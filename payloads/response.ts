@@ -67,6 +67,10 @@ export class ResponseHandler {
     return this;
   };
 
+  /**
+   * add an handler to the given path
+   * responsePayload will be sent as response to the request
+   */
   public addHandler = (
     method: SupportedMethod,
     path: IOApiPath,

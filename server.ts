@@ -11,18 +11,18 @@ import {
   getMessage
 } from "./payloads/message";
 import { handleResponse, ResponseHandler } from "./payloads/response";
-import { testSwagger } from "./utils/paths_generator";
+
+// read package.json to print some info
 const fs = require("fs");
 const packageJson = JSON.parse(fs.readFileSync("./package.json"));
-
+// define server port
 const serverPort = 3000;
-
 const express = require("express");
 const app: Application = express();
 const responseHandler = new ResponseHandler(app);
 
 app.get("/", (_, res) => {
-  res.send("Hello World!");
+  res.send(`Hi. This is ${packageJson.name}`);
 });
 
 app.get("/login", (_, res) => {

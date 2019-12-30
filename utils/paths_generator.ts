@@ -3,7 +3,7 @@ import { OpenAPIV2 } from "openapi-types";
 import * as prettier from "prettier";
 
 const tsSpecFilePaths = "./generated/definitions/server_paths.ts";
-export const testSwagger = async () => {
+export const saveApiPaths = async () => {
   const document = await SwaggerParser.bundle(
     "https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml"
   );
@@ -38,4 +38,4 @@ export const testSwagger = async () => {
   }
 };
 
-testSwagger().then(() => console.log("finish"));
+saveApiPaths().then(() => console.log("API Paths saved!"));
