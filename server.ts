@@ -2,7 +2,7 @@ import { Application } from "express";
 import { loginWithToken } from "./payloads/login";
 import { backendInfo } from "./payloads/backend";
 import { session } from "./payloads/session";
-import { profile, fiscalCode } from "./payloads/profile";
+import { getProfile } from "./payloads/profile";
 import { userMetadata } from "./payloads/userMetadata";
 import {
   messagesResponseOk,
@@ -11,7 +11,10 @@ import {
   getMessage
 } from "./payloads/message";
 import { handleResponse, ResponseHandler } from "./payloads/response";
+import { getService, getServices } from "./payloads/service";
 
+// define the fiscalCode used with the client communication
+const fiscalCode = "ISPXNB32R82Y766E";
 // read package.json to print some info
 const fs = require("fs");
 const packageJson = JSON.parse(fs.readFileSync("./package.json"));
@@ -27,6 +30,9 @@ app.get("/", (_, res) => {
 
 app.get("/login", (_, res) => {
   res.redirect(loginWithToken);
+});
+app.post("/logout", (_, res) => {
+  res.status(200).send("ok");
 });
 
 app.get("/info", (_, res) => {
@@ -44,11 +50,19 @@ app.get("/ping", (_, res) => {
 /** API handlers */
 responseHandler
   .addHandler("get", "/session", session)
-  .addHandler("get", "/profile", profile)
+  .addHandler("get", "/profile", getProfile(fiscalCode))
   .addHandler("get", "/user-metadata", userMetadata)
-  .addHandler("get", "/messages", messagesResponseOkList(10))
+  // return 10 mock messages
+  .addHandler("get", "/messages", messagesResponseOkList(10, fiscalCode))
+  // return a mock message with the same requested id (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
     return getMessage(req.params.id, fiscalCode);
+  })
+  // return 10 mock services
+  .addHandler("get", "/services", getServices(10))
+  // return a mock service with the same requested id (always found!)
+  .addCustomHandler("get", "/services/:service_id", req => {
+    return getService(req.params.service_id);
   });
 
 app.listen(serverPort, async function() {

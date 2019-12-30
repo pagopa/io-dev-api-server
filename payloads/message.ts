@@ -1,4 +1,3 @@
-import { fiscalCode } from "./profile";
 import { range } from "fp-ts/lib/Array";
 import { IOResponse } from "./response";
 import { validatePayload } from "../utils/validator";
@@ -56,28 +55,24 @@ const messages = {
   items: [
     {
       created_at: "2019-10-03T16:22:50.200Z",
-      fiscal_code: fiscalCode,
       id: "01DP96WR2EKVRQR2JKXJDT8CV1",
       sender_service_id: "azure-deployc49a",
       time_to_live: 3600
     },
     {
       created_at: "2019-10-03T16:22:50.200Z",
-      fiscal_code: fiscalCode,
       id: "01DP96WR2EKVRQR2JKXJDT8CV4",
       sender_service_id: "azure-deployc49a",
       time_to_live: 3600
     },
     {
       created_at: "2019-10-03T16:22:50.200Z",
-      fiscal_code: fiscalCode,
       id: "01DP96WR2EKVRQR2JKXJDT8CV2",
       sender_service_id: "azure-deployc49a",
       time_to_live: 3600
     },
     {
       created_at: "2019-10-03T16:22:50.200Z",
-      fiscal_code: fiscalCode,
       id: "01DP96WR2EKVRQR2JKXJDT8CV3",
       sender_service_id: "azure-deployc49a",
       time_to_live: 3600
@@ -86,23 +81,29 @@ const messages = {
   page_size: 12
 };
 
-export const createMessageList = (count: number, randomId: boolean) =>
+export const createMessageList = (
+  count: number,
+  randomId: boolean,
+  fiscal_code: string
+) =>
   validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
-    items: createMessage(count, fiscalCode, randomId),
+    items: createMessage(count, fiscal_code, randomId),
     page_size: count
   });
-
-const messageCustomList = validatePayload(
-  PaginatedCreatedMessageWithoutContentCollection,
-  messages
-);
 
 /**
  * return a list with custom messages (defined above)
  */
-export const messagesResponseOk: IOResponse = {
-  payload: messageCustomList,
-  isJson: true
+export const messagesResponseOk = (fiscal_code: string) => {
+  return {
+    payload: validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
+      ...messages,
+      items: messages.items.map(item => {
+        return { ...item, fiscal_code };
+      })
+    }),
+    isJson: true
+  };
 };
 
 export const getMessage = (
@@ -124,10 +125,11 @@ export const getMessage = (
  */
 export const messagesResponseOkList = (
   count: number,
+  fiscal_code: string,
   randomId: boolean = false
 ): IOResponse => {
   return {
-    payload: createMessageList(count, randomId),
+    payload: createMessageList(count, randomId, fiscal_code),
     isJson: true
   };
 };

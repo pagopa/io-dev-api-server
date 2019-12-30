@@ -2,13 +2,12 @@ import { IOResponse } from "./response";
 import { validatePayload } from "../utils/validator";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 
-export const fiscalCode = "ISPXNB32R82Y766E";
+// define here the fiscalCode used within the client communication
 
 const mockProfile = {
   accepted_tos_version: 1,
   email: "fake@email.it",
-  family_name: "Rossi",
-  fiscal_code: fiscalCode,
+  family_name: "Doe",
   has_profile: true,
   is_inbox_enabled: true,
   is_webhook_enabled: true,
@@ -18,7 +17,12 @@ const mockProfile = {
   version: 6
 };
 
-export const profile: IOResponse = {
-  payload: validatePayload(InitializedProfile, mockProfile),
-  isJson: true
+export const getProfile = (fiscal_code: string): IOResponse => {
+  return {
+    payload: validatePayload(InitializedProfile, {
+      ...mockProfile,
+      fiscal_code
+    }),
+    isJson: true
+  };
 };

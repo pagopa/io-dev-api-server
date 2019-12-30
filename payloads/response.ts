@@ -23,14 +23,6 @@ export const handleResponse = (
   res.send(ioResponse.payload);
 };
 
-export const handleSimpleResponse = (
-  expressRequest: Request,
-  expressResponse: Response,
-  ioResponse: IOResponse
-) => {
-  handleResponse(expressResponse, ioResponse);
-};
-
 export class ResponseHandler {
   private app: Application;
   constructor(app: Application) {
@@ -45,7 +37,7 @@ export class ResponseHandler {
     switch (method) {
       case "get":
         this.app.get(basePath + path, (req, res) =>
-          handleSimpleResponse(req, res, handler(req))
+          handleResponse(res, handler(req))
         );
         break;
       case "post":
@@ -68,8 +60,9 @@ export class ResponseHandler {
   };
 
   /**
-   * add an handler to the given path
+   * Add an handler to the given path
    * responsePayload will be sent as response to the request
+   * It accepts only IOApiPath defined into the swagger specs
    */
   public addHandler = (
     method: SupportedMethod,

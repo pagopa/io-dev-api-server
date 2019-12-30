@@ -2,16 +2,19 @@ import SwaggerParser from "swagger-parser";
 import { OpenAPIV2 } from "openapi-types";
 import * as prettier from "prettier";
 
+// read package.json to get the api url endpoint
+const fs = require("fs");
+const packageJson = JSON.parse(fs.readFileSync("./package.json"));
 const tsSpecFilePaths = "./generated/definitions/server_paths.ts";
 export const saveApiPaths = async () => {
-  const document = await SwaggerParser.bundle(
-    "https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml"
-  );
+  const document = await SwaggerParser.bundle(packageJson.api_beckend_specs);
 
   const basePath = (document as OpenAPIV2.Document).basePath;
-  const paths = Object.keys(document.paths).map(p =>
-    p.replace("{", ":").replace("}", "")
-  );
+  console.log(`retrieving API paths from ${packageJson.api_beckend_specs}:\n`);
+  const paths = Object.keys(document.paths).map(p => {
+    console.log(p);
+    return p.replace("{", ":").replace("}", "");
+  });
 
   const specCode = `
     /* tslint:disable:object-literal-sort-keys */
@@ -38,4 +41,4 @@ export const saveApiPaths = async () => {
   }
 };
 
-saveApiPaths().then(() => console.log("API Paths saved!"));
+saveApiPaths().then(() => console.log("\nAPI Paths saved!"));
