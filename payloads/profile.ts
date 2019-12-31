@@ -6,13 +6,13 @@ import { IOResponse } from "./response";
 
 const mockProfile = {
   accepted_tos_version: 1,
-  email: "fake@email.it",
-  family_name: "Doe",
+  email: "mario.rossi@fake-email.it",
+  family_name: "Rossi",
   has_profile: true,
   is_inbox_enabled: true,
   is_webhook_enabled: true,
-  name: "John",
-  spid_email: "fake_spid@email.it",
+  name: "Mario",
+  spid_email: "mario.rossi@fake-spide-mail.it",
   spid_mobile_phone: "555555555",
   version: 6
 };

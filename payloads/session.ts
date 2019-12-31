@@ -8,7 +8,6 @@ export const customSession = {
   spidLevel: "https://www.spid.gov.it/SpidL2",
   walletToken
 };
-
 export const session: IOResponse<PublicSession> = {
   payload: validatePayload(PublicSession, customSession),
   isJson: true

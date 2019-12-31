@@ -137,7 +137,7 @@ export const getMessageWithContent = (
  * @param count the number of message to generate
  * @param randomId if true a random id is generated, a fixed one otherwise
  */
-export const messagesResponseOkList = (
+export const getMessageWithoutContentList = (
   count: number,
   fiscalCode: string,
   randomId: boolean = false

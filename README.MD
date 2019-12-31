@@ -1,0 +1,138 @@
+# IO dev API server
+
+It's a simple mock server for [io-app](https://github.com/teamdigitale/io-app).
+It has been created to make the app development process easier and more productive.
+With this local server the developer could:
+
+- **run it on local machine** (develop even if there is no internet connection)
+- **change response payloads** to stress and test the app
+- **add new paths and handlers** to integrate and test features not yet released
+
+### Installation
+
+On macOS and Linux we recommend the use of nodenv for managing multiple versions of NodeJS.
+The node version used in this project is stored in .node-version.
+
+#### setup
+
+1. clone this repository
+2. to install all packages needed, run this command:
+   `yarn install`
+3. to get all api-paths and models handled by io-backend, run this command:
+   `yarn generate:all`
+4. you are ready! start the server with this command:
+   `yarn start`
+
+Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
+
+### Features
+
+The current version supports:
+✓ login
+✓ session
+✓ logout
+✓ get profile
+✓ upsert profile
+✓ user metadata
+✓ messages
+✓ message details
+✓ services
+✓ service details
+✗ payment session
+✗ payment
+✗ payment transactions
+
+#### login
+
+The default implementation by-pass SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user is immediately logged in.
+
+<img src="assets/imgs/login.gif" height="600" />
+
+#### session
+
+When the client asks for a session, a valid session is always returned. Of course the developer could implement a logic to return an expired session response to test different scenarios.
+
+#### profile
+
+The profile is mocked (hard-coded) into the server implemetation. If you want to serve a different profile, just edit it!
+On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) only increasing the profile version
+
+<img src="assets/imgs/profile.gif" height="600" />
+
+### Response validation
+
+To ensure the response payloads are compliant with the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml)
+the server automatically generates types definition (`yarn generate:models`) and reases a compile-time exception (and run time too) if a response payload it not right complianti with its type
+
+```typescript
+export const customSession = {
+  spidLevel: "https://www.spid.gov.it/SpidL2",
+  walletToken: "ABCDEFG001"
+};
+// if customSession is not compliant with PublicSession an exception will be
+// raised. Otherwise a valid PublicSession object will be returned
+const session = validatePayload(PublicSession, customSession);
+```
+
+#### API Paths
+
+To ensure you are handling the right api paths a [special type][generated/definitions/backend_api_paths.ts] is automatically generated (`yarn generate:paths`). When you add an API handler if the path is not defined in the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml) a compile time error will be raised
+
+```typescript
+// it raises a compile time error because 'fancyapi' is not defined in the API specs
+responseHandler.addHandler("get", "/fancyapi", session);
+
+// this path is defined in the specs so no error will be shown
+responseHandler.addHandler("get", "/messages", session);
+```
+
+### How can I add a new handler?
+
+#### change an existing handler
+
+Of course you can alter server payloads to stress and test app (you should do it!)
+For example if you want to serve to the client 10k messages
+
+```typescript
+// create a message list response using the utility function
+const hugeMessageList = getMessageWithoutContentList(10000, fiscalCode);
+// then serve it on the relative api path
+responseHandler.addHandler("get", "/messages", hugeMessageList);
+```
+
+note `hugeMessageList` is `IOResponse` type which is a simple wrapper around the payload sent in the response
+
+```typescript
+export type IOResponse<T> = {
+  payload: T;
+  status?: number;
+  isJson?: boolean;
+};
+```
+
+if `status` is omitted will be considered 200 (HTTP_OK)
+if `isJson` is true the `payload` will be sent as a json
+
+#### add a new handler
+
+Usually the new handler is included in a new specs version.
+
+- update the specs to the target version
+  edit the field `api_beckend_specs` in the `package.json`
+- generate the updated models and paths: `yarn generate:all`
+- add the handler
+  - create the payload should be returned
+  - add the handler
+  ```typescript
+  const mockPayload = { field1: "value", field2: 2 };
+  const newPayload = validatePayload(NewPayloadType, {
+    field1: "value",
+    field2: 2
+  });
+  const newIoPayload: IOPayload<NewPayloadType> = {
+    payload: newPayload,
+    isJson: true
+  };
+  // if the mockPayload is compliant with NewPayloadType no error will be raised
+  responseHandler.addHandler("get", "/newpath", newIoPayload);
+  ```

@@ -8,7 +8,7 @@ import { backendInfo } from "./payloads/backend";
 import { loginWithToken } from "./payloads/login";
 import {
   getMessageWithContent,
-  messagesResponseOkList
+  getMessageWithoutContentList
 } from "./payloads/message";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
@@ -18,7 +18,7 @@ import { userMetadata } from "./payloads/userMetadata";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
-const fiscalCode = "ISPXNB32R82Y766E";
+const fiscalCode = "RSSMRA83A12H501D";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
@@ -51,7 +51,8 @@ app.get("/ping", (_, res) => {
 
 /** IO backend API handlers */
 
-const messages = messagesResponseOkList(10, fiscalCode);
+const messages = getMessageWithoutContentList(10, fiscalCode);
+const services = getServices(10);
 
 responseHandler
   .addHandler("get", "/session", session)
@@ -85,7 +86,7 @@ responseHandler
     return getMessageWithContent(req.params.id, serviceId!, fiscalCode);
   })
   // return 10 mock services
-  .addHandler("get", "/services", getServices(10))
+  .addHandler("get", "/services", services)
   // return a mock service with the same requested id (always found!)
   .addCustomHandler("get", "/services/:service_id", req => {
     return getService(req.params.service_id);
