@@ -1,4 +1,5 @@
 import { range } from "fp-ts/lib/Array";
+import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { validatePayload } from "../utils/validator";
@@ -47,36 +48,44 @@ const createMessage = (
   });
 };
 
-const messages = {
-  items: [
-    {
-      created_at: "2019-10-03T16:22:50.200Z",
-      id: "01DP96WR2EKVRQR2JKXJDT8CV1",
-      sender_service_id: "azure-deployc49a",
+export const createMessageWithContent = (
+  count: number,
+  fiscalCode: string,
+  serviceId: string,
+  randomId: boolean = false,
+  messageId?: string
+) => {
+  return range(1, count).map(idx => {
+    const date = new Date();
+    const msgId =
+      randomId === true
+        ? getRandomId()
+        : messageId
+        ? messageId
+        : `${idx}`.padStart(26, "0");
+    date.setSeconds(idx);
+    return {
+      content: {
+        subject: `subject [${serviceId}]`,
+        markdown:
+          "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
+        due_date: date
+      },
+      created_at: date,
+      fiscal_code: fiscalCode,
+      id: msgId,
+      sender_service_id: serviceId,
       time_to_live: 3600
-    },
-    {
-      created_at: "2019-10-03T16:22:50.200Z",
-      id: "01DP96WR2EKVRQR2JKXJDT8CV4",
-      sender_service_id: "azure-deployc49a",
-      time_to_live: 3600
-    },
-    {
-      created_at: "2019-10-03T16:22:50.200Z",
-      id: "01DP96WR2EKVRQR2JKXJDT8CV2",
-      sender_service_id: "azure-deployc49a",
-      time_to_live: 3600
-    },
-    {
-      created_at: "2019-10-03T16:22:50.200Z",
-      id: "01DP96WR2EKVRQR2JKXJDT8CV3",
-      sender_service_id: "azure-deployc49a",
-      time_to_live: 3600
-    }
-  ],
-  page_size: 12
+    };
+  });
 };
 
+/**
+ * return a list of count messages without content
+ * @param count the number of messages
+ * @param randomId if true a random if will be generated
+ * @param fiscalCode the receiver fiscal code
+ */
 export const createMessageList = (
   count: number,
   randomId: boolean,
@@ -88,28 +97,37 @@ export const createMessageList = (
   });
 
 /**
- * return a list with custom messages (defined above)
+ * return a message without content
+ * @param messageId the id of the message to be created
+ * @param fiscalCode the receiver fiscal code
  */
-export const messagesResponseOk = (fiscalCode: string) => {
-  return {
-    payload: validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
-      ...messages,
-      items: messages.items.map(item => {
-        return { ...item, fiscal_code: fiscalCode };
-      })
-    }),
-    isJson: true
-  };
-};
-
 export const getMessage = (
   messageId: string,
   fiscalCode: string
-): IOResponse => {
+): IOResponse<CreatedMessageWithoutContent> => {
   return {
     payload: validatePayload(
       CreatedMessageWithoutContent,
       createMessage(1, fiscalCode, false, messageId)[0]
+    )
+  };
+};
+
+/**
+ * return a message with content
+ * @param messageId the id of the message to be created
+ * @param serviceId the id of the message service sender
+ * @param fiscalCode the receiver fiscal code
+ */
+export const getMessageWithContent = (
+  messageId: string,
+  serviceId: string,
+  fiscalCode: string
+): IOResponse<CreatedMessageWithContent> => {
+  return {
+    payload: validatePayload(
+      CreatedMessageWithContent,
+      createMessageWithContent(1, fiscalCode, serviceId, false, messageId)[0]
     )
   };
 };
@@ -123,15 +141,15 @@ export const messagesResponseOkList = (
   count: number,
   fiscalCode: string,
   randomId: boolean = false
-): IOResponse => {
+): IOResponse<PaginatedCreatedMessageWithoutContentCollection> => {
   return {
     payload: createMessageList(count, randomId, fiscalCode),
     isJson: true
   };
 };
 
-// 404 not found
-export const messagesResponseNotFound: IOResponse = {
+// 404 - message NOT found
+export const messagesResponseNotFound: IOResponse<string> = {
   payload: "not found",
   isJson: false,
   status: 404

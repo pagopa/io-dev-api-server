@@ -17,7 +17,7 @@ const mockProfile = {
   version: 6
 };
 
-export const getProfile = (fiscalCode: string): IOResponse => {
+export const getProfile = (fiscalCode: string): IOResponse<UserProfile> => {
   return {
     payload: validatePayload(UserProfile, {
       ...mockProfile,

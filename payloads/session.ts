@@ -9,7 +9,7 @@ export const customSession = {
   walletToken
 };
 
-export const session: IOResponse = {
+export const session: IOResponse<PublicSession> = {
   payload: validatePayload(PublicSession, customSession),
   isJson: true
 };

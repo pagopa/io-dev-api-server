@@ -6,7 +6,10 @@ import { InitializedProfile } from "./generated/definitions/backend/InitializedP
 import { UserProfile } from "./generated/definitions/backend/UserProfile";
 import { backendInfo } from "./payloads/backend";
 import { loginWithToken } from "./payloads/login";
-import { getMessage, messagesResponseOkList } from "./payloads/message";
+import {
+  getMessageWithContent,
+  messagesResponseOkList
+} from "./payloads/message";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import { getService, getServices } from "./payloads/service";
@@ -47,13 +50,16 @@ app.get("/ping", (_, res) => {
 });
 
 /** IO backend API handlers */
+
+const messages = messagesResponseOkList(10, fiscalCode);
+
 responseHandler
   .addHandler("get", "/session", session)
   .addHandler("get", "/profile", getProfile(fiscalCode))
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
-    const currentProfile = getProfile(fiscalCode).payload as UserProfile;
+    const currentProfile = getProfile(fiscalCode).payload;
     const clintProfileIncresed = {
       ...req.body,
       version: parseInt(req.body.version, 10) + 1
@@ -69,10 +75,14 @@ responseHandler
   })
   .addHandler("get", "/user-metadata", userMetadata)
   // return 10 mock messages
-  .addHandler("get", "/messages", messagesResponseOkList(10, fiscalCode))
-  // return a mock message with the same requested id (always found!)
+  .addHandler("get", "/messages", messages)
+  // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
-    return getMessage(req.params.id, fiscalCode);
+    // retrieve the service_id from the messages list
+    const serviceId = messages.payload.items.find(
+      item => item.id === req.params.id
+    )?.sender_service_id;
+    return getMessageWithContent(req.params.id, serviceId!, fiscalCode);
   })
   // return 10 mock services
   .addHandler("get", "/services", getServices(10))

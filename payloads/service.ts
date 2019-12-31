@@ -1,9 +1,10 @@
 import { range } from "fp-ts/lib/Array";
+import { PaginatedServiceTupleCollection } from "../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../generated/definitions/backend/ServicePublic";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
-export const getService = (serviceId: string): IOResponse => {
+export const getService = (serviceId: string): IOResponse<ServicePublic> => {
   const service = {
     available_notification_channels: ["EMAIL", "WEBHOOK"],
     department_name: "dev department name",
@@ -18,7 +19,9 @@ export const getService = (serviceId: string): IOResponse => {
   };
 };
 
-export const getServices = (count: number): IOResponse => {
+export const getServices = (
+  count: number
+): IOResponse<PaginatedServiceTupleCollection> => {
   const payload = {
     items: range(1, count).map(idx => getService(`dev-service_${idx}`).payload),
     page_size: count

@@ -5,15 +5,15 @@ import {
   SupportedMethod
 } from "../generated/definitions/backend_api_paths";
 
-export type IOResponse = {
-  payload: any;
+export type IOResponse<T> = {
+  payload: T;
   status?: number;
   isJson?: boolean;
 };
 
-export const handleResponse = (
+export const handleResponse = <T>(
   expressResponse: Response,
-  ioResponse: IOResponse
+  ioResponse: IOResponse<T>
 ) => {
   const res = expressResponse.status(ioResponse.status || 200);
   if (ioResponse.isJson === true) {
@@ -29,10 +29,10 @@ export class ResponseHandler {
     this.app = app;
   }
 
-  private addHandlerInternal = (
+  private addHandlerInternal = <T>(
     method: SupportedMethod,
     path: IOApiPath,
-    handler: (req: Request) => IOResponse
+    handler: (req: Request) => IOResponse<T>
   ): ResponseHandler => {
     switch (method) {
       case "get":
@@ -55,10 +55,10 @@ export class ResponseHandler {
     return this;
   };
 
-  public addCustomHandler = (
+  public addCustomHandler = <T>(
     method: SupportedMethod,
     path: IOApiPath,
-    handler: (req: Request) => IOResponse
+    handler: (req: Request) => IOResponse<T>
   ): ResponseHandler => {
     this.addHandlerInternal(method, path, handler);
     return this;
@@ -69,10 +69,10 @@ export class ResponseHandler {
    * responsePayload will be sent as response to the request
    * It accepts only IOApiPath defined into the swagger specs (see api_beckend_specs value in package.json)
    */
-  public addHandler = (
+  public addHandler = <T>(
     method: SupportedMethod,
     path: IOApiPath,
-    responsePayload: IOResponse
+    responsePayload: IOResponse<T>
   ): ResponseHandler => {
     this.addHandlerInternal(method, path, () => responsePayload);
     return this;

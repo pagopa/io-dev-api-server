@@ -7,7 +7,7 @@ const mockUserMetadata = {
   metadata: '{"organizationsOfInterest":[]}'
 };
 
-export const userMetadata: IOResponse = {
+export const userMetadata: IOResponse<UserMetadata> = {
   payload: validatePayload(UserMetadata, mockUserMetadata),
   isJson: true
 };
