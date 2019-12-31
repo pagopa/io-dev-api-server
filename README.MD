@@ -9,6 +9,8 @@ With this local server the developer could:
 - **change response payloads** to stress and test the app
 - **add new paths and handlers** to integrate and test features not yet released
 
+<img src="assets/imgs/tour.gif" height="600" />
+
 ### Installation
 
 On macOS and Linux we recommend the use of nodenv for managing multiple versions of NodeJS.
