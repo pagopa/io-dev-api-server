@@ -1,4 +1,4 @@
-import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
+import { UserProfile } from "../generated/definitions/backend/UserProfile";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
@@ -19,7 +19,7 @@ const mockProfile = {
 
 export const getProfile = (fiscalCode: string): IOResponse => {
   return {
-    payload: validatePayload(InitializedProfile, {
+    payload: validatePayload(UserProfile, {
       ...mockProfile,
       fiscal_code: fiscalCode
     }),

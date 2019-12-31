@@ -41,11 +41,16 @@ export class ResponseHandler {
         );
         break;
       case "post":
+        this.app.post(basePath + path, (req, res) =>
+          handleResponse(res, handler(req))
+        );
         break;
       case "put":
-        break;
+        throw Error("put not implemented");
       case "update":
-        break;
+        throw Error("update method not implemented");
+      default:
+        throw Error(`${method} not implemented`);
     }
     return this;
   };
@@ -60,9 +65,9 @@ export class ResponseHandler {
   };
 
   /**
-   * Add an handler to the given path
+   * Add an handler for the given api path
    * responsePayload will be sent as response to the request
-   * It accepts only IOApiPath defined into the swagger specs
+   * It accepts only IOApiPath defined into the swagger specs (see api_beckend_specs value in package.json)
    */
   public addHandler = (
     method: SupportedMethod,

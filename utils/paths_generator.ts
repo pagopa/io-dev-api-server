@@ -1,13 +1,13 @@
-import SwaggerParser from "swagger-parser";
+import fs from "fs";
 import { OpenAPIV2 } from "openapi-types";
 import * as prettier from "prettier";
-import fs from "fs";
+import SwaggerParser from "swagger-parser";
+
 // read package.json to get the api url endpoint
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 const tsSpecFilePaths = "./generated/definitions/backend_api_paths.ts";
 export const saveApiPaths = async () => {
   const document = await SwaggerParser.bundle(packageJson.api_beckend_specs);
-
   const basePath = (document as OpenAPIV2.Document).basePath;
   console.log(`retrieving API paths from ${packageJson.api_beckend_specs}:\n`);
   const paths = Object.keys(document.paths).map(p => {
@@ -15,6 +15,7 @@ export const saveApiPaths = async () => {
     return p.replace("{", ":").replace("}", "");
   });
 
+  const tsPaths = paths.map(p => `"${p}"`).join(" | ");
   const specCode = `
     /* tslint:disable:object-literal-sort-keys */
     // DO NOT EDIT
@@ -23,23 +24,21 @@ export const saveApiPaths = async () => {
   
     export const basePath = "${basePath}";
     export type SupportedMethod = "get" | "post" | "put" | "delete" | "update";
-    export type IOApiPath = ${paths.map(p => `"${p}"`).join(" | ")};
+    export type IOApiPath = ${tsPaths};
     `;
-
-  const fs = require("fs");
   if (tsSpecFilePaths) {
-    await fs.writeFile(
+    fs.writeFile(
       tsSpecFilePaths,
       prettier.format(specCode, {
         parser: "typescript"
       }),
-      (_: any, __: any) => {
+      () => {
         console.log();
       }
     );
   }
 };
 
-saveApiPaths().then(() =>
-  console.log(`\nAPI Paths saved into ${tsSpecFilePaths}`)
-);
+saveApiPaths()
+  .then(() => console.log(`\nAPI Paths saved into ${tsSpecFilePaths}`))
+  .catch(console.error);

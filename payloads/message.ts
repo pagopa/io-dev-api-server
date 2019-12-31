@@ -4,21 +4,18 @@ import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/de
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
-// 26 chars random string
-const getRandomId = (): string =>
-  (
+/**
+ * generate a 26 chars pseudo-random string
+ */
+const getRandomId = (): string => {
+  const randomSlice = () =>
     Math.random()
       .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15)
-  )
+      .substring(2, 15);
+  return (randomSlice() + randomSlice() + randomSlice())
     .substring(0, 26)
     .toUpperCase();
+};
 
 /**
  * generate a list containg count messages with the given fiscal_code

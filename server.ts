@@ -1,29 +1,30 @@
+import bodyParser from "body-parser";
 import { Application } from "express";
-import morgan from "morgan";
-import { loginWithToken } from "./payloads/login";
-import { backendInfo } from "./payloads/backend";
-import { session } from "./payloads/session";
-import { getProfile } from "./payloads/profile";
-import { userMetadata } from "./payloads/userMetadata";
-import {
-  messagesResponseOk,
-  messagesResponseNotFound,
-  messagesResponseOkList,
-  getMessage
-} from "./payloads/message";
-import { handleResponse, ResponseHandler } from "./payloads/response";
-import { getService, getServices } from "./payloads/service";
 import fs from "fs";
+import morgan from "morgan";
+import { InitializedProfile } from "./generated/definitions/backend/InitializedProfile";
+import { UserProfile } from "./generated/definitions/backend/UserProfile";
+import { backendInfo } from "./payloads/backend";
+import { loginWithToken } from "./payloads/login";
+import { getMessage, messagesResponseOkList } from "./payloads/message";
+import { getProfile } from "./payloads/profile";
+import { ResponseHandler } from "./payloads/response";
+import { getService, getServices } from "./payloads/service";
+import { session } from "./payloads/session";
+import { userMetadata } from "./payloads/userMetadata";
+import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
 const fiscalCode = "ISPXNB32R82Y766E";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
-// define server port
+// create express server
 const serverPort = 3000;
 const express = require("express");
 const app: Application = express();
+// set log middleware
 app.use(morgan("tiny"));
+app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 
 app.get("/", (_, res) => {
@@ -41,18 +42,31 @@ app.get("/info", (_, res) => {
   res.json(backendInfo);
 });
 
-app.get("/getProfile", (_, res) => {
-  res.status(404).send("not found");
-});
-
 app.get("/ping", (_, res) => {
   res.send("ok");
 });
 
-/** API handlers */
+/** IO backend API handlers */
 responseHandler
   .addHandler("get", "/session", session)
   .addHandler("get", "/profile", getProfile(fiscalCode))
+  .addCustomHandler("post", "/profile", req => {
+    // the server profile is merged with
+    // the one coming from request. Furthermore this profile's version is increased by 1
+    const currentProfile = getProfile(fiscalCode).payload as UserProfile;
+    const clintProfileIncresed = {
+      ...req.body,
+      version: parseInt(req.body.version, 10) + 1
+    };
+    const payload = validatePayload(InitializedProfile, {
+      ...currentProfile,
+      ...clintProfileIncresed
+    });
+    return {
+      payload,
+      isJson: true
+    };
+  })
   .addHandler("get", "/user-metadata", userMetadata)
   // return 10 mock messages
   .addHandler("get", "/messages", messagesResponseOkList(10, fiscalCode))
@@ -67,7 +81,7 @@ responseHandler
     return getService(req.params.service_id);
   });
 
-app.listen(serverPort, async function() {
+app.listen(serverPort, async () => {
   console.log(
     `${packageJson.name} is running on http://127.0.0.1:${serverPort}`
   );
