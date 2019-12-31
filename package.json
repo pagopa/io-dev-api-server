@@ -17,10 +17,12 @@
     "generate:all": "npm-run-all generate:models generate:paths"
   },
   "dependencies": {
+    "@types/morgan": "^1.7.37",
     "@types/prettier": "^1.19.0",
     "@types/swagger-parser": "^7.0.1",
     "express": "^4.17.1",
     "italia-utils": "^4.0.0",
+    "morgan": "^1.9.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",

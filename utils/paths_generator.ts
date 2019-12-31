@@ -1,10 +1,9 @@
 import SwaggerParser from "swagger-parser";
 import { OpenAPIV2 } from "openapi-types";
 import * as prettier from "prettier";
-
+import fs from "fs";
 // read package.json to get the api url endpoint
-const fs = require("fs");
-const packageJson = JSON.parse(fs.readFileSync("./package.json"));
+const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 const tsSpecFilePaths = "./generated/definitions/server_paths.ts";
 export const saveApiPaths = async () => {
   const document = await SwaggerParser.bundle(packageJson.api_beckend_specs);

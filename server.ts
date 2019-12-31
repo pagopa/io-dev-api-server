@@ -1,4 +1,5 @@
 import { Application } from "express";
+import morgan from "morgan";
 import { loginWithToken } from "./payloads/login";
 import { backendInfo } from "./payloads/backend";
 import { session } from "./payloads/session";
@@ -12,16 +13,17 @@ import {
 } from "./payloads/message";
 import { handleResponse, ResponseHandler } from "./payloads/response";
 import { getService, getServices } from "./payloads/service";
+import fs from "fs";
 
-// define the fiscalCode used with the client communication
+// fiscalCode used within the client communication
 const fiscalCode = "ISPXNB32R82Y766E";
 // read package.json to print some info
-const fs = require("fs");
-const packageJson = JSON.parse(fs.readFileSync("./package.json"));
+const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // define server port
 const serverPort = 3000;
 const express = require("express");
 const app: Application = express();
+app.use(morgan("tiny"));
 const responseHandler = new ResponseHandler(app);
 
 app.get("/", (_, res) => {
