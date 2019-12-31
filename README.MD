@@ -48,7 +48,7 @@ The current version supports:
 
 #### login
 
-The default implementation by-pass SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user is immediately logged in.
+The current server implementation by-passes SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user is immediately logged in.
 
 <img src="assets/imgs/login.gif" height="600" />
 
