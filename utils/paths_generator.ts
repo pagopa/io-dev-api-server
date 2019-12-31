@@ -4,7 +4,7 @@ import * as prettier from "prettier";
 import fs from "fs";
 // read package.json to get the api url endpoint
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
-const tsSpecFilePaths = "./generated/definitions/server_paths.ts";
+const tsSpecFilePaths = "./generated/definitions/backend_api_paths.ts";
 export const saveApiPaths = async () => {
   const document = await SwaggerParser.bundle(packageJson.api_beckend_specs);
 
@@ -40,4 +40,6 @@ export const saveApiPaths = async () => {
   }
 };
 
-saveApiPaths().then(() => console.log("\nAPI Paths saved!"));
+saveApiPaths().then(() =>
+  console.log(`\nAPI Paths saved into ${tsSpecFilePaths}`)
+);

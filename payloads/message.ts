@@ -1,9 +1,8 @@
 import { range } from "fp-ts/lib/Array";
-import { IOResponse } from "./response";
-import { validatePayload } from "../utils/validator";
-import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
-import { MessageResponseWithContent } from "../generated/definitions/backend/MessageResponseWithContent";
 import { CreatedMessageWithoutContent } from "../generated/definitions/backend/CreatedMessageWithoutContent";
+import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
+import { validatePayload } from "../utils/validator";
+import { IOResponse } from "./response";
 
 // 26 chars random string
 const getRandomId = (): string =>
@@ -28,7 +27,7 @@ const getRandomId = (): string =>
  */
 const createMessage = (
   count: number,
-  fiscal_code: string,
+  fiscalCode: string,
   randomId: boolean = false,
   messageId?: string
 ) => {
@@ -43,7 +42,7 @@ const createMessage = (
     date.setSeconds(idx);
     return {
       created_at: date.toISOString(),
-      fiscal_code,
+      fiscal_code: fiscalCode,
       id: msgId,
       sender_service_id: `dev-service_${idx}`,
       time_to_live: 3600
@@ -84,22 +83,22 @@ const messages = {
 export const createMessageList = (
   count: number,
   randomId: boolean,
-  fiscal_code: string
+  fiscalCode: string
 ) =>
   validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
-    items: createMessage(count, fiscal_code, randomId),
+    items: createMessage(count, fiscalCode, randomId),
     page_size: count
   });
 
 /**
  * return a list with custom messages (defined above)
  */
-export const messagesResponseOk = (fiscal_code: string) => {
+export const messagesResponseOk = (fiscalCode: string) => {
   return {
     payload: validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
       ...messages,
       items: messages.items.map(item => {
-        return { ...item, fiscal_code };
+        return { ...item, fiscal_code: fiscalCode };
       })
     }),
     isJson: true
@@ -108,12 +107,12 @@ export const messagesResponseOk = (fiscal_code: string) => {
 
 export const getMessage = (
   messageId: string,
-  fiscal_code: string
+  fiscalCode: string
 ): IOResponse => {
   return {
     payload: validatePayload(
       CreatedMessageWithoutContent,
-      createMessage(1, fiscal_code, false, messageId)[0]
+      createMessage(1, fiscalCode, false, messageId)[0]
     )
   };
 };
@@ -125,11 +124,11 @@ export const getMessage = (
  */
 export const messagesResponseOkList = (
   count: number,
-  fiscal_code: string,
+  fiscalCode: string,
   randomId: boolean = false
 ): IOResponse => {
   return {
-    payload: createMessageList(count, randomId, fiscal_code),
+    payload: createMessageList(count, randomId, fiscalCode),
     isJson: true
   };
 };

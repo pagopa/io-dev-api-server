@@ -1,9 +1,9 @@
-import { Request, Response, Application } from "express";
+import { Application, Request, Response } from "express";
 import {
+  basePath,
   IOApiPath,
-  SupportedMethod,
-  basePath
-} from "../generated/definitions/server_paths";
+  SupportedMethod
+} from "../generated/definitions/backend_api_paths";
 
 export type IOResponse = {
   payload: any;
@@ -29,7 +29,7 @@ export class ResponseHandler {
     this.app = app;
   }
 
-  private _addHandler = (
+  private addHandlerInternal = (
     method: SupportedMethod,
     path: IOApiPath,
     handler: (req: Request) => IOResponse
@@ -55,7 +55,7 @@ export class ResponseHandler {
     path: IOApiPath,
     handler: (req: Request) => IOResponse
   ): ResponseHandler => {
-    this._addHandler(method, path, handler);
+    this.addHandlerInternal(method, path, handler);
     return this;
   };
 
@@ -69,7 +69,7 @@ export class ResponseHandler {
     path: IOApiPath,
     responsePayload: IOResponse
   ): ResponseHandler => {
-    this._addHandler(method, path, () => responsePayload);
+    this.addHandlerInternal(method, path, () => responsePayload);
     return this;
   };
 }

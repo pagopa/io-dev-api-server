@@ -1,6 +1,6 @@
-import { IOResponse } from "./response";
-import { validatePayload } from "../utils/validator";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
+import { validatePayload } from "../utils/validator";
+import { IOResponse } from "./response";
 
 const mockUserMetadata = {
   version: 78,

@@ -1,6 +1,6 @@
-import { IOResponse } from "./response";
-import { validatePayload } from "../utils/validator";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
+import { validatePayload } from "../utils/validator";
+import { IOResponse } from "./response";
 
 // define here the fiscalCode used within the client communication
 
@@ -17,11 +17,11 @@ const mockProfile = {
   version: 6
 };
 
-export const getProfile = (fiscal_code: string): IOResponse => {
+export const getProfile = (fiscalCode: string): IOResponse => {
   return {
     payload: validatePayload(InitializedProfile, {
       ...mockProfile,
-      fiscal_code
+      fiscal_code: fiscalCode
     }),
     isJson: true
   };
