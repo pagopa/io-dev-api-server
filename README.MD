@@ -2,6 +2,7 @@
 
 It's a simple mock server for [io-app](https://github.com/teamdigitale/io-app).
 It has been created to make the app development process easier and more productive.
+
 With this local server the developer could:
 
 - **run it on local machine** (develop even if there is no internet connection)
@@ -16,11 +17,11 @@ The node version used in this project is stored in .node-version.
 #### setup
 
 1. clone this repository
-2. to install all packages needed, run this command:
+2. to install all packages needed:
    `yarn install`
-3. to get all api-paths and models handled by io-backend, run this command:
+3. to get all api-paths and models handled by io-backend:
    `yarn generate:all`
-4. you are ready! start the server with this command:
+4. you are ready! start the server:
    `yarn start`
 
 Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
@@ -28,19 +29,20 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 ### Features
 
 The current version supports:
-✓ login
-✓ session
-✓ logout
-✓ get profile
-✓ upsert profile
-✓ user metadata
-✓ messages
-✓ message details
-✓ services
-✓ service details
-✗ payment session
-✗ payment
-✗ payment transactions
+
+- ✓ login
+- ✓ session
+- ✓ logout
+- ✓ get profile
+- ✓ upsert profile
+- ✓ user metadata
+- ✓ messages
+- ✓ message details
+- ✓ services
+- ✓ service details
+- ✗ payment session
+- ✗ payment
+- ✗ payment transactions
 
 #### login
 
