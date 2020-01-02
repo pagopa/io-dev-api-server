@@ -1,6 +1,6 @@
 # IO dev API server
 
-It's a simple mock server for [io-app](https://github.com/teamdigitale/io-app).
+It's a simple mock server of [io-backend](https://github.com/teamdigitale/io-backend) for [io-app](https://github.com/teamdigitale/io-app).
 
 It has been created to make the app development process easier and more productive.
 
@@ -20,9 +20,9 @@ The node version used in this project is stored in .node-version.
 #### setup
 
 1. clone this repository
-2. to install all packages needed:
+2. install all packages needed:
    `yarn install`
-3. to get all api-paths and models handled by io-backend:
+3. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):
    `yarn generate:all`
 4. you are ready! start the server:
    `yarn start`
