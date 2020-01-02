@@ -1,12 +1,13 @@
 # IO dev API server
 
 It's a simple mock server for [io-app](https://github.com/teamdigitale/io-app).
+
 It has been created to make the app development process easier and more productive.
 
-With this local server the developer could:
+With this local server the developer can:
 
-- **run it on local machine** (develop even if there is no internet connection)
-- **change response payloads** to stress and test the app
+- **run it on local machine** (no internet connection needed)
+- **change response payloads** to test and stress the app
 - **add new paths and handlers** to integrate and test features not yet released
 
 <img src="assets/imgs/tour.gif" height="600" />
@@ -28,6 +29,15 @@ The node version used in this project is stored in .node-version.
 
 Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
 
+#### add server to io-app
+
+1. open io-app project folder
+2. open **.env** configuration file
+3. edit the **API_URL_PREFIX** with the local server
+   `API_URL_PREFIX='http://127.0.0.1:3000'``
+
+note you could edit the [server port](server.ts) (**serverPort** - default is 3000)
+
 ### Features
 
 The current version supports:
@@ -48,7 +58,7 @@ The current version supports:
 
 #### login
 
-The current server implementation by-passes SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user is immediately logged in.
+The current login implementation by-passes SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user will be immediately logged in.
 
 <img src="assets/imgs/login.gif" height="600" />
 
@@ -58,8 +68,8 @@ When the client asks for a session, a valid session is always returned. Of cours
 
 #### profile
 
-The profile is mocked (hard-coded) into the server implemetation. If you want to serve a different profile, just edit it!
-On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) only increasing the profile version
+The profile is [mocked](payloads/profile.ts) (hard-coded). If you want the server reponses a different profile, just edit it!
+On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) increasing the profile version
 
 <img src="assets/imgs/profile.gif" height="600" />
 
