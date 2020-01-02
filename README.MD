@@ -20,7 +20,7 @@ The node version used in this project is stored in .node-version.
 #### setup
 
 1. clone this repository
-2. install all packages needed:
+2. install all packages needed:<br/>
    `yarn install`
 3. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):
    `yarn generate:all`
