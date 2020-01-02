@@ -57,9 +57,13 @@ The current version supports:
 - ✓ message details
 - ✓ services
 - ✓ service details
+- ✓ service metadata
+- ✗ municipality metadata
 - ✗ payment session
 - ✗ payment
 - ✗ payment transactions
+
+✗ -> a contribution is really appreciate :blush:
 
 #### login
 
