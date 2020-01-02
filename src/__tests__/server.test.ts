@@ -12,6 +12,10 @@ import { ServicePublic } from "../../generated/definitions/backend/ServicePublic
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { UserProfile } from "../../generated/definitions/backend/UserProfile";
 import { basePath } from "../../generated/definitions/backend_api_paths";
+import {
+  ScopeEnum,
+  Service
+} from "../../generated/definitions/content/Service";
 import app, { fiscalCode, messages, services } from "../server";
 
 const request = supertest(app);
@@ -54,7 +58,7 @@ it("session should return a valid session", async done => {
   done();
 });
 
-it("session should return a valid profile", async done => {
+it("profile should return a valid profile", async done => {
   const response = await request.get(`${basePath}/profile`);
   expect(response.status).toBe(200);
   const profile = UserProfile.decode(response.body);
@@ -65,7 +69,7 @@ it("session should return a valid profile", async done => {
   done();
 });
 
-it("session should return a valid updated profile (version increased)", async done => {
+it("profile should return a valid updated profile (version increased)", async done => {
   const profile: InitializedProfile = {
     is_inbox_enabled: true,
     is_webhook_enabled: true,
@@ -91,7 +95,7 @@ it("session should return a valid updated profile (version increased)", async do
   done();
 });
 
-it("session should return a valid user-metadata", async done => {
+it("user-metadata should return a valid user-metadata", async done => {
   const response = await request.get(`${basePath}/user-metadata`);
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
@@ -99,7 +103,7 @@ it("session should return a valid user-metadata", async done => {
   done();
 });
 
-it("session should return a valid messages list", async done => {
+it("messages should return a valid messages list", async done => {
   const response = await request.get(`${basePath}/messages`);
   expect(response.status).toBe(200);
   const list = PaginatedCreatedMessageWithoutContentCollection.decode(
@@ -112,7 +116,7 @@ it("session should return a valid messages list", async done => {
   done();
 });
 
-it("session should return a valid message with content", async done => {
+it("messages should return a valid message with content", async done => {
   const messageId = messages.payload.items[0].id;
   const response = await request.get(`${basePath}/messages/${messageId}`);
   expect(response.status).toBe(200);
@@ -124,7 +128,7 @@ it("session should return a valid message with content", async done => {
   done();
 });
 
-it("session should return a valid services list", async done => {
+it("services should return a valid services list", async done => {
   const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
@@ -135,7 +139,7 @@ it("session should return a valid services list", async done => {
   done();
 });
 
-it("session should return a valid service with content", async done => {
+it("services should return a valid service with content", async done => {
   const serviceId = services.payload.items[0].service_id;
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
@@ -143,6 +147,20 @@ it("session should return a valid service with content", async done => {
   expect(service.isRight()).toBeTruthy();
   if (service.isRight()) {
     expect(service.value.service_id).toBe(serviceId);
+  }
+  done();
+});
+
+it("services_metadata should return a valid service metadata", async done => {
+  const serviceId = services.payload.items[0].service_id;
+  const response = await request.get(
+    `/static_contents/services/${serviceId}.json`
+  );
+  expect(response.status).toBe(200);
+  const metadata = Service.decode(response.body);
+  expect(metadata.isRight()).toBeTruthy();
+  if (metadata.isRight()) {
+    expect(metadata.value.scope).toEqual(ScopeEnum.LOCAL);
   }
   done();
 });

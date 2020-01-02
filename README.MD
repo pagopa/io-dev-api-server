@@ -30,12 +30,14 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 #### add server to io-app
 
 1. open io-app project folder
-2. open **.env** configuration file
-3. edit the **API_URL_PREFIX** with the local server<br/>
+1. open **.env** configuration file
+1. edit the **API_URL_PREFIX** with the local server<br/>
    `API_URL_PREFIX='http://127.0.0.1:3000'`
-4. update the config file<br/>
+1. edit the **CONTENT_REPO_URL** with the local server<br/>
+   `CONTENT_REPO_URL='http://127.0.0.1:3000/static_contents''`
+1. update the config file<br/>
    `yarn postinstall`
-5. run simulator<br/>
+1. run simulator<br/>
    `react-native run-ios` or<br/>
    `react-native run-android`
 

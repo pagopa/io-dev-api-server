@@ -12,7 +12,11 @@ import {
 } from "../payloads/message";
 import { getProfile } from "../payloads/profile";
 import { ResponseHandler } from "../payloads/response";
-import { getService, getServices } from "../payloads/service";
+import {
+  getService,
+  getServiceMetadata,
+  getServices
+} from "../payloads/service";
 import { session } from "../payloads/session";
 import { userMetadata } from "../payloads/userMetadata";
 import { validatePayload } from "./utils/validator";
@@ -48,10 +52,15 @@ app.get("/ping", (_, res) => {
   res.send("ok");
 });
 
-/** IO backend API handlers */
-
 export const messages = getMessageWithoutContentList(10, fiscalCode);
 export const services = getServices(10);
+
+app.get("/static_contents/services/:service_id", (req, res) => {
+  const serviceId = req.params.service_id.replace(".json", "");
+  res.json(getServiceMetadata(serviceId, services.payload).payload);
+});
+
+/** IO backend API handlers */
 
 responseHandler
   .addHandler("get", "/session", session)
