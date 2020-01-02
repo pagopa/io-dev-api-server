@@ -15,7 +15,7 @@ With this local server the developer can:
 ### Installation
 
 On macOS and Linux we recommend the use of nodenv for managing multiple versions of NodeJS.
-The node version used in this project is stored in .node-version.
+The node version used in this project is stored in [.node-version](.node-version).
 
 #### setup
 
