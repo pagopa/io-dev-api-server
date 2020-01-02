@@ -14,8 +14,9 @@
     "build": "tsc",
     "start": "npm-run-all build && node build/src/start.js",
     "generate:paths": "ts-node utils/paths_generator.ts",
+    "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec https://raw.githubusercontent.com/teamdigitale/italia-services-metadata/master/definitions.yml --out-dir ./generated/definitions/content",
     "generate:models": "rimraf generated && rimraf generated/definitions/backend && mkdir -p generated/definitions/backend && gen-api-models --api-spec $npm_package_api_beckend_specs --out-dir ./generated/definitions/backend --no-strict --request-types && gen-api-models --api-spec $npm_package_api_public_specs --out-dir generated/definitions/backend",
-    "generate:all": "npm-run-all generate:models generate:paths"
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:paths"
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",

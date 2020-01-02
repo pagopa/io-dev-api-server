@@ -1,5 +1,6 @@
 import bodyParser from "body-parser";
 import { Application } from "express";
+import express from "express";
 import fs from "fs";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
@@ -17,12 +18,11 @@ import { userMetadata } from "../payloads/userMetadata";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
-const fiscalCode = "RSSMRA83A12H501D";
+export const fiscalCode = "RSSMRA83A12H501D";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 export const serverPort = 3000;
-const express = require("express");
 const app: Application = express();
 // set log middleware
 app.use(morgan("tiny"));
@@ -50,8 +50,8 @@ app.get("/ping", (_, res) => {
 
 /** IO backend API handlers */
 
-const messages = getMessageWithoutContentList(10, fiscalCode);
-const services = getServices(10);
+export const messages = getMessageWithoutContentList(10, fiscalCode);
+export const services = getServices(10);
 
 responseHandler
   .addHandler("get", "/session", session)
