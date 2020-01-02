@@ -125,6 +125,7 @@ export type IOResponse<T> = {
 ```
 
 if `status` is omitted will be considered 200 (HTTP_OK)
+
 if `isJson` is true the `payload` will be sent as a json
 
 #### add a new handler
@@ -147,6 +148,6 @@ Usually the new handler is included in a new specs version.
     payload: newPayload,
     isJson: true
   };
-  // if the mockPayload is compliant with NewPayloadType no error will be raised
+  // if the mockPayload is compliant with NewPayloadType no errors will be raised
   responseHandler.addHandler("get", "/newpath", newIoPayload);
   ```
