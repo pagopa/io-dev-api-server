@@ -34,9 +34,9 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 1. open io-app project folder
 2. open **.env** configuration file
 3. edit the **API_URL_PREFIX** with the local server
-   `API_URL_PREFIX='http://127.0.0.1:3000'``
+   `API_URL_PREFIX='http://127.0.0.1:3000'`
 
-note you could edit the [server port](server.ts) (**serverPort** - default is 3000)
+> you could edit the [server port](server.ts) (**serverPort** - default is 3000)
 
 ### Features
 
@@ -90,7 +90,7 @@ const session = validatePayload(PublicSession, customSession);
 
 #### API Paths
 
-To ensure you are handling the right api paths a [special type][generated/definitions/backend_api_paths.ts] is automatically generated (`yarn generate:paths`). When you add an API handler if the path is not defined in the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml) a compile time error will be raised
+To ensure you are handling the right api paths a [special type](generated/definitions/backend_api_paths.ts) is automatically generated (`yarn generate:paths`). When you add an API handler if the path is not defined in the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml) a compile time error will be raised
 
 ```typescript
 // it raises a compile time error because 'fancyapi' is not defined in the API specs
