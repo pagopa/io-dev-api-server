@@ -74,7 +74,7 @@ When the client asks for a session, a valid session is always returned. Of cours
 #### profile
 
 The profile is [mocked](payloads/profile.ts) (hard-coded). If you want the server reponses a different profile, just edit it!
-On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) increasing the profile version
+<br/>On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) increasing the profile version
 
 <img src="assets/imgs/profile.gif" height="600" />
 
@@ -95,7 +95,7 @@ const session = validatePayload(PublicSession, customSession);
 
 #### API Paths
 
-To ensure you are handling the right api paths a [special type](generated/definitions/backend_api_paths.ts) is automatically generated (`yarn generate:paths`). When you add an API handler if the path is not defined in the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml) a compile time error will be raised
+To ensure you are handling the right api paths a [special type](generated/definitions/backend_api_paths.ts) is automatically generated (`yarn generate:paths`).<br/>When you add an API handler if the path is not defined in the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml) a compile time error will be raised
 
 ```typescript
 // it raises a compile time error because 'fancyapi' is not defined in the API specs
@@ -129,8 +129,7 @@ export type IOResponse<T> = {
 };
 ```
 
-if `status` is omitted will be considered 200 (HTTP_OK)
-
+if `status` is omitted will be considered 200 (HTTP_OK)<br/>
 if `isJson` is true the `payload` will be sent as a json
 
 #### add a new handler
