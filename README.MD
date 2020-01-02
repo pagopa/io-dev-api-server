@@ -111,7 +111,7 @@ responseHandler.addHandler("get", "/messages", session);
 
 Of course you can alter server payloads to stress and test app (you should do it!)<br/>
 
-_\*\*some examples_
+**some examples**
 
 > you want app loads 10k items in inbox messages
 
