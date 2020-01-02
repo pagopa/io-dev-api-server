@@ -35,6 +35,11 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 2. open **.env** configuration file
 3. edit the **API_URL_PREFIX** with the local server
    `API_URL_PREFIX='http://127.0.0.1:3000'`
+4. update the config file
+   `yarn postinstall`
+5. run simulator
+   `react-native run-ios` or
+   `react-native run-android`
 
 > you could edit the [server port](server.ts) (**serverPort** - default is 3000)
 
