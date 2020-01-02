@@ -47,7 +47,7 @@ it("logout should response 200", async done => {
 });
 
 it("session should return a valid session", async done => {
-  const response = await request.get(basePath + "/session");
+  const response = await request.get(`${basePath}/session`);
   expect(response.status).toBe(200);
   const session = PublicSession.decode(response.body);
   expect(session.isRight()).toBeTruthy();
@@ -55,7 +55,7 @@ it("session should return a valid session", async done => {
 });
 
 it("session should return a valid profile", async done => {
-  const response = await request.get(basePath + "/profile");
+  const response = await request.get(`${basePath}/profile`);
   expect(response.status).toBe(200);
   const profile = UserProfile.decode(response.body);
   expect(profile.isRight()).toBeTruthy();
@@ -78,7 +78,7 @@ it("session should return a valid updated profile (version increased)", async do
     spid_mobile_phone: "5555555" as NonEmptyString
   };
   const response = await request
-    .post(basePath + "/profile")
+    .post(`${basePath}/profile`)
     .send(profile)
     .set("Content-Type", "application/json");
 
@@ -92,7 +92,7 @@ it("session should return a valid updated profile (version increased)", async do
 });
 
 it("session should return a valid user-metadata", async done => {
-  const response = await request.get(basePath + "/user-metadata");
+  const response = await request.get(`${basePath}/user-metadata`);
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
   expect(usermetadata.isRight()).toBeTruthy();
@@ -100,7 +100,7 @@ it("session should return a valid user-metadata", async done => {
 });
 
 it("session should return a valid messages list", async done => {
-  const response = await request.get(basePath + "/messages");
+  const response = await request.get(`${basePath}/messages`);
   expect(response.status).toBe(200);
   const list = PaginatedCreatedMessageWithoutContentCollection.decode(
     response.body
@@ -114,7 +114,7 @@ it("session should return a valid messages list", async done => {
 
 it("session should return a valid message with content", async done => {
   const messageId = messages.payload.items[0].id;
-  const response = await request.get(basePath + "/messages/" + messageId);
+  const response = await request.get(`${basePath}/messages/${messageId}`);
   expect(response.status).toBe(200);
   const message = CreatedMessageWithoutContent.decode(response.body);
   expect(message.isRight()).toBeTruthy();
@@ -125,7 +125,7 @@ it("session should return a valid message with content", async done => {
 });
 
 it("session should return a valid services list", async done => {
-  const response = await request.get(basePath + "/services");
+  const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
   expect(list.isRight()).toBeTruthy();
