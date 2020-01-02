@@ -22,9 +22,9 @@ The node version used in this project is stored in .node-version.
 1. clone this repository
 2. install all packages needed:<br/>
    `yarn install`
-3. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):
+3. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):<br/>
    `yarn generate:all`
-4. you are ready! start the server:
+4. you are ready! start the server:<br/>
    `yarn start`
 
 Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
@@ -33,12 +33,12 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 
 1. open io-app project folder
 2. open **.env** configuration file
-3. edit the **API_URL_PREFIX** with the local server
+3. edit the **API_URL_PREFIX** with the local server<br/>
    `API_URL_PREFIX='http://127.0.0.1:3000'`
-4. update the config file
+4. update the config file<br/>
    `yarn postinstall`
-5. run simulator
-   `react-native run-ios` or
+5. run simulator<br/>
+   `react-native run-ios` or<br/>
    `react-native run-android`
 
 > you could edit the [server port](server.ts) (**serverPort** - default is 3000)
@@ -109,7 +109,7 @@ responseHandler.addHandler("get", "/messages", session);
 
 #### change an existing handler
 
-Of course you can alter server payloads to stress and test app (you should do it!)
+Of course you can alter server payloads to stress and test app (you should do it!)<br/>
 For example if you want app loads 10k items in inbox messages
 
 ```typescript
