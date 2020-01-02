@@ -76,7 +76,7 @@ On upsert profile request the server acts like a mirror: it gives back the updat
 ### Response validation
 
 To ensure the response payloads are compliant with the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml)
-the server automatically generates types definition (`yarn generate:models`) and reases a compile-time exception (and run time too) if a response payload it not right complianti with its type
+the server automatically generates types definition (`yarn generate:models`) and raises a compile-time exception (and run time too) if a response payload is not compliant with its type
 
 ```typescript
 export const customSession = {
@@ -96,7 +96,7 @@ To ensure you are handling the right api paths a [special type](generated/defini
 // it raises a compile time error because 'fancyapi' is not defined in the API specs
 responseHandler.addHandler("get", "/fancyapi", session);
 
-// this path is defined in the specs so no error will be shown
+// this path is defined in the specs so no error will be raised
 responseHandler.addHandler("get", "/messages", session);
 ```
 
@@ -105,7 +105,7 @@ responseHandler.addHandler("get", "/messages", session);
 #### change an existing handler
 
 Of course you can alter server payloads to stress and test app (you should do it!)
-For example if you want to serve to the client 10k messages
+For example if you want app loads 10k items in inbox messages
 
 ```typescript
 // create a message list response using the utility function
