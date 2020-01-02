@@ -2,7 +2,7 @@ import { range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
-import { validatePayload } from "../utils/validator";
+import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
 
 /**

@@ -1,5 +1,5 @@
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
-import { validatePayload } from "../utils/validator";
+import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
 
 const mockUserMetadata = {

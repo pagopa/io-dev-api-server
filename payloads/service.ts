@@ -1,7 +1,7 @@
 import { range } from "fp-ts/lib/Array";
 import { PaginatedServiceTupleCollection } from "../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../generated/definitions/backend/ServicePublic";
-import { validatePayload } from "../utils/validator";
+import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): IOResponse<ServicePublic> => {

@@ -110,7 +110,10 @@ responseHandler.addHandler("get", "/messages", session);
 #### change an existing handler
 
 Of course you can alter server payloads to stress and test app (you should do it!)<br/>
-For example if you want app loads 10k items in inbox messages
+
+_\*\*some examples_
+
+> you want app loads 10k items in inbox messages
 
 ```typescript
 // create a message list response using the utility function
@@ -131,6 +134,12 @@ export type IOResponse<T> = {
 
 if `status` is omitted will be considered 200 (HTTP_OK)<br/>
 if `isJson` is true the `payload` will be sent as a json
+
+> you want to serve 401 (unauthorized) on get profile
+
+```typescript
+responseHandler.addHandler("get", "/profile", { payload: "ko", status: 401 });
+```
 
 #### add a new handler
 

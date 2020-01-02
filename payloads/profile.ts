@@ -1,5 +1,5 @@
 import { UserProfile } from "../generated/definitions/backend/UserProfile";
-import { validatePayload } from "../utils/validator";
+import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
 
 // define here the fiscalCode used within the client communication

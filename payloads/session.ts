@@ -1,5 +1,5 @@
 import { PublicSession } from "../generated/definitions/backend/PublicSession";
-import { validatePayload } from "../utils/validator";
+import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
 
 export const walletToken = "ZXCVBNM098876543";

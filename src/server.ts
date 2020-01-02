@@ -2,19 +2,18 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import fs from "fs";
 import morgan from "morgan";
-import { InitializedProfile } from "./generated/definitions/backend/InitializedProfile";
-import { UserProfile } from "./generated/definitions/backend/UserProfile";
-import { backendInfo } from "./payloads/backend";
-import { loginWithToken } from "./payloads/login";
+import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
+import { backendInfo } from "../payloads/backend";
+import { loginWithToken } from "../payloads/login";
 import {
   getMessageWithContent,
   getMessageWithoutContentList
-} from "./payloads/message";
-import { getProfile } from "./payloads/profile";
-import { ResponseHandler } from "./payloads/response";
-import { getService, getServices } from "./payloads/service";
-import { session } from "./payloads/session";
-import { userMetadata } from "./payloads/userMetadata";
+} from "../payloads/message";
+import { getProfile } from "../payloads/profile";
+import { ResponseHandler } from "../payloads/response";
+import { getService, getServices } from "../payloads/service";
+import { session } from "../payloads/session";
+import { userMetadata } from "../payloads/userMetadata";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
@@ -22,7 +21,7 @@ const fiscalCode = "RSSMRA83A12H501D";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
-const serverPort = 3000;
+export const serverPort = 3000;
 const express = require("express");
 const app: Application = express();
 // set log middleware
@@ -92,8 +91,4 @@ responseHandler
     return getService(req.params.service_id);
   });
 
-app.listen(serverPort, async () => {
-  console.log(
-    `${packageJson.name} is running on http://127.0.0.1:${serverPort}`
-  );
-});
+export default app;
