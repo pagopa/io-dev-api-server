@@ -23,8 +23,26 @@ export const getService = (serviceId: string): IOResponse<ServicePublic> => {
 export const getServices = (
   count: number
 ): IOResponse<PaginatedServiceTupleCollection> => {
+  const organizationFiscalCodes: ReadonlyArray<string> = [
+    "00000000001",
+    "00000000002"
+  ];
+  const organizationNames: ReadonlyArray<string> = [
+    "organization - 1",
+    "organization - 2"
+  ];
   const payload = {
-    items: range(1, count).map(idx => getService(`dev-service_${idx}`).payload),
+    items: range(1, count).map(idx => {
+      const service = getService(`dev-service_${idx}`).payload;
+      const index = idx <= count / 2 ? 0 : 1;
+      // first half have organization_fiscal_code === organizationFiscalCodes[0]
+      // second half have organization_fiscal_code === organizationFiscalCodes[1]
+      return {
+        ...service,
+        organization_fiscal_code: organizationFiscalCodes[index],
+        organization_name: organizationNames[index]
+      };
+    }),
     page_size: count
   };
   return {

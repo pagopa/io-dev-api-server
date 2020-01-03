@@ -2,7 +2,7 @@ import supertest from "supertest";
 import { PublicSession } from "../../generated/definitions/backend/PublicSession";
 import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { basePath } from "../../generated/definitions/backend_api_paths";
-import app, { fiscalCode } from "../server";
+import app from "../server";
 
 const request = supertest(app);
 

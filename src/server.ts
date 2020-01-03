@@ -4,6 +4,7 @@ import express, { Response } from "express";
 import fs from "fs";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
+import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { backendInfo } from "../payloads/backend";
 import { loginWithToken } from "../payloads/login";
 import {
@@ -12,11 +13,7 @@ import {
 } from "../payloads/message";
 import { getProfile } from "../payloads/profile";
 import { ResponseHandler } from "../payloads/response";
-import {
-  getService,
-  getServiceMetadata,
-  getServices
-} from "../payloads/service";
+import { getServiceMetadata, getServices } from "../payloads/service";
 import { session } from "../payloads/session";
 import { userMetadata } from "../payloads/userMetadata";
 import { validatePayload } from "./utils/validator";
@@ -67,6 +64,8 @@ const sendFile = (filePath: string, res: Response) => {
   });
 };
 
+/** static contents */
+
 app.get("/static_contents/logos/organizations/:organization_id", (_, res) => {
   // ignoring organization id and send always the same image
   sendFile("assets/imgs/logos/organizations/organization_1.png", res);
@@ -100,6 +99,11 @@ responseHandler
     };
   })
   .addHandler("get", "/user-metadata", userMetadata)
+  .addCustomHandler("post", "/user-metadata", req => {
+    // simply return the received user-metadata
+    const payload = validatePayload(UserMetadata, req.body);
+    return { payload };
+  })
   // return 10 mock messages
   .addHandler("get", "/messages", messages)
   // return a mock message with content (always found!)
@@ -114,7 +118,10 @@ responseHandler
   .addHandler("get", "/services", services)
   // return a mock service with the same requested id (always found!)
   .addCustomHandler("get", "/services/:service_id", req => {
-    return getService(req.params.service_id);
+    const service = services.payload.items.find(
+      item => item.service_id === req.params.service_id
+    );
+    return { payload: service };
   });
 
 export default app;

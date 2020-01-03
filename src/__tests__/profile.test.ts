@@ -7,6 +7,7 @@ import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { UserProfile } from "../../generated/definitions/backend/UserProfile";
 import { basePath } from "../../generated/definitions/backend_api_paths";
 import app, { fiscalCode } from "../server";
+import { userMetadata } from "../../payloads/userMetadata";
 const request = supertest(app);
 
 it("profile should return a valid profile", async done => {
@@ -46,10 +47,24 @@ it("profile should return a valid updated profile (version increased)", async do
   done();
 });
 
-it("user-metadata should return a valid user-metadata", async done => {
+it("get user-metadata should return a valid user-metadata", async done => {
   const response = await request.get(`${basePath}/user-metadata`);
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
   expect(usermetadata.isRight()).toBeTruthy();
+  done();
+});
+
+it("post user-metadata should return the updated user-metadata", async done => {
+  const response = await request
+    .post(`${basePath}/user-metadata`)
+    .send(userMetadata.payload)
+    .set("Content-Type", "application/json");
+  expect(response.status).toBe(200);
+  const updatedUsermetadata = UserMetadata.decode(response.body);
+  expect(updatedUsermetadata.isRight()).toBeTruthy();
+  if (updatedUsermetadata.isRight()) {
+    expect(updatedUsermetadata.value).toEqual(userMetadata.payload);
+  }
   done();
 });

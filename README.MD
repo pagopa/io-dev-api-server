@@ -51,8 +51,9 @@ The current version supports:
 - ✓ session
 - ✓ logout
 - ✓ get profile
-- ✓ upsert profile
-- ✓ user metadata
+- ✓ update profile
+- ✓ get user metadata
+- ✓ update user metadata
 - ✓ messages
 - ✓ message details
 - ✓ services
