@@ -15,7 +15,7 @@ With this local server the developer can:
 On macOS and Linux we recommend the use of nodenv for managing multiple versions of NodeJS.
 The node version used in this project is stored in [.node-version](.node-version).
 
-#### setup
+#### Setup
 
 1. clone this repository
 2. install all packages needed:<br/>
@@ -27,7 +27,7 @@ The node version used in this project is stored in [.node-version](.node-version
 
 Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
 
-#### add server to io-app
+#### Add server to io-app
 
 1. open io-app project folder
 1. open **.env** configuration file
@@ -57,25 +57,28 @@ The current version supports:
 - ✓ message details
 - ✓ services
 - ✓ service details
-- ✓ service metadata
-- ✗ municipality metadata
+- ✓ service metadata (static content)
+- ✗ services by scope (static content)
+- ✓ service logo (static content)
+- ✓ organization logo (static content)
+- ✗ municipalities metadata (static content)
 - ✗ payment session
 - ✗ payment
 - ✗ payment transactions
 
 ✗ -> a contribution is really appreciate :blush:
 
-#### login
+#### Login
 
 The current login implementation by-passes SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user will be immediately logged in.
 
 <img src="assets/imgs/login.gif" height="600" />
 
-#### session
+#### Session
 
 When the client asks for a session, a valid session is always returned. Of course the developer could implement a logic to return an expired session response to test different scenarios.
 
-#### profile
+#### Profile
 
 The profile is [mocked](payloads/profile.ts) (hard-coded). If you want the server reponses a different profile, just edit it!
 <br/>On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) increasing the profile version
@@ -111,7 +114,7 @@ responseHandler.addHandler("get", "/messages", session);
 
 ### How can I add a new handler?
 
-#### change an existing handler
+#### Change an existing handler
 
 Of course you can alter server payloads to stress and test app (you should do it!)<br/>
 
@@ -145,7 +148,7 @@ if `isJson` is true the `payload` will be sent as a json
 responseHandler.addHandler("get", "/profile", { payload: "ko", status: 401 });
 ```
 
-#### add a new handler
+#### Add a new handler
 
 Usually the new handler is included in a new specs version.
 
