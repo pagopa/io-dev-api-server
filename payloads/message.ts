@@ -4,19 +4,8 @@ import { CreatedMessageWithoutContent } from "../generated/definitions/backend/C
 import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
+import { getRandomStringId } from "../src/utils/id";
 
-/**
- * generate a 26 chars pseudo-random string
- */
-const getRandomId = (): string => {
-  const randomSlice = () =>
-    Math.random()
-      .toString(36)
-      .substring(2, 15);
-  return (randomSlice() + randomSlice() + randomSlice())
-    .substring(0, 26)
-    .toUpperCase();
-};
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -33,7 +22,7 @@ const createMessage = (
     const date = new Date();
     const msgId =
       randomId === true
-        ? getRandomId()
+        ? getRandomStringId()
         : messageId
         ? messageId
         : `${idx}`.padStart(26, "0");
@@ -59,7 +48,7 @@ export const createMessageWithContent = (
     const date = new Date();
     const msgId =
       randomId === true
-        ? getRandomId()
+        ? getRandomStringId()
         : messageId
         ? messageId
         : `${idx}`.padStart(26, "0");
