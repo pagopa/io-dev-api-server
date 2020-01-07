@@ -57,7 +57,7 @@ export const transactions = getTransactions(5);
 
 /** wallet content */
 app.get("/wallet/v1/users/actions/start-session", (_, res) => {
-  res.json(sessionToken)
+  res.json(sessionToken);
 });
 
 app.get("/wallet/v1/wallet", (_, res) => {

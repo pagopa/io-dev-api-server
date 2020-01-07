@@ -5,9 +5,9 @@ import { CreditCard } from "../generated/definitions/pagopa/CreditCard";
 import { Psp } from "../generated/definitions/pagopa/Psp";
 import { validatePayload } from "../src/utils/validator";
 import { SessionResponse } from "../generated/definitions/pagopa/SessionResponse";
-import { WalletResponse } from "../generated/definitions/pagopa/WalletResponse";
-import { TransactionResponse } from "../generated/definitions/pagopa/TransactionResponse";
 import { getRandomIntId } from "../src/utils/id";
+import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
+import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
 
 export const sessionToken: SessionResponse = {
     data: {
@@ -15,7 +15,7 @@ export const sessionToken: SessionResponse = {
     }
 }
 
-export const getWallets = (): WalletResponse => {
+export const getWallets = (): WalletListResponse => {
     const validCreditCard: { [key: string]: any } = {
         id: 1464,
         holder: "Mario Rossi",
@@ -84,19 +84,22 @@ export const getWallets = (): WalletResponse => {
         lastUsage: new Date("2018-08-07T15:50:08Z")
     };
   
-    return {
+    const data = {
         data: [WalletBank, WalletCard]
-    } ;   
+    };
+    
+    return validatePayload(WalletListResponse, data)
+
 }
 
-export const getTransactions = (amount: number): TransactionResponse => {
-    return {
-        data: range(1, amount).map(_ => {
+export const getTransactions = (count: number): TransactionListResponse => {    
+    const data: TransactionListResponse = {
+        data: range(1, count).map(_ => {
             return ({
                 accountingStatus: 1,
                 amount: {amount: 20000},
                 created: new Date(2018,10,30,13,12,22,30),
-                description: 'transaction n.' + _,
+                description: `transaction n.${_}`,
                 error: false,
                 fee: {amount: 1},
                 grandTotal: {amount: 20100},
@@ -116,7 +119,8 @@ export const getTransactions = (amount: number): TransactionResponse => {
                 updated: undefined,
                 urlCheckout3ds: 'urlCheckout3ds',
                 urlRedirectPSP: 'urlRedirectPSP'
-            });
+            })
         })
     } 
+    return validatePayload(TransactionListResponse, data);
 }
