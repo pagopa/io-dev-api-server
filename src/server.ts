@@ -16,8 +16,8 @@ import { ResponseHandler } from "../payloads/response";
 import { getServiceMetadata, getServices } from "../payloads/service";
 import { session } from "../payloads/session";
 import { userMetadata } from "../payloads/userMetadata";
+import { getTransactions, getWallets, sessionToken } from "../payloads/wallet";
 import { validatePayload } from "./utils/validator";
-import { getWallets, getTransactions, sessionToken } from "../payloads/wallet";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -61,11 +61,11 @@ app.get("/wallet/v1/users/actions/start-session", (_, res) => {
 });
 
 app.get("/wallet/v1/wallet", (_, res) => {
-  res.json(wallets)
-})
+  res.json(wallets);
+});
 
 app.get("/wallet/v1/transactions", (_, res) => {
-  res.json(transactions)
+  res.json(transactions);
 });
 
 /** static contents */

@@ -12,6 +12,8 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "tsc",
+    "lint": "tslint -p . -t verbose",
+    "lint-autofix": "tslint -p . -t verbose --fix",
     "start": "npm-run-all build && node build/src/start.js",
     "generate:paths": "ts-node src/utils/paths_generator.ts",
     "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec https://raw.githubusercontent.com/teamdigitale/italia-services-metadata/master/definitions.yml --out-dir ./generated/definitions/content",

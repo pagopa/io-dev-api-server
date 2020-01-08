@@ -2,10 +2,10 @@ import { range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
+import { PaymentNoticeNumber } from "../generated/definitions/backend/PaymentNoticeNumber";
+import { getRandomStringId } from "../src/utils/id";
 import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
-import { getRandomStringId } from "../src/utils/id";
-
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -58,7 +58,11 @@ export const createMessageWithContent = (
         subject: `subject [${serviceId}]`,
         markdown:
           "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
-        due_date: date
+        due_date: date,
+        payment_data: {
+          amount: 12300,
+          notice_number: "012345678912345678" as PaymentNoticeNumber
+        }
       },
       created_at: date,
       fiscal_code: fiscalCode,
