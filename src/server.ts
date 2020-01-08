@@ -132,6 +132,10 @@ responseHandler
   })
   // return 10 mock services
   .addHandler("get", "/services", services)
+  /* 
+    //how to send "too many requests" response
+    .addHandler("get", "/services", getProblemJson(429, "too many requests"))
+  */
   // return a mock service with the same requested id (always found!)
   .addCustomHandler("get", "/services/:service_id", req => {
     const service = services.payload.items.find(

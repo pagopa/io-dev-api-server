@@ -68,7 +68,8 @@ The current version supports:
 - ✗ municipalities metadata (static content)
 - ✗ payment session
 - ✗ payment
-- ✗ payment transactions
+- ✓ payment wallets
+- ✓ payment transactions
 
 ✗ -> a contribution is really appreciate :blush:
 

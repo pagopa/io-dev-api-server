@@ -26,30 +26,30 @@ export const getService = (serviceId: string): IOResponse<ServicePublic> => {
 export const getServices = (
   count: number
 ): IOResponse<PaginatedServiceTupleCollection> => {
-  const organizationFiscalCodes: ReadonlyArray<string> = [
-    "00000000001",
-    "00000000002"
-  ];
-  const organizationNames: ReadonlyArray<string> = [
-    "organization - 1",
-    "organization - 2"
-  ];
+  const aggregation = 3;
+  // services belong to the same organization for blocks of `aggregation` size
+  // tslint:disable-next-line: no-let
+  let organizationCount = 0;
   const payload = {
     items: range(1, count).map(idx => {
       const service = getService(`dev-service_${idx}`).payload;
-      const index = idx <= count / 2 ? 0 : 1;
+      const index = idx - 1;
+      organizationCount =
+        index !== 0 && index % aggregation === 0
+          ? organizationCount + 1
+          : organizationCount;
       // first half have organization_fiscal_code === organizationFiscalCodes[0]
       // second half have organization_fiscal_code === organizationFiscalCodes[1]
       return {
         ...service,
-        organization_fiscal_code: organizationFiscalCodes[index],
-        organization_name: organizationNames[index]
+        organization_fiscal_code: `${organizationCount + 1}`.padStart(11, "0"),
+        organization_name: `organization name_${organizationCount + 1}`
       };
     }),
     page_size: count
   };
   return {
-    payload,
+    payload: validatePayload(PaginatedServiceTupleCollection, payload),
     isJson: true
   };
 };
@@ -74,6 +74,5 @@ export const getServiceMetadata = (
     email: "mock.service@email.com",
     phone: "5555555"
   };
-  const serviceMetada = validatePayload(Service, metaData);
-  return { payload: serviceMetada, isJson: true };
+  return { payload: validatePayload(Service, metaData), isJson: true };
 };
