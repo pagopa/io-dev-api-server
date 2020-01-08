@@ -14,7 +14,8 @@
     "build": "tsc",
     "lint": "tslint -p . -t verbose",
     "lint-autofix": "tslint -p . -t verbose --fix",
-    "start": "npm-run-all build && node build/src/start.js",
+    "start_server": "node build/src/start.js",
+    "start": "npm-run-all build start_server",
     "generate:paths": "ts-node src/utils/paths_generator.ts",
     "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec https://raw.githubusercontent.com/teamdigitale/italia-services-metadata/master/definitions.yml --out-dir ./generated/definitions/content",
     "generate:models": "rimraf generated && rimraf generated/definitions/backend && mkdir -p generated/definitions/backend && gen-api-models --api-spec $npm_package_api_beckend_specs --out-dir ./generated/definitions/backend --no-strict --request-types && gen-api-models --api-spec $npm_package_api_public_specs --out-dir generated/definitions/backend",
@@ -52,4 +53,3 @@
     "typescript": "^3.7.3"
   }
 }
-

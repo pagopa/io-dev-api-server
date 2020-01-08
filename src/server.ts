@@ -14,7 +14,7 @@ import {
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import { getServiceMetadata, getServices } from "./payloads/service";
-import { session } from "./payloads/session";
+import { session, session404 } from "./payloads/session";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
@@ -50,7 +50,7 @@ app.get("/ping", (_, res) => {
   res.send("ok");
 });
 
-export const messages = getMessageWithoutContentList(10, fiscalCode);
+export const messages = getMessageWithoutContentList(1, fiscalCode);
 export const services = getServices(10);
 export const wallets = getWallets();
 export const transactions = getTransactions(5);
@@ -95,7 +95,7 @@ app.get("/static_contents/logos/services/:service_id", (_, res) => {
 /** IO backend API handlers */
 
 responseHandler
-  .addHandler("get", "/session", session)
+  .addHandler("get", "/session", { payload: null, status: 404, isJson: false })
   .addHandler("get", "/profile", getProfile(fiscalCode))
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with
@@ -120,7 +120,7 @@ responseHandler
     const payload = validatePayload(UserMetadata, req.body);
     return { payload };
   })
-  // return 10 mock messages
+  // return a message
   .addHandler("get", "/messages", messages)
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {

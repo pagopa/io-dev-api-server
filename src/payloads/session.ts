@@ -12,3 +12,9 @@ export const session: IOResponse<PublicSession> = {
   payload: validatePayload(PublicSession, customSession),
   isJson: true
 };
+
+export const session404: IOResponse<PublicSession> = {
+  payload: validatePayload(PublicSession, customSession),
+  isJson: false,
+  status: 401
+};
