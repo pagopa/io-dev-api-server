@@ -10,21 +10,11 @@ npm-debug.log
 # Exclude Jest coverage reports.
 /coverage
 
-# Exclude test IDP material.
-/testenv2/conf/sp_metadata.xml
-
-# Exclude custom local enviroment variables.
-/.env
-
 # Exclude typescript generated javascript files.
 *.js
 *.js.map
 
-# Excluded auto-generated API client.
-/src/clients/pagopa
-
 # Excluded auto-generated API types.
-/src/types/api/*.ts
 /generated
 
 # Exclude certificates
