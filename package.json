@@ -21,6 +21,9 @@
     "generate:pagopa-api-definitions": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec https://wisp2.pagopa.gov.it/pp-restapi-CD/v2/api-docs --out-dir ./generated/definitions/pagopa --no-strict --request-types --response-decoders --default-error-type undefined",
     "generate:all": "npm-run-all generate:models generate:content-definitions generate:paths generate:pagopa-api-definitions"
   },
+  "jest": {
+    "preset": "ts-jest"
+  },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
     "@types/morgan": "^1.7.37",
@@ -49,3 +52,4 @@
     "typescript": "^3.7.3"
   }
 }
+
