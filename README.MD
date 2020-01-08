@@ -34,7 +34,9 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 1. edit the **API_URL_PREFIX** with the local server<br/>
    `API_URL_PREFIX='http://127.0.0.1:3000'`
 1. edit the **CONTENT_REPO_URL** with the local server<br/>
-   `CONTENT_REPO_URL='http://127.0.0.1:3000/static_contents''`
+   `CONTENT_REPO_URL='http://127.0.0.1:3000/static_contents'`
+1. edit the **PAGOPA_API_URL_PREFIX** with the local server <br/>
+    `PAGOPA_API_URL_PREFIX='http://127.0.0.1:3000/wallet'`
 1. update the config file<br/>
    `yarn postinstall`
 1. run simulator<br/>

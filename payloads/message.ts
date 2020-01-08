@@ -2,21 +2,10 @@ import { range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
+import { PaymentNoticeNumber } from "../generated/definitions/backend/PaymentNoticeNumber";
+import { getRandomStringId } from "../src/utils/id";
 import { validatePayload } from "../src/utils/validator";
 import { IOResponse } from "./response";
-
-/**
- * generate a 26 chars pseudo-random string
- */
-const getRandomId = (): string => {
-  const randomSlice = () =>
-    Math.random()
-      .toString(36)
-      .substring(2, 15);
-  return (randomSlice() + randomSlice() + randomSlice())
-    .substring(0, 26)
-    .toUpperCase();
-};
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -33,7 +22,7 @@ const createMessage = (
     const date = new Date();
     const msgId =
       randomId === true
-        ? getRandomId()
+        ? getRandomStringId()
         : messageId
         ? messageId
         : `${idx}`.padStart(26, "0");
@@ -59,7 +48,7 @@ export const createMessageWithContent = (
     const date = new Date();
     const msgId =
       randomId === true
-        ? getRandomId()
+        ? getRandomStringId()
         : messageId
         ? messageId
         : `${idx}`.padStart(26, "0");
@@ -69,7 +58,11 @@ export const createMessageWithContent = (
         subject: `subject [${serviceId}]`,
         markdown:
           "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
-        due_date: date
+        due_date: date,
+        payment_data: {
+          amount: 12300,
+          notice_number: "012345678912345678" as PaymentNoticeNumber
+        }
       },
       created_at: date,
       fiscal_code: fiscalCode,
