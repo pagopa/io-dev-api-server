@@ -7,6 +7,7 @@ With this local server the developer can:
 - **run it on local machine** (no internet connection needed)
 - **change response payloads** to test and stress the app
 - **add new paths and handlers** to integrate and test features not yet released
+- **understand flows and data echanged** between app and backend
 
 <img src="assets/imgs/tour.gif" height="600" />
 
@@ -18,11 +19,11 @@ The node version used in this project is stored in [.node-version](.node-version
 #### Setup
 
 1. clone this repository
-2. install all packages needed:<br/>
+1. install all packages needed:<br/>
    `yarn install`
-3. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):<br/>
+1. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):<br/>
    `yarn generate:all`
-4. you are ready! start the server:<br/>
+1. you are ready! start the server:<br/>
    `yarn start`
 
 Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
@@ -153,7 +154,7 @@ responseHandler.addHandler("get", "/profile", { payload: "ko", status: 401 });
 
 #### Add a new handler
 
-Usually the new handler is included in a new specs version.
+**Usually the new handler is included in a new specs version.**
 
 - update the specs to the target version
   edit the field `api_beckend_specs` in the `package.json`
@@ -173,4 +174,44 @@ Usually the new handler is included in a new specs version.
   };
   // if the mockPayload is compliant with NewPayloadType no errors will be raised
   responseHandler.addHandler("get", "/newpath", newIoPayload);
+  ```
+
+**If you want to add an handler that's in not already included in a new specs version**
+
+In some cases you would like to add an API to test if it should work. This could be part of a design process of that API.<br/>
+for example we want to add **/time** to get the date in ISO format
+
+- create the codec and type
+
+  ```typescript
+  const TimeR = t.interface({
+    date: Timestamp
+  });
+
+  const TimeO = t.partial({
+    description: t.string
+  });
+  export const Time = t.intersection([TimeR, TimeO], "Time");
+  export type Time = t.TypeOf<typeof Time>;
+  ```
+
+- create a function to return the payload
+
+  ```typescript
+  export const getTime = (): Time => {
+    const time: Time = {
+      date: new Date(),
+      description: "right now"
+    };
+    // use validatePayload to check if the built payload is compliant with the defined type
+    return validatePayload(Time, time);
+  };
+  ```
+
+- add the new handler to the server
+
+  ```typescript
+  app.get("/time", (\_, res) => {
+  res.json(getTime());
+  });
   ```
