@@ -1,8 +1,11 @@
 import { range } from "fp-ts/lib/Array";
-import { PaginatedServiceTupleCollection } from "../generated/definitions/backend/PaginatedServiceTupleCollection";
-import { ServicePublic } from "../generated/definitions/backend/ServicePublic";
-import { ScopeEnum, Service } from "../generated/definitions/content/Service";
-import { validatePayload } from "../src/utils/validator";
+import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import {
+  ScopeEnum,
+  Service
+} from "../../generated/definitions/content/Service";
+import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): IOResponse<ServicePublic> => {

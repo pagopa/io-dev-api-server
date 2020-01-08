@@ -3,7 +3,7 @@ import {
   basePath,
   IOApiPath,
   SupportedMethod
-} from "../generated/definitions/backend_api_paths";
+} from "../../generated/definitions/backend_api_paths";
 
 export type IOResponse<T> = {
   payload: T;

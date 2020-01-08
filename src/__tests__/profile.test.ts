@@ -6,7 +6,7 @@ import { InitializedProfile } from "../../generated/definitions/backend/Initiali
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { UserProfile } from "../../generated/definitions/backend/UserProfile";
 import { basePath } from "../../generated/definitions/backend_api_paths";
-import { userMetadata } from "../../payloads/userMetadata";
+import { userMetadata } from "../payloads/userMetadata";
 import app, { fiscalCode } from "../server";
 
 const request = supertest(app);

@@ -1,13 +1,11 @@
 import { range } from "fp-ts/lib/Array";
-import { CreditCard } from "../generated/definitions/pagopa/CreditCard";
-import { Psp } from "../generated/definitions/pagopa/Psp";
-import { SessionResponse } from "../generated/definitions/pagopa/SessionResponse";
-import { Transaction } from "../generated/definitions/pagopa/Transaction";
-import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
-import { TypeEnum, Wallet } from "../generated/definitions/pagopa/Wallet";
-import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
-import { getRandomIntId } from "../src/utils/id";
-import { validatePayload } from "../src/utils/validator";
+import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
+import { Psp } from "../../generated/definitions/pagopa/Psp";
+import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
+import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
+import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
+import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
+import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
   data: {

@@ -5,18 +5,18 @@ import fs from "fs";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
-import { backendInfo } from "../payloads/backend";
-import { loginWithToken } from "../payloads/login";
+import { backendInfo } from "./payloads/backend";
+import { loginWithToken } from "./payloads/login";
 import {
   getMessageWithContent,
   getMessageWithoutContentList
-} from "../payloads/message";
-import { getProfile } from "../payloads/profile";
-import { ResponseHandler } from "../payloads/response";
-import { getServiceMetadata, getServices } from "../payloads/service";
-import { session } from "../payloads/session";
-import { userMetadata } from "../payloads/userMetadata";
-import { getTransactions, getWallets, sessionToken } from "../payloads/wallet";
+} from "./payloads/message";
+import { getProfile } from "./payloads/profile";
+import { ResponseHandler } from "./payloads/response";
+import { getServiceMetadata, getServices } from "./payloads/service";
+import { session } from "./payloads/session";
+import { userMetadata } from "./payloads/userMetadata";
+import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
