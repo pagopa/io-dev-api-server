@@ -7,7 +7,7 @@ With this local server the developer can:
 - **run it on local machine** (no internet connection needed)
 - **change response payloads** to test and stress the app
 - **add new paths and handlers** to integrate and test features not yet released
-- **understand flows and data echanged** between app and backend
+- **understand flows and data exchanged** between app and backend
 
 <img src="assets/imgs/tour.gif" height="600" />
 
@@ -37,7 +37,7 @@ Commands _**2**_ and _**3**_ should be executed on the first setup and only when
 1. edit the **CONTENT_REPO_URL** with the local server<br/>
    `CONTENT_REPO_URL='http://127.0.0.1:3000/static_contents'`
 1. edit the **PAGOPA_API_URL_PREFIX** with the local server <br/>
-    `PAGOPA_API_URL_PREFIX='http://127.0.0.1:3000/wallet'`
+   `PAGOPA_API_URL_PREFIX='http://127.0.0.1:3000/wallet'`
 1. update the config file<br/>
    `yarn postinstall`
 1. run simulator<br/>
