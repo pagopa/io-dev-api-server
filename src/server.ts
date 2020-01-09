@@ -53,7 +53,8 @@ app.get("/ping", (_, res) => {
 export const messages = getMessageWithoutContentList(1, fiscalCode);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
-  const dueDate = new Date(now.setMonth(now.getMonth() + idx * 4));
+  // all messages have a due date 1 month different from each other
+  const dueDate = new Date(now.setMonth(now.getMonth() + idx));
   return getMessageWithContent(
     fiscalCode,
     msg.sender_service_id,

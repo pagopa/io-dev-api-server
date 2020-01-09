@@ -27,6 +27,7 @@ const createMessage = (
         : messageId
         ? messageId
         : `${idx}`.padStart(26, "0");
+    // all messages have a created_at 1 month different from each other
     const dueDate = date.setMonth(date.getMonth() + (idx - 1));
     return {
       created_at: new Date(dueDate).toISOString(),
