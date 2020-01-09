@@ -51,6 +51,16 @@ app.get("/ping", (_, res) => {
 });
 
 export const messages = getMessageWithoutContentList(1, fiscalCode);
+export const messagesWithContent = messages.payload.items.map((msg, idx) => {
+  const now = new Date();
+  const dueDate = new Date(now.setMonth(now.getMonth() + idx * 4));
+  return getMessageWithContent(
+    fiscalCode,
+    msg.sender_service_id,
+    msg.id,
+    dueDate
+  );
+});
 export const services = getServices(10);
 export const wallets = getWallets();
 export const transactions = getTransactions(5);
@@ -125,10 +135,10 @@ responseHandler
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
     // retrieve the service_id from the messages list
-    const serviceId = messages.payload.items.find(
+    const msgIndex = messages.payload.items.findIndex(
       item => item.id === req.params.id
-    )?.sender_service_id;
-    return getMessageWithContent(req.params.id, serviceId!, fiscalCode);
+    );
+    return messagesWithContent[msgIndex];
   })
   // return 10 mock services
   .addHandler("get", "/services", services)
