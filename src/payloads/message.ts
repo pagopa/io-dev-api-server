@@ -4,7 +4,7 @@ import { CreatedMessageWithContent } from "../../generated/definitions/backend/C
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
-import { getRandomStringId, getRandomIntInRange } from "../../src/utils/id";
+import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { IOResponse } from "./response";
 
@@ -108,7 +108,7 @@ export const getMessage = (
 export const getMessageWithContent = (
   fiscalCode: string,
   serviceId: string,
-  messageId?: string,
+  messageId: string,
   dueDate?: Date,
   amount?: number
 ): IOResponse<CreatedMessageWithContent> => {
