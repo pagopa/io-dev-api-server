@@ -21,8 +21,6 @@ The node version used in this project is stored in [.node-version](.node-version
 1. clone this repository
 1. install all packages needed:<br/>
    `yarn install`
-1. generate all api-paths and models handled by [io-backend](https://github.com/teamdigitale/io-backend):<br/>
-   `yarn generate:all`
 1. you are ready! start the server:<br/>
    `yarn start`
 
