@@ -14,9 +14,9 @@ jobs:
           name: Install dependencies
           command: yarn install
       - save_cache:
-        key: v1-dependencies-{{ checksum "package.json" }}
-        paths:
-          - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
       - run:
         name: Run linter
         command: yarn lint
