@@ -2,11 +2,12 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
-import morgan from "morgan";
+
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { backendInfo } from "./payloads/backend";
 import { loginWithToken } from "./payloads/login";
+import morgan from "morgan";
 import {
   getMessageWithContent,
   getMessageWithoutContentList

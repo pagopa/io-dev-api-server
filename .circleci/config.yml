@@ -19,7 +19,7 @@ jobs:
             - node_modules
       - run:
         name: Run linter
-        command: yarn lint
+        command: yarn tslint --config tslint.json -p tsconfig.json
       - run:
           name: Testing
           command: yarn test
