@@ -14,7 +14,7 @@ import {
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import { getServiceMetadata, getServices } from "./payloads/service";
-import { session, session404 } from "./payloads/session";
+import { session } from "./payloads/session";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
@@ -106,7 +106,7 @@ app.get("/static_contents/logos/services/:service_id", (_, res) => {
 /** IO backend API handlers */
 
 responseHandler
-  .addHandler("get", "/session", { payload: null, status: 404, isJson: false })
+  .addHandler("get", "/session", session)
   .addHandler("get", "/profile", getProfile(fiscalCode))
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with

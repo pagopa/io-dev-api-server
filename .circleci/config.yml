@@ -1,0 +1,31 @@
+---
+version: 2
+jobs:
+  node-12: &test
+    docker:
+      - image: node:12
+    working_directory: ~/src
+    steps:
+      - checkout
+      - restore_cache: &restore_cache
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Run linter
+          command: yarn tslint --config tslint.json -p tsconfig.json
+      - run:
+          name: Testing
+          command: yarn test
+
+workflows:
+  version: 2
+  "io-dev-api-server":
+    jobs:
+      - node-12
