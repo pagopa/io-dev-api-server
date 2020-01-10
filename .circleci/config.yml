@@ -1,7 +1,7 @@
 ---
 version: 2
 jobs:
-  node-latest: &test
+  node-12: &test
     docker:
       - image: node:12
     working_directory: ~/src
@@ -39,7 +39,7 @@ workflows:
   version: 2
   "io-dev-api-server":
     jobs:
-      - node-latest
+      - node-12
       - cache:
           filters:
             tags:
