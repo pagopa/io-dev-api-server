@@ -21,3 +21,9 @@ export const getProblemJson = (
     status
   };
 };
+
+export const unauthorized: IOResponse<null> = {
+  payload: null,
+  status: 401,
+  isJson: false
+};
