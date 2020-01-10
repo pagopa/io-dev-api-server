@@ -1,0 +1,48 @@
+---
+version: 2
+jobs:
+  node-latest: &test
+    docker:
+      - image: node:12
+    working_directory: ~/src
+    steps:
+      - checkout
+      - restore_cache: &restore_cache
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Testing
+          command: yarn test
+      - run:
+          name: Submitting code coverage to codecov
+          command: |
+            ./node_modules/.bin/nyc report --reporter text-lcov > coverage.lcov
+            curl -s https://codecov.io/bash | bash
+  cache:
+    <<: *test
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+workflows:
+  version: 2
+  "io-dev-api-server":
+    jobs:
+      - node-latest
+      - cache:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
