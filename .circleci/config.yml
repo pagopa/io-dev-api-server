@@ -16,6 +16,9 @@ jobs:
           name: Install dependencies
           command: yarn install
       - run:
+        name: Run linter
+        command: yarn lint
+      - run:
           name: Testing
           command: yarn test
   cache:
@@ -35,9 +38,4 @@ workflows:
   "io-dev-api-server":
     jobs:
       - node-12
-      - cache:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+      - cache
