@@ -24,12 +24,17 @@ export const fiscalCode = "RSSMRA83A12H501D";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
-export const serverPort = 3000;
 const app: Application = express();
-// set log middleware
-app.use(morgan("tiny"));
+// set middlewares
+app.use(
+  morgan(
+    ":date[iso] :method :url :status :res[content-length] - :response-time ms"
+  )
+);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
+// if you want to add a delay in your server, use delayer
+// app.use(delayer(1000 as Millisecond)); // 1 sec delay
 
 app.get("/", (_, res) => {
   res.send(`Hi. This is ${packageJson.name}`);

@@ -1,10 +1,11 @@
 import fs from "fs";
-import app, { serverPort } from "./server";
+import app from "./server";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
-
-app.listen(serverPort, async () => {
+const serverPort = 3000;
+const serverHostname = "0.0.0.0"; // public
+app.listen(serverPort, serverHostname, async () => {
   console.log(
-    `${packageJson.name} is running on http://127.0.0.1:${serverPort}`
+    `${packageJson.name} is running on http://${serverHostname}:${serverPort}`
   );
 });
