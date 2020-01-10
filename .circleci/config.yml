@@ -10,32 +10,22 @@ jobs:
       - restore_cache: &restore_cache
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
       - run:
           name: Install dependencies
           command: yarn install
+      - save_cache:
+        key: v1-dependencies-{{ checksum "package.json" }}
+        paths:
+          - node_modules
       - run:
         name: Run linter
         command: yarn lint
       - run:
           name: Testing
           command: yarn test
-  cache:
-    <<: *test
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: yarn
-      - save_cache:
-          key: v1-dependencies-{{ checksum "package.json" }}
-          paths:
-            - node_modules
 
 workflows:
   version: 2
   "io-dev-api-server":
     jobs:
       - node-12
-      - cache
