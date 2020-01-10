@@ -18,8 +18,8 @@ jobs:
           paths:
             - node_modules
       - run:
-        name: Run linter
-        command: yarn tslint --config tslint.json -p tsconfig.json
+          name: Run linter
+          command: yarn tslint --config tslint.json -p tsconfig.json
       - run:
           name: Testing
           command: yarn test
