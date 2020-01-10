@@ -1,3 +1,4 @@
+import { randomInt } from "fp-ts/lib/Random";
 /**
  * generate a n chars pseudo-random string (n value is 26 as default)
  */
@@ -12,9 +13,10 @@ export const getRandomStringId = (chars: number = 26): string => {
 };
 
 /**
- * generate a n chars pseudo-random integer number
+ * generate a random int included in range [min,max]
  */
-export const getRandomIntId = (length: number) => {
-  const num = Math.pow(Math.random() * 10, length);
-  return Math.floor(num);
+export const getRandomIntInRange = (min: number, max: number) => {
+  return randomInt(min, max)
+    .run()
+    .valueOf();
 };

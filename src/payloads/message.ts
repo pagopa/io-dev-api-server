@@ -1,9 +1,10 @@
 import { range } from "fp-ts/lib/Array";
+
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
-import { getRandomStringId } from "../../src/utils/id";
+import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { IOResponse } from "./response";
 
@@ -26,9 +27,10 @@ const createMessage = (
         : messageId
         ? messageId
         : `${idx}`.padStart(26, "0");
-    date.setSeconds(idx);
+    // all messages have a created_at 1 month different from each other
+    const dueDate = date.setMonth(date.getMonth() + (idx - 1));
     return {
-      created_at: date.toISOString(),
+      created_at: new Date(dueDate).toISOString(),
       fiscal_code: fiscalCode,
       id: msgId,
       sender_service_id: `dev-service_${idx}`,
@@ -37,40 +39,32 @@ const createMessage = (
   });
 };
 
-export const createMessageWithContent = (
-  count: number,
+const createMessageWithContent = (
   fiscalCode: string,
   serviceId: string,
-  randomId: boolean = false,
-  messageId?: string
+  messageId?: string,
+  dueDate?: Date,
+  amount?: number
 ) => {
-  return range(1, count).map(idx => {
-    const date = new Date();
-    const msgId =
-      randomId === true
-        ? getRandomStringId()
-        : messageId
-        ? messageId
-        : `${idx}`.padStart(26, "0");
-    date.setSeconds(idx);
-    return {
-      content: {
-        subject: `subject [${serviceId}]`,
-        markdown:
-          "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
-        due_date: date,
-        payment_data: {
-          amount: 12300,
-          notice_number: "012345678912345678" as PaymentNoticeNumber
-        }
-      },
-      created_at: date,
-      fiscal_code: fiscalCode,
-      id: msgId,
-      sender_service_id: serviceId,
-      time_to_live: 3600
-    };
-  });
+  const msgId = messageId || getRandomStringId(26);
+  const date = dueDate || new Date();
+  return {
+    content: {
+      subject: `subject [${serviceId}]`,
+      markdown:
+        "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
+      due_date: date,
+      payment_data: {
+        amount: amount || getRandomIntInRange(1, 10000),
+        notice_number: "012345678912345678" as PaymentNoticeNumber
+      }
+    },
+    created_at: date,
+    fiscal_code: fiscalCode,
+    id: msgId,
+    sender_service_id: serviceId,
+    time_to_live: 3600
+  };
 };
 
 /**
@@ -113,14 +107,22 @@ export const getMessage = (
  * @param fiscalCode the receiver fiscal code
  */
 export const getMessageWithContent = (
-  messageId: string,
+  fiscalCode: string,
   serviceId: string,
-  fiscalCode: string
+  messageId: string,
+  dueDate?: Date,
+  amount?: number
 ): IOResponse<CreatedMessageWithContent> => {
   return {
     payload: validatePayload(
       CreatedMessageWithContent,
-      createMessageWithContent(1, fiscalCode, serviceId, false, messageId)[0]
+      createMessageWithContent(
+        fiscalCode,
+        serviceId,
+        messageId,
+        dueDate,
+        amount
+      )
     )
   };
 };
