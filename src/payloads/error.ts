@@ -27,3 +27,9 @@ export const unauthorized: IOResponse<null> = {
   status: 401,
   isJson: false
 };
+
+export const notFound: IOResponse<null> = {
+  payload: null,
+  status: 404,
+  isJson: false
+};

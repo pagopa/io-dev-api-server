@@ -6,7 +6,7 @@ import {
   ScopeEnum,
   Service
 } from "../../generated/definitions/content/Service";
-import app, { services } from "../server";
+import app, { services, servicesTuple } from "../server";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
@@ -15,13 +15,13 @@ it("services should return a valid services list", async done => {
   const list = PaginatedServiceTupleCollection.decode(response.body);
   expect(list.isRight()).toBeTruthy();
   if (list.isRight()) {
-    expect(list.value).toEqual(services.payload);
+    expect(list.value).toEqual(servicesTuple.payload);
   }
   done();
 });
 
 it("services should return a valid service with content", async done => {
-  const serviceId = services.payload.items[0].service_id;
+  const serviceId = services[0].service_id;
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
   const service = ServicePublic.decode(response.body);
@@ -33,7 +33,7 @@ it("services should return a valid service with content", async done => {
 });
 
 it("static_contents should return a valid service metadata", async done => {
-  const serviceId = services.payload.items[0].service_id;
+  const serviceId = services[0].service_id;
   const response = await request.get(
     `/static_contents/services/${serviceId}.json`
   );

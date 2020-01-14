@@ -6,6 +6,7 @@ import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { backendInfo } from "./payloads/backend";
+import { notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
   getMessageWithContent,
@@ -13,7 +14,11 @@ import {
 } from "./payloads/message";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
-import { getServiceMetadata, getServices } from "./payloads/service";
+import {
+  getServiceMetadata,
+  getServices,
+  getServicesTuple
+} from "./payloads/service";
 import { session } from "./payloads/session";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
@@ -34,7 +39,6 @@ app.use(
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 // if you want to add a delay in your server, use delayer
-// app.use(delayer(1000 as Millisecond)); // 1 sec delay
 
 app.get("/", (_, res) => {
   res.send(`Hi. This is ${packageJson.name}`);
@@ -55,11 +59,11 @@ app.get("/ping", (_, res) => {
   res.send("ok");
 });
 
-export const messages = getMessageWithoutContentList(1, fiscalCode);
+export const messages = getMessageWithoutContentList(20, fiscalCode);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
   // all messages have a due date 1 month different from each other
-  const dueDate = new Date(now.setMonth(now.getMonth() + idx));
+  const dueDate = new Date(now.setMonth(now.getMonth() - idx));
   return getMessageWithContent(
     fiscalCode,
     msg.sender_service_id,
@@ -68,6 +72,7 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   );
 });
 export const services = getServices(10);
+export const servicesTuple = getServicesTuple(services);
 export const wallets = getWallets();
 export const transactions = getTransactions(5);
 
@@ -87,7 +92,7 @@ app.get("/wallet/v1/transactions", (_, res) => {
 /** static contents */
 app.get("/static_contents/services/:service_id", (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
-  res.json(getServiceMetadata(serviceId, services.payload).payload);
+  res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
 });
 
 const sendFile = (filePath: string, res: Response) => {
@@ -147,17 +152,17 @@ responseHandler
     return messagesWithContent[msgIndex];
   })
   // return 10 mock services
-  .addHandler("get", "/services", services)
+  .addHandler("get", "/services", servicesTuple)
   /* 
     //how to send "too many requests" response
     .addHandler("get", "/services", getProblemJson(429, "too many requests"))
   */
   // return a mock service with the same requested id (always found!)
   .addCustomHandler("get", "/services/:service_id", req => {
-    const service = services.payload.items.find(
+    const service = services.find(
       item => item.service_id === req.params.service_id
     );
-    return { payload: service };
+    return { payload: service || notFound };
   });
 
 export default app;
