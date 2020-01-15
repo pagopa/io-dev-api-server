@@ -60,19 +60,19 @@ app.get("/ping", (_, res) => {
   res.send("ok");
 });
 
-export const messages = getMessageWithoutContentList(20, fiscalCode);
+export const services = getServices(10);
+export const messages = getMessageWithoutContentList(20, services, fiscalCode);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
   // all messages have a due date 1 month different from each other
   const dueDate = new Date(now.setMonth(now.getMonth() - idx));
   return getMessageWithContent(
     fiscalCode,
-    msg.sender_service_id,
+    services[idx % services.length].service_id,
     msg.id,
     dueDate
   );
 });
-export const services = getServices(10);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 export const wallets = getWallets();

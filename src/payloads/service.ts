@@ -9,9 +9,9 @@ import {
   ScopeEnum,
   Service
 } from "../../generated/definitions/content/Service";
+import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
-import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 
 export const getService = (serviceId: string): ServicePublic => {
   const service = {
