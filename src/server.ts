@@ -17,6 +17,7 @@ import { ResponseHandler } from "./payloads/response";
 import {
   getServiceMetadata,
   getServices,
+  getServicesByScope,
   getServicesTuple
 } from "./payloads/service";
 import { session } from "./payloads/session";
@@ -73,6 +74,7 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 });
 export const services = getServices(10);
 export const servicesTuple = getServicesTuple(services);
+export const servicesByScope = getServicesByScope(services);
 export const wallets = getWallets();
 export const transactions = getTransactions(5);
 
@@ -92,6 +94,10 @@ app.get("/wallet/v1/transactions", (_, res) => {
 /** static contents */
 app.get("/static_contents/services/:service_id", (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
+  if (serviceId === "servicesByScope") {
+    res.json(servicesByScope.payload);
+    return;
+  }
   res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
 });
 
@@ -162,7 +168,7 @@ responseHandler
     const service = services.find(
       item => item.service_id === req.params.service_id
     );
-    return { payload: service || notFound };
+    return { payload: service || notFound.payload };
   });
 
 export default app;

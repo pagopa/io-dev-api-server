@@ -11,6 +11,7 @@ import {
 } from "../../generated/definitions/content/Service";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
+import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 
 export const getService = (serviceId: string): ServicePublic => {
   const service = {
@@ -62,6 +63,26 @@ export const getServicesTuple = (
     page_size: items.length
   });
   return { payload, isJson: true };
+};
+
+export const getServicesByScope = (
+  services: readonly ServicePublic[]
+): IOResponse<ServicesByScope> => {
+  // first half -> LOCAL
+  // second half -> NATIONAL
+  const servicesByScope = { NATIONAL: Array<string>(), LOCAL: Array<string>() };
+  services.forEach((s, idx) => {
+    // tslint:disable-next-line: no-let
+    let serviceScope: ScopeEnum = ScopeEnum.NATIONAL;
+    if (idx + 1 <= services.length * 0.5) {
+      serviceScope = ScopeEnum.LOCAL;
+    }
+    servicesByScope[serviceScope].push(s.service_id);
+  });
+  return {
+    payload: validatePayload(ServicesByScope, servicesByScope),
+    isJson: true
+  };
 };
 
 export const getServiceMetadata = (

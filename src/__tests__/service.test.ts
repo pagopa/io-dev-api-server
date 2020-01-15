@@ -7,6 +7,7 @@ import {
   Service
 } from "../../generated/definitions/content/Service";
 import app, { services, servicesTuple } from "../server";
+import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
@@ -43,6 +44,16 @@ it("static_contents should return a valid service metadata", async done => {
   if (metadata.isRight()) {
     expect(metadata.value.scope).toEqual(ScopeEnum.LOCAL);
   }
+  done();
+});
+
+it("static_contents should return a valid services by scope", async done => {
+  const response = await request.get(
+    `/static_contents/services/servicesByScope.json`
+  );
+  expect(response.status).toBe(200);
+  const metadata = ServicesByScope.decode(response.body);
+  expect(metadata.isRight()).toBeTruthy();
   done();
 });
 
