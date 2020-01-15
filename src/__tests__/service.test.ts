@@ -6,8 +6,8 @@ import {
   ScopeEnum,
   Service
 } from "../../generated/definitions/content/Service";
-import app, { services, servicesTuple } from "../server";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import app, { services, servicesTuple } from "../server";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
