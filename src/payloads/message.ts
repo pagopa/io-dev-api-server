@@ -4,6 +4,7 @@ import { CreatedMessageWithContent } from "../../generated/definitions/backend/C
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { IOResponse } from "./response";
@@ -77,7 +78,7 @@ export const createMessageList = (
   count: number,
   randomId: boolean,
   fiscalCode: string
-) =>
+): PaginatedCreatedMessageWithoutContentCollection =>
   validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
     items: createMessage(count, fiscalCode, randomId),
     page_size: count
@@ -134,11 +135,21 @@ export const getMessageWithContent = (
  */
 export const getMessageWithoutContentList = (
   count: number,
+  services: readonly ServicePublic[],
   fiscalCode: string,
   randomId: boolean = false
 ): IOResponse<PaginatedCreatedMessageWithoutContentCollection> => {
+  const list = createMessageList(count, randomId, fiscalCode);
   return {
-    payload: createMessageList(count, randomId, fiscalCode),
+    payload: {
+      ...list,
+      items: list.items.map((m, idx) => {
+        return {
+          ...m,
+          sender_service_id: services[idx % services.length].service_id
+        };
+      })
+    },
     isJson: true
   };
 };
