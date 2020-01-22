@@ -12,6 +12,7 @@ import {
   getMessageWithContent,
   getMessageWithoutContentList
 } from "./payloads/message";
+import { municipality } from "./payloads/municipality";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import {
@@ -25,7 +26,6 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
-import { municipality } from "./payloads/municipality";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
