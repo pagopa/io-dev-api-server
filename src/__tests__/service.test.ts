@@ -7,7 +7,7 @@ import {
   Service
 } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
-import app, { services, servicesTuple } from "../server";
+import app, { services, servicesTuple, staticContentRootPath } from "../server";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
@@ -36,7 +36,7 @@ it("services should return a valid service with content", async done => {
 it("static_contents should return a valid service metadata", async done => {
   const serviceId = services[0].service_id;
   const response = await request.get(
-    `/static_contents/services/${serviceId}.json`
+    `${staticContentRootPath}/services/${serviceId}.json`
   );
   expect(response.status).toBe(200);
   const metadata = Service.decode(response.body);
@@ -49,7 +49,7 @@ it("static_contents should return a valid service metadata", async done => {
 
 it("static_contents should return a valid services by scope", async done => {
   const response = await request.get(
-    `/static_contents/services/servicesByScope.json`
+    `${staticContentRootPath}/services/servicesByScope.json`
   );
   expect(response.status).toBe(200);
   const metadata = ServicesByScope.decode(response.body);
@@ -59,7 +59,7 @@ it("static_contents should return a valid services by scope", async done => {
 
 it("static_contents should return a valid service logo", async done => {
   const response = await request.get(
-    "/static_contents/logos/services/service_id"
+    `${staticContentRootPath}/logos/services/service_id`
   );
   expect(response.status).toBe(200);
   done();
@@ -68,7 +68,7 @@ it("static_contents should return a valid service logo", async done => {
 // tslint:disable-next-line: no-identical-functions
 it("static_contents should return a valid organization logo", async done => {
   const response = await request.get(
-    "/static_contents/logos/organizations/organization_id"
+    `${staticContentRootPath}/logos/organizations/organization_id`
   );
   expect(response.status).toBe(200);
   done();

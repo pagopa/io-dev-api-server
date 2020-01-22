@@ -46,7 +46,10 @@ export class ResponseHandler {
         );
         break;
       case "put":
-        throw Error("put not implemented");
+        this.app.put(basePath + path, (req, res) =>
+          handleResponse(res, handler(req))
+        );
+        break;
       case "update":
         throw Error("update method not implemented");
       default:
