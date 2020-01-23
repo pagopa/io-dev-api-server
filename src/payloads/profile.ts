@@ -1,4 +1,4 @@
-import { UserProfile } from "../../generated/definitions/backend/UserProfile";
+import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
@@ -10,16 +10,20 @@ const mockProfile = {
   family_name: "Rossi",
   has_profile: true,
   is_inbox_enabled: true,
+  is_email_enabled: true,
+  is_email_validated: false,
   is_webhook_enabled: true,
   name: "Mario",
   spid_email: "mario.rossi@fake-spide-mail.it",
   spid_mobile_phone: "555555555",
-  version: 6
+  version: 0
 };
 
-export const getProfile = (fiscalCode: string): IOResponse<UserProfile> => {
+export const getProfile = (
+  fiscalCode: string
+): IOResponse<InitializedProfile> => {
   return {
-    payload: validatePayload(UserProfile, {
+    payload: validatePayload(InitializedProfile, {
       ...mockProfile,
       fiscal_code: fiscalCode
     }),
