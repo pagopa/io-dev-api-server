@@ -23,7 +23,8 @@
     "generate:all": "npm-run-all generate:models generate:content-definitions generate:paths generate:pagopa-api-definitions"
   },
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "collectCoverage": true
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
