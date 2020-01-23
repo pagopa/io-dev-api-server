@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/pagopa/io-dev-api-server/branch/master/graph/badge.svg)](https://codecov.io/gh/pagopa/io-dev-api-server)
 # IO dev API server
 
 It's a simple mock server of [io-backend](https://github.com/teamdigitale/io-backend) for [io-app](https://github.com/teamdigitale/io-app).<br/>
