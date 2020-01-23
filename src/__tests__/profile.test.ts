@@ -6,6 +6,7 @@ import { InitializedProfile } from "../../generated/definitions/backend/Initiali
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { UserProfile } from "../../generated/definitions/backend/UserProfile";
 import { basePath } from "../../generated/definitions/backend_api_paths";
+import { Municipality } from "../../generated/definitions/content/Municipality";
 import { userMetadata } from "../payloads/userMetadata";
 import app, { fiscalCode } from "../server";
 
@@ -53,6 +54,16 @@ it("get user-metadata should return a valid user-metadata", async done => {
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
   expect(usermetadata.isRight()).toBeTruthy();
+  done();
+});
+
+it("get municipality should return a valid municipality", async done => {
+  const response = await request.get(
+    `/static_contents/municipalities/A/B/CODE`
+  );
+  expect(response.status).toBe(200);
+  const municipality = Municipality.decode(response.body);
+  expect(municipality.isRight()).toBeTruthy();
   done();
 });
 

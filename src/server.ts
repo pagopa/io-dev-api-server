@@ -12,6 +12,7 @@ import {
   getMessageWithContent,
   getMessageWithoutContentList
 } from "./payloads/message";
+import { municipality } from "./payloads/municipality";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import {
@@ -21,6 +22,7 @@ import {
   getServicesTuple
 } from "./payloads/service";
 import { session } from "./payloads/session";
+import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
@@ -32,6 +34,9 @@ const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
 // set middlewares
+// if you want to add a delay in your server, use delayer (utils/delay_middleware)
+
+// set middleware logging
 app.use(
   morgan(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
@@ -39,7 +44,6 @@ app.use(
 );
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
-// if you want to add a delay in your server, use delayer
 
 app.get("/", (_, res) => {
   res.send(`Hi. This is ${packageJson.name}`);
@@ -65,7 +69,7 @@ export const messages = getMessageWithoutContentList(20, services, fiscalCode);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
   // all messages have a due date 1 month different from each other
-  const dueDate = new Date(now.setMonth(now.getMonth() - idx));
+  const dueDate = new Date(now.setMonth(now.getMonth() + idx));
   return getMessageWithContent(
     fiscalCode,
     services[idx % services.length].service_id,
@@ -77,6 +81,7 @@ export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 export const wallets = getWallets();
 export const transactions = getTransactions(5);
+export const staticContentRootPath = "/static_contents";
 
 /** wallet content */
 app.get("/wallet/v1/users/actions/start-session", (_, res) => {
@@ -92,7 +97,7 @@ app.get("/wallet/v1/transactions", (_, res) => {
 });
 
 /** static contents */
-app.get("/static_contents/services/:service_id", (req, res) => {
+app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
   if (serviceId === "servicesByScope") {
     res.json(servicesByScope.payload);
@@ -107,16 +112,21 @@ const sendFile = (filePath: string, res: Response) => {
   });
 };
 
-/** static contents */
+app.get(
+  `${staticContentRootPath}/logos/organizations/:organization_id`,
+  (_, res) => {
+    // ignoring organization id and send always the same image
+    sendFile("assets/imgs/logos/organizations/organization_1.png", res);
+  }
+);
 
-app.get("/static_contents/logos/organizations/:organization_id", (_, res) => {
-  // ignoring organization id and send always the same image
-  sendFile("assets/imgs/logos/organizations/organization_1.png", res);
-});
-
-app.get("/static_contents/logos/services/:service_id", (_, res) => {
+app.get(`${staticContentRootPath}/logos/services/:service_id`, (_, res) => {
   // ignoring service id and send always the same image
   sendFile("assets/imgs/logos/services/service_1.png", res);
+});
+
+app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
+  res.json(municipality);
 });
 
 /** IO backend API handlers */
@@ -124,6 +134,7 @@ app.get("/static_contents/logos/services/:service_id", (_, res) => {
 responseHandler
   .addHandler("get", "/session", session)
   .addHandler("get", "/profile", getProfile(fiscalCode))
+  .addHandler("put", "/installations/:installationID", getSuccessResponse())
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
