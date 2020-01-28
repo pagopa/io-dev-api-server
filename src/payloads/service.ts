@@ -1,8 +1,8 @@
-import { range } from "fp-ts/lib/Array";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServiceName } from "../../generated/definitions/backend/ServiceName";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import {
@@ -12,6 +12,7 @@ import {
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
+import { paymentData } from "./payment";
 
 export const getService = (serviceId: string): ServicePublic => {
   const service = {
@@ -26,27 +27,34 @@ export const getService = (serviceId: string): ServicePublic => {
 };
 
 export const getServices = (count: number): readonly ServicePublic[] => {
-  const aggregation = 3;
-  // services belong to the same organization for blocks of `aggregation` size
-  // tslint:disable-next-line: no-let
-  let organizationCount = 0;
-  return range(1, count).map(idx => {
-    organizationCount =
-      idx !== 0 && idx % aggregation === 0
-        ? organizationCount + 1
-        : organizationCount;
-    // first half have organization_fiscal_code === organizationFiscalCodes[0]
-    // second half have organization_fiscal_code === organizationFiscalCodes[1]
-    return {
-      ...getService(`dev-service_${idx}`),
-      organization_fiscal_code: `${organizationCount + 1}`.padStart(
-        11,
-        "0"
-      ) as OrganizationFiscalCode,
-      organization_name: `organization name_${organizationCount +
-        1}` as OrganizationName
-    };
+  const mockedService1: ServicePublic = validatePayload(ServicePublic, {
+    service_id: "01" as ServiceId,
+    service_name: "servizio1.3" as ServiceName,
+    organization_name: "ente2" as OrganizationName,
+    department_name: "dipartimento1" as DepartmentName,
+    organization_fiscal_code: paymentData.organizationFiscalCode,
+    version: 3
   });
+
+  const mockedService2: ServicePublic = {
+    service_id: "02" as ServiceId,
+    service_name: "servizio2" as ServiceName,
+    organization_name: "ente1 - nuovo nome" as OrganizationName,
+    department_name: "dipartimento1" as DepartmentName,
+    organization_fiscal_code: paymentData.organizationFiscalCode,
+    version: 2
+  };
+
+  const mockedService3: ServicePublic = {
+    service_id: "03" as ServiceId,
+    service_name: "servizio3" as ServiceName,
+    organization_name: "ente1" as OrganizationName,
+    department_name: "dipartimento1" as DepartmentName,
+    organization_fiscal_code: paymentData.organizationFiscalCode,
+    version: 2
+  };
+
+  return [mockedService1];
 };
 
 export const getServicesTuple = (
@@ -80,7 +88,10 @@ export const getServicesByScope = (
     servicesByScope[serviceScope].push(s.service_id);
   });
   return {
-    payload: validatePayload(ServicesByScope, servicesByScope),
+    payload: validatePayload(ServicesByScope, {
+      LOCAL: [],
+      NATIONAL: ["01"]
+    }),
     isJson: true
   };
 };

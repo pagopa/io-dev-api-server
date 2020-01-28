@@ -1,13 +1,12 @@
 import { range } from "fp-ts/lib/Array";
-
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
-import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { IOResponse } from "./response";
+import { paymentData } from "./payment";
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -56,8 +55,8 @@ const createMessageWithContent = (
         "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
       due_date: date,
       payment_data: {
-        amount: amount || getRandomIntInRange(1, 10000),
-        notice_number: "012345678912345678" as PaymentNoticeNumber
+        amount: paymentData.importoSingoloVersamento,
+        notice_number: paymentData.paymentNoticeNumber
       }
     },
     created_at: date,

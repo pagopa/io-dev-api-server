@@ -1,6 +1,6 @@
 import { range } from "fp-ts/lib/Array";
 import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
-import { Psp } from "../../generated/definitions/pagopa/Psp";
+import { Psp, LinguaEnum } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
@@ -14,58 +14,90 @@ export const sessionToken: SessionResponse = {
   }
 };
 
+export const getPsp = (locales: LinguaEnum.IT | LinguaEnum.EN): Psp => {
+  return {
+    id: locales ===  LinguaEnum.IT ? 1713322 : 1713323,
+    idPsp: "UNCRITMM",
+    businessName: "UniCredit S.p.A",
+    paymentType: "CP",
+    idIntermediary: "00348170101",
+    idChannel: "00348170101_01_ONUS",
+    logoPSP: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/psp/1713322",
+    serviceLogo: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/service/1713322",
+    serviceName: "Pagamento con carte",
+    fixedCost: {
+      currency: "EUR",
+      amount: 95,
+      decimalDigits: 2
+    },
+    appChannel: false,
+    tags: [
+      "VISA",
+      "MASTERCARD",
+      "MAESTRO"
+    ],
+    serviceDescription: "Il Servizio consente di effettuare pagamenti con carte emesse a valere sui circuiti VISA, MASTERCARD,MAESTRO",
+    serviceAvailability: "Il Servizio è disponibile on line h24, 7 giorni su 7. Sono consentite operazioni di pagamento fino ad un limite massimo di € 1000 ciascuna",
+    urlInfoChannel: "https://www.unicredit.it/it/privati.html",
+    paymentModel: 1,
+    flagStamp: false,
+    idCard: 2535,
+    lingua: locales,
+    codiceAbi: "02008",
+    isPspOnus: true
+  }
+}
+
+const validPsp = getPsp(LinguaEnum.EN);
+
 export const getWallets = (): WalletListResponse => {
-  const validCreditCard: { [key: string]: any } = {
+  const validCreditCard: CreditCard = {
     id: 1464,
     holder: "Mario Rossi",
     pan: "************0111",
     expireMonth: "05",
     expireYear: "22",
+    brand: "MASTERCARD",
     brandLogo:
       "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_mc.png",
     flag3dsVerified: true
   };
 
-  const validAmount: { [key: string]: any } = {
-    currency: "EUR",
-    amount: 1000,
-    decimalDigits: 2
-  };
-
-  const validPsp: { [key: string]: any } = {
-    id: 43188,
-    idPsp: "idPsp1",
-    businessName: "WHITE bank",
-    paymentType: "CP",
-    idIntermediary: "idIntermediario1",
-    idChannel: "idCanale14",
-    logoPSP: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/psp/1578833",
-    serviceLogo:
-      "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/service/1578833",
-    serviceName: "nomeServizio 10 white",
-    fixedCost: validAmount,
-    appChannel: false,
-    tags: ["MAESTRO"],
-    serviceDescription: "DESCRIZIONE servizio: CP mod1",
-    serviceAvailability: "DISPONIBILITA servizio 24/7",
-    paymentModel: 1,
-    flagStamp: true,
-    idCard: 91,
-    lingua: "IT"
+  const validCreditCard2: CreditCard = {
+    id: 1464,
+    holder: "Mario Rossi",
+    pan: "************0222",
+    expireMonth: "06",
+    expireYear: "23",
+    brand: "MAESTRO",
+    brandLogo:
+      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_maestro.png",
+    flag3dsVerified: true
   };
 
   const WalletCard: Wallet = {
-    idWallet: 12345,
+    idWallet: 11111,
     type: TypeEnum.CREDIT_CARD,
     favourite: false,
-    creditCard: validCreditCard as CreditCard,
-    psp: validPsp as Psp,
+    creditCard: validCreditCard,
+    psp: validPsp,
     idPsp: validPsp.id,
     pspEditable: true,
     lastUsage: new Date("2018-08-07T15:50:08Z")
   };
 
-  // It is displayed as card!
+  const MaestroCard: Wallet = {
+    idWallet: 22222,
+    type: TypeEnum.CREDIT_CARD,
+    favourite: true,
+    creditCard: validCreditCard2,
+    psp: validPsp,
+    idPsp: validPsp.id,
+    pspEditable: true,
+    lastUsage: new Date("2019-01-07T10:00:08Z")
+  }
+
+  // FIXME - It is displayed as card!
   const WalletBank: Wallet = {
     idWallet: 67890,
     type: TypeEnum.CREDIT_CARD,
@@ -77,7 +109,7 @@ export const getWallets = (): WalletListResponse => {
   };
 
   const data = {
-    data: [WalletBank, WalletCard]
+    data: [MaestroCard, WalletCard]
   };
 
   return validatePayload(WalletListResponse, data);

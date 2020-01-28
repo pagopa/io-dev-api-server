@@ -13,6 +13,14 @@ import {
   getMessageWithoutContentList
 } from "./payloads/message";
 import { municipality } from "./payloads/municipality";
+import {
+  getPaymentActivationsPostResponse,
+  getPaymentRequestsGetResponse,
+  paymentData,
+  getPaymentActivationsGetResponse,
+  getPaymentResponse,
+  getPspList
+} from "./payloads/payment";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import {
@@ -79,23 +87,52 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 });
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
-export const wallets = getWallets();
-export const transactions = getTransactions(5);
 export const staticContentRootPath = "/static_contents";
 
 /** wallet content */
+export const wallets = getWallets();
+export const transactions = getTransactions(5);
 app.get("/wallet/v1/users/actions/start-session", (_, res) => {
   res.json(sessionToken);
 });
-
 app.get("/wallet/v1/wallet", (_, res) => {
   res.json(wallets);
 });
-
 app.get("/wallet/v1/transactions", (_, res) => {
   res.json(transactions);
 });
 
+/** payment content */
+const paymentRef: string =
+  paymentData.organizationFiscalCode + paymentData.paymentNoticeNumber;
+const paymentRequestsGetResponse = getPaymentRequestsGetResponse();
+app.get(`/api/v1/payment-requests/${paymentRef}`, (_, res) => {
+  res.json(paymentRequestsGetResponse);
+});
+
+const paymentActivationsPostResponse = getPaymentActivationsPostResponse();
+app.post(`/api/v1/payment-activations`, (_, res) => {
+  res.json(paymentActivationsPostResponse);
+});
+
+const paymentActivationsGetResponse = getPaymentActivationsGetResponse();
+app.get(`/api/v1/payment-activations/${paymentData.codiceContestoPagamento}`, (_, res) => {
+  res.json(paymentActivationsGetResponse);
+});
+
+const paymentResponse = getPaymentResponse();
+app.get(`/wallet/v1/payments/${paymentData.idPagamento}/actions/check`, (_, res) => {
+  res.json(paymentResponse);
+});
+
+const pspList = getPspList();
+app.get(`/wallet/v1/psps?paymentType=CREDIT_CARD&idPayment=${paymentData.idPagamento}&idWallet=22222`, (_,res) => { // wallet with id 22222 is the favourite one
+  res.json(pspList)
+})
+
+app.get(`/api/v1/payments/${paymentData.idPagamento}/actions/delete`, (_, res) => {
+  res.status(200);
+});
 /** static contents */
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
