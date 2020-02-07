@@ -11,9 +11,10 @@ import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definition
 import { validatePayload } from "../utils/validator";
 import { PaymentResponse } from "../../generated/definitions/pagopa/PaymentResponse";
 import { Payment } from "../../generated/definitions/pagopa/Payment";
-import { PspListResponse } from "../../generated/definitions/pagopa/PspListResponse";
+import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/PspListResponseCD";
 import { getPsp } from "./wallet";
 import { LinguaEnum } from "../../generated/definitions/pagopa/Psp";
+import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 
 export const paymentData = {
   paymentNoticeNumber: "012345678912345678" as PaymentNoticeNumber,
@@ -39,6 +40,121 @@ export const paymentData = {
     currency: "EUR",
     decimalDigits: 2
 }
+};
+
+// Response /actions/pay api
+export const payResponse = {
+  data: {
+    id: 7090047996,
+    created: new Date("2020-02-07T08:43:38Z"),
+    updated: new Date("2020-02-07T08:43:38Z"),
+    amount: {
+      currency: "EUR",
+      amount: 1,
+      decimalDigits: 2
+    },
+    grandTotal: {
+      currency: "EUR",
+      amount: 51,
+      decimalDigits: 2
+    },
+    description: "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO",
+    merchant: "Comune di Milano",
+    idStatus: 0,
+    statusMessage: "Da autorizzare",
+    error: false,
+    success: false,
+    fee: {
+      currency: "EUR",
+      amount: 50,
+      decimalDigits: 2
+    },
+    urlCheckout3ds: "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0Nzk5Ng==",
+    paymentModel: 0,
+    token: "NzA5MDA0Nzk5Ng==",
+    idWallet: 38404,
+    idPsp: 401162,
+    idPayment: 71144,
+    nodoIdPayment: "9fca64d0-921f-432a-b214-361f44f98eac",
+    orderNumber: 7090047996
+  }
+};
+
+// Response /transactions/idTransaction
+export const transactionIdResponseFirst = {
+  data: {
+    id: 7090047996,
+    created: new Date("2020-02-07T08:43:38Z"),
+    updated: new Date("2020-02-07T08:43:38Z"),
+    amount: {
+      currency: "EUR",
+      amount: 1,
+      decimalDigits: 2
+    },
+    grandTotal: {
+      currency: "EUR",
+      amount: 51,
+      decimalDigits: 2
+    },
+    description: "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO",
+    merchant: "Comune di Milano",
+    idStatus: 0,
+    statusMessage: "Da autorizzare",
+    error: false,
+    success: false,
+    fee: {
+      currency: "EUR",
+      amount: 50,
+      decimalDigits: 2
+    },
+    token: "NzA5MDA0ODAwNQ==",
+    idWallet: 38404,
+    idPsp: 401164,
+    idPayment: 71156,
+    nodoIdPayment: "e7a7aab0-9f2c-49d2-b5c4-3897d1a90f3a",
+    orderNumber: 7090048009
+  }
+};
+
+// Response /transactions/idTransaction
+export const transactionIdResponseSecond = {
+  data: {
+    id: 7090047996,
+    created: new Date("2020-02-07T08:43:38Z"),
+    updated: new Date("2020-02-07T08:43:38Z"),
+    amount: {
+      currency: "EUR",
+      amount: 1,
+      decimalDigits: 2
+    },
+    grandTotal: {
+      currency: "EUR",
+      amount: 51,
+      decimalDigits: 2
+    },
+    description: "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO",
+    merchant: "Comune di Milano",
+    idStatus: 3,
+    statusMessage: "Confermato",
+    error: false,
+    success: true,
+    fee: {
+      currency: "EUR",
+      amount: 50,
+      decimalDigits: 2
+    },
+    token: "NzA5MDA0ODAwOQ==",
+    idWallet: 38404,
+    idPsp: 401164,
+    idPayment: 71160,
+    nodoIdPayment: "375daf96-d8e6-42fb-b095-4e3c270923ad",
+    spcNodeStatus: 0,
+    accountingStatus: 1,
+    authorizationCode: "00",
+    orderNumber: 7090048009,
+    rrn: "200380002021",
+    numAut: "431061"
+  }
 };
 
 const rptId = RptId.decode(paymentData);
@@ -98,6 +214,18 @@ export const getPspList = () => {
   const data: PspListResponse = {
       data: paymentData.psps
   };
-  return validatePayload(PspListResponse, data)
+  return validatePayload(PspListResponse, data);
   
+};
+
+export const getPayResponse = () => {
+  return validatePayload(TransactionResponse, payResponse);
+};
+
+export const getTransactionResponseFirst = () => {
+  return validatePayload(TransactionResponse, transactionIdResponseFirst);
+};
+
+export const getTransactionResponseSecond = () => {
+  return validatePayload(TransactionResponse, transactionIdResponseSecond);
 };

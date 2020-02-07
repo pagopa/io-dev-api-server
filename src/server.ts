@@ -19,7 +19,10 @@ import {
   paymentData,
   getPaymentActivationsGetResponse,
   getPaymentResponse,
-  getPspList
+  getPspList,
+  getTransactionResponseFirst,
+  getTransactionResponseSecond,
+  getPayResponse
 } from "./payloads/payment";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
@@ -126,13 +129,35 @@ app.get(`/wallet/v1/payments/${paymentData.idPagamento}/actions/check`, (_, res)
 });
 
 const pspList = getPspList();
-app.get(`/wallet/v1/psps?paymentType=CREDIT_CARD&idPayment=${paymentData.idPagamento}&idWallet=22222`, (_,res) => { // wallet with id 22222 is the favourite one
-  res.json(pspList)
-})
+app.get(`/wallet/v1/psps`, (req,res) => { // wallet with id 22222 is the favourite one
+  req.query.paymentType === 'CREDIT_CARD';
+  req.query.idPayment === paymentData.idPagamento;
+  req.query.idWallet === '22222';
+  res.json(pspList);
+});
 
-app.get(`/api/v1/payments/${paymentData.idPagamento}/actions/delete`, (_, res) => {
+const payRes = getPayResponse();
+app.post(`/wallet/v1/payments/${paymentData.idPagamento}/actions/pay`, (_, res) => {
+  res.json(payRes);
+});
+
+const transRespFirst = getTransactionResponseFirst();
+const transRespSecond = getTransactionResponseSecond();
+let isFirst = true;
+app.get(`/wallet/v1/transactions/${payRes.data?.orderNumber}`, (_, res) => {
+  if (isFirst) {
+    res.json(transRespFirst);
+    isFirst = false;
+  } else {
+    res.json(transRespSecond);
+    isFirst = true;
+  }
+});
+
+app.delete(`/wallet/v1/payments/${paymentData.idPagamento}/actions/delete`, (_, res) => {
   res.status(200);
 });
+
 /** static contents */
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");

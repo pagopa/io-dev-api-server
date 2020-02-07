@@ -11,7 +11,7 @@ const mockProfile = {
   has_profile: true,
   is_inbox_enabled: true,
   is_email_enabled: true,
-  is_email_validated: false,
+  is_email_validated: true,
   is_webhook_enabled: true,
   name: "Mario",
   spid_email: "mario.rossi@fake-spide-mail.it",
