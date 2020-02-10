@@ -47,6 +47,13 @@ const app: Application = express();
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 
+// Create a temporany db
+const sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('db.db3');
+db.serialize(function() {  
+	db.run("CREATE TABLE IF NOT EXISTS payments (idTransaction TEXT PRIMARY KEY, status TEXT)");  
+});
+
 // set middleware logging
 app.use(
   morgan(
@@ -119,44 +126,77 @@ app.post(`/api/v1/payment-activations`, (_, res) => {
 });
 
 const paymentActivationsGetResponse = getPaymentActivationsGetResponse();
-app.get(`/api/v1/payment-activations/${paymentData.codiceContestoPagamento}`, (_, res) => {
-  res.json(paymentActivationsGetResponse);
-});
+app.get(
+  `/api/v1/payment-activations/${paymentData.codiceContestoPagamento}`,
+  (_, res) => {
+    res.json(paymentActivationsGetResponse);
+  }
+);
 
 const paymentResponse = getPaymentResponse();
-app.get(`/wallet/v1/payments/${paymentData.idPagamento}/actions/check`, (_, res) => {
-  res.json(paymentResponse);
-});
+app.get(
+  `/wallet/v1/payments/${paymentData.idPagamento}/actions/check`,
+  (_, res) => {
+    res.json(paymentResponse);
+  }
+);
 
 const pspList = getPspList();
-app.get(`/wallet/v1/psps`, (req,res) => { // wallet with id 22222 is the favourite one
-  req.query.paymentType === 'CREDIT_CARD';
+app.get(`/wallet/v1/psps`, (req, res) => {
+  // wallet with id 22222 is the favourite one
+  req.query.paymentType === "CREDIT_CARD";
   req.query.idPayment === paymentData.idPagamento;
-  req.query.idWallet === '22222';
+  req.query.idWallet === "22222";
   res.json(pspList);
 });
 
 const payRes = getPayResponse();
-app.post(`/wallet/v1/payments/${paymentData.idPagamento}/actions/pay`, (_, res) => {
-  res.json(payRes);
-});
+app.post(
+  `/wallet/v1/payments/${paymentData.idPagamento}/actions/pay`,
+  (_, res) => {
+    res.json(payRes);
+  }
+);
 
 const transRespFirst = getTransactionResponseFirst();
 const transRespSecond = getTransactionResponseSecond();
-let isFirst = true;
+let statusTransaction = "";
 app.get(`/wallet/v1/transactions/${payRes.data?.orderNumber}`, (_, res) => {
-  if (isFirst) {
+  // Check status transaction
+  db.serialize(function() {  
+    db.all(
+      "SELECT * from payments WHERE idTransaction = " + payRes.data?.orderNumber,
+      function(err: any, rows: any) {
+        if (err) {
+          console.log(err);
+        } else {
+          if (rows.length > 0) {
+            statusTransaction = rows[0].status;
+          }
+        }
+      }
+    );
+  });
+  // Change response if not auth
+  if (statusTransaction !== "Da autorizzare") {
+    db.serialize(function() {  
+      db.run("INSERT OR REPLACE INTO payments VALUES ('"+payRes.data?.orderNumber+"','"+transRespFirst.data?.statusMessage +"')");
+    });
     res.json(transRespFirst);
-    isFirst = false;
   } else {
+    db.serialize(function() {  
+      db.run("INSERT OR REPLACE INTO payments VALUES ('"+payRes.data?.orderNumber+"','"+transRespSecond.data?.statusMessage +"')");
+    });
     res.json(transRespSecond);
-    isFirst = true;
   }
 });
 
-app.delete(`/wallet/v1/payments/${paymentData.idPagamento}/actions/delete`, (_, res) => {
-  res.status(200);
-});
+app.delete(
+  `/wallet/v1/payments/${paymentData.idPagamento}/actions/delete`,
+  (_, res) => {
+    res.status(200);
+  }
+);
 
 /** static contents */
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {

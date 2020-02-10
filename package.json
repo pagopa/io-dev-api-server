@@ -27,6 +27,7 @@
     "collectCoverage": true
   },
   "dependencies": {
+    "sqlite3": "^4.0.0",
     "@types/body-parser": "^1.17.1",
     "@types/morgan": "^1.7.37",
     "@types/prettier": "^1.19.0",
