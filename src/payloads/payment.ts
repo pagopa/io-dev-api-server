@@ -16,8 +16,23 @@ import { getPsp } from "./wallet";
 import { LinguaEnum } from "../../generated/definitions/pagopa/Psp";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 
+const noticeNumberAvailables = [
+  "012345678912345678",
+  "012345678912345677",
+  "012345678912345676",
+  "012345678912345675",
+  "012345678912345674",
+  "012345678912345673"
+];
+
+export const getRandomNoticeNumber = (): string => {
+  return noticeNumberAvailables[
+    Math.floor(Math.random() * noticeNumberAvailables.length)
+  ];
+}
+
 export const paymentData = {
-  paymentNoticeNumber: "012345678912345678" as PaymentNoticeNumber,
+  paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,
   importoSingoloVersamento: 1 as ImportoEuroCents, // = 1 eurocent
   codiceContestoPagamento: "03314e90321011eaa22f931313a0ec7c" as CodiceContestoPagamento,

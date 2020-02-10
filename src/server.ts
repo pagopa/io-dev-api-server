@@ -113,10 +113,10 @@ app.get("/wallet/v1/transactions", (_, res) => {
 });
 
 /** payment content */
-const paymentRef: string =
-  paymentData.organizationFiscalCode + paymentData.paymentNoticeNumber;
+/* const paymentRef: string =
+  paymentData.organizationFiscalCode + paymentData.paymentNoticeNumber; */
 const paymentRequestsGetResponse = getPaymentRequestsGetResponse();
-app.get(`/api/v1/payment-requests/${paymentRef}`, (_, res) => {
+app.get(`/api/v1/payment-requests/:payment_ref`, (_, res) => {
   res.json(paymentRequestsGetResponse);
 });
 
@@ -145,7 +145,8 @@ const pspList = getPspList();
 app.get(`/wallet/v1/psps`, (req, res) => {
   // wallet with id 22222 is the favourite one
   req.query.paymentType === "CREDIT_CARD";
-  req.query.idPayment === paymentData.idPagamento;
+  // 3 id payment available to pay
+ ["012345678912345678","012345678912345676","012345678912345673"].includes(req.query.idPayment) ;
   req.query.idWallet === "22222";
   res.json(pspList);
 });

@@ -6,7 +6,7 @@ import { ServicePublic } from "../../generated/definitions/backend/ServicePublic
 import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { IOResponse } from "./response";
-import { paymentData } from "./payment";
+import { paymentData, getRandomNoticeNumber } from "./payment";
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -56,7 +56,7 @@ const createMessageWithContent = (
       due_date: date,
       payment_data: {
         amount: paymentData.importoSingoloVersamento,
-        notice_number: paymentData.paymentNoticeNumber
+        notice_number: getRandomNoticeNumber()
       }
     },
     created_at: date,
