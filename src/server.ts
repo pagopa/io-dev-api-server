@@ -35,7 +35,7 @@ import {
 import { session } from "./payloads/session";
 import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
-import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
+import { getTransactions, getWallets, sessionToken, getValidWalletResponse } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
@@ -145,8 +145,7 @@ const pspList = getPspList();
 app.get(`/wallet/v1/psps`, (req, res) => {
   // wallet with id 22222 is the favourite one
   req.query.paymentType === "CREDIT_CARD";
-  // 3 id payment available to pay
- ["012345678912345678","012345678912345676","012345678912345673"].includes(req.query.idPayment) ;
+  req.query.idPayment === "ca7d9be4-7da1-442d-92c6-d403d7361f65";
   req.query.idWallet === "22222";
   res.json(pspList);
 });
@@ -196,6 +195,13 @@ app.delete(
   `/wallet/v1/payments/${paymentData.idPagamento}/actions/delete`,
   (_, res) => {
     res.status(200);
+  }
+);
+
+app.put(
+  `/wallet/v1/wallet/22222`,
+  (_, res) => {
+    res.json(getValidWalletResponse);
   }
 );
 

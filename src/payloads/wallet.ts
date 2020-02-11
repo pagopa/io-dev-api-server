@@ -6,6 +6,7 @@ import { TransactionListResponse } from "../../generated/definitions/pagopa/Tran
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
 import { validatePayload } from "../utils/validator";
+import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 
 export const sessionToken: SessionResponse = {
   data: {
@@ -16,14 +17,15 @@ export const sessionToken: SessionResponse = {
 
 export const getPsp = (locales: LinguaEnum.IT | LinguaEnum.EN): Psp => {
   return {
-    id: locales ===  LinguaEnum.IT ? 1713322 : 1713323,
+    id: locales === LinguaEnum.IT ? 1713322 : 1713323,
     idPsp: "UNCRITMM",
     businessName: "UniCredit S.p.A",
     paymentType: "CP",
     idIntermediary: "00348170101",
     idChannel: "00348170101_01_ONUS",
     logoPSP: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/psp/1713322",
-    serviceLogo: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/service/1713322",
+    serviceLogo:
+      "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/service/1713322",
     serviceName: "Pagamento con carte",
     fixedCost: {
       currency: "EUR",
@@ -31,13 +33,11 @@ export const getPsp = (locales: LinguaEnum.IT | LinguaEnum.EN): Psp => {
       decimalDigits: 2
     },
     appChannel: false,
-    tags: [
-      "VISA",
-      "MASTERCARD",
-      "MAESTRO"
-    ],
-    serviceDescription: "Il Servizio consente di effettuare pagamenti con carte emesse a valere sui circuiti VISA, MASTERCARD,MAESTRO",
-    serviceAvailability: "Il Servizio è disponibile on line h24, 7 giorni su 7. Sono consentite operazioni di pagamento fino ad un limite massimo di € 1000 ciascuna",
+    tags: ["VISA", "MASTERCARD", "MAESTRO"],
+    serviceDescription:
+      "Il Servizio consente di effettuare pagamenti con carte emesse a valere sui circuiti VISA, MASTERCARD,MAESTRO",
+    serviceAvailability:
+      "Il Servizio è disponibile on line h24, 7 giorni su 7. Sono consentite operazioni di pagamento fino ad un limite massimo di € 1000 ciascuna",
     urlInfoChannel: "https://www.unicredit.it/it/privati.html",
     paymentModel: 1,
     flagStamp: false,
@@ -45,8 +45,62 @@ export const getPsp = (locales: LinguaEnum.IT | LinguaEnum.EN): Psp => {
     lingua: locales,
     codiceAbi: "02008",
     isPspOnus: true
+  };
+};
+
+const walletResponse = {
+  data: {
+    idWallet: 38605,
+    type: "CREDIT_CARD",
+    favourite: false,
+    creditCard: {
+      id: 30573,
+      holder: "Alice Rossi",
+      pan: "************2505",
+      expireMonth: "12",
+      expireYear: "22",
+      brandLogo:
+        "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
+      flag3dsVerified: false,
+      brand: "MASTERCARD",
+      onUs: true
+    },
+    psp: {
+      id: 403321,
+      idPsp: "BCITITMM",
+      businessName: "Intesa Sanpaolo S.p.A",
+      paymentType: "CP",
+      idIntermediary: "00799960158",
+      idChannel: "00799960158_01_ONUS",
+      logoPSP:
+        "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/403321",
+      serviceLogo:
+        "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/403321",
+      serviceName: "Pagamento con Carte",
+      fixedCost: {
+        currency: "EUR",
+        amount: 50,
+        decimalDigits: 2
+      },
+      appChannel: false,
+      tags: ["VISA", "MASTERCARD"],
+      serviceDescription:
+        "Clienti e non delle Banche del Gruppo Intesa Sanpaolo possono disporre pagamenti con carte di pagamento VISA-MASTERCARD",
+      serviceAvailability: "7/7-24H",
+      paymentModel: 1,
+      flagStamp: true,
+      idCard: 437,
+      lingua: "IT",
+      codiceAbi: "03069",
+      isPspOnus: true
+    },
+    idPsp: 403321,
+    pspEditable: true,
+    isPspToIgnore: false
   }
-}
+};
+
+export const getValidWalletResponse : WalletResponse = validatePayload(WalletResponse, walletResponse);
 
 const validPsp = getPsp(LinguaEnum.EN);
 
@@ -95,7 +149,7 @@ export const getWallets = (): WalletListResponse => {
     idPsp: validPsp.id,
     pspEditable: true,
     lastUsage: new Date("2019-01-07T10:00:08Z")
-  }
+  };
 
   // FIXME - It is displayed as card!
   const WalletBank: Wallet = {
