@@ -3,10 +3,10 @@ import { CreatedMessageWithContent } from "../../generated/definitions/backend/C
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
+import { getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { IOResponse } from "./response";
-import { paymentData, getRandomNoticeNumber } from "./payment";
+import { paymentData, getNoticeNumber } from "./payment";
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -56,7 +56,7 @@ const createMessageWithContent = (
       due_date: date,
       payment_data: {
         amount: paymentData.importoSingoloVersamento,
-        notice_number: getRandomNoticeNumber()
+        notice_number: getNoticeNumber(amount !== undefined ? amount : 0)
       }
     },
     created_at: date,

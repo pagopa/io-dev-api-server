@@ -14,15 +14,15 @@ import {
 } from "./payloads/message";
 import { municipality } from "./payloads/municipality";
 import {
+  getPaymentActivationsGetResponse,
   getPaymentActivationsPostResponse,
   getPaymentRequestsGetResponse,
-  paymentData,
-  getPaymentActivationsGetResponse,
   getPaymentResponse,
   getPspList,
   getTransactionResponseFirst,
   getTransactionResponseSecond,
-  getPayResponse
+  getPayResponse,
+  paymentData
 } from "./payloads/payment";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
@@ -37,6 +37,7 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken, getValidWalletResponse } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
+import { settings } from "./settings";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -82,8 +83,8 @@ app.get("/ping", (_, res) => {
   res.send("ok");
 });
 
-export const services = getServices(10);
-export const messages = getMessageWithoutContentList(20, services, fiscalCode);
+export const services = getServices(settings.servicesNumber);
+export const messages = getMessageWithoutContentList(settings.messagesNumber, services, fiscalCode);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
   // all messages have a due date 1 month different from each other
@@ -92,7 +93,8 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
     fiscalCode,
     services[idx % services.length].service_id,
     msg.id,
-    dueDate
+    dueDate,
+    idx
   );
 });
 export const servicesTuple = getServicesTuple(services);

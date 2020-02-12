@@ -6,7 +6,6 @@ import { PaymentActivationsGetResponse } from "../../generated/definitions/backe
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
-import { RptId } from "../../generated/definitions/backend/RptId";
 import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definitions/backend/SpezzoneStrutturatoCausaleVersamento";
 import { validatePayload } from "../utils/validator";
 import { PaymentResponse } from "../../generated/definitions/pagopa/PaymentResponse";
@@ -15,20 +14,20 @@ import { PspListResponseCD as PspListResponse } from "../../generated/definition
 import { getPsp } from "./wallet";
 import { LinguaEnum } from "../../generated/definitions/pagopa/Psp";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
+import { settings } from "../settings";
 
-const noticeNumberAvailables = [
-  "012345678912345678",
-  "012345678912345677",
-  "012345678912345676",
-  "012345678912345675",
-  "012345678912345674",
-  "012345678912345673"
-];
+export const getNoticeNumber = (paymentNumber: number): string => {
+  const messageNumber = paymentNumber.toString();
+  const newStr = settings.baseNoticeNumber.substring(0, settings.baseNoticeNumber.length - messageNumber.length);
+  return newStr + messageNumber;
+}
 
 export const getRandomNoticeNumber = (): string => {
-  return noticeNumberAvailables[
-    Math.floor(Math.random() * noticeNumberAvailables.length)
-  ];
+  const randomNumber = Math.floor(Math.random() * settings.messagesNumber);
+  const messageNumber = randomNumber.toString();
+  const newStr = settings.baseNoticeNumber.substring(0, settings.baseNoticeNumber.length - messageNumber.length);
+
+  return newStr + messageNumber;
 }
 
 export const paymentData = {
@@ -171,9 +170,6 @@ export const transactionIdResponseSecond = {
     numAut: "431061"
   }
 };
-
-const rptId = RptId.decode(paymentData);
-const delocalizedAmount = "0.01";
 
 export const getPaymentRequestsGetResponse = () => {
   const data = {
