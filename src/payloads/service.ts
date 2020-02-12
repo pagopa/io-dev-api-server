@@ -32,7 +32,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     return {
       service_id: `0${idx}` as ServiceId,
       service_name: `servizio ${idx}` as ServiceName,
-      organization_name: "ente2" as OrganizationName,
+      organization_name: `ente 1` as OrganizationName,
       department_name: "dipartimento1" as DepartmentName,
       organization_fiscal_code: paymentData.organizationFiscalCode,
       version: 3
@@ -61,20 +61,16 @@ export const getServicesByScope = (
 ): IOResponse<ServicesByScope> => {
   // first half -> LOCAL
   // second half -> NATIONAL
-  const servicesByScope = { NATIONAL: Array<string>(), LOCAL: Array<string>() };
+  const servicesByScope = { LOCAL: Array<string>(), NATIONAL: Array<string>() };
   services.forEach((s, idx) => {
-    // tslint:disable-next-line: no-let
-    let serviceScope: ScopeEnum = ScopeEnum.NATIONAL;
-    if (idx + 1 <= services.length * 0.5) {
-      serviceScope = ScopeEnum.LOCAL;
+    if (idx + 1 <= services.length / 2) {
+      servicesByScope.LOCAL.push(s.service_id);
+    } else {
+      servicesByScope.NATIONAL.push(s.service_id);
     }
-    servicesByScope[serviceScope].push(s.service_id);
   });
   return {
-    payload: validatePayload(ServicesByScope, {
-      LOCAL: [],
-      NATIONAL: ["01"]
-    }),
+    payload: validatePayload(ServicesByScope, servicesByScope),
     isJson: true
   };
 };
@@ -90,7 +86,7 @@ export const getServiceMetadata = (
   let serviceScope: ScopeEnum = ScopeEnum.NATIONAL;
   // first half -> LOCAL
   // second half -> NATIONAL
-  if (serviceIndex + 1 <= services.items.length * 0.5) {
+  if (serviceIndex + 1 <= services.items.length / 2) {
     serviceScope = ScopeEnum.LOCAL;
   }
   const metaData: Service = {
