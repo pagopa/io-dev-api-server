@@ -5,7 +5,7 @@ type settings = {
 };
 
 export const settings: settings = {
-  messagesNumber: 10,
+  messagesNumber: 5,
   servicesNumber: 10,
   baseNoticeNumber: "012345678999999999"
 };

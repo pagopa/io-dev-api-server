@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
+import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
@@ -18,10 +19,10 @@ import {
   getPaymentActivationsPostResponse,
   getPaymentRequestsGetResponse,
   getPaymentResponse,
+  getPayResponse,
   getPspList,
   getTransactionResponseFirst,
   getTransactionResponseSecond,
-  getPayResponse,
   paymentData
 } from "./payloads/payment";
 import { getProfile } from "./payloads/profile";
@@ -35,9 +36,14 @@ import {
 import { session } from "./payloads/session";
 import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
-import { getTransactions, getWallets, sessionToken, getValidWalletResponse } from "./payloads/wallet";
-import { validatePayload } from "./utils/validator";
+import {
+  getTransactions,
+  getValidWalletResponse,
+  getWallets,
+  sessionToken
+} from "./payloads/wallet";
 import { settings } from "./settings";
+import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -47,12 +53,15 @@ const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 const app: Application = express();
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
+// app.use(delayer(1000 as Millisecond));
 
 // Create a temporany db
-const sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('db.db3');
-db.serialize(function() {  
-	db.run("CREATE TABLE IF NOT EXISTS payments (idTransaction TEXT PRIMARY KEY, status TEXT)");  
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("db.db3");
+db.serialize(() => {
+  db.run(
+    "CREATE TABLE IF NOT EXISTS payments (idTransaction TEXT PRIMARY KEY, status TEXT)"
+  );
 });
 
 // set middleware logging
@@ -84,7 +93,11 @@ app.get("/ping", (_, res) => {
 });
 
 export const services = getServices(settings.servicesNumber);
-export const messages = getMessageWithoutContentList(settings.messagesNumber, services, fiscalCode);
+export const messages = getMessageWithoutContentList(
+  settings.messagesNumber,
+  services,
+  fiscalCode
+);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
   // all messages have a due date 1 month different from each other
@@ -146,10 +159,15 @@ app.get(
 const pspList = getPspList();
 app.get(`/wallet/v1/psps`, (req, res) => {
   // wallet with id 22222 is the favourite one
-  req.query.paymentType === "CREDIT_CARD";
-  req.query.idPayment === "ca7d9be4-7da1-442d-92c6-d403d7361f65";
-  req.query.idWallet === "22222";
-  res.json(pspList);
+  if (
+    req.query.paymentType === "CREDIT_CARD" &&
+    req.query.idPayment === "ca7d9be4-7da1-442d-92c6-d403d7361f65" &&
+    req.query.idWallet === "22222"
+  ) {
+    res.json(pspList);
+  } else {
+    res.status(400);
+  }
 });
 
 const payRes = getPayResponse();
@@ -162,13 +180,14 @@ app.post(
 
 const transRespFirst = getTransactionResponseFirst();
 const transRespSecond = getTransactionResponseSecond();
-let statusTransaction = "";
+// tslint:disable-next-line: no-var-keyword
+var statusTransaction = "";
 app.get(`/wallet/v1/transactions/${payRes.data?.orderNumber}`, (_, res) => {
   // Check status transaction
-  db.serialize(function() {  
+  db.serialize(() => {
     db.all(
-      "SELECT * from payments WHERE idTransaction = " + payRes.data?.orderNumber,
-      function(err: any, rows: any) {
+      `SELECT * from payments WHERE idTransaction = ${payRes.data?.orderNumber}`,
+      (err: any, rows: any) => {
         if (err) {
           console.log(err);
         } else {
@@ -179,16 +198,17 @@ app.get(`/wallet/v1/transactions/${payRes.data?.orderNumber}`, (_, res) => {
       }
     );
   });
+
+  db.serialize(() => {
+    db.run(
+      `INSERT OR REPLACE INTO payments VALUES ('${payRes.data?.orderNumber}','${transRespFirst.data?.statusMessage}')`
+    );
+  });
+
   // Change response if not auth
   if (statusTransaction !== "Da autorizzare") {
-    db.serialize(function() {  
-      db.run("INSERT OR REPLACE INTO payments VALUES ('"+payRes.data?.orderNumber+"','"+transRespFirst.data?.statusMessage +"')");
-    });
     res.json(transRespFirst);
   } else {
-    db.serialize(function() {  
-      db.run("INSERT OR REPLACE INTO payments VALUES ('"+payRes.data?.orderNumber+"','"+transRespSecond.data?.statusMessage +"')");
-    });
     res.json(transRespSecond);
   }
 });
@@ -200,12 +220,9 @@ app.delete(
   }
 );
 
-app.put(
-  `/wallet/v1/wallet/22222`,
-  (_, res) => {
-    res.json(getValidWalletResponse);
-  }
-);
+app.put(`/wallet/v1/wallet/22222`, (_, res) => {
+  res.json(getValidWalletResponse);
+});
 
 /** static contents */
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {

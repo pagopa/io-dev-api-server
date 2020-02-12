@@ -7,28 +7,34 @@ import { PaymentActivationsPostResponse } from "../../generated/definitions/back
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definitions/backend/SpezzoneStrutturatoCausaleVersamento";
-import { validatePayload } from "../utils/validator";
-import { PaymentResponse } from "../../generated/definitions/pagopa/PaymentResponse";
 import { Payment } from "../../generated/definitions/pagopa/Payment";
-import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/PspListResponseCD";
-import { getPsp } from "./wallet";
+import { PaymentResponse } from "../../generated/definitions/pagopa/PaymentResponse";
 import { LinguaEnum } from "../../generated/definitions/pagopa/Psp";
+import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/PspListResponseCD";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 import { settings } from "../settings";
+import { validatePayload } from "../utils/validator";
+import { getPsp } from "./wallet";
 
 export const getNoticeNumber = (paymentNumber: number): string => {
   const messageNumber = paymentNumber.toString();
-  const newStr = settings.baseNoticeNumber.substring(0, settings.baseNoticeNumber.length - messageNumber.length);
+  const newStr = settings.baseNoticeNumber.substring(
+    0,
+    settings.baseNoticeNumber.length - messageNumber.length
+  );
   return newStr + messageNumber;
-}
+};
 
 export const getRandomNoticeNumber = (): string => {
   const randomNumber = Math.floor(Math.random() * settings.messagesNumber);
   const messageNumber = randomNumber.toString();
-  const newStr = settings.baseNoticeNumber.substring(0, settings.baseNoticeNumber.length - messageNumber.length);
+  const newStr = settings.baseNoticeNumber.substring(
+    0,
+    settings.baseNoticeNumber.length - messageNumber.length
+  );
 
   return newStr + messageNumber;
-}
+};
 
 export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
@@ -44,16 +50,17 @@ export const paymentData = {
   spezzoniCausaleVersamento: {
     spezzoneCausaleVersamento: "causale versamento di prova" as SpezzoneStrutturatoCausaleVersamento
   },
-  idPagamento:  "ca7d9be4-7da1-442d-92c6-d403d7361f65",
+  idPagamento: "ca7d9be4-7da1-442d-92c6-d403d7361f65",
   origin: "CITTADINANZA_DIGITALE",
   id: 12882164,
-  urlRedirectEc: "http://mespaprod.soluzionipa.it/pagamenti?idSession=118a22f4-86d4-42d8-992c-7aead5ac8ed3&idDominio=01199250158", // link su piattaforma ente,
-  psps: [getPsp(LinguaEnum.IT), getPsp(LinguaEnum.EN) ],
+  urlRedirectEc:
+    "http://mespaprod.soluzionipa.it/pagamenti?idSession=118a22f4-86d4-42d8-992c-7aead5ac8ed3&idDominio=01199250158", // link su piattaforma ente,
+  psps: [getPsp(LinguaEnum.IT), getPsp(LinguaEnum.EN)],
   amount: {
     amount: 1 as ImportoEuroCents, // = 1 eurocent,
     currency: "EUR",
     decimalDigits: 2
-}
+  }
 };
 
 // Response /actions/pay api
@@ -83,7 +90,8 @@ export const payResponse = {
       amount: 50,
       decimalDigits: 2
     },
-    urlCheckout3ds: "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0Nzk5Ng==",
+    urlCheckout3ds:
+      "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0Nzk5Ng==",
     paymentModel: 0,
     token: "NzA5MDA0Nzk5Ng==",
     idWallet: 38404,
@@ -189,44 +197,43 @@ export const getPaymentActivationsPostResponse = (): PaymentActivationsPostRespo
     importoSingoloVersamento: paymentData.importoSingoloVersamento,
     ibanAccredito: paymentData.ibanAccredito,
     causaleVersamento: paymentData.causaleVersamento,
-    enteBeneficiario: paymentData.enteBeneficiario 
+    enteBeneficiario: paymentData.enteBeneficiario
   };
   return validatePayload(PaymentActivationsPostResponse, data);
 };
 
 export const getPaymentActivationsGetResponse = (): PaymentActivationsGetResponse => {
-    const data = {
-        idPagamento: paymentData.idPagamento
-      };
-    return validatePayload(PaymentActivationsGetResponse, data)
-}
+  const data = {
+    idPagamento: paymentData.idPagamento
+  };
+  return validatePayload(PaymentActivationsGetResponse, data);
+};
 
-export const getPaymentResponse = (): PaymentResponse => {    
-    const payment: Payment = {
-        amount: paymentData.amount,
-        bolloDigitale: false,
-        fiscalCode: paymentData.organizationFiscalCode,
-        id: paymentData.id,
-        idPayment: paymentData.idPagamento,
-        isCancelled: true,
-        origin: paymentData.origin,
-        receiver: paymentData.enteBeneficiario.denominazioneBeneficiario,
-        subject: paymentData.causaleVersamento,
-        urlRedirectEc: paymentData.urlRedirectEc
-    };
+export const getPaymentResponse = (): PaymentResponse => {
+  const payment: Payment = {
+    amount: paymentData.amount,
+    bolloDigitale: false,
+    fiscalCode: paymentData.organizationFiscalCode,
+    id: paymentData.id,
+    idPayment: paymentData.idPagamento,
+    isCancelled: true,
+    origin: paymentData.origin,
+    receiver: paymentData.enteBeneficiario.denominazioneBeneficiario,
+    subject: paymentData.causaleVersamento,
+    urlRedirectEc: paymentData.urlRedirectEc
+  };
 
-    const data: PaymentResponse = {
-        data: payment
-    };
-    return validatePayload(PaymentResponse, data)
-}
+  const data: PaymentResponse = {
+    data: payment
+  };
+  return validatePayload(PaymentResponse, data);
+};
 
 export const getPspList = () => {
   const data: PspListResponse = {
-      data: paymentData.psps
+    data: paymentData.psps
   };
   return validatePayload(PspListResponse, data);
-  
 };
 
 export const getPayResponse = () => {
