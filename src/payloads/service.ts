@@ -1,3 +1,4 @@
+import { range } from "fp-ts/lib/Array";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
@@ -11,8 +12,8 @@ import {
 } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
-import { IOResponse } from "./response";
 import { paymentData } from "./payment";
+import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
   const service = {
@@ -27,34 +28,16 @@ export const getService = (serviceId: string): ServicePublic => {
 };
 
 export const getServices = (count: number): readonly ServicePublic[] => {
-  const mockedService1: ServicePublic = validatePayload(ServicePublic, {
-    service_id: "01" as ServiceId,
-    service_name: "servizio1.3" as ServiceName,
-    organization_name: "ente2" as OrganizationName,
-    department_name: "dipartimento1" as DepartmentName,
-    organization_fiscal_code: paymentData.organizationFiscalCode,
-    version: 3
+  return range(1, count).map((idx: number) => {
+    return {
+      service_id: `0${idx}` as ServiceId,
+      service_name: `servizio ${idx}` as ServiceName,
+      organization_name: "ente2" as OrganizationName,
+      department_name: "dipartimento1" as DepartmentName,
+      organization_fiscal_code: paymentData.organizationFiscalCode,
+      version: 3
+    };
   });
-
-  const mockedService2: ServicePublic = {
-    service_id: "02" as ServiceId,
-    service_name: "servizio2" as ServiceName,
-    organization_name: "ente1 - nuovo nome" as OrganizationName,
-    department_name: "dipartimento1" as DepartmentName,
-    organization_fiscal_code: paymentData.organizationFiscalCode,
-    version: 2
-  };
-
-  const mockedService3: ServicePublic = {
-    service_id: "03" as ServiceId,
-    service_name: "servizio3" as ServiceName,
-    organization_name: "ente1" as OrganizationName,
-    department_name: "dipartimento1" as DepartmentName,
-    organization_fiscal_code: paymentData.organizationFiscalCode,
-    version: 2
-  };
-
-  return [mockedService1];
 };
 
 export const getServicesTuple = (
