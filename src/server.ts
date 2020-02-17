@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
-import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
@@ -40,10 +39,14 @@ import {
   getTransactions,
   getValidWalletResponse,
   getWallets,
-  sessionToken
+  sessionToken,
+  getValidWalletCCResponse,
+  getValidActionPayCC
 } from "./payloads/wallet";
 import { settings } from "./settings";
 import { validatePayload } from "./utils/validator";
+import { delayer } from "./utils/delay_middleware";
+import { Millisecond } from "italia-ts-commons/lib/units";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -53,7 +56,7 @@ const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 const app: Application = express();
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
-// app.use(delayer(1000 as Millisecond));
+// app.use(delayer(3000 as Millisecond));
 
 // Create a temporany db
 const sqlite3 = require("sqlite3").verbose();
@@ -125,6 +128,15 @@ app.get("/wallet/v1/wallet", (_, res) => {
 });
 app.get("/wallet/v1/transactions", (_, res) => {
   res.json(transactions);
+});
+
+// API called when a new card is added
+app.post("/wallet/v1/wallet/cc", (_, res) => {
+  res.json(getValidWalletCCResponse);
+});
+
+app.post("/wallet/v1/payments/cc/actions/pay", (_, res) => {
+  res.json(getValidActionPayCC);
 });
 
 /** payment content */

@@ -7,6 +7,7 @@ import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
 import { validatePayload } from "../utils/validator";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
+import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 
 export const sessionToken: SessionResponse = {
   data: {
@@ -100,7 +101,112 @@ const walletResponse = {
   }
 };
 
-export const getValidWalletResponse : WalletResponse = validatePayload(WalletResponse, walletResponse);
+export const getValidWalletResponse: WalletResponse = validatePayload(
+  WalletResponse,
+  walletResponse
+);
+
+
+const walletCCResponse = {
+  data: {
+    idWallet: 38861,
+    type: "CREDIT_CARD",
+    favourite: false,
+    creditCard: {
+      id: 30757,
+      holder: "Maria Rossa",
+      pan: "************0031",
+      expireMonth: "12",
+      expireYear: "23",
+      brandLogo: "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
+      flag3dsVerified: false,
+      brand: "MASTERCARD",
+      onUs: true
+    },
+    psp: {
+      id: 406309,
+      idPsp: "CIPBITMM",
+      businessName: "Nexi",
+      paymentType: "CP",
+      idIntermediary: "13212880150",
+      idChannel: "13212880150_02_ONUS",
+      logoPSP: "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406309",
+      serviceLogo: "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406309",
+      serviceName: "Pagamento con carta",
+      fixedCost: {
+        currency: "EUR",
+        amount: 100,
+        decimalDigits: 2
+      },
+      appChannel: false,
+      tags: [
+        "VISA",
+        "MASTERCARD",
+        "MAESTRO",
+        "VISA_ELECTRON"
+      ],
+      serviceDescription: "Il Servizio consente di eseguire pagamenti a favore delle PA con carte Nexi sui circuiti Visa, VPAY, Mastercard e Maestro.",
+      serviceAvailability: "24 ore su 24, 7 giorni su 7",
+      urlInfoChannel: "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=ita",
+      paymentModel: 1,
+      flagStamp: false,
+      idCard: 541,
+      lingua: "IT",
+      codiceAbi: "05000",
+      isPspOnus: true
+    },
+    idPsp: 406309,
+    pspEditable: true,
+    isPspToIgnore: false
+  }
+};
+
+export const getValidWalletCCResponse: WalletResponse = validatePayload(
+  WalletResponse,
+  walletCCResponse
+);
+
+
+const walletCCActionsPay = {
+  data: {
+    id: 7090048346,
+    created: "2020-02-14T10:27:14Z",
+    updated: "2020-02-14T10:27:14Z",
+    amount: {
+      currency: "EUR",
+      amount: 1,
+      decimalDigits: 2
+    },
+    grandTotal: {
+      currency: "EUR",
+      amount: 2,
+      decimalDigits: 2
+    },
+    description: "SET_SUBJECT",
+    merchant: "",
+    idStatus: 0,
+    statusMessage: "Da autorizzare",
+    error: false,
+    success: false,
+    fee: {
+      currency: "EUR",
+      amount: 100,
+      decimalDigits: 2
+    },
+    urlCheckout3ds: "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0ODM0Ng==",
+    paymentModel: 0,
+    token: "NzA5MDA0ODM0Ng==",
+    idWallet: 38861,
+    idPsp: 406309,
+    idPayment: 71692,
+    nodoIdPayment: "3fd36e66-edd5-42a1-a1fb-b933bcdb3a84",
+    orderNumber: 7090048346
+  }
+};
+
+export const getValidActionPayCC = () => {
+  return validatePayload(TransactionResponse, walletCCActionsPay);
+};
 
 const validPsp = getPsp(LinguaEnum.EN);
 
