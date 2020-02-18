@@ -2,6 +2,8 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
+import ip from "ip";
+import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
@@ -37,17 +39,16 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import {
   getTransactions,
+  getValidActionPayCC,
+  getValidFavouriteResponse,
+  getValidWalletCCResponse,
   getValidWalletResponse,
   getWallets,
-  sessionToken,
-  getValidWalletCCResponse,
-  getValidActionPayCC,
-  getValidFavouriteResponse
+  sessionToken
 } from "./payloads/wallet";
 import { settings } from "./settings";
-import { validatePayload } from "./utils/validator";
 import { delayer } from "./utils/delay_middleware";
-import { Millisecond } from "italia-ts-commons/lib/units";
+import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -142,6 +143,21 @@ app.post("/wallet/v1/payments/cc/actions/pay", (_, res) => {
 
 app.post("/wallet/v1/wallet/:id_card/actions/favourite", (req, res) => {
   res.json(getValidFavouriteResponse(Number(req.params.id_card)));
+});
+
+app.get("/wallet/checkout", (_, res) => {
+  // In query string we have
+  // id = NzA5MDA0ODM0Ng==
+  // sessionToken = 3m3Q2h6e8T5w9t3W8b8y1F4t2m6Q9b8d9N6h1f2H2u0g6E7m9d9E3g7w3T3b5a7I4c4h6U4n2b3Z4p3j8D6p4a5G1c4a8K3o0v8P7e0j6R5i1y2J6d0c7N9i6m0U3j9z
+  res.redirect(`http://${ip.address()}:${settings.serverPort}/wallet/result?id=7090048555&authorizationCode=00`);
+});
+
+app.get("/wallet/result", (_, res) => {
+  res.redirect(`http://${ip.address()}:${settings.serverPort}/wallet/loginMethod`);
+});
+
+app.get("/wallet/loginMethod", (_, res) => {
+  res.status(200).send("ok");
 });
 
 /** payment content */

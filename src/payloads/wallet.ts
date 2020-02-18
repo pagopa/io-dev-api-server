@@ -1,13 +1,15 @@
 import { range } from "fp-ts/lib/Array";
+import ip from "ip";
 import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
-import { Psp, LinguaEnum } from "../../generated/definitions/pagopa/Psp";
+import { LinguaEnum, Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
+import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
-import { validatePayload } from "../utils/validator";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
-import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
+import { validatePayload } from "../utils/validator";
+import { settings } from "../settings";
 
 export const sessionToken: SessionResponse = {
   data: {
@@ -248,8 +250,7 @@ const walletCCActionsPay = {
       amount: 100,
       decimalDigits: 2
     },
-    urlCheckout3ds:
-      "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0ODM0Ng==",
+    urlCheckout3ds: `http://${ip.address()}:${settings.serverPort}/wallet/checkout?id=NzA5MDA0ODM0Ng==`,
     paymentModel: 0,
     token: "NzA5MDA0ODM0Ng==",
     idWallet: 38861,
