@@ -41,7 +41,8 @@ import {
   getWallets,
   sessionToken,
   getValidWalletCCResponse,
-  getValidActionPayCC
+  getValidActionPayCC,
+  getValidFavouriteResponse
 } from "./payloads/wallet";
 import { settings } from "./settings";
 import { validatePayload } from "./utils/validator";
@@ -137,6 +138,10 @@ app.post("/wallet/v1/wallet/cc", (_, res) => {
 
 app.post("/wallet/v1/payments/cc/actions/pay", (_, res) => {
   res.json(getValidActionPayCC);
+});
+
+app.post("/wallet/v1/wallet/:id_card/actions/favourite", (req, res) => {
+  res.json(getValidFavouriteResponse(Number(req.params.id_card)));
 });
 
 /** payment content */

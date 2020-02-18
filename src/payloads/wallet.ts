@@ -106,6 +106,62 @@ export const getValidWalletResponse: WalletResponse = validatePayload(
   walletResponse
 );
 
+const walletFavouriteResponse = (idCard: number) => {
+  return {
+    data: {
+      idWallet: idCard,
+      type: "CREDIT_CARD",
+      favourite: true,
+      creditCard: {
+        id: 30573,
+        holder: "Alice Rossi",
+        pan: "************2505",
+        expireMonth: "12",
+        expireYear: "22",
+        brandLogo:
+          "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
+        flag3dsVerified: false,
+        brand: "MASTERCARD",
+        onUs: true
+      },
+      psp: {
+        id: 403321,
+        idPsp: "BCITITMM",
+        businessName: "Intesa Sanpaolo S.p.A",
+        paymentType: "CP",
+        idIntermediary: "00799960158",
+        idChannel: "00799960158_01_ONUS",
+        logoPSP:
+          "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/403321",
+        serviceLogo:
+          "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/403321",
+        serviceName: "Pagamento con Carte",
+        fixedCost: {
+          currency: "EUR",
+          amount: 50,
+          decimalDigits: 2
+        },
+        appChannel: false,
+        tags: ["VISA", "MASTERCARD"],
+        serviceDescription:
+          "Clienti e non delle Banche del Gruppo Intesa Sanpaolo possono disporre pagamenti con carte di pagamento VISA-MASTERCARD",
+        serviceAvailability: "7/7-24H",
+        paymentModel: 1,
+        flagStamp: true,
+        idCard: 437,
+        lingua: "IT",
+        codiceAbi: "03069",
+        isPspOnus: true
+      },
+      idPsp: 403321,
+      pspEditable: true,
+      isPspToIgnore: false
+    }
+  };
+};
+
+export const getValidFavouriteResponse = (idCard: number): WalletResponse =>
+  validatePayload(WalletResponse, walletFavouriteResponse(idCard));
 
 const walletCCResponse = {
   data: {
@@ -118,7 +174,8 @@ const walletCCResponse = {
       pan: "************0031",
       expireMonth: "12",
       expireYear: "23",
-      brandLogo: "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
+      brandLogo:
+        "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
       flag3dsVerified: false,
       brand: "MASTERCARD",
       onUs: true
@@ -130,8 +187,10 @@ const walletCCResponse = {
       paymentType: "CP",
       idIntermediary: "13212880150",
       idChannel: "13212880150_02_ONUS",
-      logoPSP: "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406309",
-      serviceLogo: "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406309",
+      logoPSP:
+        "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406309",
+      serviceLogo:
+        "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406309",
       serviceName: "Pagamento con carta",
       fixedCost: {
         currency: "EUR",
@@ -139,15 +198,12 @@ const walletCCResponse = {
         decimalDigits: 2
       },
       appChannel: false,
-      tags: [
-        "VISA",
-        "MASTERCARD",
-        "MAESTRO",
-        "VISA_ELECTRON"
-      ],
-      serviceDescription: "Il Servizio consente di eseguire pagamenti a favore delle PA con carte Nexi sui circuiti Visa, VPAY, Mastercard e Maestro.",
+      tags: ["VISA", "MASTERCARD", "MAESTRO", "VISA_ELECTRON"],
+      serviceDescription:
+        "Il Servizio consente di eseguire pagamenti a favore delle PA con carte Nexi sui circuiti Visa, VPAY, Mastercard e Maestro.",
       serviceAvailability: "24 ore su 24, 7 giorni su 7",
-      urlInfoChannel: "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=ita",
+      urlInfoChannel:
+        "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=ita",
       paymentModel: 1,
       flagStamp: false,
       idCard: 541,
@@ -165,7 +221,6 @@ export const getValidWalletCCResponse: WalletResponse = validatePayload(
   WalletResponse,
   walletCCResponse
 );
-
 
 const walletCCActionsPay = {
   data: {
@@ -193,7 +248,8 @@ const walletCCActionsPay = {
       amount: 100,
       decimalDigits: 2
     },
-    urlCheckout3ds: "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0ODM0Ng==",
+    urlCheckout3ds:
+      "https://acardste.vaservices.eu/wallet/checkout?id=NzA5MDA0ODM0Ng==",
     paymentModel: 0,
     token: "NzA5MDA0ODM0Ng==",
     idWallet: 38861,
@@ -204,9 +260,10 @@ const walletCCActionsPay = {
   }
 };
 
-export const getValidActionPayCC = () => {
-  return validatePayload(TransactionResponse, walletCCActionsPay);
-};
+export const getValidActionPayCC: TransactionResponse = validatePayload(
+  TransactionResponse,
+  walletCCActionsPay
+);
 
 const validPsp = getPsp(LinguaEnum.EN);
 
