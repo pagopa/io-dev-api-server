@@ -3,10 +3,12 @@ import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
 import ip from "ip";
-import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
+import { LocalStorage } from "node-localstorage";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
+import { Wallet } from "../generated/definitions/pagopa/Wallet";
+import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
 import { backendInfo } from "./payloads/backend";
 import { notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -20,11 +22,14 @@ import {
   getPaymentActivationsPostResponse,
   getPaymentRequestsGetResponse,
   getPaymentResponse,
+  getPaymentStatus,
   getPayResponse,
   getPspList,
   getTransactionResponseFirst,
   getTransactionResponseSecond,
-  paymentData
+  paymentData,
+  setPayment,
+  getValidPsp
 } from "./payloads/payment";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
@@ -43,11 +48,11 @@ import {
   getValidFavouriteResponse,
   getValidWalletCCResponse,
   getValidWalletResponse,
-  getWallets,
+  getWallet,
+  getWalletArray,
   sessionToken
 } from "./payloads/wallet";
-import { settings } from "./settings";
-import { delayer } from "./utils/delay_middleware";
+import { paymentItem, settings } from "./settings";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
@@ -60,14 +65,23 @@ const app: Application = express();
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 // app.use(delayer(3000 as Millisecond));
 
-// Create a temporany db
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("db.db3");
-db.serialize(() => {
-  db.run(
-    "CREATE TABLE IF NOT EXISTS payments (idTransaction TEXT PRIMARY KEY, status TEXT)"
-  );
-});
+// localStorage settings and method
+const localStorage = new LocalStorage("./scratch");
+
+/**
+ * Wallets
+ */
+
+// tslint:disable-next-line: readonly-array
+const wallets: Wallet[] = [getWallet(1111), getWallet(2222)];
+
+localStorage.setItem("wallets", JSON.stringify({ wallets }));
+
+/**
+ * Payments
+ */
+
+localStorage.setItem("payments", JSON.stringify({ payments: [] }));
 
 // set middleware logging
 app.use(
@@ -120,25 +134,69 @@ export const servicesByScope = getServicesByScope(services);
 export const staticContentRootPath = "/static_contents";
 
 /** wallet content */
-export const wallets = getWallets();
 export const transactions = getTransactions(5);
+
 app.get("/wallet/v1/users/actions/start-session", (_, res) => {
   res.json(sessionToken);
 });
+
 app.get("/wallet/v1/wallet", (_, res) => {
-  res.json(wallets);
+  const data = {
+    data: getWalletArray()
+  };
+  res.json(validatePayload(WalletListResponse, data));
 });
+
+// the id card 2222 doesn't can be deleted
+app.delete("/wallet/v1/wallet/:id_card", (req, res) => {
+  if (req.params.id_card !== "2222") {
+    // tslint:disable-next-line: readonly-array
+    const data: Wallet[] = getWalletArray();
+    const itemToRemove = data.filter((element: Wallet) => {
+      return `${element.idWallet}` === req.params.id_card;
+    });
+    if (itemToRemove.length !== 0) {
+      const indexOfItemToRemove = data.indexOf(itemToRemove[0]);
+      if (data.splice(indexOfItemToRemove, 1)) {
+        localStorage.setItem("wallets", JSON.stringify({ wallets: data }));
+        res.status(200).send("ok");
+        return;
+      } else {
+        res.status(404).send("i can't delete this item");
+      }
+    } else {
+      res.status(404).send("item not found");
+    }
+  } else {
+    res.status(404).send("error");
+  }
+});
+
 app.get("/wallet/v1/transactions", (_, res) => {
   res.json(transactions);
 });
 
 // API called when a new card is added
-app.post("/wallet/v1/wallet/cc", (_, res) => {
-  res.json(getValidWalletCCResponse);
+app.post("/wallet/v1/wallet/cc", (req, res) => {
+  const data = getWalletArray();
+  const pan = req.body.data.creditCard.pan;
+  const endPan = pan.substr(pan.length - 4);
+  // tslint:disable-next-line: radix
+  const idWallet = parseInt(endPan);
+  const holder = req.body.data.creditCard.holder;
+  const expireMonth = req.body.data.creditCard.expireMonth;
+  const expireYear = req.body.data.creditCard.expireYear;
+  // tslint:disable-next-line: restrict-plus-operands
+  data.push(getWallet(idWallet, holder, expireMonth, expireYear));
+  localStorage.setItem("wallets", JSON.stringify({ wallets: data }));
+
+  res.json(getValidWalletCCResponse(idWallet));
 });
 
-app.post("/wallet/v1/payments/cc/actions/pay", (_, res) => {
-  res.json(getValidActionPayCC);
+app.post("/wallet/v1/payments/cc/actions/pay", (req, res) => {
+  const idWallet: number = req.body.data.idWallet;
+  // tslint:disable-next-line: restrict-plus-operands
+  res.json(getValidActionPayCC(idWallet));
 });
 
 app.post("/wallet/v1/wallet/:id_card/actions/favourite", (req, res) => {
@@ -149,11 +207,17 @@ app.get("/wallet/checkout", (_, res) => {
   // In query string we have
   // id = NzA5MDA0ODM0Ng==
   // sessionToken = 3m3Q2h6e8T5w9t3W8b8y1F4t2m6Q9b8d9N6h1f2H2u0g6E7m9d9E3g7w3T3b5a7I4c4h6U4n2b3Z4p3j8D6p4a5G1c4a8K3o0v8P7e0j6R5i1y2J6d0c7N9i6m0U3j9z
-  res.redirect(`http://${ip.address()}:${settings.serverPort}/wallet/result?id=7090048555&authorizationCode=00`);
+  res.redirect(
+    `http://${ip.address()}:${
+      settings.serverPort
+    }/wallet/result?id=7090048555&authorizationCode=00`
+  );
 });
 
 app.get("/wallet/result", (_, res) => {
-  res.redirect(`http://${ip.address()}:${settings.serverPort}/wallet/loginMethod`);
+  res.redirect(
+    `http://${ip.address()}:${settings.serverPort}/wallet/loginMethod`
+  );
 });
 
 app.get("/wallet/loginMethod", (_, res) => {
@@ -191,16 +255,22 @@ app.get(
 
 const pspList = getPspList();
 app.get(`/wallet/v1/psps`, (req, res) => {
-  // wallet with id 22222 is the favourite one
+  // wallet with id 2222 is the favourite one
+  // for create tests case with result 400
   if (
     req.query.paymentType === "CREDIT_CARD" &&
     req.query.idPayment === "ca7d9be4-7da1-442d-92c6-d403d7361f65" &&
-    req.query.idWallet === "22222"
+    req.query.idWallet === "2222"
   ) {
     res.json(pspList);
   } else {
     res.status(400);
   }
+});
+
+app.get(`/wallet/v1/psps/:id_transaction`, (req, res) => {
+  const id = parseInt(req.params.id_transaction);
+  res.json(getValidPsp(id));
 });
 
 const payRes = getPayResponse();
@@ -213,31 +283,11 @@ app.post(
 
 const transRespFirst = getTransactionResponseFirst();
 const transRespSecond = getTransactionResponseSecond();
-// tslint:disable-next-line: no-var-keyword
-var statusTransaction = "";
+
 app.get(`/wallet/v1/transactions/${payRes.data?.orderNumber}`, (_, res) => {
   // Check status transaction
-  db.serialize(() => {
-    db.all(
-      `SELECT * from payments WHERE idTransaction = ${payRes.data?.orderNumber}`,
-      (err: any, rows: any) => {
-        if (err) {
-          console.log(err);
-        } else {
-          if (rows.length > 0) {
-            statusTransaction = rows[0].status;
-          }
-        }
-      }
-    );
-  });
-
-  db.serialize(() => {
-    db.run(
-      `INSERT OR REPLACE INTO payments VALUES ('${payRes.data?.orderNumber}','${transRespFirst.data?.statusMessage}')`
-    );
-  });
-
+  const statusTransaction = getPaymentStatus(payRes.data?.orderNumber);
+  setPayment(payRes.data?.orderNumber, transRespFirst.data?.statusMessage);
   // Change response if not auth
   if (statusTransaction !== "Da autorizzare") {
     res.json(transRespFirst);
@@ -246,14 +296,11 @@ app.get(`/wallet/v1/transactions/${payRes.data?.orderNumber}`, (_, res) => {
   }
 });
 
-app.delete(
-  `/wallet/v1/payments/${paymentData.idPagamento}/actions/delete`,
-  (_, res) => {
-    res.status(200);
-  }
-);
+app.delete(`/wallet/v1/payments/:id_pagamento/actions/delete`, (_, res) => {
+  res.status(200).send("ok");
+});
 
-app.put(`/wallet/v1/wallet/22222`, (_, res) => {
+app.put(`/wallet/v1/wallet/2222`, (_, res) => {
   res.json(getValidWalletResponse);
 });
 

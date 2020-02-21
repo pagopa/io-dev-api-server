@@ -11,3 +11,8 @@ export const settings: settings = {
   baseNoticeNumber: "012345678999999999",
   serverPort: 3000
 };
+
+export type paymentItem = {
+  idTransaction: number;
+  status: string;
+};

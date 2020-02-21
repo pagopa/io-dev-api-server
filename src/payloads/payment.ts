@@ -1,4 +1,5 @@
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
+import { LocalStorage } from "node-localstorage";
 import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
@@ -11,8 +12,9 @@ import { Payment } from "../../generated/definitions/pagopa/Payment";
 import { PaymentResponse } from "../../generated/definitions/pagopa/PaymentResponse";
 import { LinguaEnum } from "../../generated/definitions/pagopa/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/PspListResponseCD";
+import { PspResponse } from "../../generated/definitions/pagopa/PspResponse";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
-import { settings } from "../settings";
+import { paymentItem, settings } from "../settings";
 import { validatePayload } from "../utils/validator";
 import { getPsp } from "./wallet";
 
@@ -61,6 +63,45 @@ export const paymentData = {
     currency: "EUR",
     decimalDigits: 2
   }
+};
+
+export const getValidPsp = (idPsp: number): PspResponse => {
+  const psp = {
+    data: {
+      "id": idPsp,
+      idPsp: "CIPBITMM",
+      businessName: "Nexi",
+      paymentType: "CP",
+      idIntermediary: "13212880150",
+      idChannel: "13212880150_02_ONUS",
+      logoPSP: "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406319",
+      serviceLogo: "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406319",
+      serviceName: "Pagamento con carta",
+      fixedCost: {
+        currency: "EUR",
+        amount: 250,
+        decimalDigits: 2
+      },
+      appChannel: false,
+      tags: [
+        "VISA",
+        "MASTERCARD",
+        "MAESTRO",
+        "VISA_ELECTRON"
+      ],
+      serviceDescription: "The service allows you to make payments to the PA using Nexi cards on the Visa, VPAY, Mastercard and Maestro channels.",
+      serviceAvailability: "Operating 24 hours a day, seven days a week",
+      urlInfoChannel: "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=eng",
+      paymentModel: 1,
+      flagStamp: false,
+      idCard: 551,
+      lingua: "EN",
+      codiceAbi: "05000",
+      isPspOnus: true
+    }
+  };
+
+  return validatePayload(PspResponse, psp);
 };
 
 // Response /actions/pay api
@@ -246,4 +287,49 @@ export const getTransactionResponseFirst = () => {
 
 export const getTransactionResponseSecond = () => {
   return validatePayload(TransactionResponse, transactionIdResponseSecond);
+};
+
+// tslint:disable-next-line: readonly-array
+export const getPaymentsArray = (): paymentItem[] => {
+  const localStorage = new LocalStorage("./scratch");
+  const paymentsStorage = localStorage.getItem("payments");
+  const paymentsArray =
+    paymentsStorage !== null ? JSON.parse(paymentsStorage) : { payments: [] };
+  return paymentsArray.payments;
+};
+
+export const getPaymentStatus = (idTransaction: number | undefined): string => {
+  if (idTransaction === undefined) {
+    return "";
+  }
+  const payments = getPaymentsArray();
+  const mPayment = payments.filter(p => {
+    return p.idTransaction === idTransaction;
+  });
+  return mPayment.length > 0
+    ? mPayment[0].status !== undefined
+      ? mPayment[0].status
+      : ""
+    : "";
+};
+
+export const setPayment = (
+  idTransaction: number | undefined,
+  status: string | undefined
+) => {
+  if (idTransaction !== undefined) {
+    const payments = getPaymentsArray();
+    const payment: paymentItem = {
+      idTransaction,
+      status: status !== undefined ? status : ""
+    };
+    const alreadyExist = payments.filter(p => {
+      return p.idTransaction === idTransaction;
+    });
+    if (alreadyExist[0] === undefined || alreadyExist.length < 1) {
+      payments.push(payment);
+      const localStorage = new LocalStorage("./scratch");
+      localStorage.setItem("payments", JSON.stringify({ payments }));
+    }
+  }
 };

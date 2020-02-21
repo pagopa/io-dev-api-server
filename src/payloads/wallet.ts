@@ -1,15 +1,15 @@
 import { range } from "fp-ts/lib/Array";
 import ip from "ip";
+import { LocalStorage } from "node-localstorage";
 import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
 import { LinguaEnum, Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
-import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
-import { validatePayload } from "../utils/validator";
 import { settings } from "../settings";
+import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
   data: {
@@ -165,172 +165,171 @@ const walletFavouriteResponse = (idCard: number) => {
 export const getValidFavouriteResponse = (idCard: number): WalletResponse =>
   validatePayload(WalletResponse, walletFavouriteResponse(idCard));
 
-const walletCCResponse = {
-  data: {
-    idWallet: 38861,
-    type: "CREDIT_CARD",
-    favourite: false,
-    creditCard: {
-      id: 30757,
-      holder: "Maria Rossa",
-      pan: "************0031",
-      expireMonth: "12",
-      expireYear: "23",
-      brandLogo:
-        "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
-      flag3dsVerified: false,
-      brand: "MASTERCARD",
-      onUs: true
-    },
-    psp: {
-      id: 406309,
-      idPsp: "CIPBITMM",
-      businessName: "Nexi",
-      paymentType: "CP",
-      idIntermediary: "13212880150",
-      idChannel: "13212880150_02_ONUS",
-      logoPSP:
-        "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406309",
-      serviceLogo:
-        "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406309",
-      serviceName: "Pagamento con carta",
-      fixedCost: {
+export const getValidWalletCCResponse = (idWallet: number): WalletResponse => {
+  const walletCCResponse = {
+    data: {
+      idWallet,
+      type: "CREDIT_CARD",
+      favourite: false,
+      creditCard: {
+        id: 30757,
+        holder: "Mario Rossi",
+        pan: `************${idWallet}`,
+        expireMonth: "05",
+        expireYear: "22",
+        brandLogo:
+          "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
+        flag3dsVerified: false,
+        brand: "MASTERCARD",
+        onUs: true
+      },
+      psp: {
+        id: 406309,
+        idPsp: "CIPBITMM",
+        businessName: "Nexi",
+        paymentType: "CP",
+        idIntermediary: "13212880150",
+        idChannel: "13212880150_02_ONUS",
+        logoPSP:
+          "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406309",
+        serviceLogo:
+          "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406309",
+        serviceName: "Pagamento con carta",
+        fixedCost: {
+          currency: "EUR",
+          amount: 100,
+          decimalDigits: 2
+        },
+        appChannel: false,
+        tags: ["VISA", "MASTERCARD", "MAESTRO", "VISA_ELECTRON"],
+        serviceDescription:
+          "Il Servizio consente di eseguire pagamenti a favore delle PA con carte Nexi sui circuiti Visa, VPAY, Mastercard e Maestro.",
+        serviceAvailability: "24 ore su 24, 7 giorni su 7",
+        urlInfoChannel:
+          "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=ita",
+        paymentModel: 1,
+        flagStamp: false,
+        idCard: 541,
+        lingua: "IT",
+        codiceAbi: "05000",
+        isPspOnus: true
+      },
+      idPsp: 406309,
+      pspEditable: true,
+      isPspToIgnore: false
+    }
+  };
+  return validatePayload(WalletResponse, walletCCResponse);
+};
+export const getValidActionPayCC = (idWallet: number): TransactionResponse => {
+  const walletCCActionsPay = {
+    data: {
+      id: 7090048346,
+      created: "2020-02-14T10:27:14Z",
+      updated: "2020-02-14T10:27:14Z",
+      amount: {
+        currency: "EUR",
+        amount: 1,
+        decimalDigits: 2
+      },
+      grandTotal: {
+        currency: "EUR",
+        amount: 2,
+        decimalDigits: 2
+      },
+      description: "SET_SUBJECT",
+      merchant: "",
+      idStatus: 0,
+      statusMessage: "Da autorizzare",
+      error: false,
+      success: false,
+      fee: {
         currency: "EUR",
         amount: 100,
         decimalDigits: 2
       },
-      appChannel: false,
-      tags: ["VISA", "MASTERCARD", "MAESTRO", "VISA_ELECTRON"],
-      serviceDescription:
-        "Il Servizio consente di eseguire pagamenti a favore delle PA con carte Nexi sui circuiti Visa, VPAY, Mastercard e Maestro.",
-      serviceAvailability: "24 ore su 24, 7 giorni su 7",
-      urlInfoChannel:
-        "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=ita",
-      paymentModel: 1,
-      flagStamp: false,
-      idCard: 541,
-      lingua: "IT",
-      codiceAbi: "05000",
-      isPspOnus: true
-    },
-    idPsp: 406309,
-    pspEditable: true,
-    isPspToIgnore: false
-  }
+      urlCheckout3ds: `http://${ip.address()}:${
+        settings.serverPort
+      }/wallet/checkout?id=NzA5MDA0ODM0Ng==`,
+      paymentModel: 0,
+      token: "NzA5MDA0ODM0Ng==",
+      idWallet,
+      idPsp: 406309,
+      idPayment: 71692,
+      nodoIdPayment: "3fd36e66-edd5-42a1-a1fb-b933bcdb3a84",
+      orderNumber: 7090048346
+    }
+  };
+
+  return validatePayload(TransactionResponse, walletCCActionsPay);
 };
-
-export const getValidWalletCCResponse: WalletResponse = validatePayload(
-  WalletResponse,
-  walletCCResponse
-);
-
-const walletCCActionsPay = {
-  data: {
-    id: 7090048346,
-    created: "2020-02-14T10:27:14Z",
-    updated: "2020-02-14T10:27:14Z",
-    amount: {
-      currency: "EUR",
-      amount: 1,
-      decimalDigits: 2
-    },
-    grandTotal: {
-      currency: "EUR",
-      amount: 2,
-      decimalDigits: 2
-    },
-    description: "SET_SUBJECT",
-    merchant: "",
-    idStatus: 0,
-    statusMessage: "Da autorizzare",
-    error: false,
-    success: false,
-    fee: {
-      currency: "EUR",
-      amount: 100,
-      decimalDigits: 2
-    },
-    urlCheckout3ds: `http://${ip.address()}:${settings.serverPort}/wallet/checkout?id=NzA5MDA0ODM0Ng==`,
-    paymentModel: 0,
-    token: "NzA5MDA0ODM0Ng==",
-    idWallet: 38861,
-    idPsp: 406309,
-    idPayment: 71692,
-    nodoIdPayment: "3fd36e66-edd5-42a1-a1fb-b933bcdb3a84",
-    orderNumber: 7090048346
-  }
-};
-
-export const getValidActionPayCC: TransactionResponse = validatePayload(
-  TransactionResponse,
-  walletCCActionsPay
-);
 
 const validPsp = getPsp(LinguaEnum.EN);
 
-export const getWallets = (): WalletListResponse => {
-  const validCreditCard: CreditCard = {
-    id: 1464,
-    holder: "Mario Rossi",
-    pan: "************0111",
-    expireMonth: "05",
-    expireYear: "22",
-    brand: "MASTERCARD",
-    brandLogo:
-      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_mc.png",
-    flag3dsVerified: true
+const getValidCreditCard = (
+  id: number,
+  holder: string = "Mario Rossi",
+  pan: string,
+  expireMonth: string = "05",
+  expireYear: string = "22",
+  brand: string = "MASTERCARD",
+  brandLogo: string = "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_mc.png",
+  flag3dsVerified: boolean = true
+  // tslint:disable-next-line: parameters-max-number
+): CreditCard => {
+  return {
+    id,
+    holder,
+    pan: `************${pan}`,
+    expireMonth,
+    expireYear,
+    brand,
+    brandLogo,
+    flag3dsVerified
   };
+};
 
-  const validCreditCard2: CreditCard = {
-    id: 1464,
-    holder: "Mario Rossi",
-    pan: "************0222",
-    expireMonth: "06",
-    expireYear: "23",
-    brand: "MAESTRO",
-    brandLogo:
-      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_maestro.png",
-    flag3dsVerified: true
-  };
+// tslint:disable-next-line: readonly-array
+export const getWalletArray = (): Wallet[] => {
+  const localStorage = new LocalStorage("./scratch");
+  const walletsStorage = localStorage.getItem("wallets");
+  const walletsArray =
+    walletsStorage !== null ? JSON.parse(walletsStorage) : { wallets: [] };
+  return walletsArray.wallets;
+};
 
-  const WalletCard: Wallet = {
-    idWallet: 11111,
+export const getWallet = (
+  idWallet: number,
+  holder: string = "Mario Rossi",
+  expireMonth: string | number = "05",
+  expireYear: string | number = "22"
+): Wallet => {
+  const brand = idWallet !== 2222 ? "MASTERCARD" : "MAESTRO";
+
+  // tslint:disable-next-line: readonly-array
+  const wallet = {
+    idWallet,
     type: TypeEnum.CREDIT_CARD,
-    favourite: false,
-    creditCard: validCreditCard,
+    favourite: idWallet === 2222,
+    creditCard: getValidCreditCard(
+      1464,
+      holder,
+      `${idWallet}`,
+      `${expireMonth}`,
+      `${expireYear}`,
+      brand,
+      `https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/${
+        brand === "MASTERCARD" ? "carta_mc" : "carta_maestro"
+      }.png`,
+      true
+    ),
     psp: validPsp,
     idPsp: validPsp.id,
     pspEditable: true,
     lastUsage: new Date("2018-08-07T15:50:08Z")
   };
 
-  const MaestroCard: Wallet = {
-    idWallet: 22222,
-    type: TypeEnum.CREDIT_CARD,
-    favourite: true,
-    creditCard: validCreditCard2,
-    psp: validPsp,
-    idPsp: validPsp.id,
-    pspEditable: true,
-    lastUsage: new Date("2019-01-07T10:00:08Z")
-  };
-
-  // FIXME - It is displayed as card!
-  const WalletBank: Wallet = {
-    idWallet: 67890,
-    type: TypeEnum.CREDIT_CARD,
-    creditCard: validCreditCard as CreditCard,
-    psp: validPsp as Psp,
-    idPsp: validPsp.id,
-    pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z")
-  };
-
-  const data = {
-    data: [MaestroCard, WalletCard]
-  };
-
-  return validatePayload(WalletListResponse, data);
+  return validatePayload(Wallet, wallet);
 };
 
 export const getTransactions = (count: number): TransactionListResponse => {
