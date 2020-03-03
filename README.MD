@@ -27,6 +27,18 @@ The node version used in this project is stored in [.node-version](.node-version
 
 Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
 
+#### Docker setup
+
+A docker image is also available for local dev purposes by following these simple steps:
+
+1. Be sure you have [docker](https://www.docker.com/get-started) installed on your system
+1. login into the github packages registry by running `docker login -u <YOUR_GITHUB_USERNAME> -p <GITHUB_TOKEN> docker.pkg.github.com` (The configuration is pretty simple and fast, you can follow [these instructions](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages))
+1. point your browser to: https://github.com/pagopa/io-dev-api-server/packages and choose the package version (namely `<CHOSEN_PACKAGE_VERSION>`) you are looking for. Please note that latest version is recommended.
+1. copy the Pull image from the command line and paste it into a terminal
+1. after docker daemon finish to download image run this command: `docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:<CHOSEN_PACKAGE_VERSION>`
+1. enjoy **io-dev-api-server** on `http://127.0.0.1:<YOUR_HOST_PORT>/`
+
+
 #### Add server to io-app
 
 1. open io-app project folder
