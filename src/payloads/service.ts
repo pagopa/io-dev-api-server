@@ -12,6 +12,7 @@ import {
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
+import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 
 export const getService = (serviceId: string): ServicePublic => {
   const service = {
@@ -39,6 +40,10 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     // second half have organization_fiscal_code === organizationFiscalCodes[1]
     return {
       ...getService(`dev-service_${idx}`),
+      available_notification_channels: [
+        NotificationChannelEnum.EMAIL,
+        NotificationChannelEnum.WEBHOOK
+      ],
       organization_fiscal_code: `${organizationCount + 1}`.padStart(
         11,
         "0"
@@ -100,10 +105,14 @@ export const getServiceMetadata = (
     serviceScope = ScopeEnum.LOCAL;
   }
   const metaData: Service = {
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
     scope: serviceScope,
     address: "mock address",
     email: "mock.service@email.com",
-    phone: "5555555"
+    phone: "5555555",
+    web_url: "https://www.google.com",
+    app_android: "https://www.google.com",
+    app_ios: "https://www.google.com"
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };

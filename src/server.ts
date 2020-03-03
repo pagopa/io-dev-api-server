@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
+import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
@@ -25,6 +26,7 @@ import { session } from "./payloads/session";
 import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
+import { delayer } from "./utils/delay_middleware";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
@@ -35,7 +37,7 @@ const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 const app: Application = express();
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
-
+// app.use(delayer(3000 as Millisecond));
 // set middleware logging
 app.use(
   morgan(
@@ -61,20 +63,25 @@ app.get("/info", (_, res) => {
 });
 
 app.get("/ping", (_, res) => {
-  res.send("ok");
+  res.json({ status: "ok" });
 });
 
-export const services = getServices(10);
-export const messages = getMessageWithoutContentList(20, services, fiscalCode);
+export const services = getServices(20);
+const totalMessages = 5;
+export const messages = getMessageWithoutContentList(
+  totalMessages,
+  services,
+  fiscalCode
+);
+
+// tslint:disable-next-line: no-let
+let currentProfile = getProfile(fiscalCode).payload;
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
-  const now = new Date();
   // all messages have a due date 1 month different from each other
-  const dueDate = new Date(now.setMonth(now.getMonth() + idx));
   return getMessageWithContent(
     fiscalCode,
     services[idx % services.length].service_id,
-    msg.id,
-    dueDate
+    msg.id
   );
 });
 export const servicesTuple = getServicesTuple(services);
@@ -133,22 +140,24 @@ app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
 
 responseHandler
   .addHandler("get", "/session", session)
-  .addHandler("get", "/profile", getProfile(fiscalCode))
+  .addCustomHandler("get", "/profile", _ => {
+    return { payload: currentProfile, isJson: true };
+  })
   .addHandler("put", "/installations/:installationID", getSuccessResponse())
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
-    const currentProfile = getProfile(fiscalCode).payload;
+
     const clintProfileIncresed = {
       ...req.body,
       version: parseInt(req.body.version, 10) + 1
     };
-    const payload = validatePayload(InitializedProfile, {
+    currentProfile = validatePayload(InitializedProfile, {
       ...currentProfile,
       ...clintProfileIncresed
     });
     return {
-      payload,
+      payload: currentProfile,
       isJson: true
     };
   })
