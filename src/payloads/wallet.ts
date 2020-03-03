@@ -76,8 +76,19 @@ export const getWallets = (): WalletListResponse => {
     lastUsage: new Date("2018-08-07T15:50:08Z")
   };
 
+  // It is displayed as card!
+  const WalletBank2: Wallet = {
+    idWallet: 67891,
+    type: TypeEnum.CREDIT_CARD,
+    creditCard: validCreditCard as CreditCard,
+    psp: validPsp as Psp,
+    idPsp: validPsp.id,
+    pspEditable: true,
+    lastUsage: new Date("2018-08-07T15:50:08Z")
+  };
+
   const data = {
-    data: [WalletBank, WalletCard]
+    data: [WalletBank, WalletCard, WalletBank2]
   };
 
   return validatePayload(WalletListResponse, data);
@@ -90,7 +101,7 @@ export const getTransactions = (count: number): TransactionListResponse => {
         accountingStatus: 1,
         amount: { amount: 20000 },
         created: new Date(2018, 10, 30, 13, 12, 22, 30),
-        description: `Transaction n.${idx}`,
+        description: `hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world`,
         error: false,
         fee: { amount: 1 },
         grandTotal: { amount: 32100 },

@@ -43,24 +43,31 @@ const createMessage = (
 const createMessageWithContent = (
   fiscalCode: string,
   serviceId: string,
+  includePaymentData: boolean,
+  invalidAfterDueDate: boolean,
   messageId?: string,
   dueDate?: Date,
   amount?: number
 ) => {
   const msgId = messageId || getRandomStringId(26);
-  const date = dueDate || new Date();
+  const date = dueDate;
+  const paymentData =
+    includePaymentData === true
+      ? {
+          amount: amount || getRandomIntInRange(1, 10000),
+          notice_number: "012345678912345678" as PaymentNoticeNumber,
+          invalid_after_due_date: invalidAfterDueDate
+        }
+      : undefined;
   return {
     content: {
       subject: `subject [${serviceId}]`,
       markdown:
-        "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
+        "test test test test test test test test test test test test test test test test test test test test test test test test test test",
       due_date: date,
-      payment_data: {
-        amount: amount || getRandomIntInRange(1, 10000),
-        notice_number: "012345678912345678" as PaymentNoticeNumber
-      }
+      payment_data: paymentData
     },
-    created_at: date,
+    created_at: date || new Date(),
     fiscal_code: fiscalCode,
     id: msgId,
     sender_service_id: serviceId,
@@ -111,6 +118,8 @@ export const getMessageWithContent = (
   fiscalCode: string,
   serviceId: string,
   messageId: string,
+  includePaymentData: boolean = true,
+  invalidAfterDueDate: boolean = false,
   dueDate?: Date,
   amount?: number
 ): IOResponse<CreatedMessageWithContent> => {
@@ -120,6 +129,8 @@ export const getMessageWithContent = (
       createMessageWithContent(
         fiscalCode,
         serviceId,
+        includePaymentData,
+        invalidAfterDueDate,
         messageId,
         dueDate,
         amount
