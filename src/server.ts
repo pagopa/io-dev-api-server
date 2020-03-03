@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
-import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
@@ -26,7 +25,6 @@ import { session } from "./payloads/session";
 import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
-import { delayer } from "./utils/delay_middleware";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
@@ -63,7 +61,7 @@ app.get("/info", (_, res) => {
 });
 
 app.get("/ping", (_, res) => {
-  res.json({ status: "ok" });
+  res.send("ok");
 });
 
 export const services = getServices(20);

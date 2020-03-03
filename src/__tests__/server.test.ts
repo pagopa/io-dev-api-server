@@ -6,23 +6,6 @@ import app from "../server";
 
 const request = supertest(app);
 
-it("Ping should return 200/ok", async done => {
-  const response = await request.get("/ping");
-
-  expect(response.status).toBe(200);
-  expect(response.text).toBe("ok");
-  done();
-});
-
-it("info should return a valid ServerInfo object", async done => {
-  const response = await request.get("/info");
-
-  expect(response.status).toBe(200);
-  const backendInfo = ServerInfo.decode(response.body);
-  expect(backendInfo.isRight()).toBeTruthy();
-  done();
-});
-
 it("login should response with a redirect and the token as param", async done => {
   const response = await request.get("/login");
   expect(response.redirect).toBeTruthy();
