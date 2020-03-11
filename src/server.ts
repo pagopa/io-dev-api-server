@@ -27,9 +27,9 @@ import {
   getPspList,
   getTransactionResponseFirst,
   getTransactionResponseSecond,
+  getValidPsp,
   paymentData,
-  setPayment,
-  getValidPsp
+  setPayment
 } from "./payloads/payment";
 import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
@@ -269,6 +269,7 @@ app.get(`/wallet/v1/psps`, (req, res) => {
 });
 
 app.get(`/wallet/v1/psps/:id_transaction`, (req, res) => {
+  // tslint:disable-next-line: radix
   const id = parseInt(req.params.id_transaction);
   res.json(getValidPsp(id));
 });
@@ -338,15 +339,16 @@ app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
 });
 
 /** IO backend API handlers */
-
+const currentProfile = getProfile(fiscalCode).payload;
 responseHandler
   .addHandler("get", "/session", session)
-  .addHandler("get", "/profile", getProfile(fiscalCode))
+  .addCustomHandler("get", "/profile", _ => {
+    return { payload: currentProfile, isJson: true };
+  })
   .addHandler("put", "/installations/:installationID", getSuccessResponse())
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
-    const currentProfile = getProfile(fiscalCode).payload;
     const clintProfileIncresed = {
       ...req.body,
       version: parseInt(req.body.version, 10) + 1
@@ -378,7 +380,7 @@ responseHandler
   })
   // return 10 mock services
   .addHandler("get", "/services", servicesTuple)
-  /* 
+  /*
     //how to send "too many requests" response
     .addHandler("get", "/services", getProblemJson(429, "too many requests"))
   */

@@ -1,6 +1,7 @@
 import { range } from "fp-ts/lib/Array";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
+import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
@@ -90,10 +91,14 @@ export const getServiceMetadata = (
     serviceScope = ScopeEnum.LOCAL;
   }
   const metaData: Service = {
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
     scope: serviceScope,
     address: "mock address",
     email: "mock.service@email.com",
-    phone: "5555555"
+    phone: "5555555",
+    web_url: "https://www.google.com",
+    app_android: "https://www.google.com",
+    app_ios: "https://www.google.com"
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };

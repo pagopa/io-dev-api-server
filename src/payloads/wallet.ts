@@ -339,7 +339,7 @@ export const getTransactions = (count: number): TransactionListResponse => {
         accountingStatus: 1,
         amount: { amount: 20000 },
         created: new Date(2018, 10, 30, 13, 12, 22, 30),
-        description: `Transaction n.${idx}`,
+        description: `hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world`,
         error: false,
         fee: { amount: 1 },
         grandTotal: { amount: 32100 },

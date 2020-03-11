@@ -47,19 +47,19 @@ const createMessageWithContent = (
   amount?: number
 ) => {
   const msgId = messageId || getRandomStringId(26);
-  const date = dueDate || new Date();
+  const date = dueDate;
   return {
     content: {
       subject: `subject [${serviceId}]`,
       markdown:
-        "😊 this is a mock message this is a mock message this is a mock message this is a mock message",
+        "test test test test test test test test test test test test test test test test test test test test test test test test test test",
       due_date: date,
       payment_data: {
         amount: paymentData.importoSingoloVersamento,
         notice_number: getNoticeNumber(amount !== undefined ? amount : 0)
       }
     },
-    created_at: date,
+    created_at: date || new Date(),
     fiscal_code: fiscalCode,
     id: msgId,
     sender_service_id: serviceId,
