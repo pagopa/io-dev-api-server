@@ -42,7 +42,7 @@ it("static_contents should return a valid service metadata", async done => {
   const metadata = Service.decode(response.body);
   expect(metadata.isRight()).toBeTruthy();
   if (metadata.isRight()) {
-    expect(metadata.value.scope).toEqual(ScopeEnum.NATIONAL);
+    expect(metadata.value.scope).toEqual(ScopeEnum.LOCAL);
   }
   done();
 });
