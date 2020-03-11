@@ -68,14 +68,16 @@ export const paymentData = {
 export const getValidPsp = (idPsp: number): PspResponse => {
   const psp = {
     data: {
-      "id": idPsp,
+      id: idPsp,
       idPsp: "CIPBITMM",
       businessName: "Nexi",
       paymentType: "CP",
       idIntermediary: "13212880150",
       idChannel: "13212880150_02_ONUS",
-      logoPSP: "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406319",
-      serviceLogo: "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406319",
+      logoPSP:
+        "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/406319",
+      serviceLogo:
+        "https://acardste.vaservices.eu/pp-restapi/v3/resources/service/406319",
       serviceName: "Pagamento con carta",
       fixedCost: {
         currency: "EUR",
@@ -83,15 +85,12 @@ export const getValidPsp = (idPsp: number): PspResponse => {
         decimalDigits: 2
       },
       appChannel: false,
-      tags: [
-        "VISA",
-        "MASTERCARD",
-        "MAESTRO",
-        "VISA_ELECTRON"
-      ],
-      serviceDescription: "The service allows you to make payments to the PA using Nexi cards on the Visa, VPAY, Mastercard and Maestro channels.",
+      tags: ["VISA", "MASTERCARD", "MAESTRO", "VISA_ELECTRON"],
+      serviceDescription:
+        "The service allows you to make payments to the PA using Nexi cards on the Visa, VPAY, Mastercard and Maestro channels.",
       serviceAvailability: "Operating 24 hours a day, seven days a week",
-      urlInfoChannel: "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=eng",
+      urlInfoChannel:
+        "https://www.bancaimpresa.pagamentipa.test.nexi.it/agidpa_portal/CIPBITMM_jsp/PaginaInformativaICBPI.jsp?lang=eng",
       paymentModel: 1,
       flagStamp: false,
       idCard: 551,
