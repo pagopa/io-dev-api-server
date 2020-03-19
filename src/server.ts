@@ -187,6 +187,11 @@ responseHandler
       item => item.service_id === req.params.service_id
     );
     return { payload: service || notFound.payload };
+  })
+  // return positive feedback on request to receive a new email to verify the email address
+  .addHandler("post", "/email-validation-process", {
+    status: 202,
+    payload: undefined
   });
 
 export default app;
