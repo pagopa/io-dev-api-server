@@ -9,6 +9,7 @@ import { TransactionResponse } from "../../generated/definitions/pagopa/Transact
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 import { settings } from "../settings";
+import { capitalizeFirstLetter } from "../utils/string";
 import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
@@ -173,7 +174,7 @@ export const getValidWalletCCResponse = (idWallet: number): WalletResponse => {
       favourite: false,
       creditCard: {
         id: 30757,
-        holder: "Mario Rossi",
+        holder: `${capitalizeFirstLetter(settings.user)} Rossi`,
         pan: `************${idWallet}`,
         expireMonth: "05",
         expireYear: "22",
@@ -268,7 +269,7 @@ const validPsp = getPsp(LinguaEnum.EN);
 
 const getValidCreditCard = (
   id: number,
-  holder: string = "Mario Rossi",
+  holder: string = `${capitalizeFirstLetter(settings.user)} Rossi`,
   pan: string,
   expireMonth: string = "05",
   expireYear: string = "22",
@@ -300,7 +301,7 @@ export const getWalletArray = (): Wallet[] => {
 
 export const getWallet = (
   idWallet: number,
-  holder: string = "Mario Rossi",
+  holder: string = `${capitalizeFirstLetter(settings.user)} Rossi`,
   expireMonth: string | number = "05",
   expireYear: string | number = "22"
 ): Wallet => {

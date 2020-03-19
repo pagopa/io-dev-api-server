@@ -56,7 +56,7 @@ import { paymentItem, settings } from "./settings";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
-export const fiscalCode = "RSSMRA83A12H501D";
+export const fiscalCode = settings.userCf;
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
