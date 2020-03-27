@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
 import fs from "fs";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../generated/definitions/backend/UserDataProcessing";
@@ -206,7 +205,6 @@ responseHandler
   })
   .addCustomHandler("get", "/user-data-processing/:choice", req => {
     const choice = req.params.choice as UserDataProcessingChoiceEnum;
-    console.log(JSON.stringify(userChoices));
     if (userChoices[choice] === undefined) {
       return getProblemJson(404);
     }
@@ -219,7 +217,6 @@ responseHandler
       return { payload: userChoices[choice] };
     }
     const data: UserDataProcessing = {
-      fiscal_code: fiscalCode as FiscalCode,
       choice,
       status: UserDataProcessingStatusEnum.PENDING,
       version: 1
@@ -229,7 +226,7 @@ responseHandler
       DELETE: choice === "DELETE" ? data : userChoices.DELETE
     };
     return { payload: userChoices[choice] };
-
+  })
   // return positive feedback on request to receive a new email to verify the email address
   .addHandler("post", "/email-validation-process", {
     status: 202,
