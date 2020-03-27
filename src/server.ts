@@ -229,6 +229,11 @@ responseHandler
       DELETE: choice === "DELETE" ? data : userChoices.DELETE
     };
     return { payload: userChoices[choice] };
+
+  // return positive feedback on request to receive a new email to verify the email address
+  .addHandler("post", "/email-validation-process", {
+    status: 202,
+    payload: undefined
   });
 
 export default app;
