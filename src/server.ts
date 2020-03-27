@@ -4,9 +4,13 @@ import express, { Response } from "express";
 import fs from "fs";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
+import { UserDataProcessing } from "../generated/definitions/backend/UserDataProcessing";
+import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/UserDataProcessingChoice";
+import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
+import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { backendInfo } from "./payloads/backend";
-import { notFound } from "./payloads/error";
+import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
   getMessageWithContent,
@@ -74,6 +78,17 @@ export const messages = getMessageWithoutContentList(
 
 // tslint:disable-next-line: no-let
 let currentProfile = getProfile(fiscalCode).payload;
+
+type UserDeleteDownloadData = {
+  [key in keyof typeof UserDataProcessingChoiceEnum]:
+    | UserDataProcessing
+    | undefined;
+};
+// tslint:disable-next-line: no-let
+let userChoices: UserDeleteDownloadData = {
+  DOWNLOAD: undefined,
+  DELETE: undefined
+};
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   // all messages have a due date 1 month different from each other
   return getMessageWithContent(
@@ -187,6 +202,30 @@ responseHandler
       item => item.service_id === req.params.service_id
     );
     return { payload: service || notFound.payload };
+  })
+  .addCustomHandler("get", "/user-data-processing/:choice", req => {
+    const choice = req.params.choice as UserDataProcessingChoiceEnum;
+    if (userChoices[choice] === undefined) {
+      return getProblemJson(404);
+    }
+    return { payload: userChoices[choice] };
+  })
+  .addCustomHandler("post", "/user-data-processing", req => {
+    const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
+    const choice = payload.choice;
+    if (userChoices[choice] !== undefined) {
+      return { payload: userChoices[choice] };
+    }
+    const data: UserDataProcessing = {
+      choice,
+      status: UserDataProcessingStatusEnum.PENDING,
+      version: 1
+    };
+    userChoices = {
+      DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
+      DELETE: choice === "DELETE" ? data : userChoices.DELETE
+    };
+    return { payload: userChoices[choice] };
   })
   // return positive feedback on request to receive a new email to verify the email address
   .addHandler("post", "/email-validation-process", {
