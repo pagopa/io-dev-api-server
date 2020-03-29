@@ -9,7 +9,7 @@ import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/U
 import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
-import { backendInfo } from "./payloads/backend";
+import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
@@ -66,6 +66,11 @@ app.get("/info", (_, res) => {
 
 app.get("/ping", (_, res) => {
   res.send("ok");
+});
+
+// backend service status
+app.get("/status/backend.json", (_, res) => {
+  res.json(backendStatus);
 });
 
 export const services = getServices(20);
