@@ -89,11 +89,12 @@ type UserDeleteDownloadData = {
     | UserDataProcessing
     | undefined;
 };
-// tslint:disable-next-line: no-let
-let userChoices: UserDeleteDownloadData = {
+const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
   DELETE: undefined
 };
+// tslint:disable-next-line: no-let
+let userChoices = initialUserChoice;
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   // all messages have a due date 1 month different from each other
   return getMessageWithContent(
@@ -152,6 +153,15 @@ app.get(`${staticContentRootPath}/logos/services/:service_id`, (_, res) => {
 
 app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
   res.json(municipality);
+});
+
+// it should be usefull to reset some states
+app.get("/reset", (_, res) => {
+  // reset profile
+  currentProfile = getProfile(fiscalCode).payload;
+  // reset user shoice
+  userChoices = initialUserChoice;
+  res.send("ok - reset");
 });
 
 /** IO backend API handlers */
