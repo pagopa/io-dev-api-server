@@ -37,6 +37,7 @@ export const fiscalCode = "RSSMRA83A12H501D";
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
+
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 // app.use(delayer(3000 as Millisecond));
@@ -49,6 +50,47 @@ app.use(
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 
+// setting IO backend behavior (NOTE: all exported variables and functions it's because they should be tested, to ensure the expected behavior)
+// profile
+// tslint:disable-next-line: no-let
+let currentProfile = getProfile(fiscalCode).payload;
+// services and messages
+export const services = getServices(20);
+const totalMessages = 5;
+export const messages = getMessageWithoutContentList(
+  totalMessages,
+  services,
+  fiscalCode
+);
+export const servicesTuple = getServicesTuple(services);
+export const servicesByScope = getServicesByScope(services);
+export const messagesWithContent = messages.payload.items.map((msg, idx) => {
+  return getMessageWithContent(
+    fiscalCode,
+    services[idx % services.length].service_id,
+    msg.id
+  );
+});
+// wallets and transactions
+export const wallets = getWallets();
+export const transactions = getTransactions(5);
+// change this directory to serve differents files
+export const staticContentRootPath = "/static_contents";
+// define user UserDataProcessing (download / delete)
+// to handle e remember user choice
+type UserDeleteDownloadData = {
+  [key in keyof typeof UserDataProcessingChoiceEnum]:
+    | UserDataProcessing
+    | undefined;
+};
+const initialUserChoice: UserDeleteDownloadData = {
+  DOWNLOAD: undefined,
+  DELETE: undefined
+};
+// tslint:disable-next-line: no-let
+let userChoices = initialUserChoice;
+
+// public API
 app.get("/", (_, res) => {
   res.send(`Hi. This is ${packageJson.name}`);
 });
@@ -72,42 +114,6 @@ app.get("/ping", (_, res) => {
 app.get("/status/backend.json", (_, res) => {
   res.json(backendStatus);
 });
-
-export const services = getServices(20);
-const totalMessages = 5;
-export const messages = getMessageWithoutContentList(
-  totalMessages,
-  services,
-  fiscalCode
-);
-
-// tslint:disable-next-line: no-let
-let currentProfile = getProfile(fiscalCode).payload;
-
-type UserDeleteDownloadData = {
-  [key in keyof typeof UserDataProcessingChoiceEnum]:
-    | UserDataProcessing
-    | undefined;
-};
-const initialUserChoice: UserDeleteDownloadData = {
-  DOWNLOAD: undefined,
-  DELETE: undefined
-};
-// tslint:disable-next-line: no-let
-let userChoices = initialUserChoice;
-export const messagesWithContent = messages.payload.items.map((msg, idx) => {
-  // all messages have a due date 1 month different from each other
-  return getMessageWithContent(
-    fiscalCode,
-    services[idx % services.length].service_id,
-    msg.id
-  );
-});
-export const servicesTuple = getServicesTuple(services);
-export const servicesByScope = getServicesByScope(services);
-export const wallets = getWallets();
-export const transactions = getTransactions(5);
-export const staticContentRootPath = "/static_contents";
 
 /** wallet content */
 app.get("/wallet/v1/users/actions/start-session", (_, res) => {
@@ -155,7 +161,7 @@ app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
   res.json(municipality);
 });
 
-// it should be usefull to reset some states
+// it should be useful to reset some states
 app.get("/reset", (_, res) => {
   // reset profile
   currentProfile = getProfile(fiscalCode).payload;
@@ -165,7 +171,6 @@ app.get("/reset", (_, res) => {
 });
 
 /** IO backend API handlers */
-
 responseHandler
   .addHandler("get", "/session", session)
   .addCustomHandler("get", "/profile", _ => {
@@ -175,7 +180,6 @@ responseHandler
   .addCustomHandler("post", "/profile", req => {
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
-
     const clintProfileIncresed = {
       ...req.body,
       version: parseInt(req.body.version, 10) + 1
@@ -191,11 +195,11 @@ responseHandler
   })
   .addHandler("get", "/user-metadata", userMetadata)
   .addCustomHandler("post", "/user-metadata", req => {
-    // simply return the received user-metadata
+    // simply validate and return the received user-metadata
     const payload = validatePayload(UserMetadata, req.body);
     return { payload };
   })
-  // return a message
+  // return messages
   .addHandler("get", "/messages", messages)
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
@@ -205,7 +209,7 @@ responseHandler
     );
     return messagesWithContent[msgIndex];
   })
-  // return 10 mock services
+  // return services
   .addHandler("get", "/services", servicesTuple)
   /* 
     //how to send "too many requests" response
