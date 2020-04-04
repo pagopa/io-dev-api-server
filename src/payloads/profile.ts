@@ -18,7 +18,7 @@ const spidProfile: InitializedProfile = {
   spid_email: "mario.rossi@fake-spide-mail.it" as EmailAddress,
   spid_mobile_phone: "555555555" as NonEmptyString,
   version: 1,
-  fiscal_code: "" as FiscalCode, // injected in getProfile
+  fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
 // mock a cie profile on first onboarding
@@ -31,7 +31,7 @@ const cieProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: "Mario",
   version: 0,
-  fiscal_code: "" as FiscalCode, // injected in getProfile
+  fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
 export const getProfile = (
@@ -41,8 +41,8 @@ export const getProfile = (
     // inject the fiscal code
     payload: validatePayload(InitializedProfile, {
       ...spidProfile,
-      fiscal_code: fiscalCode,
+      fiscal_code: fiscalCode
     }),
-    isJson: true,
+    isJson: true
   };
 };
