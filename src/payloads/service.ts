@@ -21,6 +21,10 @@ export const getService = (serviceId: string): ServicePublic => {
     organization_name: "dev organization name" as OrganizationName,
     service_id: serviceId,
     service_name: `mock service [${serviceId}]` as ServiceName,
+    available_notification_channels: [
+      NotificationChannelEnum.EMAIL,
+      NotificationChannelEnum.WEBHOOK
+    ],
     version: 1
   };
   return validatePayload(ServicePublic, service);
@@ -40,10 +44,6 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     // second half have organization_fiscal_code === organizationFiscalCodes[1]
     return {
       ...getService(`dev-service_${idx}`),
-      available_notification_channels: [
-        NotificationChannelEnum.EMAIL,
-        NotificationChannelEnum.WEBHOOK
-      ],
       organization_fiscal_code: `${organizationCount + 1}`.padStart(
         11,
         "0"
