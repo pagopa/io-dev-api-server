@@ -35,7 +35,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
-  return range(1, count).map(idx => {
+  return range(0, count - 1).map(idx => {
     organizationCount =
       idx !== 0 && idx % aggregation === 0
         ? organizationCount + 1
