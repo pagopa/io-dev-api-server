@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/gh/pagopa/io-dev-api-server/branch/master/graph/badge.svg)](https://codecov.io/gh/pagopa/io-dev-api-server)
+
 # IO dev API server
 
 It's a simple mock server of [io-backend](https://github.com/teamdigitale/io-backend) for [io-app](https://github.com/teamdigitale/io-app).<br/>
@@ -38,7 +39,6 @@ A docker image is also available for local dev purposes by following these simpl
 1. after docker daemon finish to download image run this command: `docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:<CHOSEN_PACKAGE_VERSION>`
 1. enjoy **io-dev-api-server** on `http://127.0.0.1:<YOUR_HOST_PORT>/`
 
-
 #### Add server to io-app
 
 1. open io-app project folder
@@ -49,6 +49,8 @@ A docker image is also available for local dev purposes by following these simpl
    `CONTENT_REPO_URL='http://127.0.0.1:3000/static_contents'`
 1. edit the **PAGOPA_API_URL_PREFIX** with the local server <br/>
    `PAGOPA_API_URL_PREFIX='http://127.0.0.1:3000/wallet'`
+1. edit the **BACKEND_STATUS_URL** with the local server <br/>
+   `BACKEND_STATUS_URL='http://127.0.0.1:3000/status'`
 1. update the config file<br/>
    `yarn postinstall`
 1. run simulator<br/>

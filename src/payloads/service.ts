@@ -23,6 +23,10 @@ export const getService = (serviceId: string): ServicePublic => {
     organization_name: "dev organization name" as OrganizationName,
     service_id: serviceId,
     service_name: `mock service [${serviceId}]` as ServiceName,
+    available_notification_channels: [
+      NotificationChannelEnum.EMAIL,
+      NotificationChannelEnum.WEBHOOK
+    ],
     version: 1
   };
   return validatePayload(ServicePublic, service);

@@ -6,11 +6,15 @@ import ip from "ip";
 import morgan from "morgan";
 import { LocalStorage } from "node-localstorage";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
+import { UserDataProcessing } from "../generated/definitions/backend/UserDataProcessing";
+import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/UserDataProcessingChoice";
+import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
+import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
-import { backendInfo } from "./payloads/backend";
-import { notFound } from "./payloads/error";
+import { backendInfo, backendStatus } from "./payloads/backend";
+import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
   getMessageWithContent,
@@ -61,6 +65,7 @@ export const fiscalCode = settings.userCf;
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
+
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 // app.use(delayer(3000 as Millisecond));
@@ -92,25 +97,11 @@ app.use(
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 
-app.get("/", (_, res) => {
-  res.send(`Hi. This is ${packageJson.name}`);
-});
-
-app.get("/login", (_, res) => {
-  res.redirect(loginWithToken);
-});
-app.post("/logout", (_, res) => {
-  res.status(200).send("ok");
-});
-
-app.get("/info", (_, res) => {
-  res.json(backendInfo);
-});
-
-app.get("/ping", (_, res) => {
-  res.send("ok");
-});
-
+// setting IO backend behavior (NOTE: all exported variables and functions it's because they should be tested, to ensure the expected behavior)
+// profile
+// tslint:disable-next-line: no-let
+let currentProfile = getProfile(fiscalCode).payload;
+// services and messages
 export const services = getServices(settings.servicesNumber);
 export const messages = getMessageWithoutContentList(
   settings.messagesNumber,
@@ -131,10 +122,48 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 });
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
-export const staticContentRootPath = "/static_contents";
-
-/** wallet content */
+// transaction
 export const transactions = getTransactions(5);
+// change this directory to serve differents files
+export const staticContentRootPath = "/static_contents";
+// define user UserDataProcessing (download / delete)
+// to handle e remember user choice
+type UserDeleteDownloadData = {
+  [key in keyof typeof UserDataProcessingChoiceEnum]:
+    | UserDataProcessing
+    | undefined;
+};
+const initialUserChoice: UserDeleteDownloadData = {
+  DOWNLOAD: undefined,
+  DELETE: undefined
+};
+// tslint:disable-next-line: no-let
+let userChoices = initialUserChoice;
+
+// public API
+app.get("/", (_, res) => {
+  res.send(`Hi. This is ${packageJson.name}`);
+});
+
+app.get("/login", (_, res) => {
+  res.redirect(loginWithToken);
+});
+app.post("/logout", (_, res) => {
+  res.status(200).send("ok");
+});
+
+app.get("/info", (_, res) => {
+  res.json(backendInfo);
+});
+
+app.get("/ping", (_, res) => {
+  res.send("ok");
+});
+
+// backend service status
+app.get("/status/backend.json", (_, res) => {
+  res.json(backendStatus);
+});
 
 app.get("/wallet/v1/users/actions/start-session", (_, res) => {
   res.json(sessionToken);
@@ -339,7 +368,18 @@ app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
 });
 
 /** IO backend API handlers */
-const currentProfile = getProfile(fiscalCode).payload;
+// const currentProfile = getProfile(fiscalCode).payload;
+
+// it should be useful to reset some states
+app.get("/reset", (_, res) => {
+  // reset profile
+  currentProfile = getProfile(fiscalCode).payload;
+  // reset user shoice
+  userChoices = initialUserChoice;
+  res.send("ok - reset");
+});
+
+/** IO backend API handlers */
 responseHandler
   .addHandler("get", "/session", session)
   .addCustomHandler("get", "/profile", _ => {
@@ -364,11 +404,11 @@ responseHandler
   })
   .addHandler("get", "/user-metadata", userMetadata)
   .addCustomHandler("post", "/user-metadata", req => {
-    // simply return the received user-metadata
+    // simply validate and return the received user-metadata
     const payload = validatePayload(UserMetadata, req.body);
     return { payload };
   })
-  // return a message
+  // return messages
   .addHandler("get", "/messages", messages)
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
@@ -378,7 +418,7 @@ responseHandler
     );
     return messagesWithContent[msgIndex];
   })
-  // return 10 mock services
+  // return services
   .addHandler("get", "/services", servicesTuple)
   /*
     //how to send "too many requests" response
@@ -390,6 +430,35 @@ responseHandler
       item => item.service_id === req.params.service_id
     );
     return { payload: service || notFound.payload };
+  })
+  .addCustomHandler("get", "/user-data-processing/:choice", req => {
+    const choice = req.params.choice as UserDataProcessingChoiceEnum;
+    if (userChoices[choice] === undefined) {
+      return getProblemJson(404);
+    }
+    return { payload: userChoices[choice] };
+  })
+  .addCustomHandler("post", "/user-data-processing", req => {
+    const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
+    const choice = payload.choice;
+    if (userChoices[choice] !== undefined) {
+      return { payload: userChoices[choice] };
+    }
+    const data: UserDataProcessing = {
+      choice,
+      status: UserDataProcessingStatusEnum.PENDING,
+      version: 1
+    };
+    userChoices = {
+      DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
+      DELETE: choice === "DELETE" ? data : userChoices.DELETE
+    };
+    return { payload: userChoices[choice] };
+  })
+  // return positive feedback on request to receive a new email to verify the email address
+  .addHandler("post", "/email-validation-process", {
+    status: 202,
+    payload: undefined
   });
 
 export default app;
