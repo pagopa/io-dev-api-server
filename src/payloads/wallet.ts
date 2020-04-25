@@ -2,11 +2,10 @@ import { range } from "fp-ts/lib/Array";
 import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
 import { Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
-import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
+import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
 import { validatePayload } from "../utils/validator";
-import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 
 export const sessionToken: SessionResponse = {
   data: {
