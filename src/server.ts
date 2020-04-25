@@ -1,6 +1,8 @@
 import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
+import { takeEnd } from "fp-ts/lib/Array";
+import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
@@ -9,6 +11,7 @@ import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/U
 import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
+import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -73,7 +76,9 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 });
 // wallets and transactions
 export const wallets = getWallets();
-export const transactions = getTransactions(5);
+export const transactionPageSize = 10;
+export const transactions = getTransactions(25);
+
 // change this directory to serve differents files
 export const staticContentRootPath = "/static_contents";
 // define user UserDataProcessing (download / delete)
@@ -124,8 +129,19 @@ app.get("/wallet/v1/wallet", (_, res) => {
   res.json(wallets);
 });
 
-app.get("/wallet/v1/transactions", (_, res) => {
-  res.json(transactions);
+app.get("/wallet/v1/transactions", (req, res) => {
+  const start = fromNullable(req.query.start)
+    .map(s => parseInt(s, 10))
+    .getOrElse(0);
+  const transactionsSlice = takeEnd(transactions.length - start, [
+    ...transactions
+  ]).slice(0, transactionPageSize);
+  const response = validatePayload(TransactionListResponse, {
+    data: transactionsSlice,
+    size: transactionsSlice.length,
+    total: transactions.length
+  });
+  res.json(response);
 });
 
 /** static contents */
