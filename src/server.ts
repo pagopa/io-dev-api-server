@@ -77,7 +77,8 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 // wallets and transactions
 export const wallets = getWallets();
 export const transactionPageSize = 10;
-export const transactions = getTransactions(25);
+export const transactionsTotal = 25;
+export const transactions = getTransactions(transactionsTotal);
 
 // change this directory to serve differents files
 export const staticContentRootPath = "/static_contents";
@@ -131,11 +132,12 @@ app.get("/wallet/v1/wallet", (_, res) => {
 
 app.get("/wallet/v1/transactions", (req, res) => {
   const start = fromNullable(req.query.start)
-    .map(s => parseInt(s, 10))
+    .map(s => Math.max(parseInt(s, 10), 0))
     .getOrElse(0);
-  const transactionsSlice = takeEnd(transactions.length - start, [
-    ...transactions
-  ]).slice(0, transactionPageSize);
+  const transactionsSlice = takeEnd(
+    transactions.length - Math.min(start, transactions.length),
+    [...transactions]
+  ).slice(0, transactionPageSize);
   const response = validatePayload(TransactionListResponse, {
     data: transactionsSlice,
     size: transactionsSlice.length,
