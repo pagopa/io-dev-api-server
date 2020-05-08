@@ -6,6 +6,7 @@ import { LinguaEnum, Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
+import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 import { settings } from "../settings";
@@ -333,35 +334,32 @@ export const getWallet = (
   return validatePayload(Wallet, wallet);
 };
 
-export const getTransactions = (count: number): TransactionListResponse => {
-  const data: TransactionListResponse = {
-    data: range(1, count).map(idx => {
-      return {
-        accountingStatus: 1,
-        amount: { amount: 20000 },
-        created: new Date(2018, 10, 30, 13, 12, 22, 30),
-        description: `hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world`,
-        error: false,
-        fee: { amount: 1 },
-        grandTotal: { amount: 32100 },
-        id: idx,
-        idPayment: 1,
-        idPsp: 43188,
-        idStatus: 3,
-        idWallet: 12345,
-        merchant: "merchant",
-        nodoIdPayment: "nodoIdPayment",
-        paymentModel: 5,
-        spcNodeDescription: "spcNodeDescription",
-        spcNodeStatus: 6,
-        statusMessage: "statusMessage",
-        success: true,
-        token: "token",
-        updated: undefined,
-        urlCheckout3ds: "urlCheckout3ds",
-        urlRedirectPSP: "urlRedirectPSP"
-      };
-    })
-  };
-  return validatePayload(TransactionListResponse, data);
+export const getTransactions = (count: number): ReadonlyArray<Transaction> => {
+  return range(1, count).map(idx => {
+    return validatePayload(Transaction, {
+      accountingStatus: 1,
+      amount: { amount: 20000 },
+      created: new Date(2018, 10, 30, 13, 12, 22, 30),
+      description: `hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world`,
+      error: false,
+      fee: { amount: 1 },
+      grandTotal: { amount: 32100 },
+      id: idx,
+      idPayment: 1,
+      idPsp: 43188,
+      idStatus: 3,
+      idWallet: 12345,
+      merchant: "merchant",
+      nodoIdPayment: "nodoIdPayment",
+      paymentModel: 5,
+      spcNodeDescription: "spcNodeDescription",
+      spcNodeStatus: 6,
+      statusMessage: "statusMessage",
+      success: true,
+      token: "token",
+      updated: undefined,
+      urlCheckout3ds: "urlCheckout3ds",
+      urlRedirectPSP: "urlRedirectPSP"
+    });
+  });
 };

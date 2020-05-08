@@ -1,6 +1,8 @@
 import bodyParser from "body-parser";
 import { Application } from "express";
 import express, { Response } from "express";
+import { takeEnd } from "fp-ts/lib/Array";
+import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import ip from "ip";
 import morgan from "morgan";
@@ -13,6 +15,7 @@ import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/U
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
+import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -122,8 +125,12 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 });
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
-// transaction
-export const transactions = getTransactions(5);
+// wallets and transactions
+export const wallets = getWallets();
+export const transactionPageSize = 10;
+export const transactionsTotal = 25;
+export const transactions = getTransactions(transactionsTotal);
+
 // change this directory to serve differents files
 export const staticContentRootPath = "/static_contents";
 // define user UserDataProcessing (download / delete)
@@ -201,8 +208,20 @@ app.delete("/wallet/v1/wallet/:id_card", (req, res) => {
   }
 });
 
-app.get("/wallet/v1/transactions", (_, res) => {
-  res.json(transactions);
+app.get("/wallet/v1/transactions", (req, res) => {
+  const start = fromNullable(req.query.start)
+    .map(s => Math.max(parseInt(s, 10), 0))
+    .getOrElse(0);
+  const transactionsSlice = takeEnd(
+    transactions.length - Math.min(start, transactions.length),
+    [...transactions]
+  ).slice(0, transactionPageSize);
+  const response = validatePayload(TransactionListResponse, {
+    data: transactionsSlice,
+    size: transactionsSlice.length,
+    total: transactions.length
+  });
+  res.json(response);
 });
 
 // API called when a new card is added
