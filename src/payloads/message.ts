@@ -52,7 +52,9 @@ const messageMarkdown = `
 
 [WALLET_LIST](ioit://WALLET_LIST)
 
-[PAYMENTS_HISTORY_SCREEN](ioit://PAYMENTS_HISTORY_SCREEN)`;
+[PAYMENTS_HISTORY_SCREEN](ioit://PAYMENTS_HISTORY_SCREEN)
+
+[LINK CORROTTO](ioit://WRONG&$)`;
 
 /**
  * generate a list containg count messages with the given fiscal_code
