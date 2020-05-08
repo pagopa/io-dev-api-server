@@ -13,9 +13,9 @@ import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/U
 import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
+import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
-import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -126,7 +126,6 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 // wallets and transactions
-export const wallets = getWallets();
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export const transactions = getTransactions(transactionsTotal);
