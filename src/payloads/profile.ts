@@ -8,7 +8,7 @@ import { IOResponse } from "./response";
 
 // define here the fiscalCode used within the client communication
 const mockProfile: InitializedProfile = {
-  accepted_tos_version: undefined,
+  accepted_tos_version: 1,
   email: `${settings.user}.rossi@fake-email.it` as EmailAddress,
   family_name: "Rossi",
   has_profile: true,
@@ -42,7 +42,7 @@ export const getProfile = (
   return {
     // inject the fiscal code
     payload: validatePayload(InitializedProfile, {
-      ...cieProfile,
+      ...mockProfile,
       fiscal_code: fiscalCode
     }),
     isJson: true
