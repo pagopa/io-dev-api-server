@@ -65,13 +65,18 @@ export const messages = getMessageWithoutContentList(
   services,
   fiscalCode
 );
+const now = new Date();
+const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   return getMessageWithContent(
     fiscalCode,
     services[idx % services.length].service_id,
-    msg.id
+    msg.id,
+    true,
+    true,
+    hourAhead
   );
 });
 // wallets and transactions
