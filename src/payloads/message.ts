@@ -1,5 +1,5 @@
 import { range } from "fp-ts/lib/Array";
-
+import { fromNullable } from "fp-ts/lib/Option";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
@@ -201,9 +201,13 @@ export const getMessageWithoutContentList = (
     payload: {
       ...list,
       items: list.items.map((m, idx) => {
+        const service = services[idx % services.length];
         return {
           ...m,
-          sender_service_id: services[idx % services.length].service_id
+          sender_service_id: fromNullable(service).fold(
+            "n/a",
+            s => s.service_id as string
+          )
         };
       })
     },
