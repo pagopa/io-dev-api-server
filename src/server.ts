@@ -115,12 +115,15 @@ export const messagesWithContent = messages.payload.items.map((msg, idx) => {
   const now = new Date();
   // all messages have a due date 1 month different from each other
   const dueDate = new Date(now.setMonth(now.getMonth() + idx));
+  // if invalid_after_due_date is not true, the payment does not expire within the due date
+  const invalid_after_due_date = true;
   return getMessageWithContent(
     fiscalCode,
     services[idx % services.length].service_id,
     msg.id,
     dueDate,
-    idx
+    idx,
+    invalid_after_due_date
   );
 });
 export const servicesTuple = getServicesTuple(services);
