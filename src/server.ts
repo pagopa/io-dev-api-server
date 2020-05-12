@@ -307,6 +307,9 @@ const pspList = getPspList();
 app.get(`/wallet/v1/psps`, (req, res) => {
   // wallet with id 2222 is the favourite one
   // for create tests case with result 400
+  res.json(pspList);
+  
+  /* For testing 400 response, instead:
   if (
     req.query.paymentType === "CREDIT_CARD" &&
     req.query.idPayment === "ca7d9be4-7da1-442d-92c6-d403d7361f65" &&
@@ -316,6 +319,7 @@ app.get(`/wallet/v1/psps`, (req, res) => {
   } else {
     res.status(400);
   }
+  */
 });
 
 app.get(`/wallet/v1/psps/:id_transaction`, (req, res) => {
