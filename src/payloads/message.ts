@@ -20,7 +20,9 @@ import { IOResponse } from "./response";
 const createMessageItem = (
   fiscalCode: string,
   senderServiceId: string,
-  messageId: string = uuidv4(),
+  messageId: string = uuidv4()
+    .toUpperCase()
+    .substr(0, 26),
   timeToLive: number = 3600
 ): CreatedMessageWithoutContent => {
   return validatePayload(CreatedMessageWithoutContent, {
