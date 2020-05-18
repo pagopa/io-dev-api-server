@@ -74,7 +74,8 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
     `Subject - test ${idx + 1}`,
     messageMarkdown
   );
-  return withPaymentData(withDueDate(withContent, hourAhead));
+  const withDD = withDueDate(withContent, hourAhead);
+  return withPaymentData(withDD);
 });
 // wallets and transactions
 export const wallets = getWallets();
