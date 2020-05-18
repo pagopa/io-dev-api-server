@@ -1,4 +1,4 @@
-import { range } from "fp-ts/lib/Array";
+import { index, range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
@@ -7,83 +7,27 @@ import { PaymentNoticeNumber } from "../../generated/definitions/backend/Payment
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
+import { uuidv4 } from "../utils/strings";
+import { messageMarkdown } from "../utils/variables";
 import { IOResponse } from "./response";
-
-const messageMarkdown = `
-# blocco1 
-
-  ## blocco2 
-
-  ### blocco3 
-
-  #### blocco4
-
-  Test list: 
-  - item1
-  - item2 
-  - item3 
-  - item4 
-  - item5 
-  - item6 
-  
-È universalmente **riconosciuto** che un _lettore_ che **osserva** il layout di una pagina viene distratto dal contenuto testuale se questo è leggibile. Lo scopo dell’utilizzo del Lorem Ipsum è che offre una normale distribuzione delle lettere (al contrario di quanto avviene se si utilizzano brevi frasi ripetute, ad esempio “testo qui”), apparendo come un normale blocco di testo leggibile. Molti software di impaginazione e di web design utilizzano Lorem Ipsum come testo modello. Molte versioni del testo sono state prodotte negli anni, a volte casualmente, a volte di proposito (ad esempio inserendo passaggi ironici).
-
-### link esterni
-
-[LINK ESTERNO GOOGLE](https://www.google.it)
-
-[LINK CORROTTO](google.it)
-
-### link interni
-
-[MESSAGES_HOME](ioit://MESSAGES_HOME)
-
-[PROFILE_PREFERENCES_HOME](ioit://PROFILE_PREFERENCES_HOME)
-
-[SERVICES_HOME](ioit://SERVICES_HOME)
-
-[PROFILE_MAIN](ioit://PROFILE_MAIN)
-
-[PROFILE_PRIVACY](ioit://PROFILE_PRIVACY)
-
-[PROFILE_PRIVACY_MAIN](ioit://PROFILE_PRIVACY_MAIN)
-
-[WALLET_HOME](ioit://WALLET_HOME)
-
-[WALLET_LIST](ioit://WALLET_LIST)
-
-[PAYMENTS_HISTORY_SCREEN](ioit://PAYMENTS_HISTORY_SCREEN)
-
-[LINK CORROTTO](ioit://WRONG&$)`;
 
 /**
  * generate a list containg count messages with the given fiscal_code
  * @param count the number of messages to generate
  * @param fiscal_code
  */
-const createMessage = (
-  count: number,
+const createMessageItem = (
   fiscalCode: string,
-  randomId: boolean = false,
-  messageId?: string
-) => {
-  return range(1, count).map(idx => {
-    const date = new Date();
-    const msgId =
-      randomId === true
-        ? getRandomStringId()
-        : messageId
-        ? messageId
-        : `${idx}`.padStart(26, "0");
-    // all messages have a created_at 1 month different from each other
-    const dueDate = date.setMonth(date.getMonth() + (idx - 3));
-    return {
-      created_at: new Date(dueDate).toISOString(),
-      fiscal_code: fiscalCode,
-      id: msgId,
-      sender_service_id: `dev-service_${idx}`,
-      time_to_live: 3600
-    };
+  senderServiceId: string,
+  messageId: string = uuidv4(),
+  timeToLive: number = 3600
+): CreatedMessageWithoutContent => {
+  return validatePayload(CreatedMessageWithoutContent, {
+    created_at: new Date().toISOString(),
+    fiscal_code: fiscalCode,
+    id: messageId,
+    sender_service_id: senderServiceId,
+    time_to_live: timeToLive
   });
 };
 
@@ -129,29 +73,19 @@ const createMessageWithContent = (
  */
 export const createMessageList = (
   count: number,
-  randomId: boolean,
-  fiscalCode: string
-): PaginatedCreatedMessageWithoutContentCollection =>
-  validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
-    items: createMessage(count, fiscalCode, randomId),
+  fiscalCode: string,
+  services: ReadonlyArray<ServicePublic>
+): PaginatedCreatedMessageWithoutContentCollection => {
+  const items = range(1, count).map(c => {
+    return createMessageItem(
+      fiscalCode,
+      index(c - 1, [...services]).fold("n/a", s => s.service_id as string)
+    );
+  });
+  return validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
+    items,
     page_size: count
   });
-
-/**
- * return a message without content
- * @param messageId the id of the message to be created
- * @param fiscalCode the receiver fiscal code
- */
-export const getMessage = (
-  messageId: string,
-  fiscalCode: string
-): IOResponse<CreatedMessageWithoutContent> => {
-  return {
-    payload: validatePayload(
-      CreatedMessageWithoutContent,
-      createMessage(1, fiscalCode, false, messageId)[0]
-    )
-  };
 };
 
 /**
@@ -192,11 +126,11 @@ export const getMessageWithContent = (
  */
 export const getMessageWithoutContentList = (
   count: number,
-  services: readonly ServicePublic[],
+  services: ReadonlyArray<ServicePublic>,
   fiscalCode: string,
   randomId: boolean = false
 ): IOResponse<PaginatedCreatedMessageWithoutContentCollection> => {
-  const list = createMessageList(count, randomId, fiscalCode);
+  const list = createMessageList(count, fiscalCode, services);
   return {
     payload: {
       ...list,
