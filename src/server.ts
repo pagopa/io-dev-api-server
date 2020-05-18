@@ -16,8 +16,10 @@ import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
-  getMessageWithContent,
-  getMessageWithoutContentList
+  getMessages,
+  withDueDate,
+  withMessageContent,
+  withPaymentData
 } from "./payloads/message";
 import { municipality } from "./payloads/municipality";
 import { getProfile } from "./payloads/profile";
@@ -33,6 +35,7 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
+import { messageMarkdown } from "./utils/variables";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -60,28 +63,19 @@ let currentProfile = getProfile(fiscalCode).payload;
 // services and messages
 export const services = getServices(20);
 const totalMessages = 5;
-export const messages = getMessageWithoutContentList(
-  totalMessages,
-  services,
-  fiscalCode
-);
+export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
-export const messagesWithContent =
-  services.length === 0
-    ? []
-    : messages.payload.items.map((msg, idx) => {
-        return getMessageWithContent(
-          fiscalCode,
-          services[idx % services.length].service_id,
-          msg.id,
-          true,
-          true,
-          hourAhead
-        );
-      });
+export const messagesWithContent = messages.payload.items.map((item, idx) => {
+  const withContent = withMessageContent(
+    item,
+    `Subject - test ${idx + 1}`,
+    messageMarkdown
+  );
+  return withPaymentData(withDueDate(withContent, hourAhead));
+});
 // wallets and transactions
 export const wallets = getWallets();
 export const transactionPageSize = 10;
@@ -229,11 +223,14 @@ responseHandler
   .addHandler("get", "/messages", messages)
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
-    // retrieve the service_id from the messages list
+    // retrieve the messageIndex from id
     const msgIndex = messages.payload.items.findIndex(
       item => item.id === req.params.id
     );
-    return messagesWithContent[msgIndex];
+    if (msgIndex === -1) {
+      return getProblemJson(404, "message not found");
+    }
+    return { payload: messagesWithContent[msgIndex], isJson: true };
   })
   // return services
   .addHandler("get", "/services", servicesTuple)

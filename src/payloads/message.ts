@@ -1,14 +1,15 @@
 import { index, range } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
+import { MessageContent } from "../../generated/definitions/backend/MessageContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
+import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
+import { PaymentData } from "../../generated/definitions/backend/PaymentData";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { uuidv4 } from "../utils/strings";
-import { messageMarkdown } from "../utils/variables";
 import { IOResponse } from "./response";
 
 /**
@@ -31,38 +32,41 @@ const createMessageItem = (
   });
 };
 
-const createMessageWithContent = (
-  fiscalCode: string,
-  serviceId: string,
-  includePaymentData: boolean,
-  invalidAfterDueDate: boolean,
-  messageId?: string,
-  dueDate?: Date,
-  amount?: number
-) => {
-  const msgId = messageId || getRandomStringId(26);
-  const date = dueDate;
-  const paymentData =
-    includePaymentData === true
-      ? {
-          amount: amount || getRandomIntInRange(1, 10000),
-          notice_number: "012345678912345678" as PaymentNoticeNumber,
-          invalid_after_due_date: invalidAfterDueDate
-        }
-      : undefined;
-  return {
-    content: {
-      subject: `subject [${serviceId}]`,
-      markdown: messageMarkdown,
-      due_date: date,
-      payment_data: paymentData
-    },
-    created_at: date || new Date(),
-    fiscal_code: fiscalCode,
-    id: msgId,
-    sender_service_id: serviceId,
-    time_to_live: 3600
+export const withDueDate = (
+  message: CreatedMessageWithContent,
+  dueDate: Date
+): CreatedMessageWithContent => {
+  return { ...message, content: { ...message.content, due_date: dueDate } };
+};
+
+export const withPaymentData = (
+  message: CreatedMessageWithContent,
+  noticeNumber: string = "012345678912345678",
+  amount: number = getRandomIntInRange(1, 10000),
+  invalidAfterDueDate: boolean = false
+): CreatedMessageWithContent => {
+  const data: PaymentData = {
+    notice_number: noticeNumber as PaymentNoticeNumber,
+    amount: amount as PaymentAmount,
+    invalid_after_due_date: invalidAfterDueDate
   };
+  const paymementData = validatePayload(PaymentData, data);
+  return {
+    ...message,
+    content: { ...message.content, payment_data: paymementData }
+  };
+};
+
+export const withMessageContent = (
+  message: CreatedMessageWithoutContent,
+  subject: string,
+  markdown: string
+): CreatedMessageWithContent => {
+  const content = validatePayload(MessageContent, {
+    subject,
+    markdown
+  });
+  return { ...message, content };
 };
 
 /**
@@ -71,7 +75,7 @@ const createMessageWithContent = (
  * @param randomId if true a random if will be generated
  * @param fiscalCode the receiver fiscal code
  */
-export const createMessageList = (
+const createMessageList = (
   count: number,
   fiscalCode: string,
   services: ReadonlyArray<ServicePublic>
@@ -89,62 +93,18 @@ export const createMessageList = (
 };
 
 /**
- * return a message with content
- * @param messageId the id of the message to be created
- * @param serviceId the id of the message service sender
- * @param fiscalCode the receiver fiscal code
- */
-export const getMessageWithContent = (
-  fiscalCode: string,
-  serviceId: string,
-  messageId: string,
-  includePaymentData: boolean = true,
-  invalidAfterDueDate: boolean = false,
-  dueDate?: Date,
-  amount?: number
-): IOResponse<CreatedMessageWithContent> => {
-  return {
-    payload: validatePayload(
-      CreatedMessageWithContent,
-      createMessageWithContent(
-        fiscalCode,
-        serviceId,
-        includePaymentData,
-        invalidAfterDueDate,
-        messageId,
-        dueDate,
-        amount
-      )
-    )
-  };
-};
-
-/**
  * return a list containing count messages
  * @param count the number of message to generate
  * @param randomId if true a random id is generated, a fixed one otherwise
  */
-export const getMessageWithoutContentList = (
+export const getMessages = (
   count: number,
   services: ReadonlyArray<ServicePublic>,
-  fiscalCode: string,
-  randomId: boolean = false
+  fiscalCode: string
 ): IOResponse<PaginatedCreatedMessageWithoutContentCollection> => {
-  const list = createMessageList(count, fiscalCode, services);
+  const payload = createMessageList(count, fiscalCode, services);
   return {
-    payload: {
-      ...list,
-      items: list.items.map((m, idx) => {
-        const service = services[idx % services.length];
-        return {
-          ...m,
-          sender_service_id: fromNullable(service).fold(
-            "n/a",
-            s => s.service_id as string
-          )
-        };
-      })
-    },
+    payload,
     isJson: true
   };
 };
