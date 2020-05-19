@@ -92,7 +92,8 @@ const createMessageWithContent = (
   messageId?: string,
   dueDate?: Date,
   amount?: number,
-  invalid_after_due_date?: boolean
+  // tslint:disable-next-line: bool-param-default
+  invalidAfterDueDate?: boolean
 ) => {
   const msgId = messageId || getRandomStringId(26);
   const date = dueDate;
@@ -104,7 +105,7 @@ const createMessageWithContent = (
       payment_data: {
         amount: paymentData.importoSingoloVersamento,
         notice_number: getNoticeNumber(amount !== undefined ? amount : 0),
-        invalid_after_due_date: invalid_after_due_date || undefined
+        invalid_after_due_date: invalidAfterDueDate || undefined
       }
     },
     created_at: date || new Date(),
@@ -160,7 +161,8 @@ export const getMessageWithContent = (
   messageId: string,
   dueDate?: Date,
   amount?: number,
-  invalid_after_due_date?: boolean
+  // tslint:disable-next-line: bool-param-default
+  invalidAfterDueDate?: boolean
 ): IOResponse<CreatedMessageWithContent> => {
   return {
     payload: validatePayload(
@@ -171,7 +173,7 @@ export const getMessageWithContent = (
         messageId,
         dueDate,
         amount,
-        invalid_after_due_date
+        invalidAfterDueDate
       )
     )
   };
