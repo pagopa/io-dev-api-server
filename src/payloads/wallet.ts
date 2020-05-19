@@ -5,7 +5,6 @@ import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
 import { LinguaEnum, Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
-import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
@@ -20,17 +19,75 @@ export const sessionToken: SessionResponse = {
   }
 };
 
-export const getPsp = (locales: LinguaEnum.IT | LinguaEnum.EN): Psp => {
-  return {
-    id: locales === LinguaEnum.IT ? 1713322 : 1713323,
+type pspAttr = {
+  id: (locales: boolean) => number;
+  idPsp: string;
+  businessName: string;
+  logo: string;
+  idCard: number;
+  codiceAbi: string;
+};
+
+export const pspList: ReadonlyArray<pspAttr> = [
+  {
+    id: (locales: boolean) => (locales ? 1713322 : 1713323),
     idPsp: "UNCRITMM",
     businessName: "UniCredit S.p.A",
+    logo:
+      "https://i0.wp.com/newshitechitalia.it/wp-content/uploads/2017/07/IMG_9282.png?resize=800%2C215&ssl=1",
+    idCard: 2535,
+    codiceAbi: "02008"
+  },
+  {
+    id: (locales: boolean) => (locales ? 1713312 : 1713313),
+    idPsp: "POSTITMM",
+    businessName: "Poste Italiane S.p.A",
+    logo:
+      "https://upload.wikimedia.org/wikipedia/commons/4/4f/Logo_Poste_Italiane.png",
+    idCard: 2534,
+    codiceAbi: "02007"
+  },
+  {
+    id: (locales: boolean) => (locales ? 403321 : 403322),
+    idPsp: "BCITITMM",
+    businessName: "Intesa Sanpaolo S.p.A",
+    logo: "https://acardste.vaservices.eu/pp-restapi/v3/resources/psp/403321",
+    idCard: 437,
+    codiceAbi: "03069"
+  },
+  {
+    id: (locales: boolean) => (locales ? 1403351 : 1403352),
+    idPsp: "MEUMITMM",
+    businessName: "Mediolanum S.p.A",
+    logo:
+      "https://www.bancamediolanum.it/static-assets/images/components/uploaded/mediolanumforyou_social.png",
+    idCard: 4372,
+    codiceAbi: "01053"
+  },
+  {
+    id: (locales: boolean) => (locales ? 1209951 : 120952),
+    idPsp: "UBBAITMM",
+    businessName: "Ubi Banca S.p.A",
+    logo:
+      "https://toppng.com/uploads/preview/ubi-banca-italy-vector-logo-11574253318bhjc3cfibr.png",
+    idCard: 4322,
+    codiceAbi: "01299"
+  }
+];
+
+export const getPsp = (
+  locales: LinguaEnum.IT | LinguaEnum.EN,
+  { id, idPsp, businessName, logo, idCard, codiceAbi }: pspAttr
+): Psp => {
+  return {
+    id: id(locales === LinguaEnum.IT),
+    idPsp,
+    businessName,
     paymentType: "CP",
     idIntermediary: "00348170101",
     idChannel: "00348170101_01_ONUS",
-    logoPSP: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/psp/1713322",
-    serviceLogo:
-      "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/service/1713322",
+    logoPSP: logo,
+    serviceLogo: logo,
     serviceName: "Pagamento con carte",
     fixedCost: {
       currency: "EUR",
@@ -46,9 +103,9 @@ export const getPsp = (locales: LinguaEnum.IT | LinguaEnum.EN): Psp => {
     urlInfoChannel: "https://www.unicredit.it/it/privati.html",
     paymentModel: 1,
     flagStamp: false,
-    idCard: 2535,
+    idCard,
     lingua: locales,
-    codiceAbi: "02008",
+    codiceAbi,
     isPspOnus: true
   };
 };
@@ -60,9 +117,9 @@ const walletResponse = {
     favourite: false,
     creditCard: {
       id: 30573,
-      holder: "Alice Rossi",
-      pan: "************2505",
-      expireMonth: "12",
+      holder: `${capitalizeFirstLetter(settings.user)} Rossi`,
+      pan: "************2222",
+      expireMonth: "05",
       expireYear: "22",
       brandLogo:
         "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
@@ -266,7 +323,7 @@ export const getValidActionPayCC = (idWallet: number): TransactionResponse => {
   return validatePayload(TransactionResponse, walletCCActionsPay);
 };
 
-const validPsp = getPsp(LinguaEnum.EN);
+const validPsp = getPsp(LinguaEnum.EN, pspList[0]);
 
 const getValidCreditCard = (
   id: number,

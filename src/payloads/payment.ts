@@ -16,7 +16,7 @@ import { PspResponse } from "../../generated/definitions/pagopa/PspResponse";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 import { paymentItem, settings } from "../settings";
 import { validatePayload } from "../utils/validator";
-import { getPsp } from "./wallet";
+import { getPsp, pspList } from "./wallet";
 
 export const getNoticeNumber = (paymentNumber: number): string => {
   const messageNumber = paymentNumber.toString();
@@ -57,7 +57,18 @@ export const paymentData = {
   id: 12882164,
   urlRedirectEc:
     "http://mespaprod.soluzionipa.it/pagamenti?idSession=118a22f4-86d4-42d8-992c-7aead5ac8ed3&idDominio=01199250158", // link su piattaforma ente,
-  psps: [getPsp(LinguaEnum.IT), getPsp(LinguaEnum.EN)],
+  psps: [
+    getPsp(LinguaEnum.IT, pspList[0]),
+    getPsp(LinguaEnum.EN, pspList[0]),
+    getPsp(LinguaEnum.IT, pspList[1]),
+    getPsp(LinguaEnum.EN, pspList[1]),
+    getPsp(LinguaEnum.IT, pspList[2]),
+    getPsp(LinguaEnum.EN, pspList[2]),
+    getPsp(LinguaEnum.IT, pspList[3]),
+    getPsp(LinguaEnum.EN, pspList[3]),
+    getPsp(LinguaEnum.IT, pspList[4]),
+    getPsp(LinguaEnum.EN, pspList[4])
+  ],
   amount: {
     amount: 1 as ImportoEuroCents, // = 1 eurocent,
     currency: "EUR",

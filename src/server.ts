@@ -16,6 +16,7 @@ import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../generated/definitions/pagopa/WalletListResponse";
+import { WalletResponse } from "../generated/definitions/pagopa/WalletResponse";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -60,6 +61,7 @@ import {
   sessionToken
 } from "./payloads/wallet";
 import { paymentItem, settings } from "./settings";
+import { capitalizeFirstLetter } from "./utils/string";
 import { validatePayload } from "./utils/validator";
 
 // fiscalCode used within the client communication
@@ -304,6 +306,9 @@ const pspList = getPspList();
 app.get(`/wallet/v1/psps`, (req, res) => {
   // wallet with id 2222 is the favourite one
   // for create tests case with result 400
+  res.json(pspList);
+
+  /* For testing 400 response, instead:
   if (
     req.query.paymentType === "CREDIT_CARD" &&
     req.query.idPayment === "ca7d9be4-7da1-442d-92c6-d403d7361f65" &&
@@ -313,6 +318,7 @@ app.get(`/wallet/v1/psps`, (req, res) => {
   } else {
     res.status(400);
   }
+  */
 });
 
 app.get(`/wallet/v1/psps/:id_transaction`, (req, res) => {
@@ -350,6 +356,67 @@ app.delete(`/wallet/v1/payments/:id_pagamento/actions/delete`, (_, res) => {
 
 app.put(`/wallet/v1/wallet/2222`, (_, res) => {
   res.json(getValidWalletResponse);
+});
+
+const secondWalletResponse = {
+  data: {
+    idWallet: 38605,
+    type: "CREDIT_CARD",
+    favourite: false,
+    creditCard: {
+      id: 30573,
+      holder: `${capitalizeFirstLetter(settings.user)} Rossi`,
+      pan: "************2222",
+      expireMonth: "05",
+      expireYear: "22",
+      brandLogo:
+        "https://acardste.vaservices.eu/wallet/assets/img/creditcard/carta_mc.png",
+      flag3dsVerified: false,
+      brand: "MASTERCARD",
+      onUs: true
+    },
+    psp: {
+      id: 1713313,
+      idPsp: "UNCRITMM",
+      businessName: "Poste Italiane",
+      paymentType: "CP",
+      idIntermediary: "00348170102",
+      idChannel: "00348170101_02_ONUS",
+      logoPSP:
+        "https://upload.wikimedia.org/wikipedia/commons/4/4f/Logo_Poste_Italiane.png",
+      serviceLogo:
+        "https://upload.wikimedia.org/wikipedia/commons/4/4f/Logo_Poste_Italiane.png",
+      serviceName: "Pagamento con carte",
+      fixedCost: {
+        currency: "EUR",
+        amount: 95,
+        decimalDigits: 2
+      },
+      appChannel: false,
+      tags: ["VISA", "MASTERCARD", "MAESTRO"],
+      serviceDescription:
+        "Clienti e non delle Banche del Gruppo Intesa Sanpaolo possono disporre pagamenti con carte di pagamento VISA-MASTERCARD",
+      serviceAvailability: "7/7-24H",
+      paymentModel: 1,
+      flagStamp: true,
+      idCard: 747,
+      lingua: "IT",
+      codiceAbi: "03069",
+      isPspOnus: true
+    },
+    idPsp: 1713313,
+    pspEditable: true,
+    isPspToIgnore: false
+  }
+};
+
+const newGetValidWalletResponse: WalletResponse = validatePayload(
+  WalletResponse,
+  secondWalletResponse
+);
+
+app.put(`/wallet/v1/wallet/38605`, (_, res) => {
+  res.json(newGetValidWalletResponse);
 });
 
 /** static contents */
