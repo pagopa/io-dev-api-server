@@ -4,43 +4,82 @@ import { InitializedProfile } from "../../generated/definitions/backend/Initiali
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
-// mock a SPID profile (if you want simulate first onboarding set version:0 and accepted_tos_version:undefined)
+export const user = {
+  name: "Mario",
+  suruname: "Rossi",
+  mobile: "555555555",
+  spid_email: "mario.rossi@spid-email.it",
+  email: "mario.rossi@email.it"
+};
+
+// define here the fiscalCode used within the client communication
 const spidProfile: InitializedProfile = {
   accepted_tos_version: 1,
-  email: "mario.rossi@fake-email.it" as EmailAddress,
-  family_name: "Rossi",
+  email: user.email as EmailAddress,
+  family_name: user.suruname,
   has_profile: true,
   is_inbox_enabled: true,
   is_email_enabled: true,
   is_email_validated: true,
   is_webhook_enabled: true,
-  name: "Mario",
-  spid_email: "mario.rossi@fake-spide-mail.it" as EmailAddress,
-  spid_mobile_phone: "555555555" as NonEmptyString,
+  name: user.name,
+  spid_email: user.spid_email as EmailAddress,
+  spid_mobile_phone: user.mobile as NonEmptyString,
+  version: 1,
+  fiscal_code: "" as FiscalCode // injected in getProfile
+};
+
+// mock a SPID profile on first onboarding
+const spidProfileFirstOnboarding: InitializedProfile = {
+  email: user.email as EmailAddress,
+  family_name: user.suruname,
+  has_profile: true,
+  is_inbox_enabled: false,
+  is_webhook_enabled: false,
+  is_email_enabled: true,
+  is_email_validated: true,
+  name: user.name,
+  spid_email: user.spid_email as EmailAddress,
+  spid_mobile_phone: user.mobile as NonEmptyString,
+  version: 0,
+  fiscal_code: "" as FiscalCode // injected in getProfile
+};
+
+const cieProfile: InitializedProfile = {
+  email: user.email as EmailAddress,
+  accepted_tos_version: 1,
+  family_name: user.suruname,
+  has_profile: true,
+  is_inbox_enabled: true,
+  is_email_enabled: true,
+  is_email_validated: true,
+  is_webhook_enabled: true,
+  name: user.name,
   version: 1,
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
 // mock a cie profile on first onboarding
-const cieProfile: InitializedProfile = {
-  family_name: "Rossi",
+const cieProfileFirstOnboarding: InitializedProfile = {
+  family_name: user.suruname,
   has_profile: true,
-  is_inbox_enabled: true,
   is_email_enabled: true,
   is_email_validated: false,
-  is_webhook_enabled: true,
-  name: "Mario",
+  is_inbox_enabled: false,
+  is_webhook_enabled: false,
+  name: user.name,
   version: 0,
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
+const currentProfile = cieProfileFirstOnboarding;
 export const getProfile = (
   fiscalCode: string
 ): IOResponse<InitializedProfile> => {
   return {
     // inject the fiscal code
     payload: validatePayload(InitializedProfile, {
-      ...spidProfile,
+      ...currentProfile,
       fiscal_code: fiscalCode
     }),
     isJson: true
