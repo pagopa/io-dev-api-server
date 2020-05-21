@@ -72,14 +72,14 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
-const currentProfile = cieProfileFirstOnboarding;
+const currentProfile = spidProfile;
 export const getProfile = (
   fiscalCode: string
 ): IOResponse<InitializedProfile> => {
   return {
     // inject the fiscal code
     payload: validatePayload(InitializedProfile, {
-      ...spidProfile,
+      ...currentProfile,
       fiscal_code: fiscalCode
     }),
     isJson: true
