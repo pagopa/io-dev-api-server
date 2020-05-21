@@ -36,6 +36,7 @@ import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
 import { messageMarkdown } from "./utils/variables";
+import { Wallet } from "../generated/definitions/pagopa/Wallet";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -131,6 +132,20 @@ app.get("/wallet/v1/users/actions/start-session", (_, res) => {
 
 app.get("/wallet/v1/wallet", (_, res) => {
   res.json(wallets);
+});
+
+app.post("/wallet/v1/wallet/:wallet_id/actions/favourite", (req, res) => {
+  fromNullable(wallets.data)
+    .chain((d: ReadonlyArray<Wallet>) => {
+      const maybeWallet = d.find(
+        w => w.idWallet === parseInt(req.params.wallet_id, 10)
+      );
+      return fromNullable(maybeWallet);
+    })
+    .foldL(
+      () => res.sendStatus(404),
+      w => res.json({ data: w })
+    );
 });
 
 app.get("/wallet/v1/transactions", (req, res) => {
