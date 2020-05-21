@@ -79,7 +79,7 @@ export const getProfile = (
   return {
     // inject the fiscal code
     payload: validatePayload(InitializedProfile, {
-      ...currentProfile,
+      ...spidProfile,
       fiscal_code: fiscalCode
     }),
     isJson: true
