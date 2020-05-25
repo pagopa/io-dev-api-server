@@ -13,6 +13,7 @@ import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/U
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
+import { bonusVacanze } from "./bonus-vacanze/bonus_api";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -44,6 +45,9 @@ export const fiscalCode = "RSSMRA83A12H501D";
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
+
+// support bonus vacanze
+app.use("/bonus", bonusVacanze);
 
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
