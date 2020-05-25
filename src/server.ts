@@ -12,6 +12,7 @@ import { UserDataProcessingChoiceRequest } from "../generated/definitions/backen
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
+import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -36,7 +37,6 @@ import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
 import { messageMarkdown } from "./utils/variables";
-import { Wallet } from "../generated/definitions/pagopa/Wallet";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
