@@ -13,7 +13,7 @@ import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/U
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
-import { bonusVacanze } from "./bonus-vacanze/bonus_api";
+import { bonusVacanze, resetBonusVacanze } from "./bonus-vacanze/apis";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -207,6 +207,7 @@ app.get("/reset", (_, res) => {
   currentProfile = getProfile(fiscalCode).payload;
   // reset user shoice
   userChoices = initialUserChoice;
+  resetBonusVacanze();
   res.send("ok - reset");
 });
 

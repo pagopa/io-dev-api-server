@@ -1,5 +1,7 @@
 import { Router } from "express";
 import * as fs from "fs";
+import { Second } from "italia-ts-commons/lib/units";
+import { uuidv4 } from "../utils/strings";
 export const bonusVacanze = Router();
 
 const qrCodeBonusVacanze = fs
@@ -49,6 +51,7 @@ bonusVacanze.get(`/can-activate/:id_bonus`, (_, res) => {
   */
 });
 
+// return the last istance of the bonus from category id_bonus
 bonusVacanze.get(`/:id_bonus/latest`, (_, res) => {
   const bonus = {
     code: "ABCDE123XYZ",
@@ -63,6 +66,67 @@ bonusVacanze.get(`/:id_bonus/latest`, (_, res) => {
   };
   // it could be 200 (a bonus exists)
   // or 404 a bonus doesn't exits
-  // client can activate a bonus if: 404 or 200 -> status: ABORTED
+  // client can activate a bonus if: 404 or (200 && status == ABORTED)
   return res.json(bonus);
+});
+
+// tslint:disable-next-line: no-let
+let id_task: string | undefined;
+// tslint:disable-next-line: no-let
+let firstRequestTime = 0;
+const responseIseeAfter = 8 as Second;
+export const resetBonusVacanze = () => {
+  id_task = undefined;
+  firstRequestTime = 0;
+};
+
+// make a check about citizen isee
+bonusVacanze.post("/check-isee", (_, res) => {
+  if (id_task) {
+    // a task already exists because it has been requested
+    // return conflict status
+    res.status(409).json({ id_task });
+    return;
+  }
+  firstRequestTime = new Date().getTime();
+  id_task = uuidv4();
+  // first time return the id of the created task
+  res.status(202).json({ id_task });
+});
+
+const iseeCheck = {
+  members: [
+    {
+      name: "Mario",
+      surname: "Rossi"
+    },
+    {
+      name: "Giulia",
+      surname: "Rossi"
+    },
+    {
+      name: "Piero",
+      surname: "Rossi"
+    }
+  ],
+  max_amount: 50000,
+  tax_benefit: 3000
+};
+
+// make a check isee
+bonusVacanze.get("/check-isee/:id_task", (_, res) => {
+  // no task created, not-found
+  if (id_task === undefined) {
+    res.sendStatus(404);
+    return;
+  }
+  const elapsedTime = (new Date().getTime() - firstRequestTime) / 1000;
+  // if elapsedTime is less than responseIseeAfter return pending status
+  // first time return the id of the created task
+  if (elapsedTime < responseIseeAfter) {
+    res.status(200).json({ status: "PENDING" });
+    return;
+  }
+  // TODO we should mock also the ERROR case
+  res.status(200).json({ ...iseeCheck, status: "COMPLETE" });
 });
