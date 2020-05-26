@@ -46,9 +46,6 @@ const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
 
-// support bonus vacanze
-app.use("/bonus", bonusVacanze);
-
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 // app.use(delayer(3000 as Millisecond));
@@ -58,6 +55,8 @@ app.use(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
 );
+// support bonus vacanze
+app.use("/bonus/vacanze", bonusVacanze);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 

@@ -52,10 +52,10 @@ bonusVacanze.get(`/can-activate/:id_bonus`, (_, res) => {
 });
 
 // return the last istance of the bonus from category id_bonus
-bonusVacanze.get(`/:id_bonus/latest`, (_, res) => {
+bonusVacanze.get(`/bonus/vacanze/activation`, (_, res) => {
   const bonus = {
     code: "ABCDE123XYZ",
-    status: "ACTIVATED", // could be ACTIVATED | ABORTED | CONSUMED
+    status: "ACTIVE", // could be ACTIVABLE, ACTIVE, ABORTED, FAILED, CONSUMED
     qr_code: {
       mime_type: "image/png",
       base64_content: qrCodeBonusVacanze
@@ -70,18 +70,13 @@ bonusVacanze.get(`/:id_bonus/latest`, (_, res) => {
   return res.json(bonus);
 });
 
-// tslint:disable-next-line: no-let
-let id_task: string | undefined;
-// tslint:disable-next-line: no-let
-let firstRequestTime = 0;
-const responseIseeAfter = 8 as Second;
 export const resetBonusVacanze = () => {
   id_task = undefined;
   firstRequestTime = 0;
 };
 
-// make a check about citizen isee
-bonusVacanze.post("/check-isee", (_, res) => {
+// Start bonus eligibility check (ISEE)
+bonusVacanze.post("/eligibility", (_, res) => {
   if (id_task) {
     // a task already exists because it has been requested
     // return conflict status
@@ -90,31 +85,35 @@ bonusVacanze.post("/check-isee", (_, res) => {
   }
   firstRequestTime = new Date().getTime();
   id_task = uuidv4();
-  // first time return the id of the created task
-  res.status(202).json({ id_task });
+  // first time return the id of the created task -> request accepted
+  res.status(202).json({ id: id_task });
 });
 
-const iseeCheck = {
-  members: [
-    {
-      name: "Mario",
-      surname: "Rossi"
-    },
-    {
-      name: "Giulia",
-      surname: "Rossi"
-    },
-    {
-      name: "Piero",
-      surname: "Rossi"
-    }
-  ],
-  max_amount: 50000,
-  tax_benefit: 3000
-};
-
-// make a check isee
-bonusVacanze.get("/check-isee/:id_task", (_, res) => {
+// tslint:disable-next-line: no-let
+let id_task: string | undefined;
+// tslint:disable-next-line: no-let
+let firstRequestTime = 0;
+const responseIseeAfter = 20 as Second;
+// Get eligibility (ISEE) check information for user's bonus
+bonusVacanze.get("/eligibility", (_, res) => {
+  const iseeCheck = {
+    members: [
+      {
+        name: "Mario",
+        surname: "Rossi"
+      },
+      {
+        name: "Giulia",
+        surname: "Rossi"
+      },
+      {
+        name: "Piero",
+        surname: "Rossi"
+      }
+    ],
+    max_amount: 50000,
+    tax_benefit: 3000
+  };
   // no task created, not-found
   if (id_task === undefined) {
     res.sendStatus(404);
@@ -124,9 +123,23 @@ bonusVacanze.get("/check-isee/:id_task", (_, res) => {
   // if elapsedTime is less than responseIseeAfter return pending status
   // first time return the id of the created task
   if (elapsedTime < responseIseeAfter) {
-    res.status(200).json({ status: "PENDING" });
+    // processing request
+    res.sendStatus(202);
     return;
   }
+  // possible states NO_DATA, ELIGIBLE, INELIGIBLE, NOT_FOUND
+  // Request processed
   // TODO we should mock also the ERROR case
-  res.status(200).json({ ...iseeCheck, status: "COMPLETE" });
+  res.status(200).json({ ...iseeCheck, status: "ELIGIBLE" });
+});
+
+// Cancel bonus eligibility check procedure (avoids sending a push notification when done)
+bonusVacanze.delete("/eligibility", (_, res) => {
+  if (id_task) {
+    // Request canceled.
+    res.status(200).json({ id_task });
+    return;
+  }
+  // not found
+  res.status(404);
 });
