@@ -70,6 +70,14 @@ bonusVacanze.get(`/bonus/vacanze/activation`, (_, res) => {
   return res.json(bonus);
 });
 
+// tslint:disable-next-line: no-let
+let id_task: string | undefined;
+// tslint:disable-next-line: no-let
+let firstRequestTime = 0;
+const responseIseeAfter = 8 as Second;
+// Get eligibility (ISEE) check information for user's bonus
+
+// util function to reset some data structures
 export const resetBonusVacanze = () => {
   id_task = undefined;
   firstRequestTime = 0;
@@ -80,7 +88,7 @@ bonusVacanze.post("/eligibility", (_, res) => {
   if (id_task) {
     // a task already exists because it has been requested
     // return conflict status
-    res.status(409).json({ id_task });
+    res.status(409).json({ id: id_task });
     return;
   }
   firstRequestTime = new Date().getTime();
@@ -89,12 +97,6 @@ bonusVacanze.post("/eligibility", (_, res) => {
   res.status(202).json({ id: id_task });
 });
 
-// tslint:disable-next-line: no-let
-let id_task: string | undefined;
-// tslint:disable-next-line: no-let
-let firstRequestTime = 0;
-const responseIseeAfter = 20 as Second;
-// Get eligibility (ISEE) check information for user's bonus
 bonusVacanze.get("/eligibility", (_, res) => {
   const iseeCheck = {
     members: [
@@ -122,22 +124,26 @@ bonusVacanze.get("/eligibility", (_, res) => {
   const elapsedTime = (new Date().getTime() - firstRequestTime) / 1000;
   // if elapsedTime is less than responseIseeAfter return pending status
   // first time return the id of the created task
-  if (elapsedTime < responseIseeAfter) {
-    // processing request
-    res.sendStatus(202);
+  if (id_task && elapsedTime < responseIseeAfter) {
+    // request accepted, return the task id
+    res.status(202).json({ id: id_task });
     return;
   }
-  // possible states NO_DATA, ELIGIBLE, INELIGIBLE, NOT_FOUND
+  // possible states
+  // - USER_NOT_FOUND    User not found in INPS database
+  // - ISEE_NOT_FOUND    User found but there's no ISEE data
+  // - ELIGIBILE         The user is eligible for the bonus
+  // - INELIGIBLE        The user is not eligible for the bonus
   // Request processed
   // TODO we should mock also the ERROR case
-  res.status(200).json({ ...iseeCheck, status: "ELIGIBLE" });
+  res.status(200).json({ ...iseeCheck, id: id_task, status: "ELIGIBLE" });
 });
 
 // Cancel bonus eligibility check procedure (avoids sending a push notification when done)
 bonusVacanze.delete("/eligibility", (_, res) => {
   if (id_task) {
     // Request canceled.
-    res.status(200).json({ id_task });
+    res.status(200).json({ id: id_task });
     return;
   }
   // not found
