@@ -13,7 +13,7 @@ bonusVacanze.get("/", (_, res) => {
   const bonuses = {
     items: [
       {
-        id: 1,
+        id_type: 1,
         name: "Bonus Vacanze",
         description: "descrizione bonus vacanze",
         valid_from: "2020-07-01T00:00:00.000Z",
@@ -22,7 +22,7 @@ bonusVacanze.get("/", (_, res) => {
           "https://gdsit.cdn-immedia.net/2018/08/fff810d2e44464312e70071340fd92fc.jpg"
       },
       {
-        id: 2,
+        id_type: 2,
         name: "Bonus che non esiste",
         description: "descrizione bonus che non esiste",
         valid_from: "2020-05-25T00:00:00.000Z",
@@ -51,23 +51,26 @@ bonusVacanze.get(`/can-activate/:id_bonus`, (_, res) => {
   */
 });
 
-// return the last istance of the bonus from category id_bonus
-bonusVacanze.get(`/bonus/vacanze/activation`, (_, res) => {
-  const bonus = {
-    code: "ABCDE123XYZ",
-    status: "ACTIVE", // could be ACTIVABLE, ACTIVE, ABORTED, FAILED, CONSUMED
-    qr_code: {
-      mime_type: "image/png",
-      base64_content: qrCodeBonusVacanze
-    },
-    max_amount: 50000,
-    tax_benefit: 3000,
-    activate_at: "2020-07-04T12:20:00.000Z"
+// Get all IDs of the bonus activations requested by
+// the authenticated user or by any between his family member
+bonusVacanze.get(`/activations`, (_, res) => {
+  const activations = {
+    items: [
+      {
+        id: "ABC",
+        is_applicant: false
+      },
+      {
+        id: "DEF",
+        is_applicant: false
+      },
+      {
+        id: "GHJ",
+        is_applicant: false
+      }
+    ]
   };
-  // it could be 200 (a bonus exists)
-  // or 404 a bonus doesn't exits
-  // client can activate a bonus if: 404 or (200 && status == ABORTED)
-  return res.json(bonus);
+  return res.json(activations);
 });
 
 // tslint:disable-next-line: no-let
