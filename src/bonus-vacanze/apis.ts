@@ -101,23 +101,26 @@ bonusVacanze.post("/eligibility", (_, res) => {
 });
 
 bonusVacanze.get("/eligibility", (_, res) => {
-  const iseeCheck = {
-    members: [
+  const eligibilityCheck = {
+    family_members: [
       {
         name: "Mario",
-        surname: "Rossi"
+        surname: "Rossi",
+        fiscal_code: "EFCMZZ80A12L720R"
       },
       {
         name: "Giulia",
-        surname: "Rossi"
+        surname: "Rossi",
+        fiscal_code: "CDCMQQ81A12L721R"
       },
       {
         name: "Piero",
-        surname: "Rossi"
+        surname: "Rossi",
+        fiscal_code: "ABCMYY82A12L722R"
       }
     ],
     max_amount: 50000,
-    tax_benefit: 3000
+    max_tax_benefit: 3000
   };
   // no task created, not-found
   if (id_task === undefined) {
@@ -139,7 +142,9 @@ bonusVacanze.get("/eligibility", (_, res) => {
   // - INELIGIBLE        The user is not eligible for the bonus
   // Request processed
   // TODO we should mock also the ERROR case
-  res.status(200).json({ ...iseeCheck, id: id_task, status: "ELIGIBLE" });
+  res
+    .status(200)
+    .json({ ...eligibilityCheck, id: id_task, status: "ELIGIBLE" });
 });
 
 // Cancel bonus eligibility check procedure (avoids sending a push notification when done)
