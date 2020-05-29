@@ -5,8 +5,12 @@ import { Second } from "italia-ts-commons/lib/units";
 import { uuidv4 } from "../utils/strings";
 export const bonusVacanze = Router();
 
-const qrCodeBonusVacanze = fs
+const qrCodeBonusVacanzeSvg = fs
   .readFileSync("assets/imgs/bonus-vacanze/qr-mysecretcode.svg")
+  .toString("base64");
+
+const qrCodeBonusVacanzePng = fs
+  .readFileSync("assets/imgs/bonus-vacanze/qr_code_bonus_vacanze.png")
   .toString("base64");
 
 enum BonusStatusEnum {
@@ -75,6 +79,25 @@ bonusVacanze.get(`/activations`, (_, res) => {
   );
 });
 
+const activeBonus = {
+  applicant_fiscal_code: "SPNDNL80R11C522K",
+  code: "MYSECRETCODE",
+  qr_code: [
+    {
+      mime_type: "svg+xml",
+      base64_content: qrCodeBonusVacanzeSvg
+    },
+    {
+      mime_type: "image/png",
+      base64_content: qrCodeBonusVacanzePng
+    }
+  ],
+  max_amount: 50000,
+  max_tax_benefit: 3000,
+  updated_at: "2020-07-04T12:20:00.000Z",
+  status: BonusStatusEnum.ACTIVE
+};
+
 bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
   fromNullable(idActivationBonus).foldL(
     () => {
@@ -83,20 +106,7 @@ bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
     },
     // List of bonus activations ID activated or consumed by the authenticated user
     // or by any between his family members (former and actual)
-    () =>
-      res.json({
-        id: idActivationBonus,
-        applicant_fiscal_code: "SPNDNL80R11C522K",
-        code: "MYSECRETCODE",
-        qr_code: {
-          mime_type: "svg+xml",
-          base64_content: qrCodeBonusVacanze
-        },
-        max_amount: 50000,
-        max_tax_benefit: 3000,
-        updated_at: "2020-07-04T12:20:00.000Z",
-        status: BonusStatusEnum.ACTIVE
-      })
+    () => res.json({ ...activeBonus, id: idActivationBonus })
   );
 });
 
@@ -117,7 +127,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 let idEligibilityRequest: string | undefined;
 // tslint:disable-next-line: no-let
 let firstRequestTime = 0;
-const responseIseeAfter = 8 as Second;
+const responseIseeAfter = 18 as Second;
 // Get eligibility (ISEE) check information for user's bonus
 
 // since all these apis implements a specific flow, if you want re-run it
