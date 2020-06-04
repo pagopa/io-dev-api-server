@@ -139,9 +139,19 @@ definitions:
       description: 
         type: string
       email: 
-        type: string
+        $ref: '#/definitions/IdpCta'
       phone: 
-        type: string
+        $ref: '#/definitions/IdpCta'
       web_site: 
+        $ref: '#/definitions/IdpCta'
+  IdpCta:
+    type: object
+    required:
+      - cta
+      - action
+    properties:
+      cta: 
+        type: string
+      action: 
         type: string
 
