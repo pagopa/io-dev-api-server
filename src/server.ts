@@ -15,6 +15,7 @@ import { TransactionListResponse } from "../generated/definitions/pagopa/Transac
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
+import { idps } from "./payloads/idps";
 import { loginWithToken } from "./payloads/login";
 import {
   getMessages,
@@ -195,6 +196,10 @@ app.get(`${staticContentRootPath}/logos/services/:service_id`, (_, res) => {
 
 app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
   res.json(municipality);
+});
+
+app.get(`${staticContentRootPath}/idps/idps.json`, (_, res) => {
+  res.json(idps);
 });
 
 // it should be useful to reset some states

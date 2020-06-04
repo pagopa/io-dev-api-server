@@ -1,0 +1,109 @@
+swagger: "2.0"
+info:
+  version: "0.1"
+paths:
+definitions:
+  Service:
+    type: object
+    required:
+      - scope
+    properties:
+      description:
+        type: string
+      web_url:
+        type: string
+      app_ios:
+        type: string
+      app_android:
+        type: string
+      tos_url:
+        type: string
+      privacy_url:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      pec:
+        type: string
+      scope:
+        type: string
+        x-extensible-enum:
+          - NATIONAL
+          - LOCAL
+  Municipality:
+    type: object
+    required:
+      - codiceRegione
+      - codiceProvincia
+      - denominazione
+      - denominazioneInItaliano
+      - denominazioneRegione
+      - siglaProvincia
+    properties:
+      codiceRegione:
+        type: string
+      codiceProvincia:
+        type: string
+      denominazione:
+        type: string
+      denominazioneInItaliano:
+        type: string
+      denominazioneRegione:
+        type: string
+      siglaProvincia:
+        type: string
+  ServicesByScope:
+    type: object
+    required:
+      - LOCAL
+      - NATIONAL
+    properties:
+      LOCAL:
+        type: array
+        items:
+          type: string
+      NATIONAL:
+        type: array
+        items:
+          type: string
+  IdpsTextData:
+    type: object
+    required:
+      - version
+      - global
+      - arubaid
+    properties:
+      version:
+        type: number
+      global: 
+        type: object
+        required:
+          - title
+          - sub_title
+        properties:
+          title:
+            type: string
+          sub_title:
+            type: string
+      arubaid: 
+        $ref: '#/definitions/Idp'
+  Idp:
+    type: object
+    required:
+      - description
+      - email
+      - phone
+      - web_site
+    properties:
+      description: 
+        type: string
+      email: 
+        type: string
+      phone: 
+        type: string
+      web_site: 
+        type: string
+
