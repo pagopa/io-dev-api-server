@@ -166,6 +166,17 @@ app.get("/wallet/v1/transactions", (req, res) => {
 });
 
 /** static contents */
+
+const sendFile = (filePath: string, res: Response) => {
+  res.sendFile(filePath, {
+    root: "."
+  });
+};
+
+app.get(`/content.yaml`, (_, res) => {
+  sendFile("assets/yaml/content.yaml", res);
+});
+
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
   if (serviceId === "servicesByScope") {
@@ -174,12 +185,6 @@ app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   }
   res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
 });
-
-const sendFile = (filePath: string, res: Response) => {
-  res.sendFile(filePath, {
-    root: "."
-  });
-};
 
 app.get(
   `${staticContentRootPath}/logos/organizations/:organization_id`,

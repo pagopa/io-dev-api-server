@@ -73,11 +73,31 @@ definitions:
     type: object
     required:
       - version
-      - global
-      - arubaid
+      - it
+      - en
     properties:
       version:
         type: number
+      it:
+        $ref: '#/definitions/IdpsData'
+      en:
+        $ref: '#/definitions/IdpsData'
+  IdpsData:
+    type: object
+    required:
+      - global
+      - sub_title
+      - arubaid
+      - infocertid
+      - intesaid
+      - lepidaid
+      - namirialid
+      - posteid
+      - sielteid
+      - spiditalia
+      - timid
+      - xx_servizicie
+    properties:
       global: 
         type: object
         required:
@@ -89,6 +109,24 @@ definitions:
           sub_title:
             type: string
       arubaid: 
+        $ref: '#/definitions/Idp'
+      infocertid: 
+        $ref: '#/definitions/Idp'
+      intesaid: 
+        $ref: '#/definitions/Idp'
+      lepidaid: 
+        $ref: '#/definitions/Idp'
+      namirialid: 
+        $ref: '#/definitions/Idp'
+      posteid: 
+        $ref: '#/definitions/Idp'
+      sielteid: 
+        $ref: '#/definitions/Idp'
+      spiditalia: 
+        $ref: '#/definitions/Idp'
+      timid: 
+        $ref: '#/definitions/Idp'
+      xx_servizicie: 
         $ref: '#/definitions/Idp'
   Idp:
     type: object
