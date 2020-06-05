@@ -3,6 +3,13 @@ import { fromNullable } from "fp-ts/lib/Option";
 import * as fs from "fs";
 import { Second } from "italia-ts-commons/lib/units";
 import { uuidv4 } from "../utils/strings";
+import { availableBonuses } from "./payloads/availableBonuses";
+import { activeBonus } from "./payloads/bonus";
+import {
+  eligibilityCheckSuccessEligible,
+  eligibilityCheckSuccessIneligible,
+  eligibilityCheckFailure
+} from "./payloads/eligibility";
 export const bonusVacanze = Router();
 
 const qrCodeBonusVacanzeSvg = fs
@@ -13,41 +20,9 @@ const qrCodeBonusVacanzePng = fs
   .readFileSync("assets/imgs/bonus-vacanze/qr_code_bonus_vacanze.png")
   .toString("base64");
 
-enum BonusStatusEnum {
-  "ACTIVE" = "ACTIVE",
-  "CANCELLED" = "CANCELLED",
-  "FAILED" = "FAILED",
-  "CONSUMED" = "CONSUMED"
-}
-
 // get the list of all available bonus types
 bonusVacanze.get("/", (_, res) => {
-  const bonuses = {
-    items: [
-      {
-        id_type: 1,
-        service_id: "01DBJNYDCT0Q5G0D0K7RFS2R2F",
-        name: "Bonus Vacanze",
-        is_active: true,
-        description: "descrizione bonus vacanze",
-        valid_from: "2020-07-01T00:00:00.000Z",
-        valid_to: "2020-12-31T00:00:00.000Z",
-        cover:
-          "https://gdsit.cdn-immedia.net/2018/08/fff810d2e44464312e70071340fd92fc.jpg"
-      },
-      {
-        id_type: 2,
-        name: "Bonus che non esiste",
-        is_active: false,
-        description: "descrizione bonus che non esiste",
-        valid_from: "2020-05-25T00:00:00.000Z",
-        valid_to: "2020-06-01T00:00:00.000Z",
-        cover:
-          "https://www.pensionipertutti.it/wp-content/uploads/2020/05/bonus-600-euro-autonomi.jpg"
-      }
-    ]
-  };
-  res.json(bonuses);
+  res.json(availableBonuses);
 });
 
 // check if can activate bonus
@@ -82,26 +57,7 @@ bonusVacanze.get(`/activations`, (_, res) => {
   );
 });
 
-const activeBonus = {
-  applicant_fiscal_code: "SPNDNL80R11C522K",
-  code: "MYSECRETCODE",
-  qr_code: [
-    {
-      mime_type: "svg+xml",
-      base64_content: qrCodeBonusVacanzeSvg
-    },
-    {
-      mime_type: "image/png",
-      base64_content: qrCodeBonusVacanzePng
-    }
-  ],
-  max_amount: 50000,
-  max_tax_benefit: 3000,
-  updated_at: "2020-07-04T12:20:00.000Z",
-  status: BonusStatusEnum.ACTIVE
-};
-
-bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
+bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
   fromNullable(idActivationBonus).foldL(
     () => {
       // No active bonus found.
@@ -130,7 +86,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 let idEligibilityRequest: string | undefined;
 // tslint:disable-next-line: no-let
 let firstRequestTime = 0;
-const responseIseeAfter = 18 as Second;
+const responseIseeAfter = 3 as Second;
 // Get eligibility (ISEE) check information for user's bonus
 
 // since all these apis implements a specific flow, if you want re-run it
@@ -156,27 +112,6 @@ bonusVacanze.post("/eligibility", (_, res) => {
 });
 
 bonusVacanze.get("/eligibility", (_, res) => {
-  const eligibilityCheck = {
-    family_members: [
-      {
-        name: "Mario",
-        surname: "Rossi",
-        fiscal_code: "EFCMZZ80A12L720R"
-      },
-      {
-        name: "Giulia",
-        surname: "Rossi",
-        fiscal_code: "CDCMQQ81A12L721R"
-      },
-      {
-        name: "Piero",
-        surname: "Rossi",
-        fiscal_code: "ABCMYY82A12L722R"
-      }
-    ],
-    max_amount: 50000,
-    max_tax_benefit: 3000
-  };
   // no task created, not-found
   if (idEligibilityRequest === undefined) {
     res.sendStatus(404);
@@ -190,24 +125,11 @@ bonusVacanze.get("/eligibility", (_, res) => {
     res.status(202).json({ id: idEligibilityRequest });
     return;
   }
-  enum EligibilityCheckStatusEnum {
-    "USER_NOT_FOUND" = "USER_NOT_FOUND",
-    "INELIGIBLE" = "INELIGIBLE",
-    "ISEE_NOT_FOUND" = "ISEE_NOT_FOUND",
-    "ELIGIBLE" = "ELIGIBLE"
-  }
-  // possible states
-  // - USER_NOT_FOUND    User not found in INPS database
-  // - ISEE_NOT_FOUND    User found but there's no ISEE data
-  // - ELIGIBILE         The user is eligible for the bonus
-  // - INELIGIBLE        The user is not eligible for the bonus
   // Request processed
-  // TODO we should mock also the ERROR case
-  res.status(200).json({
-    ...eligibilityCheck,
-    id: idEligibilityRequest,
-    status: EligibilityCheckStatusEnum.ELIGIBLE
-  });
+  // success and eligible -> eligibilityCheckSuccessEligible
+  // success and ineligible -> eligibilityCheckSuccessIneligible
+  // failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
+  res.status(200).json(eligibilityCheckFailure);
 });
 
 // Cancel bonus eligibility check procedure (avoids sending a push notification when done)
