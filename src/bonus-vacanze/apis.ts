@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import * as fs from "fs";
 import { Second } from "italia-ts-commons/lib/units";
 import { uuidv4 } from "../utils/strings";
 import { availableBonuses } from "./payloads/availableBonuses";
@@ -11,14 +10,6 @@ import {
   eligibilityCheckFailure
 } from "./payloads/eligibility";
 export const bonusVacanze = Router();
-
-const qrCodeBonusVacanzeSvg = fs
-  .readFileSync("assets/imgs/bonus-vacanze/qr-mysecretcode.svg")
-  .toString("base64");
-
-const qrCodeBonusVacanzePng = fs
-  .readFileSync("assets/imgs/bonus-vacanze/qr_code_bonus_vacanze.png")
-  .toString("base64");
 
 // get the list of all available bonus types
 bonusVacanze.get("/", (_, res) => {
