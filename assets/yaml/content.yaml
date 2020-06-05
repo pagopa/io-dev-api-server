@@ -85,8 +85,6 @@ definitions:
   IdpsData:
     type: object
     required:
-      - global
-      - sub_title
       - arubaid
       - infocertid
       - intesaid
@@ -98,16 +96,6 @@ definitions:
       - timid
       - xx_servizicie
     properties:
-      global: 
-        type: object
-        required:
-          - title
-          - sub_title
-        properties:
-          title:
-            type: string
-          sub_title:
-            type: string
       arubaid: 
         $ref: '#/definitions/Idp'
       infocertid: 
@@ -132,7 +120,7 @@ definitions:
     type: object
     required:
       - description
-      - email
+      - recover_password
       - phone
       - web_site
     properties:
@@ -140,9 +128,15 @@ definitions:
         type: string
       email: 
         $ref: '#/definitions/IdpCta'
+      helpdesk_form: 
+        $ref: '#/definitions/IdpCta'
       phone: 
         $ref: '#/definitions/IdpCta'
       web_site: 
+        $ref: '#/definitions/IdpCta'
+      recover_username: 
+        $ref: '#/definitions/IdpCta'
+      recover_password: 
         $ref: '#/definitions/IdpCta'
   IdpCta:
     type: object

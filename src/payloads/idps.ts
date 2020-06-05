@@ -4,135 +4,547 @@ import { validatePayload } from "../utils/validator";
 const mockIdps: IdpsTextData = {
   version: 1,
   it: {
-    global: {
-      title: "**testo** globale",
-      sub_title: "### lista \n- item1\n- item2"
-    },
     arubaid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     infocertid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     intesaid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     lepidaid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     namirialid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     posteid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     sielteid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     spiditalia: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     timid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     xx_servizicie: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     }
   },
   en: {
-    global: {
-      title: "**testo** globale",
-      sub_title: "### lista \n- item1\n- item2"
-    },
     arubaid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     infocertid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     intesaid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     lepidaid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     namirialid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     posteid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     sielteid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     spiditalia: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     timid: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     },
     xx_servizicie: {
-      description: "bla bla",
-      email: { cta: "email", action: "email@idp.it" },
-      phone: { cta: "telefono", action: "5555555" },
-      web_site: { cta: "sito web", action: "https://www.idp.it" }
+      description: "**description**",
+      email: {
+        cta: "invia un'e-mail",
+        action: "<EMAIL>"
+      },
+      helpdesk_form: {
+        cta: "apri un ticket",
+        action: "<INDIRIZZO WEB>"
+      },
+      phone: {
+        cta: "chiama",
+        action: "<TELEFONO>"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "<INDIRIZZO WEB PROVIDER>"
+      },
+      recover_username: {
+        cta: "Recupera l'username",
+        action: "<INDIRIZZO WEB>"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "<INDIRIZZO WEB>"
+      }
     }
   }
 };
