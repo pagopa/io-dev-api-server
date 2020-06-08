@@ -66,7 +66,7 @@ const responseHandler = new ResponseHandler(app);
 let currentProfile = getProfile(fiscalCode).payload;
 // services and messages
 export const services = getServices(20);
-const totalMessages = 5;
+const totalMessages = 2;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);

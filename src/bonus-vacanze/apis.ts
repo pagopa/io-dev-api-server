@@ -120,7 +120,7 @@ bonusVacanze.get("/eligibility", (_, res) => {
   // success and eligible -> eligibilityCheckSuccessEligible
   // success and ineligible -> eligibilityCheckSuccessIneligible
   // failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
-  res.status(200).json(eligibilityCheckFailure);
+  res.status(200).json(eligibilityCheckSuccessEligible);
 });
 
 // Cancel bonus eligibility check procedure (avoids sending a push notification when done)

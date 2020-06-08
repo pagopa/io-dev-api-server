@@ -17,7 +17,7 @@ export const eligibilityCheckSuccessEligible = {
       fiscal_code: "ABCMYY82A12L722R"
     }
   ],
-  max_amount: 499,
+  max_amount: 499, // due to a bug on codec
   max_tax_benefit: 30,
   valid_before: "2020-05-25T00:00:00.000Z",
   status: "ELIGIBLE"
