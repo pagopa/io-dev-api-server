@@ -8,11 +8,11 @@ enum BonusStatusEnum {
 }
 
 const qrCodeBonusVacanzeSvg = fs
-  .readFileSync("assets/imgs/bonus-vacanze/qr-mysecretcode.svg")
+  .readFileSync("assets/bonus-vacanze/qr-mysecretcode.svg")
   .toString("base64");
 
 const qrCodeBonusVacanzePng = fs
-  .readFileSync("assets/imgs/bonus-vacanze/qr_code_bonus_vacanze.png")
+  .readFileSync("assets/bonus-vacanze/qr_code_bonus_vacanze.png")
   .toString("base64");
 
 export const activeBonus = {

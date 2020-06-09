@@ -1,15 +1,14 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
+import { sendFile } from "../server";
 import { uuidv4 } from "../utils/strings";
-import { availableBonuses } from "./payloads/availableBonuses";
 import { activeBonus } from "./payloads/bonus";
 import { eligibilityCheckSuccessEligible } from "./payloads/eligibility";
 export const bonusVacanze = Router();
 
-// get the list of all available bonus types
-bonusVacanze.get("/", (_, res) => {
-  res.json(availableBonuses);
+bonusVacanze.get("/definitions", (_, res) => {
+  sendFile("assets/bonus-vacanze/specs.yaml", res);
 });
 
 // check if can activate bonus

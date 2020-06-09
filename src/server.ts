@@ -11,9 +11,11 @@ import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/U
 import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
+import { basePath } from "../generated/definitions/backend_api_paths";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { bonusVacanze, resetBonusVacanze } from "./bonus-vacanze/apis";
+import { availableBonuses } from "./bonus-vacanze/payloads/availableBonuses";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
@@ -56,7 +58,7 @@ app.use(
   )
 );
 // support bonus vacanze
-app.use("/bonus/vacanze", bonusVacanze);
+app.use(`${basePath}/bonus/vacanze`, bonusVacanze);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 
@@ -177,7 +179,7 @@ app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
 });
 
-const sendFile = (filePath: string, res: Response) => {
+export const sendFile = (filePath: string, res: Response) => {
   res.sendFile(filePath, {
     root: "."
   });
@@ -199,6 +201,13 @@ app.get(`${staticContentRootPath}/logos/services/:service_id`, (_, res) => {
 app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
   res.json(municipality);
 });
+
+// get the list of all available bonus types
+app.get(`${staticContentRootPath}/bonus-vacanze/bonuses.json`, (_, res) => {
+  res.json(availableBonuses);
+});
+
+/** end static content */
 
 // it should be useful to reset some states
 app.get("/reset", (_, res) => {
