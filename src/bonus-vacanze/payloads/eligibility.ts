@@ -1,25 +1,42 @@
-export const eligibilityCheckSuccessEligible = {
-  id: "id_eligibility_success",
-  family_members: [
-    {
-      name: "Mario",
-      surname: "Rossi",
-      fiscal_code: "EFCMZZ80A12L720R"
-    },
-    {
-      name: "Giulia",
-      surname: "Rossi",
-      fiscal_code: "ABCMYY82A12L722R"
-    },
-    {
-      name: "Piero",
-      surname: "Rossi",
-      fiscal_code: "ABCMYY82A12L722R"
-    }
-  ],
-  max_amount: 499, // due to a bug on codec
+const familyMembers = [
+  {
+    name: "Mario",
+    surname: "Rossi",
+    fiscal_code: "EFCMZZ80A12L720R"
+  },
+  {
+    name: "Giulia",
+    surname: "Rossi",
+    fiscal_code: "CDCMQQ81A12L721R"
+  },
+  {
+    name: "Piero",
+    surname: "Rossi",
+    fiscal_code: "ABCMYY82A12L722R"
+  }
+];
+
+const dsuData = {
+  request_id: "request_id",
+  isee_type: "isee_id",
+  dsu_protocol_id: "dsu_protocol_id",
+  dsu_created_at: "2020-05-25T00:00:00.000Z",
+  has_discrepancies: false,
+  family_members: familyMembers,
+  max_amount: 499,
+  max_tax_benefit: 30
+};
+
+export const mockedElegibilityCheck = {
+  max_amount: 499,
   max_tax_benefit: 30,
-  valid_before: "2020-05-25T00:00:00.000Z",
+  id: "d296cf6a-11f8-412b-972a-ede34d629680",
+  valid_before: new Date("2020-07-04T12:20:00.000Z"),
+  ...dsuData
+};
+
+export const eligibilityCheckSuccessEligible = {
+  ...mockedElegibilityCheck,
   status: "ELIGIBLE"
 };
 

@@ -66,18 +66,19 @@ bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
 });
 
 // Start bonus activation request procedure
-// 202 -> Request accepted.
+// 201 -> Request created.
+// 201 -> Processing request.
 // 409 -> Cannot activate a new bonus because another bonus related to this user was found.
 // 403 -> Cannot activate a new bonus because the eligibility data has expired.
 // The user must re-initiate the eligibility procedure to refresh her data
 // and retry to activate the bonus within 24h since her got the result.
 bonusVacanze.post(`/activations`, (_, res) => {
-  // if there is no previous activation -> Request accepted -> send back the created id
+  // if there is no previous activation -> Request created -> send back the created id
   fromNullable(idActivationBonus).foldL(
     () => {
       idActivationBonus = uuidv4();
       firstBonusActivationRequestTime = new Date().getTime();
-      res.status(202).json({ id: idActivationBonus });
+      res.status(201).json({ id: idActivationBonus });
     },
     // Cannot activate a new bonus because another bonus related to this user was found.
     () => res.sendStatus(409)
@@ -101,6 +102,9 @@ export const resetBonusVacanze = () => {
 };
 
 // Start bonus eligibility check (ISEE)
+// 201 -> created
+// 202 -> request processing
+// 409 -> pending request
 bonusVacanze.post("/eligibility", (_, res) => {
   if (idEligibilityRequest) {
     // a task already exists because it has been requested
@@ -111,7 +115,7 @@ bonusVacanze.post("/eligibility", (_, res) => {
   firstIseeRequestTime = new Date().getTime();
   idEligibilityRequest = uuidv4();
   // first time return the id of the created task -> request accepted
-  res.status(202).json({ id: idEligibilityRequest });
+  res.status(201).json({ id: idEligibilityRequest });
 });
 
 bonusVacanze.get("/eligibility", (_, res) => {
