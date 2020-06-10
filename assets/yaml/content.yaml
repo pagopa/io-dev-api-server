@@ -132,11 +132,15 @@ definitions:
         $ref: '#/definitions/IdpCta'
       phone: 
         $ref: '#/definitions/IdpCta'
+      phone_international: 
+        $ref: '#/definitions/IdpCta'
       web_site: 
         $ref: '#/definitions/IdpCta'
       recover_username: 
         $ref: '#/definitions/IdpCta'
       recover_password: 
+        $ref: '#/definitions/IdpCta'
+      recover_emergency_code:
         $ref: '#/definitions/IdpCta'
   IdpCta:
     type: object
