@@ -5,7 +5,8 @@ const mockIdps: IdpsTextData = {
   version: 1,
   it: {
     arubaid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Aruba selezionando una delle opzioni disponibili qui.",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Aruba selezionando una delle opzioni disponibili qui.",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://selfcarespid.aruba.it/#/recovery-emergency-code"
@@ -32,7 +33,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     infocertid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da InfoCert  selezionando una delle opzioni disponibili qui di seguito. \n Inoltre, per ulteriori informazioni puoi consultare la [le FAQ e le guide](https://help.infocert.it/Cerca?searchText=spid) fornite dal tuo Identity Provider.",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da InfoCert  selezionando una delle opzioni disponibili qui di seguito. \n Inoltre, per ulteriori informazioni puoi consultare la [le FAQ e le guide](https://help.infocert.it/Cerca?searchText=spid) fornite dal tuo Identity Provider.",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://contatta.infocert.it/ticket/"
@@ -47,7 +49,8 @@ const mockIdps: IdpsTextData = {
       },
       recover_username: {
         cta: "Recupera l'username",
-        action: "https://help.infocert.it/home/faq/come-posso-recuperare-la-user-id-di-accesso-alla-mia-identita-digitale"
+        action:
+          "https://help.infocert.it/home/faq/come-posso-recuperare-la-user-id-di-accesso-alla-mia-identita-digitale"
       },
       recover_password: {
         cta: "Recupera la password",
@@ -55,7 +58,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     intesaid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Intesa  selezionando una delle opzioni disponibili qui di seguito.",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Intesa  selezionando una delle opzioni disponibili qui di seguito.",
       email: {
         cta: "invia un'e-mail",
         action: "hdintesa@advalia.com"
@@ -82,14 +86,16 @@ const mockIdps: IdpsTextData = {
       }
     },
     lepidaid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Lepida selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://id.lepida.it/docs/manuale_utente.pdf) fornito da tuo Identity Provider.",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Lepida selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://id.lepida.it/docs/manuale_utente.pdf) fornito da tuo Identity Provider.",
       email: {
         cta: "invia un'e-mail",
         action: "helpdesk@lepida.it"
       },
       helpdesk_form: {
         cta: "apri un ticket",
-        action: "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid"
+        action:
+          "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid"
       },
       phone: {
         cta: "chiama",
@@ -109,7 +115,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     namirialid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Namirial selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) fornite dal tuo Identity Provider.",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Namirial selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) fornite dal tuo Identity Provider.",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://support.namirial.com/it/supporto-tecnico"
@@ -132,7 +139,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     posteid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://www.poste.it/scrivici.html"
@@ -155,7 +163,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     sielteid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://www.sielteid.it/contact.html#blocco-contatti-form"
@@ -174,7 +183,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     spiditalia: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Register mediante il bottone qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.register.it/spid#pgc-23051-10-0) fornite dal tuo Identity Provider ed il [Manuale Utente](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Register mediante il bottone qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.register.it/spid#pgc-23051-10-0) fornite dal tuo Identity Provider ed il [Manuale Utente](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
       phone: {
         cta: "chiama",
         action: "+390355787979"
@@ -193,7 +203,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     timid: {
-      description: "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
+      description:
+        "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
       email: {
         cta: "invia un'e-mail",
         action: "supportotimid@telecomitalia.it"
@@ -219,8 +230,27 @@ const mockIdps: IdpsTextData = {
         action: "https://login.id.tim.it/mps/fp.php"
       }
     },
-    xx_servizicie: {
-      description: "Il provider selezionato è utilizzato per scopi di sviluppo e tsting dell'app.",
+    cie: {
+      description: "The selected provider is used for development purposes.",
+      email: {
+        cta: "invia un'e-mail",
+        action: "fake@email.it"
+      },
+      phone: {
+        cta: "chiama",
+        action: "00000000"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "https://www.pagopa.gov.it/it/pagopa-spa/"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "https://www.pagopa.gov.it/it/pagopa-spa/"
+      }
+    },
+    test: {
+      description: "The selected provider is used for development purposes.",
       email: {
         cta: "invia un'e-mail",
         action: "fake@email.it"
@@ -241,7 +271,8 @@ const mockIdps: IdpsTextData = {
   },
   en: {
     arubaid: {
-      description: "For problems encountered during the authentication process , you can reach the support desk of Aruba by selecting  one of the options presented below.",
+      description:
+        "For problems encountered during the authentication process , you can reach the support desk of Aruba by selecting  one of the options presented below.",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://selfcarespid.aruba.it/#/recovery-emergency-code"
@@ -268,7 +299,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     infocertid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of InfoCert by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://help.infocert.it/Cerca?searchText=spid) gathered by your Identity Provider.",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of InfoCert by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://help.infocert.it/Cerca?searchText=spid) gathered by your Identity Provider.",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://contatta.infocert.it/ticket/"
@@ -283,7 +315,8 @@ const mockIdps: IdpsTextData = {
       },
       recover_username: {
         cta: "Recupera l'username",
-        action: "https://help.infocert.it/home/faq/come-posso-recuperare-la-user-id-di-accesso-alla-mia-identita-digitale"
+        action:
+          "https://help.infocert.it/home/faq/come-posso-recuperare-la-user-id-di-accesso-alla-mia-identita-digitale"
       },
       recover_password: {
         cta: "Recupera la password",
@@ -291,7 +324,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     intesaid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Intesa by selecting  one of the options presented below.",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Intesa by selecting  one of the options presented below.",
       email: {
         cta: "invia un'e-mail",
         action: "hdintesa@advalia.com"
@@ -318,14 +352,16 @@ const mockIdps: IdpsTextData = {
       }
     },
     lepidaid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Lepida by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Lepida by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
       email: {
         cta: "invia un'e-mail",
         action: "helpdesk@lepida.it"
       },
       helpdesk_form: {
         cta: "apri un ticket",
-        action: "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid"
+        action:
+          "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid"
       },
       phone: {
         cta: "chiama",
@@ -345,7 +381,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     namirialid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Namirial by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Namirial by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://support.namirial.com/it/supporto-tecnico"
@@ -368,7 +405,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     posteid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Poste Italiane by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Poste Italiane by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://www.poste.it/scrivici.html"
@@ -391,7 +429,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     sielteid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Sielte by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Sielte by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
       helpdesk_form: {
         cta: "apri un ticket",
         action: "https://www.sielteid.it/contact.html#blocco-contatti-form"
@@ -410,7 +449,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     spiditalia: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Sielte by selecting  the button below. \n For further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Sielte by selecting  the button below. \n For further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
       phone: {
         cta: "chiama",
         action: "+390355787979"
@@ -429,7 +469,8 @@ const mockIdps: IdpsTextData = {
       }
     },
     timid: {
-      description: "For problems encountered during the authentication process,  you can reach the support desk of Tim by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
+      description:
+        "For problems encountered during the authentication process,  you can reach the support desk of Tim by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
       email: {
         cta: "invia un'e-mail",
         action: "supportotimid@telecomitalia.it"
@@ -455,7 +496,26 @@ const mockIdps: IdpsTextData = {
         action: "https://login.id.tim.it/mps/fp.php"
       }
     },
-    xx_servizicie: {
+    cie: {
+      description: "The selected provider is used for development purposes.",
+      email: {
+        cta: "invia un'e-mail",
+        action: "fake@email.it"
+      },
+      phone: {
+        cta: "chiama",
+        action: "00000000"
+      },
+      web_site: {
+        cta: "Vai al sito web",
+        action: "https://www.pagopa.gov.it/it/pagopa-spa/"
+      },
+      recover_password: {
+        cta: "Recupera la password",
+        action: "https://www.pagopa.gov.it/it/pagopa-spa/"
+      }
+    },
+    test: {
       description: "The selected provider is used for development purposes.",
       email: {
         cta: "invia un'e-mail",
