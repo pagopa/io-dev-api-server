@@ -14,8 +14,8 @@ import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { backendInfo, backendStatus } from "./payloads/backend";
-import { getProblemJson, notFound } from "./payloads/error";
 import { contextualHelpData } from "./payloads/contextualHelp";
+import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
   getMessages,
