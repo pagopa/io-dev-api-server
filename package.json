@@ -5,7 +5,7 @@
   "main": "app.js",
   "api_beckend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v5.3.1/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v5.3.1/api_public.yaml",
-  "content_specs": "http://127.0.0.1:3000/content.yaml",
+  "content_specs": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_bonus.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,

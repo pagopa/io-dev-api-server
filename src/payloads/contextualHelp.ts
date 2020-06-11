@@ -7,6 +7,7 @@ const contextualHelp: ContextualHelp = {
     screens: [
       {
         route_name: "PROFILE_MAIN",
+        title: "title",
         content: "**content**"
       }
     ],
@@ -102,20 +103,6 @@ const contextualHelp: ContextualHelp = {
         web_site: "https://spid.tim.it/tim-id-portal",
         recover_username: "https://login.id.tim.it/mps/fu.php",
         recover_password: "https://login.id.tim.it/mps/fp.php"
-      },
-      cie: {
-        description: "The selected provider is used for development purposes.",
-        email: "fake@email.it",
-        phone: "00000000",
-        web_site: "https://www.pagopa.gov.it/it/pagopa-spa/",
-        recover_password: "https://www.pagopa.gov.it/it/pagopa-spa/"
-      },
-      test: {
-        description: "The selected provider is used for development purposes.",
-        email: "fake@email.it",
-        phone: "00000000",
-        web_site: "https://www.pagopa.gov.it/it/pagopa-spa/",
-        recover_password: "https://www.pagopa.gov.it/it/pagopa-spa/"
       }
     }
   },
@@ -123,6 +110,7 @@ const contextualHelp: ContextualHelp = {
     screens: [
       {
         route_name: "PROFILE_MAIN",
+        title: "title",
         content: "**content**"
       }
     ],
@@ -218,20 +206,6 @@ const contextualHelp: ContextualHelp = {
         web_site: "https://spid.tim.it/tim-id-portal",
         recover_username: "https://login.id.tim.it/mps/fu.php",
         recover_password: "https://login.id.tim.it/mps/fp.php"
-      },
-      cie: {
-        description: "The selected provider is used for development purposes.",
-        email: "fake@email.it",
-        phone: "00000000",
-        web_site: "https://www.pagopa.gov.it/it/pagopa-spa/",
-        recover_password: "https://www.pagopa.gov.it/it/pagopa-spa/"
-      },
-      test: {
-        description: "The selected provider is used for development purposes.",
-        email: "fake@email.it",
-        phone: "00000000",
-        web_site: "https://www.pagopa.gov.it/it/pagopa-spa/",
-        recover_password: "https://www.pagopa.gov.it/it/pagopa-spa/"
       }
     }
   }

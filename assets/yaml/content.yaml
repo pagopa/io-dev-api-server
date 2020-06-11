@@ -100,9 +100,12 @@ definitions:
     type: object
     required:
       - route_name
+      - title
       - content
     properties:
       route_name:
+        type: string
+      title:
         type: string
       content:
         type: string
