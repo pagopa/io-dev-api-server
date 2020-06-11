@@ -11,6 +11,10 @@ bonusVacanze.get("/definitions", (_, res) => {
   sendFile("assets/bonus-vacanze/specs.yaml", res);
 });
 
+bonusVacanze.get("/definitions_functions", (_, res) => {
+  sendFile("assets/bonus-vacanze/specs_functions.yaml", res);
+});
+
 // check if can activate bonus
 bonusVacanze.get(`/can-activate/:id_bonus`, (_, res) => {
   // could be
@@ -133,8 +137,10 @@ bonusVacanze.get("/eligibility", (_, res) => {
     return;
   }
   // Request processed
+  // use these const to simulate different scenarios
   // success and eligible -> eligibilityCheckSuccessEligible
   // success and ineligible -> eligibilityCheckSuccessIneligible
+  // conflict -> eligibilityCheckConflict
   // failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
   res.status(200).json(eligibilityCheckSuccessEligible);
 });

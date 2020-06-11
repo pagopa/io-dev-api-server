@@ -145,47 +145,48 @@ paths:
           description: Service unavailable.
           schema:
             $ref: "#/definitions/ProblemJson"
+
 definitions:
   FiscalCode:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/FiscalCode"
   InstanceId:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/InstanceId"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/InstanceId"
   ProblemJson:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/ProblemJson"
   MaxBonusAmount:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/MaxBonusAmount"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/MaxBonusAmount"
   MaxBonusTaxBenefit:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/MaxBonusTaxBenefit"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/MaxBonusTaxBenefit"
   FamilyMember:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/FamilyMember"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/FamilyMember"
   FamilyMembers:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/FamilyMembers"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/FamilyMembers"
   Dsu:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/Dsu"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/Dsu"
   EligibilityCheckSuccess:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/EligibilityCheckSuccess"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/EligibilityCheckSuccess"
   EligibilityCheckSuccessEligible:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/EligibilityCheckSuccessEligible"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/EligibilityCheckSuccessEligible"
   EligibilityCheckSuccessIneligible:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/EligibilityCheckSuccessIneligible"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/EligibilityCheckSuccessIneligible"
   EligibilityCheckFailure:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/EligibilityCheckFailure"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/EligibilityCheckFailure"
   EligibilityCheck:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/EligibilityCheck"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/EligibilityCheck"
   BonusActivationStatus:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/BonusActivationStatus"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/BonusActivationStatus"
   BonusActivation:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/BonusActivation"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/BonusActivation"
   Timestamp:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/master/openapi/definitions.yaml#/Timestamp"
+    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/Timestamp"
   BonusActivationItem:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/BonusActivationItem"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/BonusActivationItem"
   BonusActivationCollection:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/BonusActivationCollection"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/BonusActivationCollection"
   PaginationResponse:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/PaginationResponse"
   PaginatedBonusActivationsCollection:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-bonus/master/openapi/index.yaml#/definitions/PaginatedBonusActivationsCollection"
+    $ref: "http://127.0.0.1:3000/api/v1/bonus/vacanze/definitions_functions#/definitions/PaginatedBonusActivationsCollection"
 
   QrCodeImage:
     type: object
