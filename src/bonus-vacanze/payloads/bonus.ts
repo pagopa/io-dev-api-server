@@ -30,3 +30,22 @@ export const activeBonus: BonusActivationWithQrCode = {
   created_at: new Date(),
   status: BonusActivationStatusEnum.ACTIVE
 };
+
+export const redeemedBonus: BonusActivationWithQrCode = {
+  id: "ACEFGHLMN346" as BonusCode,
+  applicant_fiscal_code: "SPNDNL80R11C522K" as FiscalCode,
+  qr_code: [
+    {
+      mime_type: "image/png",
+      content: qrCodeBonusVacanzePng
+    },
+    {
+      mime_type: "svg+xml",
+      content: qrCodeBonusVacanzeSvg
+    }
+  ],
+  dsu_request: dsuData,
+  created_at: new Date(),
+  status: BonusActivationStatusEnum.REDEEMED,
+  redeemed_at: new Date()
+};

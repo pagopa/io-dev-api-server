@@ -54,6 +54,9 @@ const responseBonusActivationAfter = 8 as Second;
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
 bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
+  // use one of these constants to simulate different scenario
+  // - activeBonus
+  // - redeemedBonus
   // no task created, not-found
   if (idActivationBonus === undefined) {
     res.sendStatus(404);
@@ -138,10 +141,10 @@ bonusVacanze.get("/eligibility", (_, res) => {
   }
   // Request processed
   // use these const to simulate different scenarios
-  // success and eligible -> eligibilityCheckSuccessEligible
-  // success and ineligible -> eligibilityCheckSuccessIneligible
-  // conflict -> eligibilityCheckConflict
-  // failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
+  // - success and eligible -> eligibilityCheckSuccessEligible
+  // - success and ineligible -> eligibilityCheckSuccessIneligible
+  // - conflict -> eligibilityCheckConflict
+  // - failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
   res.status(200).json(eligibilityCheckSuccessEligible);
 });
 
