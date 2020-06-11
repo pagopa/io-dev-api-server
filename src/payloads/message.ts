@@ -7,7 +7,7 @@ import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount
 import { PaymentData } from "../../generated/definitions/backend/PaymentData";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { getRandomIntInRange, getRandomStringId } from "../../src/utils/id";
+import { getRandomIntInRange } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { uuidv4 } from "../utils/strings";
 import { IOResponse } from "./response";
