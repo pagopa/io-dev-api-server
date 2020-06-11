@@ -14,6 +14,7 @@ import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { backendInfo, backendStatus } from "./payloads/backend";
+import { contextualHelpData } from "./payloads/contextualHelp";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
@@ -165,6 +166,17 @@ app.get("/wallet/v1/transactions", (req, res) => {
 });
 
 /** static contents */
+
+const sendFile = (filePath: string, res: Response) => {
+  res.sendFile(filePath, {
+    root: "."
+  });
+};
+
+app.get(`/content.yaml`, (_, res) => {
+  sendFile("assets/yaml/content.yaml", res);
+});
+
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
   if (serviceId === "servicesByScope") {
@@ -173,12 +185,6 @@ app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   }
   res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
 });
-
-const sendFile = (filePath: string, res: Response) => {
-  res.sendFile(filePath, {
-    root: "."
-  });
-};
 
 app.get(
   `${staticContentRootPath}/logos/organizations/:organization_id`,
@@ -195,6 +201,10 @@ app.get(`${staticContentRootPath}/logos/services/:service_id`, (_, res) => {
 
 app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
   res.json(municipality);
+});
+
+app.get(`${staticContentRootPath}/contextualhelp/data.json`, (_, res) => {
+  res.json(contextualHelpData);
 });
 
 // it should be useful to reset some states

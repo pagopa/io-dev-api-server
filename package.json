@@ -5,6 +5,7 @@
   "main": "app.js",
   "api_beckend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v5.3.1/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v5.3.1/api_public.yaml",
+  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/definitions.yml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -17,7 +18,7 @@
     "lint-autofix": "tslint -p . -t verbose --fix",
     "start": "ts-node src/start.ts",
     "generate:paths": "ts-node src/utils/paths_generator.ts",
-    "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec https://raw.githubusercontent.com/teamdigitale/italia-services-metadata/master/definitions.yml --out-dir ./generated/definitions/content",
+    "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec $npm_package_content_specs --out-dir ./generated/definitions/content",
     "generate:models": "rimraf generated && rimraf generated/definitions/backend && mkdir -p generated/definitions/backend && gen-api-models --api-spec $npm_package_api_beckend_specs --out-dir ./generated/definitions/backend --no-strict --request-types && gen-api-models --api-spec $npm_package_api_public_specs --out-dir generated/definitions/backend",
     "generate:pagopa-api-definitions": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec https://wisp2.pagopa.gov.it/pp-restapi-CD/v2/api-docs --out-dir ./generated/definitions/pagopa --no-strict --request-types --response-decoders --default-error-type undefined",
     "generate:all": "npm-run-all generate:models generate:content-definitions generate:paths generate:pagopa-api-definitions"
