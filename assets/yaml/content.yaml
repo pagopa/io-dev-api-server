@@ -86,9 +86,26 @@ definitions:
     type: object
     required:
       - idps
+      - screens
     properties:
       idps:
         $ref: '#/definitions/IdpData'
+      screens:
+        $ref: '#/definitions/ScreensCHData'
+  ScreensCHData:
+    type: array
+    items:
+      $ref: '#/definitions/ScreenCHData'
+  ScreenCHData:
+    type: object
+    required:
+      - route_name
+      - content
+    properties:
+      route_name:
+        type: string
+      content:
+        type: string
   IdpData:
     type: object
     properties:

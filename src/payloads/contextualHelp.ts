@@ -4,6 +4,12 @@ import { validatePayload } from "../utils/validator";
 const contextualHelp: ContextualHelp = {
   version: 1,
   it: {
+    screens: [
+      {
+        route_name: "PROFILE_MAIN",
+        content: "**content**"
+      }
+    ],
     idps: {
       arubaid: {
         description:
@@ -114,6 +120,12 @@ const contextualHelp: ContextualHelp = {
     }
   },
   en: {
+    screens: [
+      {
+        route_name: "PROFILE_MAIN",
+        content: "**content**"
+      }
+    ],
     idps: {
       arubaid: {
         description:
