@@ -1,6 +1,6 @@
 import { ContextualHelp } from "../../generated/definitions/content/ContextualHelp";
 import { validatePayload } from "../utils/validator";
-
+// tslint:disable no-hardcoded-credentials
 const contextualHelp: ContextualHelp = {
   version: 1,
   it: {
