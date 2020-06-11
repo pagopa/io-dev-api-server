@@ -14,7 +14,7 @@ const qrCodeBonusVacanzePng = fs
   .toString("base64");
 
 export const activeBonus: BonusActivationWithQrCode = {
-  id: "BONUS_ID" as BonusCode,
+  id: "ACEFGHLMN346" as BonusCode,
   applicant_fiscal_code: "SPNDNL80R11C522K" as FiscalCode,
   qr_code: [
     {

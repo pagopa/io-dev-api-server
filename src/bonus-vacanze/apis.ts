@@ -63,10 +63,10 @@ bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
     (new Date().getTime() - firstBonusActivationRequestTime) / 1000;
   if (elapsedTime < responseBonusActivationAfter) {
     // request accepted, return the task id
-    res.status(202).json({ id: idActivationBonus });
+    res.status(202).json({ id: activeBonus.id });
     return;
   }
-  res.status(200).json({ ...activeBonus, id: req.params.bonus_id });
+  res.status(200).json(activeBonus);
 });
 
 // Start bonus activation request procedure
