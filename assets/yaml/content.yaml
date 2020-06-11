@@ -160,4 +160,40 @@ definitions:
         type: string
       recover_emergency_code:
         type: string
+  BonusesAvailable:
+    type: array
+    items:
+      $ref: '#/definitions/BonusAvailable'
+  BonusAvailable:
+    type: object
+    required:
+      - id_type
+      - name
+      - subtitle
+      - content
+      - is_active
+      - valid_from
+      - valid_to
+    properties:
+      id_type: 
+        type: number
+      name: 
+        type: string
+      subtitle:
+        type: string
+      content:
+        type: string
+      is_active: 
+        type: boolean
+      cover:
+        type: string
+      sponsorship_cover:
+        type: string
+      valid_from: 
+        $ref: '#/definitions/Timestamp'
+      valid_to: 
+        $ref: '#/definitions/Timestamp'
+  Timestamp:
+    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/Timestamp"
+        
 

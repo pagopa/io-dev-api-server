@@ -172,13 +172,13 @@ app.get("/wallet/v1/transactions", (req, res) => {
 
 /** static contents */
 
-const sendFile = (filePath: string, res: Response) => {
+export const sendFile = (filePath: string, res: Response) => {
   res.sendFile(filePath, {
     root: "."
   });
 };
 
-app.get(`/content.yaml`, (_, res) => {
+app.get(`/content_definitions.yaml`, (_, res) => {
   sendFile("assets/yaml/content.yaml", res);
 });
 
@@ -209,9 +209,12 @@ app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
 });
 
 // get the list of all available bonus types
-app.get(`${staticContentRootPath}/bonus-vacanze/bonuses.json`, (_, res) => {
-  res.json(availableBonuses);
-});
+app.get(
+  `${staticContentRootPath}/bonus/vacanze/bonuses_available.json`,
+  (_, res) => {
+    res.json(availableBonuses);
+  }
+);
 
 /** end static content */
 
