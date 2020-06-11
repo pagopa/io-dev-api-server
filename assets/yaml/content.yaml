@@ -69,7 +69,7 @@ definitions:
         type: array
         items:
           type: string
-  IdpsTextData:
+  ContextualHelp:
     type: object
     required:
       - version
@@ -79,22 +79,18 @@ definitions:
       version:
         type: number
       it:
-        $ref: '#/definitions/IdpsData'
+        $ref: '#/definitions/ContextualHelpData'
       en:
-        $ref: '#/definitions/IdpsData'
-  IdpsData:
+        $ref: '#/definitions/ContextualHelpData'
+  ContextualHelpData:
     type: object
     required:
-      - arubaid
-      - infocertid
-      - intesaid
-      - lepidaid
-      - namirialid
-      - posteid
-      - sielteid
-      - spiditalia
-      - timid
-      - xx_servizicie
+      - idps
+    properties:
+      idps:
+        $ref: '#/definitions/IdpData'
+  IdpData:
+    type: object
     properties:
       arubaid: 
         $ref: '#/definitions/Idp'
@@ -114,7 +110,9 @@ definitions:
         $ref: '#/definitions/Idp'
       timid: 
         $ref: '#/definitions/Idp'
-      xx_servizicie: 
+      cie: 
+        $ref: '#/definitions/Idp'
+      test: 
         $ref: '#/definitions/Idp'
   Idp:
     type: object
@@ -127,29 +125,19 @@ definitions:
       description: 
         type: string
       email: 
-        $ref: '#/definitions/IdpCta'
-      helpdesk_form: 
-        $ref: '#/definitions/IdpCta'
-      phone: 
-        $ref: '#/definitions/IdpCta'
-      phone_international: 
-        $ref: '#/definitions/IdpCta'
-      web_site: 
-        $ref: '#/definitions/IdpCta'
-      recover_username: 
-        $ref: '#/definitions/IdpCta'
-      recover_password: 
-        $ref: '#/definitions/IdpCta'
-      recover_emergency_code:
-        $ref: '#/definitions/IdpCta'
-  IdpCta:
-    type: object
-    required:
-      - cta
-      - action
-    properties:
-      cta: 
         type: string
-      action: 
+      helpdesk_form: 
+        type: string
+      phone: 
+        type: string
+      phone_international: 
+        type: string
+      web_site: 
+        type: string
+      recover_username: 
+        type: string
+      recover_password: 
+        type: string
+      recover_emergency_code:
         type: string
 
