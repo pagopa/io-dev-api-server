@@ -17,6 +17,7 @@ import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { bonusVacanze, resetBonusVacanze } from "./bonus-vacanze/apis";
 import { availableBonuses } from "./bonus-vacanze/payloads/availableBonuses";
 import { backendInfo, backendStatus } from "./payloads/backend";
+import { contextualHelpData } from "./payloads/contextualHelp";
 import { getProblemJson, notFound } from "./payloads/error";
 import { loginWithToken } from "./payloads/login";
 import {
@@ -170,6 +171,17 @@ app.get("/wallet/v1/transactions", (req, res) => {
 });
 
 /** static contents */
+
+const sendFile = (filePath: string, res: Response) => {
+  res.sendFile(filePath, {
+    root: "."
+  });
+};
+
+app.get(`/content.yaml`, (_, res) => {
+  sendFile("assets/yaml/content.yaml", res);
+});
+
 app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");
   if (serviceId === "servicesByScope") {
@@ -178,12 +190,6 @@ app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
   }
   res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
 });
-
-export const sendFile = (filePath: string, res: Response) => {
-  res.sendFile(filePath, {
-    root: "."
-  });
-};
 
 app.get(
   `${staticContentRootPath}/logos/organizations/:organization_id`,
@@ -208,6 +214,10 @@ app.get(`${staticContentRootPath}/bonus-vacanze/bonuses.json`, (_, res) => {
 });
 
 /** end static content */
+
+app.get(`${staticContentRootPath}/contextualhelp/data.json`, (_, res) => {
+  res.json(contextualHelpData);
+});
 
 // it should be useful to reset some states
 app.get("/reset", (_, res) => {

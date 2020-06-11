@@ -6,6 +6,7 @@
   "api_beckend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v6.3.0/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v6.3.0/api_public.yaml",
   "api_bonus_vacanze": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_bonus.yaml",
+  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/definitions.yml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
