@@ -112,6 +112,7 @@ export const resetBonusVacanze = () => {
 // 201 -> created
 // 202 -> request processing
 // 409 -> pending request
+// 403 -> there's already an active bonus related to this user
 bonusVacanze.post("/eligibility", (_, res) => {
   if (idEligibilityRequest) {
     // a task already exists because it has been requested
