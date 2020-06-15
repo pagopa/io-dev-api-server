@@ -38,6 +38,8 @@ const responseBonusActivationAfter = 8 as Second;
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
 bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
+  res.status(200).json(activeBonus);
+  return;
   // use one of these constants to simulate different scenario
   // - activeBonus
   // - redeemedBonus
