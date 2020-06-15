@@ -15,22 +15,6 @@ bonusVacanze.get("/definitions_functions", (_, res) => {
   sendFile("assets/bonus-vacanze/specs_functions.yaml", res);
 });
 
-// check if can activate bonus
-bonusVacanze.get(`/can-activate/:id_bonus`, (_, res) => {
-  // could be
-  // 200 -> can activate
-  // 403 -> can't activate (maybe some other activated it before)
-  res.sendStatus(200);
-  // this is only a mock
-  /*
-  res.send(403).json({
-    message:
-      "non puoi attivare il bonus perchè è stato già attivato da un componente del tuo nucleo familiare",
-    when: "2020-07-04T12:20:00.000Z"
-  });
-  */
-});
-
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
 // Get all IDs of the bonus activations requested by
@@ -53,7 +37,7 @@ const responseBonusActivationAfter = 8 as Second;
 // 202 -> Processing request.
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
-bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
+bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
   // use one of these constants to simulate different scenario
   // - activeBonus
   // - redeemedBonus
