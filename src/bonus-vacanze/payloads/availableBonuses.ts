@@ -7,8 +7,8 @@ Il bonus è destinato a tutte le famiglie italiane con un reddito familiare ISEE
 #### Quanto vale?
 Il valore del bonus cambia in base al numero di componenti del nucleo familiare:
 - 150€ per un solo componente; 
--  300€ per due componenti; 
--  500€ per più di due componenti.
+- 300€ per due componenti; 
+- 500€ per più di due componenti.
 
 L’incentivo può essere paragonato a uno sconto pari all’80% del valore del bonus, che viene applicato dalla struttura turistica al momento del pagamento della vacanza. Il restante 20% sarà fruito in forma di detrazione fiscale in fase di dichiarazione dei redditi.
 
@@ -38,6 +38,19 @@ export const availableBonuses: BonusesAvailable = [
     name: "Bonus Vacanze",
     subtitle: "dal 01/07/2020 al 31/12/2020",
     is_active: true,
+    content: contentBonusVacanze,
+    valid_from: new Date("2020-07-01T00:00:00.000Z"),
+    valid_to: new Date("2020-12-31T00:00:00.000Z"),
+    cover:
+      "https://gdsit.cdn-immedia.net/2018/08/fff810d2e44464312e70071340fd92fc.jpg",
+    sponsorship_cover:
+      "https://www.sinetinformatica.it/wp-content/uploads/2020/03/APP-IO-300x260.png"
+  },
+  {
+    id_type: 2,
+    name: "Bonus Vacanze2",
+    subtitle: "dal 01/07/2020 al 31/12/2020",
+    is_active: false,
     content: contentBonusVacanze,
     valid_from: new Date("2020-07-01T00:00:00.000Z"),
     valid_to: new Date("2020-12-31T00:00:00.000Z"),

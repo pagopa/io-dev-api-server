@@ -42,10 +42,10 @@ export const dsuData: Dsu = {
   isee_type: "isee_id",
   dsu_protocol_id: "dsu_protocol_id" as NonEmptyString,
   dsu_created_at: "2020-05-25T00:00:00.000Z",
-  has_discrepancies: true,
+  has_discrepancies: false,
   family_members: familyMembers,
-  max_amount: 499,
-  max_tax_benefit: 30
+  max_amount: 500,
+  max_tax_benefit: 100
 };
 
 export const eligibilityCheckSuccessEligible: EligibilityCheckSuccessEligible = {
@@ -62,7 +62,7 @@ export const eligibilityCheckSuccessIneligible: EligibilityCheckSuccessIneligibl
 
 export const eligibilityCheckFailure: EligibilityCheckFailure = {
   id: "d296cf6a-11f8-412b-972a-ede34d629680" as NonEmptyString,
-  error: ErrorEnum.INTERNAL_ERROR,
+  error: ErrorEnum.DATA_NOT_FOUND,
   error_description: "error_description",
   status: EnumFailure.FAILURE
 };

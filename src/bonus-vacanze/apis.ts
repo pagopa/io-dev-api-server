@@ -4,7 +4,12 @@ import { Second } from "italia-ts-commons/lib/units";
 import { sendFile } from "../server";
 import { uuidv4 } from "../utils/strings";
 import { activeBonus } from "./payloads/bonus";
-import { eligibilityCheckSuccessEligible } from "./payloads/eligibility";
+import {
+  eligibilityCheckSuccessEligible,
+  eligibilityCheckSuccessIneligible,
+  eligibilityCheckFailure,
+  eligibilityCheckConflict
+} from "./payloads/eligibility";
 export const bonusVacanze = Router();
 
 bonusVacanze.get("/definitions", (_, res) => {
@@ -33,13 +38,11 @@ bonusVacanze.get(`/activations`, (_, res) => {
 
 // tslint:disable-next-line: no-let
 let firstBonusActivationRequestTime = 0;
-const responseBonusActivationAfter = 8 as Second;
+const responseBonusActivationAfter = 3 as Second;
 // 202 -> Processing request.
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
 bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
-  res.status(200).json(activeBonus);
-  return;
   // use one of these constants to simulate different scenario
   // - activeBonus
   // - redeemedBonus
@@ -130,7 +133,7 @@ bonusVacanze.get("/eligibility", (_, res) => {
   // use these const to simulate different scenarios
   // - success and eligible -> eligibilityCheckSuccessEligible
   // - success and ineligible -> eligibilityCheckSuccessIneligible
-  // - conflict -> eligibilityCheckConflict
+  // - conflict -> eligibilityCheckConflict (Eligibility check succeeded but there's already a bonus found for this set of family members.)
   // - failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
   res.status(200).json(eligibilityCheckSuccessEligible);
 });
