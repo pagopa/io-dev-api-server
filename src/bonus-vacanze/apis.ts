@@ -72,7 +72,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
   // if there is no previous activation -> Request created -> send back the created id
   fromNullable(idActivationBonus).foldL(
     () => {
-      idActivationBonus = uuidv4();
+      idActivationBonus = activeBonus.id;
       firstBonusActivationRequestTime = new Date().getTime();
       res.status(201).json({ id: idActivationBonus });
     },
@@ -85,7 +85,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 let idEligibilityRequest: string | undefined;
 // tslint:disable-next-line: no-let
 let firstIseeRequestTime = 0;
-const responseIseeAfter = 13 as Second;
+const responseIseeAfter = 3 as Second;
 
 // Start bonus eligibility check (ISEE)
 // 201 -> created
