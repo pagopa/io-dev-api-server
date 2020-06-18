@@ -85,17 +85,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 let idEligibilityRequest: string | undefined;
 // tslint:disable-next-line: no-let
 let firstIseeRequestTime = 0;
-const responseIseeAfter = 3 as Second;
-// Get eligibility (ISEE) check information for user's bonus
-
-// since all these apis implements a specific flow, if you want re-run it
-// some vars must be cleaned
-export const resetBonusVacanze = () => {
-  idEligibilityRequest = undefined;
-  firstIseeRequestTime = 0;
-  idActivationBonus = undefined;
-  firstBonusActivationRequestTime = 0;
-};
+const responseIseeAfter = 13 as Second;
 
 // Start bonus eligibility check (ISEE)
 // 201 -> created
@@ -115,6 +105,7 @@ bonusVacanze.post("/eligibility", (_, res) => {
   res.status(201).json({ id: idEligibilityRequest });
 });
 
+// Get eligibility (ISEE) check information for user's bonus
 bonusVacanze.get("/eligibility", (_, res) => {
   // no task created, not-found
   if (idEligibilityRequest === undefined) {
@@ -148,3 +139,12 @@ bonusVacanze.delete("/eligibility", (_, res) => {
   // not found
   res.status(404);
 });
+
+// since all these apis implements a specific flow, if you want re-run it
+// some vars must be cleaned
+export const resetBonusVacanze = () => {
+  idEligibilityRequest = undefined;
+  firstIseeRequestTime = 0;
+  idActivationBonus = undefined;
+  firstBonusActivationRequestTime = 0;
+};
