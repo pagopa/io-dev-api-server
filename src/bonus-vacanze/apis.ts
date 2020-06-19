@@ -3,13 +3,14 @@ import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
 import { sendFile } from "../server";
 import { uuidv4 } from "../utils/strings";
-import { activeBonus } from "./payloads/bonus";
+import { activeBonus, genRandomBonusCode } from "./payloads/bonus";
 import {
   eligibilityCheckSuccessEligible,
   eligibilityCheckSuccessIneligible,
   eligibilityCheckFailure,
   eligibilityCheckConflict
 } from "./payloads/eligibility";
+import { range } from "fp-ts/lib/Array";
 export const bonusVacanze = Router();
 
 bonusVacanze.get("/definitions", (_, res) => {
@@ -22,14 +23,23 @@ bonusVacanze.get("/definitions_functions", (_, res) => {
 
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
+const aLotOfBonus = range(1, 5).map(_ => ({
+  ...activeBonus,
+  id: genRandomBonusCode()
+}));
 // Get all IDs of the bonus activations requested by
 // the authenticated user or by any between his family member
 bonusVacanze.get(`/activations`, (_, res) => {
   fromNullable(idActivationBonus).foldL(
     () => {
       // No activation found.
-      res.sendStatus(404);
+      // res.sendStatus(404);
+      // if you want to return a list of bonus comment the line above and uncomment the line below
+      res.json({
+        items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
+      });
     },
+
     // List of bonus activations ID activated or consumed by the authenticated user
     // or by any between his family members (former and actual)
     () => res.json({ items: [{ id: idActivationBonus, is_applicant: true }] })
@@ -42,7 +52,11 @@ const responseBonusActivationAfter = 3 as Second;
 // 202 -> Processing request.
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
-bonusVacanze.get(`/activations/:bonus_id`, (_, res) => {
+bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
+  const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
+  if (bonus) {
+    res.status(200).json(bonus);
+  }
   // use one of these constants to simulate different scenario
   // - activeBonus
   // - redeemedBonus

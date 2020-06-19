@@ -1,5 +1,7 @@
+import { randomBytes } from "crypto";
 import * as fs from "fs";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
+import { promisify } from "util";
 import { BonusActivationStatusEnum } from "../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { BonusActivationWithQrCode } from "../../../generated/definitions/bonus_vacanze/BonusActivationWithQrCode";
 import { BonusCode } from "../../../generated/definitions/bonus_vacanze/BonusCode";
@@ -12,8 +14,25 @@ const qrCodeBonusVacanzePng = fs
   .readFileSync("assets/bonus-vacanze/qr_code_bonus_vacanze.png")
   .toString("base64");
 
+// Bonus codes are made of characters picked from the following alphabet
+export const ALPHABET = "ACEFGHLMNPRUV3469";
+const ALPHABET_LEN = ALPHABET.length;
+// Bonus codes have a length of 12 characthers
+export const BONUSCODE_LENGTH = 12;
+
+/**
+ * Generates a new random bonus code
+ */
+export function genRandomBonusCode(): BonusCode {
+  const randomBuffer = randomBytes(BONUSCODE_LENGTH);
+  const code = [...Array.from(randomBuffer)]
+    .map(b => ALPHABET[b % ALPHABET_LEN])
+    .join("");
+  return code as BonusCode;
+}
+
 export const activeBonus: BonusActivationWithQrCode = {
-  id: "ACEFGHLMN346" as BonusCode,
+  id: genRandomBonusCode(),
   applicant_fiscal_code: "SPNDNL80R11C522K" as FiscalCode,
   qr_code: [
     {
