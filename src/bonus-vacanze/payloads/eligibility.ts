@@ -34,6 +34,30 @@ const familyMembers: FamilyMembers = [
     name: "Piero" as NonEmptyString,
     surname: "Rossi" as NonEmptyString,
     fiscal_code: "ABCMYY82A12L722R" as FiscalCode
+  },
+  // Overflow name
+  {
+    name: "Maria Giovanni" as NonEmptyString,
+    surname: "D'Anassimandro Curtis" as NonEmptyString,
+    fiscal_code: "ABCMWW82A12L722R" as FiscalCode
+  },
+  // Overflow Fiscal Code
+  {
+    name: "Luigi Mario" as NonEmptyString,
+    surname: "Rossi" as NonEmptyString,
+    fiscal_code: "ABCMKK82A12L722R" as FiscalCode
+  },
+  // Overflow name + Fiscal Code
+  {
+    name: "Vittorio Emanuele" as NonEmptyString,
+    surname: "Del Priore Primo" as NonEmptyString,
+    fiscal_code: "ABCMZZ82A12L722R" as FiscalCode
+  },
+  // Overflow name + very short fiscal code
+  {
+    name: "Maria Antonietta Assunta" as NonEmptyString,
+    surname: "Blu" as NonEmptyString,
+    fiscal_code: "MMMMYY82A12L722R" as FiscalCode
   }
 ];
 
