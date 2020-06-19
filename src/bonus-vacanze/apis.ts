@@ -33,11 +33,13 @@ bonusVacanze.get(`/activations`, (_, res) => {
   fromNullable(idActivationBonus).foldL(
     () => {
       // No activation found.
-      // res.sendStatus(404);
+      res.sendStatus(404);
       // if you want to return a list of bonus comment the line above and uncomment the line below
+      /*
       res.json({
         items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
       });
+      */
     },
 
     // List of bonus activations ID activated or consumed by the authenticated user
