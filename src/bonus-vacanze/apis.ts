@@ -23,7 +23,7 @@ bonusVacanze.get("/definitions_functions", (_, res) => {
 
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
-const aLotOfBonus = range(1, 5).map(_ => ({
+const aLotOfBonus = range(1, 2).map(_ => ({
   ...activeBonus,
   id: genRandomBonusCode()
 }));
@@ -39,7 +39,8 @@ bonusVacanze.get(`/activations`, (_, res) => {
       res.json({
         items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
       });
-      */
+
+       */
     },
 
     // List of bonus activations ID activated or consumed by the authenticated user
@@ -50,7 +51,7 @@ bonusVacanze.get(`/activations`, (_, res) => {
 
 // tslint:disable-next-line: no-let
 let firstBonusActivationRequestTime = 0;
-const responseBonusActivationAfter = 3 as Second;
+const responseBonusActivationAfter = 5 as Second;
 // 202 -> Processing request.
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
@@ -101,7 +102,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 let idEligibilityRequest: string | undefined;
 // tslint:disable-next-line: no-let
 let firstIseeRequestTime = 0;
-const responseIseeAfter = 3 as Second;
+const responseIseeAfter = 5 as Second;
 
 // Start bonus eligibility check (ISEE)
 // 201 -> created

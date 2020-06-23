@@ -168,23 +168,15 @@ definitions:
     type: object
     required:
       - id_type
-      - name
-      - title
-      - subtitle
-      - content
       - is_active
       - valid_from
       - valid_to
+      - it
+      - en
     properties:
       id_type:
         type: number
-      name:
-        type: string
-      title:
-        type: string
-      subtitle:
-        type: string
-      content:
+      service_id:
         type: string
       is_active:
         type: boolean
@@ -194,11 +186,31 @@ definitions:
         type: string
       sponsorship_description:
         type: string
-      tos_url:
-        type: string
+      it:
+        $ref: "#/definitions/BonusAvailableContent"
+      en:
+        $ref: "#/definitions/BonusAvailableContent"
       valid_from:
         $ref: "#/definitions/Timestamp"
       valid_to:
         $ref: "#/definitions/Timestamp"
+  BonusAvailableContent:
+    type: object
+    required:
+      - name
+      - title
+      - subtitle
+      - content
+    properties:
+      name:
+        type: string
+      title:
+        type: string
+      subtitle:
+        type: string
+      content:
+        type: string
+      tos_url:
+        type: string
   Timestamp:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/Timestamp"
