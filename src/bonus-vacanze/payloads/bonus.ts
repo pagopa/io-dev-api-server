@@ -40,7 +40,7 @@ export const activeBonus: BonusActivationWithQrCode = {
       content: qrCodeBonusVacanzePng
     },
     {
-      mime_type: "svg+xml",
+      mime_type: "image/svg+xml",
       content: qrCodeBonusVacanzeSvg
     }
   ],
