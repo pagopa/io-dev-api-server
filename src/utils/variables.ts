@@ -1,3 +1,20 @@
+export const frontMatter2CTA = `---
+it:
+    cta_1: 
+        text: "premi"
+        action: "iohandledlink://https://www.google.it"
+    cta_2: 
+        text: "premi2"
+        action: "ioit://PROFILE_MAIN"
+en:
+    cta_1: 
+        text: "go1"
+        action: "ioit://PROFILE_MAIN"
+    cta_2: 
+        text: "go2"
+        action: "ioit://PROFILE_MAIN2"
+---`;
+
 export const messageMarkdown = `
 # blocco1 
 
