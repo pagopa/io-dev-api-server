@@ -40,7 +40,13 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
-import { messageMarkdown } from "./utils/variables";
+import {
+  frontMatter1CTA,
+  frontMatter2CTA,
+  frontMatter2CTA_2,
+  frontMatterInvalid,
+  messageMarkdown
+} from "./utils/variables";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -69,20 +75,27 @@ const responseHandler = new ResponseHandler(app);
 let currentProfile = getProfile(fiscalCode).payload;
 // services and messages
 export const services = getServices(20);
-const totalMessages = 2;
+const totalMessages = 5;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
+const messageContents: ReadonlyArray<string> = [
+  "",
+  frontMatter2CTA,
+  frontMatter1CTA,
+  frontMatterInvalid,
+  frontMatter2CTA_2
+];
 export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withContent = withMessageContent(
     item,
     `Subject - test ${idx + 1}`,
-    messageMarkdown
+    messageContents[idx % messageContents.length] + messageMarkdown
   );
   const withDD = withDueDate(withContent, hourAhead);
-  return withPaymentData(withDD);
+  return withDD; //withPaymentData(withDD);
 });
 // wallets and transactions
 export const wallets = getWallets();
@@ -97,7 +110,7 @@ export const staticContentRootPath = "/static_contents";
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined;
+    | undefined
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
@@ -148,10 +161,7 @@ app.post("/wallet/v1/wallet/:wallet_id/actions/favourite", (req, res) => {
       );
       return fromNullable(maybeWallet);
     })
-    .foldL(
-      () => res.sendStatus(404),
-      w => res.json({ data: w })
-    );
+    .foldL(() => res.sendStatus(404), w => res.json({ data: w }));
 });
 
 app.get("/wallet/v1/transactions", (req, res) => {

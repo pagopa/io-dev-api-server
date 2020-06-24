@@ -1,18 +1,53 @@
 export const frontMatter2CTA = `---
 it:
     cta_1: 
-        text: "premi"
+        text: "google"
         action: "iohandledlink://https://www.google.it"
     cta_2: 
-        text: "premi2"
-        action: "ioit://PROFILE_MAIN"
+        text: "bonus disponibili"
+        action: "ioit://BONUS_AVAILABLE_LIST"
+en:
+    cta_1: 
+        text: "google"
+        action: "iohandledlink://https://www.google.it"
+    cta_2: 
+        text: "bonus available"
+        action: "ioit://BONUS_AVAILABLE_LIST"
+---`;
+
+export const frontMatter2CTA_2 = `---
+it:
+    cta_1: 
+        text: "email"
+        action: "iohandledlink://email:test@test.it"
+    cta_2: 
+        text: "pagamenti"
+        action: "ioit://WALLET_HOME"
+en:
+    cta_1: 
+        text: "email"
+        action: "iohandledlink://email:test@test.it"
+    cta_2: 
+        text: "payments"
+        action: "ioit://WALLET_HOME"
+---`;
+
+export const frontMatter1CTA = `---
+it:
+    cta_1: 
+        text: "check ISEE"
+        action: "ioit://BONUS_CTA_ELIGILITY_START"
+---`;
+
+export const frontMatterInvalid = `---
+it:
+    invalid_1: 
+        text: "premi"
+        action: "ioit://SERVICES_HOME"
 en:
     cta_1: 
         text: "go1"
-        action: "ioit://PROFILE_MAIN"
-    cta_2: 
-        text: "go2"
-        action: "ioit://PROFILE_MAIN2"
+        action: "dummy://PROFILE_MAIN"
 ---`;
 
 export const messageMarkdown = `
