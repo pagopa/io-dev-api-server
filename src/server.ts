@@ -23,7 +23,8 @@ import { loginWithToken } from "./payloads/login";
 import {
   getMessages,
   withDueDate,
-  withMessageContent
+  withMessageContent,
+  withPaymentData
 } from "./payloads/message";
 import { municipality } from "./payloads/municipality";
 import { getProfile } from "./payloads/profile";
@@ -85,7 +86,7 @@ const messageContents: ReadonlyArray<string> = [
   frontMatter2CTA,
   frontMatter1CTA,
   frontMatterInvalid,
-  frontMatter2CTA_2
+  frontMatter2CTA2
 ];
 export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withContent = withMessageContent(
@@ -94,7 +95,7 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
     messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
   );
   const withDD = withDueDate(withContent, hourAhead);
-  return withDD; // withPaymentData(withDD);
+  return withPaymentData(withDD);
 });
 // wallets and transactions
 export const wallets = getWallets();

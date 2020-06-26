@@ -17,7 +17,7 @@ per verificare la tua idoneità, oppure richiedere l'ISEE sui canali previsti da
 
 Attenzione:il calcolo effettuato con la simulazione non ha valore certificativo e l'esito non sostituisce in alcun modo l'attestazione ISEE rilasciata dall'Inps`;
 
-export const frontMatter2CTA_2 = `---
+export const frontMatter2CTA2 = `---
 it:
     cta_1: 
         text: "email"

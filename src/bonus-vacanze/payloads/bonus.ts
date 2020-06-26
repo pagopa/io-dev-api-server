@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto";
 import * as fs from "fs";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
-import { promisify } from "util";
 import { BonusActivationStatusEnum } from "../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { BonusActivationWithQrCode } from "../../../generated/definitions/bonus_vacanze/BonusActivationWithQrCode";
 import { BonusCode } from "../../../generated/definitions/bonus_vacanze/BonusCode";
@@ -31,7 +30,7 @@ export function genRandomBonusCode(): BonusCode {
   return code as BonusCode;
 }
 
-export let activeBonus: BonusActivationWithQrCode = {
+export const activeBonus: BonusActivationWithQrCode = {
   id: genRandomBonusCode(),
   applicant_fiscal_code: "SPNDNL80R11C522K" as FiscalCode,
   qr_code: [
