@@ -43,7 +43,7 @@ import { validatePayload } from "./utils/validator";
 import {
   frontMatter1CTA,
   frontMatter2CTA,
-  frontMatter2CTA_2,
+  frontMatter2CTA2,
   frontMatterInvalid,
   messageMarkdown
 } from "./utils/variables";
