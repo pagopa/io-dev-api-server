@@ -1,3 +1,57 @@
+export const frontMatter2CTA = `---
+it:
+    cta_1: 
+        text: "Richiedi ISEE"
+        action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+en:
+    cta_1: 
+        text: "Request ISEE"
+        action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+---
+INPS ha completato le verifiche e risulta che il tuo nucleo familiare non ha un ISEE valido. 
+ 
+E' necessario presentare una Dichiarazione Sostitutiva Unica (DSU) per il calcolo dell'ISEE, prima di richiedere nuovamente il Bonus Vacanze.
+
+Puoi fare subito una [simulazione online](https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088#h3heading4) sul sito dell'INPS 
+per verificare la tua idoneità, oppure richiedere l'ISEE sui canali previsti da INPS.
+
+Attenzione:il calcolo effettuato con la simulazione non ha valore certificativo e l'esito non sostituisce in alcun modo l'attestazione ISEE rilasciata dall'Inps`;
+
+export const frontMatter2CTA2 = `---
+it:
+    cta_1: 
+        text: "email"
+        action: "iohandledlink://email:test@test.it"
+    cta_2: 
+        text: "pagamenti"
+        action: "ioit://WALLET_HOME"
+en:
+    cta_1: 
+        text: "email"
+        action: "iohandledlink://email:test@test.it"
+    cta_2: 
+        text: "payments"
+        action: "ioit://WALLET_HOME"
+---`;
+
+export const frontMatter1CTA = `---
+it:
+    cta_1: 
+        text: "check ISEE"
+        action: "ioit://BONUS_CTA_ELIGILITY_START"
+---`;
+
+export const frontMatterInvalid = `---
+it:
+    invalid_1: 
+        text: "premi"
+        action: "ioit://SERVICES_HOME"
+en:
+    cta_1: 
+        text: "go1"
+        action: "dummy://PROFILE_MAIN"
+---`;
+
 export const messageMarkdown = `
 # blocco1 
 
@@ -26,6 +80,10 @@ export const messageMarkdown = `
 [LINK CORROTTO](google.it)
 
 ### link interni
+
+[BONUS_AVAILABLE_LIST](ioit://BONUS_AVAILABLE_LIST)
+
+[BONUS_CTA_ELIGILITY_START](ioit://BONUS_CTA_ELIGILITY_START)
 
 [MESSAGES_HOME](ioit://MESSAGES_HOME)
 

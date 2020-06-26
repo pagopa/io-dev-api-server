@@ -11,8 +11,11 @@ import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/U
 import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
+import { basePath } from "../generated/definitions/backend_api_paths";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
+import { bonusVacanze, resetBonusVacanze } from "./bonus-vacanze/apis";
+import { availableBonuses } from "./bonus-vacanze/payloads/availableBonuses";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { contextualHelpData } from "./payloads/contextualHelp";
 import { getProblemJson, notFound } from "./payloads/error";
@@ -37,7 +40,13 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
-import { messageMarkdown } from "./utils/variables";
+import {
+  frontMatter1CTA,
+  frontMatter2CTA,
+  frontMatter2CTA2,
+  frontMatterInvalid,
+  messageMarkdown
+} from "./utils/variables";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -55,6 +64,8 @@ app.use(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
 );
+// support bonus vacanze
+app.use(`${basePath}/bonus/vacanze`, bonusVacanze);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 
@@ -70,11 +81,18 @@ const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
+const messageContents: ReadonlyArray<string> = [
+  "",
+  frontMatter2CTA,
+  frontMatter1CTA,
+  frontMatterInvalid,
+  frontMatter2CTA2
+];
 export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withContent = withMessageContent(
     item,
     `Subject - test ${idx + 1}`,
-    messageMarkdown
+    messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
   );
   const withDD = withDueDate(withContent, hourAhead);
   return withPaymentData(withDD);
@@ -167,13 +185,13 @@ app.get("/wallet/v1/transactions", (req, res) => {
 
 /** static contents */
 
-const sendFile = (filePath: string, res: Response) => {
+export const sendFile = (filePath: string, res: Response) => {
   res.sendFile(filePath, {
     root: "."
   });
 };
 
-app.get(`/content.yaml`, (_, res) => {
+app.get(`/content_definitions.yaml`, (_, res) => {
   sendFile("assets/yaml/content.yaml", res);
 });
 
@@ -203,6 +221,16 @@ app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
   res.json(municipality);
 });
 
+// get the list of all available bonus types
+app.get(
+  `${staticContentRootPath}/bonus/vacanze/bonuses_available.json`,
+  (_, res) => {
+    res.json(availableBonuses);
+  }
+);
+
+/** end static content */
+
 app.get(`${staticContentRootPath}/contextualhelp/data.json`, (_, res) => {
   res.json(contextualHelpData);
 });
@@ -213,6 +241,7 @@ app.get("/reset", (_, res) => {
   currentProfile = getProfile(fiscalCode).payload;
   // reset user shoice
   userChoices = initialUserChoice;
+  resetBonusVacanze();
   res.send("ok - reset");
 });
 

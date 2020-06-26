@@ -79,9 +79,9 @@ definitions:
       version:
         type: number
       it:
-        $ref: '#/definitions/ContextualHelpData'
+        $ref: "#/definitions/ContextualHelpData"
       en:
-        $ref: '#/definitions/ContextualHelpData'
+        $ref: "#/definitions/ContextualHelpData"
   ContextualHelpData:
     type: object
     required:
@@ -89,13 +89,13 @@ definitions:
       - screens
     properties:
       idps:
-        $ref: '#/definitions/IdpData'
+        $ref: "#/definitions/IdpData"
       screens:
-        $ref: '#/definitions/ScreensCHData'
+        $ref: "#/definitions/ScreensCHData"
   ScreensCHData:
     type: array
     items:
-      $ref: '#/definitions/ScreenCHData'
+      $ref: "#/definitions/ScreenCHData"
   ScreenCHData:
     type: object
     required:
@@ -112,28 +112,28 @@ definitions:
   IdpData:
     type: object
     properties:
-      arubaid: 
-        $ref: '#/definitions/Idp'
-      infocertid: 
-        $ref: '#/definitions/Idp'
-      intesaid: 
-        $ref: '#/definitions/Idp'
-      lepidaid: 
-        $ref: '#/definitions/Idp'
-      namirialid: 
-        $ref: '#/definitions/Idp'
-      posteid: 
-        $ref: '#/definitions/Idp'
-      sielteid: 
-        $ref: '#/definitions/Idp'
-      spiditalia: 
-        $ref: '#/definitions/Idp'
-      timid: 
-        $ref: '#/definitions/Idp'
-      cie: 
-        $ref: '#/definitions/Idp'
-      test: 
-        $ref: '#/definitions/Idp'
+      arubaid:
+        $ref: "#/definitions/Idp"
+      infocertid:
+        $ref: "#/definitions/Idp"
+      intesaid:
+        $ref: "#/definitions/Idp"
+      lepidaid:
+        $ref: "#/definitions/Idp"
+      namirialid:
+        $ref: "#/definitions/Idp"
+      posteid:
+        $ref: "#/definitions/Idp"
+      sielteid:
+        $ref: "#/definitions/Idp"
+      spiditalia:
+        $ref: "#/definitions/Idp"
+      timid:
+        $ref: "#/definitions/Idp"
+      cie:
+        $ref: "#/definitions/Idp"
+      test:
+        $ref: "#/definitions/Idp"
   Idp:
     type: object
     required:
@@ -142,22 +142,75 @@ definitions:
       - phone
       - web_site
     properties:
-      description: 
+      description:
         type: string
-      email: 
+      email:
         type: string
-      helpdesk_form: 
+      helpdesk_form:
         type: string
-      phone: 
+      phone:
         type: string
-      phone_international: 
+      phone_international:
         type: string
-      web_site: 
+      web_site:
         type: string
-      recover_username: 
+      recover_username:
         type: string
-      recover_password: 
+      recover_password:
         type: string
       recover_emergency_code:
         type: string
-
+  BonusesAvailable:
+    type: array
+    items:
+      $ref: "#/definitions/BonusAvailable"
+  BonusAvailable:
+    type: object
+    required:
+      - id_type
+      - is_active
+      - valid_from
+      - valid_to
+      - it
+      - en
+    properties:
+      id_type:
+        type: number
+      service_id:
+        type: string
+      is_active:
+        type: boolean
+      cover:
+        type: string
+      sponsorship_cover:
+        type: string
+      sponsorship_description:
+        type: string
+      it:
+        $ref: "#/definitions/BonusAvailableContent"
+      en:
+        $ref: "#/definitions/BonusAvailableContent"
+      valid_from:
+        $ref: "#/definitions/Timestamp"
+      valid_to:
+        $ref: "#/definitions/Timestamp"
+  BonusAvailableContent:
+    type: object
+    required:
+      - name
+      - title
+      - subtitle
+      - content
+    properties:
+      name:
+        type: string
+      title:
+        type: string
+      subtitle:
+        type: string
+      content:
+        type: string
+      tos_url:
+        type: string
+  Timestamp:
+    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v10.2.3/openapi/definitions.yaml#/Timestamp"
