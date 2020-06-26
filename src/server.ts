@@ -110,7 +110,7 @@ export const staticContentRootPath = "/static_contents";
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined
+    | undefined;
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
@@ -161,7 +161,10 @@ app.post("/wallet/v1/wallet/:wallet_id/actions/favourite", (req, res) => {
       );
       return fromNullable(maybeWallet);
     })
-    .foldL(() => res.sendStatus(404), w => res.json({ data: w }));
+    .foldL(
+      () => res.sendStatus(404),
+      w => res.json({ data: w })
+    );
 });
 
 app.get("/wallet/v1/transactions", (req, res) => {
