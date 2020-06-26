@@ -84,7 +84,7 @@ bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
     res.status(202).json({ id: activeBonus.id });
     return;
   }
-  res.status(200).json(test);
+  res.status(200).json(activeBonus);
 });
 
 // Start bonus activation request procedure
@@ -141,11 +141,11 @@ bonusVacanze.get("/eligibility", (_, res) => {
   // if elapsedTime is less than responseIseeAfter return pending status
   // first time return the id of the created task
   if (idEligibilityRequest && elapsedTime < responseIseeAfter) {
-    idEligibilityRequest = undefined;
     // request accepted, return the task id
     res.status(202).json({ id: idEligibilityRequest });
     return;
   }
+  idEligibilityRequest = undefined;
   // Request processed
   // use these const to simulate different scenarios
   // - success and eligible -> eligibilityCheckSuccessEligible
