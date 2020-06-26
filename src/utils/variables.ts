@@ -1,19 +1,21 @@
 export const frontMatter2CTA = `---
 it:
     cta_1: 
-        text: "google"
-        action: "iohandledlink://https://www.google.it"
-    cta_2: 
-        text: "bonus disponibili"
-        action: "ioit://BONUS_AVAILABLE_LIST"
+        text: "Richiedi ISEE"
+        action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
 en:
     cta_1: 
-        text: "google"
-        action: "iohandledlink://https://www.google.it"
-    cta_2: 
-        text: "bonus available"
-        action: "ioit://BONUS_AVAILABLE_LIST"
----`;
+        text: "Request ISEE"
+        action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+---
+INPS ha completato le verifiche e risulta che il tuo nucleo familiare non ha un ISEE valido. 
+ 
+E' necessario presentare una Dichiarazione Sostitutiva Unica (DSU) per il calcolo dell'ISEE, prima di richiedere nuovamente il Bonus Vacanze.
+
+Puoi fare subito una [simulazione online](https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088#h3heading4) sul sito dell'INPS 
+per verificare la tua idoneità, oppure richiedere l'ISEE sui canali previsti da INPS.
+
+Attenzione:il calcolo effettuato con la simulazione non ha valore certificativo e l'esito non sostituisce in alcun modo l'attestazione ISEE rilasciata dall'Inps`;
 
 export const frontMatter2CTA_2 = `---
 it:

@@ -1,48 +1,57 @@
 import { Router } from "express";
+import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
 import { sendFile } from "../server";
 import { uuidv4 } from "../utils/strings";
 import { activeBonus, genRandomBonusCode } from "./payloads/bonus";
-import {
-  eligibilityCheckSuccessEligible,
-  eligibilityCheckSuccessIneligible,
-  eligibilityCheckFailure,
-  eligibilityCheckConflict
-} from "./payloads/eligibility";
-import { range } from "fp-ts/lib/Array";
+import { eligibilityCheckSuccessEligible } from "./payloads/eligibility";
 export const bonusVacanze = Router();
 
+// tslint:disable-next-line: no-let
+let firstBonusActivationRequestTime = 0;
+// tslint:disable-next-line: no-let
+let firstIseeRequestTime = 0;
+// server responses with the activate bonus after
+const responseBonusActivationAfter = 3 as Second;
+// tslint:disable-next-line: no-let
+let idEligibilityRequest: string | undefined;
+// server responses with the eligibility check after
+const responseIseeAfter = 3 as Second;
+
+// return the bonus vacanze definition (it should not be used)
 bonusVacanze.get("/definitions", (_, res) => {
   sendFile("assets/bonus-vacanze/specs.yaml", res);
 });
-
+// return the bonus vacanze definition (it should not be used)
 bonusVacanze.get("/definitions_functions", (_, res) => {
   sendFile("assets/bonus-vacanze/specs_functions.yaml", res);
 });
 
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
+// generate clones of activeBonus but with different id
+// tslint:disable-next-line: no-let
 const aLotOfBonus = range(1, 3).map(_ => ({
   ...activeBonus,
   id: genRandomBonusCode()
 }));
+
 // Get all IDs of the bonus activations requested by
 // the authenticated user or by any between his family member
 bonusVacanze.get(`/activations`, (_, res) => {
+  // if you want to return a list of bonus uncomment the lines below
+  /*
   res.json({
     items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
   });
   return;
+  */
+
   fromNullable(idActivationBonus).foldL(
     () => {
       // No activation found.
-      //res.sendStatus(404);
-      // if you want to return a list of bonus comment the line above and uncomment the line below
-
-      res.json({
-        items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
-      });
+      res.sendStatus(404);
     },
 
     // List of bonus activations ID activated or consumed by the authenticated user
@@ -51,17 +60,14 @@ bonusVacanze.get(`/activations`, (_, res) => {
   );
 });
 
-// tslint:disable-next-line: no-let
-let firstBonusActivationRequestTime = 0;
-const responseBonusActivationAfter = 3 as Second;
 // 202 -> Processing request.
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
 bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
-  res.status(200).json(aLotOfBonus[0]);
   const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
   if (bonus) {
-    res.status(200).json(bonus);
+    res.json(bonus);
+    return;
   }
   // use one of these constants to simulate different scenario
   // - activeBonus
@@ -78,7 +84,7 @@ bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
     res.status(202).json({ id: activeBonus.id });
     return;
   }
-  res.status(200).json(activeBonus);
+  res.status(200).json(test);
 });
 
 // Start bonus activation request procedure
@@ -101,12 +107,6 @@ bonusVacanze.post(`/activations`, (_, res) => {
   );
 });
 
-// tslint:disable-next-line: no-let
-let idEligibilityRequest: string | undefined;
-// tslint:disable-next-line: no-let
-let firstIseeRequestTime = 0;
-const responseIseeAfter = 3 as Second;
-
 // Start bonus eligibility check (ISEE)
 // 201 -> created
 // 202 -> request processing
@@ -117,6 +117,11 @@ bonusVacanze.post("/eligibility", (_, res) => {
     // a task already exists because it has been requested
     // return conflict status
     res.status(409).json({ id: idEligibilityRequest });
+    return;
+  }
+  if (idActivationBonus) {
+    // a bonus active already exists
+    res.sendStatus(403);
     return;
   }
   firstIseeRequestTime = new Date().getTime();
@@ -136,6 +141,7 @@ bonusVacanze.get("/eligibility", (_, res) => {
   // if elapsedTime is less than responseIseeAfter return pending status
   // first time return the id of the created task
   if (idEligibilityRequest && elapsedTime < responseIseeAfter) {
+    idEligibilityRequest = undefined;
     // request accepted, return the task id
     res.status(202).json({ id: idEligibilityRequest });
     return;
@@ -145,19 +151,8 @@ bonusVacanze.get("/eligibility", (_, res) => {
   // - success and eligible -> eligibilityCheckSuccessEligible
   // - success and ineligible -> eligibilityCheckSuccessIneligible
   // - conflict -> eligibilityCheckConflict (Eligibility check succeeded but there's already a bonus found for this set of family members.)
-  // - failure (multiple error avaible, see ErrorEnum)-> eligibilityCheckFailure
+  // - failure (multiple error available, see ErrorEnum)-> eligibilityCheckFailure
   res.status(200).json(eligibilityCheckSuccessEligible);
-});
-
-// Cancel bonus eligibility check procedure (avoids sending a push notification when done)
-bonusVacanze.delete("/eligibility", (_, res) => {
-  if (idEligibilityRequest) {
-    // Request canceled.
-    res.status(200).json({ id: idEligibilityRequest });
-    return;
-  }
-  // not found
-  res.status(404);
 });
 
 // since all these apis implements a specific flow, if you want re-run it

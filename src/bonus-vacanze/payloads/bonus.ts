@@ -31,7 +31,7 @@ export function genRandomBonusCode(): BonusCode {
   return code as BonusCode;
 }
 
-export const activeBonus: BonusActivationWithQrCode = {
+export let activeBonus: BonusActivationWithQrCode = {
   id: genRandomBonusCode(),
   applicant_fiscal_code: "SPNDNL80R11C522K" as FiscalCode,
   qr_code: [
@@ -46,7 +46,7 @@ export const activeBonus: BonusActivationWithQrCode = {
   ],
   dsu_request: dsuData,
   created_at: new Date(),
-  status: BonusActivationStatusEnum.REDEEMED
+  status: BonusActivationStatusEnum.ACTIVE
 };
 
 export const redeemedBonus: BonusActivationWithQrCode = {

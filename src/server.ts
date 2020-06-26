@@ -23,8 +23,7 @@ import { loginWithToken } from "./payloads/login";
 import {
   getMessages,
   withDueDate,
-  withMessageContent,
-  withPaymentData
+  withMessageContent
 } from "./payloads/message";
 import { municipality } from "./payloads/municipality";
 import { getProfile } from "./payloads/profile";
@@ -40,7 +39,13 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
-import { messageMarkdown } from "./utils/variables";
+import {
+  frontMatter1CTA,
+  frontMatter2CTA,
+  frontMatter2CTA_2,
+  frontMatterInvalid,
+  messageMarkdown
+} from "./utils/variables";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -69,21 +74,27 @@ const responseHandler = new ResponseHandler(app);
 let currentProfile = getProfile(fiscalCode).payload;
 // services and messages
 export const services = getServices(20);
-const totalMessages = 2;
+const totalMessages = 5;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
-const msgs = ["Benvenuto su IO", "Quali servizi trovi su IO?"];
+const messageContents: ReadonlyArray<string> = [
+  "",
+  frontMatter2CTA,
+  frontMatter1CTA,
+  frontMatterInvalid,
+  frontMatter2CTA_2
+];
 export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withContent = withMessageContent(
     item,
-    msgs[idx % msgs.length],
-    messageMarkdown
+    `Subject - test ${idx + 1}`,
+    messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
   );
   const withDD = withDueDate(withContent, hourAhead);
-  return withPaymentData(withContent);
+  return withDD; // withPaymentData(withDD);
 });
 // wallets and transactions
 export const wallets = getWallets();
