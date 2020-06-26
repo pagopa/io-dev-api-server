@@ -40,13 +40,7 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { validatePayload } from "./utils/validator";
-import {
-  frontMatter1CTA,
-  frontMatter2CTA,
-  frontMatter2CTA_2,
-  frontMatterInvalid,
-  messageMarkdown
-} from "./utils/variables";
+import { messageMarkdown } from "./utils/variables";
 
 // fiscalCode used within the client communication
 export const fiscalCode = "RSSMRA83A12H501D";
@@ -75,27 +69,21 @@ const responseHandler = new ResponseHandler(app);
 let currentProfile = getProfile(fiscalCode).payload;
 // services and messages
 export const services = getServices(20);
-const totalMessages = 5;
+const totalMessages = 2;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
 export const servicesTuple = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
-const messageContents: ReadonlyArray<string> = [
-  "",
-  frontMatter2CTA,
-  frontMatter1CTA,
-  frontMatterInvalid,
-  frontMatter2CTA_2
-];
+const msgs = ["Benvenuto su IO", "Quali servizi trovi su IO?"];
 export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withContent = withMessageContent(
     item,
-    `Subject - test ${idx + 1}`,
-    messageContents[idx % messageContents.length] + messageMarkdown
+    msgs[idx % msgs.length],
+    messageMarkdown
   );
   const withDD = withDueDate(withContent, hourAhead);
-  return withDD; //withPaymentData(withDD);
+  return withPaymentData(withContent);
 });
 // wallets and transactions
 export const wallets = getWallets();

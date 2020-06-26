@@ -46,7 +46,7 @@ export const activeBonus: BonusActivationWithQrCode = {
   ],
   dsu_request: dsuData,
   created_at: new Date(),
-  status: BonusActivationStatusEnum.ACTIVE
+  status: BonusActivationStatusEnum.REDEEMED
 };
 
 export const redeemedBonus: BonusActivationWithQrCode = {

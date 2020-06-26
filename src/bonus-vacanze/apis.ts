@@ -23,24 +23,26 @@ bonusVacanze.get("/definitions_functions", (_, res) => {
 
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
-const aLotOfBonus = range(1, 2).map(_ => ({
+const aLotOfBonus = range(1, 3).map(_ => ({
   ...activeBonus,
   id: genRandomBonusCode()
 }));
 // Get all IDs of the bonus activations requested by
 // the authenticated user or by any between his family member
 bonusVacanze.get(`/activations`, (_, res) => {
+  res.json({
+    items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
+  });
+  return;
   fromNullable(idActivationBonus).foldL(
     () => {
       // No activation found.
-      res.sendStatus(404);
+      //res.sendStatus(404);
       // if you want to return a list of bonus comment the line above and uncomment the line below
-      /*
+
       res.json({
         items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
       });
-
-       */
     },
 
     // List of bonus activations ID activated or consumed by the authenticated user
@@ -51,11 +53,12 @@ bonusVacanze.get(`/activations`, (_, res) => {
 
 // tslint:disable-next-line: no-let
 let firstBonusActivationRequestTime = 0;
-const responseBonusActivationAfter = 5 as Second;
+const responseBonusActivationAfter = 3 as Second;
 // 202 -> Processing request.
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
 bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
+  res.status(200).json(aLotOfBonus[0]);
   const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
   if (bonus) {
     res.status(200).json(bonus);
@@ -102,7 +105,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 let idEligibilityRequest: string | undefined;
 // tslint:disable-next-line: no-let
 let firstIseeRequestTime = 0;
-const responseIseeAfter = 5 as Second;
+const responseIseeAfter = 3 as Second;
 
 // Start bonus eligibility check (ISEE)
 // 201 -> created
