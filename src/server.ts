@@ -95,7 +95,7 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
     messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
   );
   const withDD = withDueDate(withContent, hourAhead);
-  return withPaymentData(withDD);
+  return withDD;
 });
 // wallets and transactions
 export const wallets = getWallets();
