@@ -14,7 +14,7 @@ export const user = {
 
 // define here the fiscalCode used within the client communication
 const spidProfile: InitializedProfile = {
-  accepted_tos_version: 1,
+  accepted_tos_version: 2,
   email: user.email as EmailAddress,
   family_name: user.suruname,
   has_profile: true,
@@ -47,7 +47,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
 
 const cieProfile: InitializedProfile = {
   email: user.email as EmailAddress,
-  accepted_tos_version: 1,
+  accepted_tos_version: 2,
   family_name: user.suruname,
   has_profile: true,
   is_inbox_enabled: true,
