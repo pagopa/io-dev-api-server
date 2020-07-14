@@ -112,6 +112,7 @@ bonusVacanze.post(`/activations`, (_, res) => {
 // 202 -> request processing
 // 409 -> pending request
 // 403 -> there's already an active bonus related to this user
+// 451 -> Unavailable For Legal Reasons (underage)
 bonusVacanze.post("/eligibility", (_, res) => {
   if (idEligibilityRequest) {
     // a task already exists because it has been requested
