@@ -110,7 +110,7 @@ export const staticContentRootPath = "/static_contents";
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined;
+    | undefined
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
@@ -161,10 +161,7 @@ app.post("/wallet/v1/wallet/:wallet_id/actions/favourite", (req, res) => {
       );
       return fromNullable(maybeWallet);
     })
-    .foldL(
-      () => res.sendStatus(404),
-      w => res.json({ data: w })
-    );
+    .foldL(() => res.sendStatus(404), w => res.json({ data: w }));
 });
 
 app.get("/wallet/v1/transactions", (req, res) => {
@@ -253,11 +250,14 @@ responseHandler
   })
   .addHandler("put", "/installations/:installationID", getSuccessResponse())
   .addCustomHandler("post", "/profile", req => {
+    console.log(currentProfile);
+    console.log(req.body);
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
     const clintProfileIncresed = {
       ...req.body,
-      version: parseInt(req.body.version, 10) + 1
+      version: parseInt(req.body.version, 10) + 1,
+      is_email_validated: currentProfile.email === req.body.email
     };
     currentProfile = validatePayload(InitializedProfile, {
       ...currentProfile,
