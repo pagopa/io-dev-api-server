@@ -250,14 +250,11 @@ responseHandler
   })
   .addHandler("put", "/installations/:installationID", getSuccessResponse())
   .addCustomHandler("post", "/profile", req => {
-    console.log(currentProfile);
-    console.log(req.body);
     // the server profile is merged with
     // the one coming from request. Furthermore this profile's version is increased by 1
     const clintProfileIncresed = {
       ...req.body,
-      version: parseInt(req.body.version, 10) + 1,
-      is_email_validated: currentProfile.email === req.body.email
+      version: parseInt(req.body.version, 10) + 1
     };
     currentProfile = validatePayload(InitializedProfile, {
       ...currentProfile,
