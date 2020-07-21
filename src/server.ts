@@ -39,6 +39,12 @@ import { session } from "./payloads/session";
 import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
+import { publicRouter } from "./routers/public";
+import {
+  servicesMetadataRouter,
+  staticContentRootPath
+} from "./routers/services_metadata";
+import { walletPath, walletRouter } from "./routers/wallet";
 import { validatePayload } from "./utils/validator";
 import {
   frontMatter1CTA,
@@ -66,6 +72,9 @@ app.use(
 );
 // support bonus vacanze
 app.use(`${basePath}/bonus/vacanze`, bonusVacanze);
+app.use(staticContentRootPath, servicesMetadataRouter);
+app.use("/", publicRouter);
+app.use(walletPath, walletRouter);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
 
@@ -97,14 +106,9 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withDD = withDueDate(withContent, hourAhead);
   return withDD;
 });
-// wallets and transactions
-export const wallets = getWallets();
-export const transactionPageSize = 10;
-export const transactionsTotal = 25;
-export const transactions = getTransactions(transactionsTotal);
 
 // change this directory to serve differents files
-export const staticContentRootPath = "/static_contents";
+
 // define user UserDataProcessing (download / delete)
 // to handle e remember user choice
 type UserDeleteDownloadData = {
@@ -131,54 +135,7 @@ app.post("/logout", (_, res) => {
   res.status(200).send("ok");
 });
 
-app.get("/info", (_, res) => {
-  res.json(backendInfo);
-});
-
-app.get("/ping", (_, res) => {
-  res.send("ok");
-});
-
-// backend service status
-app.get("/status/backend.json", (_, res) => {
-  res.json(backendStatus);
-});
-
 /** wallet content */
-app.get("/wallet/v1/users/actions/start-session", (_, res) => {
-  res.json(sessionToken);
-});
-
-app.get("/wallet/v1/wallet", (_, res) => {
-  res.json(wallets);
-});
-
-app.post("/wallet/v1/wallet/:wallet_id/actions/favourite", (req, res) => {
-  fromNullable(wallets.data)
-    .chain((d: ReadonlyArray<Wallet>) => {
-      const maybeWallet = d.find(
-        w => w.idWallet === parseInt(req.params.wallet_id, 10)
-      );
-      return fromNullable(maybeWallet);
-    })
-    .foldL(() => res.sendStatus(404), w => res.json({ data: w }));
-});
-
-app.get("/wallet/v1/transactions", (req, res) => {
-  const start = fromNullable(req.query.start)
-    .map(s => Math.max(parseInt(s, 10), 0))
-    .getOrElse(0);
-  const transactionsSlice = takeEnd(
-    transactions.length - Math.min(start, transactions.length),
-    [...transactions]
-  ).slice(0, transactionPageSize);
-  const response = validatePayload(TransactionListResponse, {
-    data: transactionsSlice,
-    size: transactionsSlice.length,
-    total: transactions.length
-  });
-  res.json(response);
-});
 
 /** static contents */
 
@@ -190,46 +147,6 @@ export const sendFile = (filePath: string, res: Response) => {
 
 app.get(`/content_definitions.yaml`, (_, res) => {
   sendFile("assets/yaml/content.yaml", res);
-});
-
-app.get(`${staticContentRootPath}/services/:service_id`, (req, res) => {
-  const serviceId = req.params.service_id.replace(".json", "");
-  if (serviceId === "servicesByScope") {
-    res.json(servicesByScope.payload);
-    return;
-  }
-  res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
-});
-
-app.get(
-  `${staticContentRootPath}/logos/organizations/:organization_id`,
-  (_, res) => {
-    // ignoring organization id and send always the same image
-    sendFile("assets/imgs/logos/organizations/organization_1.png", res);
-  }
-);
-
-app.get(`${staticContentRootPath}/logos/services/:service_id`, (_, res) => {
-  // ignoring service id and send always the same image
-  sendFile("assets/imgs/logos/services/service_1.png", res);
-});
-
-app.get(`${staticContentRootPath}/municipalities/:A/:B/:CODE`, (_, res) => {
-  res.json(municipality);
-});
-
-// get the list of all available bonus types
-app.get(
-  `${staticContentRootPath}/bonus/vacanze/bonuses_available.json`,
-  (_, res) => {
-    res.json(availableBonuses);
-  }
-);
-
-/** end static content */
-
-app.get(`${staticContentRootPath}/contextualhelp/data.json`, (_, res) => {
-  res.json(contextualHelpData);
 });
 
 // it should be useful to reset some states
