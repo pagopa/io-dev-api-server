@@ -53,9 +53,8 @@ import {
   frontMatterInvalid,
   messageMarkdown
 } from "./utils/variables";
+import { fiscalCode } from "./global";
 
-// fiscalCode used within the client communication
-export const fiscalCode = "RSSMRA83A12H501D";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server

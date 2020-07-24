@@ -6,6 +6,7 @@ import { sendFile } from "../server";
 import { uuidv4 } from "../utils/strings";
 import { activeBonus, genRandomBonusCode } from "./payloads/bonus";
 import { eligibilityCheckSuccessEligible } from "./payloads/eligibility";
+import { BonusActivationStatusEnum } from "../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 export const bonusVacanze = Router();
 
 // tslint:disable-next-line: no-let
@@ -32,9 +33,10 @@ bonusVacanze.get("/definitions_functions", (_, res) => {
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // tslint:disable-next-line: no-let
-const aLotOfBonus = range(1, 3).map(_ => ({
+const aLotOfBonus = range(1, 1).map(_ => ({
   ...activeBonus,
-  id: genRandomBonusCode()
+  id: genRandomBonusCode(),
+  status: BonusActivationStatusEnum.REDEEMED
 }));
 
 // Get all IDs of the bonus activations requested by

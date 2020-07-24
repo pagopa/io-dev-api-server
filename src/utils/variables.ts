@@ -69,6 +69,19 @@ export const messageMarkdown = `
   - item5 
   - item6 
   
+  
+| Elemento | Stato | Commenti |
+| --- | --- | --- |
+| Pulsanti small |OK | Completato |
+| Pulsanti big | OK | Completato |
+| Icone header | ~ | Bloccato da https://www.pivotaltracker.com/n/projects/2048617/stories/173767813 per evitare conflitti
+| Tab lista | KO | Non è possibile aumentare solo l’area toccabile, è possibile aumentare l’altezza grafica di tutto il componente
+| Menu di navigazione |KO | Non è possibile aumentare solo l’area toccabile
+| Testo bianco su fondo acqua | OK | Completato |
+| Link | OK | Completato |
+| Titoli di pagina | OK |  Risolto in https://www.pivotaltracker.com/n/projects/2048617/stories/173767813
+| Font size | OK | Completato |
+  
 È universalmente **riconosciuto** che un _lettore_ che **osserva** il layout di una pagina viene distratto dal contenuto testuale se questo è leggibile. Lo scopo dell’utilizzo del Lorem Ipsum è che offre una normale distribuzione delle lettere (al contrario di quanto avviene se si utilizzano brevi frasi ripetute, ad esempio “testo qui”), apparendo come un normale blocco di testo leggibile. Molti software di impaginazione e di web design utilizzano Lorem Ipsum come testo modello. Molte versioni del testo sono state prodotte negli anni, a volte casualmente, a volte di proposito (ad esempio inserendo passaggi ironici).
 
 | copia e incolla il seguente link: \`https://verylongurl.com/verylong_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_\`
