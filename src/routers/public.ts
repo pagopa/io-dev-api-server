@@ -3,6 +3,7 @@
  */
 import { Router } from "express";
 import { backendInfo, backendStatus } from "../payloads/backend";
+import { loginSessionToken } from "../payloads/login";
 
 export const publicRouter = Router();
 
@@ -12,6 +13,10 @@ publicRouter.get("/info", (_, res) => {
 
 publicRouter.get("/ping", (_, res) => {
   res.send("ok");
+});
+
+publicRouter.post("/test-login", (_, res) => {
+  res.json(loginSessionToken);
 });
 
 // backend service status
