@@ -54,6 +54,8 @@ import {
   messageMarkdown
 } from "./utils/variables";
 import { fiscalCode } from "./global";
+import { delayer } from "./utils/delay_middleware";
+import { Millisecond } from "italia-ts-commons/lib/units";
 
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
@@ -62,7 +64,7 @@ const app: Application = express();
 
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
-// app.use(delayer(3000 as Millisecond));
+//app.use(delayer(500 as Millisecond));
 // set middleware logging
 app.use(
   morgan(
@@ -83,7 +85,7 @@ const responseHandler = new ResponseHandler(app);
 let currentProfile = getProfile(fiscalCode).payload;
 // services and messages
 export const services = getServices(20);
-const totalMessages = 5;
+const totalMessages = 1;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
@@ -188,7 +190,7 @@ responseHandler
     return { payload };
   })
   // return messages
-  .addHandler("get", "/messages", messages)
+  .addCustomHandler("get", "/messages", _ => messages, 3000 as Millisecond)
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
     // retrieve the messageIndex from id

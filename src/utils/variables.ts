@@ -91,6 +91,10 @@ il link deve **sempre** includere il protocollo (http:// o https://)
 
 [DESCRIZIONE LINK](https://www.google.it)
 
+[LINK NON VALIDO -1](www.google.it)
+
+[LINK NON VALIDO -2](google.it)
+
 ### link interni
 
 [BONUS_AVAILABLE_LIST](ioit://BONUS_AVAILABLE_LIST)

@@ -4,6 +4,7 @@ import {
   IOApiPath,
   SupportedMethod
 } from "../../generated/definitions/backend_api_paths";
+import { Millisecond } from "italia-ts-commons/lib/units";
 
 export type IOResponse<T> = {
   payload: T;
@@ -13,14 +14,15 @@ export type IOResponse<T> = {
 
 export const handleResponse = <T>(
   expressResponse: Response,
-  ioResponse: IOResponse<T>
+  ioResponse: IOResponse<T>,
+  delay: Millisecond
 ) => {
   const res = expressResponse.status(ioResponse.status || 200);
   if (ioResponse.isJson === true) {
-    res.json(ioResponse.payload);
+    setTimeout(() => res.json(ioResponse.payload), delay);
     return;
   }
-  res.send(ioResponse.payload);
+  setTimeout(() => res.send(ioResponse.payload), delay);
 };
 
 export class ResponseHandler {
@@ -29,25 +31,26 @@ export class ResponseHandler {
     this.app = app;
   }
 
-  private addHandlerInternal = <T>(
+  private registerHandler = <T>(
     method: SupportedMethod,
     path: IOApiPath,
-    handler: (req: Request) => IOResponse<T>
+    handler: (req: Request) => IOResponse<T>,
+    delay: Millisecond
   ): ResponseHandler => {
     switch (method) {
       case "get":
         this.app.get(basePath + path, (req, res) =>
-          handleResponse(res, handler(req))
+          handleResponse(res, handler(req), delay)
         );
         break;
       case "post":
         this.app.post(basePath + path, (req, res) =>
-          handleResponse(res, handler(req))
+          handleResponse(res, handler(req), delay)
         );
         break;
       case "put":
         this.app.put(basePath + path, (req, res) =>
-          handleResponse(res, handler(req))
+          handleResponse(res, handler(req), delay)
         );
         break;
       case "update":
@@ -61,9 +64,10 @@ export class ResponseHandler {
   public addCustomHandler = <T>(
     method: SupportedMethod,
     path: IOApiPath,
-    handler: (req: Request) => IOResponse<T>
+    handler: (req: Request) => IOResponse<T>,
+    delay: Millisecond = 0 as Millisecond
   ): ResponseHandler => {
-    this.addHandlerInternal(method, path, handler);
+    this.registerHandler(method, path, handler, delay);
     return this;
   };
 
@@ -75,9 +79,10 @@ export class ResponseHandler {
   public addHandler = <T>(
     method: SupportedMethod,
     path: IOApiPath,
-    responsePayload: IOResponse<T>
+    responsePayload: IOResponse<T>,
+    delay: Millisecond = 0 as Millisecond
   ): ResponseHandler => {
-    this.addHandlerInternal(method, path, () => responsePayload);
+    this.registerHandler(method, path, () => responsePayload, delay);
     return this;
   };
 }
