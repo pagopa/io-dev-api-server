@@ -100,7 +100,7 @@ export const getTransactions = (count: number): ReadonlyArray<Transaction> => {
       accountingStatus: 1,
       amount: { amount: 20000 },
       created: new Date(2018, 10, 30, 13, 12, 22, 30),
-      description: `hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world`,
+      description: `/RFB/02000000000495213/0.01/TXT/75 TEST_PAGOPASPA_IO VAIANO CREMASCO`,
       error: false,
       fee: { amount: 1 },
       grandTotal: { amount: 32100 },
