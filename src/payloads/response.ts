@@ -1,10 +1,10 @@
 import { Application, Request, Response } from "express";
+import { Millisecond } from "italia-ts-commons/lib/units";
 import {
   basePath,
   IOApiPath,
   SupportedMethod
 } from "../../generated/definitions/backend_api_paths";
-import { Millisecond } from "italia-ts-commons/lib/units";
 
 export type IOResponse<T> = {
   payload: T;
@@ -13,10 +13,10 @@ export type IOResponse<T> = {
 };
 
 export const handleResponse = <T>(
-  expressResponse: Response,
-  ioResponse: IOResponse<T>,
+  handler: (req: Request) => IOResponse<T>,
   delay: Millisecond
-) => {
+) => (req: Request, expressResponse: Response) => {
+  const ioResponse = handler(req);
   const res = expressResponse.status(ioResponse.status || 200);
   if (ioResponse.isJson === true) {
     setTimeout(() => res.json(ioResponse.payload), delay);
@@ -37,21 +37,16 @@ export class ResponseHandler {
     handler: (req: Request) => IOResponse<T>,
     delay: Millisecond
   ): ResponseHandler => {
+    const handlerWithDelay = handleResponse(handler, delay);
     switch (method) {
       case "get":
-        this.app.get(basePath + path, (req, res) =>
-          handleResponse(res, handler(req), delay)
-        );
+        this.app.get(basePath + path, handlerWithDelay);
         break;
       case "post":
-        this.app.post(basePath + path, (req, res) =>
-          handleResponse(res, handler(req), delay)
-        );
+        this.app.post(basePath + path, handlerWithDelay);
         break;
       case "put":
-        this.app.put(basePath + path, (req, res) =>
-          handleResponse(res, handler(req), delay)
-        );
+        this.app.put(basePath + path, handlerWithDelay);
         break;
       case "update":
         throw Error("update method not implemented");
