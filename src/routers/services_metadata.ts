@@ -9,7 +9,6 @@ import { getServiceMetadata } from "../payloads/service";
 import { sendFile, servicesByScope, servicesTuple } from "../server";
 
 export const servicesMetadataRouter = Router();
-export const staticContentRootPath = "/static_contents";
 
 servicesMetadataRouter.get(`/services/:service_id`, (req, res) => {
   const serviceId = req.params.service_id.replace(".json", "");

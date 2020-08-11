@@ -4,6 +4,7 @@ import express, { Response } from "express";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
+import { Millisecond } from "italia-ts-commons/lib/units";
 import morgan from "morgan";
 import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../generated/definitions/backend/UserDataProcessing";
@@ -16,6 +17,7 @@ import { TransactionListResponse } from "../generated/definitions/pagopa/Transac
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
 import { bonusVacanze, resetBonusVacanze } from "./bonus-vacanze/apis";
 import { availableBonuses } from "./bonus-vacanze/payloads/availableBonuses";
+import { fiscalCode, staticContentRootPath } from "./global";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { contextualHelpData } from "./payloads/contextualHelp";
 import { getProblemJson, notFound } from "./payloads/error";
@@ -40,11 +42,9 @@ import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
 import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { publicRouter } from "./routers/public";
-import {
-  servicesMetadataRouter,
-  staticContentRootPath
-} from "./routers/services_metadata";
+import { servicesMetadataRouter } from "./routers/services_metadata";
 import { walletPath, walletRouter } from "./routers/wallet";
+import { delayer } from "./utils/delay_middleware";
 import { validatePayload } from "./utils/validator";
 import {
   frontMatter1CTA,
@@ -53,9 +53,6 @@ import {
   frontMatterInvalid,
   messageMarkdown
 } from "./utils/variables";
-import { fiscalCode } from "./global";
-import { delayer } from "./utils/delay_middleware";
-import { Millisecond } from "italia-ts-commons/lib/units";
 
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
@@ -115,7 +112,7 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined
+    | undefined;
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,

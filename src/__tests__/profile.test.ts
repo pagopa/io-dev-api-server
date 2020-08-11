@@ -7,8 +7,9 @@ import { Profile } from "../../generated/definitions/backend/Profile";
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { basePath } from "../../generated/definitions/backend_api_paths";
 import { Municipality } from "../../generated/definitions/content/Municipality";
+import { fiscalCode } from "../global";
 import { userMetadata } from "../payloads/userMetadata";
-import app, { fiscalCode } from "../server";
+import app from "../server";
 
 const request = supertest(app);
 
