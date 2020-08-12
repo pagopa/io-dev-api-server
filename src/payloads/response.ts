@@ -25,6 +25,11 @@ export const handleResponse = <T>(
   setTimeout(() => res.send(ioResponse.payload), delay);
 };
 
+/**
+ * ResponseHandler is an helper function to handle the IO API
+ * it checks your are handling an existing api (IOApiPath)
+ * it ensures handler give a response compliant with API spec (IOResponse<T>)
+ */
 export class ResponseHandler {
   private app: Application;
   constructor(app: Application) {

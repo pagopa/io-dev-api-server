@@ -53,6 +53,7 @@ import {
   frontMatterInvalid,
   messageMarkdown
 } from "./utils/variables";
+import { setProfileHandlers } from "./routers/profile";
 
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
@@ -63,6 +64,7 @@ const app: Application = express();
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 //app.use(delayer(500 as Millisecond));
 // set middleware logging
+
 app.use(
   morgan(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
@@ -75,11 +77,11 @@ app.use("/", publicRouter);
 app.use(walletPath, walletRouter);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
+setProfileHandlers(responseHandler);
 
 // setting IO backend behavior (NOTE: all exported variables and functions it's because they should be tested, to ensure the expected behavior)
 // profile
-// tslint:disable-next-line: no-let
-let currentProfile = getProfile(fiscalCode).payload;
+
 // services and messages
 export const services = getServices(20);
 const totalMessages = 1;
@@ -112,7 +114,7 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined;
+    | undefined
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
@@ -150,7 +152,8 @@ app.get(`/content_definitions.yaml`, (_, res) => {
 // it should be useful to reset some states
 app.get("/reset", (_, res) => {
   // reset profile
-  currentProfile = getProfile(fiscalCode).payload;
+  // TO DO RESTORE
+  // currentProfile = getProfile(fiscalCode).payload;
   // reset user shoice
   userChoices = initialUserChoice;
   resetBonusVacanze();
@@ -160,26 +163,6 @@ app.get("/reset", (_, res) => {
 /** IO backend API handlers */
 responseHandler
   .addHandler("get", "/session", session)
-  .addCustomHandler("get", "/profile", _ => {
-    return { payload: currentProfile, isJson: true };
-  })
-  .addHandler("put", "/installations/:installationID", getSuccessResponse())
-  .addCustomHandler("post", "/profile", req => {
-    // the server profile is merged with
-    // the one coming from request. Furthermore this profile's version is increased by 1
-    const clintProfileIncresed = {
-      ...req.body,
-      version: parseInt(req.body.version, 10) + 1
-    };
-    currentProfile = validatePayload(InitializedProfile, {
-      ...currentProfile,
-      ...clintProfileIncresed
-    });
-    return {
-      payload: currentProfile,
-      isJson: true
-    };
-  })
   .addHandler("get", "/user-metadata", userMetadata)
   .addCustomHandler("post", "/user-metadata", req => {
     // simply validate and return the received user-metadata

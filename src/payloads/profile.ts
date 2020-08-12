@@ -11,7 +11,7 @@ export const user = {
   spid_email: "mario.rossi@spid-email.it",
   email: "mario.rossi@email.it"
 };
-
+const currentTosVersion = 2;
 // define here the fiscalCode used within the client communication
 const spidProfile: InitializedProfile = {
   accepted_tos_version: 2,
@@ -25,7 +25,7 @@ const spidProfile: InitializedProfile = {
   name: user.name,
   spid_email: user.spid_email as EmailAddress,
   spid_mobile_phone: user.mobile as NonEmptyString,
-  version: 1,
+  version: currentTosVersion,
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -47,7 +47,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
 
 const cieProfile: InitializedProfile = {
   email: user.email as EmailAddress,
-  accepted_tos_version: 2,
+  accepted_tos_version: currentTosVersion,
   family_name: user.suruname,
   has_profile: true,
   is_inbox_enabled: true,
@@ -72,7 +72,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
-const currentProfile = spidProfile;
+const currentProfile = spidProfileFirstOnboarding;
 export const getProfile = (
   fiscalCode: string
 ): IOResponse<InitializedProfile> => {
