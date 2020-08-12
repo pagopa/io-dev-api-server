@@ -2,11 +2,11 @@
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
 import { Router } from "express";
-import { availableBonuses } from "../bonus-vacanze/payloads/availableBonuses";
+import { availableBonuses } from "../features/bonus-vacanze/payloads/availableBonuses";
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { getServiceMetadata } from "../payloads/service";
-import { sendFile, servicesByScope, servicesTuple } from "../server";
+import { servicesByScope, servicesTuple } from "../server";
 
 export const servicesMetadataRouter = Router();
 
@@ -23,13 +23,17 @@ servicesMetadataRouter.get(
   `/logos/organizations/:organization_id`,
   (_, res) => {
     // ignoring organization id and send always the same image
-    sendFile("assets/imgs/logos/organizations/organization_1.png", res);
+    res.sendFile("assets/imgs/logos/organizations/organization_1.png", {
+      root: "."
+    });
   }
 );
 
 servicesMetadataRouter.get(`/logos/services/:service_id`, (_, res) => {
   // ignoring service id and send always the same image
-  sendFile("assets/imgs/logos/services/service_1.png", res);
+  res.sendFile("assets/imgs/logos/services/service_1.png", {
+    root: "."
+  });
 });
 
 servicesMetadataRouter.get(`/municipalities/:A/:B/:CODE`, (_, res) => {

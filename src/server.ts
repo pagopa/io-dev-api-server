@@ -15,8 +15,8 @@ import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import { basePath } from "../generated/definitions/backend_api_paths";
 import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
 import { Wallet } from "../generated/definitions/pagopa/Wallet";
-import { bonusVacanze, resetBonusVacanze } from "./bonus-vacanze/apis";
-import { availableBonuses } from "./bonus-vacanze/payloads/availableBonuses";
+import { bonusVacanze, resetBonusVacanze } from "./features/bonus-vacanze/apis";
+import { availableBonuses } from "./features/bonus-vacanze/payloads/availableBonuses";
 import { fiscalCode, staticContentRootPath } from "./global";
 import { backendInfo, backendStatus } from "./payloads/backend";
 import { contextualHelpData } from "./payloads/contextualHelp";
@@ -138,16 +138,6 @@ app.post("/logout", (_, res) => {
 /** wallet content */
 
 /** static contents */
-
-export const sendFile = (filePath: string, res: Response) => {
-  res.sendFile(filePath, {
-    root: "."
-  });
-};
-
-app.get(`/content_definitions.yaml`, (_, res) => {
-  sendFile("assets/yaml/content.yaml", res);
-});
 
 // it should be useful to reset some states
 app.get("/reset", (_, res) => {

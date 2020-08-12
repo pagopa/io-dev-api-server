@@ -2,11 +2,10 @@ import { Router } from "express";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
-import { sendFile } from "../server";
-import { uuidv4 } from "../utils/strings";
+import { BonusActivationStatusEnum } from "../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
+import { uuidv4 } from "../../utils/strings";
 import { activeBonus, genRandomBonusCode } from "./payloads/bonus";
 import { eligibilityCheckSuccessEligible } from "./payloads/eligibility";
-import { BonusActivationStatusEnum } from "../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 export const bonusVacanze = Router();
 
 // tslint:disable-next-line: no-let
@@ -19,15 +18,6 @@ const responseBonusActivationAfter = 3 as Second;
 let idEligibilityRequest: string | undefined;
 // server responses with the eligibility check after
 const responseIseeAfter = 3 as Second;
-
-// return the bonus vacanze definition (it should not be used)
-bonusVacanze.get("/definitions", (_, res) => {
-  sendFile("assets/bonus-vacanze/specs.yaml", res);
-});
-// return the bonus vacanze definition (it should not be used)
-bonusVacanze.get("/definitions_functions", (_, res) => {
-  sendFile("assets/bonus-vacanze/specs_functions.yaml", res);
-});
 
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
