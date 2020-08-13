@@ -59,7 +59,7 @@ import { profileRouter } from "./routers/profile";
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
-
+app.use(bodyParser.json());
 // set middlewares
 // if you want to add a delay in your server, use delayer (utils/delay_middleware)
 //app.use(delayer(500 as Millisecond));
@@ -76,7 +76,7 @@ app.use(staticContentRootPath, servicesMetadataRouter);
 app.use("/", publicRouter);
 app.use(walletPath, walletRouter);
 app.use(basePath, profileRouter);
-app.use(bodyParser.json());
+
 const responseHandler = new ResponseHandler(app);
 
 // setting IO backend behavior (NOTE: all exported variables and functions it's because they should be tested, to ensure the expected behavior)

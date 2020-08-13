@@ -11,22 +11,23 @@ const currentProfile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = currentProfile.payload;
 export const profileRouter = Router();
-installHandler(profileRouter, "get", "/profile", () => currentProfile);
+
 installHandler(profileRouter, "put", "/installations/:installationID", () =>
   getSuccessResponse()
 );
+installHandler(profileRouter, "get", "/profile", () => currentProfile);
 installHandler(profileRouter, "post", "/profile", req => {
   // the server profile is merged with
   // the one coming from request. Furthermore this profile's version is increased by 1
-  const clientProfileIncresed = {
+  const clientProfileIncreased = {
     ...req.body,
     version: parseInt(req.body.version, 10) + 1
   };
-  profilePayload = validatePayload(InitializedProfile, {
+  profilePayload = {
     ...currentProfile,
-    ...clientProfileIncresed
-  });
-  return validateAndCreatePayload(InitializedProfile, profilePayload);
+    ...clientProfileIncreased
+  };
+  return profilePayload;
 });
 installHandler(profileRouter, "get", "/user-metadata", () => userMetadata);
 installHandler(profileRouter, "post", "/user-metadata", req => {

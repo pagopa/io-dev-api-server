@@ -6,6 +6,9 @@ import {
   SupportedMethod
 } from "../../generated/definitions/backend_api_paths";
 import { IRouterMatcher } from "express-serve-static-core";
+import { validatePayload } from "../utils/validator";
+import * as t from "io-ts";
+import { fromNullable } from "fp-ts/lib/Option";
 
 export type IOResponse<T> = {
   payload: T;
@@ -86,15 +89,17 @@ export class ResponseHandler {
   };
 }
 
-export const installHandler = <T>(
+export const installHandler = <T, O, I>(
   router: Router,
   method: SupportedMethod,
   path: string,
-  response: (request: Request) => IOResponse<T>,
+  response: (request: Request) => any,
+  codec?: t.Type<T, O, I>,
   delay: Millisecond = 0 as Millisecond
 ) => {
   router[method](path, (req, res) => {
     const responsePayload = response(req);
+    fromNullable(codec).map(c => validatePayload(c, responsePayload));
     const expressResponse = res.status(responsePayload.status || 200);
     if (responsePayload.isJson === true) {
       setTimeout(() => expressResponse.json(responsePayload.payload), delay);
