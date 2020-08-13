@@ -72,7 +72,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
-const currentProfile = spidProfileFirstOnboarding;
+const currentProfile = spidProfile;
 export const getProfile = (
   fiscalCode: string
 ): IOResponse<InitializedProfile> => {
