@@ -53,7 +53,7 @@ import {
   frontMatterInvalid,
   messageMarkdown
 } from "./utils/variables";
-import { setProfileHandlers } from "./routers/profile";
+import { profileRouter } from "./routers/profile";
 
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
@@ -70,14 +70,14 @@ app.use(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
 );
-// support bonus vacanze
+// add routers for
 app.use(`${basePath}/bonus/vacanze`, bonusVacanze);
 app.use(staticContentRootPath, servicesMetadataRouter);
 app.use("/", publicRouter);
 app.use(walletPath, walletRouter);
+app.use(basePath, profileRouter);
 app.use(bodyParser.json());
 const responseHandler = new ResponseHandler(app);
-setProfileHandlers(responseHandler);
 
 // setting IO backend behavior (NOTE: all exported variables and functions it's because they should be tested, to ensure the expected behavior)
 // profile

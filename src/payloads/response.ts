@@ -1,10 +1,11 @@
-import { Application, Request, Response } from "express";
+import { Application, Request, Response, Router } from "express";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import {
   basePath,
   IOApiPath,
   SupportedMethod
 } from "../../generated/definitions/backend_api_paths";
+import { IRouterMatcher } from "express-serve-static-core";
 
 export type IOResponse<T> = {
   payload: T;
@@ -53,8 +54,6 @@ export class ResponseHandler {
       case "put":
         this.app.put(basePath + path, handlerWithDelay);
         break;
-      case "update":
-        throw Error("update method not implemented");
       default:
         throw Error(`${method} not implemented`);
     }
@@ -86,3 +85,21 @@ export class ResponseHandler {
     return this;
   };
 }
+
+export const installHandler = <T>(
+  router: Router,
+  method: SupportedMethod,
+  path: string,
+  response: (request: Request) => IOResponse<T>,
+  delay: Millisecond = 0 as Millisecond
+) => {
+  router[method](path, (req, res) => {
+    const responsePayload = response(req);
+    const expressResponse = res.status(responsePayload.status || 200);
+    if (responsePayload.isJson === true) {
+      setTimeout(() => expressResponse.json(responsePayload.payload), delay);
+      return;
+    }
+    setTimeout(() => expressResponse.send(responsePayload.payload), delay);
+  });
+};
