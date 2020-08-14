@@ -83,7 +83,7 @@ const responseHandler = new ResponseHandler(app);
 // profile
 
 // services and messages
-export const services = getServices(20);
+export const services = getServices(5);
 const totalMessages = 1;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
@@ -160,7 +160,7 @@ responseHandler
     return { payload };
   })
   // return messages
-  .addCustomHandler("get", "/messages", _ => messages, 3000 as Millisecond)
+  .addCustomHandler("get", "/messages", _ => messages)
   // return a mock message with content (always found!)
   .addCustomHandler("get", "/messages/:id", req => {
     // retrieve the messageIndex from id

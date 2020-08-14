@@ -1,14 +1,13 @@
 import { Application, Request, Response, Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
+import * as t from "io-ts";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import {
   basePath,
   IOApiPath,
   SupportedMethod
 } from "../../generated/definitions/backend_api_paths";
-import { IRouterMatcher } from "express-serve-static-core";
 import { validatePayload } from "../utils/validator";
-import * as t from "io-ts";
-import { fromNullable } from "fp-ts/lib/Option";
 
 export type IOResponse<T> = {
   payload: T;
@@ -22,11 +21,15 @@ export const handleResponse = <T>(
 ) => (req: Request, expressResponse: Response) => {
   const ioResponse = handler(req);
   const res = expressResponse.status(ioResponse.status || 200);
-  if (ioResponse.isJson === true) {
-    setTimeout(() => res.json(ioResponse.payload), delay);
+  const executeRes = () =>
+    ioResponse.isJson
+      ? res.json(ioResponse.payload)
+      : res.send(ioResponse.payload);
+  if (delay > 0) {
+    setTimeout(executeRes, delay);
     return;
   }
-  setTimeout(() => res.send(ioResponse.payload), delay);
+  executeRes();
 };
 
 /**
@@ -101,10 +104,14 @@ export const installHandler = <T, O, I>(
     const responsePayload = response(req);
     fromNullable(codec).map(c => validatePayload(c, responsePayload));
     const expressResponse = res.status(responsePayload.status || 200);
-    if (responsePayload.isJson === true) {
-      setTimeout(() => expressResponse.json(responsePayload.payload), delay);
+    const executeRes = () =>
+      responsePayload.isJson
+        ? expressResponse.json(responsePayload.payload)
+        : expressResponse.send(responsePayload.payload);
+    if (delay > 0) {
+      setTimeout(executeRes, delay);
       return;
     }
-    setTimeout(() => expressResponse.send(responsePayload.payload), delay);
+    executeRes();
   });
 };
