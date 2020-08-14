@@ -16,19 +16,25 @@ installHandler(profileRouter, "put", "/installations/:installationID", () =>
   getSuccessResponse()
 );
 installHandler(profileRouter, "get", "/profile", () => currentProfile);
-installHandler(profileRouter, "post", "/profile", req => {
-  // the server profile is merged with
-  // the one coming from request. Furthermore this profile's version is increased by 1
-  const clientProfileIncreased = {
-    ...req.body,
-    version: parseInt(req.body.version, 10) + 1
-  };
-  profilePayload = {
-    ...currentProfile,
-    ...clientProfileIncreased
-  };
-  return profilePayload;
-});
+installHandler(
+  profileRouter,
+  "post",
+  "/profile",
+  req => {
+    // the server profile is merged with
+    // the one coming from request. Furthermore this profile's version is increased by 1
+    const clientProfileIncreased = {
+      ...req.body,
+      version: parseInt(req.body.version, 10) + 1
+    };
+    profilePayload = {
+      ...profilePayload,
+      ...clientProfileIncreased
+    };
+    return { payload: profilePayload };
+  },
+  InitializedProfile
+);
 installHandler(profileRouter, "get", "/user-metadata", () => userMetadata);
 installHandler(profileRouter, "post", "/user-metadata", req => {
   // simply validate and return the received user-metadata
