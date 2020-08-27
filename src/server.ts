@@ -327,4 +327,8 @@ responseHandler
     payload: undefined
   });
 
+app.get("/test-html", (_, res) => {
+  sendFile("/src/index.html", res);
+});
+
 export default app;
