@@ -94,8 +94,7 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
     `Subject - test ${idx + 1}`,
     messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
   );
-  const withDD = withDueDate(withContent, hourAhead);
-  return withDD;
+  return withDueDate(withContent, hourAhead);
 });
 // wallets and transactions
 export const wallets = getWallets();
@@ -110,7 +109,7 @@ export const staticContentRootPath = "/static_contents";
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined
+    | undefined;
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
@@ -161,7 +160,10 @@ app.post("/wallet/v1/wallet/:wallet_id/actions/favourite", (req, res) => {
       );
       return fromNullable(maybeWallet);
     })
-    .foldL(() => res.sendStatus(404), w => res.json({ data: w }));
+    .foldL(
+      () => res.sendStatus(404),
+      w => res.json({ data: w })
+    );
 });
 
 app.get("/wallet/v1/transactions", (req, res) => {
