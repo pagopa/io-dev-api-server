@@ -95,22 +95,25 @@ export const installHandler = <T>(
   router: Router,
   method: SupportedMethod,
   path: string,
-  response: (request: Request) => IOResponse<T>,
+  handleRequest: (request: Request, response: Response) => IOResponse<T> | null,
   codec?: t.Type<T>,
   delay: Millisecond = 0 as Millisecond
 ) => {
   router[method](path, (req, res) => {
-    const responsePayload = response(req);
-    fromNullable(codec).map((c) => validatePayload(c, responsePayload.payload));
-    const status = responsePayload.status || 200;
-    const executeRes = () =>
-      responsePayload.isJson
-        ? res.status(status).json(responsePayload.payload)
-        : res.status(status).send(responsePayload.payload);
-    if (delay > 0) {
-      setTimeout(executeRes, delay);
-      return;
-    }
-    executeRes();
+    fromNullable(handleRequest(req, res)).map((responsePayload) => {
+      fromNullable(codec).map((c) =>
+        validatePayload(c, responsePayload.payload)
+      );
+      const status = responsePayload.status || 200;
+      const executeRes = () =>
+        responsePayload.isJson
+          ? res.status(status).json(responsePayload.payload)
+          : res.status(status).send(responsePayload.payload);
+      if (delay > 0) {
+        setTimeout(executeRes, delay);
+        return;
+      }
+      executeRes();
+    });
   });
 };

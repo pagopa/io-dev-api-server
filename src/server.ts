@@ -26,7 +26,7 @@ import {
   getMessages,
   withDueDate,
   withMessageContent,
-  withPaymentData
+  withPaymentData,
 } from "./payloads/message";
 import { municipality } from "./payloads/municipality";
 import { getProfile } from "./payloads/profile";
@@ -35,7 +35,7 @@ import {
   getServiceMetadata,
   getServices,
   getServicesByScope,
-  getServicesTuple
+  getServicesTuple,
 } from "./payloads/service";
 import { session } from "./payloads/session";
 import { getSuccessResponse } from "./payloads/success";
@@ -51,9 +51,10 @@ import {
   frontMatter2CTA,
   frontMatter2CTA2,
   frontMatterInvalid,
-  messageMarkdown
+  messageMarkdown,
 } from "./utils/variables";
 import { profileRouter } from "./routers/profile";
+import { miscRouter } from "./routers/misc";
 
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
@@ -74,6 +75,7 @@ app.use(
 app.use(`${basePath}/bonus/vacanze`, bonusVacanze);
 app.use(staticContentRootPath, servicesMetadataRouter);
 app.use("/", publicRouter);
+app.use("/", miscRouter);
 app.use(walletPath, walletRouter);
 app.use(basePath, profileRouter);
 
@@ -95,7 +97,7 @@ const messageContents: ReadonlyArray<string> = [
   frontMatter2CTA,
   frontMatter1CTA,
   frontMatterInvalid,
-  frontMatter2CTA2
+  frontMatter2CTA2,
 ];
 export const messagesWithContent = messages.payload.items.map((item, idx) => {
   const withContent = withMessageContent(
@@ -114,11 +116,11 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
 type UserDeleteDownloadData = {
   [key in keyof typeof UserDataProcessingChoiceEnum]:
     | UserDataProcessing
-    | undefined
+    | undefined;
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
-  DELETE: undefined
+  DELETE: undefined,
 };
 // tslint:disable-next-line: no-let
 let userChoices = initialUserChoice;
@@ -154,18 +156,18 @@ app.get("/reset", (_, res) => {
 responseHandler
   .addHandler("get", "/session", session)
   .addHandler("get", "/user-metadata", userMetadata)
-  .addCustomHandler("post", "/user-metadata", req => {
+  .addCustomHandler("post", "/user-metadata", (req) => {
     // simply validate and return the received user-metadata
     const payload = validatePayload(UserMetadata, req.body);
     return { payload };
   })
   // return messages
-  .addCustomHandler("get", "/messages", _ => messages)
+  .addCustomHandler("get", "/messages", (_) => messages)
   // return a mock message with content (always found!)
-  .addCustomHandler("get", "/messages/:id", req => {
+  .addCustomHandler("get", "/messages/:id", (req) => {
     // retrieve the messageIndex from id
     const msgIndex = messages.payload.items.findIndex(
-      item => item.id === req.params.id
+      (item) => item.id === req.params.id
     );
     if (msgIndex === -1) {
       return getProblemJson(404, "message not found");
@@ -179,20 +181,20 @@ responseHandler
     .addHandler("get", "/services", getProblemJson(429, "too many requests"))
   */
   // return a mock service with the same requested id (always found!)
-  .addCustomHandler("get", "/services/:service_id", req => {
+  .addCustomHandler("get", "/services/:service_id", (req) => {
     const service = services.find(
-      item => item.service_id === req.params.service_id
+      (item) => item.service_id === req.params.service_id
     );
     return { payload: service || notFound.payload };
   })
-  .addCustomHandler("get", "/user-data-processing/:choice", req => {
+  .addCustomHandler("get", "/user-data-processing/:choice", (req) => {
     const choice = req.params.choice as UserDataProcessingChoiceEnum;
     if (userChoices[choice] === undefined) {
       return getProblemJson(404);
     }
     return { payload: userChoices[choice] };
   })
-  .addCustomHandler("post", "/user-data-processing", req => {
+  .addCustomHandler("post", "/user-data-processing", (req) => {
     const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
     const choice = payload.choice;
     if (userChoices[choice] !== undefined) {
@@ -201,18 +203,18 @@ responseHandler
     const data: UserDataProcessing = {
       choice,
       status: UserDataProcessingStatusEnum.PENDING,
-      version: 1
+      version: 1,
     };
     userChoices = {
       DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
-      DELETE: choice === "DELETE" ? data : userChoices.DELETE
+      DELETE: choice === "DELETE" ? data : userChoices.DELETE,
     };
     return { payload: userChoices[choice] };
   })
   // return positive feedback on request to receive a new email to verify the email address
   .addHandler("post", "/email-validation-process", {
     status: 202,
-    payload: undefined
+    payload: undefined,
   });
 
 export default app;
