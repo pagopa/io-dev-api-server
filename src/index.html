@@ -4,7 +4,7 @@
     <script>
       function sendMessage() {
         const message = "LOAD_END"
-        window.ReactNativeWebView.postMessage(message)
+        window.ReactNativeWebView.postMessage(document.cookie)
       }
 
       sendMessage()
