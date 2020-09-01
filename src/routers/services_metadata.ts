@@ -7,24 +7,32 @@ import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { getServiceMetadata } from "../payloads/service";
 import { servicesByScope, servicesTuple } from "../server";
+import { installHandler } from "../payloads/response";
+import { publicRouter } from "./public";
+import { Service } from "../../generated/definitions/content/Service";
+import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 
 export const servicesMetadataRouter = Router();
 
-servicesMetadataRouter.get(`/services/:service_id`, (req, res) => {
-  const serviceId = req.params.service_id.replace(".json", "");
-  if (serviceId === "servicesByScope") {
-    res.json(servicesByScope.payload);
-    return;
+installHandler<Service | ServicesByScope>(
+  servicesMetadataRouter,
+  "get",
+  `/services/:service_id`,
+  (req) => {
+    const serviceId = req.params.service_id.replace(".json", "");
+    if (serviceId === "servicesByScope") {
+      return servicesByScope;
+    }
+    return getServiceMetadata(serviceId, servicesTuple.payload);
   }
-  res.json(getServiceMetadata(serviceId, servicesTuple.payload).payload);
-});
+);
 
 servicesMetadataRouter.get(
   `/logos/organizations/:organization_id`,
   (_, res) => {
     // ignoring organization id and send always the same image
     res.sendFile("assets/imgs/logos/organizations/organization_1.png", {
-      root: "."
+      root: ".",
     });
   }
 );
@@ -32,7 +40,7 @@ servicesMetadataRouter.get(
 servicesMetadataRouter.get(`/logos/services/:service_id`, (_, res) => {
   // ignoring service id and send always the same image
   res.sendFile("assets/imgs/logos/services/service_1.png", {
-    root: "."
+    root: ".",
   });
 });
 

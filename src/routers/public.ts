@@ -1,25 +1,49 @@
 /**
- * this router serves all public API
+ * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
-import { backendInfo, backendStatus } from "../payloads/backend";
+import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
 import { loginSessionToken } from "../payloads/login";
+import { installHandler } from "../payloads/response";
+import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
+import { AccessToken } from "../../generated/definitions/backend/AccessToken";
 
 export const publicRouter = Router();
 
-publicRouter.get("/info", (_, res) => {
-  res.json(backendInfo);
-});
+installHandler(
+  publicRouter,
+  "get",
+  "/info",
+  () => ({
+    payload: backendInfo,
+  }),
+  ServerInfo
+);
 
-publicRouter.get("/ping", (_, res) => {
-  res.send("ok");
-});
+// ping (no longer needed since actually app disables network status checking)
+installHandler(publicRouter, "get", "/ping", () => ({
+  payload: "ok",
+  isJson: false,
+}));
 
-publicRouter.post("/test-login", (_, res) => {
-  res.json(loginSessionToken);
-});
+// test login
+installHandler(
+  publicRouter,
+  "post",
+  "/test-login",
+  () => ({
+    payload: { token: loginSessionToken },
+  }),
+  AccessToken
+);
 
 // backend service status
-publicRouter.get("/status/backend.json", (_, res) => {
-  res.json(backendStatus);
-});
+installHandler(
+  publicRouter,
+  "get",
+  "/status/backend.json",
+  () => ({
+    payload: backendStatus,
+  }),
+  BackendStatus
+);

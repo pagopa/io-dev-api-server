@@ -5,7 +5,7 @@ import { Millisecond } from "italia-ts-commons/lib/units";
 import {
   basePath,
   IOApiPath,
-  SupportedMethod
+  SupportedMethod,
 } from "../../generated/definitions/backend_api_paths";
 import { validatePayload } from "../utils/validator";
 
@@ -91,18 +91,17 @@ export class ResponseHandler {
     return this;
   };
 }
-
-export const installHandler = <T, O, I>(
+export const installHandler = <T>(
   router: Router,
   method: SupportedMethod,
   path: string,
   response: (request: Request) => IOResponse<T>,
-  codec?: t.Type<T, O, I>,
+  codec?: t.Type<T>,
   delay: Millisecond = 0 as Millisecond
 ) => {
   router[method](path, (req, res) => {
     const responsePayload = response(req);
-    fromNullable(codec).map(c => validatePayload(c, responsePayload.payload));
+    fromNullable(codec).map((c) => validatePayload(c, responsePayload.payload));
     const status = responsePayload.status || 200;
     const executeRes = () =>
       responsePayload.isJson
