@@ -25,7 +25,7 @@ export const getService = (serviceId: string): ServicePublic => {
       NotificationChannelEnum.EMAIL,
       NotificationChannelEnum.WEBHOOK,
     ],
-    version: 1,
+    version: 2,
   };
   return validatePayload(ServicePublic, service);
 };

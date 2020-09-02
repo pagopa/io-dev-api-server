@@ -95,7 +95,10 @@ export const installHandler = <T>(
   router: Router,
   method: SupportedMethod,
   path: string,
-  handleRequest: (request: Request, response: Response) => IOResponse<T> | null,
+  handleRequest: (
+    request: Request,
+    response: Response
+  ) => IOResponse<T> | null | undefined,
   codec?: t.Type<T>,
   delay: Millisecond = 0 as Millisecond
 ) => {

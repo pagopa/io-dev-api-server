@@ -27,36 +27,60 @@ installHandler<Service | ServicesByScope>(
   }
 );
 
-servicesMetadataRouter.get(
+installHandler(
+  servicesMetadataRouter,
+  "get",
   `/logos/organizations/:organization_id`,
   (_, res) => {
     // ignoring organization id and send always the same image
     res.sendFile("assets/imgs/logos/organizations/organization_1.png", {
       root: ".",
     });
+    return null;
   }
 );
 
-servicesMetadataRouter.get(`/logos/services/:service_id`, (_, res) => {
-  // ignoring service id and send always the same image
-  res.sendFile("assets/imgs/logos/services/service_1.png", {
-    root: ".",
-  });
-});
+installHandler(
+  servicesMetadataRouter,
+  "get",
+  `/logos/services/:service_id`,
+  (_, res) => {
+    // ignoring service id and send always the same image
+    res.sendFile("assets/imgs/logos/services/service_1.png", {
+      root: ".",
+    });
+    return null;
+  }
+);
 
-servicesMetadataRouter.get(`/municipalities/:A/:B/:CODE`, (_, res) => {
-  // return always the same municipality
-  res.json(municipality);
-});
+installHandler(
+  servicesMetadataRouter,
+  "get",
+  `/municipalities/:A/:B/:CODE`,
+  (_, res) => {
+    // return always the same municipality
+    res.json(municipality);
+    return null;
+  }
+);
 
 // get the list of all available bonus types
-servicesMetadataRouter.get(
+installHandler(
+  servicesMetadataRouter,
+  "get",
   `/bonus/vacanze/bonuses_available.json`,
   (_, res) => {
     res.json(availableBonuses);
+    return null;
   }
 );
 
-servicesMetadataRouter.get(`/contextualhelp/data.json`, (_, res) => {
-  res.json(contextualHelpData);
-});
+installHandler(
+  servicesMetadataRouter,
+  "get",
+  `/contextualhelp/data.json`,
+  (_, res) => {
+    res.json(contextualHelpData);
+    return null;
+  }
+);

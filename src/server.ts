@@ -86,7 +86,7 @@ const responseHandler = new ResponseHandler(app);
 
 // services and messages
 export const services = getServices(5);
-const totalMessages = 1;
+const totalMessages = 5;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 const now = new Date();
 const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
@@ -185,6 +185,10 @@ responseHandler
     const service = services.find(
       (item) => item.service_id === req.params.service_id
     );
+    if (req.params.service_id === "dev-service_2") {
+      return { payload: null, status: 500 };
+    }
+
     return { payload: service || notFound.payload };
   })
   .addCustomHandler("get", "/user-data-processing/:choice", (req) => {

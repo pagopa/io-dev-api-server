@@ -13,20 +13,20 @@ let firstBonusActivationRequestTime = 0;
 // tslint:disable-next-line: no-let
 let firstIseeRequestTime = 0;
 // server responses with the activate bonus after
-const responseBonusActivationAfter = 3 as Second;
+const responseBonusActivationAfter = 0 as Second;
 // tslint:disable-next-line: no-let
 let idEligibilityRequest: string | undefined;
 // server responses with the eligibility check after
-const responseIseeAfter = 3 as Second;
+const responseIseeAfter = 0 as Second;
 
 // tslint:disable-next-line: no-let
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // tslint:disable-next-line: no-let
-const aLotOfBonus = range(1, 1).map(_ => ({
+const aLotOfBonus = range(1, 1).map((_) => ({
   ...activeBonus,
   id: genRandomBonusCode(),
-  status: BonusActivationStatusEnum.REDEEMED
+  status: BonusActivationStatusEnum.REDEEMED,
 }));
 
 // Get all IDs of the bonus activations requested by
@@ -56,7 +56,7 @@ bonusVacanze.get(`/activations`, (_, res) => {
 // 200 -> Bonus activation details.
 // 404 -> No bonus found.
 bonusVacanze.get(`/activations/:bonus_id`, (req, res) => {
-  const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
+  const bonus = aLotOfBonus.find((b) => b.id === req.params.bonus_id);
   if (bonus) {
     res.json(bonus);
     return;
