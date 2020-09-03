@@ -6,8 +6,7 @@ import { getProfile } from "../payloads/profile";
 import { installHandler } from "../payloads/response";
 import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
-import { validateAndCreatePayload, validatePayload } from "../utils/validator";
-import { Millisecond } from "italia-ts-commons/lib/units";
+import { validatePayload } from "../utils/validator";
 const currentProfile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = currentProfile.payload;
@@ -28,7 +27,7 @@ installHandler(
   "post",
   "/profile",
   (req) => {
-    // the server profile is merged with the one coming from request.
+    // profile is merged with the one coming from request.
     // furthermore this profile's version is increased by 1
     const clientProfileIncreased = {
       ...req.body,
