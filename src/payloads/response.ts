@@ -8,6 +8,8 @@ import {
   SupportedMethod,
 } from "../../generated/definitions/backend_api_paths";
 import { validatePayload } from "../utils/validator";
+import { getProblemJson } from "./error";
+import { PathReporter } from "io-ts/lib/PathReporter";
 
 export type IOResponse<T> = {
   payload: T;
@@ -95,28 +97,45 @@ export const installHandler = <T>(
   router: Router,
   method: SupportedMethod,
   path: string,
-  handleRequest: (
-    request: Request,
-    response: Response
-  ) => IOResponse<T> | null | undefined,
+  handleRequest: (request: Request) => IOResponse<T>,
   codec?: t.Type<T>,
   delay: Millisecond = 0 as Millisecond
 ) => {
   router[method](path, (req, res) => {
-    fromNullable(handleRequest(req, res)).map((responsePayload) => {
-      fromNullable(codec).map((c) =>
-        validatePayload(c, responsePayload.payload)
+    const responsePayload = handleRequest(req);
+    const validation = fromNullable(codec).map((c) =>
+      c.decode(responsePayload.payload)
+    );
+    // the provided payload is not respecting the codec shape
+    if (validation.isSome() && validation.value.isLeft()) {
+      const problem = getProblemJson(
+        500,
+        "the returned payload is not compliant with the target codec",
+        PathReporter.report(validation.value).toString()
       );
-      const status = responsePayload.status || 200;
-      const executeRes = () =>
-        responsePayload.isJson
-          ? res.status(status).json(responsePayload.payload)
-          : res.status(status).send(responsePayload.payload);
-      if (delay > 0) {
-        setTimeout(executeRes, delay);
-        return;
-      }
-      executeRes();
-    });
+      res.status(problem.status || 500).json(problem.payload);
+      return;
+    }
+    const status = responsePayload.status || 200;
+    const executeRes = () =>
+      responsePayload.isJson
+        ? res.status(status).json(responsePayload.payload)
+        : res.status(status).send(responsePayload.payload);
+    if (delay > 0) {
+      setTimeout(executeRes, delay);
+      return;
+    }
+    executeRes();
+  });
+};
+
+export const installCustomHandler = <T>(
+  router: Router,
+  method: SupportedMethod,
+  path: string,
+  handleRequest: (request: Request, response: Response) => void
+) => {
+  router[method](path, (req, res) => {
+    handleRequest(req, res);
   });
 };

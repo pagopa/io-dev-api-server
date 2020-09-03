@@ -7,7 +7,7 @@ import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { getServiceMetadata } from "../payloads/service";
 import { servicesByScope, servicesTuple } from "../server";
-import { installHandler } from "../payloads/response";
+import { installCustomHandler, installHandler } from "../payloads/response";
 import { publicRouter } from "./public";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
@@ -27,7 +27,7 @@ installHandler<Service | ServicesByScope>(
   }
 );
 
-installHandler(
+installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/logos/organizations/:organization_id`,
@@ -36,11 +36,10 @@ installHandler(
     res.sendFile("assets/imgs/logos/organizations/organization_1.png", {
       root: ".",
     });
-    return null;
   }
 );
 
-installHandler(
+installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/logos/services/:service_id`,
@@ -49,38 +48,34 @@ installHandler(
     res.sendFile("assets/imgs/logos/services/service_1.png", {
       root: ".",
     });
-    return null;
   }
 );
 
-installHandler(
+installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/municipalities/:A/:B/:CODE`,
   (_, res) => {
     // return always the same municipality
     res.json(municipality);
-    return null;
   }
 );
 
 // get the list of all available bonus types
-installHandler(
+installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/bonus/vacanze/bonuses_available.json`,
   (_, res) => {
     res.json(availableBonuses);
-    return null;
   }
 );
 
-installHandler(
+installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/contextualhelp/data.json`,
   (_, res) => {
     res.json(contextualHelpData);
-    return null;
   }
 );
