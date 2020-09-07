@@ -4,6 +4,11 @@ import { sendFile } from "../utils/file";
 
 export const miscRouter = Router();
 
-installCustomHandler(miscRouter, "get", "/test-cookies.html", (_, res) => {
-  sendFile("assets/html/test_cookies.html", res);
-});
+installCustomHandler(
+  miscRouter,
+  "get",
+  "/myportal_playground.html",
+  (_, res) => {
+    sendFile("assets/html/myportal_playground.html", res);
+  }
+);

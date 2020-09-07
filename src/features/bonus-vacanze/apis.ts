@@ -33,12 +33,11 @@ const aLotOfBonus = range(1, 1).map((_) => ({
 // the authenticated user or by any between his family member
 bonusVacanze.get(`/activations`, (_, res) => {
   // if you want to return a list of bonus uncomment the lines below
-  /*
+
   res.json({
-    items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
+    items: aLotOfBonus.map((b) => ({ id: b.id, is_applicant: true })),
   });
   return;
-  */
 
   fromNullable(idActivationBonus).foldL(
     () => {

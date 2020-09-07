@@ -119,5 +119,7 @@ il link deve **sempre** includere il protocollo (http:// o https://)
 
 [PAYMENTS_HISTORY_SCREEN](ioit://PAYMENTS_HISTORY_SCREEN)
 
+[WALLET_HOME con parametri](ioit://WALLET_HOME?param1=a&param2=b&param3=c&param4=100)
+
 [LINK CORROTTO](ioit://WRONG&$)
 `;
