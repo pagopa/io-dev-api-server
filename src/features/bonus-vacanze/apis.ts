@@ -26,7 +26,7 @@ let idActivationBonus: string | undefined;
 const aLotOfBonus = range(1, 1).map((_) => ({
   ...activeBonus,
   id: genRandomBonusCode(),
-  status: BonusActivationStatusEnum.REDEEMED,
+  status: BonusActivationStatusEnum.ACTIVE,
 }));
 
 // Get all IDs of the bonus activations requested by

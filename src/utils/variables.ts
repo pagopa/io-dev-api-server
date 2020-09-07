@@ -3,10 +3,13 @@ it:
     cta_1: 
         text: "Richiedi ISEE"
         action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+    cta_2: 
+        text: "Interno con params"
+        action: "ioit://WALLET_HOME?hello=world&count=100"
 en:
     cta_1: 
-        text: "Request ISEE"
-        action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+        text: "Internal with params"
+        action: "ioit://WALLET_HOME?hello=world&count=100"
 ---
 INPS ha completato le verifiche e risulta che il tuo nucleo familiare non ha un ISEE valido. 
  
