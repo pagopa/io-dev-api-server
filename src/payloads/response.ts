@@ -4,7 +4,6 @@ import * as t from "io-ts";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import {
   basePath,
-  IOApiPath,
   SupportedMethod,
 } from "../../generated/definitions/backend_api_paths";
 import { getProblemJson } from "./error";
@@ -46,7 +45,7 @@ export class ResponseHandler {
 
   private registerHandler = <T>(
     method: SupportedMethod,
-    path: IOApiPath,
+    path: string,
     handler: (req: Request) => IOResponse<T>,
     delay: Millisecond
   ): ResponseHandler => {
@@ -69,7 +68,7 @@ export class ResponseHandler {
 
   public addCustomHandler = <T>(
     method: SupportedMethod,
-    path: IOApiPath,
+    path: string,
     handler: (req: Request) => IOResponse<T>,
     delay: Millisecond = 0 as Millisecond
   ): ResponseHandler => {
@@ -84,7 +83,7 @@ export class ResponseHandler {
    */
   public addHandler = <T>(
     method: SupportedMethod,
-    path: IOApiPath,
+    path: string,
     responsePayload: IOResponse<T>,
     delay: Millisecond = 0 as Millisecond
   ): ResponseHandler => {
