@@ -3,10 +3,16 @@
  */
 import { Router } from "express";
 import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
-import { loginSessionToken } from "../payloads/login";
-import { installHandler } from "../payloads/response";
+import { loginSessionToken, loginWithToken } from "../payloads/login";
+import {
+  allRegisteredRoutes,
+  installCustomHandler,
+  installHandler,
+} from "../payloads/response";
 import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { AccessToken } from "../../generated/definitions/backend/AccessToken";
+import app from "../server";
+import fs from "fs";
 
 export const publicRouter = Router();
 
@@ -47,3 +53,20 @@ installHandler(
   }),
   BackendStatus
 );
+
+// read package.json to print some info
+const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
+installCustomHandler(publicRouter, "get", "/", (_, res) => {
+  res.send(
+    `Hi. This is ${
+      packageJson.name
+    }<br/><br/>routes availables:<br/>${allRegisteredRoutes("<br/>")}`
+  );
+});
+
+installCustomHandler(publicRouter, "get", "/login", (_, res) => {
+  res.redirect(loginWithToken);
+});
+installCustomHandler(publicRouter, "post", "/logout", (_, res) => {
+  res.status(200).send("ok");
+});

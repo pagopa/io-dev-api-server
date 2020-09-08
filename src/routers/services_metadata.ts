@@ -2,7 +2,7 @@
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
 import { Router } from "express";
-import { availableBonuses } from "../features/bonus-vacanze/payloads/availableBonuses";
+import { availableBonuses } from "./features/bonus-vacanze/payloads/availableBonuses";
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { getServiceMetadata } from "../payloads/service";

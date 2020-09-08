@@ -7,7 +7,6 @@ import {
   IOApiPath,
   SupportedMethod,
 } from "../../generated/definitions/backend_api_paths";
-import { validatePayload } from "../utils/validator";
 import { getProblemJson } from "./error";
 import { PathReporter } from "io-ts/lib/PathReporter";
 
@@ -93,6 +92,19 @@ export class ResponseHandler {
     return this;
   };
 }
+
+type Route = { path: string; method: SupportedMethod };
+const routes: Route[] = [];
+const addNewRoute = (method: SupportedMethod, path: string) => {
+  routes.push({ path, method });
+};
+
+export const allRegisteredRoutes = (joiner: string = "\n") =>
+  routes
+    .sort((a, b) => a.path.localeCompare(b.path))
+    .map((r) => `[${r.method}]\t${r.path}`)
+    .join(joiner);
+
 export const installHandler = <T>(
   router: Router,
   method: SupportedMethod,
@@ -101,6 +113,7 @@ export const installHandler = <T>(
   codec?: t.Type<T>,
   delay: Millisecond = 0 as Millisecond
 ) => {
+  addNewRoute(method, path);
   router[method](path, (req, res) => {
     const responsePayload = handleRequest(req);
     const validation = fromNullable(codec).map((c) =>
@@ -135,6 +148,7 @@ export const installCustomHandler = <T>(
   path: string,
   handleRequest: (request: Request, response: Response) => void
 ) => {
+  addNewRoute(method, path);
   router[method](path, (req, res) => {
     handleRequest(req, res);
   });

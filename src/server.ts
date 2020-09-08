@@ -1,50 +1,34 @@
 import bodyParser from "body-parser";
 import { Application } from "express";
-import express, { Response } from "express";
-import { takeEnd } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
-import fs from "fs";
-import { Millisecond } from "italia-ts-commons/lib/units";
+import express from "express";
 import morgan from "morgan";
-import { InitializedProfile } from "../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../generated/definitions/backend/UserDataProcessing";
 import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
-import { basePath } from "../generated/definitions/backend_api_paths";
-import { TransactionListResponse } from "../generated/definitions/pagopa/TransactionListResponse";
-import { Wallet } from "../generated/definitions/pagopa/Wallet";
-import { bonusVacanze, resetBonusVacanze } from "./features/bonus-vacanze/apis";
-import { availableBonuses } from "./features/bonus-vacanze/payloads/availableBonuses";
+import {
+  bonusVacanze,
+  resetBonusVacanze,
+} from "./routers/features/bonus-vacanze/bonus_vacanze";
 import { fiscalCode, staticContentRootPath } from "./global";
-import { backendInfo, backendStatus } from "./payloads/backend";
-import { contextualHelpData } from "./payloads/contextualHelp";
 import { getProblemJson, notFound } from "./payloads/error";
-import { loginWithToken } from "./payloads/login";
 import {
   getMessages,
   withDueDate,
   withMessageContent,
-  withPaymentData,
 } from "./payloads/message";
-import { municipality } from "./payloads/municipality";
-import { getProfile } from "./payloads/profile";
 import { ResponseHandler } from "./payloads/response";
 import {
-  getServiceMetadata,
   getServices,
   getServicesByScope,
   getServicesTuple,
 } from "./payloads/service";
 import { session } from "./payloads/session";
-import { getSuccessResponse } from "./payloads/success";
 import { userMetadata } from "./payloads/userMetadata";
-import { getTransactions, getWallets, sessionToken } from "./payloads/wallet";
 import { publicRouter } from "./routers/public";
 import { servicesMetadataRouter } from "./routers/services_metadata";
-import { walletPath, walletRouter } from "./routers/wallet";
-import { delayer } from "./utils/delay_middleware";
+import { walletRouter } from "./routers/wallet";
 import { validatePayload } from "./utils/validator";
 import {
   frontMatter1CTA,
@@ -56,8 +40,6 @@ import {
 import { profileRouter } from "./routers/profile";
 import { miscRouter } from "./routers/misc";
 
-// read package.json to print some info
-const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 // create express server
 const app: Application = express();
 app.use(bodyParser.json());
@@ -72,12 +54,12 @@ app.use(
   )
 );
 // add routers for
-app.use(`${basePath}/bonus/vacanze`, bonusVacanze);
+app.use(bonusVacanze);
 app.use(staticContentRootPath, servicesMetadataRouter);
-app.use("/", publicRouter);
-app.use("/", miscRouter);
-app.use(walletPath, walletRouter);
-app.use(basePath, profileRouter);
+app.use(publicRouter);
+app.use(miscRouter);
+app.use(walletRouter);
+app.use(profileRouter);
 
 const responseHandler = new ResponseHandler(app);
 
@@ -126,16 +108,6 @@ const initialUserChoice: UserDeleteDownloadData = {
 let userChoices = initialUserChoice;
 
 // public API
-app.get("/", (_, res) => {
-  res.send(`Hi. This is ${packageJson.name}`);
-});
-
-app.get("/login", (_, res) => {
-  res.redirect(loginWithToken);
-});
-app.post("/logout", (_, res) => {
-  res.status(200).send("ok");
-});
 
 /** wallet content */
 
@@ -185,9 +157,6 @@ responseHandler
     const service = services.find(
       (item) => item.service_id === req.params.service_id
     );
-    if (req.params.service_id === "dev-service_2") {
-      return { payload: null, status: 500 };
-    }
 
     return { payload: service || notFound.payload };
   })

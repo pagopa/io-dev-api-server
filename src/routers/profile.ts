@@ -7,25 +7,31 @@ import { installHandler } from "../payloads/response";
 import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
 import { validatePayload } from "../utils/validator";
+import { basePath } from "../../generated/definitions/backend_api_paths";
 const currentProfile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = currentProfile.payload;
 export const profileRouter = Router();
 
-installHandler(profileRouter, "put", "/installations/:installationID", () =>
-  getSuccessResponse()
+const appendPrefix = (path: string) => `${basePath}${path}`;
+
+installHandler(
+  profileRouter,
+  "put",
+  appendPrefix("/installations/:installationID"),
+  () => getSuccessResponse()
 );
 installHandler(
   profileRouter,
   "get",
-  "/profile",
+  appendPrefix("/profile"),
   () => currentProfile,
   InitializedProfile
 );
 installHandler(
   profileRouter,
   "post",
-  "/profile",
+  appendPrefix("/profile"),
   (req) => {
     // profile is merged with the one coming from request.
     // furthermore this profile's version is increased by 1
@@ -44,14 +50,14 @@ installHandler(
 installHandler(
   profileRouter,
   "get",
-  "/user-metadata",
+  appendPrefix("/user-metadata"),
   () => userMetadata,
   UserMetadata
 );
 installHandler(
   profileRouter,
   "post",
-  "/user-metadata",
+  appendPrefix("/user-metadata"),
   (req) => {
     // simply validate and return the received user-metadata
     const payload = validatePayload(UserMetadata, req.body);
