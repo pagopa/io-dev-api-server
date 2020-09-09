@@ -25,7 +25,7 @@ installHandler(
   profileRouter,
   "get",
   appendPrefix("/profile"),
-  () => currentProfile,
+  () => ({ payload: profilePayload }),
   InitializedProfile
 );
 installHandler(

@@ -9,7 +9,7 @@ export const user = {
   surename: "Rossi",
   mobile: "555555555",
   spid_email: "mario.rossi@spid-email.it",
-  email: "mario.rossi@email.it"
+  email: "mario.rossi@email.it",
 };
 const currentTosVersion = 2;
 // define here the fiscalCode used within the client communication
@@ -27,7 +27,7 @@ const spidProfile: InitializedProfile = {
   spid_mobile_phone: user.mobile as NonEmptyString,
   version: currentTosVersion,
   date_of_birth: "1991-01-06",
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: "" as FiscalCode, // injected in getProfile
 };
 
 // mock a SPID profile on first onboarding
@@ -44,7 +44,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   spid_mobile_phone: user.mobile as NonEmptyString,
   version: 0,
   date_of_birth: "1991-01-06",
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: "" as FiscalCode, // injected in getProfile
 };
 
 const cieProfile: InitializedProfile = {
@@ -59,7 +59,7 @@ const cieProfile: InitializedProfile = {
   name: user.name,
   version: 1,
   date_of_birth: "1991-01-06",
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: "" as FiscalCode, // injected in getProfile
 };
 
 // mock a cie profile on first onboarding
@@ -73,7 +73,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   name: user.name,
   version: 0,
   date_of_birth: "1991-01-06",
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: "" as FiscalCode, // injected in getProfile
 };
 
 const currentProfile = spidProfile;
@@ -84,8 +84,8 @@ export const getProfile = (
     // inject the fiscal code
     payload: validatePayload(InitializedProfile, {
       ...currentProfile,
-      fiscal_code: fiscalCode
+      fiscal_code: fiscalCode,
     }),
-    isJson: true
+    isJson: true,
   };
 };
