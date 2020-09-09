@@ -1,4 +1,4 @@
-import { BonusesAvailable } from "../../../../../generated/definitions/content/BonusesAvailable";
+import { BonusesAvailable } from "../../../../generated/definitions/content/BonusesAvailable";
 
 const contentBonusVacanze = `#### Chi può richiederlo?
 

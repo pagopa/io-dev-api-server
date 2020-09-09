@@ -32,6 +32,14 @@
             showAlertBox(payload);
         }
 
+        function sendWasteData(){
+            const payload = {
+                "a": 1,
+                "b": null
+            };
+            showSuccess(payload);
+        }
+
         function printCookies(){
             document.getElementById("cookies").innerText = document.cookie;
         }
@@ -74,6 +82,10 @@
 <div class="item">
     <button onclick="sendAlertBox()">SEND ALERT</button>
     <div>show an alert message</div>
+</div>
+<div class="item">
+    <button onclick="sendWasteData()">SEND WASTE</button>
+    <div>send invalid data to the app</div>
 </div>
 </body>
 </html>

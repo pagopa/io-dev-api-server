@@ -4,8 +4,11 @@ import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { uuidv4 } from "../../../utils/strings";
-import { activeBonus, genRandomBonusCode } from "./payloads/bonus";
-import { eligibilityCheckSuccessEligible } from "./payloads/eligibility";
+import {
+  activeBonus,
+  genRandomBonusCode,
+} from "../../../payloads/features/bonus-vacanze/bonus";
+import { eligibilityCheckSuccessEligible } from "../../../payloads/features/bonus-vacanze/eligibility";
 import { basePath } from "../../../../generated/definitions/backend_api_paths";
 import {
   installCustomHandler,
@@ -28,7 +31,7 @@ const responseIseeAfter = 0 as Second;
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // tslint:disable-next-line: no-let
-const aLotOfBonus = range(1, 1).map((_) => ({
+const aLotOfBonus = range(1, 10).map((_) => ({
   ...activeBonus,
   id: genRandomBonusCode(),
   status: BonusActivationStatusEnum.ACTIVE,
@@ -53,12 +56,12 @@ installCustomHandler(
   appendPrefix(`/activations`),
   (_, res) => {
     // if you want to return a list of bonus uncomment the lines below
-    /*
+
     res.json({
       items: aLotOfBonus.map((b) => ({ id: b.id, is_applicant: true })),
     });
     return;
-    */
+
     fromNullable(idActivationBonus).foldL(
       () => {
         // No activation found.
