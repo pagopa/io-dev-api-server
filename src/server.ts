@@ -10,7 +10,7 @@ import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
 import {
   bonusVacanze,
   resetBonusVacanze,
-} from "./routers/features/bonus-vacanze/bonus_vacanze";
+} from "./routers/features/bonus-vacanze";
 import { fiscalCode, staticContentRootPath } from "./global";
 import { getProblemJson, notFound } from "./payloads/error";
 import {

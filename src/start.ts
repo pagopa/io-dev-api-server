@@ -12,7 +12,9 @@ const serverHostname = "0.0.0.0"; // public
 app.listen(serverPort, serverHostname, async () => {
   child_process.exec("git branch --show-current", (err, stdout) => {
     console.log(
-      chalk.blue(`running on git branch "${stdout.replace("\n", "")}"`)
+      chalk.blue(
+        `running on git branch "${chalk.bgRedBright(stdout.replace("\n", ""))}"`
+      )
     );
     const nets = networkInterfaces();
     const results = Object.create(null);

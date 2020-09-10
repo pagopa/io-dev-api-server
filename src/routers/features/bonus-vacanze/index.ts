@@ -31,7 +31,7 @@ const responseIseeAfter = 0 as Second;
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // tslint:disable-next-line: no-let
-const aLotOfBonus = range(1, 10).map((_) => ({
+const aLotOfBonus = range(1, 3).map((_) => ({
   ...activeBonus,
   id: genRandomBonusCode(),
   status: BonusActivationStatusEnum.ACTIVE,
@@ -56,12 +56,12 @@ installCustomHandler(
   appendPrefix(`/activations`),
   (_, res) => {
     // if you want to return a list of bonus uncomment the lines below
-
+    /*
     res.json({
       items: aLotOfBonus.map((b) => ({ id: b.id, is_applicant: true })),
     });
     return;
-
+    */
     fromNullable(idActivationBonus).foldL(
       () => {
         // No activation found.
