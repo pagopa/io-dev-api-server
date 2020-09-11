@@ -7,7 +7,6 @@ import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { getServiceMetadata } from "../payloads/service";
 import { installCustomHandler, installHandler } from "../payloads/response";
-import { publicRouter } from "./public";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { servicesByScope, servicesTuple } from "./message";
@@ -54,7 +53,7 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/municipalities/:A/:B/:CODE`,
+  `/municipalities/:a/:b/:code`,
   (_, res) => {
     // return always the same municipality
     res.json(municipality);
