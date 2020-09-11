@@ -7,9 +7,9 @@ import {
 } from "../../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../../generated/definitions/content/ServicesByScope";
 import { staticContentRootPath } from "../../global";
+import { basePath } from "../../payloads/response";
 import app from "../../server";
 import { services, visibleServices } from "../service";
-import { basePath } from "../../payloads/response";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
