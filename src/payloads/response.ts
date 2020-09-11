@@ -13,14 +13,14 @@ export type IOResponse<T> = {
 };
 
 type Route = { path: string; method: SupportedMethod };
-// tslint:disable-next-line
-const routes: Route[] = [];
+// tslint:disable-next-line: no-let
+let routes: ReadonlyArray<Route> = [];
 const addNewRoute = (method: SupportedMethod, path: string) => {
-  routes.push({ path, method });
+  routes = [...routes, { path, method }];
 };
 
 export const allRegisteredRoutes = (joiner: string = "\n") =>
-  routes
+  [...routes]
     .sort((a, b) => a.path.localeCompare(b.path))
     .map(r => `[${r.method}]\t${r.path}`)
     .join(joiner);
