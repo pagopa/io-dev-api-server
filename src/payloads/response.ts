@@ -13,6 +13,7 @@ export type IOResponse<T> = {
 };
 
 type Route = { path: string; method: SupportedMethod };
+// tslint:disable-next-line
 const routes: Route[] = [];
 const addNewRoute = (method: SupportedMethod, path: string) => {
   routes.push({ path, method });
