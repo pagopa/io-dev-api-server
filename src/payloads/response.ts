@@ -125,6 +125,7 @@ export const installHandler = <T>(
         "the returned payload is not compliant with the target codec",
         PathReporter.report(validation.value).toString()
       );
+      console.error(problem);
       res.status(problem.status || 500).json(problem.payload);
       return;
     }

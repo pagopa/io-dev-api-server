@@ -5,16 +5,16 @@ import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
 export const user = {
-  name: "Mario",
+  name: "Maria",
   surename: "Rossi",
   mobile: "555555555",
   spid_email: "mario.rossi@spid-email.it",
   email: "mario.rossi@email.it",
 };
-const currentTosVersion = 2;
+const currentTosVersion = 2.1;
 // define here the fiscalCode used within the client communication
 const spidProfile: InitializedProfile = {
-  accepted_tos_version: 2,
+  accepted_tos_version: currentTosVersion,
   email: user.email as EmailAddress,
   family_name: user.surename,
   has_profile: true,
@@ -25,7 +25,7 @@ const spidProfile: InitializedProfile = {
   name: user.name,
   spid_email: user.spid_email as EmailAddress,
   spid_mobile_phone: user.mobile as NonEmptyString,
-  version: currentTosVersion,
+  version: 1,
   date_of_birth: "1991-01-06",
   fiscal_code: "" as FiscalCode, // injected in getProfile
 };

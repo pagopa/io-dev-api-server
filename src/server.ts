@@ -2,15 +2,7 @@ import bodyParser from "body-parser";
 import { Application } from "express";
 import express from "express";
 import morgan from "morgan";
-import { UserDataProcessing } from "../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingChoiceEnum } from "../generated/definitions/backend/UserDataProcessingChoice";
-import { UserDataProcessingChoiceRequest } from "../generated/definitions/backend/UserDataProcessingChoiceRequest";
-import { UserDataProcessingStatusEnum } from "../generated/definitions/backend/UserDataProcessingStatus";
-import { UserMetadata } from "../generated/definitions/backend/UserMetadata";
-import {
-  bonusVacanze,
-  resetBonusVacanze,
-} from "./routers/features/bonus-vacanze";
+import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { fiscalCode, staticContentRootPath } from "./global";
 import { getProblemJson, notFound } from "./payloads/error";
 import {
@@ -25,11 +17,9 @@ import {
   getServicesTuple,
 } from "./payloads/service";
 import { session } from "./payloads/session";
-import { userMetadata } from "./payloads/userMetadata";
 import { publicRouter } from "./routers/public";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { walletRouter } from "./routers/wallet";
-import { validatePayload } from "./utils/validator";
 import {
   frontMatter1CTA,
   frontMatter2CTA,
@@ -44,16 +34,16 @@ import { miscRouter } from "./routers/misc";
 const app: Application = express();
 app.use(bodyParser.json());
 // set middlewares
-// if you want to add a delay in your server, use delayer (utils/delay_middleware)
-//app.use(delayer(500 as Millisecond));
-// set middleware logging
+// if you want to add a delay in your server, use a global delayer (utils/delay_middleware)
+// app.use(delayer(500 as Millisecond));
 
+// set middleware logger
 app.use(
   morgan(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
 );
-// add routers for
+// add routers
 app.use(bonusVacanze);
 app.use(staticContentRootPath, servicesMetadataRouter);
 app.use(publicRouter);
@@ -91,48 +81,8 @@ export const messagesWithContent = messages.payload.items.map((item, idx) => {
   return withDD;
 });
 
-// change this directory to serve differents files
-
-// define user UserDataProcessing (download / delete)
-// to handle e remember user choice
-type UserDeleteDownloadData = {
-  [key in keyof typeof UserDataProcessingChoiceEnum]:
-    | UserDataProcessing
-    | undefined;
-};
-const initialUserChoice: UserDeleteDownloadData = {
-  DOWNLOAD: undefined,
-  DELETE: undefined,
-};
-// tslint:disable-next-line: no-let
-let userChoices = initialUserChoice;
-
-// public API
-
-/** wallet content */
-
-/** static contents */
-
-// it should be useful to reset some states
-app.get("/reset", (_, res) => {
-  // reset profile
-  // TO DO RESTORE
-  // currentProfile = getProfile(fiscalCode).payload;
-  // reset user shoice
-  userChoices = initialUserChoice;
-  resetBonusVacanze();
-  res.send("ok - reset");
-});
-
-/** IO backend API handlers */
 responseHandler
   .addHandler("get", "/session", session)
-  .addHandler("get", "/user-metadata", userMetadata)
-  .addCustomHandler("post", "/user-metadata", (req) => {
-    // simply validate and return the received user-metadata
-    const payload = validatePayload(UserMetadata, req.body);
-    return { payload };
-  })
   // return messages
   .addCustomHandler("get", "/messages", (_) => messages)
   // return a mock message with content (always found!)
@@ -159,35 +109,6 @@ responseHandler
     );
 
     return { payload: service || notFound.payload };
-  })
-  .addCustomHandler("get", "/user-data-processing/:choice", (req) => {
-    const choice = req.params.choice as UserDataProcessingChoiceEnum;
-    if (userChoices[choice] === undefined) {
-      return getProblemJson(404);
-    }
-    return { payload: userChoices[choice] };
-  })
-  .addCustomHandler("post", "/user-data-processing", (req) => {
-    const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
-    const choice = payload.choice;
-    if (userChoices[choice] !== undefined) {
-      return { payload: userChoices[choice] };
-    }
-    const data: UserDataProcessing = {
-      choice,
-      status: UserDataProcessingStatusEnum.PENDING,
-      version: 1,
-    };
-    userChoices = {
-      DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
-      DELETE: choice === "DELETE" ? data : userChoices.DELETE,
-    };
-    return { payload: userChoices[choice] };
-  })
-  // return positive feedback on request to receive a new email to verify the email address
-  .addHandler("post", "/email-validation-process", {
-    status: 202,
-    payload: undefined,
   });
 
 export default app;
