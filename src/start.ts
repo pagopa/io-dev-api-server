@@ -1,9 +1,9 @@
+import chalk from "chalk";
 import child_process from "child_process";
 import fs from "fs";
-import app from "./server";
-import { allRegisteredRoutes } from "./payloads/response";
-import chalk from "chalk";
 import { networkInterfaces } from "os";
+import { allRegisteredRoutes } from "./payloads/response";
+import app from "./server";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 
@@ -17,8 +17,7 @@ app.listen(serverPort, serverHostname, async () => {
       )
     );
     const nets = networkInterfaces();
-    const results = Object.create(null);
-    results["loopback"] = `127.0.0.1`;
+    const results = Object.create({ loopback: "127.0.0.1" });
     const interestingNetworkInterfaces = new Set(["en0", "eth0"]);
     for (const name of Object.keys(nets)) {
       if (!interestingNetworkInterfaces.has(name)) {
@@ -40,6 +39,7 @@ app.listen(serverPort, serverHostname, async () => {
           `${packageJson.name} is running on\n${Object.keys(results)
             .map(
               ni =>
+                // tslint:disable-next-line:no-nested-template-literals
                 `- ${chalk.underline(`http://${results[ni]}:${serverPort}`)}`
             )
             .join("\n")}`

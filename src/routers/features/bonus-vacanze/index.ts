@@ -2,18 +2,15 @@ import { Router } from "express";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
+import { basePath } from "../../../../generated/definitions/backend_api_paths";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
-import { uuidv4 } from "../../../utils/strings";
 import {
   activeBonus,
   genRandomBonusCode
 } from "../../../payloads/features/bonus-vacanze/bonus";
 import { eligibilityCheckSuccessEligible } from "../../../payloads/features/bonus-vacanze/eligibility";
-import { basePath } from "../../../../generated/definitions/backend_api_paths";
-import {
-  installCustomHandler,
-  installHandler
-} from "../../../payloads/response";
+import { installCustomHandler } from "../../../payloads/response";
+import { uuidv4 } from "../../../utils/strings";
 export const bonusVacanze = Router();
 
 // tslint:disable-next-line: no-let
