@@ -2,11 +2,6 @@ import { Router } from "express";
 import { installHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import {
-  getServices,
-  getServicesByScope,
-  getServicesTuple,
-} from "../payloads/service";
-import {
   getMessages,
   withDueDate,
   withMessageContent,
@@ -21,13 +16,12 @@ import {
 } from "../utils/variables";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { getProblemJson } from "../payloads/error";
+import { services } from "./service";
 
 export const messageRouter = Router();
-export const services = getServices(5);
 const totalMessages = 5;
 export const messages = getMessages(totalMessages, services, fiscalCode);
-export const servicesTuple = getServicesTuple(services);
-export const servicesByScope = getServicesByScope(services);
+
 let messagesWithContent: CreatedMessageWithContent[] = [];
 
 const createMessages = () => {

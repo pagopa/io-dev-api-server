@@ -2,15 +2,22 @@ import { Router } from "express";
 import { installHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import { notFound } from "../payloads/error";
-import { services, servicesTuple } from "./message";
+import {
+  getServices,
+  getServicesByScope,
+  getServicesTuple,
+} from "../payloads/service";
 
 export const serviceRouter = Router();
+export const services = getServices(5);
+export const visibleServices = getServicesTuple(services);
+export const servicesByScope = getServicesByScope(services);
 
 installHandler(
   serviceRouter,
   "get",
   addApiV1Prefix("/services"),
-  () => servicesTuple
+  () => visibleServices
 );
 
 installHandler(

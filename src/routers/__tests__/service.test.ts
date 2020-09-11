@@ -9,7 +9,7 @@ import {
 import { ServicesByScope } from "../../../generated/definitions/content/ServicesByScope";
 import { staticContentRootPath } from "../../global";
 import app from "../../server";
-import { services, servicesTuple } from "../message";
+import { services, visibleServices } from "../service";
 const request = supertest(app);
 
 it("services should return a valid services list", async (done) => {
@@ -18,7 +18,7 @@ it("services should return a valid services list", async (done) => {
   const list = PaginatedServiceTupleCollection.decode(response.body);
   expect(list.isRight()).toBeTruthy();
   if (list.isRight()) {
-    expect(list.value).toEqual(servicesTuple.payload);
+    expect(list.value).toEqual(visibleServices.payload);
   }
   done();
 });

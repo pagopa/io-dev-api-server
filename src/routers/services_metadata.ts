@@ -9,7 +9,7 @@ import { getServiceMetadata } from "../payloads/service";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
-import { servicesByScope, servicesTuple } from "./message";
+import { servicesByScope, visibleServices } from "./service";
 
 export const servicesMetadataRouter = Router();
 
@@ -22,7 +22,7 @@ installHandler<Service | ServicesByScope>(
     if (serviceId === "servicesByScope") {
       return servicesByScope;
     }
-    return getServiceMetadata(serviceId, servicesTuple.payload);
+    return getServiceMetadata(serviceId, visibleServices.payload);
   }
 );
 
