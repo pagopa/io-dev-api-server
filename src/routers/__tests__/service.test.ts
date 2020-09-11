@@ -1,13 +1,15 @@
 import supertest from "supertest";
-import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { basePath } from "../../generated/definitions/backend_api_paths";
+import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import {
   ScopeEnum,
   Service
-} from "../../generated/definitions/content/Service";
-import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
-import app, { services, servicesTuple, staticContentRootPath } from "../server";
+} from "../../../generated/definitions/content/Service";
+import { ServicesByScope } from "../../../generated/definitions/content/ServicesByScope";
+import { staticContentRootPath } from "../../global";
+import { basePath } from "../../payloads/response";
+import app from "../../server";
+import { services, visibleServices } from "../service";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
@@ -16,7 +18,7 @@ it("services should return a valid services list", async done => {
   const list = PaginatedServiceTupleCollection.decode(response.body);
   expect(list.isRight()).toBeTruthy();
   if (list.isRight()) {
-    expect(list.value).toEqual(servicesTuple.payload);
+    expect(list.value).toEqual(visibleServices.payload);
   }
   done();
 });

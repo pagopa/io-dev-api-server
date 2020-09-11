@@ -1,4 +1,4 @@
-import { BonusesAvailable } from "../../../generated/definitions/content/BonusesAvailable";
+import { BonusesAvailable } from "../../../../generated/definitions/content/BonusesAvailable";
 
 const contentBonusVacanze = `#### Chi può richiederlo?
 
@@ -44,9 +44,9 @@ export const availableBonuses: BonusesAvailable = [
       tos_url: "https://io.italia.it/app-content/tos_privacy.html"
     },
     en: {
-      name: "Bonus Vacanze EN",
+      name: "Bonus Vacanze",
       subtitle:
-        "L'incentivo per supportare il settore del turismo dopo il lockdown richiesto dal COVID-19 EN",
+        "L'incentivo per supportare il settore del turismo dopo il lockdown richiesto dal COVID-19",
       title: "Richiesta Bonus Vacanze",
       content: contentBonusVacanze,
       tos_url: "https://io.italia.it/app-content/tos_privacy.html"

@@ -3,10 +3,13 @@ it:
     cta_1: 
         text: "Richiedi ISEE"
         action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+    cta_2: 
+        text: "Interno con params"
+        action: "ioit://WALLET_HOME?hello=world&count=100"
 en:
     cta_1: 
-        text: "Request ISEE"
-        action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
+        text: "Internal with params"
+        action: "ioit://WALLET_HOME?hello=world&count=100"
 ---
 INPS ha completato le verifiche e risulta che il tuo nucleo familiare non ha un ISEE valido. 
  
@@ -53,31 +56,47 @@ en:
 ---`;
 
 export const messageMarkdown = `
-# blocco1 
+# H1 
 
-  ## blocco2 
+## H2 
 
-  ### blocco3 
+### H3 
 
-  #### blocco4
+#### H4
 
-  Test list: 
-  - item1
-  - item2 
-  - item3 
-  - item4 
-  - item5 
-  - item6 
-  
+esempio di lista: 
+
+- item1
+- item2 
+- item3 
+- item4 
+- item5 
+- item6 
+
+
+esempio di numerata: 
+
+1. item1
+1. item2 
+1. item3 
+1. item4 
+1. item5 
+1. item6 
+
+
 È universalmente **riconosciuto** che un _lettore_ che **osserva** il layout di una pagina viene distratto dal contenuto testuale se questo è leggibile. Lo scopo dell’utilizzo del Lorem Ipsum è che offre una normale distribuzione delle lettere (al contrario di quanto avviene se si utilizzano brevi frasi ripetute, ad esempio “testo qui”), apparendo come un normale blocco di testo leggibile. Molti software di impaginazione e di web design utilizzano Lorem Ipsum come testo modello. Molte versioni del testo sono state prodotte negli anni, a volte casualmente, a volte di proposito (ad esempio inserendo passaggi ironici).
 
 | copia e incolla il seguente link: \`https://verylongurl.com/verylong_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_very_long_\`
 
 ### link esterni
 
-[LINK ESTERNO GOOGLE](https://www.google.it)
+il link deve **sempre** includere il protocollo (http:// o https://)
 
-[LINK CORROTTO](google.it)
+[DESCRIZIONE LINK](https://www.google.it)
+
+[LINK NON VALIDO -1](www.google.it)
+
+[LINK NON VALIDO -2](google.it)
 
 ### link interni
 
@@ -105,4 +124,5 @@ export const messageMarkdown = `
 
 [WALLET_HOME con parametri](ioit://WALLET_HOME?param1=a&param2=b&param3=c&param4=100)
 
-[LINK CORROTTO](ioit://WRONG&$)`;
+[LINK CORROTTO](ioit://WRONG&$)
+`;

@@ -1,23 +1,23 @@
 import { FiscalCode, NonEmptyString } from "italia-ts-commons/lib/strings";
-import { Dsu } from "../../../generated/definitions/bonus_vacanze/Dsu";
+import { Dsu } from "../../../../generated/definitions/bonus_vacanze/Dsu";
 import {
   EligibilityCheckFailure,
   ErrorEnum,
   StatusEnum as EnumFailure
-} from "../../../generated/definitions/bonus_vacanze/EligibilityCheckFailure";
+} from "../../../../generated/definitions/bonus_vacanze/EligibilityCheckFailure";
 import {
   EligibilityCheckSuccessConflict,
   StatusEnum as EnumConflict
-} from "../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessConflict";
+} from "../../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessConflict";
 import {
   EligibilityCheckSuccessEligible,
   StatusEnum as EnumEligible
-} from "../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessEligible";
+} from "../../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessEligible";
 import {
   EligibilityCheckSuccessIneligible,
   StatusEnum as EnumIneligible
-} from "../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessIneligible";
-import { FamilyMembers } from "../../../generated/definitions/bonus_vacanze/FamilyMembers";
+} from "../../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessIneligible";
+import { FamilyMembers } from "../../../../generated/definitions/bonus_vacanze/FamilyMembers";
 
 const familyMembers: FamilyMembers = [
   {

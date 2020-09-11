@@ -95,12 +95,14 @@ export const getWallets = (): WalletListResponse => {
 };
 
 export const getTransactions = (count: number): ReadonlyArray<Transaction> => {
+  const now = new Date();
+  const delta = 1000 * 60 * 60; // 1 hour in millisecond
   return range(1, count).map(idx => {
     return validatePayload(Transaction, {
       accountingStatus: 1,
-      amount: { amount: 20000 },
-      created: new Date(2018, 10, 30, 13, 12, 22, 30),
-      description: `hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world hello world`,
+      amount: { amount: 20000 + idx * 10 },
+      created: new Date(now.getTime() + idx * delta),
+      description: `/RFB/02000000000495213/0.01/TXT/${idx} - TEST CAUSALE`,
       error: false,
       fee: { amount: 1 },
       grandTotal: { amount: 32100 },

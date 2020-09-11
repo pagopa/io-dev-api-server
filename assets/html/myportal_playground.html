@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <script>
+        function sendSuccess() {
+            const payload = {
+                "it": "Richiesta avvenuta con successo",
+                "en": "Request successfully sent"
+            };
+            showSuccess(payload);
+        }
+
+        function sendError() {
+            const payload = {
+                "it": "È avvenuto un errore!",
+                "en": "An error occurred!"
+            };
+            showErrorMessage(payload);
+        }
+
+        function sendAlertBox() {
+            const payload = {
+                "it": {
+                    "title": "Attenzione",
+                    "description": "Sembra che ci sia qualcosa che non va!"
+                },
+                "en": {
+                    "title": "Warning",
+                    "description": "Seems there's something wrong!"
+                }
+            };
+            showAlertBox(payload);
+        }
+
+        function sendWasteData(){
+            const payload = {
+                "a": 1,
+                "b": null
+            };
+            showSuccess(payload);
+        }
+
+        function printCookies(){
+            document.getElementById("cookies").innerText = document.cookie;
+        }
+    </script>
+    <style>
+        .item{
+            border: 1px solid gray;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+<h1>MY-PORTAL PLAYGROUND</h1>
+<div class="item">
+    <h3>cookies</h3>
+    <div id="cookies"></div>
+    <script>printCookies();</script>
+</div>
+<div class="item">
+    <button onclick="closeModal()">CLOSE MODAL</button>
+    <div>close the current screen</div>
+</div>
+<div class="item">
+    <button onclick="showLoader()">SHOW LOADER</button>
+    <div>show a loader activity indicator</div>
+</div>
+<div class="item">
+    <button onclick="hideLoader()">HIDE LOADER</button>
+    <div>hide the loader activity indicator</div>
+</div>
+<div class="item">
+    <button onclick="sendSuccess()">SEND SUCCESS</button>
+    <div>show a successfully message</div>
+</div>
+<div class="item">
+    <button onclick="sendError()">SEND ERROR</button>
+    <div>show a failure message</div>
+</div>
+<div class="item">
+    <button onclick="sendAlertBox()">SEND ALERT</button>
+    <div>show an alert message</div>
+</div>
+<div class="item">
+    <button onclick="sendWasteData()">SEND WASTE</button>
+    <div>send invalid data to the app</div>
+</div>
+</body>
+</html>
