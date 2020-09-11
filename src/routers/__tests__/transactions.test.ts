@@ -1,14 +1,14 @@
 import supertest from "supertest";
-import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
+import { TransactionListResponse } from "../../../generated/definitions/pagopa/TransactionListResponse";
 import {
   transactionPageSize,
   transactions,
-  transactionsTotal
-} from "../routers/wallet";
-import app from "../server";
+  transactionsTotal,
+} from "../wallet";
+import app from "../../server";
 const request = supertest(app);
 
-it("services should return a valid transactions list", async done => {
+it("services should return a valid transactions list", async (done) => {
   const response = await request.get("/wallet/v1/transactions");
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
@@ -24,7 +24,7 @@ it("services should return a valid transactions list", async done => {
   done();
 });
 
-it("services should return a valid transactions list slice", async done => {
+it("services should return a valid transactions list slice", async (done) => {
   const response = await request.get(
     `/wallet/v1/transactions?start=${transactionsTotal - 1}`
   );
@@ -37,7 +37,7 @@ it("services should return a valid transactions list slice", async done => {
   done();
 });
 
-it("services should return an empty data transactions", async done => {
+it("services should return an empty data transactions", async (done) => {
   const response = await request.get(
     `/wallet/v1/transactions?start=${transactionsTotal + 1}`
   );

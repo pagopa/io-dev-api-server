@@ -93,39 +93,49 @@ installHandler(
 );
 
 // User data processing (DOWNLOAD / DELETE)
-installHandler(profileRouter, "get", "/user-data-processing/:choice", (req) => {
-  const choice = req.params.choice as UserDataProcessingChoiceEnum;
-  if (userChoices[choice] === undefined) {
-    return getProblemJson(404);
-  }
-  return { payload: userChoices[choice] };
-});
-installHandler(profileRouter, "post", "/user-data-processing", (req) => {
-  const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
-  const choice = payload.choice;
-  if (userChoices[choice] !== undefined) {
+installHandler(
+  profileRouter,
+  "get",
+  addApiV1Prefix("/user-data-processing/:choice"),
+  (req) => {
+    const choice = req.params.choice as UserDataProcessingChoiceEnum;
+    if (userChoices[choice] === undefined) {
+      return getProblemJson(404);
+    }
     return { payload: userChoices[choice] };
   }
-  const data: UserDataProcessing = {
-    choice,
-    status: UserDataProcessingStatusEnum.PENDING,
-    version: 1,
-  };
-  userChoices = {
-    DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
-    DELETE: choice === "DELETE" ? data : userChoices.DELETE,
-  };
-  return { payload: userChoices[choice] };
-});
+);
+installHandler(
+  profileRouter,
+  "post",
+  addApiV1Prefix("/user-data-processing"),
+  (req) => {
+    const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
+    const choice = payload.choice;
+    if (userChoices[choice] !== undefined) {
+      return { payload: userChoices[choice] };
+    }
+    const data: UserDataProcessing = {
+      choice,
+      status: UserDataProcessingStatusEnum.PENDING,
+      version: 1,
+    };
+    userChoices = {
+      DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
+      DELETE: choice === "DELETE" ? data : userChoices.DELETE,
+    };
+    return { payload: userChoices[choice] };
+  }
+);
 
 // Email validation
 // return positive feedback on request to receive a new email message to verify his/her email
 installCustomHandler(
   profileRouter,
   "post",
-  "/email-validation-process",
+  addApiV1Prefix("/email-validation-process"),
   (_, res) => {
-    res.status(202);
+    res.sendStatus(202);
   }
 );
 

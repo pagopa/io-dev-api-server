@@ -1,7 +1,7 @@
 import supertest from "supertest";
-import { PublicSession } from "../../generated/definitions/backend/PublicSession";
-import { basePath } from "../../generated/definitions/backend_api_paths";
-import app from "../server";
+import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
+import { basePath } from "../../../generated/definitions/backend_api_paths";
+import app from "../../server";
 
 const request = supertest(app);
 
