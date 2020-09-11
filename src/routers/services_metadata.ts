@@ -6,11 +6,11 @@ import { availableBonuses } from "../payloads/features/bonus-vacanze/availableBo
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { getServiceMetadata } from "../payloads/service";
-import { servicesByScope, servicesTuple } from "../server";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { publicRouter } from "./public";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import { servicesByScope, servicesTuple } from "./message";
 
 export const servicesMetadataRouter = Router();
 

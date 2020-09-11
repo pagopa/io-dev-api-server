@@ -10,7 +10,8 @@ import { getTransactions, getWallets, sessionToken } from "../payloads/wallet";
 import { validatePayload } from "../utils/validator";
 
 export const walletRouter = Router();
-export const walletPath = "/wallet/v1";
+const walletPath = "/wallet/v1";
+const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 
 // wallets and transactions
 export const wallets = getWallets();
@@ -18,16 +19,19 @@ export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export const transactions = getTransactions(transactionsTotal);
 
-walletRouter.get(`${walletPath}/users/actions/start-session`, (_, res) => {
-  res.json(sessionToken);
-});
+walletRouter.get(
+  appendWalletPrefix("/users/actions/start-session"),
+  (_, res) => {
+    res.json(sessionToken);
+  }
+);
 
-walletRouter.get(`${walletPath}/wallet`, (_, res) => {
+walletRouter.get(appendWalletPrefix("/wallet"), (_, res) => {
   res.json(wallets);
 });
 
 walletRouter.post(
-  `${walletPath}/wallet/:wallet_id/actions/favourite`,
+  appendWalletPrefix("/wallet/:wallet_id/actions/favourite"),
   (req, res) => {
     fromNullable(wallets.data)
       .chain((d: ReadonlyArray<Wallet>) => {
@@ -43,7 +47,7 @@ walletRouter.post(
   }
 );
 
-walletRouter.get(`${walletPath}/transactions`, (req, res) => {
+walletRouter.get(appendWalletPrefix("/transactions"), (req, res) => {
   const start = fromNullable(req.query.start)
     .map((s) => Math.max(parseInt(s, 10), 0))
     .getOrElse(0);

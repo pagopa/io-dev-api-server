@@ -13,6 +13,7 @@ import { getProblemJson } from "../payloads/error";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
+import { addApiV1Prefix } from "../utils/strings";
 const currentProfile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = currentProfile.payload;
@@ -31,13 +32,12 @@ const initialUserChoice: UserDeleteDownloadData = {
 let userChoices = initialUserChoice;
 
 export const profileRouter = Router();
-const appendPrefix = (path: string) => `${basePath}${path}`;
 
 // update installationID (usefull information to target device using push notification)
 installHandler(
   profileRouter,
   "put",
-  appendPrefix("/installations/:installationID"),
+  addApiV1Prefix("/installations/:installationID"),
   () => getSuccessResponse()
 );
 
@@ -45,7 +45,7 @@ installHandler(
 installHandler(
   profileRouter,
   "get",
-  appendPrefix("/profile"),
+  addApiV1Prefix("/profile"),
   () => ({ payload: profilePayload }),
   InitializedProfile
 );
@@ -54,7 +54,7 @@ installHandler(
 installHandler(
   profileRouter,
   "post",
-  appendPrefix("/profile"),
+  addApiV1Prefix("/profile"),
   (req) => {
     // profile is merged with the one coming from request.
     // furthermore this profile's version is increased by 1
@@ -76,14 +76,14 @@ installHandler(
 installHandler(
   profileRouter,
   "get",
-  appendPrefix("/user-metadata"),
+  addApiV1Prefix("/user-metadata"),
   () => userMetadata,
   UserMetadata
 );
 installHandler(
   profileRouter,
   "post",
-  appendPrefix("/user-metadata"),
+  addApiV1Prefix("/user-metadata"),
   (req) => {
     // simply validate and return the received user-metadata
     const payload = validatePayload(UserMetadata, req.body);
@@ -119,7 +119,7 @@ installHandler(profileRouter, "post", "/user-data-processing", (req) => {
 });
 
 // Email validation
-// return positive feedback on request to receive a new email to verify the email address
+// return positive feedback on request to receive a new email message to verify his/her email
 installCustomHandler(
   profileRouter,
   "post",
