@@ -3,8 +3,10 @@ import { fromNullable } from "fp-ts/lib/Option";
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import { Millisecond } from "italia-ts-commons/lib/units";
-import { SupportedMethod } from "../../generated/definitions/backend_api_paths";
 import { getProblemJson } from "./error";
+
+export const basePath = "/api/v1";
+export type SupportedMethod = "get" | "post" | "put" | "delete";
 
 export type IOResponse<T> = {
   payload: T;

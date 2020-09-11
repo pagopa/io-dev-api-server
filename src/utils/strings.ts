@@ -1,4 +1,4 @@
-import { basePath } from "../../generated/definitions/backend_api_paths";
+import { basePath } from "../payloads/response";
 
 export const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {

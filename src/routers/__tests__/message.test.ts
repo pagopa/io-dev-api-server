@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { CreatedMessageWithoutContent } from "../../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
-import { basePath } from "../../../generated/definitions/backend_api_paths";
+import { basePath } from "../../payloads/response";
 import app from "../../server";
 import { messages } from "../message";
 const request = supertest(app);

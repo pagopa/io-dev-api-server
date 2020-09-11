@@ -19,8 +19,8 @@
     "lint-autofix": "tslint -p . -t verbose --fix",
     "start": "ts-node src/start.ts",
     "prettify": "prettier --write \"src/**/*.ts*\"",
-    "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec $npm_package_content_specs --out-dir ./generated/definitions/content",
     "generate:models": "rimraf generated && rimraf generated/definitions/backend && mkdir -p generated/definitions/backend && gen-api-models --api-spec $npm_package_api_beckend_specs --out-dir ./generated/definitions/backend && gen-api-models --api-spec $npm_package_api_public_specs --out-dir generated/definitions/backend",
+    "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec $npm_package_content_specs --out-dir ./generated/definitions/content",
     "generate:pagopa-api-definitions": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec https://wisp2.pagopa.gov.it/pp-restapi-CD/v2/api-docs --out-dir ./generated/definitions/pagopa",
     "generate:bonus-vacanze-definitions": "rimraf generated/definitions/bonus_vacanze && mkdir -p generated/definitions/bonus_vacanze && gen-api-models --api-spec $npm_package_api_bonus_vacanze --out-dir ./generated/definitions/bonus_vacanze ",
     "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions"

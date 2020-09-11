@@ -2,7 +2,6 @@ import { Router } from "express";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { Second } from "italia-ts-commons/lib/units";
-import { basePath } from "../../../../generated/definitions/backend_api_paths";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import {
   activeBonus,
@@ -10,7 +9,7 @@ import {
 } from "../../../payloads/features/bonus-vacanze/bonus";
 import { eligibilityCheckSuccessEligible } from "../../../payloads/features/bonus-vacanze/eligibility";
 import { installCustomHandler } from "../../../payloads/response";
-import { uuidv4 } from "../../../utils/strings";
+import { addApiV1Prefix, uuidv4 } from "../../../utils/strings";
 export const bonusVacanze = Router();
 
 // tslint:disable-next-line: no-let
@@ -43,14 +42,12 @@ export const resetBonusVacanze = () => {
   firstBonusActivationRequestTime = 0;
 };
 
-const appendPrefix = (path: string) => `${basePath}/bonus/vacanze${path}`;
-
 // Get all IDs of the bonus activations requested by
 // the authenticated user or by any between his family member
 installCustomHandler(
   bonusVacanze,
   "get",
-  appendPrefix(`/activations`),
+  addApiV1Prefix(`/activations`),
   (_, res) => {
     // if you want to return a list of bonus uncomment the lines below
     /*
@@ -78,7 +75,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "get",
-  appendPrefix(`/activations/:bonus_id`),
+  addApiV1Prefix(`/activations/:bonus_id`),
   (req, res) => {
     const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
     if (bonus) {
@@ -114,7 +111,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "post",
-  appendPrefix("/activations"),
+  addApiV1Prefix("/activations"),
   (_, res) => {
     // if there is no previous activation -> Request created -> send back the created id
     fromNullable(idActivationBonus).foldL(
@@ -138,7 +135,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "post",
-  appendPrefix("/eligibility"),
+  addApiV1Prefix("/eligibility"),
   (_, res) => {
     if (idEligibilityRequest) {
       // a task already exists because it has been requested
@@ -162,7 +159,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "get",
-  appendPrefix("/eligibility"),
+  addApiV1Prefix("/eligibility"),
   (_, res) => {
     // no task created, not-found
     if (idEligibilityRequest === undefined) {

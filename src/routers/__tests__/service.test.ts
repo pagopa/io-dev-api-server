@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
-import { basePath } from "../../../generated/definitions/backend_api_paths";
 import {
   ScopeEnum,
   Service
@@ -10,6 +9,7 @@ import { ServicesByScope } from "../../../generated/definitions/content/Services
 import { staticContentRootPath } from "../../global";
 import app from "../../server";
 import { services, visibleServices } from "../service";
+import { basePath } from "../../payloads/response";
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {

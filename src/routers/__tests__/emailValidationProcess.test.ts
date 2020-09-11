@@ -1,6 +1,6 @@
 import supertest from "supertest";
-import { basePath } from "../../../generated/definitions/backend_api_paths";
 import app from "../../server";
+import { basePath } from "../../payloads/response";
 
 const request = supertest(app);
 
