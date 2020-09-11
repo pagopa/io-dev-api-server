@@ -39,52 +39,15 @@ A docker image is also available for local dev purposes by following these simpl
 1. after docker daemon finish to download image run this command: `docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:<CHOSEN_PACKAGE_VERSION>`
 1. enjoy **io-dev-api-server** on `http://127.0.0.1:<YOUR_HOST_PORT>/`
 
-#### Add server to io-app
+#### Run [IO-App](https://github.com/teamdigitale/io-app) with this server
 
-1. open io-app project folder
-1. open **.env** configuration file
-1. edit the **API_URL_PREFIX** with the local server<br/>
-   `API_URL_PREFIX='http://127.0.0.1:3000'`
-1. edit the **CONTENT_REPO_URL** with the local server<br/>
-   `CONTENT_REPO_URL='http://127.0.0.1:3000/static_contents'`
-1. edit the **PAGOPA_API_URL_PREFIX** with the local server <br/>
-   `PAGOPA_API_URL_PREFIX='http://127.0.0.1:3000/wallet'`
-1. edit the **BACKEND_STATUS_URL** with the local server <br/>
-   `BACKEND_STATUS_URL='http://127.0.0.1:3000/status'`
-1. update the config file<br/>
-   `yarn postinstall`
-1. run simulator<br/>
-   `react-native run-ios` or<br/>
-   `react-native run-android`
+1. run the server `yarn start`
+1. in the app project folder run `cp .env.local .env` (it is configured with a server running in the same machine of the device. You can edit the server endpoint on your needs)
+1. run `yarn postinstall` (update config file injected into the app)
+1. run the app `yarn run-ios` or `yarn run-android`
 
 > you could edit the [server port](server.ts) (**serverPort** - default is 3000)
 
-### Features
-
-The current version supports:
-
-- ✓ login
-- ✓ session
-- ✓ logout
-- ✓ get profile
-- ✓ update profile
-- ✓ get user metadata
-- ✓ update user metadata
-- ✓ messages
-- ✓ message details
-- ✓ services
-- ✓ service details
-- ✓ service metadata (static content)
-- ✗ services by scope (static content)
-- ✓ service logo (static content)
-- ✓ organization logo (static content)
-- ✗ municipalities metadata (static content)
-- ✗ payment session
-- ✗ payment
-- ✓ payment wallets
-- ✓ payment transactions
-
-✗ -> a contribution is really appreciate :blush:
 
 #### Login
 
@@ -102,130 +65,3 @@ The profile is [mocked](payloads/profile.ts) (hard-coded). If you want the serve
 <br/>On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) increasing the profile version
 
 <img src="assets/imgs/profile.gif" height="600" />
-
-### Response validation
-
-To ensure the response payloads are compliant with the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml)
-the server automatically generates types definition (`yarn generate:models`) and raises a compile-time exception (and run time too) if a response payload is not compliant with its type
-
-```typescript
-export const customSession = {
-  spidLevel: "https://www.spid.gov.it/SpidL2",
-  walletToken: "ABCDEFG001"
-};
-// if customSession is not compliant with PublicSession an exception will be
-// raised. Otherwise a valid PublicSession object will be returned
-const session = validatePayload(PublicSession, customSession);
-```
-
-#### API Paths
-
-To ensure you are handling the right api paths a [special type](generated/definitions/backend_api_paths.ts) is automatically generated (`yarn generate:paths`).<br/>When you add an API handler if the path is not defined in the [API specs](https://raw.githubusercontent.com/teamdigitale/italia-backend/v1.7.1/api_backend.yaml) a compile time error will be raised
-
-```typescript
-// it raises a compile time error because 'fancyapi' is not defined in the API specs
-responseHandler.addHandler("get", "/fancyapi", session);
-
-// this path is defined in the specs so no error will be raised
-responseHandler.addHandler("get", "/messages", session);
-```
-
-### How can I add a new handler?
-
-#### Change an existing handler
-
-Of course you can alter server payloads to stress and test app (you should do it!)<br/>
-
-**some examples**
-
-> you want app loads 10k items in inbox messages
-
-```typescript
-// create a message list response using the utility function
-const hugeMessageList = getMessageWithoutContentList(10000, fiscalCode);
-// then serve it on the relative api path
-responseHandler.addHandler("get", "/messages", hugeMessageList);
-```
-
-note `hugeMessageList` is `IOResponse` type which is a simple wrapper around the payload sent in the response
-
-```typescript
-export type IOResponse<T> = {
-  payload: T;
-  status?: number;
-  isJson?: boolean;
-};
-```
-
-if `status` is omitted will be considered 200 (HTTP_OK)<br/>
-if `isJson` is true the `payload` will be sent as a json
-
-> you want to serve 401 (unauthorized) on get profile
-
-```typescript
-responseHandler.addHandler("get", "/profile", { payload: "ko", status: 401 });
-```
-
-#### Add a new handler
-
-**Usually the new handler is included in a new specs version.**
-
-- update the specs to the target version
-  edit the field `api_beckend_specs` in the `package.json`
-- generate the updated models and paths: `yarn generate:all`
-- add the handler
-  - create the payload should be returned
-  - add the handler
-  ```typescript
-  const mockPayload = { field1: "value", field2: 2 };
-  const newPayload = validatePayload(NewPayloadType, {
-    field1: "value",
-    field2: 2
-  });
-  const newIoPayload: IOPayload<NewPayloadType> = {
-    payload: newPayload,
-    isJson: true
-  };
-  // if the mockPayload is compliant with NewPayloadType no errors will be raised
-  responseHandler.addHandler("get", "/newpath", newIoPayload);
-  ```
-
-**If you want to add an handler that's in not already included in a new specs version**
-
-In some cases you would like to add an API to test if it should work. This could be part of a design process of that API.<br/>
-for example we want to add **/time** to get the date in ISO format
-
-- create the codec and type
-
-  ```typescript
-  const TimeR = t.interface({
-    date: Timestamp
-  });
-
-  const TimeO = t.partial({
-    description: t.string
-  });
-  export const Time = t.intersection([TimeR, TimeO], "Time");
-  export type Time = t.TypeOf<typeof Time>;
-  ```
-
-- create a function to return the payload
-
-  ```typescript
-  export const getTime = (): Time => {
-    const time: Time = {
-      date: new Date(),
-      description: "right now"
-    };
-    // use validatePayload to check if the built payload is compliant with the defined type
-    return validatePayload(Time, time);
-  };
-  ```
-
-- add the new handler to the server
-
-  ```typescript
-  app.get("/time", (\_, res) => {
-  res.json(getTime());
-  });
-  ```
