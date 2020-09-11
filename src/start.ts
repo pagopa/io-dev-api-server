@@ -18,7 +18,8 @@ app.listen(serverPort, serverHostname, async () => {
     );
     const nets = networkInterfaces();
     // tslint:disable-next-line: no-let
-    let results = Object.create({ loopback: "127.0.0.1" });
+    let results = Object.create(null);
+    results = { ...results, loopback: "127.0.0.1" };
     const interestingNetworkInterfaces = new Set(["en0", "eth0"]);
     for (const name of Object.keys(nets)) {
       if (!interestingNetworkInterfaces.has(name)) {
