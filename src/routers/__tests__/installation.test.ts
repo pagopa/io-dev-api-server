@@ -5,7 +5,7 @@ import app from "../../server";
 
 const request = supertest(app);
 
-it("should return 200", async (done) => {
+it("should return 200", async done => {
   const response = await request.put(
     `${basePath}/installations/MY_FANCY_TOKEN`
   );

@@ -6,13 +6,13 @@ import { BonusActivationStatusEnum } from "../../../../generated/definitions/bon
 import { uuidv4 } from "../../../utils/strings";
 import {
   activeBonus,
-  genRandomBonusCode,
+  genRandomBonusCode
 } from "../../../payloads/features/bonus-vacanze/bonus";
 import { eligibilityCheckSuccessEligible } from "../../../payloads/features/bonus-vacanze/eligibility";
 import { basePath } from "../../../../generated/definitions/backend_api_paths";
 import {
   installCustomHandler,
-  installHandler,
+  installHandler
 } from "../../../payloads/response";
 export const bonusVacanze = Router();
 
@@ -31,10 +31,10 @@ const responseIseeAfter = 0 as Second;
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // tslint:disable-next-line: no-let
-const aLotOfBonus = range(1, 3).map((_) => ({
+const aLotOfBonus = range(1, 3).map(_ => ({
   ...activeBonus,
   id: genRandomBonusCode(),
-  status: BonusActivationStatusEnum.ACTIVE,
+  status: BonusActivationStatusEnum.ACTIVE
 }));
 
 // since all these apis implements a specific flow, if you want re-run it
@@ -83,7 +83,7 @@ installCustomHandler(
   "get",
   appendPrefix(`/activations/:bonus_id`),
   (req, res) => {
-    const bonus = aLotOfBonus.find((b) => b.id === req.params.bonus_id);
+    const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
     if (bonus) {
       res.json(bonus);
       return;

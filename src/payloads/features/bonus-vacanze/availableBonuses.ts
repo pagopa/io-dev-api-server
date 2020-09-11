@@ -41,7 +41,7 @@ export const availableBonuses: BonusesAvailable = [
         "L'incentivo per supportare il settore del turismo dopo il lockdown richiesto dal COVID-19",
       title: "Richiesta Bonus Vacanze",
       content: contentBonusVacanze,
-      tos_url: "https://io.italia.it/app-content/tos_privacy.html",
+      tos_url: "https://io.italia.it/app-content/tos_privacy.html"
     },
     en: {
       name: "Bonus Vacanze",
@@ -49,7 +49,7 @@ export const availableBonuses: BonusesAvailable = [
         "L'incentivo per supportare il settore del turismo dopo il lockdown richiesto dal COVID-19",
       title: "Richiesta Bonus Vacanze",
       content: contentBonusVacanze,
-      tos_url: "https://io.italia.it/app-content/tos_privacy.html",
+      tos_url: "https://io.italia.it/app-content/tos_privacy.html"
     },
     service_id: "01EB8AXKNV6NMSP2R25KSGF743",
     is_active: true,
@@ -59,6 +59,6 @@ export const availableBonuses: BonusesAvailable = [
       "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_BonusVacanze.png",
     sponsorship_description: "Agenzia delle Entrate",
     sponsorship_cover:
-      "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_AgenziaEntrate.png",
-  },
+      "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_AgenziaEntrate.png"
+  }
 ];

@@ -36,20 +36,20 @@ walletRouter.post(
     fromNullable(wallets.data)
       .chain((d: ReadonlyArray<Wallet>) => {
         const maybeWallet = d.find(
-          (w) => w.idWallet === parseInt(req.params.wallet_id, 10)
+          w => w.idWallet === parseInt(req.params.wallet_id, 10)
         );
         return fromNullable(maybeWallet);
       })
       .foldL(
         () => res.sendStatus(404),
-        (w) => res.json({ data: w })
+        w => res.json({ data: w })
       );
   }
 );
 
 walletRouter.get(appendWalletPrefix("/transactions"), (req, res) => {
   const start = fromNullable(req.query.start)
-    .map((s) => Math.max(parseInt(s, 10), 0))
+    .map(s => Math.max(parseInt(s, 10), 0))
     .getOrElse(0);
   const transactionsSlice = takeEnd(
     transactions.length - Math.min(start, transactions.length),
@@ -58,7 +58,7 @@ walletRouter.get(appendWalletPrefix("/transactions"), (req, res) => {
   const response = validatePayload(TransactionListResponse, {
     data: transactionsSlice,
     size: transactionsSlice.length,
-    total: transactions.length,
+    total: transactions.length
   });
   res.json(response);
 });

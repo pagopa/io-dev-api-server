@@ -13,7 +13,7 @@ import app from "../../server";
 
 const request = supertest(app);
 
-it("profile should return a valid profile", async (done) => {
+it("profile should return a valid profile", async done => {
   const response = await request.get(`${basePath}/profile`);
   expect(response.status).toBe(200);
   const profile = InitializedProfile.decode(response.body);
@@ -24,13 +24,13 @@ it("profile should return a valid profile", async (done) => {
   done();
 });
 
-it("profile should return a valid updated profile (version increased)", async (done) => {
+it("profile should return a valid updated profile (version increased)", async done => {
   const profile: Profile = {
     is_inbox_enabled: true,
     is_email_enabled: true,
     is_webhook_enabled: true,
     email: "new_email@email.it" as EmailAddress,
-    version: 5,
+    version: 5
   };
   const response = await request
     .post(`${basePath}/profile`)
@@ -46,7 +46,7 @@ it("profile should return a valid updated profile (version increased)", async (d
   done();
 });
 
-it("get user-metadata should return a valid user-metadata", async (done) => {
+it("get user-metadata should return a valid user-metadata", async done => {
   const response = await request.get(`${basePath}/user-metadata`);
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
@@ -54,7 +54,7 @@ it("get user-metadata should return a valid user-metadata", async (done) => {
   done();
 });
 
-it("get municipality should return a valid municipality", async (done) => {
+it("get municipality should return a valid municipality", async done => {
   const response = await request.get(
     `/static_contents/municipalities/A/B/CODE`
   );
@@ -64,7 +64,7 @@ it("get municipality should return a valid municipality", async (done) => {
   done();
 });
 
-it("post user-metadata should return the updated user-metadata", async (done) => {
+it("post user-metadata should return the updated user-metadata", async done => {
   const response = await request
     .post(`${basePath}/user-metadata`)
     .send(userMetadata.payload)

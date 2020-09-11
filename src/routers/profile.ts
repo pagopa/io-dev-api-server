@@ -26,7 +26,7 @@ type UserDeleteDownloadData = {
 };
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
-  DELETE: undefined,
+  DELETE: undefined
 };
 // tslint:disable-next-line: no-let
 let userChoices = initialUserChoice;
@@ -55,16 +55,16 @@ installHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/profile"),
-  (req) => {
+  req => {
     // profile is merged with the one coming from request.
     // furthermore this profile's version is increased by 1
     const clientProfileIncreased = {
       ...req.body,
-      version: parseInt(req.body.version, 10) + 1,
+      version: parseInt(req.body.version, 10) + 1
     };
     profilePayload = {
       ...profilePayload,
-      ...clientProfileIncreased,
+      ...clientProfileIncreased
     };
     return { payload: profilePayload };
   },
@@ -84,7 +84,7 @@ installHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/user-metadata"),
-  (req) => {
+  req => {
     // simply validate and return the received user-metadata
     const payload = validatePayload(UserMetadata, req.body);
     return { payload };
@@ -97,7 +97,7 @@ installHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/user-data-processing/:choice"),
-  (req) => {
+  req => {
     const choice = req.params.choice as UserDataProcessingChoiceEnum;
     if (userChoices[choice] === undefined) {
       return getProblemJson(404);
@@ -109,7 +109,7 @@ installHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/user-data-processing"),
-  (req) => {
+  req => {
     const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
     const choice = payload.choice;
     if (userChoices[choice] !== undefined) {
@@ -118,11 +118,11 @@ installHandler(
     const data: UserDataProcessing = {
       choice,
       status: UserDataProcessingStatusEnum.PENDING,
-      version: 1,
+      version: 1
     };
     userChoices = {
       DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
-      DELETE: choice === "DELETE" ? data : userChoices.DELETE,
+      DELETE: choice === "DELETE" ? data : userChoices.DELETE
     };
     return { payload: userChoices[choice] };
   }

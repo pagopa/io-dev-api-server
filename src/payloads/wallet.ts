@@ -10,8 +10,8 @@ import { validatePayload } from "../utils/validator";
 export const sessionToken: SessionResponse = {
   data: {
     sessionToken:
-      "3m3Q2h6e8T5w9t3W8b8y1F4t2m6Q9b8d9N6h1f2H2u0g6E7m9d9E3g7w3T3b5a7I4c4h6U4n2b3Z4p3j8D6p4a5G1c4a8K3o0v8P7e0j6R5i1y2J6d0c7N9i6m0U3j9z",
-  },
+      "3m3Q2h6e8T5w9t3W8b8y1F4t2m6Q9b8d9N6h1f2H2u0g6E7m9d9E3g7w3T3b5a7I4c4h6U4n2b3Z4p3j8D6p4a5G1c4a8K3o0v8P7e0j6R5i1y2J6d0c7N9i6m0U3j9z"
+  }
 };
 
 export const getWallets = (): WalletListResponse => {
@@ -23,13 +23,13 @@ export const getWallets = (): WalletListResponse => {
     expireYear: "22",
     brandLogo:
       "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_mc.png",
-    flag3dsVerified: true,
+    flag3dsVerified: true
   };
 
   const validAmount: { [key: string]: any } = {
     currency: "EUR",
     amount: 1000,
-    decimalDigits: 2,
+    decimalDigits: 2
   };
 
   const validPsp: { [key: string]: any } = {
@@ -51,7 +51,7 @@ export const getWallets = (): WalletListResponse => {
     paymentModel: 1,
     flagStamp: true,
     idCard: 91,
-    lingua: "IT",
+    lingua: "IT"
   };
 
   const WalletCard: Wallet = {
@@ -62,7 +62,7 @@ export const getWallets = (): WalletListResponse => {
     psp: validPsp as Psp,
     idPsp: validPsp.id,
     pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z"),
+    lastUsage: new Date("2018-08-07T15:50:08Z")
   };
 
   // It is displayed as card!
@@ -73,7 +73,7 @@ export const getWallets = (): WalletListResponse => {
     psp: validPsp as Psp,
     idPsp: validPsp.id,
     pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z"),
+    lastUsage: new Date("2018-08-07T15:50:08Z")
   };
 
   // It is displayed as card!
@@ -84,11 +84,11 @@ export const getWallets = (): WalletListResponse => {
     psp: validPsp as Psp,
     idPsp: validPsp.id,
     pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z"),
+    lastUsage: new Date("2018-08-07T15:50:08Z")
   };
 
   const data = {
-    data: [WalletBank, WalletCard, WalletBank2],
+    data: [WalletBank, WalletCard, WalletBank2]
   };
 
   return validatePayload(WalletListResponse, data);
@@ -97,7 +97,7 @@ export const getWallets = (): WalletListResponse => {
 export const getTransactions = (count: number): ReadonlyArray<Transaction> => {
   const now = new Date();
   const delta = 1000 * 60 * 60; // 1 hour in millisecond
-  return range(1, count).map((idx) => {
+  return range(1, count).map(idx => {
     return validatePayload(Transaction, {
       accountingStatus: 1,
       amount: { amount: 20000 + idx * 10 },
@@ -121,7 +121,7 @@ export const getTransactions = (count: number): ReadonlyArray<Transaction> => {
       token: "token",
       updated: undefined,
       urlCheckout3ds: "urlCheckout3ds",
-      urlRedirectPSP: "urlRedirectPSP",
+      urlRedirectPSP: "urlRedirectPSP"
     });
   });
 };

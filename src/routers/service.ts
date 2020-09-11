@@ -5,7 +5,7 @@ import { notFound } from "../payloads/error";
 import {
   getServices,
   getServicesByScope,
-  getServicesTuple,
+  getServicesTuple
 } from "../payloads/service";
 
 export const serviceRouter = Router();
@@ -26,9 +26,9 @@ installHandler(
   addApiV1Prefix("/services/:service_id"),
 
   // return a mock service with the same requested id (always found!)
-  (req) => {
+  req => {
     const service = services.find(
-      (item) => item.service_id === req.params.service_id
+      item => item.service_id === req.params.service_id
     );
 
     return { payload: service || notFound.payload };

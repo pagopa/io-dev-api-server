@@ -26,7 +26,7 @@ export const BONUSCODE_LENGTH = 12;
 export function genRandomBonusCode(): BonusCode {
   const randomBuffer = randomBytes(BONUSCODE_LENGTH);
   const code = [...Array.from(randomBuffer)]
-    .map((b) => ALPHABET[b % ALPHABET_LEN])
+    .map(b => ALPHABET[b % ALPHABET_LEN])
     .join("");
   return code as BonusCode;
 }
@@ -37,16 +37,16 @@ export const activeBonus: BonusActivationWithQrCode = {
   qr_code: [
     {
       mime_type: "image/png",
-      content: qrCodeBonusVacanzePng,
+      content: qrCodeBonusVacanzePng
     },
     {
       mime_type: "image/svg+xml",
-      content: qrCodeBonusVacanzeSvg,
-    },
+      content: qrCodeBonusVacanzeSvg
+    }
   ],
   dsu_request: dsuData,
   created_at: new Date(),
-  status: BonusActivationStatusEnum.ACTIVE,
+  status: BonusActivationStatusEnum.ACTIVE
 };
 
 export const redeemedBonus: BonusActivationWithQrCode = {
@@ -55,15 +55,15 @@ export const redeemedBonus: BonusActivationWithQrCode = {
   qr_code: [
     {
       mime_type: "image/png",
-      content: qrCodeBonusVacanzePng,
+      content: qrCodeBonusVacanzePng
     },
     {
       mime_type: "svg+xml",
-      content: qrCodeBonusVacanzeSvg,
-    },
+      content: qrCodeBonusVacanzeSvg
+    }
   ],
   dsu_request: dsuData,
   created_at: new Date(),
   status: BonusActivationStatusEnum.REDEEMED,
-  redeemed_at: new Date(),
+  redeemed_at: new Date()
 };

@@ -8,7 +8,7 @@ import { ServiceName } from "../../generated/definitions/backend/ServiceName";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import {
   ScopeEnum,
-  Service,
+  Service
 } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
@@ -23,9 +23,9 @@ export const getService = (serviceId: string): ServicePublic => {
     service_name: `mock service [${serviceId}]` as ServiceName,
     available_notification_channels: [
       NotificationChannelEnum.EMAIL,
-      NotificationChannelEnum.WEBHOOK,
+      NotificationChannelEnum.WEBHOOK
     ],
-    version: 2,
+    version: 2
   };
   return validatePayload(ServicePublic, service);
 };
@@ -35,7 +35,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
-  return range(0, count - 1).map((idx) => {
+  return range(0, count - 1).map(idx => {
     organizationCount =
       idx !== 0 && idx % aggregation === 0
         ? organizationCount + 1
@@ -48,9 +48,8 @@ export const getServices = (count: number): readonly ServicePublic[] => {
         11,
         "0"
       ) as OrganizationFiscalCode,
-      organization_name: `organization name_${
-        organizationCount + 1
-      }` as OrganizationName,
+      organization_name: `organization name_${organizationCount +
+        1}` as OrganizationName
     };
   });
 };
@@ -58,15 +57,15 @@ export const getServices = (count: number): readonly ServicePublic[] => {
 export const getServicesTuple = (
   services: readonly ServicePublic[]
 ): IOResponse<PaginatedServiceTupleCollection> => {
-  const items = services.map((s) => {
+  const items = services.map(s => {
     return {
       service_id: s.service_id,
-      version: s.version,
+      version: s.version
     };
   });
   const payload = validatePayload(PaginatedServiceTupleCollection, {
     items,
-    page_size: items.length,
+    page_size: items.length
   });
   return { payload, isJson: true };
 };
@@ -87,7 +86,7 @@ export const getServicesByScope = (
   });
   return {
     payload: validatePayload(ServicesByScope, servicesByScope),
-    isJson: true,
+    isJson: true
   };
 };
 
@@ -96,7 +95,7 @@ export const getServiceMetadata = (
   services: PaginatedServiceTupleCollection
 ): IOResponse<Service> => {
   const serviceIndex = services.items.findIndex(
-    (s) => s.service_id === serviceId
+    s => s.service_id === serviceId
   );
   // tslint:disable-next-line: no-let
   let serviceScope: ScopeEnum = ScopeEnum.NATIONAL;
@@ -117,7 +116,7 @@ export const getServiceMetadata = (
     app_ios: "https://www.google.com",
     support_url: "https://www.sos.com",
     tos_url: "https://www.tos.com",
-    privacy_url: "https://www.privacy.com",
+    privacy_url: "https://www.privacy.com"
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };

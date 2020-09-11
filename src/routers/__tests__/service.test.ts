@@ -4,7 +4,7 @@ import { ServicePublic } from "../../../generated/definitions/backend/ServicePub
 import { basePath } from "../../../generated/definitions/backend_api_paths";
 import {
   ScopeEnum,
-  Service,
+  Service
 } from "../../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../../generated/definitions/content/ServicesByScope";
 import { staticContentRootPath } from "../../global";
@@ -12,7 +12,7 @@ import app from "../../server";
 import { services, visibleServices } from "../service";
 const request = supertest(app);
 
-it("services should return a valid services list", async (done) => {
+it("services should return a valid services list", async done => {
   const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
@@ -23,7 +23,7 @@ it("services should return a valid services list", async (done) => {
   done();
 });
 
-it("services should return a valid service with content", async (done) => {
+it("services should return a valid service with content", async done => {
   const serviceId = services[0].service_id;
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
@@ -35,7 +35,7 @@ it("services should return a valid service with content", async (done) => {
   done();
 });
 
-it("static_contents should return a valid service metadata", async (done) => {
+it("static_contents should return a valid service metadata", async done => {
   const serviceId = services[0].service_id;
   const response = await request.get(
     `${staticContentRootPath}/services/${serviceId}.json`
@@ -49,7 +49,7 @@ it("static_contents should return a valid service metadata", async (done) => {
   done();
 });
 
-it("static_contents should return a valid services by scope", async (done) => {
+it("static_contents should return a valid services by scope", async done => {
   const response = await request.get(
     `${staticContentRootPath}/services/servicesByScope.json`
   );
@@ -59,7 +59,7 @@ it("static_contents should return a valid services by scope", async (done) => {
   done();
 });
 
-it("static_contents should return a valid service logo", async (done) => {
+it("static_contents should return a valid service logo", async done => {
   const response = await request.get(
     `${staticContentRootPath}/logos/services/service_id`
   );
@@ -68,7 +68,7 @@ it("static_contents should return a valid service logo", async (done) => {
 });
 
 // tslint:disable-next-line: no-identical-functions
-it("static_contents should return a valid organization logo", async (done) => {
+it("static_contents should return a valid organization logo", async done => {
   const response = await request.get(
     `${staticContentRootPath}/logos/organizations/organization_id`
   );

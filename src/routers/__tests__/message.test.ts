@@ -6,7 +6,7 @@ import app from "../../server";
 import { messages } from "../message";
 const request = supertest(app);
 
-it("messages should return a valid messages list", async (done) => {
+it("messages should return a valid messages list", async done => {
   const response = await request.get(`${basePath}/messages`);
   expect(response.status).toBe(200);
   const list = PaginatedCreatedMessageWithoutContentCollection.decode(
@@ -19,7 +19,7 @@ it("messages should return a valid messages list", async (done) => {
   done();
 });
 
-it("messages should return a valid message with content", async (done) => {
+it("messages should return a valid message with content", async done => {
   const messageId = messages.payload.items[0].id;
   const response = await request.get(`${basePath}/messages/${messageId}`);
   expect(response.status).toBe(200);

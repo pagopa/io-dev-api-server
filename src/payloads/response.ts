@@ -21,7 +21,7 @@ const addNewRoute = (method: SupportedMethod, path: string) => {
 export const allRegisteredRoutes = (joiner: string = "\n") =>
   routes
     .sort((a, b) => a.path.localeCompare(b.path))
-    .map((r) => `[${r.method}]\t${r.path}`)
+    .map(r => `[${r.method}]\t${r.path}`)
     .join(joiner);
 
 export const installHandler = <T>(
@@ -35,7 +35,7 @@ export const installHandler = <T>(
   addNewRoute(method, path);
   router[method](path, (req, res) => {
     const responsePayload = handleRequest(req);
-    const validation = fromNullable(codec).map((c) =>
+    const validation = fromNullable(codec).map(c =>
       c.decode(responsePayload.payload)
     );
     // the provided payload is not respecting the codec shape

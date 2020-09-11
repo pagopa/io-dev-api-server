@@ -7,7 +7,7 @@ import { loginSessionToken, loginWithToken } from "../payloads/login";
 import {
   allRegisteredRoutes,
   installCustomHandler,
-  installHandler,
+  installHandler
 } from "../payloads/response";
 import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { AccessToken } from "../../generated/definitions/backend/AccessToken";
@@ -29,7 +29,7 @@ installHandler(
   "get",
   "/info",
   () => ({
-    payload: backendInfo,
+    payload: backendInfo
   }),
   ServerInfo
 );
@@ -37,7 +37,7 @@ installHandler(
 // ping (no longer needed since actually app disables network status checking)
 installHandler(publicRouter, "get", "/ping", () => ({
   payload: "ok",
-  isJson: false,
+  isJson: false
 }));
 
 // test login
@@ -46,7 +46,7 @@ installHandler(
   "post",
   "/test-login",
   () => ({
-    payload: { token: loginSessionToken },
+    payload: { token: loginSessionToken }
   }),
   AccessToken
 );
@@ -57,7 +57,7 @@ installHandler(
   "get",
   "/status/backend.json",
   () => ({
-    payload: backendStatus,
+    payload: backendStatus
   }),
   BackendStatus
 );
@@ -81,7 +81,5 @@ installCustomHandler(publicRouter, "get", "/reset", (_, res) => {
   resetProfile();
   resetBonusVacanze();
   const resets = ["bonus vacanze", "user delete/download"];
-  res.send(
-    "<h2>reset:</h2>" + resets.map((r) => `<li>${r}</li>`).join("<br/>")
-  );
+  res.send("<h2>reset:</h2>" + resets.map(r => `<li>${r}</li>`).join("<br/>"));
 });

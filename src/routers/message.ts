@@ -4,7 +4,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import {
   getMessages,
   withDueDate,
-  withMessageContent,
+  withMessageContent
 } from "../payloads/message";
 import { fiscalCode } from "../global";
 import {
@@ -12,7 +12,7 @@ import {
   frontMatter2CTA,
   frontMatter2CTA2,
   frontMatterInvalid,
-  messageMarkdown,
+  messageMarkdown
 } from "../utils/variables";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { getProblemJson } from "../payloads/error";
@@ -32,7 +32,7 @@ const createMessages = () => {
     frontMatter2CTA,
     frontMatter1CTA,
     frontMatterInvalid,
-    frontMatter2CTA2,
+    frontMatter2CTA2
   ];
   return messages.payload.items.map((item, idx) => {
     const withContent = withMessageContent(
@@ -51,13 +51,13 @@ installHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/messages"),
-  (_) => messages
+  _ => messages
 );
 
-installHandler(messageRouter, "get", addApiV1Prefix("/messages/:id"), (req) => {
+installHandler(messageRouter, "get", addApiV1Prefix("/messages/:id"), req => {
   // retrieve the messageIndex from id
   const msgIndex = messages.payload.items.findIndex(
-    (item) => item.id === req.params.id
+    item => item.id === req.params.id
   );
   if (msgIndex === -1) {
     return getProblemJson(404, "message not found");

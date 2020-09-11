@@ -17,7 +17,7 @@ installHandler<Service | ServicesByScope>(
   servicesMetadataRouter,
   "get",
   `/services/:service_id`,
-  (req) => {
+  req => {
     const serviceId = req.params.service_id.replace(".json", "");
     if (serviceId === "servicesByScope") {
       return servicesByScope;
@@ -33,7 +33,7 @@ installCustomHandler(
   (_, res) => {
     // ignoring organization id and send always the same image
     res.sendFile("assets/imgs/logos/organizations/organization_1.png", {
-      root: ".",
+      root: "."
     });
   }
 );
@@ -45,7 +45,7 @@ installCustomHandler(
   (_, res) => {
     // ignoring service id and send always the same image
     res.sendFile("assets/imgs/logos/services/service_1.png", {
-      root: ".",
+      root: "."
     });
   }
 );

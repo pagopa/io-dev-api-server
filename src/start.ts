@@ -39,7 +39,7 @@ app.listen(serverPort, serverHostname, async () => {
         chalk.green(
           `${packageJson.name} is running on\n${Object.keys(results)
             .map(
-              (ni) =>
+              ni =>
                 `- ${chalk.underline(`http://${results[ni]}:${serverPort}`)}`
             )
             .join("\n")}`

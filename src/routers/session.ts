@@ -5,9 +5,4 @@ import { addApiV1Prefix } from "../utils/strings";
 
 export const sessionRouter = Router();
 
-installHandler(
-  sessionRouter,
-  "get",
-  addApiV1Prefix("/session"),
-  (_) => session
-);
+installHandler(sessionRouter, "get", addApiV1Prefix("/session"), _ => session);
