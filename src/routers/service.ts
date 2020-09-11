@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { installHandler } from "../payloads/response";
-import { addApiV1Prefix } from "../utils/strings";
 import { notFound } from "../payloads/error";
+import { installHandler } from "../payloads/response";
 import {
   getServices,
   getServicesByScope,
   getServicesTuple
 } from "../payloads/service";
+import { addApiV1Prefix } from "../utils/strings";
 
 export const serviceRouter = Router();
 export const services = getServices(5);

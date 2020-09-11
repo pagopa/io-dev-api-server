@@ -2,13 +2,13 @@
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
 import { Router } from "express";
-import { availableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
-import { contextualHelpData } from "../payloads/contextualHelp";
-import { municipality } from "../payloads/municipality";
-import { getServiceMetadata } from "../payloads/service";
-import { installCustomHandler, installHandler } from "../payloads/response";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import { contextualHelpData } from "../payloads/contextualHelp";
+import { availableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
+import { municipality } from "../payloads/municipality";
+import { installCustomHandler, installHandler } from "../payloads/response";
+import { getServiceMetadata } from "../payloads/service";
 import { servicesByScope, visibleServices } from "./service";
 
 export const servicesMetadataRouter = Router();

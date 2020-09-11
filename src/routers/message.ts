@@ -1,12 +1,14 @@
 import { Router } from "express";
-import { installHandler } from "../payloads/response";
-import { addApiV1Prefix } from "../utils/strings";
+import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { fiscalCode } from "../global";
+import { getProblemJson } from "../payloads/error";
 import {
   getMessages,
   withDueDate,
   withMessageContent
 } from "../payloads/message";
-import { fiscalCode } from "../global";
+import { installHandler } from "../payloads/response";
+import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTA,
   frontMatter2CTA,
@@ -14,15 +16,13 @@ import {
   frontMatterInvalid,
   messageMarkdown
 } from "../utils/variables";
-import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { getProblemJson } from "../payloads/error";
 import { services } from "./service";
 
 export const messageRouter = Router();
 const totalMessages = 5;
 export const messages = getMessages(totalMessages, services, fiscalCode);
-
-let messagesWithContent: CreatedMessageWithContent[] = [];
+// tslint:disable-next-line: no-let
+let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
 
 const createMessages = () => {
   const now = new Date();

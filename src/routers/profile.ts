@@ -1,19 +1,18 @@
 import { Router } from "express";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
+import { UserDataProcessingChoiceEnum } from "../../generated/definitions/backend/UserDataProcessingChoice";
+import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
+import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { fiscalCode } from "../global";
+import { getProblemJson } from "../payloads/error";
 import { getProfile } from "../payloads/profile";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
-import { validatePayload } from "../utils/validator";
-import { basePath } from "../../generated/definitions/backend_api_paths";
-import { UserDataProcessingChoiceEnum } from "../../generated/definitions/backend/UserDataProcessingChoice";
-import { getProblemJson } from "../payloads/error";
-import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
-import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { addApiV1Prefix } from "../utils/strings";
+import { validatePayload } from "../utils/validator";
 const currentProfile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = currentProfile.payload;

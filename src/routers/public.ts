@@ -2,6 +2,9 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
+import fs from "fs";
+import { AccessToken } from "../../generated/definitions/backend/AccessToken";
+import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import {
@@ -9,9 +12,6 @@ import {
   installCustomHandler,
   installHandler
 } from "../payloads/response";
-import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
-import { AccessToken } from "../../generated/definitions/backend/AccessToken";
-import fs from "fs";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
 
