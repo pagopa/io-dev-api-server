@@ -42,12 +42,14 @@ export const resetBonusVacanze = () => {
   firstBonusActivationRequestTime = 0;
 };
 
+const addPrefix = (path: string) => addApiV1Prefix(`/bonus/vacanze${path}`);
+
 // Get all IDs of the bonus activations requested by
 // the authenticated user or by any between his family member
 installCustomHandler(
   bonusVacanze,
   "get",
-  addApiV1Prefix(`/activations`),
+  addPrefix(`/activations`),
   (_, res) => {
     // if you want to return a list of bonus uncomment the lines below
     /*
@@ -75,7 +77,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "get",
-  addApiV1Prefix(`/activations/:bonus_id`),
+  addPrefix(`/activations/:bonus_id`),
   (req, res) => {
     const bonus = aLotOfBonus.find(b => b.id === req.params.bonus_id);
     if (bonus) {
@@ -111,7 +113,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "post",
-  addApiV1Prefix("/activations"),
+  addPrefix("/activations"),
   (_, res) => {
     // if there is no previous activation -> Request created -> send back the created id
     fromNullable(idActivationBonus).foldL(
@@ -135,7 +137,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "post",
-  addApiV1Prefix("/eligibility"),
+  addPrefix("/eligibility"),
   (_, res) => {
     if (idEligibilityRequest) {
       // a task already exists because it has been requested
@@ -159,7 +161,7 @@ installCustomHandler(
 installCustomHandler(
   bonusVacanze,
   "get",
-  addApiV1Prefix("/eligibility"),
+  addPrefix("/eligibility"),
   (_, res) => {
     // no task created, not-found
     if (idEligibilityRequest === undefined) {
