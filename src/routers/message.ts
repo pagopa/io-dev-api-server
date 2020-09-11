@@ -40,8 +40,7 @@ const createMessages = () => {
       `Subject - test ${idx + 1}`,
       messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
     );
-    const withDD = withDueDate(withContent, hourAhead);
-    return withDD;
+    return withDueDate(withContent, hourAhead);
   });
 };
 

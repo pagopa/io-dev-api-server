@@ -1,11 +1,11 @@
 import supertest from "supertest";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/TransactionListResponse";
+import app from "../../server";
 import {
   transactionPageSize,
   transactions,
   transactionsTotal
 } from "../wallet";
-import app from "../../server";
 const request = supertest(app);
 
 it("services should return a valid transactions list", async done => {

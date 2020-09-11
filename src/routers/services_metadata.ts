@@ -1,7 +1,7 @@
 /**
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
-import { Router } from "express";
+import { Response, Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { contextualHelpData } from "../payloads/contextualHelp";
@@ -26,15 +26,18 @@ installHandler<Service | ServicesByScope>(
   }
 );
 
+const sendFile = (file: string, res: Response) =>
+  res.sendFile(file, {
+    root: "."
+  });
+
 installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/logos/organizations/:organization_id`,
   (_, res) => {
     // ignoring organization id and send always the same image
-    res.sendFile("assets/imgs/logos/organizations/organization_1.png", {
-      root: "."
-    });
+    sendFile("assets/imgs/logos/organizations/organization_1.png", res);
   }
 );
 
@@ -44,9 +47,7 @@ installCustomHandler(
   `/logos/services/:service_id`,
   (_, res) => {
     // ignoring service id and send always the same image
-    res.sendFile("assets/imgs/logos/services/service_1.png", {
-      root: "."
-    });
+    sendFile("assets/imgs/logos/services/service_1.png", res);
   }
 );
 

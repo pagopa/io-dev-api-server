@@ -80,6 +80,9 @@ installCustomHandler(publicRouter, "get", "/reset", (_, res) => {
   // reset user shoice
   resetProfile();
   resetBonusVacanze();
-  const resets = ["bonus vacanze", "user delete/download"];
+  const resets: ReadonlyArray<string> = [
+    "bonus vacanze",
+    "user delete/download"
+  ];
   res.send("<h2>reset:</h2>" + resets.map(r => `<li>${r}</li>`).join("<br/>"));
 });
