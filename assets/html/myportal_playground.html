@@ -43,6 +43,10 @@
         function printCookies(){
             document.getElementById("cookies").innerText = document.cookie;
         }
+
+        function onInjectionCompleted(){
+          document.getElementById("paragraph-to-remove").remove();
+        }
     </script>
     <style>
         .item{
@@ -54,6 +58,7 @@
 </head>
 <body>
 <h1>MY-PORTAL PLAYGROUND</h1>
+<p id="paragraph-to-remove">Injecting JS...</p>
 <div class="item">
     <h3>cookies</h3>
     <div id="cookies"></div>
