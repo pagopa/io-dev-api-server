@@ -15,17 +15,6 @@ export const sessionToken: SessionResponse = {
 };
 
 export const getWallets = (): WalletListResponse => {
-  const validCreditCard: { [key: string]: any } = {
-    id: 1464,
-    holder: "Mario Rossi",
-    pan: "************0111",
-    expireMonth: "05",
-    expireYear: "22",
-    brandLogo:
-      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_mc.png",
-    flag3dsVerified: true
-  };
-
   const validAmount: { [key: string]: any } = {
     currency: "EUR",
     amount: 1000,
@@ -54,33 +43,45 @@ export const getWallets = (): WalletListResponse => {
     lingua: "IT"
   };
 
-  const WalletCard: Wallet = {
-    idWallet: 12345,
-    type: TypeEnum.CREDIT_CARD,
-    favourite: false,
-    creditCard: validCreditCard as CreditCard,
-    psp: validPsp as Psp,
-    idPsp: validPsp.id,
-    pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z")
+  const cclogos: ReadonlyArray<string> = ["mc", "visa", "maestro", "amex"];
+  // tslint:disable-next-line: no-let
+  let walletId = 0;
+  // tslint:disable-next-line: no-let
+  let creditCardId = 0;
+  const generateCreditCard = (): CreditCard => {
+    const logoIndex = Math.trunc(Math.random() * 1000) % cclogos.length;
+    creditCardId++;
+    return {
+      id: creditCardId,
+      holder: "Mario Rossi",
+      pan: "************0111",
+      expireMonth: "05",
+      expireYear: "22",
+      brandLogo: `https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_${cclogos[logoIndex]}.png`,
+      flag3dsVerified: true
+    };
+  };
+
+  const generateWallet = (): Wallet => {
+    walletId++;
+
+    return {
+      idWallet: walletId,
+      type: TypeEnum.CREDIT_CARD,
+      favourite: false,
+      creditCard: generateCreditCard(),
+      psp: validPsp as Psp,
+      idPsp: validPsp.id,
+      pspEditable: true,
+      lastUsage: new Date()
+    };
   };
 
   // It is displayed as card!
   const WalletBank: Wallet = {
     idWallet: 67890,
-    type: TypeEnum.CREDIT_CARD,
-    creditCard: validCreditCard as CreditCard,
-    psp: validPsp as Psp,
-    idPsp: validPsp.id,
-    pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z")
-  };
-
-  // It is displayed as card!
-  const WalletBank2: Wallet = {
-    idWallet: 67891,
-    type: TypeEnum.CREDIT_CARD,
-    creditCard: validCreditCard as CreditCard,
+    type: TypeEnum.BANK_ACCOUNT,
+    creditCard: generateCreditCard(),
     psp: validPsp as Psp,
     idPsp: validPsp.id,
     pspEditable: true,
@@ -88,7 +89,7 @@ export const getWallets = (): WalletListResponse => {
   };
 
   const data = {
-    data: [WalletBank, WalletCard, WalletBank2]
+    data: [...range(1, 4).map(generateWallet), WalletBank]
   };
 
   return validatePayload(WalletListResponse, data);
