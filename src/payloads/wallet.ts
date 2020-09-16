@@ -2,7 +2,7 @@ import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
-import { Psp } from "../../generated/definitions/pagopa/Psp";
+import { LinguaEnum, Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
@@ -16,23 +16,24 @@ export const sessionToken: SessionResponse = {
   }
 };
 
-export const getWallets = (count: number = 4): WalletListResponse => {
-  const validAmount: { [key: string]: any } = {
-    currency: "EUR",
-    amount: 1000,
-    decimalDigits: 2
-  };
-
-  const validPsp: { [key: string]: any } = {
+const validAmount: { [key: string]: any } = {
+  currency: "EUR",
+  amount: 1000,
+  decimalDigits: 2
+};
+const cclogos: ReadonlyArray<string> = ["mc", "visa", "maestro", "amex"];
+export const getPsps = (): ReadonlyArray<Psp> => [
+  {
     id: 43188,
     idPsp: "idPsp1",
     businessName: "WHITE bank",
     paymentType: "CP",
     idIntermediary: "idIntermediario1",
     idChannel: "idCanale14",
-    logoPSP: "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/psp/1578833",
+    logoPSP:
+      "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
     serviceLogo:
-      "https://wisp2.pagopa.gov.it/pp-restapi/v2/resources/service/1578833",
+      "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
     serviceName: "nomeServizio 10 white",
     fixedCost: validAmount,
     appChannel: false,
@@ -42,10 +43,12 @@ export const getWallets = (count: number = 4): WalletListResponse => {
     paymentModel: 1,
     flagStamp: true,
     idCard: 91,
-    lingua: "IT"
-  };
+    lingua: "IT" as LinguaEnum
+  }
+];
 
-  const cclogos: ReadonlyArray<string> = ["mc", "visa", "maestro", "amex"];
+const validPsp = getPsps()[0];
+export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let walletId = 0;
   // tslint:disable-next-line: no-let
