@@ -8,12 +8,10 @@ import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import {
-  allRegisteredRoutes,
   installCustomHandler,
   installHandler,
   routes
 } from "../payloads/response";
-import { interfaces, serverPort } from "../start";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
 
@@ -67,11 +65,7 @@ installHandler(
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 installCustomHandler(publicRouter, "get", "/", (_, res) => {
-  const serverUrl = `http://${interfaces.loopback}:${serverPort}`;
-  const rr = routes.map(
-    r =>
-      `<li><a href="${serverUrl}${r.path}" target="_blank">[${r.method}] ${r.path}</a></li>`
-  );
+  const rr = routes.map(r => `<li>[${r.method}] ${r.path}</li>`);
   console.log(rr);
   res.send(
     `Hi. This is ${
