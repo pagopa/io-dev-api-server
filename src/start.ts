@@ -7,8 +7,11 @@ import app from "./server";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 
-const serverPort = 3000;
+export const serverPort = 3000;
 const serverHostname = "0.0.0.0"; // public
+// tslint:disable-next-line: no-let
+export let interfaces = Object.create(null);
+interfaces = { ...interfaces, loopback: "127.0.0.1" };
 app.listen(serverPort, serverHostname, async () => {
   child_process.exec("git branch --show-current", (err, stdout) => {
     console.log(
@@ -17,9 +20,7 @@ app.listen(serverPort, serverHostname, async () => {
       )
     );
     const nets = networkInterfaces();
-    // tslint:disable-next-line: no-let
-    let results = Object.create(null);
-    results = { ...results, loopback: "127.0.0.1" };
+
     const interestingNetworkInterfaces = new Set(["en0", "eth0"]);
     for (const name of Object.keys(nets)) {
       if (!interestingNetworkInterfaces.has(name)) {
@@ -28,21 +29,21 @@ app.listen(serverPort, serverHostname, async () => {
       for (const net of nets[name]) {
         // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
         if (net.family === "IPv4" && !net.internal) {
-          if (results[name]) {
+          if (interfaces[name]) {
             continue;
           }
-          results = { ...results, name: net.address };
+          interfaces = { ...interfaces, name: net.address };
         }
       }
     }
     console.log(
       chalk.bgBlack(
         chalk.green(
-          `${packageJson.name} is running on\n${Object.keys(results)
+          `${packageJson.name} is running on\n${Object.keys(interfaces)
             .map(
               ni =>
                 // tslint:disable-next-line:no-nested-template-literals
-                `- ${chalk.underline(`http://${results[ni]}:${serverPort}`)}`
+                `- ${chalk.underline(`http://${interfaces[ni]}:${serverPort}`)}`
             )
             .join("\n")}`
         )

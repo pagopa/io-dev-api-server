@@ -10,8 +10,10 @@ import { loginSessionToken, loginWithToken } from "../payloads/login";
 import {
   allRegisteredRoutes,
   installCustomHandler,
-  installHandler
+  installHandler,
+  routes
 } from "../payloads/response";
+import { interfaces, serverPort } from "../start";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
 
@@ -65,10 +67,16 @@ installHandler(
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 installCustomHandler(publicRouter, "get", "/", (_, res) => {
+  const serverUrl = `http://${interfaces.loopback}:${serverPort}`;
+  const rr = routes.map(
+    r =>
+      `<li><a href="${serverUrl}${r.path}" target="_blank">[${r.method}] ${r.path}</a></li>`
+  );
+  console.log(rr);
   res.send(
     `Hi. This is ${
       packageJson.name
-    }<br/><br/>routes available:<br/>${allRegisteredRoutes("<br/>")}`
+    }<br/><br/><h3>routes available</h3><br/>${rr.join("")}`
   );
 });
 
