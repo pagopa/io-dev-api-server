@@ -17,7 +17,7 @@ const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const wallets = getWallets();
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
-export const transactions = getTransactions(transactionsTotal);
+export const transactions = getTransactions(transactionsTotal, wallets.data);
 
 walletRouter.get(
   appendWalletPrefix("/users/actions/start-session"),

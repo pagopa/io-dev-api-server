@@ -1,4 +1,6 @@
+import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
+import { fromNullable } from "fp-ts/lib/Option";
 import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
 import { Psp } from "../../generated/definitions/pagopa/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
@@ -14,7 +16,7 @@ export const sessionToken: SessionResponse = {
   }
 };
 
-export const getWallets = (): WalletListResponse => {
+export const getWallets = (count: number = 4): WalletListResponse => {
   const validAmount: { [key: string]: any } = {
     currency: "EUR",
     amount: 1000,
@@ -34,7 +36,7 @@ export const getWallets = (): WalletListResponse => {
     serviceName: "nomeServizio 10 white",
     fixedCost: validAmount,
     appChannel: false,
-    tags: ["MAESTRO"],
+    tags: ["MAESTRO", "VISA"],
     serviceDescription: "DESCRIZIONE servizio: CP mod1",
     serviceAvailability: "DISPONIBILITA servizio 24/7",
     paymentModel: 1,
@@ -51,12 +53,21 @@ export const getWallets = (): WalletListResponse => {
   const generateCreditCard = (): CreditCard => {
     const logoIndex = Math.trunc(Math.random() * 1000) % cclogos.length;
     creditCardId++;
+    const expDate = faker.date.future();
     return {
       id: creditCardId,
-      holder: "Mario Rossi",
-      pan: "************0111",
-      expireMonth: "05",
-      expireYear: "22",
+      holder: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      pan:
+        "************" +
+        faker.random
+          .number(9999)
+          .toString()
+          .padStart(4, "0"),
+      expireMonth: (expDate.getMonth() + 1).toString().padStart(2, "0"),
+      expireYear: expDate
+        .getFullYear()
+        .toString()
+        .substr(2),
       brandLogo: `https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_${cclogos[logoIndex]}.png`,
       flag3dsVerified: true
     };
@@ -89,30 +100,40 @@ export const getWallets = (): WalletListResponse => {
   };
 
   const data = {
-    data: [...range(1, 4).map(generateWallet), WalletBank]
+    data: [...range(1, count).map(generateWallet), WalletBank]
   };
 
   return validatePayload(WalletListResponse, data);
 };
 
-export const getTransactions = (count: number): ReadonlyArray<Transaction> => {
-  const now = new Date();
-  const delta = 1000 * 60 * 60; // 1 hour in millisecond
+export const getTransactions = (
+  count: number,
+  wallets?: ReadonlyArray<Wallet>
+): ReadonlyArray<Transaction> => {
   return range(1, count).map(idx => {
+    const amount = Math.trunc(Math.random() * 100 * 1000);
+    const fee = Math.trunc(Math.random() * 150);
     return validatePayload(Transaction, {
       accountingStatus: 1,
-      amount: { amount: 20000 + idx * 10 },
-      created: new Date(now.getTime() + idx * delta),
-      description: `/RFB/02000000000495213/0.01/TXT/${idx} - TEST CAUSALE`,
+      amount: { amount },
+      created: faker.date.past(),
+      description: `/RFB/${faker.random
+        .number(1000000)
+        .toString()
+        .padStart(17, "0")}/${amount / 100}/TXT/${faker.company.catchPhrase()}`,
       error: false,
-      fee: { amount: 1 },
-      grandTotal: { amount: 32100 },
+      fee: { amount: fee },
+      grandTotal: { amount: amount + fee },
       id: idx,
       idPayment: 1,
-      idPsp: 43188,
+      idPsp: fromNullable(wallets)
+        .map(ws => ws[idx % ws.length].idPsp)
+        .getOrElse(faker.random.number(10000)),
       idStatus: 3,
-      idWallet: 12345,
-      merchant: "merchant",
+      idWallet: fromNullable(wallets)
+        .map(ws => ws[idx % ws.length].idWallet)
+        .getOrElse(faker.random.number(10000)),
+      merchant: faker.company.companyName(),
       nodoIdPayment: "nodoIdPayment",
       paymentModel: 5,
       spcNodeDescription: "spcNodeDescription",
