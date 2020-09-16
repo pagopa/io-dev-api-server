@@ -84,7 +84,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
       type: TypeEnum.CREDIT_CARD,
       favourite: false,
       creditCard: generateCreditCard(),
-      psp: validPsp as Psp,
+      psp: validPsp,
       idPsp: validPsp.id,
       pspEditable: true,
       lastUsage: new Date()
@@ -96,7 +96,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
     idWallet: 67890,
     type: TypeEnum.BANK_ACCOUNT,
     creditCard: generateCreditCard(),
-    psp: validPsp as Psp,
+    psp: validPsp,
     idPsp: validPsp.id,
     pspEditable: true,
     lastUsage: new Date("2018-08-07T15:50:08Z")
