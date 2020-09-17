@@ -15,12 +15,13 @@ import {
 } from "../payloads/wallet";
 import { validatePayload } from "../utils/validator";
 
+export const walletCount = 6;
 export const walletRouter = Router();
 const walletPath = "/wallet/v1";
-const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
+export const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 
 // wallets and transactions
-export const wallets = getWallets();
+export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export const transactions = getTransactions(transactionsTotal, wallets.data);

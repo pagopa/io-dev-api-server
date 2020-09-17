@@ -12,14 +12,29 @@ import {
   installHandler,
   routes
 } from "../payloads/response";
+import { sendFile } from "../utils/file";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
 
 export const publicRouter = Router();
 
-installCustomHandler(publicRouter, "get", "/login", (_, res) => {
-  res.redirect(loginWithToken);
+installCustomHandler(publicRouter, "get", "/login", (req, res) => {
+  if (req.query.authorized && req.query.authorized === "1") {
+    res.redirect(loginWithToken);
+    return;
+  }
+  sendFile("assets/html/login.html", res);
 });
+
+installCustomHandler(
+  publicRouter,
+  "get",
+  "/assets/imgs/how_to_login.png",
+  (_, res) => {
+    sendFile("assets/imgs/how_to_login.png", res);
+  }
+);
+
 installCustomHandler(publicRouter, "post", "/logout", (_, res) => {
   res.status(200).send("ok");
 });
