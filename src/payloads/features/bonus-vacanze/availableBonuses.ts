@@ -32,7 +32,7 @@ Questi sono i passaggi che ti chiederemo di effettuare:
 - il tuo bonus sarà poi visibile nella sezione Pagamenti.
 `;
 
-export const availableBonuses: BonusesAvailable = [
+export const legacyAvailableBonuses: BonusesAvailable = [
   {
     id_type: 1,
     it: {

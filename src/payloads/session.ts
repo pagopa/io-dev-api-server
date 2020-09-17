@@ -1,12 +1,14 @@
+import * as faker from "faker";
 import { PublicSession } from "../../generated/definitions/backend/PublicSession";
+import { SpidLevel } from "../../generated/definitions/backend/SpidLevel";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
-export const walletToken = "ZXCVBNM098876543";
-
-export const customSession = {
-  spidLevel: "https://www.spid.gov.it/SpidL2",
-  walletToken
+export const customSession: PublicSession = {
+  spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
+  walletToken: faker.random.alphaNumeric(15).toUpperCase(),
+  myPortalToken: faker.random.alphaNumeric(15).toUpperCase(),
+  bpdToken: faker.random.alphaNumeric(15).toUpperCase()
 };
 export const session: IOResponse<PublicSession> = {
   payload: validatePayload(PublicSession, customSession),

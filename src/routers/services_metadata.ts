@@ -5,11 +5,12 @@ import { Response, Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { contextualHelpData } from "../payloads/contextualHelp";
-import { availableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
+import { legacyAvailableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
 import { municipality } from "../payloads/municipality";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { servicesByScope, visibleServices } from "./service";
+import { availableBonuses } from "../payloads/bonusAvailable";
 
 export const servicesMetadataRouter = Router();
 
@@ -66,6 +67,15 @@ installCustomHandler(
   servicesMetadataRouter,
   "get",
   `/bonus/vacanze/bonuses_available.json`,
+  (_, res) => {
+    res.json(legacyAvailableBonuses);
+  }
+);
+
+installCustomHandler(
+  servicesMetadataRouter,
+  "get",
+  `/bonus/bonus_available.json`,
   (_, res) => {
     res.json(availableBonuses);
   }
