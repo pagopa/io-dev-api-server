@@ -15,7 +15,7 @@ import {
 } from "../payloads/wallet";
 import { validatePayload } from "../utils/validator";
 
-export const walletCount = 6;
+export const walletCount = 4;
 export const walletRouter = Router();
 const walletPath = "/wallet/v1";
 export const appendWalletPrefix = (path: string) => `${walletPath}${path}`;

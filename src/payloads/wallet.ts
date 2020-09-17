@@ -90,17 +90,6 @@ export const getWallets = (count: number = 4): WalletListResponse => {
     };
   };
 
-  // It is displayed as card!
-  const WalletBank: Wallet = {
-    idWallet: 67890,
-    type: TypeEnum.BANK_ACCOUNT,
-    creditCard: generateCreditCard(),
-    psp: validPsp,
-    idPsp: validPsp.id,
-    pspEditable: true,
-    lastUsage: new Date("2018-08-07T15:50:08Z")
-  };
-
   const data = {
     data: range(1, count).map(generateWallet)
   };
