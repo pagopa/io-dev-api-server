@@ -4,20 +4,24 @@
 import { Response, Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import { staticContentRootPath } from "../global";
 import { availableBonuses } from "../payloads/bonusAvailable";
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { legacyAvailableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
 import { municipality } from "../payloads/municipality";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
+import { sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
 
 export const servicesMetadataRouter = Router();
 
+const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
+
 installHandler<Service | ServicesByScope>(
   servicesMetadataRouter,
   "get",
-  `/services/:service_id`,
+  addRoutePrefix(`/services/:service_id`),
   req => {
     const serviceId = req.params.service_id.replace(".json", "");
     if (serviceId === "servicesByScope") {
@@ -27,15 +31,10 @@ installHandler<Service | ServicesByScope>(
   }
 );
 
-const sendFile = (file: string, res: Response) =>
-  res.sendFile(file, {
-    root: "."
-  });
-
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/logos/organizations/:organization_id`,
+  addRoutePrefix("/logos/organizations/:organization_id"),
   (_, res) => {
     // ignoring organization id and send always the same image
     sendFile("assets/imgs/logos/organizations/organization_1.png", res);
@@ -45,7 +44,7 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/logos/services/:service_id`,
+  addRoutePrefix("/logos/services/:service_id"),
   (_, res) => {
     // ignoring service id and send always the same image
     sendFile("assets/imgs/logos/services/service_1.png", res);
@@ -55,7 +54,7 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/municipalities/:a/:b/:code`,
+  addRoutePrefix("/municipalities/:a/:b/:code"),
   (_, res) => {
     // return always the same municipality
     res.json(municipality);
@@ -66,7 +65,7 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/bonus/vacanze/bonuses_available.json`,
+  addRoutePrefix("/bonus/vacanze/bonuses_available.json"),
   (_, res) => {
     res.json(legacyAvailableBonuses);
   }
@@ -75,7 +74,7 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/bonus/bonus_available.json`,
+  addRoutePrefix("/bonus/bonus_available.json"),
   (_, res) => {
     res.json(availableBonuses);
   }
@@ -84,7 +83,7 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
-  `/contextualhelp/data.json`,
+  addRoutePrefix("/contextualhelp/data.json"),
   (_, res) => {
     res.json(contextualHelpData);
   }

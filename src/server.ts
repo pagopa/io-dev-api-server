@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import { Application, Router } from "express";
 import express from "express";
 import morgan from "morgan";
-import { staticContentRootPath } from "./global";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
@@ -36,7 +35,7 @@ const routers: ReadonlyArray<readonly [Router, string?]> = [
   [messageRouter],
   [serviceRouter],
   [walletRouter],
-  [servicesMetadataRouter, staticContentRootPath],
+  [servicesMetadataRouter],
   [bonusVacanze],
   [miscRouter]
 ];
