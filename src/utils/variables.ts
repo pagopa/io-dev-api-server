@@ -5,11 +5,11 @@ it:
         action: "iohandledlink://https://www.inps.it/nuovoportaleinps/default.aspx?itemdir=50088"
     cta_2: 
         text: "Interno con params"
-        action: "ioit://WALLET_HOME?hello=world&count=100"
+        action: "ioit://SERVICE_WEBVIEW?url=http://localhost:3000/myportal_playground.html"
 en:
     cta_1: 
         text: "Internal with params"
-        action: "ioit://WALLET_HOME?hello=world&count=100"
+        action: "ioit://SERVICE_WEBVIEW?url=http://localhost:3000/myportal_playground.html"
 ---
 INPS ha completato le verifiche e risulta che il tuo nucleo familiare non ha un ISEE valido. 
  
@@ -122,7 +122,7 @@ il link deve **sempre** includere il protocollo (http:// o https://)
 
 [PAYMENTS_HISTORY_SCREEN](ioit://PAYMENTS_HISTORY_SCREEN)
 
-[WALLET_HOME con parametri](ioit://WALLET_HOME?param1=a&param2=b&param3=c&param4=100)
+[SERVICE_WEBVIEW con parametri](ioit://SERVICE_WEBVIEW?url=http://localhost:3000/myportal_playground.html)
 
 [LINK CORROTTO](ioit://WRONG&$)
 `;
