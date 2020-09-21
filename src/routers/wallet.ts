@@ -24,7 +24,11 @@ export const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
-export const transactions = getTransactions(transactionsTotal, wallets.data);
+export const transactions = getTransactions(
+  transactionsTotal,
+  true,
+  wallets.data
+);
 
 installHandler(
   walletRouter,

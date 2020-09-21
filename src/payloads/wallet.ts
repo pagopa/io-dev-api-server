@@ -99,19 +99,32 @@ export const getWallets = (count: number = 4): WalletListResponse => {
 
 export const getTransactions = (
   count: number,
+  randomData: boolean = true,
   wallets?: ReadonlyArray<Wallet>
 ): ReadonlyArray<Transaction> => {
   return range(1, count).map(idx => {
-    const amount = Math.trunc(Math.random() * 100 * 1000);
-    const fee = Math.trunc(Math.random() * 150);
+    const amount = randomData
+      ? Math.trunc(Math.random() * 100 * 1000)
+      : 20000 + idx * 10;
+    const fee = randomData ? Math.trunc(Math.random() * 150) : 1;
+    const description = randomData
+      ? `/RFB/${faker.random
+          .number(1000000)
+          .toString()
+          .padStart(17, "0")}/${amount /
+          100}/TXT/${faker.company.catchPhrase()}`
+      : `/RFB/02000000000495213/0.01/TXT/${idx} - TEST CAUSALE`;
+    const delta = 1000 * 60 * 60;
+    const now = new Date();
+    const created = randomData
+      ? faker.date.past()
+      : new Date(now.getTime() + idx * delta);
+    const merchant = randomData ? faker.company.companyName() : "merchant";
     return validatePayload(Transaction, {
       accountingStatus: 1,
       amount: { amount },
-      created: faker.date.past(),
-      description: `/RFB/${faker.random
-        .number(1000000)
-        .toString()
-        .padStart(17, "0")}/${amount / 100}/TXT/${faker.company.catchPhrase()}`,
+      created,
+      description,
       error: false,
       fee: { amount: fee },
       grandTotal: { amount: amount + fee },
@@ -124,7 +137,7 @@ export const getTransactions = (
       idWallet: fromNullable(wallets)
         .map(ws => ws[idx % ws.length].idWallet)
         .getOrElse(faker.random.number(10000)),
-      merchant: faker.company.companyName(),
+      merchant,
       nodoIdPayment: "nodoIdPayment",
       paymentModel: 5,
       spcNodeDescription: "spcNodeDescription",
