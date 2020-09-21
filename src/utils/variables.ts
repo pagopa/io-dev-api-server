@@ -124,5 +124,7 @@ il link deve **sempre** includere il protocollo (http:// o https://)
 
 [WALLET_HOME con parametri](ioit://WALLET_HOME?param1=a&param2=b&param3=c&param4=100)
 
+[SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=http://localhost:3000/myportal_playground.html)
+
 [LINK CORROTTO](ioit://WRONG&$)
 `;
