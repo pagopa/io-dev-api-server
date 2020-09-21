@@ -1,0 +1,356 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "title": "BPD IO Citizen API",
+      "version": "1.0",
+      "description": "Api and Models"
+   },
+   "host": "bpd-dev.azure-api.net",
+   "basePath": "/bpd/io/citizen",
+   "schemes": [
+      "https"
+   ],
+   "securityDefinitions": {
+      "apiKeyHeader": {
+         "type": "apiKey",
+         "name": "Ocp-Apim-Subscription-Key",
+         "in": "header"
+      },
+      "apiKeyQuery": {
+         "type": "apiKey",
+         "name": "subscription-key",
+         "in": "query"
+      }
+   },
+   "security": [
+      {
+         "apiKeyHeader": []
+      },
+      {
+         "apiKeyQuery": []
+      }
+   ],
+   "paths": {
+      "/": {
+         "get": {
+            "description": "find",
+            "operationId": "findUsingGET",
+            "summary": "find",
+            "tags": [
+               "Bonus Pagamenti Digitali Citizen Controller"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "description": "Bearer Auth Token",
+                  "required": true,
+                  "type": "string"
+               },
+               {
+                  "name": "x_request_id",
+                  "in": "header",
+                  "description": "UUID for request identification",
+                  "type": "string"
+               }
+            ],
+            "produces": [
+               "application/json;charset=UTF-8"
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "schema": {
+                     "$ref": "#/definitions/CitizenResource"
+                  }
+               },
+               "401": {
+                  "description": "Unauthorized"
+               },
+               "404": {
+                  "description": "Not Found"
+               },
+               "500": {
+                  "description": ""
+               }
+            }
+         },
+         "delete": {
+            "description": "delete",
+            "operationId": "deleteUsingDELETE",
+            "summary": "delete",
+            "tags": [
+               "Bonus Pagamenti Digitali Citizen Controller"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "description": "Bearer Auth Token",
+                  "required": true,
+                  "type": "string"
+               },
+               {
+                  "name": "x_request_id",
+                  "in": "header",
+                  "description": "UUID for request identification",
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "204": {
+                  "description": "No Content"
+               },
+               "401": {
+                  "description": "Unauthorized"
+               }
+            }
+         },
+         "patch": {
+            "description": "updatePaymentMethod",
+            "operationId": "updatePaymentMethodUsingPATCH",
+            "summary": "updatePaymentMethod",
+            "tags": [
+               "Bonus Pagamenti Digitali Citizen Controller"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "description": "Bearer Auth Token",
+                  "required": true,
+                  "type": "string"
+               },
+               {
+                  "name": "x_request_id",
+                  "in": "header",
+                  "description": "UUID for request identification",
+                  "type": "string"
+               },
+               {
+                  "name": "citizenPatchDTO",
+                  "in": "body",
+                  "schema": {
+                     "$ref": "#/definitions/CitizenPatchDTO"
+                  },
+                  "description": "citizen"
+               }
+            ],
+            "consumes": [
+               "application/json"
+            ],
+            "responses": {
+               "204": {
+                  "description": "No Content"
+               },
+               "401": {
+                  "description": "Unauthorized"
+               },
+               "500": {
+                  "description": ""
+               }
+            }
+         },
+         "put": {
+            "description": "enrollCitizenIO",
+            "operationId": "enrollment",
+            "summary": "enrollCitizenIO",
+            "tags": [
+               "Bonus Pagamenti Digitali enrollment Controller"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "description": "Bearer Auth Token",
+                  "required": true,
+                  "type": "string"
+               },
+               {
+                  "name": "x_request_id",
+                  "in": "header",
+                  "description": "UUID for request identification",
+                  "type": "string"
+               }
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "schema": {
+                     "$ref": "#/definitions/CitizenResource"
+                  }
+               },
+               "401": {
+                  "description": ""
+               },
+               "500": {
+                  "description": ""
+               }
+            }
+         }
+      },
+      "/ranking": {
+         "get": {
+            "description": "findRanking",
+            "operationId": "findRankingUsingGET",
+            "summary": "findRanking",
+            "tags": [
+               "Bonus Pagamenti Digitali Citizen Controller"
+            ],
+            "parameters": [
+               {
+                  "name": "awardPeriodId",
+                  "in": "query",
+                  "description": "identificativo univoco del periodo di premiazione",
+                  "required": true,
+                  "type": "string"
+               },
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "description": "Bearer Auth Token",
+                  "required": true,
+                  "type": "string"
+               },
+               {
+                  "name": "x_request_id",
+                  "in": "header",
+                  "description": "UUID for request identification",
+                  "type": "string"
+               }
+            ],
+            "produces": [
+               "application/json;charset=UTF-8"
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "schema": {
+                     "$ref": "#/definitions/CitizenRankingResource"
+                  }
+               },
+               "401": {
+                  "description": "Unauthorized"
+               },
+               "404": {
+                  "description": "Not Found"
+               },
+               "500": {
+                  "description": ""
+               }
+            }
+         }
+      }
+   },
+   "definitions": {
+      "CitizenDTO": {
+         "title": "CitizenDTO",
+         "required": [
+            "timestampTC"
+         ],
+         "type": "object",
+         "properties": {
+            "timestampTC": {
+               "format": "date-time",
+               "description": "timestamp dell'accettazione di T&C. FORMATO  ISO8601 yyyy-MM-ddTHH:mm:ss.SSSXXXXX",
+               "type": "string"
+            }
+         }
+      },
+      "CitizenRankingResource": {
+         "title": "CitizenRankingResource",
+         "required": [
+            "totalParticipants",
+            "ranking"
+         ],
+         "type": "object",
+         "properties": {
+            "totalParticipants": {
+               "format": "int64",
+               "description": "numero totale di partecipanti al Bonus Pagamenti Digitali",
+               "type": "integer"
+            },
+            "ranking": {
+               "format": "int64",
+               "description": "posizione della graduatoria riferita al periodo di premiazione corrente",
+               "type": "integer"
+            }
+         },
+         "example": {
+            "totalParticipants": 0,
+            "ranking": 0
+         }
+      },
+      "CitizenPatchDTO": {
+         "title": "CitizenPatchDTO",
+         "required": [
+            "payoffInstr",
+            "payoffInstrType"
+         ],
+         "type": "object",
+         "properties": {
+            "payoffInstr": {
+               "description": "identificativo dello strumento di pagamento per la riscossione del premio",
+               "type": "string"
+            },
+            "payoffInstrType": {
+               "description": "tipologia di strumento di pagamento per la riscossione del premio",
+               "enum": [
+                  "IBAN"
+               ],
+               "type": "string"
+            }
+         }
+      },
+      "CitizenResource": {
+         "title": "CitizenResource",
+         "required": [
+            "enabled",
+            "fiscalCode",
+            "payoffInstr",
+            "payoffInstrType",
+            "timestampTC"
+         ],
+         "type": "object",
+         "properties": {
+            "enabled": {
+               "description": "stato dell'abilitazione al servizio da parte del citizen",
+               "type": "boolean"
+            },
+            "fiscalCode": {
+               "description": "id dell'utente, che corrisponde al codice fiscale",
+               "type": "string"
+            },
+            "payoffInstr": {
+               "description": "identificativo dello strumento di pagamento per la riscossione del premio",
+               "type": "string"
+            },
+            "payoffInstrType": {
+               "description": "tipologia di strumento di pagamento per la riscossione del premio",
+               "type": "string"
+            },
+            "timestampTC": {
+               "format": "date-time",
+               "description": "timestamp dell'accettazione di T&C. FORMATO  ISO8601 yyyy-MM-ddTHH:mm:ss.SSSXXXXX",
+               "type": "string"
+            }
+         },
+         "example": {
+            "enabled": false,
+            "fiscalCode": "string",
+            "payoffInstr": "string",
+            "payoffInstrType": "string",
+            "timestampTC": "string"
+         }
+      }
+   },
+   "tags": [
+      {
+         "name": "Bonus Pagamenti Digitali Citizen Controller",
+         "description": "Bpd Citizen Controller Impl"
+      }
+   ]
+}

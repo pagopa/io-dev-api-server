@@ -11,6 +11,7 @@ import { serviceRouter } from "./routers/service";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
+import { bdp } from "./routers/features/bdp";
 
 // create express server
 const app: Application = express();
@@ -28,18 +29,19 @@ app.use(
   )
 );
 
-const routers: ReadonlyArray<readonly [Router, string?]> = [
-  [publicRouter],
-  [profileRouter],
-  [sessionRouter],
-  [messageRouter],
-  [serviceRouter],
-  [walletRouter],
-  [servicesMetadataRouter],
-  [bonusVacanze],
-  [miscRouter]
+const routers: ReadonlyArray<Router> = [
+  publicRouter,
+  profileRouter,
+  sessionRouter,
+  messageRouter,
+  serviceRouter,
+  walletRouter,
+  servicesMetadataRouter,
+  bonusVacanze,
+  miscRouter,
+  bdp
 ];
 // add routers
-routers.forEach(r => app.use(r[1] || "", r[0]));
+routers.forEach(r => app.use(r));
 
 export default app;

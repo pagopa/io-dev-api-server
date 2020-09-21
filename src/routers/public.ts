@@ -15,6 +15,7 @@ import {
 import { sendFile } from "../utils/file";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
+import { resetBpd } from "./features/bdp";
 
 export const publicRouter = Router();
 
@@ -91,15 +92,19 @@ installCustomHandler(publicRouter, "get", "/", (_, res) => {
 
 // it should be useful to reset some states
 installCustomHandler(publicRouter, "get", "/reset", (_, res) => {
-  // reset profile
-  // TO DO RESTORE
-  // currentProfile = getProfile(fiscalCode).payload;
-  // reset user shoice
-  resetProfile();
-  resetBonusVacanze();
-  const resets: ReadonlyArray<string> = [
-    "bonus vacanze",
-    "user delete/download"
+  type emptyFunc = () => void;
+  const resets: ReadonlyArray<readonly [emptyFunc, string]> = [
+    [resetProfile, "bonus vacanze"],
+    [resetBonusVacanze, "user delete/download"],
+    [resetBpd, "bdp"]
   ];
-  res.send("<h2>reset:</h2>" + resets.map(r => `<li>${r}</li>`).join("<br/>"));
+  res.send(
+    "<h2>reset:</h2>" +
+      resets
+        .map(r => {
+          r[0]();
+          return `<li>${r[1]}</li>`;
+        })
+        .join("<br/>")
+  );
 });
