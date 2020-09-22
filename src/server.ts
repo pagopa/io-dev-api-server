@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import { Application, Router } from "express";
 import express from "express";
 import morgan from "morgan";
+import { bpd } from "./routers/features/bdp";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
@@ -11,7 +12,6 @@ import { serviceRouter } from "./routers/service";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
-import { bdp } from "./routers/features/bdp";
 
 // create express server
 const app: Application = express();
@@ -39,7 +39,7 @@ const routers: ReadonlyArray<Router> = [
   servicesMetadataRouter,
   bonusVacanze,
   miscRouter,
-  bdp
+  bpd
 ];
 // add routers
 routers.forEach(r => app.use(r));
