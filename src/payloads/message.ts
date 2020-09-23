@@ -85,7 +85,10 @@ const createMessageList = (
   const items = range(1, count).map(c => {
     return createMessageItem(
       fiscalCode,
-      index(c - 1, [...services]).fold("n/a", s => s.service_id as string)
+      index((c - 1) % services.length, [...services]).fold(
+        "n/a",
+        s => s.service_id as string
+      )
     );
   });
   return validatePayload(PaginatedCreatedMessageWithoutContentCollection, {

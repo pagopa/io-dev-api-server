@@ -6,6 +6,7 @@ import { bpd } from "./routers/features/bdp";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
+import { paymentRouter } from "./routers/payment";
 import { profileRouter } from "./routers/profile";
 import { publicRouter } from "./routers/public";
 import { serviceRouter } from "./routers/service";
@@ -36,6 +37,7 @@ const routers: ReadonlyArray<Router> = [
   messageRouter,
   serviceRouter,
   walletRouter,
+  paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,
   miscRouter,

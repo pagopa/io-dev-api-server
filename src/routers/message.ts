@@ -5,7 +5,8 @@ import { getProblemJson } from "../payloads/error";
 import {
   getMessages,
   withDueDate,
-  withMessageContent
+  withMessageContent,
+  withPaymentData
 } from "../payloads/message";
 import { installHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
@@ -20,7 +21,12 @@ import { services } from "./service";
 
 export const messageRouter = Router();
 const totalMessages = 5;
-export const messages = getMessages(totalMessages, services, fiscalCode);
+const totalPaymentMessages = 2;
+export const messages = getMessages(
+  totalMessages + totalPaymentMessages,
+  services,
+  fiscalCode
+);
 // tslint:disable-next-line: no-let
 let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
 
@@ -34,14 +40,29 @@ const createMessages = () => {
     frontMatterInvalid,
     frontMatter2CTA2
   ];
-  return messages.payload.items.map((item, idx) => {
-    const withContent = withMessageContent(
-      item,
-      `Subject - test ${idx + 1}`,
-      messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
-    );
-    return withDueDate(withContent, hourAhead);
-  });
+  const updateMessages = messages.payload.items
+    .slice(0, totalMessages)
+    .map((item, idx) => {
+      const withContent = withMessageContent(
+        item,
+        `Subject - test ${idx + 1}`,
+        messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
+      );
+      return withDueDate(withContent, hourAhead);
+    });
+
+  const paymentMessages = messages.payload.items
+    .slice(totalMessages, updateMessages.length + totalPaymentMessages)
+    .map((item, idx) => {
+      const withContent = withMessageContent(
+        item,
+        `Subject - test payment ${idx + 1}`,
+        messageMarkdown // add front matter prefix
+      );
+      return withPaymentData(withContent);
+    });
+
+  return [...updateMessages, ...paymentMessages];
 };
 
 messagesWithContent = createMessages();
