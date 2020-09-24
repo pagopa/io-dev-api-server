@@ -6,7 +6,7 @@ import { Millisecond } from "italia-ts-commons/lib/units";
 import { getProblemJson } from "./error";
 
 export const basePath = "/api/v1";
-export type SupportedMethod = "get" | "post" | "put" | "delete";
+export type SupportedMethod = "get" | "post" | "put" | "delete" | "patch";
 
 export type IOResponse<T> = {
   payload: T;
