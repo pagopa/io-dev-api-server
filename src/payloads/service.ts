@@ -12,6 +12,7 @@ import {
 } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
+import { frontMatterMyPortal } from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -117,15 +118,8 @@ export const getServiceMetadata = (
     support_url: "https://www.sos.com",
     tos_url: "https://www.tos.com",
     privacy_url: "https://www.privacy.com",
-
-    cta: `it:
-    cta_1: 
-        text: "CTA ITA"
-        action: "ioit://SERVICE_WEBVIEW?url=http://192.168.1.10:3000/myportal_playground.html"
-en:
-    cta_1: 
-        text: "CTA ENG"
-        action: "ioit://SERVICE_WEBVIEW?url=http://192.168.1.10:3000/myportal_playground.html"`
+    token_name: "myPortalToken",
+    cta: frontMatterMyPortal
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };

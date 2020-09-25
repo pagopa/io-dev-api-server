@@ -20,6 +20,23 @@ per verificare la tua idoneità, oppure richiedere l'ISEE sui canali previsti da
 
 Attenzione:il calcolo effettuato con la simulazione non ha valore certificativo e l'esito non sostituisce in alcun modo l'attestazione ISEE rilasciata dall'Inps`;
 
+export const frontMatterMyPortal = `---
+it:
+    cta_1: 
+        text: "email"
+        action: "iohandledlink://email:test@test.it"
+    cta_2: 
+        text: "myportal"
+        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
+en:
+    cta_1: 
+        text: "email"
+        action: "iohandledlink://email:test@test.it"
+    cta_2: 
+        text: "payments"
+        action: "ioit://WALLET_HOME"
+---`;
+
 export const frontMatter2CTA2 = `---
 it:
     cta_1: 
