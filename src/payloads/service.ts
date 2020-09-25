@@ -116,7 +116,16 @@ export const getServiceMetadata = (
     app_ios: "https://www.google.com",
     support_url: "https://www.sos.com",
     tos_url: "https://www.tos.com",
-    privacy_url: "https://www.privacy.com"
+    privacy_url: "https://www.privacy.com",
+
+    cta: `it:
+    cta_1: 
+        text: "CTA ITA"
+        action: "ioit://SERVICE_WEBVIEW?url=http://192.168.1.10:3000/myportal_playground.html"
+en:
+    cta_1: 
+        text: "CTA ENG"
+        action: "ioit://SERVICE_WEBVIEW?url=http://192.168.1.10:3000/myportal_playground.html"`
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };
