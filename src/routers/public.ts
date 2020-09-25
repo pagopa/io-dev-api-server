@@ -13,9 +13,9 @@ import {
   routes
 } from "../payloads/response";
 import { sendFile } from "../utils/file";
+import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
-import { resetBpd } from "./features/bdp";
 
 export const publicRouter = Router();
 
