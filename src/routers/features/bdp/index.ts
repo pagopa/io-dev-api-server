@@ -77,6 +77,7 @@ installCustomHandler(bpd, "patch", addPrefix("/io/citizen"), (req, res) => {
   }
   const { payoffInstr, payoffInstrType } = req.body;
   if (Iban.decode(payoffInstr).isLeft()) {
+    // should invalidate citizen current iban ?
     res.sendStatus(400);
     return;
   }
@@ -85,6 +86,7 @@ installCustomHandler(bpd, "patch", addPrefix("/io/citizen"), (req, res) => {
     payoffInstr,
     payoffInstrType
   };
+
   // possible values
   // OK -> citizen owns the given IBAN
   // KO -> citizen doesn't own the given IBAN
