@@ -13,6 +13,7 @@ import { serviceRouter } from "./routers/service";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
+import { wallet2Router } from "./routers/wallet2";
 
 // create express server
 const app: Application = express();
@@ -37,6 +38,7 @@ const routers: ReadonlyArray<Router> = [
   messageRouter,
   serviceRouter,
   walletRouter,
+  wallet2Router,
   paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,

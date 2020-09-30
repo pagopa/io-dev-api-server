@@ -112,7 +112,7 @@ export const getTransactions = (
           .number(1000000)
           .toString()
           .padStart(17, "0")}/${amount /
-          100}/TXT/${faker.company.catchPhrase()}`
+          100}/TXT/${faker.finance.transactionDescription()}`
       : `/RFB/02000000000495213/0.01/TXT/${idx} - TEST CAUSALE`;
     const delta = 1000 * 60 * 60;
     const now = new Date();
