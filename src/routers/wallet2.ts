@@ -76,7 +76,7 @@ const cardsData = range(1, 10).map<Card>(_ => {
 
     tokens: ["token1", "token2"],
 
-    validityState: ValidityStateEnum.BR
+    validityState: ValidityStateEnum.V
   };
 });
 
