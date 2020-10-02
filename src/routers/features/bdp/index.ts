@@ -46,6 +46,13 @@ installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
   res.json(currentCitizen);
 });
 
+installCustomHandler(bpd, "delete", addPrefix("/io/citizen"), (_, res) => {
+  if (currentCitizen === undefined) {
+    res.sendStatus(404);
+  }
+  res.sendStatus(204);
+});
+
 /**
  * update the citizen
  * can return these codes: 200, 401, 500
