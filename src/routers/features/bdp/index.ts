@@ -43,6 +43,7 @@ installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
   }
+  currentCitizen = undefined;
   res.json(currentCitizen);
 });
 
