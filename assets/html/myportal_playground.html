@@ -40,6 +40,13 @@
             showSuccess(payload);
         }
 
+        function handleLoader() {
+          showLoader();
+          setTimeout(() => {
+            hideLoader();
+          }, 10000)
+        }
+
         function printCookies(){
             document.getElementById("cookies").innerText = document.cookie;
         }
@@ -60,6 +67,10 @@
 <h1>MY-PORTAL PLAYGROUND</h1>
 <p id="paragraph-to-remove">Injecting JS...</p>
 <div class="item">
+    <h3>INPUT</h3>
+    <input placeholder="Inserisci una parola"/>
+</div>
+<div class="item">
     <h3>cookies</h3>
     <div id="cookies"></div>
     <script>printCookies();</script>
@@ -69,12 +80,8 @@
     <div>close the current screen</div>
 </div>
 <div class="item">
-    <button onclick="showLoader()">SHOW LOADER</button>
+    <button onclick="handleLoader()">SHOW LOADER</button>
     <div>show a loader activity indicator</div>
-</div>
-<div class="item">
-    <button onclick="hideLoader()">HIDE LOADER</button>
-    <div>hide the loader activity indicator</div>
 </div>
 <div class="item">
     <button onclick="sendSuccess()">SEND SUCCESS</button>
