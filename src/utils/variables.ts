@@ -27,7 +27,7 @@ it:
         action: "iohandledlink://email:test@test.it"
     cta_2: 
         text: "myportal"
-        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
+        action: "ioit://SERVICE_WEBVIEW?url=http://127.0.0.1:3000/myportal_playground.html"
 en:
     cta_1: 
         text: "email"
