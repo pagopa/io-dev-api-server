@@ -1,30 +1,27 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { AbiResponse } from "../../generated/definitions/bpd/pm/bancomat/AbiResponse";
-import { installHandler } from "../payloads/response";
-import { appendWalletPrefix } from "./wallet";
-import { Cards } from "../../generated/definitions/bpd/pm/bancomat/Cards";
 import { Abi } from "../../generated/definitions/bpd/pm/bancomat/Abi";
+import { AbiResponse } from "../../generated/definitions/bpd/pm/bancomat/AbiResponse";
 import {
   Card,
   ProductTypeEnum,
   ValidityStateEnum
 } from "../../generated/definitions/bpd/pm/bancomat/Card";
-import * as t from "io-ts";
-import { PatternString } from "italia-ts-commons/lib/strings";
-import { enumType } from "italia-ts-commons/lib/types";
+import { Cards } from "../../generated/definitions/bpd/pm/bancomat/Cards";
+import { installHandler } from "../payloads/response";
 import { toPayload } from "../utils/validator";
+import { appendWalletPrefix } from "./wallet";
 
 export const wallet2Router = Router();
 
-const abisData = range(1, 500).map(idx => ({
+const abisData = range(1, 500).map<Abi>(idx => ({
   abi: idx.toString().padStart(5, "0"),
   name: faker.company.companyName(),
   logoUrl: faker.image.imageUrl(64, 64)
 }));
 
-const abis: AbiResponse = {
+const abiResponse: AbiResponse = {
   data: abisData
 };
 
@@ -38,50 +35,49 @@ installHandler<AbiResponse>(
       const s = abiQuery.toLowerCase().trim();
       return {
         payload: {
-          ...abis,
+          ...abiResponse,
           data: abisData.filter(
             a =>
-              a.name.toLowerCase().indexOf(s) !== -1 ||
-              a.abi.toLowerCase().indexOf(s) !== -1
+              a.name!.toLowerCase().indexOf(s) !== -1 ||
+              a.abi!.toLowerCase().indexOf(s) !== -1
           )
         }
       };
     }
-    return { payload: abis };
+    return { payload: abiResponse };
   }
 );
+const cardCount = 10;
+const cardsData = (abis: ReadonlyArray<Abi>) => {
+  // tslint:disable-next-line
+  const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
+  return range(1, Math.min(cardCount, abis.length)).map<Card>((_, idx) => {
+    const cn = faker.finance.creditCardNumber();
+    const ed = faker.date.future();
+    return {
+      abi: shuffledAbis[idx].abi,
+      cardNumber: cn,
 
-const cardsData = range(1, 10).map<Card>(_ => {
-  const cn = faker.finance.creditCardNumber();
-  const ed = faker.date.future();
-  return {
-    abi: faker.random
-      .number(500)
-      .toString()
-      .padStart(5, "0"),
+      cardPartialNumber: cn.substr(cn.lastIndexOf("-") + 1).substr(0, 4),
 
-    cardNumber: cn,
+      expiringDate: `${ed.getFullYear()}-${(ed.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${ed
+        .getDate()
+        .toString()
+        .padStart(2, "0")}`,
 
-    cardPartialNumber: cn.substr(cn.lastIndexOf("-") + 1).substr(0, 4),
+      productType: ProductTypeEnum.PP,
 
-    expiringDate: `${ed.getFullYear()}-${ed
-      .getMonth()
-      .toString()
-      .padStart(2, "0")}-${ed
-      .getDate()
-      .toString()
-      .padStart(2, "0")}`,
+      tokens: ["token1", "token2"],
 
-    productType: ProductTypeEnum.PP,
-
-    tokens: ["token1", "token2"],
-
-    validityState: ValidityStateEnum.V
-  };
-});
+      validityState: ValidityStateEnum.V
+    };
+  });
+};
 
 const cards: Cards = {
-  data: cardsData
+  data: cardsData(abiResponse.data!)
 };
 
 installHandler<Cards>(
