@@ -1,10 +1,10 @@
 import { Router } from "express";
+import * as faker from "faker/locale/it";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
 import { fiscalCode } from "../../../global";
 import { installCustomHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
-import * as faker from "faker/locale/it";
 
 export const bpd = Router();
 
@@ -55,7 +55,6 @@ installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
     res.sendStatus(404);
     return;
   }
-  currentCitizen = undefined;
   res.json(currentCitizen);
 });
 
