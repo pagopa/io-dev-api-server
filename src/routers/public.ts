@@ -37,7 +37,7 @@ installCustomHandler(
 );
 
 installCustomHandler(publicRouter, "post", "/logout", (_, res) => {
-  res.status(200).send("ok");
+  res.status(200).send({ message: "ok" });
 });
 
 installHandler(
