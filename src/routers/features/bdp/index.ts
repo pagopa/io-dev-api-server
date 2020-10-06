@@ -4,6 +4,7 @@ import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/C
 import { fiscalCode } from "../../../global";
 import { installCustomHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
+import * as faker from "faker/locale/it";
 
 export const bpd = Router();
 
@@ -34,6 +35,16 @@ installCustomHandler(bpd, "get", addPrefix("/definition/citizen"), (_, res) =>
   sendFile("assets/definitions/bonus/bpd/citizen.json", res)
 );
 
+const token: string = faker.random.alphaNumeric(146);
+installCustomHandler(
+  bpd,
+  "post",
+  "/bonus/bpd/pagopa/api/v1/login",
+  (_, res) => {
+    res.send(token);
+  }
+);
+
 /**
  * return the citizen
  * can return these codes: 200, 401, 404, 500
@@ -42,6 +53,7 @@ installCustomHandler(bpd, "get", addPrefix("/definition/citizen"), (_, res) =>
 installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
+    return;
   }
   currentCitizen = undefined;
   res.json(currentCitizen);
@@ -50,7 +62,9 @@ installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
 installCustomHandler(bpd, "delete", addPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
+    return;
   }
+  currentCitizen = undefined;
   res.sendStatus(204);
 });
 
