@@ -11,6 +11,7 @@ import { getRandomIntInRange } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
 import { uuidv4 } from "../utils/strings";
 import { IOResponse } from "./response";
+import * as faker from "faker";
 
 /**
  * generate a list containg count messages with the given fiscal_code
@@ -43,7 +44,9 @@ export const withDueDate = (
 
 export const withPaymentData = (
   message: CreatedMessageWithContent,
-  noticeNumber: string = "012345678912345678",
+  noticeNumber: string = faker.helpers.replaceSymbolWithNumber(
+    "0#################"
+  ),
   amount: number = getRandomIntInRange(1, 10000),
   invalidAfterDueDate: boolean = false
 ): CreatedMessageWithContent => {

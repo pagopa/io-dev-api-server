@@ -254,8 +254,7 @@ export const getPaymentRequestsGetResponse = () => {
     enteBeneficiario: paymentData.enteBeneficiario,
     spezzoniCausaleVersamento: [paymentData.spezzoniCausaleVersamento]
   };
-
-  return validatePayload(PaymentRequestsGetResponse, data);
+  return data;
 };
 
 export const getPaymentActivationsPostResponse = (): PaymentActivationsPostResponse => {

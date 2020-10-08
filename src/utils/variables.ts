@@ -40,10 +40,10 @@ en:
 export const frontMatter2CTA2 = `---
 it:
     cta_1: 
-        text: "email"
+        text: "cta 1"
         action: "iohandledlink://email:test@test.it"
     cta_2: 
-        text: "myportal"
+        text: "cta 2"
         action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
 en:
     cta_1: 
@@ -57,7 +57,7 @@ en:
 export const frontMatter1CTA = `---
 it:
     cta_1: 
-        text: "check ISEE"
+        text: "verifica ISEE"
         action: "ioit://BONUS_CTA_ELIGILITY_START"
 ---`;
 
