@@ -1,14 +1,15 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { Abi } from "../../generated/definitions/bpd/pm/bancomat/Abi";
-import { AbiResponse } from "../../generated/definitions/bpd/pm/bancomat/AbiResponse";
+import sha256 from "sha256";
+import { Abi } from "../../generated/definitions/pagopa/Abi";
+import { AbiListResponse } from "../../generated/definitions/pagopa/AbiListResponse";
 import {
   Card,
   ProductTypeEnum,
   ValidityStateEnum
-} from "../../generated/definitions/bpd/pm/bancomat/Card";
-import { Cards } from "../../generated/definitions/bpd/pm/bancomat/Cards";
+} from "../../generated/definitions/pagopa/Card";
+import { RestPanResponse } from "../../generated/definitions/pagopa/RestPanResponse";
 import { installHandler } from "../payloads/response";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
@@ -21,11 +22,11 @@ const abisData = range(1, 500).map<Abi>(idx => ({
   logoUrl: faker.image.imageUrl(64, 64)
 }));
 
-const abiResponse: AbiResponse = {
+const abiResponse: AbiListResponse = {
   data: abisData
 };
 
-installHandler<AbiResponse>(
+installHandler<AbiListResponse>(
   wallet2Router,
   "get",
   appendWalletPrefix("/bancomat/abi"),
@@ -57,30 +58,21 @@ const cardsData = (abis: ReadonlyArray<Abi>) => {
     return {
       abi: shuffledAbis[idx].abi,
       cardNumber: cn,
-
       cardPartialNumber: cn.substr(cn.lastIndexOf("-") + 1).substr(0, 4),
-
-      expiringDate: `${ed.getFullYear()}-${(ed.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${ed
-        .getDate()
-        .toString()
-        .padStart(2, "0")}`,
-
+      expiringDate: ed,
+      hpan: sha256(cn),
       productType: ProductTypeEnum.PP,
-
       tokens: ["token1", "token2"],
-
       validityState: ValidityStateEnum.V
     };
   });
 };
 
-const cards: Cards = {
+const cards: RestPanResponse = {
   data: cardsData(abiResponse.data!)
 };
 
-installHandler<Cards>(
+installHandler<RestPanResponse>(
   wallet2Router,
   "get",
   appendWalletPrefix("/bancomat/pans"),

@@ -6,9 +6,9 @@
   "api_beckend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.0.0/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.0.0/api_public.yaml",
   "api_bonus_vacanze": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_bonus.yaml",
-  "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
   "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/definitions.yml",
-  "api_pagopa_2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/swagger_bancomat.yaml",
+  "api_pagopa": "https://acardste.vaservices.eu/pp-restapi-CD/v2/api-docs",
+  "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -23,11 +23,10 @@
     "prettify": "prettier --write \"src/**/*.ts*\"",
     "generate:models": "rimraf generated && rimraf generated/definitions/backend && mkdir -p generated/definitions/backend && gen-api-models --api-spec $npm_package_api_beckend_specs --out-dir ./generated/definitions/backend && gen-api-models --api-spec $npm_package_api_public_specs --out-dir generated/definitions/backend",
     "generate:content-definitions": "rimraf generated/definitions/content && mkdir -p generated/definitions/content && gen-api-models --api-spec $npm_package_content_specs --out-dir ./generated/definitions/content",
-    "generate:pagopa-api-definitions": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec https://wisp2.pagopa.gov.it/pp-restapi-CD/v2/api-docs --out-dir ./generated/definitions/pagopa",
+    "generate:pagopa-api-definitions": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec $npm_package_api_pagopa --out-dir ./generated/definitions/pagopa",
     "generate:bonus-vacanze-definitions": "rimraf generated/definitions/bonus_vacanze && mkdir -p generated/definitions/bonus_vacanze && gen-api-models --api-spec $npm_package_api_bonus_vacanze --out-dir ./generated/definitions/bonus_vacanze ",
     "generate:bpd-citizen": "rimraf generated/definitions/bpd/citizen && mkdir -p generated/definitions/bpd/citizen  && gen-api-models --api-spec $npm_package_api_bpd_citizen --out-dir ./generated/definitions/bpd/citizen --no-strict",
-    "generate:bpd-bancomat": "rimraf generated/definitions/bpd/pm/bancomat && mkdir -p generated/definitions/bpd/pm/bancomat  && gen-api-models --api-spec $npm_package_api_pagopa_2 --out-dir ./generated/definitions/bpd/pm/bancomat --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-bancomat"
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen"
   },
   "jest": {
     "preset": "ts-jest",
@@ -38,6 +37,7 @@
     "@types/faker": "^5.1.0",
     "@types/morgan": "^1.7.37",
     "@types/prettier": "^1.19.0",
+    "@types/sha256": "^0.2.0",
     "@types/swagger-parser": "^7.0.1",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
@@ -52,6 +52,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
+    "sha256": "^0.2.0",
     "swagger-parser": "^8.0.3",
     "ts-node": "8.9.0"
   },
