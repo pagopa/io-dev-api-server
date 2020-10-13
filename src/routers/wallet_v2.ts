@@ -41,9 +41,10 @@ installHandler<AbiListResponse>(
   }
 );
 
+const defaultCards = generateCards(abiResponse.data ?? [], 3);
 // tslint:disable-next-line
 let pansResponse: RestPanResponse = {
-  data: []
+  data: defaultCards
 };
 
 /**
