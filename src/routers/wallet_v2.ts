@@ -89,7 +89,7 @@ installCustomHandler<WalletsV2Response>(
     );
     const newPans = maybeData.value.data ?? [];
     pansResponse = {
-      data: [...(pansResponse.data ?? []), ...newPans]
+      data: [...keptData, ...newPans]
     };
     res.json(newPans);
   }
