@@ -87,7 +87,10 @@ installCustomHandler<WalletsV2Response>(
     const keptData = (pansResponse.data ?? []).filter(d =>
       (maybeData.value.data ?? []).some(dd => dd.hpan !== d.hpan)
     );
-    pansResponse = { data: [...keptData, ...(maybeData.value.data ?? [])] };
-    res.json(pansResponse);
+    const newPans = maybeData.value.data ?? [];
+    pansResponse = {
+      data: [...(pansResponse.data ?? []), ...newPans]
+    };
+    res.json(newPans);
   }
 );

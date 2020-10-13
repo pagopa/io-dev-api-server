@@ -14,10 +14,12 @@ export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
   return range(1, Math.min(count, abis.length)).map<Card>((_, idx) => {
     const cn = faker.finance.creditCardNumber();
     const ed = faker.date.future();
+    const lastIndex = cn.lastIndexOf("-");
+    const partialNumberIndex = lastIndex >= 0 ? lastIndex + 1 : cn.length - 5;
     return {
       abi: shuffledAbis[idx].abi,
       cardNumber: cn,
-      cardPartialNumber: cn.substr(cn.lastIndexOf("-") + 1).substr(0, 4),
+      cardPartialNumber: cn.substr(partialNumberIndex).substr(0, 4),
       expiringDate: ed,
       hpan: sha256(cn),
       productType: ProductTypeEnum.PP,
