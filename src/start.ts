@@ -2,8 +2,9 @@ import chalk from "chalk";
 import child_process from "child_process";
 import fs from "fs";
 import { networkInterfaces } from "os";
-import { allRegisteredRoutes } from "./payloads/response";
+import { allRegisteredRoutes, routes } from "./payloads/response";
 import app from "./server";
+import { cli } from "cli-ux";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 
@@ -36,10 +37,19 @@ app.listen(serverPort, serverHostname, async () => {
         }
       }
     }
+    cli.table([...routes], {
+      method: {
+        minWidth: 6,
+        header: "method"
+      },
+      path: {
+        header: "path"
+      }
+    });
     console.log(
       chalk.bgBlack(
         chalk.green(
-          `${packageJson.name} is running on\n${Object.keys(interfaces)
+          `\n${packageJson.name} is running on\n${Object.keys(interfaces)
             .map(
               ni =>
                 // tslint:disable-next-line:no-nested-template-literals

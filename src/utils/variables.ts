@@ -47,10 +47,10 @@ it:
         action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
 en:
     cta_1: 
-        text: "email"
+        text: "cta 1 EN"
         action: "iohandledlink://email:test@test.it"
     cta_2: 
-        text: "payments"
+        text: "cta 2 EN"
         action: "ioit://WALLET_HOME"
 ---`;
 
