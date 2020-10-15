@@ -7,6 +7,9 @@ import {
   ProductTypeEnum,
   ValidityStateEnum
 } from "../../generated/definitions/pagopa/bancomat/Card";
+import { DateFromString } from "italia-ts-commons/lib/dates";
+import * as t from "io-ts";
+import { PaymentMethodInfo } from "../../generated/definitions/pagopa/bancomat/PaymentMethodInfo";
 
 export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
   // tslint:disable-next-line
@@ -35,3 +38,20 @@ export const generateAbiData = (count: number, withImage: boolean = false) =>
     name: faker.company.companyName(),
     logoUrl: withImage ? faker.image.imageUrl(64, 64) : undefined
   }));
+
+export const generateWalletV2 = (
+  card: Card,
+  enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
+) => {
+  const ed = faker.date.future();
+  return {
+    createDate: ed,
+    enableableFunctions,
+    favourite: false,
+    idWallet: faker.random.number({ min: 20000, max: 30000 }),
+    info: card,
+    onboardingChannel: "I",
+    pagoPA: true,
+    updateDate: new Date()
+  };
+};

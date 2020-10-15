@@ -4,9 +4,18 @@ import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancoma
 import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
 import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
 import { installCustomHandler, installHandler } from "../payloads/response";
-import { generateAbiData, generateCards } from "../payloads/wallet_v2";
+import {
+  generateAbiData,
+  generateCards,
+  generateWalletV2
+} from "../payloads/wallet_v2";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
+import { DateFromString } from "italia-ts-commons/lib/dates";
+import * as t from "io-ts";
+import { PaymentMethodInfo } from "../../generated/definitions/pagopa/bancomat/PaymentMethodInfo";
+import { getWallets } from "../payloads/wallet";
+import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
 
 export const wallet2Router = Router();
 
@@ -87,10 +96,13 @@ installCustomHandler<WalletsV2Response>(
     const keptData = (pansResponse.data ?? []).filter(d =>
       (maybeData.value.data ?? []).some(dd => dd.hpan !== d.hpan)
     );
-    const newPans = maybeData.value.data ?? [];
+    const newPans: ReadonlyArray<Card> = maybeData.value.data ?? [];
     pansResponse = {
       data: [...keptData, ...newPans]
     };
-    res.json(newPans);
+    const response: WalletsV2Response = {
+      data: newPans.map(c => generateWalletV2(c))
+    };
+    res.json(response);
   }
 );
