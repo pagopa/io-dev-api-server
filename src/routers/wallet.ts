@@ -13,7 +13,9 @@ import {
   getWallets,
   sessionToken
 } from "../payloads/wallet";
-import { validatePayload } from "../utils/validator";
+import { toPayload, validatePayload } from "../utils/validator";
+import { Payment } from "../../generated/definitions/pagopa/Payment";
+import faker from "faker/locale/it";
 
 export const walletCount = 4;
 export const walletRouter = Router();
@@ -95,4 +97,8 @@ installCustomHandler(
       p => res.json({ data: p })
     );
   }
+);
+
+installHandler(walletRouter, "get", appendWalletPrefix("/psps"), req =>
+  toPayload({ data: getPsps() })
 );

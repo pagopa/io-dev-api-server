@@ -83,7 +83,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
       type: TypeEnum.CREDIT_CARD,
       favourite: false,
       creditCard: generateCreditCard(),
-      psp: validPsp,
+      // psp: validPsp,
       idPsp: validPsp.id,
       pspEditable: true,
       lastUsage: new Date()

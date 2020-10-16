@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AbiListResponse } from "../../generated/definitions/pagopa/bancomat/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancomat/BancomatCardsRequest";
+import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
 import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
 import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
 import { installCustomHandler, installHandler } from "../payloads/response";
@@ -11,14 +12,12 @@ import {
 } from "../payloads/wallet_v2";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
-import { DateFromString } from "italia-ts-commons/lib/dates";
-import * as t from "io-ts";
-import { PaymentMethodInfo } from "../../generated/definitions/pagopa/bancomat/PaymentMethodInfo";
-import { getWallets } from "../payloads/wallet";
-import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
+import { WalletV2ListResponse } from "../../generated/definitions/pagopa/bancomat/WalletV2ListResponse";
+import { range } from "fp-ts/lib/Array";
 
 export const wallet2Router = Router();
-
+const walletPath = "/wallet/v2";
+const appendWallet2Prefix = (path: string) => `${walletPath}${path}`;
 const abiResponse: AbiListResponse = {
   data: generateAbiData(500, false)
 };
@@ -105,4 +104,18 @@ installCustomHandler<WalletsV2Response>(
     };
     res.json(response);
   }
+);
+
+const walletV2Response: WalletV2ListResponse = {
+  data: range(1, 4).map(_ =>
+    generateWalletV2(generateCards(abiResponse.data ?? []))
+  )
+};
+
+installHandler<WalletV2ListResponse>(
+  wallet2Router,
+  "get",
+  appendWallet2Prefix("/wallet"),
+  _ => toPayload(walletV2Response),
+  WalletV2ListResponse
 );

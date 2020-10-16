@@ -60,8 +60,4 @@ app.listen(serverPort, serverHostname, async () => {
       )
     );
   });
-
-  console.log("routes available:");
-  console.log(chalk.bgBlue(allRegisteredRoutes()));
-  console.log("\n");
 });
