@@ -15,7 +15,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
-let profilePayload = { ...profile.payload };
+export let currentProfile = { ...profile.payload };
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
 type UserDeleteDownloadData = {
@@ -45,7 +45,7 @@ installHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/profile"),
-  () => ({ payload: profilePayload }),
+  () => ({ payload: currentProfile }),
   InitializedProfile
 );
 
@@ -61,11 +61,11 @@ installHandler(
       ...req.body,
       version: parseInt(req.body.version, 10) + 1
     };
-    profilePayload = {
-      ...profilePayload,
+    currentProfile = {
+      ...currentProfile,
       ...clientProfileIncreased
     };
-    return { payload: profilePayload };
+    return { payload: currentProfile };
   },
   InitializedProfile
 );
@@ -141,5 +141,5 @@ installCustomHandler(
 // reset function
 export const resetProfile = () => {
   userChoices = initialUserChoice;
-  profilePayload = { ...profile.payload };
+  currentProfile = { ...profile.payload };
 };

@@ -107,9 +107,7 @@ installCustomHandler<WalletsV2Response>(
 );
 
 const walletV2Response: WalletV2ListResponse = {
-  data: range(1, 4).map(_ =>
-    generateWalletV2(generateCards(abiResponse.data ?? []))
-  )
+  data: generateCards(abiResponse.data ?? [], 6).map(c => generateWalletV2(c))
 };
 
 installHandler<WalletV2ListResponse>(

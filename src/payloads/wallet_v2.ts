@@ -7,6 +7,14 @@ import {
   ProductTypeEnum,
   ValidityStateEnum
 } from "../../generated/definitions/pagopa/bancomat/Card";
+import { WalletV2 } from "../../generated/definitions/pagopa/bancomat/WalletV2";
+import {
+  CardInfo,
+  TypeEnum
+} from "../../generated/definitions/pagopa/bancomat/CardInfo";
+import * as t from "io-ts";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { currentProfile } from "../routers/profile";
 
 export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
   // tslint:disable-next-line
@@ -44,14 +52,27 @@ export const generateAbiData = (count: number, withImage: boolean = false) =>
 export const generateWalletV2 = (
   card: Card,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
-) => {
-  const ed = faker.date.future();
+): WalletV2 => {
+  const ed = card.expiringDate ?? faker.date.future();
+  const ccBrand = faker.random.arrayElement(creditCardBrands);
+  const info: CardInfo = {
+    blurredNumber: card.cardPartialNumber,
+    brand: ccBrand,
+    brandLogo: getCreditCardLogo(ccBrand),
+    expireMonth: (ed.getMonth() + 1).toString(),
+    expireYear: ed.getFullYear().toString(),
+    hashPan: card.hpan,
+    holder: `${currentProfile.name} ${currentProfile.family_name}`,
+    htokenList: card.tokens,
+    issuerAbiCode: card.abi,
+    type: TypeEnum.PP
+  };
   return {
     createDate: ed,
     enableableFunctions,
     favourite: false,
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
-    info: card,
+    info,
     onboardingChannel: "I",
     pagoPA: true,
     updateDate: new Date()

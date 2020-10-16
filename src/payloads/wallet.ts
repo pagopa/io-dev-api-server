@@ -8,6 +8,7 @@ import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
 import { validatePayload } from "../utils/validator";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 export const sessionToken: SessionResponse = {
   data: {
@@ -20,7 +21,6 @@ const validAmount: { [key: string]: any } = {
   amount: 1000,
   decimalDigits: 2
 };
-const cclogos: ReadonlyArray<string> = ["mc", "visa", "maestro", "amex"];
 export const getPsps = (): ReadonlyArray<Psp> => [
   {
     id: 43188,
@@ -53,11 +53,12 @@ export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let creditCardId = 0;
   const generateCreditCard = (): CreditCard => {
-    const logoIndex = Math.trunc(Math.random() * 1000) % cclogos.length;
+    const ccBrand = faker.random.arrayElement(creditCardBrands);
     creditCardId++;
     const expDate = faker.date.future();
     return {
       id: creditCardId,
+      brand: ccBrand,
       holder: `${faker.name.firstName()} ${faker.name.lastName()}`,
       pan:
         "************" +
@@ -70,7 +71,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
         .getFullYear()
         .toString()
         .substr(2),
-      brandLogo: `https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_${cclogos[logoIndex]}.png`,
+      brandLogo: getCreditCardLogo(ccBrand),
       flag3dsVerified: true
     };
   };
