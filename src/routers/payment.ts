@@ -1,10 +1,16 @@
 import { Router } from "express";
+import faker from "faker/locale/it";
+import { FiscalCode } from "italia-ts-commons/lib/strings";
+import { Iban } from "../../generated/definitions/backend/Iban";
+import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import {
   DetailEnum,
   PaymentProblemJson
 } from "../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentResponse } from "../../generated/definitions/pagopa/bancomat/PaymentResponse";
+import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import {
   installCustomHandler,
@@ -12,16 +18,10 @@ import {
   IOResponse
 } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
-import { profileRouter } from "./profile";
-import faker from "faker/locale/it";
-import { Iban } from "../../generated/definitions/backend/Iban";
-import { services } from "./service";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
-import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { toPayload } from "../utils/validator";
+import { profileRouter } from "./profile";
+import { services } from "./service";
 import { appendWalletPrefix, walletRouter } from "./wallet";
-import { PaymentResponse } from "../../generated/definitions/pagopa/bancomat/PaymentResponse";
-import { fiscalCode } from "../global";
 
 export const paymentRouter = Router();
 
@@ -35,7 +35,9 @@ const getVerificaError = (
   status: 500
 });
 
-const getVerificaSuccess = () => ({ payload: getPaymentRequestsGetResponse() });
+const getVerificaSuccess = () => ({
+  payload: getPaymentRequestsGetResponse()
+});
 
 // verifica
 installHandler(
@@ -44,7 +46,7 @@ installHandler(
   addApiV1Prefix("/payment-requests/:rptId"),
   // success response: getVerificaSuccess()
   // errore response: getVerificaError(DetailEnum.PAYMENT_DUPLICATED)
-  () => getVerificaSuccess()
+  req => getVerificaSuccess()
 );
 
 installCustomHandler<PaymentActivationsPostResponse>(

@@ -15,6 +15,7 @@ import { PspResponse } from "../../generated/definitions/pagopa/PspResponse";
 import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
 import { validatePayload } from "../utils/validator";
 import { getPsps } from "./wallet";
+import faker from "faker/locale/it";
 
 type settings = {
   user: string;
@@ -247,10 +248,10 @@ export const transactionIdResponseSecond = {
 
 export const getPaymentRequestsGetResponse = () => {
   const data = {
-    importoSingoloVersamento: paymentData.importoSingoloVersamento,
-    codiceContestoPagamento: paymentData.codiceContestoPagamento,
-    ibanAccredito: paymentData.ibanAccredito,
-    causaleVersamento: paymentData.causaleVersamento,
+    importoSingoloVersamento: faker.random.number({ min: 1, max: 9999 }),
+    codiceContestoPagamento: faker.random.alphaNumeric(32),
+    ibanAccredito: faker.finance.iban(),
+    causaleVersamento: faker.finance.transactionDescription(),
     enteBeneficiario: paymentData.enteBeneficiario,
     spezzoniCausaleVersamento: [paymentData.spezzoniCausaleVersamento]
   };
