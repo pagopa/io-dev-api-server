@@ -102,9 +102,10 @@ export const getTransactions = (
   randomData: boolean = true,
   wallets?: ReadonlyArray<Wallet>
 ): ReadonlyArray<Transaction> => {
+  const startId = faker.random.number();
   return range(1, count).map(idx => {
     const amount = randomData
-      ? Math.trunc(Math.random() * 100 * 1000)
+      ? faker.random.number({ min: 100, max: 999999 })
       : 20000 + idx * 10;
     const fee = randomData ? Math.trunc(Math.random() * 150) : 1;
     const description = randomData
@@ -128,7 +129,7 @@ export const getTransactions = (
       error: false,
       fee: { amount: fee },
       grandTotal: { amount: amount + fee },
-      id: idx,
+      id: startId + idx,
       idPayment: 1,
       idPsp: fromNullable(wallets)
         .map(ws => ws[idx % ws.length].idPsp)

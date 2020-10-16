@@ -4,6 +4,7 @@ import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import { getProblemJson } from "./error";
+import chalk from "chalk";
 
 export const basePath = "/api/v1";
 export type SupportedMethod = "get" | "post" | "put" | "delete" | "patch";
@@ -58,6 +59,9 @@ export const installHandler = <T>(
         ? res.status(status).json(responsePayload.payload)
         : res.status(status).send(responsePayload.payload);
     if (delay > 0) {
+      console.log(
+        chalk.red(`${path} response has a delayed of ${delay} milliseconds`)
+      );
       setTimeout(executeRes, delay);
       return;
     }
