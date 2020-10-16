@@ -14,6 +14,8 @@ import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/wallet_v2";
+import { delayer } from "./utils/delay_middleware";
+import { globalDelay } from "./global";
 
 // create express server
 const app: Application = express();
@@ -22,7 +24,7 @@ app.use(bodyParser.json());
 
 // set middlewares
 // if you want to add a delay in your server, use a global delayer (utils/delay_middleware)
-// app.use(delayer(500 as Millisecond));
+app.use(delayer(globalDelay));
 
 // set middleware logger
 app.use(
