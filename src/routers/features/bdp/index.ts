@@ -2,9 +2,14 @@ import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
+import {
+  PaymentInstrumentResource,
+  StatusEnum
+} from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
 import { fiscalCode } from "../../../global";
 import { installCustomHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
+import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 
 export const bpd = Router();
 
@@ -116,6 +121,62 @@ installCustomHandler(bpd, "patch", addPrefix("/io/citizen"), (req, res) => {
   res.json({ validationStatus });
 });
 
+// tslint:disable-next-line
+const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
+
+installCustomHandler(
+  bpd,
+  "get",
+  addPrefix("/io/payment-instruments/:hashPan"),
+  (req, res) => {
+    const hpan = req.params.hashPan;
+    if (!activeHashPan.has(hpan)) {
+      res.sendStatus(404);
+      return;
+    }
+    const status = activeHashPan.get(hpan);
+    const result: PaymentInstrumentResource = {
+      hpan,
+      fiscalCode,
+      activationDate: new Date(),
+      deactivationDate: new Date(),
+      Status: status!
+    };
+    res.json(result);
+  }
+);
+
+installCustomHandler(
+  bpd,
+  "put",
+  addPrefix("/io/payment-instruments/:hashPan"),
+  (req, res) => {
+    const hpan = req.params.hashPan;
+    activeHashPan.set(hpan, StatusEnum.ACTIVE);
+    const result: PaymentInstrumentDTO = {
+      fiscalCode,
+      activationDate: new Date()
+    };
+    res.json(result);
+  }
+);
+
+installCustomHandler(
+  bpd,
+  "delete",
+  addPrefix("/io/payment-instruments/:hashPan"),
+  (req, res) => {
+    const hpan = req.params.hashPan;
+    if (!activeHashPan.has(hpan)) {
+      res.sendStatus(404);
+      return;
+    }
+    activeHashPan.set(hpan, StatusEnum.INACTIVE);
+    res.sendStatus(204);
+  }
+);
+
 export const resetBpd = () => {
   currentCitizen = undefined;
+  activeHashPan.clear();
 };

@@ -10,6 +10,7 @@
   "api_pagopa": "https://wisp2.pagopa.gov.it/pp-restapi-CD/v2/api-docs",
   "api_pagopa_bancomat": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/swagger_bancomat.json",
   "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
+  "api_bpd_payment": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/payment.json",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -28,7 +29,8 @@
     "generate:pagopa-api-bancomat-definitions": "rimraf generated/definitions/pagopa/bancomat && mkdir -p generated/definitions/pagopa/bancomat && gen-api-models --api-spec $npm_package_api_pagopa_bancomat --out-dir ./generated/definitions/pagopa/bancomat",
     "generate:bonus-vacanze-definitions": "rimraf generated/definitions/bonus_vacanze && mkdir -p generated/definitions/bonus_vacanze && gen-api-models --api-spec $npm_package_api_bonus_vacanze --out-dir ./generated/definitions/bonus_vacanze ",
     "generate:bpd-citizen": "rimraf generated/definitions/bpd/citizen && mkdir -p generated/definitions/bpd/citizen  && gen-api-models --api-spec $npm_package_api_bpd_citizen --out-dir ./generated/definitions/bpd/citizen --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:pagopa-api-bancomat-definitions"
+    "generate:bpd-payment": "rimraf generated/definitions/bpd/payment && mkdir -p generated/definitions/bpd/payment  && gen-api-models --api-spec $npm_package_api_bpd_payment --out-dir ./generated/definitions/bpd/payment --no-strict",
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:pagopa-api-bancomat-definitions generate:bpd-payment"
   },
   "jest": {
     "preset": "ts-jest",
