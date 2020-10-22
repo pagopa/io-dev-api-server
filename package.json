@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
+    "@types/date-fns": "^2.6.0",
     "@types/faker": "^5.1.0",
     "@types/morgan": "^1.7.37",
     "@types/prettier": "^1.19.0",
@@ -47,6 +48,7 @@
     "chalk": "^4.1.0",
     "cli-ux": "^5.5.0",
     "crypto": "^1.0.1",
+    "date-fns": "^2.16.1",
     "express": "^4.17.1",
     "faker": "^5.1.0",
     "italia-ts-commons": "^5.1.13",

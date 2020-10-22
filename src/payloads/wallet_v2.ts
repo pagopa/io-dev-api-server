@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import sha256 from "sha256";
@@ -7,14 +8,13 @@ import {
   ProductTypeEnum,
   ValidityStateEnum
 } from "../../generated/definitions/pagopa/bancomat/Card";
-import { WalletV2 } from "../../generated/definitions/pagopa/bancomat/WalletV2";
 import {
   CardInfo,
   TypeEnum
 } from "../../generated/definitions/pagopa/bancomat/CardInfo";
-import * as t from "io-ts";
-import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { WalletV2 } from "../../generated/definitions/pagopa/bancomat/WalletV2";
 import { currentProfile } from "../routers/profile";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
   // tslint:disable-next-line
@@ -68,7 +68,8 @@ export const generateWalletV2 = (
     type: TypeEnum.PP
   };
   return {
-    createDate: ed,
+    // force createDate to be a string because we need to force a specific date format
+    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
     enableableFunctions,
     favourite: false,
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
