@@ -12,7 +12,10 @@ import {
   CardInfo,
   TypeEnum
 } from "../../generated/definitions/pagopa/bancomat/CardInfo";
-import { WalletV2 } from "../../generated/definitions/pagopa/bancomat/WalletV2";
+import {
+  WalletTypeEnum,
+  WalletV2
+} from "../../generated/definitions/pagopa/bancomat/WalletV2";
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
@@ -68,6 +71,7 @@ export const generateWalletV2 = (
     type: TypeEnum.PP
   };
   return {
+    walletType: WalletTypeEnum.Bancomat,
     // force createDate to be a string because we need to force a specific date format
     createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
     enableableFunctions,
@@ -76,6 +80,6 @@ export const generateWalletV2 = (
     info,
     onboardingChannel: "I",
     pagoPA: true,
-    updateDate: new Date()
+    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
