@@ -80,6 +80,11 @@ installHandler<RestPanResponse>(
   }
 );
 
+// tslint:disable-next-line
+let walletV2Response: WalletV2ListResponse = {
+  data: []
+};
+
 installCustomHandler<WalletsV2Response>(
   wallet2Router,
   "post",
@@ -99,16 +104,15 @@ installCustomHandler<WalletsV2Response>(
     pansResponse = {
       data: [...keptData, ...newPans]
     };
-    const response: WalletsV2Response = {
-      data: newPans.map(c => generateWalletV2(c))
+    walletV2Response = {
+      data: [
+        ...(walletV2Response.data ?? []),
+        ...newPans.map(c => generateWalletV2(c))
+      ]
     };
-    res.json(response);
+    res.json(walletV2Response);
   }
 );
-
-const walletV2Response: WalletV2ListResponse = {
-  data: generateCards(abiResponse.data ?? [], 6).map(c => generateWalletV2(c))
-};
 
 installHandler<WalletV2ListResponse>(
   wallet2Router,
