@@ -17,6 +17,7 @@ import {
 } from "../payloads/wallet_v2";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
+import { fromNullable } from "fp-ts/lib/Option";
 
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
@@ -106,14 +107,38 @@ installCustomHandler<WalletsV2Response>(
     if (maybeData.isLeft()) {
       return res.sendStatus(403);
     }
-    const newPans: ReadonlyArray<Card> = maybeData.value.data ?? [];
-    const addedBancomats = newPans.map(c =>
+    const walletData = walletV2Response.data ?? [];
+    const bancomatsToAdd = maybeData.value.data ?? [];
+    // check if a bancomat is already present in the wallet list
+    const findBancomat = (card: Card): Card | undefined => {
+      return walletData.find(nc =>
+        fromNullable(nc)
+          .map(v => {
+            if (v.info) {
+              const info = v.info as any;
+              return card.hpan === info.hashPan;
+            }
+            return false;
+          })
+          .getOrElse(false)
+      );
+    };
+    // don't add bancomats already present in wallet list (same hpan)
+    const addedBancomats = bancomatsToAdd.filter(
+      c => findBancomat(c) === undefined
+    );
+    // transform bancomat to walletv2
+    const addedBancomatsWalletV2 = addedBancomats.map(c =>
       generateWalletV2(c, WalletTypeEnum.Bancomat)
     );
     walletV2Response = {
-      data: [...(walletV2Response.data ?? []), ...addedBancomats]
+      data: [...walletData, ...addedBancomatsWalletV2]
     };
-    res.json(walletV2Response);
+    res.json({
+      data: bancomatsToAdd.map(c =>
+        generateWalletV2(c, WalletTypeEnum.Bancomat)
+      )
+    });
   }
 );
 
