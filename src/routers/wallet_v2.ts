@@ -4,7 +4,10 @@ import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancoma
 import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
 import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
 import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
-import { WalletTypeEnum } from "../../generated/definitions/pagopa/bancomat/WalletV2";
+import {
+  WalletTypeEnum,
+  WalletV2
+} from "../../generated/definitions/pagopa/bancomat/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/pagopa/bancomat/WalletV2ListResponse";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
@@ -86,9 +89,10 @@ const bancomat = generateCards(abiResponse.data ?? [], 1).map(c =>
 const creditCards = generateCards(abiResponse.data ?? [], 2).map(c =>
   generateWalletV2(c, WalletTypeEnum.Card)
 );
+const presetWallets: ReadonlyArray<WalletV2> = [...bancomat, ...creditCards];
 // tslint:disable-next-line
 let walletV2Response: WalletV2ListResponse = {
-  data: [...bancomat, ...creditCards]
+  data: presetWallets
 };
 
 installCustomHandler<WalletsV2Response>(
@@ -127,3 +131,10 @@ installHandler<WalletV2ListResponse>(
   _ => toPayload(walletV2Response),
   WalletV2ListResponse
 );
+
+// reset function
+export const resetWalletV2 = () => {
+  walletV2Response = {
+    data: presetWallets
+  };
+};

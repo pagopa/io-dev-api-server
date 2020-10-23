@@ -16,6 +16,7 @@ import { sendFile } from "../utils/file";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
+import { resetWalletV2 } from "./wallet_v2";
 
 export const publicRouter = Router();
 
@@ -96,7 +97,8 @@ installCustomHandler(publicRouter, "get", "/reset", (_, res) => {
   const resets: ReadonlyArray<readonly [emptyFunc, string]> = [
     [resetProfile, "bonus vacanze"],
     [resetBonusVacanze, "user delete/download"],
-    [resetBpd, "bdp"]
+    [resetBpd, "bdp"],
+    [resetWalletV2, "walletV2"]
   ];
   res.send(
     "<h2>reset:</h2>" +
