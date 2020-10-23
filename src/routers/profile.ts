@@ -13,9 +13,9 @@ import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
-const currentProfile = getProfile(fiscalCode);
+const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
-let profilePayload = currentProfile.payload;
+let profilePayload = { ...profile.payload };
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
 type UserDeleteDownloadData = {
@@ -141,4 +141,5 @@ installCustomHandler(
 // reset function
 export const resetProfile = () => {
   userChoices = initialUserChoice;
+  profilePayload = { ...profile.payload };
 };

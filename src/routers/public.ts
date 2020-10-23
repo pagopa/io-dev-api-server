@@ -8,18 +8,33 @@ import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import {
-  allRegisteredRoutes,
   installCustomHandler,
-  installHandler
+  installHandler,
+  routes
 } from "../payloads/response";
+import { sendFile } from "../utils/file";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
 
 export const publicRouter = Router();
 
-installCustomHandler(publicRouter, "get", "/login", (_, res) => {
-  res.redirect(loginWithToken);
+installCustomHandler(publicRouter, "get", "/login", (req, res) => {
+  if (req.query.authorized && req.query.authorized === "1") {
+    res.redirect(loginWithToken);
+    return;
+  }
+  sendFile("assets/html/login.html", res);
 });
+
+installCustomHandler(
+  publicRouter,
+  "get",
+  "/assets/imgs/how_to_login.png",
+  (_, res) => {
+    sendFile("assets/imgs/how_to_login.png", res);
+  }
+);
+
 installCustomHandler(publicRouter, "post", "/logout", (_, res) => {
   res.status(200).send("ok");
 });
@@ -65,10 +80,12 @@ installHandler(
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 installCustomHandler(publicRouter, "get", "/", (_, res) => {
+  const rr = routes.map(r => `<li>[${r.method}] ${r.path}</li>`);
+  console.log(rr);
   res.send(
     `Hi. This is ${
       packageJson.name
-    }<br/><br/>routes available:<br/>${allRegisteredRoutes("<br/>")}`
+    }<br/><br/><h3>routes available</h3><br/>${rr.join("")}`
   );
 });
 

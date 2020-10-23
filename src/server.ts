@@ -1,5 +1,5 @@
 import bodyParser from "body-parser";
-import { Application } from "express";
+import { Application, Router } from "express";
 import express from "express";
 import morgan from "morgan";
 import { staticContentRootPath } from "./global";
@@ -28,15 +28,19 @@ app.use(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
 );
+
+const routers: ReadonlyArray<readonly [Router, string?]> = [
+  [publicRouter],
+  [profileRouter],
+  [sessionRouter],
+  [messageRouter],
+  [serviceRouter],
+  [walletRouter],
+  [servicesMetadataRouter, staticContentRootPath],
+  [bonusVacanze],
+  [miscRouter]
+];
 // add routers
-app.use(bonusVacanze);
-app.use(staticContentRootPath, servicesMetadataRouter);
-app.use(publicRouter);
-app.use(miscRouter);
-app.use(walletRouter);
-app.use(profileRouter);
-app.use(sessionRouter);
-app.use(messageRouter);
-app.use(serviceRouter);
+routers.forEach(r => app.use(r[1] || "", r[0]));
 
 export default app;
