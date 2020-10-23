@@ -54,6 +54,7 @@ export const generateAbiData = (count: number, withImage: boolean = false) =>
  */
 export const generateWalletV2 = (
   card: Card,
+  walletType: WalletTypeEnum,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
 ): WalletV2 => {
   const ed = card.expiringDate ?? faker.date.future();
@@ -71,7 +72,7 @@ export const generateWalletV2 = (
     type: TypeEnum.PP
   };
   return {
-    walletType: WalletTypeEnum.Bancomat,
+    walletType,
     // force createDate to be a string because we need to force a specific date format
     createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
     enableableFunctions,

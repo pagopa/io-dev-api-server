@@ -4,6 +4,8 @@ import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancoma
 import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
 import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
 import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
+import { WalletTypeEnum } from "../../generated/definitions/pagopa/bancomat/WalletV2";
+import { WalletV2ListResponse } from "../../generated/definitions/pagopa/bancomat/WalletV2ListResponse";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
   generateAbiData,
@@ -12,8 +14,6 @@ import {
 } from "../payloads/wallet_v2";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
-import { WalletV2ListResponse } from "../../generated/definitions/pagopa/bancomat/WalletV2ListResponse";
-import { range } from "fp-ts/lib/Array";
 
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
@@ -82,7 +82,9 @@ installHandler<RestPanResponse>(
 
 // tslint:disable-next-line
 let walletV2Response: WalletV2ListResponse = {
-  data: []
+  data: generateCards(abiResponse.data ?? [], 1).map(c =>
+    generateWalletV2(c, WalletTypeEnum.Bancomat)
+  )
 };
 
 installCustomHandler<WalletsV2Response>(
@@ -107,7 +109,7 @@ installCustomHandler<WalletsV2Response>(
     walletV2Response = {
       data: [
         ...(walletV2Response.data ?? []),
-        ...newPans.map(c => generateWalletV2(c))
+        ...newPans.map(c => generateWalletV2(c, WalletTypeEnum.Bancomat))
       ]
     };
     res.json(walletV2Response);
