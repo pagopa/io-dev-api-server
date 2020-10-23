@@ -113,7 +113,7 @@ installCustomHandler<WalletsV2Response>(
     walletV2Response = {
       data: [...(walletV2Response.data ?? []), ...addedBancomats]
     };
-    res.json(addedBancomats);
+    res.json(walletV2Response);
   }
 );
 
