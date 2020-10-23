@@ -80,11 +80,15 @@ installHandler<RestPanResponse>(
   }
 );
 
+const bancomat = generateCards(abiResponse.data ?? [], 1).map(c =>
+  generateWalletV2(c, WalletTypeEnum.Bancomat)
+);
+const creditCards = generateCards(abiResponse.data ?? [], 2).map(c =>
+  generateWalletV2(c, WalletTypeEnum.Card)
+);
 // tslint:disable-next-line
 let walletV2Response: WalletV2ListResponse = {
-  data: generateCards(abiResponse.data ?? [], 1).map(c =>
-    generateWalletV2(c, WalletTypeEnum.Bancomat)
-  )
+  data: [...bancomat, ...creditCards]
 };
 
 installCustomHandler<WalletsV2Response>(
