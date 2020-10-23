@@ -107,12 +107,16 @@ export const getServiceMetadata = (
   const metaData: Service = {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
     scope: serviceScope,
-    address: "mock address",
+    address: "Piazza di Spagna, Roma, Italia",
     email: "mock.service@email.com",
+    pec: "mock.pec@email.com",
     phone: "5555555",
     web_url: "https://www.google.com",
     app_android: "https://www.google.com",
-    app_ios: "https://www.google.com"
+    app_ios: "https://www.google.com",
+    support_url: "https://www.sos.com",
+    tos_url: "https://www.tos.com",
+    privacy_url: "https://www.privacy.com"
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };

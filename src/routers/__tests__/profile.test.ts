@@ -1,14 +1,13 @@
-import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import supertest from "supertest";
-import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
-import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
-import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
-import { Profile } from "../../generated/definitions/backend/Profile";
-import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
-import { basePath } from "../../generated/definitions/backend_api_paths";
-import { Municipality } from "../../generated/definitions/content/Municipality";
-import { userMetadata } from "../payloads/userMetadata";
-import app, { fiscalCode } from "../server";
+import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
+import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
+import { Profile } from "../../../generated/definitions/backend/Profile";
+import { UserMetadata } from "../../../generated/definitions/backend/UserMetadata";
+import { Municipality } from "../../../generated/definitions/content/Municipality";
+import { fiscalCode } from "../../global";
+import { basePath } from "../../payloads/response";
+import { userMetadata } from "../../payloads/userMetadata";
+import app from "../../server";
 
 const request = supertest(app);
 

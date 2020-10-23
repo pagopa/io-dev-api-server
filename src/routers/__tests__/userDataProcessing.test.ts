@@ -1,10 +1,10 @@
 import supertest from "supertest";
-import { ProblemJson } from "../../generated/definitions/backend/ProblemJson";
-import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingChoiceEnum } from "../../generated/definitions/backend/UserDataProcessingChoice";
-import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
-import { basePath } from "../../generated/definitions/backend_api_paths";
-import app from "../server";
+import { ProblemJson } from "../../../generated/definitions/backend/ProblemJson";
+import { UserDataProcessing } from "../../../generated/definitions/backend/UserDataProcessing";
+import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/backend/UserDataProcessingChoice";
+import { UserDataProcessingStatusEnum } from "../../../generated/definitions/backend/UserDataProcessingStatus";
+import { basePath } from "../../payloads/response";
+import app from "../../server";
 
 const request = supertest(app);
 

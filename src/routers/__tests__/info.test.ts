@@ -1,7 +1,7 @@
 import supertest from "supertest";
-import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
-import { BackendStatus } from "../payloads/backend";
-import app from "../server";
+import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
+import { BackendStatus } from "../../payloads/backend";
+import app from "../../server";
 
 const request = supertest(app);
 

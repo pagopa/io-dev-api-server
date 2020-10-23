@@ -1,9 +1,12 @@
-import { Application, Request, Response } from "express";
-import {
-  basePath,
-  IOApiPath,
-  SupportedMethod
-} from "../../generated/definitions/backend_api_paths";
+import { Request, Response, Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
+import * as t from "io-ts";
+import { PathReporter } from "io-ts/lib/PathReporter";
+import { Millisecond } from "italia-ts-commons/lib/units";
+import { getProblemJson } from "./error";
+
+export const basePath = "/api/v1";
+export type SupportedMethod = "get" | "post" | "put" | "delete";
 
 export type IOResponse<T> = {
   payload: T;
@@ -11,73 +14,65 @@ export type IOResponse<T> = {
   isJson?: boolean;
 };
 
-export const handleResponse = <T>(
-  expressResponse: Response,
-  ioResponse: IOResponse<T>
-) => {
-  const res = expressResponse.status(ioResponse.status || 200);
-  if (ioResponse.isJson === true) {
-    res.json(ioResponse.payload);
-    return;
-  }
-  res.send(ioResponse.payload);
+type Route = { path: string; method: SupportedMethod };
+// tslint:disable-next-line: no-let
+export let routes: ReadonlyArray<Route> = [];
+const addNewRoute = (method: SupportedMethod, path: string) => {
+  routes = [...routes, { path, method }];
 };
 
-export class ResponseHandler {
-  private app: Application;
-  constructor(app: Application) {
-    this.app = app;
-  }
+export const allRegisteredRoutes = (joiner: string = "\n") =>
+  [...routes]
+    .sort((a, b) => a.path.localeCompare(b.path))
+    .map(r => `[${r.method}]\t${r.path}`)
+    .join(joiner);
 
-  private addHandlerInternal = <T>(
-    method: SupportedMethod,
-    path: IOApiPath,
-    handler: (req: Request) => IOResponse<T>
-  ): ResponseHandler => {
-    switch (method) {
-      case "get":
-        this.app.get(basePath + path, (req, res) =>
-          handleResponse(res, handler(req))
-        );
-        break;
-      case "post":
-        this.app.post(basePath + path, (req, res) =>
-          handleResponse(res, handler(req))
-        );
-        break;
-      case "put":
-        this.app.put(basePath + path, (req, res) =>
-          handleResponse(res, handler(req))
-        );
-        break;
-      case "update":
-        throw Error("update method not implemented");
-      default:
-        throw Error(`${method} not implemented`);
+export const installHandler = <T>(
+  router: Router,
+  method: SupportedMethod,
+  path: string,
+  handleRequest: (request: Request) => IOResponse<T>,
+  codec?: t.Type<T>,
+  delay: Millisecond = 0 as Millisecond
+) => {
+  addNewRoute(method, path);
+  router[method](path, (req, res) => {
+    const responsePayload = handleRequest(req);
+    const validation = fromNullable(codec).map(c =>
+      c.decode(responsePayload.payload)
+    );
+    // the provided payload is not respecting the codec shape
+    if (validation.isSome() && validation.value.isLeft()) {
+      const problem = getProblemJson(
+        500,
+        "the returned payload is not compliant with the target codec",
+        PathReporter.report(validation.value).toString()
+      );
+      console.error(problem);
+      res.status(problem.status || 500).json(problem.payload);
+      return;
     }
-    return this;
-  };
+    const status = responsePayload.status || 200;
+    const executeRes = () =>
+      responsePayload.isJson
+        ? res.status(status).json(responsePayload.payload)
+        : res.status(status).send(responsePayload.payload);
+    if (delay > 0) {
+      setTimeout(executeRes, delay);
+      return;
+    }
+    executeRes();
+  });
+};
 
-  public addCustomHandler = <T>(
-    method: SupportedMethod,
-    path: IOApiPath,
-    handler: (req: Request) => IOResponse<T>
-  ): ResponseHandler => {
-    this.addHandlerInternal(method, path, handler);
-    return this;
-  };
-
-  /**
-   * Add an handler for the given api path
-   * responsePayload will be sent as response to the request
-   * It accepts only IOApiPath defined into the swagger specs (see api_beckend_specs value in package.json)
-   */
-  public addHandler = <T>(
-    method: SupportedMethod,
-    path: IOApiPath,
-    responsePayload: IOResponse<T>
-  ): ResponseHandler => {
-    this.addHandlerInternal(method, path, () => responsePayload);
-    return this;
-  };
-}
+export const installCustomHandler = <T>(
+  router: Router,
+  method: SupportedMethod,
+  path: string,
+  handleRequest: (request: Request, response: Response) => void
+) => {
+  addNewRoute(method, path);
+  router[method](path, (req, res) => {
+    handleRequest(req, res);
+  });
+};
