@@ -106,19 +106,9 @@ installCustomHandler<WalletsV2Response>(
     if (maybeData.isLeft()) {
       return res.sendStatus(403);
     }
-    // keep from current cars those one different from the new ones
-    const keptData = (pansResponse.data ?? []).filter(d =>
-      (maybeData.value.data ?? []).some(dd => dd.hpan !== d.hpan)
-    );
     const newPans: ReadonlyArray<Card> = maybeData.value.data ?? [];
-    pansResponse = {
-      data: [...keptData, ...newPans]
-    };
     walletV2Response = {
-      data: [
-        ...(walletV2Response.data ?? []),
-        ...newPans.map(c => generateWalletV2(c, WalletTypeEnum.Bancomat))
-      ]
+      data: [...newPans.map(c => generateWalletV2(c, WalletTypeEnum.Bancomat))]
     };
     res.json(walletV2Response);
   }
