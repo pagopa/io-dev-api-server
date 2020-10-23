@@ -107,10 +107,13 @@ installCustomHandler<WalletsV2Response>(
       return res.sendStatus(403);
     }
     const newPans: ReadonlyArray<Card> = maybeData.value.data ?? [];
+    const addedBancomats = newPans.map(c =>
+      generateWalletV2(c, WalletTypeEnum.Bancomat)
+    );
     walletV2Response = {
-      data: [...newPans.map(c => generateWalletV2(c, WalletTypeEnum.Bancomat))]
+      data: [...(walletV2Response.data ?? []), ...addedBancomats]
     };
-    res.json(walletV2Response);
+    res.json(addedBancomats);
   }
 );
 
