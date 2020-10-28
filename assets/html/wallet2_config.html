@@ -13,6 +13,7 @@
   }
 </style>
   <script>
+    // wallet v2
     var wcc = undefined;
     var wbc = undefined;
     var cbc = undefined;
@@ -46,20 +47,52 @@
       );
     }
 
-    $(document).ready(function() {
+    const initWalletV2 = () => {
       wcc = $("#walletCreditCard");
       wbc = $("#walletBancomat");
       cbc = $("#citizenBancomat");
       $.getJSON("/walletv2/config", function(data) {
-        setForm(data);
+          setForm(data);
         }
       );
+    }
+
+    var awardPeriodsPreset;
+    const initBPD = () => {
+      wcc = $("#walletCreditCard");
+      awardPeriodsPreset = $("#awardPeriodsPreset");
+      $.getJSON("/bonus/bpd/award/periods/presets", function(presets) {
+        presets.forEach(p => {
+          awardPeriodsPreset.append(new Option(p.replace(".json",""), p));
+        });
+        }
+      );
+    }
+
+    const updateAwardPeriods = () => {
+      $.ajax({
+        type: 'POST',
+        url: "/bonus/bpd/award/periods/presets/"+ awardPeriodsPreset.val(),
+        data: JSON.stringify({}),
+        success: function() {alert(`${awardPeriodsPreset.val()} flushed!`) }
+      });
+    }
+
+    $(document).ready(function() {
+      initWalletV2();
+      initBPD();
     });
   </script>
 </head>
 <body>
 
-<table>
+<table style="padding:16px;border: 1px solid black;">
+  <tr>
+    <td colspan="2">
+      <b>WalletV2 configuration</b>
+    </td>
+  </tr>
+  <tr>
   <tr class="form_item">
     <td><label>wallet Credit Card</label></td>
     <td><input type="number" min="0" class="form_number" id="walletCreditCard"/>
@@ -76,12 +109,35 @@
   </tr>
   <tr>
     <td colspan="2">
-      <button value="update" onclick="updateConfig()">update</button>
+      <button value="update" onclick="updateConfig()">flush</button>
     </td>
   </tr>
   <tr>
     <td colspan="2">
       <button value="reset" onclick="resetConfig()">reset</button>
+    </td>
+  </tr>
+</table>
+
+<table style="padding:16px;border: 1px solid black; margin-top: 20px;">
+  <tr>
+    <td colspan="2">
+      <b>BPD configuration</b>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <i>place your json preset into /assets/bpd/award/periods</i>
+    </td>
+  </tr>
+
+  <tr class="form_item">
+    <td><label>wallet Credit Card</label></td>
+    <td><select id="awardPeriodsPreset" style="width: 100px;"></select></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <button value="reset" onclick="updateAwardPeriods()">flush</button>
     </td>
   </tr>
 </table>

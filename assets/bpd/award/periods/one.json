@@ -1,0 +1,16 @@
+[
+  {
+    "awardPeriodId": 0,
+    "startDate": "2020-04-09",
+    "endDate": "2020-04-19",
+    "minTransactionNumber": 100,
+    "maxAmount": 150,
+    "minPosition": 20,
+    "maxTransactionCashback": 15,
+    "maxPeriodCashback": 150,
+    "cashbackPercentage": 10,
+    "gracePeriod": 12,
+    "status": "CLOSED",
+    "maxTransactionEvaluated": 150
+  }
+]
