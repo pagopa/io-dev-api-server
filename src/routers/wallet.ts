@@ -14,8 +14,6 @@ import {
   sessionToken
 } from "../payloads/wallet";
 import { toPayload, validatePayload } from "../utils/validator";
-import { Payment } from "../../generated/definitions/pagopa/Payment";
-import faker from "faker/locale/it";
 
 export const walletCount = 4;
 export const walletRouter = Router();

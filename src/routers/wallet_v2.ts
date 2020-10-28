@@ -1,13 +1,11 @@
 import { Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
 import { AbiListResponse } from "../../generated/definitions/pagopa/bancomat/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancomat/BancomatCardsRequest";
 import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
 import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
 import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
-import {
-  WalletTypeEnum,
-  WalletV2
-} from "../../generated/definitions/pagopa/bancomat/WalletV2";
+import { WalletTypeEnum } from "../../generated/definitions/pagopa/bancomat/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/pagopa/bancomat/WalletV2ListResponse";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
@@ -15,9 +13,9 @@ import {
   generateCards,
   generateWalletV2
 } from "../payloads/wallet_v2";
+import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
-import { fromNullable } from "fp-ts/lib/Option";
 
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
@@ -53,12 +51,52 @@ installHandler<AbiListResponse>(
   }
 );
 
-const defaultCards = generateCards(abiResponse.data ?? [], 3);
-// tslint:disable-next-line
-let pansResponse: RestPanResponse = {
-  data: defaultCards
+type WalletV2Config = {
+  walletBancomat: number;
+  walletCreditCard: number;
+  citizenBancomat: number;
 };
 
+// tslint:disable-next-line
+let walletV2Config: WalletV2Config = {
+  walletBancomat: 2,
+  walletCreditCard: 1,
+  citizenBancomat: 3
+};
+
+const citizenBancomat = () =>
+  generateCards(abiResponse.data ?? [], walletV2Config.citizenBancomat);
+
+// tslint:disable-next-line
+let pansResponse: RestPanResponse = {
+  data: []
+};
+// tslint:disable-next-line
+let walletBancomat = [];
+// tslint:disable-next-line
+let walletV2Response: WalletV2ListResponse = {
+  data: []
+};
+// tslint:disable-next-line
+let walletCreditCards = [];
+
+const generateData = () => {
+  pansResponse = {
+    data: citizenBancomat()
+  };
+  walletBancomat = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.walletBancomat
+  ).map(c => generateWalletV2(c, WalletTypeEnum.Bancomat));
+  walletCreditCards = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.walletCreditCard
+  ).map(c => generateWalletV2(c, WalletTypeEnum.Card));
+  walletV2Response = {
+    data: [...walletBancomat, ...walletCreditCards]
+  };
+};
+generateData();
 /**
  * return the pans list (bancomat)
  * if 'abi' is defined in query string a filter on abi will be applied
@@ -83,18 +121,6 @@ installHandler<RestPanResponse>(
     });
   }
 );
-
-const bancomat = generateCards(abiResponse.data ?? [], 1).map(c =>
-  generateWalletV2(c, WalletTypeEnum.Bancomat)
-);
-const creditCards = generateCards(abiResponse.data ?? [], 2).map(c =>
-  generateWalletV2(c, WalletTypeEnum.Card)
-);
-const presetWallets: ReadonlyArray<WalletV2> = [...bancomat, ...creditCards];
-// tslint:disable-next-line
-let walletV2Response: WalletV2ListResponse = {
-  data: presetWallets
-};
 
 installCustomHandler<WalletsV2Response>(
   wallet2Router,
@@ -147,12 +173,28 @@ installHandler<WalletV2ListResponse>(
   "get",
   appendWallet2Prefix("/wallet"),
   _ => toPayload(walletV2Response),
-  WalletV2ListResponse
+  { codec: WalletV2ListResponse }
 );
 
 // reset function
 export const resetWalletV2 = () => {
-  walletV2Response = {
-    data: presetWallets
-  };
+  generateData();
 };
+
+installCustomHandler(
+  wallet2Router,
+  "get",
+  "/walletv2",
+  (_, res) => sendFile("assets/html/wallet2_config.html", res),
+  "WalletV2 config dashboard"
+);
+
+installCustomHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
+  res.json(walletV2Config)
+);
+
+installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
+  walletV2Config = req.body;
+  generateData();
+  res.json(walletV2Config);
+});

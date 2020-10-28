@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import child_process from "child_process";
+import { cli } from "cli-ux";
 import fs from "fs";
 import { networkInterfaces } from "os";
-import { allRegisteredRoutes, routes } from "./payloads/response";
+import { routes } from "./payloads/response";
 import app from "./server";
-import { cli } from "cli-ux";
+import { fromNullable } from "fp-ts/lib/Option";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 
@@ -44,6 +45,17 @@ app.listen(serverPort, serverHostname, async () => {
       },
       path: {
         header: "path"
+      },
+      description: {
+        header: "description",
+        get(row): any {
+          return (
+            fromNullable(row.description)
+              // tslint:disable-next-line:no-nested-template-literals
+              .map(d => `(${d})`)
+              .getOrElse("")
+          );
+        }
       }
     });
     console.log(

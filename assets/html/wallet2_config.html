@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <title>WalletV2 configuration</title>
+<style>
+  .form_item{
+      margin-top: 10px;
+  }
+  .form_number{
+      width: 50px;
+  }
+</style>
+  <script>
+    var wcc = undefined;
+    var wbc = undefined;
+    var cbc = undefined;
+
+    const setForm = (config) => {
+      wcc.val(config.walletCreditCard);
+      wbc.val(config.walletBancomat);
+      cbc.val(config.citizenBancomat);
+    }
+
+    const updateConfig = () => {
+      const config = {
+        walletBancomat: parseInt(wbc.val(),10),
+        walletCreditCard: parseInt(wcc.val(),10),
+        citizenBancomat: parseInt(cbc.val(),10),
+      }
+      $.ajax({
+        type: 'POST',
+        url: "/walletv2/config",
+        data: JSON.stringify(config),
+        success: function(data) { setForm(data); alert("done! refresh your wallet!") },
+        contentType: "application/json",
+        dataType: 'json'
+      });
+    }
+
+    $(document).ready(function() {
+      wcc = $("#walletCreditCard");
+      wbc = $("#walletBancomat");
+      cbc = $("#citizenBancomat");
+      $.getJSON("/walletv2/config", function(data) {
+        setForm(data);
+        }
+      );
+    });
+  </script>
+</head>
+<body>
+
+<table>
+  <tr class="form_item">
+    <td><label>wallet Credit Card</label></td>
+    <td><input type="number" min="0" class="form_number" id="walletCreditCard"/>
+  </tr>
+
+  <tr class="form_item">
+    <td><label>wallet Bancomat</label></td>
+    <td><input type="number" min="0" class="form_number" id="walletBancomat"/></td>
+  </tr>
+
+  <tr class="form_item">
+    <td><label>Citizen Bancomat (pans)</label></td>
+    <td><input type="number" min="0" class="form_number" id="citizenBancomat"/></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <button value="update" onclick="updateConfig()">update</button>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

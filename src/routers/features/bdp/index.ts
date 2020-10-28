@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
+import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 import {
   PaymentInstrumentResource,
   StatusEnum
@@ -9,7 +10,6 @@ import {
 import { fiscalCode } from "../../../global";
 import { installCustomHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
-import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 
 export const bpd = Router();
 

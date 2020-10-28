@@ -48,7 +48,7 @@ installHandler(
   () => ({
     payload: backendInfo
   }),
-  ServerInfo
+  { codec: ServerInfo }
 );
 
 // ping (no longer needed since actually app disables network status checking)
@@ -65,7 +65,7 @@ installHandler(
   () => ({
     payload: { token: loginSessionToken }
   }),
-  AccessToken
+  { codec: AccessToken }
 );
 
 // backend service status
@@ -76,7 +76,7 @@ installHandler(
   () => ({
     payload: backendStatus
   }),
-  BackendStatus
+  { codec: BackendStatus }
 );
 
 // read package.json to print some info

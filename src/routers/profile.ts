@@ -46,7 +46,7 @@ installHandler(
   "get",
   addApiV1Prefix("/profile"),
   () => ({ payload: currentProfile }),
-  InitializedProfile
+  { codec: InitializedProfile }
 );
 
 // update profile
@@ -67,7 +67,7 @@ installHandler(
     };
     return { payload: currentProfile };
   },
-  InitializedProfile
+  { codec: InitializedProfile }
 );
 
 // User metadata
@@ -77,7 +77,7 @@ installHandler(
   "get",
   addApiV1Prefix("/user-metadata"),
   () => userMetadata,
-  UserMetadata
+  { codec: UserMetadata }
 );
 installHandler(
   profileRouter,
@@ -88,7 +88,7 @@ installHandler(
     const payload = validatePayload(UserMetadata, req.body);
     return { payload };
   },
-  UserMetadata
+  { codec: UserMetadata }
 );
 
 // User data processing (DOWNLOAD / DELETE)
