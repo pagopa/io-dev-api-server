@@ -16,6 +16,7 @@ import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/wallet_v2";
 import { delayer } from "./utils/delay_middleware";
 import { globalDelay } from "./global";
+import { bpdAward } from "./routers/features/bdp/award";
 
 // create express server
 const app: Application = express();
@@ -45,7 +46,8 @@ const routers: ReadonlyArray<Router> = [
   servicesMetadataRouter,
   bonusVacanze,
   miscRouter,
-  bpd
+  bpd,
+  bpdAward
 ];
 // add routers
 routers.forEach(r => app.use(r));

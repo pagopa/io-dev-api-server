@@ -13,7 +13,7 @@ import { sendFile } from "../../../utils/file";
 
 export const bpd = Router();
 
-const addPrefix = (path: string) => `/bonus/bpd${path}`;
+export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
 const citizen: CitizenResource = {
   enabled: false,
   fiscalCode,
@@ -26,18 +26,13 @@ const citizen: CitizenResource = {
 let currentCitizen: CitizenResource | undefined;
 
 // return the T&C as a HTML string
-installCustomHandler(bpd, "get", addPrefix("/tc/html"), (_, res) =>
+installCustomHandler(bpd, "get", addBPDPrefix("/tc/html"), (_, res) =>
   res.status(200).send("<html><body>hello HTML</body></html>")
 );
 
 // return the T&C as a pdf file
-installCustomHandler(bpd, "get", addPrefix("/tc/pdf"), (_, res) =>
+installCustomHandler(bpd, "get", addBPDPrefix("/tc/pdf"), (_, res) =>
   sendFile("assets/pdf/tos.pdf", res)
-);
-
-// return the citizen json swagger file
-installCustomHandler(bpd, "get", addPrefix("/definition/citizen"), (_, res) =>
-  sendFile("assets/definitions/bonus/bpd/citizen.json", res)
 );
 
 const token: string = faker.random.alphaNumeric(146);
@@ -55,7 +50,7 @@ installCustomHandler(
  * can return these codes: 200, 401, 404, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  */
-installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
+installCustomHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
     return;
@@ -63,7 +58,7 @@ installCustomHandler(bpd, "get", addPrefix("/io/citizen"), (_, res) => {
   res.json(currentCitizen);
 });
 
-installCustomHandler(bpd, "delete", addPrefix("/io/citizen"), (_, res) => {
+installCustomHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
     return;
@@ -77,7 +72,7 @@ installCustomHandler(bpd, "delete", addPrefix("/io/citizen"), (_, res) => {
  * can return these codes: 200, 401, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  */
-installCustomHandler(bpd, "put", addPrefix("/io/citizen"), (_, res) => {
+installCustomHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
   currentCitizen = {
     ...citizen,
     enabled: true
@@ -95,7 +90,7 @@ installCustomHandler(bpd, "put", addPrefix("/io/citizen"), (_, res) => {
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  * see https://docs.google.com/document/d/1GuFOu24IeWK3W4pGlZ8PUnnMJi-oDr5xAQEjTxC0hfc/edit#heading=h.gr9fx7vug165
  */
-installCustomHandler(bpd, "patch", addPrefix("/io/citizen"), (req, res) => {
+installCustomHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
   // citizen not found
   if (currentCitizen === undefined) {
     res.sendStatus(404);
@@ -127,7 +122,7 @@ const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
 installCustomHandler(
   bpd,
   "get",
-  addPrefix("/io/payment-instruments/:hashPan"),
+  addBPDPrefix("/io/payment-instruments/:hashPan"),
   (req, res) => {
     const hpan = req.params.hashPan;
     if (!activeHashPan.has(hpan)) {
@@ -138,8 +133,8 @@ installCustomHandler(
     const result: PaymentInstrumentResource = {
       hpan,
       fiscalCode,
-      activationDate: new Date(),
-      deactivationDate: new Date(),
+      activationDate: new Date().toISOString(),
+      deactivationDate: new Date().toISOString(),
       Status: status!
     };
     res.json(result);
@@ -149,7 +144,7 @@ installCustomHandler(
 installCustomHandler(
   bpd,
   "put",
-  addPrefix("/io/payment-instruments/:hashPan"),
+  addBPDPrefix("/io/payment-instruments/:hashPan"),
   (req, res) => {
     const hpan = req.params.hashPan;
     activeHashPan.set(hpan, StatusEnum.ACTIVE);
@@ -164,7 +159,7 @@ installCustomHandler(
 installCustomHandler(
   bpd,
   "delete",
-  addPrefix("/io/payment-instruments/:hashPan"),
+  addBPDPrefix("/io/payment-instruments/:hashPan"),
   (req, res) => {
     const hpan = req.params.hashPan;
     if (!activeHashPan.has(hpan)) {
