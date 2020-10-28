@@ -57,12 +57,13 @@ type WalletV2Config = {
   citizenBancomat: number;
 };
 
-// tslint:disable-next-line
-let walletV2Config: WalletV2Config = {
+const defaultWalletV2Config: WalletV2Config = {
   walletBancomat: 2,
   walletCreditCard: 1,
   citizenBancomat: 3
 };
+// tslint:disable-next-line
+let walletV2Config = defaultWalletV2Config;
 
 const citizenBancomat = () =>
   generateCards(abiResponse.data ?? [], walletV2Config.citizenBancomat);
@@ -192,6 +193,12 @@ installCustomHandler(
 installCustomHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
   res.json(walletV2Config)
 );
+
+installCustomHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
+  walletV2Config = defaultWalletV2Config;
+  generateData();
+  res.json(walletV2Config);
+});
 
 installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   walletV2Config = req.body;
