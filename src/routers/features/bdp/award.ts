@@ -12,6 +12,7 @@ import {
 import { listDir } from "../../../utils/file";
 import { toPayload } from "../../../utils/validator";
 import { addBPDPrefix } from "./index";
+import chalk from "chalk";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
@@ -53,11 +54,17 @@ installCustomHandler(
     const files = listDir(assetsFolder + "/bpd/award/periods");
     const file = files.find(f => f === req.params.period);
     if (file) {
-      awardPeriods = BpdAwardPeriods.decode(
+      const maybeAwardPeriods = BpdAwardPeriods.decode(
         readPeriodPresetJson(file)
-      ).getOrElse([]);
+      );
+      if (maybeAwardPeriods.isLeft()) {
+        console.log(chalk.red(`${file} is not a valid BpdAwardPeriods`));
+        res.sendStatus(500);
+      } else {
+        awardPeriods = maybeAwardPeriods.value;
+        res.sendStatus(200);
+      }
     }
-    res.sendStatus(200);
   }
 );
 
@@ -66,8 +73,7 @@ installHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), () =>
   toPayload(awardPeriods)
 );
 
-// tslint:disable-next-line: no-let
-let totalCashback: Map<number, string> = new Map<number, string>([
+const totalCashback: Map<number, string> = new Map<number, string>([
   [0, "default.json"],
   [1, "default.json"],
   [2, "default.json"],
@@ -82,13 +88,20 @@ installCustomHandler(
   (req, res) => {
     const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
     fromNullable(totalCashback.get(awardPeriodId)).foldL(
-      () => res.sendStatus(404),
-      p =>
-        res.json(
-          TotalCashbackResource.decode(
-            readTotalCashbackJson(req.query.awardPeriodId, p)
-          ).value as TotalCashbackResource
-        )
+      () => {
+        res.sendStatus(404);
+      },
+      p => {
+        const maybeTotalCashBack = TotalCashbackResource.decode(
+          readTotalCashbackJson(req.query.awardPeriodId, p)
+        );
+        if (maybeTotalCashBack.isLeft()) {
+          console.log(chalk.red(`${p} is not a valid TotalCashbackResource`));
+          res.sendStatus(500);
+        } else {
+          res.json(maybeTotalCashBack.value);
+        }
+      }
     );
   }
 );
@@ -113,8 +126,18 @@ installCustomHandler(
   addBPDPrefix("/winning-transactions/presets"),
   (req, res) => {
     const payload = req.body;
-    console.log(payload);
-    totalCashback.set(parseInt(payload.directory, 10), payload.file);
-    res.sendStatus(200);
+    // check if the json is valid
+    const maybeTotalCashBack = TotalCashbackResource.decode(
+      readTotalCashbackJson(payload.directory, payload.file)
+    );
+    if (maybeTotalCashBack.isLeft()) {
+      console.log(
+        chalk.red(`${payload.file} is not a valid TotalCashbackResource`)
+      );
+      res.sendStatus(500);
+    } else {
+      res.json(maybeTotalCashBack.value);
+      res.sendStatus(200);
+    }
   }
 );
