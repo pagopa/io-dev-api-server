@@ -68,7 +68,10 @@ installHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), () =>
 
 // tslint:disable-next-line: no-let
 let totalCashback: Map<number, string> = new Map<number, string>([
-  [0, "default.json"]
+  [0, "default.json"],
+  [1, "default.json"],
+  [2, "default.json"],
+  [3, "default.json"]
 ]);
 
 // response with the total cashback
