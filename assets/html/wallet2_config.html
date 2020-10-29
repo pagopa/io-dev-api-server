@@ -69,6 +69,32 @@
       );
     }
 
+
+    const onFlushTotalCashBack = (directory) => {
+      const select =  $("#tc_"+directory);
+      $.ajax({
+        type: 'POST',
+        url: "/bonus/bpd/winning-transactions/presets",
+        data: JSON.stringify({directory,file: select.val()}),
+        success: function() {alert(`${select.val()} flushed!`) },
+        contentType: "application/json",
+      });
+    }
+
+    const initTotalCashBack = () => {
+
+      const container = $("#total_cashback");
+      $.getJSON("/bonus/bpd/winning-transactions/presets", function(presets) {
+          Object.keys(presets).forEach(p => {
+            const options = presets[p].map(v => `<option value="${v}">${v}</option>`)
+            container.append(`<label>${p}</label> <select id="tc_${p}">${options}</select>`);
+            container.append(` <button onclick="onFlushTotalCashBack(${p})">flush</button>`);
+            container.append(`<br/>`);
+          });
+        }
+      );
+    }
+
     const updateAwardPeriods = () => {
       $.ajax({
         type: 'POST',
@@ -81,6 +107,7 @@
     $(document).ready(function() {
       initWalletV2();
       initBPD();
+      initTotalCashBack();
     });
   </script>
 </head>
@@ -133,12 +160,12 @@
 
   <tr class="form_item">
     <td><label>award periods</label></td>
-    <td><select id="awardPeriodsPreset" style="width: 100px;"></select></td>
+    <td><select id="awardPeriodsPreset" style="width: 100px;"></select> <button value="reset" onclick="updateAwardPeriods()">flush</button></td>
   </tr>
-  <tr>
-    <td colspan="2">
-      <button value="reset" onclick="updateAwardPeriods()">flush</button>
-    </td>
+
+  <tr class="form_item">
+    <td><label>total cashback</label></td>
+    <td><div id="total_cashback"></div></td>
   </tr>
 </table>
 </body>
