@@ -1,0 +1,58 @@
+[
+  {
+    "awardPeriodId": 0,
+    "startDate": "2020-04-09",
+    "endDate": "2020-04-19",
+    "minTransactionNumber": 100,
+    "maxAmount": 150,
+    "minPosition": 20,
+    "maxTransactionCashback": 15,
+    "maxPeriodCashback": 150,
+    "cashbackPercentage": 10,
+    "gracePeriod": 12,
+    "status": "CLOSED",
+    "maxTransactionEvaluated": 150
+  },
+  {
+    "awardPeriodId": 2,
+    "startDate": "2020-10-01",
+    "endDate": "2020-10-18",
+    "minTransactionNumber": 100,
+    "maxAmount": 150,
+    "minPosition": 20,
+    "maxTransactionCashback": 15,
+    "maxPeriodCashback": 150,
+    "cashbackPercentage": 10,
+    "gracePeriod": 0,
+    "status": "INACTIVE",
+    "maxTransactionEvaluated": 150
+  },
+  {
+    "awardPeriodId": 3,
+    "startDate": "2020-10-18",
+    "endDate": "2020-10-19",
+    "minTransactionNumber": 100,
+    "maxAmount": 150,
+    "minPosition": 20,
+    "maxTransactionCashback": 15,
+    "maxPeriodCashback": 150,
+    "cashbackPercentage": 10,
+    "gracePeriod": 0,
+    "status": "INACTIVE",
+    "maxTransactionEvaluated": 150
+  },
+  {
+    "awardPeriodId": 1,
+    "startDate": "2020-02-20",
+    "endDate": "2020-12-31",
+    "minTransactionNumber": 100,
+    "maxAmount": 150,
+    "minPosition": 20,
+    "maxTransactionCashback": 15,
+    "maxPeriodCashback": 150,
+    "cashbackPercentage": 10,
+    "gracePeriod": 22,
+    "status": "ACTIVE",
+    "maxTransactionEvaluated": 150
+  }
+]
