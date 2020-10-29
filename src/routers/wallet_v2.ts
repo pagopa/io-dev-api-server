@@ -185,7 +185,7 @@ export const resetWalletV2 = () => {
 installCustomHandler(
   wallet2Router,
   "get",
-  "/walletv2",
+  "/walletv2-bpd",
   (_, res) => sendFile("assets/html/wallet2_config.html", res),
   "WalletV2 config dashboard"
 );
