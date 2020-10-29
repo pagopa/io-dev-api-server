@@ -24,7 +24,7 @@
     "maxPeriodCashback": 150,
     "cashbackPercentage": 10,
     "gracePeriod": 0,
-    "status": "CLOSED",
+    "status": "INACTIVE",
     "maxTransactionEvaluated": 150
   },
   {
@@ -38,7 +38,7 @@
     "maxPeriodCashback": 150,
     "cashbackPercentage": 10,
     "gracePeriod": 0,
-    "status": "CLOSED",
+    "status": "INACTIVE",
     "maxTransactionEvaluated": 150
   },
   {
