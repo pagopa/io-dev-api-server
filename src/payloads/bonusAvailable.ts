@@ -95,7 +95,7 @@ export const availableBonuses: BonusesAvailable = [
     valid_from: new Date("2021-01-01T00:00:00.000Z"),
     valid_to: new Date("2021-06-30T00:00:00.000Z"),
     cover:
-      "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_BonusVacanze.png",
+      "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-cashback.png",
     sponsorship_description: "Ministero Economia e Finanze",
     sponsorship_cover:
       "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_AgenziaEntrate.png"
