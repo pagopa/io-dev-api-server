@@ -16,6 +16,7 @@ import {
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
+import { CardInfo } from "../../generated/definitions/pagopa/bancomat/CardInfo";
 
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
@@ -182,6 +183,7 @@ export const resetWalletV2 = () => {
   generateData();
 };
 
+// get walletv2-bpd dashboard web
 installCustomHandler(
   wallet2Router,
   "get",
@@ -190,18 +192,33 @@ installCustomHandler(
   "WalletV2 config dashboard"
 );
 
+// get walletv2-bpd config (dashboard web)
 installCustomHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
   res.json(walletV2Config)
 );
 
+// reset walletv2-bpd config (dashboard web)
 installCustomHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
   walletV2Config = defaultWalletV2Config;
   generateData();
   res.json(walletV2Config);
 });
 
+// update walletv2-bpd config (dashboard web)
 installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   walletV2Config = req.body;
   generateData();
   res.json(walletV2Config);
+});
+
+// get the hpans of walletv2 that support BPD (dashboard web)
+installCustomHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
+  res.json(
+    (walletV2Response.data ?? [])
+      .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
+      .map(bpd => ({
+        hpan: (bpd.info as CardInfo).hashPan,
+        pan: (bpd.info as CardInfo).blurredNumber
+      }))
+  );
 });

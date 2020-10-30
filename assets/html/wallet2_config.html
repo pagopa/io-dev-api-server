@@ -74,7 +74,7 @@
       const select =  $("#tc_"+directory);
       $.ajax({
         type: 'POST',
-        url: "/bonus/bpd/winning-transactions/presets",
+        url: "/bonus/bpd/winning-transactions/total_cashback/presets",
         data: JSON.stringify({directory,file: select.val()}),
         success: function() {alert(`${select.val()} flushed!`) },
         contentType: "application/json",
@@ -84,9 +84,9 @@
     const initTotalCashBack = () => {
 
       const container = $("#total_cashback");
-      $.getJSON("/bonus/bpd/winning-transactions/presets", function(presets) {
+      $.getJSON("/bonus/bpd/winning-transactions/total_cashback/presets", function(presets) {
           Object.keys(presets).forEach(p => {
-            const options = presets[p].map(v => `<option value="${v}">${v}</option>`)
+            const options = presets[p].map(v => `<option value="${v}">${v}</option>`);
             container.append(`<label>${p}</label> <select id="tc_${p}">${options}</select>`);
             container.append(` <button onclick="onFlushTotalCashBack(${p})">flush</button>`);
             container.append(`<br/>`);
@@ -104,10 +104,44 @@
       });
     }
 
+    const updateWinningTransaction = (period, file) => {
+      const s = $("#win_t_"+file.replace(".json",""));
+      console.log(period,file,s.val());
+      $.ajax({
+        type: 'POST',
+        url: "/bonus/bpd/winning-transactions/transactions/presets",
+        data: JSON.stringify({period,file,hpan:s.val()}),
+        success: function() {alert(`${period}/${file} flushed!`) },
+        contentType: "application/json",
+      });
+    }
+
+    const initWinningTransactions = () => {
+
+
+
+      const container = $("#winning_transactions");
+      $.getJSON("/walletv2/bpd-pans", function(pans) {
+        const options = pans.map(p => `<option value="${p.hpan}">${p.pan}</option>`);
+        $.getJSON("/bonus/bpd/winning-transactions/transactions/presets", function(presets) {
+          Object.keys(presets).forEach(p => {
+            presets[p].forEach(pp => {
+              const button = `<button onclick="updateWinningTransaction(${p},\'${pp}\')">flush</button>`;
+              const select = `<select id="win_t_${pp.replace(".json","")}">${options}</select>`;
+              container.append(`<div>${p}/${pp} ${select} ${button}</div>`);
+            });
+          });
+          }
+        );
+        }
+      );
+    }
+
     $(document).ready(function() {
       initWalletV2();
       initBPD();
       initTotalCashBack();
+      initWinningTransactions();
     });
   </script>
 </head>
@@ -159,13 +193,31 @@
   </tr>
 
   <tr class="form_item">
-    <td><label>award periods</label></td>
+    <td><label style="font-weight: bold">award periods</label></td>
     <td><select id="awardPeriodsPreset" style="width: 100px;"></select> <button value="reset" onclick="updateAwardPeriods()">flush</button></td>
   </tr>
 
   <tr class="form_item">
-    <td><label>total cashback</label></td>
+  <tr>
+    <td colspan="2">
+      <br/>
+      place your json presets into <i>/assets/bpd/award/total_cashback</i>
+    </td>
+  </tr>
+    <td><label style="font-weight: bold">amount</label></td>
     <td><div id="total_cashback"></div></td>
+  </tr>
+
+
+  <tr class="form_item">
+  <tr>
+    <td colspan="2">
+      <br/>
+      place your json presets into <i>/assets/bpd/award/winning_transactions</i>
+    </td>
+  </tr>
+  <td><label style="font-weight: bold">winning transactions</label></td>
+  <td><div id="winning_transactions"></div></td>
   </tr>
 </table>
 </body>

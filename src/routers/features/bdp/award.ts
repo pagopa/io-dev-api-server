@@ -13,6 +13,8 @@ import {
 import { listDir } from "../../../utils/file";
 import { toPayload } from "../../../utils/validator";
 import { addBPDPrefix } from "./index";
+import { WinningTransactionResource } from "../../../../generated/definitions/bpd/total_cashback/WinningTransactionResource";
+import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/total_cashback/BpdWinningTransactions";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
@@ -25,6 +27,15 @@ const readTotalCashbackJson = (directoryName: string, fileName: string) =>
     fs
       .readFileSync(
         `${assetsFolder}/bpd/award/total_cashback/${directoryName}/${fileName}`
+      )
+      .toString()
+  );
+
+const readWinningTransactions = (directoryName: string, fileName: string) =>
+  JSON.parse(
+    fs
+      .readFileSync(
+        `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
       )
       .toString()
   );
@@ -77,7 +88,8 @@ const totalCashback: Map<number, string> = new Map<number, string>([
   [0, "default.json"],
   [1, "default.json"],
   [2, "default.json"],
-  [3, "default.json"]
+  [3, "default.json"],
+  [4, "default.json"]
 ]);
 
 // get the total cashback from a given awardPeriodId
@@ -95,6 +107,7 @@ installCustomHandler(
         const maybeTotalCashBack = TotalCashbackResource.decode(
           readTotalCashbackJson(req.query.awardPeriodId, p)
         );
+
         if (maybeTotalCashBack.isLeft()) {
           console.log(chalk.red(`${p} is not a valid TotalCashbackResource`));
           res.sendStatus(500);
@@ -106,11 +119,102 @@ installCustomHandler(
   }
 );
 
+const winningTransactions: Map<number, Map<string, string>> = new Map<
+  number,
+  Map<string, string>
+>([
+  [0, new Map<string, string>()],
+  [1, new Map<string, string>()],
+  [2, new Map<string, string>()],
+  [3, new Map<string, string>()],
+  [4, new Map<string, string>()]
+]);
+
+installCustomHandler(
+  bpdAward,
+  "get",
+  addBPDPrefix("/io/winning-transactions"),
+  (req, res) => {
+    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    const hpan = req.query.hpan;
+    if (!winningTransactions.has(awardPeriodId)) {
+      res.sendStatus(404);
+      return;
+    }
+    const response = (period: number, file: string) => {
+      const maybeTransactions = BpdWinningTransactions.decode(
+        readWinningTransactions(period.toString(), file)
+      );
+      if (maybeTransactions.isLeft()) {
+        console.log(
+          chalk.red(
+            `${period.toString()}/${file} is not a valid BpdWinningTransactions`
+          )
+        );
+        res.sendStatus(500);
+      } else {
+        // inject the hpan
+        res.json(maybeTransactions.value.map(t => ({ ...t, hashPan: hpan })));
+      }
+    };
+
+    // if hashpan is not mapped, return defaults
+    if (!winningTransactions.get(awardPeriodId)!.has(hpan)) {
+      response(awardPeriodId, "default.json");
+      return;
+    }
+    const hashFile = winningTransactions.get(awardPeriodId)!.get(hpan)!;
+    response(awardPeriodId, hashFile);
+  }
+);
+
+// update the configuration for winning transactions (web dashboard)
+installCustomHandler(
+  bpdAward,
+  "post",
+  addBPDPrefix("/winning-transactions/transactions/presets"),
+  (req, res) => {
+    const payload = req.body;
+    // check if the json is valid
+    const maybeTransactions = BpdWinningTransactions.decode(
+      readWinningTransactions(payload.period, payload.file)
+    );
+    if (maybeTransactions.isLeft()) {
+      console.log(
+        chalk.red(`${payload.file} is not a valid BpdWinningTransactions`)
+      );
+      res.sendStatus(500);
+    } else {
+      winningTransactions
+        .get(parseInt(payload.period, 10))!
+        .set(payload.hpan, payload.file);
+      res.sendStatus(200);
+    }
+  }
+);
+
+// return the configuration for winning-transactions (web dashboard)
+installCustomHandler(
+  bpdAward,
+  "get",
+  addBPDPrefix("/winning-transactions/transactions/presets"),
+  (req, res) => {
+    const folders = listDir(assetsFolder + "/bpd/award/winning_transactions");
+    const folderFiles = folders.reduce((acc, curr) => {
+      const files = listDir(
+        `${assetsFolder}/bpd/award/winning_transactions/${curr}`
+      );
+      return { ...acc, [curr]: files };
+    }, {});
+    res.json(folderFiles);
+  }
+);
+
 // return the configuration for total cashback (web dashboard)
 installCustomHandler(
   bpdAward,
   "get",
-  addBPDPrefix("/winning-transactions/presets"),
+  addBPDPrefix("/winning-transactions/total_cashback/presets"),
   (_, res) => {
     const folders = listDir(assetsFolder + "/bpd/award/total_cashback");
     const folderFiles = folders.reduce((acc, curr) => {
@@ -125,7 +229,7 @@ installCustomHandler(
 installCustomHandler(
   bpdAward,
   "post",
-  addBPDPrefix("/winning-transactions/presets"),
+  addBPDPrefix("/winning-transactions/total_cashback/presets"),
   (req, res) => {
     const payload = req.body;
     // check if the json is valid
@@ -139,7 +243,6 @@ installCustomHandler(
       res.sendStatus(500);
     } else {
       totalCashback.set(payload.directory, payload.file);
-      res.json(maybeTotalCashBack.value);
       res.sendStatus(200);
     }
   }

@@ -1,0 +1,12 @@
+[
+  {
+    "amount": 0.7114042004081611,
+    "awardPeriodId": 0,
+    "cashback": 0.56401332578398988,
+    "circuitType": "test",
+    "hashPan": "hashPan",
+    "idTrxAcquirer": "test",
+    "idTrxIssuer": "test",
+    "trxDate": "2018-10-13"
+  }
+]
