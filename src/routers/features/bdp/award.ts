@@ -1,9 +1,10 @@
 // return the T&C as a HTML string
+import chalk from "chalk";
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
-import { TotalCashbackResource } from "../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
+import { TotalCashbackResource } from "../../../../generated/definitions/bpd/total_cashback/TotalCashbackResource";
 import { assetsFolder } from "../../../global";
 import {
   installCustomHandler,
@@ -12,7 +13,6 @@ import {
 import { listDir } from "../../../utils/file";
 import { toPayload } from "../../../utils/validator";
 import { addBPDPrefix } from "./index";
-import chalk from "chalk";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>

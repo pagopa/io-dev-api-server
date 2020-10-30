@@ -12,7 +12,7 @@
   "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
   "api_bpd_payment": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/payment.json",
   "api_bpd_award": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/award.json",
-  "api_bpd_winning_transactions": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions.json",
+  "api_bpd_total_cashback": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/total_cashback.json",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -33,8 +33,8 @@
     "generate:bpd-citizen": "rimraf generated/definitions/bpd/citizen && mkdir -p generated/definitions/bpd/citizen  && gen-api-models --api-spec $npm_package_api_bpd_citizen --out-dir ./generated/definitions/bpd/citizen --no-strict",
     "generate:bpd-payment": "rimraf generated/definitions/bpd/payment && mkdir -p generated/definitions/bpd/payment  && gen-api-models --api-spec $npm_package_api_bpd_payment --out-dir ./generated/definitions/bpd/payment --no-strict",
     "generate:bpd-award": "rimraf generated/definitions/bpd/award && mkdir -p generated/definitions/bpd/award  && gen-api-models --api-spec $npm_package_api_bpd_award --out-dir ./generated/definitions/bpd/award --no-strict",
-    "generate:bpd-winning-transactions": "rimraf generated/definitions/bpd/winning_transactions && mkdir -p generated/definitions/bpd/winning_transactions  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions --out-dir ./generated/definitions/bpd/winning_transactions --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:pagopa-api-bancomat-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions"
+    "generate:bpd-total_cashback": "rimraf generated/definitions/bpd/total_cashback && mkdir -p generated/definitions/bpd/total_cashback  && gen-api-models --api-spec $npm_package_api_bpd_total_cashback --out-dir ./generated/definitions/bpd/total_cashback --no-strict",
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:pagopa-api-bancomat-definitions generate:bpd-payment generate:bpd-award generate:bpd-total_cashback"
   },
   "jest": {
     "preset": "ts-jest",
