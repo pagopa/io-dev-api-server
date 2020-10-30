@@ -80,7 +80,7 @@ const totalCashback: Map<number, string> = new Map<number, string>([
   [3, "default.json"]
 ]);
 
-// response with the total cashback
+// get the total cashback from a given awardPeriodId
 installCustomHandler(
   bpdAward,
   "get",
@@ -106,6 +106,7 @@ installCustomHandler(
   }
 );
 
+// return the configuration for total cashback (web dashboard)
 installCustomHandler(
   bpdAward,
   "get",
@@ -120,6 +121,7 @@ installCustomHandler(
   }
 );
 
+// update the configuration for total cashback (web dashboard)
 installCustomHandler(
   bpdAward,
   "post",
@@ -136,6 +138,7 @@ installCustomHandler(
       );
       res.sendStatus(500);
     } else {
+      totalCashback.set(payload.directory, payload.file);
       res.json(maybeTotalCashBack.value);
       res.sendStatus(200);
     }
