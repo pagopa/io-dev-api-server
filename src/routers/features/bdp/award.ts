@@ -4,8 +4,8 @@ import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
-import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/total_cashback/BpdWinningTransactions";
-import { TotalCashbackResource } from "../../../../generated/definitions/bpd/total_cashback/TotalCashbackResource";
+import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/winning_transactions/BpdWinningTransactions";
+import { TotalCashbackResource } from "../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { assetsFolder } from "../../../global";
 import {
   installCustomHandler,
@@ -141,6 +141,7 @@ const initWinningTransaction = () => {
 };
 initWinningTransaction();
 
+// return the cashback winning transaction given a periodId and an hPan
 installCustomHandler(
   bpdAward,
   "get",
