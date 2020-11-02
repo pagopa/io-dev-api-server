@@ -146,7 +146,6 @@ installCustomHandler(
   "get",
   addBPDPrefix("/io/winning-transactions"),
   (req, res) => {
-    console.log(winningTransactions);
     const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
     const hpan = req.query.hpan;
     if (!winningTransactions.has(awardPeriodId)) {
@@ -169,8 +168,6 @@ installCustomHandler(
         res.json(maybeTransactions.value.map(t => ({ ...t, hashPan: hpan })));
       }
     };
-
-    console.log(hpan, winningTransactions.get(awardPeriodId)!.has(hpan));
     // if hashpan is not mapped, return 404 -> not found
     if (!winningTransactions.get(awardPeriodId)!.has(hpan)) {
       res.sendStatus(404);
@@ -202,7 +199,6 @@ installCustomHandler(
       winningTransactions
         .get(parseInt(payload.period, 10))!
         .set(payload.hpan, payload.file);
-      console.log(winningTransactions);
       res.sendStatus(200);
     }
   }
