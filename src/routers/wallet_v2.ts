@@ -204,16 +204,17 @@ installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   res.json(walletV2Config);
 });
 
+export const getBPDPaymentMethod = () =>
+  (walletV2Response.data ?? [])
+    .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
+    .map(bpd => ({
+      hpan: (bpd.info as CardInfo).hashPan,
+      pan: (bpd.info as CardInfo).blurredNumber
+    }));
+
 // get the hpans of walletv2 that support BPD (dashboard web)
 installCustomHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
-  res.json(
-    (walletV2Response.data ?? [])
-      .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
-      .map(bpd => ({
-        hpan: (bpd.info as CardInfo).hashPan,
-        pan: (bpd.info as CardInfo).blurredNumber
-      }))
-  );
+  res.json(getBPDPaymentMethod());
 });
 
 // reset walletv2-bpd config (dashboard web)

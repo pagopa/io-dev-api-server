@@ -14,6 +14,7 @@ import {
 import { listDir } from "../../../utils/file";
 import { toPayload } from "../../../utils/validator";
 import { addBPDPrefix } from "./index";
+import { getBPDPaymentMethod } from "../../wallet_v2";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
@@ -169,6 +170,29 @@ installCustomHandler(
         res.json(maybeTransactions.value.map(t => ({ ...t, hashPan: hpan })));
       }
     };
+    // if no hpan is specified return default.json for that period
+    if (hpan === undefined) {
+      const maybeTransactions = BpdWinningTransactions.decode(
+        readWinningTransactions(awardPeriodId.toString(), "default.json")
+      );
+      if (maybeTransactions.isLeft()) {
+        console.log(
+          chalk.red(
+            `${awardPeriodId.toString()}/"default.json" is not a valid BpdWinningTransactions`
+          )
+        );
+      } else {
+        // get all payment method compliant with BPD
+        const bpdPaymentMethods = getBPDPaymentMethod();
+        res.json(
+          maybeTransactions.value.map((t, idx) => ({
+            ...t,
+            hashPan: bpdPaymentMethods[idx % bpdPaymentMethods.length].hpan
+          }))
+        );
+      }
+      return;
+    }
     // if hashpan is not mapped, return 404 -> not found
     if (!winningTransactions.get(awardPeriodId)!.has(hpan)) {
       res.sendStatus(404);
