@@ -47,6 +47,14 @@
       );
     }
 
+    const resetBPDConfig = () => {
+      $.ajax({
+        type: 'GET',
+        url: "/winning-transactions/reset",
+        success: function(data) { setForm(data); alert("reset completed!") },
+      });
+    }
+
     const initWalletV2 = () => {
       wcc = $("#walletCreditCard");
       wbc = $("#walletBancomat");
@@ -218,6 +226,12 @@
   </tr>
   <td><label style="font-weight: bold">winning transactions</label></td>
   <td><div id="winning_transactions"></div></td>
+  </tr>
+
+  <tr>
+    <td colspan="2">
+      <button value="reset" onclick="resetBPDConfig()">reset</button>
+    </td>
   </tr>
 </table>
 </body>

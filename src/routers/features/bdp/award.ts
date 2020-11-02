@@ -4,6 +4,7 @@ import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
+import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/total_cashback/BpdWinningTransactions";
 import { TotalCashbackResource } from "../../../../generated/definitions/bpd/total_cashback/TotalCashbackResource";
 import { assetsFolder } from "../../../global";
 import {
@@ -13,8 +14,6 @@ import {
 import { listDir } from "../../../utils/file";
 import { toPayload } from "../../../utils/validator";
 import { addBPDPrefix } from "./index";
-import { WinningTransactionResource } from "../../../../generated/definitions/bpd/total_cashback/WinningTransactionResource";
-import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/total_cashback/BpdWinningTransactions";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
@@ -84,13 +83,19 @@ installHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), () =>
   toPayload(awardPeriods)
 );
 
-const totalCashback: Map<number, string> = new Map<number, string>([
-  [0, "default.json"],
-  [1, "default.json"],
-  [2, "default.json"],
-  [3, "default.json"],
-  [4, "default.json"]
-]);
+// tslint:disable-next-line: no-let
+let totalCashback: Map<number, string>;
+
+const initTotalCashback = () => {
+  totalCashback = new Map<number, string>([
+    [0, "default.json"],
+    [1, "default.json"],
+    [2, "default.json"],
+    [3, "default.json"],
+    [4, "default.json"]
+  ]);
+};
+initTotalCashback();
 
 // get the total cashback from a given awardPeriodId
 installCustomHandler(
@@ -119,22 +124,29 @@ installCustomHandler(
   }
 );
 
-const winningTransactions: Map<number, Map<string, string>> = new Map<
+// tslint:disable-next-line: no-let
+let winningTransactions: Map<number, Map<string, string>> = new Map<
   number,
   Map<string, string>
->([
-  [0, new Map<string, string>()],
-  [1, new Map<string, string>()],
-  [2, new Map<string, string>()],
-  [3, new Map<string, string>()],
-  [4, new Map<string, string>()]
-]);
+>();
+
+const initWinningTransaction = () => {
+  winningTransactions = new Map<number, Map<string, string>>([
+    [0, new Map<string, string>()],
+    [1, new Map<string, string>()],
+    [2, new Map<string, string>()],
+    [3, new Map<string, string>()],
+    [4, new Map<string, string>()]
+  ]);
+};
+initWinningTransaction();
 
 installCustomHandler(
   bpdAward,
   "get",
   addBPDPrefix("/io/winning-transactions"),
   (req, res) => {
+    console.log(winningTransactions);
     const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
     const hpan = req.query.hpan;
     if (!winningTransactions.has(awardPeriodId)) {
@@ -158,9 +170,10 @@ installCustomHandler(
       }
     };
 
-    // if hashpan is not mapped, return defaults
+    console.log(hpan, winningTransactions.get(awardPeriodId)!.has(hpan));
+    // if hashpan is not mapped, return 404 -> not found
     if (!winningTransactions.get(awardPeriodId)!.has(hpan)) {
-      response(awardPeriodId, "default.json");
+      res.sendStatus(404);
       return;
     }
     const hashFile = winningTransactions.get(awardPeriodId)!.get(hpan)!;
@@ -185,9 +198,11 @@ installCustomHandler(
       );
       res.sendStatus(500);
     } else {
+      winningTransactions.get(parseInt(payload.period, 10))!.clear();
       winningTransactions
         .get(parseInt(payload.period, 10))!
         .set(payload.hpan, payload.file);
+      console.log(winningTransactions);
       res.sendStatus(200);
     }
   }
@@ -245,5 +260,17 @@ installCustomHandler(
       totalCashback.set(payload.directory, payload.file);
       res.sendStatus(200);
     }
+  }
+);
+
+// reset walletv2-bpd config (dashboard web)
+installCustomHandler(
+  bpdAward,
+  "get",
+  "/winning-transactions/reset",
+  (_, res) => {
+    initWinningTransaction();
+    initTotalCashback();
+    res.sendStatus(200);
   }
 );

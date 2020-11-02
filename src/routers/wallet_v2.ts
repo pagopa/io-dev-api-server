@@ -197,13 +197,6 @@ installCustomHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
   res.json(walletV2Config)
 );
 
-// reset walletv2-bpd config (dashboard web)
-installCustomHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
-  walletV2Config = defaultWalletV2Config;
-  generateData();
-  res.json(walletV2Config);
-});
-
 // update walletv2-bpd config (dashboard web)
 installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   walletV2Config = req.body;
@@ -221,4 +214,11 @@ installCustomHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
         pan: (bpd.info as CardInfo).blurredNumber
       }))
   );
+});
+
+// reset walletv2-bpd config (dashboard web)
+installCustomHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
+  walletV2Config = defaultWalletV2Config;
+  generateData();
+  res.json(walletV2Config);
 });
