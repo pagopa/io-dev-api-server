@@ -3,6 +3,8 @@ import { CreatedMessageWithContent } from "../../generated/definitions/backend/C
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
+  base64png,
+  base64svg,
   getMessages,
   withDueDate,
   withMessageContent,
@@ -18,9 +20,12 @@ import {
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
+import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { FiscalCode } from "italia-ts-commons/lib/strings";
+import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
 
 export const messageRouter = Router();
-const totalMessages = 8;
+const totalMessages = 9;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 // tslint:disable-next-line: no-let
 let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
@@ -34,6 +39,27 @@ const createMessages = () => {
     messageIndex++;
     return m;
   };
+
+  const medicalPrescription: PrescriptionData = {
+    nre: "050A00854698121",
+    iup: "0000X0NFM",
+    prescriber_fiscal_code: fiscalCode as FiscalCode
+  };
+  const attachments: ReadonlyArray<MessageAttachment> = [
+    { name: "attachment1", content: base64png, mime_type: "image/png" },
+    {
+      name: "attachment2",
+      content: base64svg,
+      mime_type: "image/svg+xml"
+    }
+  ];
+
+  const medicalPrescriptionMessage = withMessageContent(
+    nextMessage(),
+    `medical prescription`,
+    messageMarkdown,
+    medicalPrescription
+  );
 
   const messageDefault = withMessageContent(
     nextMessage(),
@@ -117,6 +143,7 @@ const createMessages = () => {
     messageDefault,
     message2NestedCta,
     message1NestedCta,
+    medicalPrescriptionMessage,
     message1,
     message2,
     message3,
