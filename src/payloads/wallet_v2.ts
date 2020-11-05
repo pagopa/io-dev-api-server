@@ -29,12 +29,10 @@ export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
     const cn = cardPanPrefix + cardEndNumber.toString().padStart(4, "0");
     cardEndNumber++;
     const ed = faker.date.future();
-    const lastIndex = cn.lastIndexOf("-");
-    const partialNumberIndex = lastIndex >= 0 ? lastIndex + 1 : cn.length - 5;
     return {
       abi: shuffledAbis[idx].abi,
       cardNumber: cn,
-      cardPartialNumber: cn.substr(partialNumberIndex).substr(0, 4),
+      cardPartialNumber: cn.slice(-4),
       expiringDate: ed,
       hpan: sha256(cn),
       productType: ProductTypeEnum.PP,
