@@ -26,7 +26,7 @@ export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
   // tslint:disable-next-line
   const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
   return range(1, Math.min(count, abis.length)).map<Card>((_, idx) => {
-    const cn = cardPanPrefix + cardPanPrefix.toString().padStart(4, "0");
+    const cn = cardPanPrefix + cardEndNumber.toString().padStart(4, "0");
     cardEndNumber++;
     const ed = faker.date.future();
     const lastIndex = cn.lastIndexOf("-");
