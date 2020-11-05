@@ -6,7 +6,7 @@ import { UserDataProcessingChoiceRequest } from "../../generated/definitions/bac
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { fiscalCode } from "../global";
-import { getProblemJson } from "../payloads/error";
+import { conflict, getProblemJson } from "../payloads/error";
 import { getProfile } from "../payloads/profile";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { getSuccessResponse } from "../payloads/success";
@@ -126,6 +126,32 @@ installHandler(
     return { payload: userChoices[choice] };
   }
 );
+
+// installHandler(
+//   profileRouter,
+//   "delete",
+//   addApiV1Prefix("/user-data-processing/:choice"),
+//   req => {
+//     const choice = req.params.choice as UserDataProcessingChoiceEnum;
+
+//     if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
+//       return conflict;
+//     }
+//     if (userChoices[choice] !== undefined) {
+//       return { payload: userChoices[choice] };
+//     }
+//     const data: UserDataProcessing = {
+//       choice,
+//       status: UserDataProcessingStatusEnum.PENDING,
+//       version: 1
+//     };
+//     userChoices = {
+//       DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
+//       DELETE: choice === "DELETE" ? data : userChoices.DELETE
+//     };
+//     return { payload: userChoices[choice] };
+//   }
+// );
 
 // Email validation
 // return positive feedback on request to receive a new email message to verify his/her email
