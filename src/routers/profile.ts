@@ -127,31 +127,30 @@ installHandler(
   }
 );
 
-// installHandler(
-//   profileRouter,
-//   "delete",
-//   addApiV1Prefix("/user-data-processing/:choice"),
-//   req => {
-//     const choice = req.params.choice as UserDataProcessingChoiceEnum;
+installCustomHandler(
+  profileRouter,
+  "delete",
+  addApiV1Prefix("/user-data-processing/:choice"),
+  (req, res) => {
+    const choice = req.params.choice as UserDataProcessingChoiceEnum;
 
-//     if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
-//       return conflict;
-//     }
-//     if (userChoices[choice] !== undefined) {
-//       return { payload: userChoices[choice] };
-//     }
-//     const data: UserDataProcessing = {
-//       choice,
-//       status: UserDataProcessingStatusEnum.PENDING,
-//       version: 1
-//     };
-//     userChoices = {
-//       DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
-//       DELETE: choice === "DELETE" ? data : userChoices.DELETE
-//     };
-//     return { payload: userChoices[choice] };
-//   }
-// );
+    console.log(choice);
+    // The abort function is managed only for the DELETE
+    if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
+      console.log("entra");
+      res.sendStatus(409);
+    }
+
+    if (
+      userChoices[choice] === undefined ||
+      userChoices[choice]?.status !== UserDataProcessingStatusEnum.PENDING
+    ) {
+      res.sendStatus(409);
+    }
+
+    res.status(202).send();
+  }
+);
 
 // Email validation
 // return positive feedback on request to receive a new email message to verify his/her email
