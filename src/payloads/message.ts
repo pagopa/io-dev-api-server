@@ -1,3 +1,4 @@
+import * as faker from "faker";
 import { index, range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
@@ -9,10 +10,10 @@ import { PaymentNoticeNumber } from "../../generated/definitions/backend/Payment
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { getRandomIntInRange } from "../../src/utils/id";
 import { validatePayload } from "../../src/utils/validator";
-import { uuidv4 } from "../utils/strings";
 import { IOResponse } from "./response";
-import * as faker from "faker";
 
+// tslint:disable-next-line: no-let
+let messageIdIndex = 0;
 /**
  * generate a list containg count messages with the given fiscal_code
  * @param count the number of messages to generate
@@ -21,15 +22,15 @@ import * as faker from "faker";
 const createMessageItem = (
   fiscalCode: string,
   senderServiceId: string,
-  messageId: string = uuidv4()
-    .toUpperCase()
-    .substr(0, 26),
+  messageId?: string,
   timeToLive: number = 3600
 ): CreatedMessageWithoutContent => {
+  const id = messageId ?? messageIdIndex.toString().padStart(26, "0");
+  messageIdIndex++;
   return validatePayload(CreatedMessageWithoutContent, {
     created_at: new Date().toISOString(),
     fiscal_code: fiscalCode,
-    id: messageId,
+    id,
     sender_service_id: senderServiceId,
     time_to_live: timeToLive
   });
@@ -44,11 +45,11 @@ export const withDueDate = (
 
 export const withPaymentData = (
   message: CreatedMessageWithContent,
+  invalidAfterDueDate: boolean = false,
   noticeNumber: string = faker.helpers.replaceSymbolWithNumber(
     "0#################"
   ),
-  amount: number = getRandomIntInRange(1, 10000),
-  invalidAfterDueDate: boolean = false
+  amount: number = getRandomIntInRange(1, 10000)
 ): CreatedMessageWithContent => {
   const data: PaymentData = {
     notice_number: noticeNumber as PaymentNoticeNumber,

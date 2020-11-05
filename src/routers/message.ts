@@ -20,49 +20,110 @@ import {
 import { services } from "./service";
 
 export const messageRouter = Router();
-const totalMessages = 5;
-const totalPaymentMessages = 2;
-export const messages = getMessages(
-  totalMessages + totalPaymentMessages,
-  services,
-  fiscalCode
-);
+const totalMessages = 8;
+export const messages = getMessages(totalMessages, services, fiscalCode);
 // tslint:disable-next-line: no-let
 let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
 
 const createMessages = () => {
   const now = new Date();
-  const hourAhead = new Date(now.getTime() + 60 * 1000 * 60);
-  const messageContents: ReadonlyArray<string> = [
-    "",
-    frontMatter2CTA,
-    frontMatter1CTA,
-    frontMatterInvalid,
-    frontMatter2CTA2
+  // tslint:disable-next-line: no-let
+  let messageIndex = 0;
+  const nextMessage = () => {
+    const m = messages.payload.items[messageIndex];
+    messageIndex++;
+    return m;
+  };
+
+  const messageDefault = withMessageContent(
+    nextMessage(),
+    `default message`,
+    messageMarkdown
+  );
+
+  const message2NestedCta = withMessageContent(
+    nextMessage(),
+    `with 2 nested CTA`,
+    frontMatter2CTA + messageMarkdown
+  );
+
+  const message1NestedCta = withMessageContent(
+    nextMessage(),
+    `with 1 nested CTA`,
+    frontMatter1CTA + messageMarkdown
+  );
+
+  const withContent1 = withMessageContent(
+    nextMessage(),
+    `with payment [valid]`,
+    messageMarkdown
+  );
+  const message1 = withDueDate(
+    withPaymentData(withContent1, true),
+    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+  );
+
+  const withContent2 = withMessageContent(
+    nextMessage(),
+    `with payment [expiring]`,
+    messageMarkdown
+  );
+  const message2 = withDueDate(
+    withPaymentData(withContent2, true),
+    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 3)
+  );
+
+  const withContent3 = withMessageContent(
+    nextMessage(),
+    `with payment [expired]`,
+    messageMarkdown
+  );
+  const message3 = withDueDate(
+    withPaymentData(withContent3, true),
+    new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+  );
+
+  const withContent4 = withMessageContent(
+    nextMessage(),
+    `with payment [expiring] without invalid after due date`,
+    messageMarkdown
+  );
+  const message4 = withDueDate(
+    withPaymentData(withContent4, false),
+    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 3)
+  );
+
+  const withContent5 = withMessageContent(
+    nextMessage(),
+    `with payment [expired] without invalid after due date`,
+    messageMarkdown
+  );
+  const message5 = withDueDate(
+    withPaymentData(withContent5, false),
+    new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+  );
+
+  const withContent6 = withMessageContent(
+    nextMessage(),
+    `with payment [valid] without invalid after due date`,
+    messageMarkdown
+  );
+  const message6 = withDueDate(
+    withPaymentData(withContent6, false),
+    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+  );
+
+  return [
+    messageDefault,
+    message2NestedCta,
+    message1NestedCta,
+    message1,
+    message2,
+    message3,
+    message4,
+    message5,
+    message6
   ];
-  const updateMessages = messages.payload.items
-    .slice(0, totalMessages)
-    .map((item, idx) => {
-      const withContent = withMessageContent(
-        item,
-        `Subject - test ${idx + 1}`,
-        messageContents[idx % messageContents.length] + messageMarkdown // add front matter prefix
-      );
-      return withDueDate(withContent, hourAhead);
-    });
-
-  const paymentMessages = messages.payload.items
-    .slice(totalMessages, updateMessages.length + totalPaymentMessages)
-    .map((item, idx) => {
-      const withContent = withMessageContent(
-        item,
-        `Subject - test payment ${idx + 1}`,
-        messageMarkdown // add front matter prefix
-      );
-      return withPaymentData(withContent);
-    });
-
-  return [...updateMessages, ...paymentMessages];
 };
 
 messagesWithContent = createMessages();
