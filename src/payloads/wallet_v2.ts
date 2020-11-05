@@ -19,18 +19,15 @@ import {
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
+const cardPanPrefix = "000012345678";
+// tslint:disable-next-line
+let cardEndNumber = 0;
 export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
   // tslint:disable-next-line
   const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
   return range(1, Math.min(count, abis.length)).map<Card>((_, idx) => {
-    const cn = range(1, 4)
-      .map(() =>
-        faker.random
-          .number(9999)
-          .toString()
-          .padStart(4, "0")
-      )
-      .join("");
+    const cn = cardPanPrefix + cardPanPrefix.toString().padStart(4, "0");
+    cardEndNumber++;
     const ed = faker.date.future();
     const lastIndex = cn.lastIndexOf("-");
     const partialNumberIndex = lastIndex >= 0 ? lastIndex + 1 : cn.length - 5;
