@@ -182,14 +182,7 @@ installCustomHandler(
           )
         );
       } else {
-        // get all payment method compliant with BPD
-        const bpdPaymentMethods = getBPDPaymentMethod();
-        res.json(
-          maybeTransactions.value.map((t, idx) => ({
-            ...t,
-            hashPan: bpdPaymentMethods[idx % bpdPaymentMethods.length].hpan
-          }))
-        );
+        res.json(maybeTransactions.value);
       }
       return;
     }

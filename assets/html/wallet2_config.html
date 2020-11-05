@@ -125,11 +125,10 @@
     }
 
     const initWinningTransactions = () => {
-
-
-
       const container = $("#winning_transactions");
       $.getJSON("/walletv2/bpd-pans", function(pans) {
+        const formattedPans = pans.map(p => `<tr><td>${p.hpan}</td><td>${p.pan}</td></tr>`);
+        $("#bpdPaymentInstruments").append(`<table>${formattedPans}</table>`);
         const options = pans.map(p => `<option value="${p.hpan}">${p.pan}</option>`);
         $.getJSON("/bonus/bpd/winning-transactions/transactions/presets", function(presets) {
           Object.keys(presets).forEach(p => {
@@ -228,6 +227,12 @@
   <td><div id="winning_transactions"></div></td>
   </tr>
 
+  <tr>
+    <td colspan="2">
+      <div>BPD payment instruments</div>
+      <div id="bpdPaymentInstruments"></div>
+    </td>
+  </tr>
   <tr>
     <td colspan="2">
       <button value="reset" onclick="resetBPDConfig()">reset</button>
