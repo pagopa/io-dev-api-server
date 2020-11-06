@@ -112,14 +112,13 @@
       });
     }
 
-    const updateWinningTransaction = (period, file) => {
-      const s = $("#win_t_"+file.replace(".json",""));
-      console.log(period,file,s.val());
+    const updateWinningTransaction = (period) => {
+      const s = $("#wt_"+period);
       $.ajax({
         type: 'POST',
         url: "/bonus/bpd/winning-transactions/transactions/presets",
-        data: JSON.stringify({period,file,hpan:s.val()}),
-        success: function() {alert(`${period}/${file} flushed!`) },
+        data: JSON.stringify({period,file:s.val()}),
+        success: function() {alert(`${period}/${s.val()} flushed!`) },
         contentType: "application/json",
       });
     }
@@ -127,16 +126,16 @@
     const initWinningTransactions = () => {
       const container = $("#winning_transactions");
       $.getJSON("/walletv2/bpd-pans", function(pans) {
-        const formattedPans = pans.map(p => `<tr><td>${p.hpan}</td><td>${p.pan}</td></tr>`);
-        $("#bpdPaymentInstruments").append(`<table>${formattedPans}</table>`);
+        const formattedPans = pans.map(p => `<tr><td>${p.hpan}</td><td align="center">${p.pan}</td></tr>`);
+        const header = "<tr><th>hash pan</th><th>last 4 digits</th></tr>";
+        $("#bpdPaymentInstruments").append(`<table>${header}${formattedPans.join("")}</table>`);
         const options = pans.map(p => `<option value="${p.hpan}">${p.pan}</option>`);
         $.getJSON("/bonus/bpd/winning-transactions/transactions/presets", function(presets) {
           Object.keys(presets).forEach(p => {
-            presets[p].forEach(pp => {
-              const button = `<button onclick="updateWinningTransaction(${p},\'${pp}\')">flush</button>`;
-              const select = `<select id="win_t_${pp.replace(".json","")}">${options}</select>`;
-              container.append(`<div>${p}/${pp} ${select} ${button}</div>`);
-            });
+              const button = `<button onclick="updateWinningTransaction(${p})">flush</button>`;
+              const options = presets[p].map(v => `<option value="${v}">${v}</option>`);
+              const select = `<select id="wt_${p}">${options}</select>`;
+              container.append(`<div>${p} ${select} ${button}</div>`);
           });
           }
         );
@@ -229,7 +228,7 @@
 
   <tr>
     <td colspan="2">
-      <div>BPD payment instruments</div>
+      <div><b>BPD payment instruments</b></div>
       <div id="bpdPaymentInstruments"></div>
     </td>
   </tr>

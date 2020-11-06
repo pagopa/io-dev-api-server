@@ -126,18 +126,15 @@ installCustomHandler(
 );
 
 // tslint:disable-next-line: no-let
-let winningTransactions: Map<number, Map<string, string>> = new Map<
-  number,
-  Map<string, string>
->();
+let winningTransactions: Map<number, string> = new Map<number, string>();
 
 const initWinningTransaction = () => {
-  winningTransactions = new Map<number, Map<string, string>>([
-    [0, new Map<string, string>()],
-    [1, new Map<string, string>()],
-    [2, new Map<string, string>()],
-    [3, new Map<string, string>()],
-    [4, new Map<string, string>()]
+  winningTransactions = new Map<number, string>([
+    [0, "default.json"],
+    [1, "default.json"],
+    [2, "default.json"],
+    [3, "default.json"],
+    [4, "default.json"]
   ]);
 };
 initWinningTransaction();
@@ -149,7 +146,6 @@ installCustomHandler(
   addBPDPrefix("/io/winning-transactions"),
   (req, res) => {
     const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
-    const hpan = req.query.hpan;
     if (!winningTransactions.has(awardPeriodId)) {
       res.sendStatus(404);
       return;
@@ -166,33 +162,15 @@ installCustomHandler(
         );
         res.sendStatus(500);
       } else {
-        // inject the hpan
-        res.json(maybeTransactions.value.map(t => ({ ...t, hashPan: hpan })));
-      }
-    };
-    // if no hpan is specified return default.json for that period
-    if (hpan === undefined) {
-      const maybeTransactions = BpdWinningTransactions.decode(
-        readWinningTransactions(awardPeriodId.toString(), "default.json")
-      );
-      if (maybeTransactions.isLeft()) {
-        console.log(
-          chalk.red(
-            `${awardPeriodId.toString()}/"default.json" is not a valid BpdWinningTransactions`
-          )
-        );
-      } else {
         res.json(maybeTransactions.value);
       }
-      return;
-    }
-    // if hashpan is not mapped, return 404 -> not found
-    if (!winningTransactions.get(awardPeriodId)!.has(hpan)) {
+    };
+    if (!winningTransactions.get(awardPeriodId)) {
       res.sendStatus(404);
       return;
     }
-    const hashFile = winningTransactions.get(awardPeriodId)!.get(hpan)!;
-    response(awardPeriodId, hashFile);
+    const jsonFile = winningTransactions.get(awardPeriodId)!;
+    response(awardPeriodId, jsonFile);
   }
 );
 
@@ -213,10 +191,7 @@ installCustomHandler(
       );
       res.sendStatus(500);
     } else {
-      winningTransactions.get(parseInt(payload.period, 10))!.clear();
-      winningTransactions
-        .get(parseInt(payload.period, 10))!
-        .set(payload.hpan, payload.file);
+      winningTransactions.set(parseInt(payload.period, 10), payload.file);
       res.sendStatus(200);
     }
   }

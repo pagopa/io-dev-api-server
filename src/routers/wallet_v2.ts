@@ -3,6 +3,7 @@ import { fromNullable } from "fp-ts/lib/Option";
 import { AbiListResponse } from "../../generated/definitions/pagopa/bancomat/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancomat/BancomatCardsRequest";
 import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
+import { CardInfo } from "../../generated/definitions/pagopa/bancomat/CardInfo";
 import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
 import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
 import { WalletTypeEnum } from "../../generated/definitions/pagopa/bancomat/WalletV2";
@@ -16,7 +17,6 @@ import {
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
 import { appendWalletPrefix } from "./wallet";
-import { CardInfo } from "../../generated/definitions/pagopa/bancomat/CardInfo";
 
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
