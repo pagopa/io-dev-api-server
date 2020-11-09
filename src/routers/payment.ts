@@ -9,7 +9,7 @@ import {
   DetailEnum,
   PaymentProblemJson
 } from "../../generated/definitions/backend/PaymentProblemJson";
-import { PaymentResponse } from "../../generated/definitions/pagopa/bancomat/PaymentResponse";
+import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import {

@@ -2,20 +2,20 @@ import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import sha256 from "sha256";
-import { Abi } from "../../generated/definitions/pagopa/bancomat/Abi";
+import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
 import {
   Card,
   ProductTypeEnum,
   ValidityStateEnum
-} from "../../generated/definitions/pagopa/bancomat/Card";
+} from "../../generated/definitions/pagopa/walletv2/Card";
 import {
   CardInfo,
   TypeEnum
-} from "../../generated/definitions/pagopa/bancomat/CardInfo";
+} from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import {
   WalletTypeEnum,
   WalletV2
-} from "../../generated/definitions/pagopa/bancomat/WalletV2";
+} from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 

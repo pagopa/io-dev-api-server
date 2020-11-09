@@ -126,9 +126,10 @@
     const initWinningTransactions = () => {
       const container = $("#winning_transactions");
       $.getJSON("/walletv2/bpd-pans", function(pans) {
-        const formattedPans = pans.map(p => `<tr><td>${p.hpan}</td><td align="center">${p.pan}</td></tr>`);
-        const header = "<tr><th>hash pan</th><th>last 4 digits</th></tr>";
-        $("#bpdPaymentInstruments").append(`<table>${header}${formattedPans.join("")}</table>`);
+        const style = 'style="border: 1px solid black;"';
+        const formattedPans = pans.map(p => `<tr><td ${style}>${p.type}</td><td ${style}>${p.hpan}</td><td align="center" ${style}>${p.pan}</td></tr>`);
+        const header = "<tr><th>type</th><th>hash pan</th><th>last 4 digits</th></tr>";
+        $("#bpdPaymentInstruments").append(`<table ${style}>${header}${formattedPans.join("")}</table>`);
         const options = pans.map(p => `<option value="${p.hpan}">${p.pan}</option>`);
         $.getJSON("/bonus/bpd/winning-transactions/transactions/presets", function(presets) {
           Object.keys(presets).forEach(p => {

@@ -1,13 +1,12 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import { AbiListResponse } from "../../generated/definitions/pagopa/bancomat/AbiListResponse";
-import { BancomatCardsRequest } from "../../generated/definitions/pagopa/bancomat/BancomatCardsRequest";
-import { Card } from "../../generated/definitions/pagopa/bancomat/Card";
-import { CardInfo } from "../../generated/definitions/pagopa/bancomat/CardInfo";
-import { RestPanResponse } from "../../generated/definitions/pagopa/bancomat/RestPanResponse";
-import { WalletsV2Response } from "../../generated/definitions/pagopa/bancomat/WalletsV2Response";
-import { WalletTypeEnum } from "../../generated/definitions/pagopa/bancomat/WalletV2";
-import { WalletV2ListResponse } from "../../generated/definitions/pagopa/bancomat/WalletV2ListResponse";
+import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/AbiListResponse";
+import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
+import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
+import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
+import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
+import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
+import { WalletV2ListResponse } from "../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
   generateAbiData,
@@ -71,7 +70,7 @@ const citizenBancomat = () =>
 
 // tslint:disable-next-line
 let pansResponse: RestPanResponse = {
-  data: []
+  data: [] // card array
 };
 // tslint:disable-next-line
 let walletBancomat = [];
@@ -84,7 +83,7 @@ let walletCreditCards = [];
 
 const generateData = () => {
   pansResponse = {
-    data: citizenBancomat()
+    data: { data: citizenBancomat() }
   };
   walletBancomat = generateCards(
     abiResponse.data ?? [],
@@ -114,17 +113,21 @@ installHandler<RestPanResponse>(
     }
     return toPayload({
       ...pansResponse,
-      data:
-        pansResponse.data !== undefined && pansResponse.data.length > 0
-          ? pansResponse.data.filter(c =>
-              c.abi ? c.abi.indexOf(abi) !== -1 : false
-            )
-          : []
+      data: {
+        data:
+          pansResponse.data &&
+          pansResponse.data.data !== undefined &&
+          pansResponse.data.data.length > 0
+            ? pansResponse.data.data.filter(c =>
+                c.abi ? c.abi.indexOf(abi) !== -1 : false
+              )
+            : []
+      }
     });
   }
 );
 
-installCustomHandler<WalletsV2Response>(
+installCustomHandler<WalletV2ListResponse>(
   wallet2Router,
   "post",
   appendWalletPrefix("/bancomat/add-wallets"),
@@ -136,7 +139,7 @@ installCustomHandler<WalletsV2Response>(
       return res.sendStatus(403);
     }
     const walletData = walletV2Response.data ?? [];
-    const bancomatsToAdd = maybeData.value.data ?? [];
+    const bancomatsToAdd = maybeData.value.data?.data ?? [];
     // check if a bancomat is already present in the wallet list
     const findBancomat = (card: Card): Card | undefined => {
       return walletData.find(nc =>
@@ -209,7 +212,8 @@ export const getBPDPaymentMethod = () =>
     .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
     .map(bpd => ({
       hpan: (bpd.info as CardInfo).hashPan,
-      pan: (bpd.info as CardInfo).blurredNumber
+      pan: (bpd.info as CardInfo).blurredNumber,
+      type: bpd.walletType
     }));
 
 // get the hpans of walletv2 that support BPD (dashboard web)
