@@ -1,12 +1,19 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
+import fs from "fs";
+import * as t from "io-ts";
 import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
 import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
+import {
+  CaNameEnum,
+  Message
+} from "../../generated/definitions/pagopa/walletv2/Message";
 import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
+import { assetsFolder } from "../global";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
   generateAbiData,
@@ -87,6 +94,7 @@ let walletV2Response: WalletV2ListResponse = {
 let walletCreditCards = [];
 
 const generateData = () => {
+  // messages are read from a json on response
   pansResponse = {
     data: { data: citizenBancomat() }
   };
@@ -115,23 +123,31 @@ installHandler<RestPanResponse>(
   appendWalletPrefix("/bancomat/pans"),
   req => {
     const abi = req.query.abi;
+    const msg = JSON.parse(
+      fs.readFileSync(assetsFolder + "/pm/pans/messages.json").toString()
+    );
+    const response = {
+      ...pansResponse,
+      messages: t.readonlyArray(Message).decode(msg).value
+    };
     if (abi === undefined) {
-      return toPayload(pansResponse);
+      return toPayload(response);
     }
     return toPayload({
-      ...pansResponse,
+      ...response,
       data: {
         data:
-          pansResponse.data &&
-          pansResponse.data.data !== undefined &&
-          pansResponse.data.data.length > 0
-            ? pansResponse.data.data.filter(c =>
+          response.data &&
+          response.data.data !== undefined &&
+          response.data.data.length > 0
+            ? response.data.data.filter(c =>
                 c.abi ? c.abi.indexOf(abi) !== -1 : false
               )
             : []
       }
     });
-  }
+  },
+  { codec: RestPanResponse }
 );
 
 installCustomHandler<WalletV2ListResponse>(
