@@ -14,7 +14,6 @@ import {
 import { listDir } from "../../../utils/file";
 import { toPayload } from "../../../utils/validator";
 import { addBPDPrefix } from "./index";
-import { getBPDPaymentMethod } from "../../wallet_v2";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>

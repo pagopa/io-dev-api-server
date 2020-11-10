@@ -11,7 +11,8 @@ import { installCustomHandler, installHandler } from "../payloads/response";
 import {
   generateAbiData,
   generateCards,
-  generateWalletV2
+  generateWalletV2,
+  resetCardConfig
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
@@ -66,7 +67,11 @@ const defaultWalletV2Config: WalletV2Config = {
 let walletV2Config = defaultWalletV2Config;
 
 const citizenBancomat = () =>
-  generateCards(abiResponse.data ?? [], walletV2Config.citizenBancomat);
+  generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.citizenBancomat,
+    WalletTypeEnum.Bancomat
+  );
 
 // tslint:disable-next-line
 let pansResponse: RestPanResponse = {
@@ -87,11 +92,13 @@ const generateData = () => {
   };
   walletBancomat = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.walletBancomat
+    walletV2Config.walletBancomat,
+    WalletTypeEnum.Bancomat
   ).map(c => generateWalletV2(c, WalletTypeEnum.Bancomat));
   walletCreditCards = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.walletCreditCard
+    walletV2Config.walletCreditCard,
+    WalletTypeEnum.Card
   ).map(c => generateWalletV2(c, WalletTypeEnum.Card));
   walletV2Response = {
     data: [...walletBancomat, ...walletCreditCards]
@@ -186,7 +193,7 @@ export const resetWalletV2 = () => {
   generateData();
 };
 
-// get walletv2-bpd dashboard web
+// get walletv2-bpd (dashboard web)
 installCustomHandler(
   wallet2Router,
   "get",
@@ -203,6 +210,7 @@ installCustomHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
 // update walletv2-bpd config (dashboard web)
 installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   walletV2Config = req.body;
+  resetCardConfig();
   generateData();
   res.json(walletV2Config);
 });

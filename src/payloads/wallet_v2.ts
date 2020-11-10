@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
+import { fromNullable } from "fp-ts/lib/Option";
 import sha256 from "sha256";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
 import {
@@ -19,15 +20,45 @@ import {
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
-const cardPanPrefix = "000012345678";
+type CardConfig = {
+  prefix: string;
+  index: number;
+};
+
 // tslint:disable-next-line
-let cardEndNumber = 0;
-export const generateCards = (abis: ReadonlyArray<Abi>, count: number = 10) => {
+let defaultCardConfig: CardConfig = { prefix: "00000000000", index: 0 };
+const cardConfigMap: Map<WalletTypeEnum, CardConfig> = new Map<
+  WalletTypeEnum,
+  CardConfig
+>([
+  [WalletTypeEnum.Card, { prefix: "000012345678", index: 0 }],
+  [WalletTypeEnum.Bancomat, { prefix: "123400005678", index: 0 }],
+  [WalletTypeEnum.BPay, { prefix: "123456780000", index: 0 }],
+  [WalletTypeEnum.Satispay, { prefix: "125678000034", index: 0 }]
+]);
+
+export const resetCardConfig = () => {
+  cardConfigMap.forEach((v, k) => cardConfigMap.set(k, { ...v, index: 0 }));
+};
+
+export const generateCards = (
+  abis: ReadonlyArray<Abi>,
+  count: number = 10,
+  cardType: WalletTypeEnum
+) => {
   // tslint:disable-next-line
   const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
   return range(1, Math.min(count, abis.length)).map<Card>((_, idx) => {
-    const cn = cardPanPrefix + cardEndNumber.toString().padStart(4, "0");
-    cardEndNumber++;
+    const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
+      defaultCardConfig
+    );
+
+    const cn = config.prefix + config.index.toString().padStart(4, "0");
+    if (cardConfigMap.get(cardType)) {
+      cardConfigMap.set(cardType, { ...config, index: config.index + 1 });
+    } else {
+      defaultCardConfig = { ...config, index: config.index + 1 };
+    }
     const ed = faker.date.future();
     return {
       abi: shuffledAbis[idx].abi,
