@@ -82,7 +82,7 @@ const citizenBancomat = () =>
 
 // tslint:disable-next-line
 let pansResponse: RestPanResponse = {
-  data: [] // card array
+  data: { data: [], messages: [] } // card array
 };
 // tslint:disable-next-line
 let walletBancomat = [];
@@ -128,7 +128,10 @@ installHandler<RestPanResponse>(
     );
     const response = {
       ...pansResponse,
-      messages: t.readonlyArray(Message).decode(msg).value
+      data: {
+        ...pansResponse.data,
+        messages: t.readonlyArray(Message).decode(msg).value
+      }
     };
     if (abi === undefined) {
       return toPayload(response);
