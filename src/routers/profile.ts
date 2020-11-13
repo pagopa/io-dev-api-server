@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingChoiceEnum } from "../../generated/definitions/backend/UserDataProcessingChoice";
+import {
+  UserDataProcessingChoice,
+  UserDataProcessingChoiceEnum
+} from "../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
@@ -13,6 +16,8 @@ import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+import { fromNullable } from "fp-ts/lib/Option";
+import { undefined as undefinedType } from "io-ts";
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = { ...profile.payload };
@@ -132,23 +137,29 @@ installCustomHandler(
   "delete",
   addApiV1Prefix("/user-data-processing/:choice"),
   (req, res) => {
-    const choice = req.params.choice as UserDataProcessingChoiceEnum;
+    // try to decode the request param
 
-    console.log(choice);
+    res.status(202).send(undefinedType);
+    const maybeChoice = UserDataProcessingChoice.decode(req.params.choice);
+
+    if (maybeChoice.isLeft()) {
+      // the given param is not a valid UserDataProcessingChoice
+      // send invalid request
+      res.sendStatus(400);
+      return;
+    }
+
+    const choice = maybeChoice.value;
     // The abort function is managed only for the DELETE
     if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
-      console.log("entra");
       res.sendStatus(409);
     }
 
-    if (
-      userChoices[choice] === undefined ||
-      userChoices[choice]?.status !== UserDataProcessingStatusEnum.PENDING
-    ) {
-      res.sendStatus(409);
-    }
-
-    res.status(202).send();
+    res.sendStatus(
+      fromNullable(userChoices[choice]).fold(409, c =>
+        c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202
+      )
+    );
   }
 );
 
