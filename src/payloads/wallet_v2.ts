@@ -64,7 +64,7 @@ export const generateCards = (
       abi: shuffledAbis[idx].abi,
       cardNumber: cn,
       cardPartialNumber: cn.slice(-4),
-      expiringDate: ed,
+      expiringDate: ed.toISOString(),
       hpan: sha256(cn),
       productType: ProductTypeEnum.PP,
       tokens: ["token1", "token2"],
@@ -90,7 +90,9 @@ export const generateWalletV2 = (
   walletType: WalletTypeEnum,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
 ): WalletV2 => {
-  const ed = card.expiringDate ?? faker.date.future();
+  const ed = card.expiringDate
+    ? new Date(card.expiringDate)
+    : faker.date.future();
   const ccBrand = faker.random.arrayElement(creditCardBrands);
   const info: CardInfo = {
     blurredNumber: card.cardPartialNumber,
