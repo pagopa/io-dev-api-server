@@ -7,7 +7,7 @@ import { basePath } from "../../payloads/response";
 import app from "../../server";
 
 const request = supertest(app);
-
+/* tslint:disable */
 it("info should return ProblemJson with not found", async done => {
   const response = await request.get(
     `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
