@@ -18,6 +18,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { fromNullable } from "fp-ts/lib/Option";
 import { undefined as undefinedType } from "io-ts";
+import { stat } from "fs";
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = { ...profile.payload };
@@ -28,14 +29,9 @@ type UserDeleteDownloadData = {
     | UserDataProcessing
     | undefined;
 };
-const data: UserDataProcessing = {
-  choice: UserDataProcessingChoiceEnum.DELETE,
-  status: UserDataProcessingStatusEnum.PENDING,
-  version: 1
-};
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
-  DELETE: data
+  DELETE: undefined
 };
 // tslint:disable-next-line: no-let
 let userChoices = initialUserChoice;
@@ -157,13 +153,26 @@ installCustomHandler(
     // The abort function is managed only for the DELETE
     if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
       res.sendStatus(409);
+      return;
     }
 
-    res.sendStatus(
-      fromNullable(userChoices[choice]).fold(409, c =>
-        c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202
-      )
+    const acceptedOrConflictStatus = fromNullable(userChoices[choice]).fold(
+      409,
+      c => (c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202)
     );
+    res.sendStatus(acceptedOrConflictStatus);
+
+    if (acceptedOrConflictStatus === 202) {
+      const data: UserDataProcessing = {
+        choice,
+        status: UserDataProcessingStatusEnum.ABORTED,
+        version: 1
+      };
+      userChoices = {
+        DOWNLOAD: userChoices.DOWNLOAD,
+        DELETE: data
+      };
+    }
   }
 );
 
