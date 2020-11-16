@@ -28,9 +28,14 @@ type UserDeleteDownloadData = {
     | UserDataProcessing
     | undefined;
 };
+const data: UserDataProcessing = {
+  choice: UserDataProcessingChoiceEnum.DELETE,
+  status: UserDataProcessingStatusEnum.PENDING,
+  version: 1
+};
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
-  DELETE: undefined
+  DELETE: data
 };
 // tslint:disable-next-line: no-let
 let userChoices = initialUserChoice;
