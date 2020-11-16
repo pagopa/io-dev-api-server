@@ -139,7 +139,6 @@ installCustomHandler(
   (req, res) => {
     // try to decode the request param
 
-    res.status(202).send(undefinedType);
     const maybeChoice = UserDataProcessingChoice.decode(req.params.choice);
 
     if (maybeChoice.isLeft()) {
