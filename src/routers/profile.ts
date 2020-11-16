@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
@@ -9,16 +10,14 @@ import { UserDataProcessingChoiceRequest } from "../../generated/definitions/bac
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { fiscalCode } from "../global";
-import { conflict, getProblemJson } from "../payloads/error";
+import { getProblemJson } from "../payloads/error";
 import { getProfile } from "../payloads/profile";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
-import { fromNullable } from "fp-ts/lib/Option";
-import { undefined as undefinedType } from "io-ts";
-import { stat } from "fs";
+
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 let profilePayload = { ...profile.payload };
