@@ -6,30 +6,29 @@ import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/Abi
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
 import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
-import {
-  CaNameEnum,
-  Message
-} from "../../generated/definitions/pagopa/walletv2/Message";
+import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
 import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
+import {
+  WalletTypeEnum,
+  WalletV2
+} from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
 import { assetsFolder } from "../global";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
-  generateAbiData,
+  abiData,
   generateCards,
   generateWalletV2,
   resetCardConfig
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
-import { appendWalletPrefix } from "./wallet";
-
+export const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
 const appendWallet2Prefix = (path: string) => `${walletPath}${path}`;
-const abiResponse: AbiListResponse = {
-  data: generateAbiData(500, false)
+export const abiResponse: AbiListResponse = {
+  data: abiData
 };
 
 /**
@@ -87,7 +86,7 @@ let pansResponse: RestPanResponse = {
 // tslint:disable-next-line
 let walletBancomat = [];
 // tslint:disable-next-line
-let walletV2Response: WalletV2ListResponse = {
+export let walletV2Response: WalletV2ListResponse = {
   data: []
 };
 // tslint:disable-next-line
@@ -153,6 +152,19 @@ installHandler<RestPanResponse>(
   { codec: RestPanResponse }
 );
 
+export const addWalletV2 = (
+  newData: ReadonlyArray<WalletV2>,
+  replace: boolean = false
+) => {
+  if (replace) {
+    walletV2Response = { data: newData };
+    return;
+  }
+  walletV2Response = {
+    data: [...(walletV2Response.data ?? []), ...newData]
+  };
+};
+
 installCustomHandler<WalletV2ListResponse>(
   wallet2Router,
   "post",
@@ -188,9 +200,7 @@ installCustomHandler<WalletV2ListResponse>(
     const addedBancomatsWalletV2 = addedBancomats.map(c =>
       generateWalletV2(c, WalletTypeEnum.Bancomat)
     );
-    walletV2Response = {
-      data: [...walletData, ...addedBancomatsWalletV2]
-    };
+    addWalletV2([...walletData, ...addedBancomatsWalletV2], true);
     res.json({
       data: bancomatsToAdd.map(c =>
         generateWalletV2(c, WalletTypeEnum.Bancomat)

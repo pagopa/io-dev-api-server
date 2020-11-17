@@ -7,8 +7,8 @@ import { SessionResponse } from "../../generated/definitions/pagopa/SessionRespo
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
-import { validatePayload } from "../utils/validator";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
   data: {

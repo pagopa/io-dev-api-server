@@ -1,11 +1,11 @@
 import chalk from "chalk";
 import child_process from "child_process";
 import { cli } from "cli-ux";
+import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import { networkInterfaces } from "os";
 import { routes } from "./payloads/response";
 import app from "./server";
-import { fromNullable } from "fp-ts/lib/Option";
 // read package.json to print some info
 const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
 

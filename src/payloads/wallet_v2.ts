@@ -45,14 +45,13 @@ export const generateCards = (
   abis: ReadonlyArray<Abi>,
   count: number = 10,
   cardType: WalletTypeEnum
-) => {
+): ReadonlyArray<Card> => {
   // tslint:disable-next-line
   const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
   return range(1, Math.min(count, abis.length)).map<Card>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig
     );
-
     const cn = config.prefix + config.index.toString().padStart(4, "0");
     if (cardConfigMap.get(cardType)) {
       cardConfigMap.set(cardType, { ...config, index: config.index + 1 });
@@ -73,12 +72,11 @@ export const generateCards = (
   });
 };
 
-export const generateAbiData = (count: number, withImage: boolean = false) =>
-  range(1, count).map<Abi>(idx => ({
-    abi: idx.toString().padStart(5, "0"),
-    name: faker.company.companyName(),
-    logoUrl: withImage ? faker.image.imageUrl(64, 64) : undefined
-  }));
+export const abiData = range(1, 500).map<Abi>(idx => ({
+  abi: idx.toString().padStart(5, "0"),
+  name: faker.company.companyName(),
+  logoUrl: true ? faker.image.imageUrl(64, 64) : undefined
+}));
 
 /**
  * info could be CardInfo
