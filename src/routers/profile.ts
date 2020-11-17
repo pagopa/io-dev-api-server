@@ -116,7 +116,10 @@ installHandler(
   req => {
     const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
     const choice = payload.choice;
-    if (userChoices[choice] !== undefined) {
+    if (
+      userChoices[choice] !== undefined &&
+      userChoices[choice]?.status !== UserDataProcessingStatusEnum.ABORTED
+    ) {
       return { payload: userChoices[choice] };
     }
     const data: UserDataProcessing = {
