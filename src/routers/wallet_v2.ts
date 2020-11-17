@@ -23,7 +23,9 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
-export const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
+
+const walletV1Path = "/wallet/v1";
+const appendWalletPrefix = (path: string) => `${walletV1Path}${path}`;
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
 const appendWallet2Prefix = (path: string) => `${walletPath}${path}`;
