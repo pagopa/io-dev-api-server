@@ -26,6 +26,8 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
+import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
+import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
 
 const walletV1Path = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletV1Path}${path}`;
@@ -277,11 +279,36 @@ installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
 export const getBPDPaymentMethod = () =>
   (walletV2Response.data ?? [])
     .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
-    .map(bpd => ({
-      hpan: (bpd.info as CardInfo).hashPan,
-      pan: (bpd.info as CardInfo).blurredNumber,
-      type: bpd.walletType
-    }));
+    .map(bpd => {
+      if (
+        bpd.walletType === WalletTypeEnum.Card ||
+        bpd.walletType === WalletTypeEnum.Bancomat
+      )
+        return {
+          hpan: (bpd.info as CardInfo).hashPan,
+          pan: (bpd.info as CardInfo).blurredNumber,
+          type: bpd.walletType
+        };
+      if (bpd.walletType === WalletTypeEnum.Satispay) {
+        return {
+          hpan: (bpd.info as SatispayInfo).uuid,
+          pan: "--",
+          type: bpd.walletType
+        };
+      }
+      if (bpd.walletType === WalletTypeEnum.BPay) {
+        return {
+          hpan: (bpd.info as BPayInfo).uidHash,
+          pan: "--",
+          type: bpd.walletType
+        };
+      }
+      return {
+        hpan: "--",
+        pan: "--",
+        type: bpd.walletType
+      };
+    });
 
 // get the hpans of walletv2 that support BPD (dashboard web)
 installCustomHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
