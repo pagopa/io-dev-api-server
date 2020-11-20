@@ -17,18 +17,24 @@
     var wcc = undefined;
     var wbc = undefined;
     var cbc = undefined;
+    var wsp = undefined;
+    var wbp = undefined;
 
     const setForm = (config) => {
       wcc.val(config.walletCreditCard);
       wbc.val(config.walletBancomat);
       cbc.val(config.citizenBancomat);
+      wsp.val(config.satispay);
+      wbp.val(config.bPay);
     }
 
     const updateConfig = () => {
       const config = {
         walletBancomat: parseInt(wbc.val(),10),
         walletCreditCard: parseInt(wcc.val(),10),
+        satispay: parseInt(wsp.val(),10),
         citizenBancomat: parseInt(cbc.val(),10),
+        bPay: parseInt(wbp.val(),10)
       }
       $.ajax({
         type: 'POST',
@@ -58,6 +64,8 @@
     const initWalletV2 = () => {
       wcc = $("#walletCreditCard");
       wbc = $("#walletBancomat");
+      wsp = $("#walletSatispay");
+      wbp = $("#walletBPay");
       cbc = $("#citizenBancomat");
       $.getJSON("/walletv2/config", function(data) {
           setForm(data);
@@ -169,6 +177,16 @@
   <tr class="form_item">
     <td><label>wallet Bancomat</label></td>
     <td><input type="number" min="0" class="form_number" id="walletBancomat"/></td>
+  </tr>
+
+  <tr class="form_item">
+    <td><label>wallet Satispay</label></td>
+    <td><input type="number" min="0" class="form_number" id="walletSatispay"/></td>
+  </tr>
+
+  <tr class="form_item">
+    <td><label>wallet Bpay</label></td>
+    <td><input type="number" min="0" class="form_number" id="walletBPay"/></td>
   </tr>
 
   <tr class="form_item">

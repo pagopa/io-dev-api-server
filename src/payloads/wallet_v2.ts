@@ -2,8 +2,11 @@ import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import * as t from "io-ts";
 import sha256 from "sha256";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
+import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
+import { BPayPaymentInstrumentWallet } from "../../generated/definitions/pagopa/walletv2/BPayPaymentInstrumentWallet";
 import {
   Card,
   ProductTypeEnum,
@@ -13,6 +16,7 @@ import {
   CardInfo,
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
+import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import {
   WalletTypeEnum,
   WalletV2
@@ -41,14 +45,50 @@ export const resetCardConfig = () => {
   cardConfigMap.forEach((v, k) => cardConfigMap.set(k, { ...v, index: 0 }));
 };
 
+export const generateSatispay = (
+  count: number
+): ReadonlyArray<SatispayInfo> => {
+  const config = fromNullable(
+    cardConfigMap.get(WalletTypeEnum.Satispay)
+  ).getOrElse(defaultCardConfig);
+  const uuid = sha256(config.prefix) + config.index.toString().padStart(4, "0");
+  cardConfigMap.set(WalletTypeEnum.Satispay, {
+    ...config,
+    index: config.index + 1
+  });
+  return range(1, count).map(_ => ({
+    brandLogo: faker.random.image(),
+    uuid
+  }));
+};
+
+export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
+  const config = fromNullable(
+    cardConfigMap.get(WalletTypeEnum.Bancomat)
+  ).getOrElse(defaultCardConfig);
+  const uidHash =
+    sha256(config.prefix) + config.index.toString().padStart(4, "0");
+  cardConfigMap.set(WalletTypeEnum.Bancomat, {
+    ...config,
+    index: config.index + 1
+  });
+  return range(1, count).map(_ => ({
+    bankName: faker.company.companyName(),
+    instituteCode: config.index.toString(),
+    numberObfuscated: "*".repeat(4) + config.index.toString().padStart(4, "0"),
+    paymentInstruments: [],
+    uidHash
+  }));
+};
+
 export const generateCards = (
   abis: ReadonlyArray<Abi>,
   count: number = 10,
-  cardType: WalletTypeEnum
-): ReadonlyArray<Card> => {
+  cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
+): ReadonlyArray<CardInfo> => {
   // tslint:disable-next-line
   const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
-  return range(1, Math.min(count, abis.length)).map<Card>((_, idx) => {
+  return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig
     );
@@ -79,11 +119,11 @@ export const abiData = range(1, 500).map<Abi>(idx => ({
 }));
 
 /**
- * info could be CardInfo
+ * info could be CardInfo (Card or Bancomat)
  * @param card
  * @param enableableFunctions
  */
-export const generateWalletV2 = (
+export const generateWalletV2FromCard = (
   card: Card,
   walletType: WalletTypeEnum,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
@@ -92,7 +132,8 @@ export const generateWalletV2 = (
     ? new Date(card.expiringDate)
     : faker.date.future();
   const ccBrand = faker.random.arrayElement(creditCardBrands);
-  const info: CardInfo = {
+
+  const info = {
     blurredNumber: card.cardPartialNumber,
     brand: ccBrand,
     brandLogo: getCreditCardLogo(ccBrand),
@@ -104,6 +145,31 @@ export const generateWalletV2 = (
     issuerAbiCode: card.abi,
     type: TypeEnum.PP
   };
+
+  return {
+    walletType,
+    // force createDate to be a string because we need to force a specific date format
+    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
+    enableableFunctions,
+    favourite: false,
+    idWallet: faker.random.number({ min: 20000, max: 30000 }),
+    info,
+    onboardingChannel: "I",
+    pagoPA: true,
+    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
+  };
+};
+
+/**
+ * @param satispay
+ * @param enableableFunctions
+ */
+export const generateWalletV2FromSatispayOrBancomatPay = (
+  info: SatispayInfo | BPayInfo,
+  walletType: WalletTypeEnum.Satispay | WalletTypeEnum.BPay,
+  enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
+): WalletV2 => {
+  const ed = faker.date.future();
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format

@@ -20,7 +20,7 @@ import {
 import {
   abiData,
   generateCards,
-  generateWalletV2
+  generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../start";
 import { toPayload, validatePayload } from "../utils/validator";
@@ -118,7 +118,7 @@ installHandler(
   appendWalletPrefix("/wallet/cc"),
   _ => {
     const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
-    const walletV2 = generateWalletV2(cards[0], WalletTypeEnum.Card);
+    const walletV2 = generateWalletV2FromCard(cards[0], WalletTypeEnum.Card);
     const info = walletV2.info! as CardInfo;
     // add new wallet to the existing ones
     addWalletV2([walletV2]);
