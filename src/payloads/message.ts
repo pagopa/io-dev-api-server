@@ -34,7 +34,7 @@ const createMessageItem = (
   const id = messageId ?? messageIdIndex.toString().padStart(26, "0");
   messageIdIndex++;
   return validatePayload(CreatedMessageWithoutContent, {
-    created_at: new Date().toISOString(),
+    created_at: new Date("2020-11-19T23:15:56.756Z").toISOString(),
     fiscal_code: fiscalCode,
     id,
     sender_service_id: senderServiceId,
