@@ -4,10 +4,13 @@ import fs from "fs";
 import * as t from "io-ts";
 import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
+import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
 import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
+import { RestSatispayResponse } from "../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
+import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import {
   WalletTypeEnum,
   WalletV2
@@ -19,15 +22,23 @@ import {
   abiData,
   generateBancomatPay,
   generateCards,
-  generateSatispay,
+  generateSatispayInfo,
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay,
-  resetCardConfig
+  resetCardConfig,
+  satispay
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
-import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
+
+type WalletV2Config = {
+  walletBancomat: number;
+  walletCreditCard: number;
+  satispay: number;
+  bPay: number;
+  citizenBancomat: number;
+  citizenSatispay: boolean;
+};
 
 const walletV1Path = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletV1Path}${path}`;
@@ -37,6 +48,100 @@ const appendWallet2Prefix = (path: string) => `${walletPath}${path}`;
 export const abiResponse: AbiListResponse = {
   data: abiData
 };
+
+const defaultWalletV2Config: WalletV2Config = {
+  walletBancomat: 2,
+  walletCreditCard: 1,
+  satispay: 1,
+  bPay: 1,
+  citizenSatispay: true,
+  citizenBancomat: 3
+};
+// tslint:disable-next-line
+let pansResponse: RestPanResponse = {
+  data: { data: [], messages: [] } // card array
+};
+// tslint:disable-next-line
+export let walletV2Response: WalletV2ListResponse = {
+  data: []
+};
+// tslint:disable-next-line
+let walletBancomat = [];
+// tslint:disable-next-line
+let walletCreditCards = [];
+// tslint:disable-next-line
+let walletSatispay = [];
+// tslint:disable-next-line
+let walletBancomatPay = [];
+// tslint:disable-next-line
+let walletV2Config = defaultWalletV2Config;
+
+// the bancomat owned by the citizen
+const citizenBancomat = () =>
+  generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.citizenBancomat,
+    WalletTypeEnum.Bancomat
+  );
+
+const generateData = () => {
+  // bancomat owned by the citizen but not added in his wallet
+  pansResponse = {
+    data: { data: citizenBancomat() }
+  };
+  // add bancomat
+  walletBancomat = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.walletBancomat,
+    WalletTypeEnum.Bancomat
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Bancomat));
+  // add credit cards
+  walletCreditCards = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.walletCreditCard,
+    WalletTypeEnum.Card
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card));
+  // add satispay
+  walletSatispay = generateSatispayInfo(walletV2Config.satispay).map(c =>
+    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.Satispay)
+  );
+  // add bancomatPay
+  walletBancomatPay = generateBancomatPay(walletV2Config.bPay).map(c =>
+    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay)
+  );
+
+  walletV2Response = {
+    data: [
+      ...walletBancomat,
+      ...walletCreditCards,
+      ...walletSatispay,
+      ...walletBancomatPay
+    ]
+  };
+};
+
+// add a list of walletv2 to the current already added
+export const addWalletV2 = (
+  wallets: ReadonlyArray<WalletV2>,
+  append: boolean = true
+) => {
+  if (!append) {
+    walletV2Response = { data: wallets };
+    return;
+  }
+  walletV2Response = {
+    data: [...wallets, ...(walletV2Response.data ?? [])]
+  };
+};
+
+// return the list of wallets
+installHandler<WalletV2ListResponse>(
+  wallet2Router,
+  "get",
+  appendWallet2Prefix("/wallet"),
+  _ => toPayload(walletV2Response),
+  { codec: WalletV2ListResponse }
+);
 
 /**
  * return the banks list
@@ -65,85 +170,6 @@ installHandler<AbiListResponse>(
   }
 );
 
-type WalletV2Config = {
-  walletBancomat: number;
-  walletCreditCard: number;
-  citizenBancomat: number;
-  satispay: number;
-  bPay: number;
-};
-
-const defaultWalletV2Config: WalletV2Config = {
-  walletBancomat: 2,
-  walletCreditCard: 1,
-  citizenBancomat: 3,
-  satispay: 1,
-  bPay: 1
-};
-// tslint:disable-next-line
-let walletV2Config = defaultWalletV2Config;
-
-const citizenBancomat = () =>
-  generateCards(
-    abiResponse.data ?? [],
-    walletV2Config.citizenBancomat,
-    WalletTypeEnum.Bancomat
-  );
-
-// tslint:disable-next-line
-let pansResponse: RestPanResponse = {
-  data: { data: [], messages: [] } // card array
-};
-// tslint:disable-next-line
-let walletBancomat = [];
-// tslint:disable-next-line
-export let walletV2Response: WalletV2ListResponse = {
-  data: []
-};
-// tslint:disable-next-line
-let walletCreditCards = [];
-// tslint:disable-next-line
-let walletSatispay = [];
-// tslint:disable-next-line
-let walletBancomatPay = [];
-
-const generateData = () => {
-  // bancomat owned by the citizen but not added in his wallet
-  pansResponse = {
-    data: { data: citizenBancomat() }
-  };
-  // add bancomat
-  walletBancomat = generateCards(
-    abiResponse.data ?? [],
-    walletV2Config.walletBancomat,
-    WalletTypeEnum.Bancomat
-  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Bancomat));
-  // add credit cards
-  walletCreditCards = generateCards(
-    abiResponse.data ?? [],
-    walletV2Config.walletCreditCard,
-    WalletTypeEnum.Card
-  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card));
-  // add satispay
-  walletSatispay = generateSatispay(walletV2Config.satispay).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.Satispay)
-  );
-
-  // add bancomatPay
-  walletBancomatPay = generateBancomatPay(walletV2Config.bPay).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay)
-  );
-
-  walletV2Response = {
-    data: [
-      ...walletBancomat,
-      ...walletCreditCards,
-      ...walletSatispay,
-      ...walletBancomatPay
-    ]
-  };
-};
-generateData();
 /**
  * return the pans list (bancomat)
  * if 'abi' is defined in query string a filter on abi will be applied
@@ -184,19 +210,7 @@ installHandler<RestPanResponse>(
   { codec: RestPanResponse }
 );
 
-export const addWalletV2 = (
-  newData: ReadonlyArray<WalletV2>,
-  replace: boolean = false
-) => {
-  if (replace) {
-    walletV2Response = { data: newData };
-    return;
-  }
-  walletV2Response = {
-    data: [...(walletV2Response.data ?? []), ...newData]
-  };
-};
-
+// add a list of bancomat to the wallet
 installCustomHandler<WalletV2ListResponse>(
   wallet2Router,
   "post",
@@ -224,7 +238,7 @@ installCustomHandler<WalletV2ListResponse>(
           .getOrElse(false)
       );
     };
-    // don't add bancomats already present in wallet list (same hpan)
+    // don't add bancomat already present in wallet list (same hpan)
     const addedBancomats = bancomatsToAdd.filter(
       c => findBancomat(c) === undefined
     );
@@ -232,7 +246,7 @@ installCustomHandler<WalletV2ListResponse>(
     const addedBancomatsWalletV2 = addedBancomats.map(c =>
       generateWalletV2FromCard(c, WalletTypeEnum.Bancomat)
     );
-    addWalletV2([...walletData, ...addedBancomatsWalletV2], true);
+    addWalletV2([...walletData, ...addedBancomatsWalletV2], false);
     res.json({
       data: bancomatsToAdd.map(c =>
         generateWalletV2FromCard(c, WalletTypeEnum.Bancomat)
@@ -241,24 +255,33 @@ installCustomHandler<WalletV2ListResponse>(
   }
 );
 
-installHandler<WalletV2ListResponse>(
+// return the satispay owned by the user
+installCustomHandler<RestSatispayResponse>(
   wallet2Router,
   "get",
-  appendWallet2Prefix("/wallet"),
-  _ => toPayload(walletV2Response),
-  { codec: WalletV2ListResponse }
+  appendWalletPrefix("/satispay/consumers"),
+  (req, res) => {
+    if (walletV2Config.citizenSatispay) {
+      res.json({ data: satispay });
+      return;
+    }
+    res.sendStatus(404);
+  }
 );
 
 // reset function
 export const resetWalletV2 = () => {
   generateData();
 };
+generateData();
+
+// DASHBOARD config API / functions
 
 // get walletv2-bpd (dashboard web)
 installCustomHandler(
   wallet2Router,
   "get",
-  "/walletv2-bpd",
+  "/",
   (_, res) => sendFile("assets/html/wallet2_config.html", res),
   "WalletV2 config dashboard"
 );
@@ -276,6 +299,7 @@ installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   res.json(walletV2Config);
 });
 
+// get all payment methods compliant with BPD (dashboard web)
 export const getBPDPaymentMethod = () =>
   (walletV2Response.data ?? [])
     .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
@@ -283,12 +307,13 @@ export const getBPDPaymentMethod = () =>
       if (
         bpd.walletType === WalletTypeEnum.Card ||
         bpd.walletType === WalletTypeEnum.Bancomat
-      )
+      ) {
         return {
           hpan: (bpd.info as CardInfo).hashPan,
           pan: (bpd.info as CardInfo).blurredNumber,
           type: bpd.walletType
         };
+      }
       if (bpd.walletType === WalletTypeEnum.Satispay) {
         return {
           hpan: (bpd.info as SatispayInfo).uuid,

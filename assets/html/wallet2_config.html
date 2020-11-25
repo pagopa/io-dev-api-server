@@ -19,6 +19,7 @@
     var cbc = undefined;
     var wsp = undefined;
     var wbp = undefined;
+    var csp = undefined;
 
     const setForm = (config) => {
       wcc.val(config.walletCreditCard);
@@ -26,6 +27,14 @@
       cbc.val(config.citizenBancomat);
       wsp.val(config.satispay);
       wbp.val(config.bPay);
+      if(config.citizenSatispay){
+        csp.attr('checked', config.citizenSatispay ? 'checked' : '');
+      }
+      else{
+        csp.removeAttr('checked');
+      }
+
+
     }
 
     const updateConfig = () => {
@@ -34,7 +43,8 @@
         walletCreditCard: parseInt(wcc.val(),10),
         satispay: parseInt(wsp.val(),10),
         citizenBancomat: parseInt(cbc.val(),10),
-        bPay: parseInt(wbp.val(),10)
+        bPay: parseInt(wbp.val(),10),
+        citizenSatispay: csp.is(":checked")
       }
       $.ajax({
         type: 'POST',
@@ -67,6 +77,7 @@
       wsp = $("#walletSatispay");
       wbp = $("#walletBPay");
       cbc = $("#citizenBancomat");
+      csp = $("#citizenSatispay");
       $.getJSON("/walletv2/config", function(data) {
           setForm(data);
         }
@@ -190,8 +201,12 @@
   </tr>
 
   <tr class="form_item">
-    <td><label>citizen Bancomat (pans)</label></td>
+    <td><label>owner Bancomat (pans)</label></td>
     <td><input type="number" min="0" class="form_number" id="citizenBancomat"/></td>
+  </tr>
+  <tr class="form_item">
+    <td><label>owner Satispay</label></td>
+    <td><input type="checkbox" id="citizenSatispay"/></td>
   </tr>
   <tr>
     <td colspan="2">

@@ -79,18 +79,6 @@ installHandler(
   { codec: BackendStatus }
 );
 
-// read package.json to print some info
-const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
-installCustomHandler(publicRouter, "get", "/", (_, res) => {
-  const rr = routes.map(r => `<li>[${r.method}] ${r.path}</li>`);
-  console.log(rr);
-  res.send(
-    `Hi. This is ${
-      packageJson.name
-    }<br/><br/><h3>routes available</h3><br/>${rr.join("")}`
-  );
-});
-
 // it should be useful to reset some states
 installCustomHandler(publicRouter, "get", "/reset", (_, res) => {
   type emptyFunc = () => void;

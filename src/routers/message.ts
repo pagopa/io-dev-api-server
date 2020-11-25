@@ -10,7 +10,7 @@ import {
   withMessageContent,
   withPaymentData
 } from "../payloads/message";
-import { installHandler } from "../payloads/response";
+import { installCustomHandler, installHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTA,
@@ -155,11 +155,80 @@ const createMessages = () => {
 
 messagesWithContent = createMessages();
 
-installHandler(
+installCustomHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/messages"),
-  _ => messages
+  (req, res) => {
+    res.json({
+      items: [
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000000",
+          sender_service_id: "dev-service_0",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000001",
+          sender_service_id: "dev-service_1",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000002",
+          sender_service_id: "dev-service_2",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000003",
+          sender_service_id: "dev-service_3",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000004",
+          sender_service_id: "dev-service_4",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000005",
+          sender_service_id: "dev-service_0",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000006",
+          sender_service_id: "dev-service_1",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000007",
+          sender_service_id: "dev-service_2",
+          time_to_live: 3600
+        },
+        {
+          created_at: "2020-11-19T23:15:56.756Z",
+          fiscal_code: "RSSMRA80A41H501Y",
+          id: "00000000000000000000000008",
+          sender_service_id: "dev-service_3",
+          time_to_live: 3600
+        }
+      ],
+      page_size: 9
+    });
+  }
 );
 
 installHandler(messageRouter, "get", addApiV1Prefix("/messages/:id"), req => {

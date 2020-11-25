@@ -23,6 +23,7 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { Satispay } from "../../generated/definitions/pagopa/Satispay";
 
 type CardConfig = {
   prefix: string;
@@ -45,7 +46,7 @@ export const resetCardConfig = () => {
   cardConfigMap.forEach((v, k) => cardConfigMap.set(k, { ...v, index: 0 }));
 };
 
-export const generateSatispay = (
+export const generateSatispayInfo = (
   count: number
 ): ReadonlyArray<SatispayInfo> => {
   const config = fromNullable(
@@ -60,6 +61,13 @@ export const generateSatispay = (
     brandLogo: faker.random.image(),
     uuid
   }));
+};
+
+export const satispay = {
+  hasMore: false,
+  token: sha256("token"),
+  uidSatispay: "uidSatispay",
+  uidSatispayHash: sha256("uidSatispay")
 };
 
 export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
