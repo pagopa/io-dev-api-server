@@ -9,7 +9,7 @@ export const sessionRouter = Router();
 installHandler(sessionRouter, "get", addApiV1Prefix("/session"), _ => session);
 
 // TODO replace with the relative generated codec when all specs will be updated
-installHandler(sessionRouter, "get", addApiV1Prefix("/token"), _ =>
+installHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), _ =>
   toPayload({
     access_token: faker.random.uuid(),
     expires_in: faker.random.number()
