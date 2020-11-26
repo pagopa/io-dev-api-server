@@ -30,6 +30,7 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
+import { Satispay } from "../../generated/definitions/pagopa/walletv2/Satispay";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -52,7 +53,7 @@ export const abiResponse: AbiListResponse = {
 const defaultWalletV2Config: WalletV2Config = {
   walletBancomat: 2,
   walletCreditCard: 1,
-  satispay: 1,
+  satispay: 0,
   bPay: 1,
   citizenSatispay: true,
   citizenBancomat: 3
@@ -220,7 +221,7 @@ installCustomHandler<WalletV2ListResponse>(
     const maybeData = BancomatCardsRequest.decode(data);
     // cant decode the body
     if (maybeData.isLeft()) {
-      return res.sendStatus(403);
+      return res.sendStatus(400);
     }
     const walletData = walletV2Response.data ?? [];
     const bancomatsToAdd = maybeData.value.data?.data ?? [];
@@ -266,6 +267,36 @@ installCustomHandler<RestSatispayResponse>(
       return;
     }
     res.sendStatus(404);
+  }
+);
+
+// add the given satispay to the wallet
+installCustomHandler<RestSatispayResponse>(
+  wallet2Router,
+  "post",
+  appendWalletPrefix("/satispay/add-wallet"),
+  (req, res) => {
+    const maybeSatispayInfo = Satispay.decode(req.body);
+    maybeSatispayInfo.fold(
+      () => res.sendStatus(400),
+      si => {
+        const walletData = walletV2Response.data ?? [];
+        const walletsWithoutSatispay = walletData.filter(
+          w => w.walletType !== WalletTypeEnum.Satispay
+        );
+        addWalletV2(
+          [
+            ...walletsWithoutSatispay,
+            generateWalletV2FromSatispayOrBancomatPay(
+              { uuid: si.uidSatispayHash },
+              WalletTypeEnum.Satispay
+            )
+          ],
+          false
+        );
+        return res.json(walletV2Response);
+      }
+    );
   }
 );
 

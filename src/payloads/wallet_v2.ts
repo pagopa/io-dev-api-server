@@ -2,11 +2,9 @@ import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
-import * as t from "io-ts";
 import sha256 from "sha256";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
 import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
-import { BPayPaymentInstrumentWallet } from "../../generated/definitions/pagopa/walletv2/BPayPaymentInstrumentWallet";
 import {
   Card,
   ProductTypeEnum,
@@ -23,7 +21,6 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
-import { Satispay } from "../../generated/definitions/pagopa/Satispay";
 
 type CardConfig = {
   prefix: string;
@@ -187,7 +184,7 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
     info,
     onboardingChannel: "I",
-    pagoPA: true,
+    pagoPA: false,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
