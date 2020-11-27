@@ -5,7 +5,10 @@ import { Response, Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { staticContentRootPath } from "../global";
-import { availableBonuses } from "../payloads/bonusAvailable";
+import {
+  availableBonuses,
+  availableBonusesv1
+} from "../payloads/bonusAvailable";
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { legacyAvailableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
 import { municipality } from "../payloads/municipality";
@@ -77,6 +80,15 @@ installCustomHandler(
   addRoutePrefix("/bonus/bonus_available.json"),
   (_, res) => {
     res.json(availableBonuses);
+  }
+);
+
+installCustomHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/bonus/bonus_available_v1.json"),
+  (_, res) => {
+    res.json(availableBonusesv1);
   }
 );
 
