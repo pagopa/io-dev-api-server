@@ -7,7 +7,8 @@ import { ServicesByScope } from "../../generated/definitions/content/ServicesByS
 import { staticContentRootPath } from "../global";
 import {
   availableBonuses,
-  availableBonusesv1
+  availableBonusesv1,
+  availableBonusesv2
 } from "../payloads/bonusAvailable";
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { legacyAvailableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
@@ -89,6 +90,15 @@ installCustomHandler(
   addRoutePrefix("/bonus/bonus_available_v1.json"),
   (_, res) => {
     res.json(availableBonusesv1);
+  }
+);
+
+installCustomHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/bonus/bonus_available_v2.json"),
+  (_, res) => {
+    res.json(availableBonusesv2);
   }
 );
 
