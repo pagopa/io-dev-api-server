@@ -106,7 +106,7 @@ export const generateCards = (
     }
     const ed = faker.date.future();
     return {
-      abi: shuffledAbis[idx].abi,
+      abi: shuffledAbis[idx % shuffledAbis.length].abi,
       cardNumber: cn,
       cardPartialNumber: cn.slice(-4),
       expiringDate: ed.toISOString(),
@@ -118,7 +118,7 @@ export const generateCards = (
   });
 };
 
-export const abiData = range(1, 500).map<Abi>(idx => ({
+export const abiData = range(3000, 3500).map<Abi>(idx => ({
   abi: idx.toString().padStart(5, "0"),
   name: faker.company.companyName()
 }));

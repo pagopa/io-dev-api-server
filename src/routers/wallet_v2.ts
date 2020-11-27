@@ -10,6 +10,7 @@ import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
 import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { RestSatispayResponse } from "../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
+import { Satispay } from "../../generated/definitions/pagopa/walletv2/Satispay";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import {
   WalletTypeEnum,
@@ -30,7 +31,6 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
-import { Satispay } from "../../generated/definitions/pagopa/walletv2/Satispay";
 
 type WalletV2Config = {
   walletBancomat: number;
