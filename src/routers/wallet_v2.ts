@@ -276,7 +276,7 @@ installCustomHandler<RestSatispayResponse>(
   "post",
   appendWalletPrefix("/satispay/add-wallet"),
   (req, res) => {
-    const maybeSatispayInfo = Satispay.decode(req.body);
+    const maybeSatispayInfo = Satispay.decode(req.body.data);
     maybeSatispayInfo.fold(
       () => res.sendStatus(400),
       si => {
@@ -284,17 +284,18 @@ installCustomHandler<RestSatispayResponse>(
         const walletsWithoutSatispay = walletData.filter(
           w => w.walletType !== WalletTypeEnum.Satispay
         );
+        const w2Satispay = generateWalletV2FromSatispayOrBancomatPay(
+          { uuid: si.uidSatispayHash },
+          WalletTypeEnum.Satispay
+        );
         addWalletV2(
           [
             ...walletsWithoutSatispay,
-            generateWalletV2FromSatispayOrBancomatPay(
-              { uuid: si.uidSatispayHash },
-              WalletTypeEnum.Satispay
-            )
+            w2Satispay
           ],
           false
         );
-        return res.json(walletV2Response);
+        return res.json({data: w2Satispay});
       }
     );
   }
