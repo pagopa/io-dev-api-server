@@ -140,7 +140,7 @@ export const availableBonusesv1: BonusesAvailable = [
       ]
     },
     service_id: "01EB8AXKNV6NMSP2R25KSGF743",
-    is_active: true,
+    is_active: false,
     hidden: false,
     valid_from: new Date("2020-07-01T00:00:00.000Z"),
     valid_to: new Date("2020-12-31T00:00:00.000Z"),
