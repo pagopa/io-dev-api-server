@@ -159,7 +159,7 @@ export const generateWalletV2FromCard = (
     favourite: false,
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
     info,
-    onboardingChannel: "I",
+    onboardingChannel: "IO",
     pagoPA: true,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
@@ -183,7 +183,7 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     favourite: false,
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
     info,
-    onboardingChannel: "I",
+    onboardingChannel: "IO",
     pagoPA: false,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
