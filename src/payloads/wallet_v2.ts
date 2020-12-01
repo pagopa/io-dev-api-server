@@ -21,6 +21,8 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { currentProfile } from "../routers/profile";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { listDir } from "../utils/file";
+import { assetsFolder } from "../global";
 
 type CardConfig = {
   prefix: string;
@@ -118,8 +120,9 @@ export const generateCards = (
   });
 };
 
-export const abiData = range(3000, 3500).map<Abi>(idx => ({
-  abi: idx.toString().padStart(5, "0"),
+const abiLogoFiles = listDir(assetsFolder + "/imgs/logos/abi");
+export const abiData = range(1, abiLogoFiles.length - 1).map<Abi>(idx => ({
+  abi: abiLogoFiles[idx].replace(".png", ""),
   name: faker.company.companyName()
 }));
 

@@ -58,6 +58,15 @@ installCustomHandler(
 installCustomHandler(
   servicesMetadataRouter,
   "get",
+  addRoutePrefix("/logos/abi/:logo_id"),
+  (req, res) => {
+    sendFile(`assets/imgs/logos/abi/${req.params.logo_id}`, res);
+  }
+);
+
+installCustomHandler(
+  servicesMetadataRouter,
+  "get",
   addRoutePrefix("/municipalities/:a/:b/:code"),
   (_, res) => {
     // return always the same municipality

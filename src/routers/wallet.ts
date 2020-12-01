@@ -5,13 +5,13 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import {
   TypeEnum,
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
-import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { installCustomHandler, installHandler } from "../payloads/response";
 import {
