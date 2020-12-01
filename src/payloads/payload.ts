@@ -1,3 +1,4 @@
+import faker from "faker/locale/it";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
 import { Iban } from "../../generated/definitions/backend/Iban";
@@ -5,17 +6,15 @@ import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEur
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
-import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definitions/backend/SpezzoneStrutturatoCausaleVersamento";
-import { Payment } from "../../generated/definitions/pagopa/Payment";
-import { PaymentResponse } from "../../generated/definitions/pagopa/PaymentResponse";
-import { LinguaEnum } from "../../generated/definitions/pagopa/Psp";
-import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/PspListResponseCD";
-import { PspResponse } from "../../generated/definitions/pagopa/PspResponse";
-import { TransactionResponse } from "../../generated/definitions/pagopa/TransactionResponse";
+import { Payment } from "../../generated/definitions/pagopa/walletv2/Payment";
+import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
+import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
+import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
+import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
+import { TransactionResponse } from "../../generated/definitions/pagopa/walletv2/TransactionResponse";
 import { validatePayload } from "../utils/validator";
 import { getPsps } from "./wallet";
-import faker from "faker/locale/it";
 
 type settings = {
   user: string;

@@ -1,12 +1,18 @@
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
-import { CreditCard } from "../../generated/definitions/pagopa/CreditCard";
-import { LinguaEnum, Psp } from "../../generated/definitions/pagopa/Psp";
-import { SessionResponse } from "../../generated/definitions/pagopa/SessionResponse";
-import { Transaction } from "../../generated/definitions/pagopa/Transaction";
-import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
-import { WalletListResponse } from "../../generated/definitions/pagopa/WalletListResponse";
+import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
+import {
+  LinguaEnum,
+  Psp
+} from "../../generated/definitions/pagopa/walletv2/Psp";
+import { SessionResponse } from "../../generated/definitions/pagopa/walletv2/SessionResponse";
+import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
+import {
+  TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/walletv2/Wallet";
+import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { validatePayload } from "../utils/validator";
 
