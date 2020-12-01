@@ -14,6 +14,7 @@ import { installCustomHandler, installHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTA,
+  frontMatter1CTABonusBpd,
   frontMatter2CTA,
   messageMarkdown
 } from "../utils/variables";
@@ -23,7 +24,7 @@ import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
 
 export const messageRouter = Router();
-const totalMessages = 9;
+const totalMessages = 10;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 // tslint:disable-next-line: no-let
 let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
@@ -75,6 +76,12 @@ const createMessages = () => {
     nextMessage(),
     `with 1 nested CTA`,
     frontMatter1CTA + messageMarkdown
+  );
+
+  const message1NestedCtaBonusBpd = withMessageContent(
+    nextMessage(),
+    `with 1 nested CTA BPD`,
+    frontMatter1CTABonusBpd + messageMarkdown
   );
 
   const withContent1 = withMessageContent(
@@ -141,6 +148,7 @@ const createMessages = () => {
     messageDefault,
     message2NestedCta,
     message1NestedCta,
+    message1NestedCtaBonusBpd,
     medicalPrescriptionMessage,
     message1,
     message2,

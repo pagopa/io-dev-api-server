@@ -54,6 +54,13 @@ en:
         action: "ioit://WALLET_HOME"
 ---`;
 
+export const frontMatter1CTABonusBpd = `---
+it:
+    cta_1: 
+        text: "BPD"
+        action: "ioit://CTA_START_BPD"
+---`;
+
 export const frontMatter1CTA = `---
 it:
     cta_1: 
