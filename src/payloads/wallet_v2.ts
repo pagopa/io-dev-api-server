@@ -121,10 +121,17 @@ export const generateCards = (
 };
 
 const abiLogoFiles = listDir(assetsFolder + "/imgs/logos/abi");
-export const abiData = range(1, abiLogoFiles.length - 1).map<Abi>(idx => ({
-  abi: abiLogoFiles[idx].replace(".png", ""),
-  name: faker.company.companyName()
-}));
+// tslint:disable-next-line
+let millis = new Date().getTime();
+export const abiData = range(1, abiLogoFiles.length - 1).map<Abi>(_ => {
+  faker.seed(millis++);
+  return {
+    abi: abiLogoFiles[
+      faker.random.number({ min: 0, max: abiLogoFiles.length - 1 })
+    ].replace(".png", ""),
+    name: faker.company.companyName()
+  };
+});
 
 /**
  * info could be CardInfo (Card or Bancomat)
