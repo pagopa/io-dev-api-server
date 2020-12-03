@@ -31,6 +31,7 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
+import { Millisecond } from "italia-ts-commons/lib/units";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -288,14 +289,8 @@ installCustomHandler<RestSatispayResponse>(
           { uuid: si.uidSatispayHash },
           WalletTypeEnum.Satispay
         );
-        addWalletV2(
-          [
-            ...walletsWithoutSatispay,
-            w2Satispay
-          ],
-          false
-        );
-        return res.json({data: w2Satispay});
+        addWalletV2([...walletsWithoutSatispay, w2Satispay], false);
+        return res.json({ data: w2Satispay });
       }
     );
   }

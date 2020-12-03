@@ -1,5 +1,4 @@
 import { Router } from "express";
-import * as faker from "faker/locale/it";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
@@ -9,7 +8,6 @@ import {
 } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
 import { fiscalCode } from "../../../global";
 import { installCustomHandler } from "../../../payloads/response";
-import { sendFile } from "../../../utils/file";
 
 export const bpd = Router();
 
@@ -24,26 +22,6 @@ const citizen: CitizenResource = {
 
 // tslint:disable-next-line: no-let
 let currentCitizen: CitizenResource | undefined;
-
-// return the T&C as a HTML string
-installCustomHandler(bpd, "get", addBPDPrefix("/tc/html"), (_, res) =>
-  res.status(200).send("<html><body>hello HTML</body></html>")
-);
-
-// return the T&C as a pdf file
-installCustomHandler(bpd, "get", addBPDPrefix("/tc/pdf"), (_, res) =>
-  sendFile("assets/pdf/tos.pdf", res)
-);
-
-const token: string = faker.random.alphaNumeric(146);
-installCustomHandler(
-  bpd,
-  "post",
-  "/bonus/bpd/pagopa/api/v1/login",
-  (_, res) => {
-    res.send(token);
-  }
-);
 
 /**
  * return the citizen
