@@ -22,6 +22,12 @@ export const getProblemJson = (
   };
 };
 
+export const invalid: IOResponse<null> = {
+  payload: null,
+  status: 400,
+  isJson: false
+};
+
 export const unauthorized: IOResponse<null> = {
   payload: null,
   status: 401,
@@ -31,5 +37,11 @@ export const unauthorized: IOResponse<null> = {
 export const notFound: IOResponse<null> = {
   payload: null,
   status: 404,
+  isJson: false
+};
+
+export const conflict: IOResponse<null> = {
+  payload: null,
+  status: 409,
   isJson: false
 };
