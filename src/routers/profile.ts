@@ -1,7 +1,11 @@
 import { Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingChoiceEnum } from "../../generated/definitions/backend/UserDataProcessingChoice";
+import {
+  UserDataProcessingChoice,
+  UserDataProcessingChoiceEnum
+} from "../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
@@ -13,6 +17,7 @@ import { getSuccessResponse } from "../payloads/success";
 import { userMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
 export let currentProfile = { ...profile.payload };
@@ -111,7 +116,10 @@ installHandler(
   req => {
     const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
     const choice = payload.choice;
-    if (userChoices[choice] !== undefined) {
+    if (
+      userChoices[choice] !== undefined &&
+      userChoices[choice]?.status !== UserDataProcessingStatusEnum.ABORTED
+    ) {
       return { payload: userChoices[choice] };
     }
     const data: UserDataProcessing = {
@@ -124,6 +132,49 @@ installHandler(
       DELETE: choice === "DELETE" ? data : userChoices.DELETE
     };
     return { payload: userChoices[choice] };
+  }
+);
+
+installCustomHandler(
+  profileRouter,
+  "delete",
+  addApiV1Prefix("/user-data-processing/:choice"),
+  (req, res) => {
+    // try to decode the request param
+
+    const maybeChoice = UserDataProcessingChoice.decode(req.params.choice);
+
+    if (maybeChoice.isLeft()) {
+      // the given param is not a valid UserDataProcessingChoice
+      // send invalid request
+      res.sendStatus(400);
+      return;
+    }
+
+    const choice = maybeChoice.value;
+    // The abort function is managed only for the DELETE
+    if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
+      res.sendStatus(409);
+      return;
+    }
+
+    const acceptedOrConflictStatus = fromNullable(userChoices[choice]).fold(
+      409,
+      c => (c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202)
+    );
+    res.sendStatus(acceptedOrConflictStatus);
+
+    if (acceptedOrConflictStatus === 202) {
+      const data: UserDataProcessing = {
+        choice,
+        status: UserDataProcessingStatusEnum.ABORTED,
+        version: 1
+      };
+      userChoices = {
+        DOWNLOAD: userChoices.DOWNLOAD,
+        DELETE: data
+      };
+    }
   }
 );
 
