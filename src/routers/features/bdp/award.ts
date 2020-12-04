@@ -7,36 +7,26 @@ import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/Bpd
 import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/winning_transactions/BpdWinningTransactions";
 import { TotalCashbackResource } from "../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { assetsFolder } from "../../../global";
-import {
-  installCustomHandler,
-  installHandler
-} from "../../../payloads/response";
-import { listDir } from "../../../utils/file";
-import { toPayload } from "../../../utils/validator";
+import { addHandler } from "../../../payloads/response";
+import { listDir, readFile } from "../../../utils/file";
 import { addBPDPrefix } from "./index";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
-  JSON.parse(
-    fs.readFileSync(assetsFolder + "/bpd/award/periods/" + fileName).toString()
-  );
+  JSON.parse(readFile(assetsFolder + "/bpd/award/periods/" + fileName));
 
 const readTotalCashbackJson = (directoryName: string, fileName: string) =>
   JSON.parse(
-    fs
-      .readFileSync(
-        `${assetsFolder}/bpd/award/total_cashback/${directoryName}/${fileName}`
-      )
-      .toString()
+    readFile(
+      `${assetsFolder}/bpd/award/total_cashback/${directoryName}/${fileName}`
+    )
   );
 
 const readWinningTransactions = (directoryName: string, fileName: string) =>
   JSON.parse(
-    fs
-      .readFileSync(
-        `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
-      )
-      .toString()
+    readFile(
+      `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
+    )
   );
 
 // tslint:disable-next-line: no-let
@@ -45,7 +35,7 @@ let awardPeriods: BpdAwardPeriods = BpdAwardPeriods.decode(
 ).getOrElse([]);
 
 // return the list of json file names to populate the web dashboard
-installCustomHandler(
+addHandler(
   bpdAward,
   "get",
   addBPDPrefix("/award/periods/presets"),
@@ -56,7 +46,7 @@ installCustomHandler(
 );
 
 // update the period preset (web dashboard)
-installCustomHandler(
+addHandler(
   bpdAward,
   "post",
   addBPDPrefix("/award/periods/presets/:period"),
@@ -79,8 +69,8 @@ installCustomHandler(
 );
 
 // response with the bpd award periods
-installHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), () =>
-  toPayload(awardPeriods)
+addHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), (_, res) =>
+  res.json(awardPeriods)
 );
 
 // tslint:disable-next-line: no-let
@@ -98,7 +88,7 @@ const initTotalCashback = () => {
 initTotalCashback();
 
 // get the total cashback from a given awardPeriodId
-installCustomHandler(
+addHandler(
   bpdAward,
   "get",
   addBPDPrefix("/io/winning-transactions/total-cashback"),
@@ -139,7 +129,7 @@ const initWinningTransaction = () => {
 initWinningTransaction();
 
 // return the cashback winning transaction given a periodId and an hPan
-installCustomHandler(
+addHandler(
   bpdAward,
   "get",
   addBPDPrefix("/io/winning-transactions"),
@@ -174,7 +164,7 @@ installCustomHandler(
 );
 
 // update the configuration for winning transactions (web dashboard)
-installCustomHandler(
+addHandler(
   bpdAward,
   "post",
   addBPDPrefix("/winning-transactions/transactions/presets"),
@@ -197,7 +187,7 @@ installCustomHandler(
 );
 
 // return the configuration for winning-transactions (web dashboard)
-installCustomHandler(
+addHandler(
   bpdAward,
   "get",
   addBPDPrefix("/winning-transactions/transactions/presets"),
@@ -214,7 +204,7 @@ installCustomHandler(
 );
 
 // return the configuration for total cashback (web dashboard)
-installCustomHandler(
+addHandler(
   bpdAward,
   "get",
   addBPDPrefix("/winning-transactions/total_cashback/presets"),
@@ -229,7 +219,7 @@ installCustomHandler(
 );
 
 // update the configuration for total cashback (web dashboard)
-installCustomHandler(
+addHandler(
   bpdAward,
   "post",
   addBPDPrefix("/winning-transactions/total_cashback/presets"),
@@ -252,13 +242,8 @@ installCustomHandler(
 );
 
 // reset walletv2-bpd config (dashboard web)
-installCustomHandler(
-  bpdAward,
-  "get",
-  "/winning-transactions/reset",
-  (_, res) => {
-    initWinningTransaction();
-    initTotalCashback();
-    res.sendStatus(200);
-  }
-);
+addHandler(bpdAward, "get", "/winning-transactions/reset", (_, res) => {
+  initWinningTransaction();
+  initTotalCashback();
+  res.sendStatus(200);
+});

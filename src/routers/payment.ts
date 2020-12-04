@@ -12,13 +12,8 @@ import {
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
-import {
-  installCustomHandler,
-  installHandler,
-  IOResponse
-} from "../payloads/response";
+import { addHandler, IOResponse } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
-import { toPayload } from "../utils/validator";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
@@ -37,21 +32,17 @@ const getVerificaError = (
   status: 500
 });
 
-const getVerificaSuccess = () => ({
-  payload: getPaymentRequestsGetResponse()
-});
-
 // verifica
-installHandler(
+addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
   // success response: getVerificaSuccess()
   // errore response: getVerificaError(DetailEnum.PAYMENT_DUPLICATED)
-  req => getVerificaSuccess()
+  (_, res) => res.json(getPaymentRequestsGetResponse())
 );
 
-installCustomHandler<PaymentActivationsPostResponse>(
+addHandler<PaymentActivationsPostResponse>(
   profileRouter,
   "post",
   addApiV1Prefix("/payment-activations"),
@@ -77,23 +68,23 @@ installCustomHandler<PaymentActivationsPostResponse>(
   }
 );
 
-installHandler<PaymentActivationsGetResponse>(
+addHandler<PaymentActivationsGetResponse>(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-activations/:codiceContestopagamento"),
-  () => {
+  (_, res) => {
     const response: PaymentActivationsGetResponse = {
       idPagamento: faker.random.alphaNumeric(30)
     };
-    return toPayload(response);
+    res.json(response);
   }
 );
 
-installHandler(
+addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/payments/:idPagamento/actions/check"),
-  _ => {
+  (_, res) => {
     const payment: PaymentResponse = {
       data: {
         id: faker.random.number(),
@@ -114,6 +105,6 @@ installHandler(
         iban: faker.finance.iban()
       }
     };
-    return toPayload(payment);
+    res.json(payment);
   }
 );

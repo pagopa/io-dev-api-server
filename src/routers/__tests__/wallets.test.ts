@@ -6,7 +6,6 @@ import { WalletListResponse } from "../../../generated/definitions/pagopa/Wallet
 import { sessionToken } from "../../payloads/wallet";
 import app from "../../server";
 import {
-  appendWalletPrefix,
   transactionPageSize,
   transactions,
   transactionsTotal,
@@ -14,6 +13,8 @@ import {
 } from "../wallet";
 
 const request = supertest(app);
+const walletPath = "/wallet/v1";
+const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 
 const testGetWallets = (response: Response) => {
   expect(response.status).toBe(200);

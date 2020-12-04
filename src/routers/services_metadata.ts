@@ -13,7 +13,7 @@ import {
 import { contextualHelpData } from "../payloads/contextualHelp";
 import { legacyAvailableBonuses } from "../payloads/features/bonus-vacanze/availableBonuses";
 import { municipality } from "../payloads/municipality";
-import { installCustomHandler, installHandler } from "../payloads/response";
+import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
@@ -22,20 +22,21 @@ export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
 
-installHandler<Service | ServicesByScope>(
+addHandler<Service | ServicesByScope>(
   servicesMetadataRouter,
   "get",
   addRoutePrefix(`/services/:service_id`),
-  req => {
+  (req, res) => {
     const serviceId = req.params.service_id.replace(".json", "");
     if (serviceId === "servicesByScope") {
-      return servicesByScope;
+      res.json(servicesByScope.payload);
+      return;
     }
-    return getServiceMetadata(serviceId, visibleServices.payload);
+    res.json(getServiceMetadata(serviceId, visibleServices.payload).payload);
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/logos/organizations/:organization_id"),
@@ -45,7 +46,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/logos/services/:service_id"),
@@ -55,7 +56,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/logos/abi/:logo_id"),
@@ -64,7 +65,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/municipalities/:a/:b/:code"),
@@ -75,7 +76,7 @@ installCustomHandler(
 );
 
 // get the list of all available bonus types
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/bonus/vacanze/bonuses_available.json"),
@@ -84,7 +85,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/bonus/bonus_available.json"),
@@ -93,7 +94,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/bonus/bonus_available_v1.json"),
@@ -102,7 +103,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/bonus/bonus_available_v2.json"),
@@ -111,7 +112,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/contextualhelp/data.json"),

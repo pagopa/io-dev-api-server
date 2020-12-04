@@ -1,5 +1,8 @@
 import { Router } from "express";
+import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
+import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
@@ -10,7 +13,7 @@ import {
   withMessageContent,
   withPaymentData
 } from "../payloads/message";
-import { installCustomHandler, installHandler } from "../payloads/response";
+import { addHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTA,
@@ -19,12 +22,9 @@ import {
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
-import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
-import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
 
 export const messageRouter = Router();
-const totalMessages = 10;
+const totalMessages = 11;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 // tslint:disable-next-line: no-let
 let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
@@ -53,36 +53,42 @@ const createMessages = () => {
     }
   ];
 
+  const messagesWC = new Array();
   const medicalPrescriptionMessage = withMessageContent(
     nextMessage(),
     `medical prescription`,
     messageMarkdown,
     medicalPrescription
   );
+  messagesWC.push(medicalPrescriptionMessage);
 
   const messageDefault = withMessageContent(
     nextMessage(),
     `default message`,
     messageMarkdown
   );
+  messagesWC.push(messageDefault);
 
   const message2NestedCta = withMessageContent(
     nextMessage(),
     `with 2 nested CTA`,
     frontMatter2CTA + messageMarkdown
   );
+  messagesWC.push(message2NestedCta);
 
   const message1NestedCta = withMessageContent(
     nextMessage(),
     `with 1 nested CTA`,
     frontMatter1CTA + messageMarkdown
   );
+  messagesWC.push(message1NestedCta);
 
   const message1NestedCtaBonusBpd = withMessageContent(
     nextMessage(),
     `with 1 nested CTA BPD`,
     frontMatter1CTABonusBpd + messageMarkdown
   );
+  messagesWC.push(message1NestedCtaBonusBpd);
 
   const withContent1 = withMessageContent(
     nextMessage(),
@@ -93,6 +99,7 @@ const createMessages = () => {
     withPaymentData(withContent1, true),
     new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
   );
+  messagesWC.push(message1);
 
   const withContent2 = withMessageContent(
     nextMessage(),
@@ -104,6 +111,8 @@ const createMessages = () => {
     new Date(now.getTime() + 60 * 1000 * 60 * 24 * 3)
   );
 
+  messagesWC.push(message2);
+
   const withContent3 = withMessageContent(
     nextMessage(),
     `with payment [expired]`,
@@ -113,6 +122,8 @@ const createMessages = () => {
     withPaymentData(withContent3, true),
     new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
   );
+
+  messagesWC.push(message3);
 
   const withContent4 = withMessageContent(
     nextMessage(),
@@ -124,6 +135,8 @@ const createMessages = () => {
     new Date(now.getTime() + 60 * 1000 * 60 * 24 * 3)
   );
 
+  messagesWC.push(message4);
+
   const withContent5 = withMessageContent(
     nextMessage(),
     `with payment [expired] without invalid after due date`,
@@ -134,6 +147,8 @@ const createMessages = () => {
     new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
   );
 
+  messagesWC.push(message5);
+
   const withContent6 = withMessageContent(
     nextMessage(),
     `with payment [valid] without invalid after due date`,
@@ -143,42 +158,31 @@ const createMessages = () => {
     withPaymentData(withContent6, false),
     new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
   );
+  messagesWC.push(message6);
 
-  return [
-    messageDefault,
-    message2NestedCta,
-    message1NestedCta,
-    message1NestedCtaBonusBpd,
-    medicalPrescriptionMessage,
-    message1,
-    message2,
-    message3,
-    message4,
-    message5,
-    message6
-  ];
+  return messagesWC;
 };
 
 messagesWithContent = createMessages();
 
-installCustomHandler(
+addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
+  res.json({
+    items: messages.payload.items
+  });
+});
+
+addHandler(
   messageRouter,
   "get",
-  addApiV1Prefix("/messages"),
+  addApiV1Prefix("/messages/:id"),
   (req, res) => {
-    res.json({
-      items: messages.payload.items
-    });
+    // retrieve the messageIndex from id
+    const msgIndex = messages.payload.items.findIndex(
+      item => item.id === req.params.id
+    );
+    if (msgIndex === -1) {
+      res.json(getProblemJson(404, "message not found"));
+    }
+    res.json(messagesWithContent[msgIndex]);
   }
 );
-
-installHandler(messageRouter, "get", addApiV1Prefix("/messages/:id"), req => {
-  // retrieve the messageIndex from id
-  const msgIndex = messages.payload.items.findIndex(
-    item => item.id === req.params.id
-  );
-  if (msgIndex === -1) {
-    return getProblemJson(404, "message not found");
-  }
-  return { payload: messagesWithContent[msgIndex], isJson: true };
-});

@@ -18,7 +18,7 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
 import { assetsFolder } from "../global";
-import { installCustomHandler, installHandler } from "../payloads/response";
+import { addHandler } from "../payloads/response";
 import {
   abiData,
   generateBancomatPay,
@@ -31,7 +31,6 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { toPayload } from "../utils/validator";
-import { Millisecond } from "italia-ts-commons/lib/units";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -137,23 +136,22 @@ export const addWalletV2 = (
 };
 
 // return the list of wallets
-installHandler<WalletV2ListResponse>(
+addHandler<WalletV2ListResponse>(
   wallet2Router,
   "get",
   appendWallet2Prefix("/wallet"),
-  _ => toPayload(walletV2Response),
-  { codec: WalletV2ListResponse }
+  (_, res) => res.json(walletV2Response)
 );
 
 /**
  * return the banks list
  * if 'abiQuery' is defined in query string a filter on name and abi will be applied
  */
-installHandler<AbiListResponse>(
+addHandler<AbiListResponse>(
   wallet2Router,
   "get",
   appendWalletPrefix("/bancomat/abi"),
-  req => {
+  (req, res) => {
     const abiQuery = req.query.abiQuery;
     if (abiQuery !== undefined) {
       const s = abiQuery.toLowerCase().trim();
@@ -168,7 +166,7 @@ installHandler<AbiListResponse>(
         }
       };
     }
-    return { payload: abiResponse };
+    res.json(abiResponse);
   }
 );
 
@@ -176,11 +174,11 @@ installHandler<AbiListResponse>(
  * return the pans list (bancomat)
  * if 'abi' is defined in query string a filter on abi will be applied
  */
-installHandler<RestPanResponse>(
+addHandler<RestPanResponse>(
   wallet2Router,
   "get",
   appendWalletPrefix("/bancomat/pans"),
-  req => {
+  (req, res) => {
     const abi = req.query.abi;
     const msg = JSON.parse(
       fs.readFileSync(assetsFolder + "/pm/pans/messages.json").toString()
@@ -195,7 +193,7 @@ installHandler<RestPanResponse>(
     if (abi === undefined) {
       return toPayload(response);
     }
-    return toPayload({
+    res.json({
       ...response,
       data: {
         data:
@@ -208,12 +206,11 @@ installHandler<RestPanResponse>(
             : []
       }
     });
-  },
-  { codec: RestPanResponse }
+  }
 );
 
 // add a list of bancomat to the wallet
-installCustomHandler<WalletV2ListResponse>(
+addHandler<WalletV2ListResponse>(
   wallet2Router,
   "post",
   appendWalletPrefix("/bancomat/add-wallets"),
@@ -258,7 +255,7 @@ installCustomHandler<WalletV2ListResponse>(
 );
 
 // return the satispay owned by the user
-installCustomHandler<RestSatispayResponse>(
+addHandler<RestSatispayResponse>(
   wallet2Router,
   "get",
   appendWalletPrefix("/satispay/consumers"),
@@ -272,7 +269,7 @@ installCustomHandler<RestSatispayResponse>(
 );
 
 // add the given satispay to the wallet
-installCustomHandler<RestSatispayResponse>(
+addHandler<RestSatispayResponse>(
   wallet2Router,
   "post",
   appendWalletPrefix("/satispay/add-wallet"),
@@ -305,21 +302,22 @@ generateData();
 // DASHBOARD config API / functions
 
 // get walletv2-bpd (dashboard web)
-installCustomHandler(
+addHandler(
   wallet2Router,
   "get",
   "/",
   (_, res) => sendFile("assets/html/wallet2_config.html", res),
-  "WalletV2 config dashboard"
+  0,
+  { description: "WalletV2 config dashboard" }
 );
 
 // get walletv2-bpd config (dashboard web)
-installCustomHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
+addHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
   res.json(walletV2Config)
 );
 
 // update walletv2-bpd config (dashboard web)
-installCustomHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
+addHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
   walletV2Config = req.body;
   resetCardConfig();
   generateData();
@@ -363,12 +361,12 @@ export const getBPDPaymentMethod = () =>
     });
 
 // get the hpans of walletv2 that support BPD (dashboard web)
-installCustomHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
+addHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
   res.json(getBPDPaymentMethod());
 });
 
 // reset walletv2-bpd config (dashboard web)
-installCustomHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
+addHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
   walletV2Config = defaultWalletV2Config;
   generateData();
   res.json(walletV2Config);

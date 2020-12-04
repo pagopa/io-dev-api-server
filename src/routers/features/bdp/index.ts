@@ -7,7 +7,7 @@ import {
   StatusEnum
 } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
 import { fiscalCode } from "../../../global";
-import { installCustomHandler } from "../../../payloads/response";
+import { addHandler } from "../../../payloads/response";
 
 export const bpd = Router();
 
@@ -28,7 +28,7 @@ let currentCitizen: CitizenResource | undefined;
  * can return these codes: 200, 401, 404, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  */
-installCustomHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
+addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
     return;
@@ -36,7 +36,7 @@ installCustomHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
   res.json(currentCitizen);
 });
 
-installCustomHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
+addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
   if (currentCitizen === undefined) {
     res.sendStatus(404);
     return;
@@ -50,7 +50,7 @@ installCustomHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
  * can return these codes: 200, 401, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  */
-installCustomHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
+addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
   currentCitizen = {
     ...citizen,
     enabled: true
@@ -68,7 +68,7 @@ installCustomHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  * see https://docs.google.com/document/d/1GuFOu24IeWK3W4pGlZ8PUnnMJi-oDr5xAQEjTxC0hfc/edit#heading=h.gr9fx7vug165
  */
-installCustomHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
+addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
   // citizen not found
   if (currentCitizen === undefined) {
     res.sendStatus(404);
@@ -97,7 +97,7 @@ installCustomHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
 // tslint:disable-next-line
 const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
 
-installCustomHandler(
+addHandler(
   bpd,
   "get",
   addBPDPrefix("/io/payment-instruments/:hashPan"),
@@ -119,7 +119,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   bpd,
   "put",
   addBPDPrefix("/io/payment-instruments/:hashPan"),
@@ -134,7 +134,7 @@ installCustomHandler(
   }
 );
 
-installCustomHandler(
+addHandler(
   bpd,
   "delete",
   addBPDPrefix("/io/payment-instruments/:hashPan"),

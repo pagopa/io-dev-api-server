@@ -2,16 +2,9 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
-import fs from "fs";
-import { AccessToken } from "../../generated/definitions/backend/AccessToken";
-import { ServerInfo } from "../../generated/definitions/backend/ServerInfo";
 import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
-import {
-  installCustomHandler,
-  installHandler,
-  routes
-} from "../payloads/response";
+import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
@@ -20,7 +13,7 @@ import { resetWalletV2 } from "./wallet_v2";
 
 export const publicRouter = Router();
 
-installCustomHandler(publicRouter, "get", "/login", (req, res) => {
+addHandler(publicRouter, "get", "/login", (req, res) => {
   if (req.query.authorized && req.query.authorized === "1") {
     res.redirect(loginWithToken);
     return;
@@ -28,59 +21,31 @@ installCustomHandler(publicRouter, "get", "/login", (req, res) => {
   sendFile("assets/html/login.html", res);
 });
 
-installCustomHandler(
-  publicRouter,
-  "get",
-  "/assets/imgs/how_to_login.png",
-  (_, res) => {
-    sendFile("assets/imgs/how_to_login.png", res);
-  }
-);
+addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
+  sendFile("assets/imgs/how_to_login.png", res);
+});
 
-installCustomHandler(publicRouter, "post", "/logout", (_, res) => {
+addHandler(publicRouter, "post", "/logout", (_, res) => {
   res.status(200).send({ message: "ok" });
 });
 
-installHandler(
-  publicRouter,
-  "get",
-  "/info",
-  () => ({
-    payload: backendInfo
-  }),
-  { codec: ServerInfo }
-);
+addHandler(publicRouter, "get", "/info", (_, res) => res.json(backendInfo));
 
 // ping (no longer needed since actually app disables network status checking)
-installHandler(publicRouter, "get", "/ping", () => ({
-  payload: "ok",
-  isJson: false
-}));
+addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 
 // test login
-installHandler(
-  publicRouter,
-  "post",
-  "/test-login",
-  () => ({
-    payload: { token: loginSessionToken }
-  }),
-  { codec: AccessToken }
+addHandler(publicRouter, "post", "/test-login", (_, res) =>
+  res.json({ token: loginSessionToken })
 );
 
 // backend service status
-installHandler(
-  publicRouter,
-  "get",
-  "/status/backend.json",
-  () => ({
-    payload: backendStatus
-  }),
-  { codec: BackendStatus }
+addHandler(publicRouter, "get", "/status/backend.json", (_, res) =>
+  res.json(backendStatus)
 );
 
 // it should be useful to reset some states
-installCustomHandler(publicRouter, "get", "/reset", (_, res) => {
+addHandler(publicRouter, "get", "/reset", (_, res) => {
   type emptyFunc = () => void;
   const resets: ReadonlyArray<readonly [emptyFunc, string]> = [
     [resetProfile, "bonus vacanze"],

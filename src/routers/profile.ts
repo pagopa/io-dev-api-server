@@ -8,13 +8,11 @@ import {
 } from "../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
-import { UserMetadata } from "../../generated/definitions/backend/UserMetadata";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import { getProfile } from "../payloads/profile";
-import { installCustomHandler, installHandler } from "../payloads/response";
-import { getSuccessResponse } from "../payloads/success";
-import { userMetadata } from "../payloads/userMetadata";
+import { addHandler } from "../payloads/response";
+import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
@@ -37,83 +35,67 @@ let userChoices = initialUserChoice;
 
 export const profileRouter = Router();
 
-// update installationID (usefull information to target device using push notification)
-installHandler(
+// update installationID (useful information to target device using push notification)
+addHandler(
   profileRouter,
   "put",
   addApiV1Prefix("/installations/:installationID"),
-  () => getSuccessResponse()
+  (_, res) => res.sendStatus(200)
 );
 
 // get profile
-installHandler(
-  profileRouter,
-  "get",
-  addApiV1Prefix("/profile"),
-  () => ({ payload: currentProfile }),
-  { codec: InitializedProfile }
+addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) =>
+  res.json(currentProfile)
 );
 
 // update profile
-installHandler(
-  profileRouter,
-  "post",
-  addApiV1Prefix("/profile"),
-  req => {
-    // profile is merged with the one coming from request.
-    // furthermore this profile's version is increased by 1
-    const clientProfileIncreased = {
-      ...req.body,
-      version: parseInt(req.body.version, 10) + 1
-    };
-    currentProfile = {
-      ...currentProfile,
-      ...clientProfileIncreased
-    };
-    return { payload: currentProfile };
-  },
-  { codec: InitializedProfile }
-);
+addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
+  // profile is merged with the one coming from request.
+  // furthermore this profile's version is increased by 1
+  const clientProfileIncreased = {
+    ...req.body,
+    version: parseInt(req.body.version, 10) + 1
+  };
+  currentProfile = {
+    ...currentProfile,
+    ...clientProfileIncreased
+  };
+  res.json(currentProfile);
+});
 
 // User metadata
-
-installHandler(
-  profileRouter,
-  "get",
-  addApiV1Prefix("/user-metadata"),
-  () => userMetadata,
-  { codec: UserMetadata }
+addHandler(profileRouter, "get", addApiV1Prefix("/user-metadata"), (_, res) =>
+  res.json({ ...mockUserMetadata, version: currentProfile.version })
 );
-installHandler(
+
+addHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/user-metadata"),
-  req => {
-    // simply validate and return the received user-metadata
-    const payload = validatePayload(UserMetadata, req.body);
-    return { payload };
-  },
-  { codec: UserMetadata }
+  (req, res) => {
+    res.json(req.body);
+  }
 );
 
 // User data processing (DOWNLOAD / DELETE)
-installHandler(
+addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/user-data-processing/:choice"),
-  req => {
+  (req, res) => {
     const choice = req.params.choice as UserDataProcessingChoiceEnum;
     if (userChoices[choice] === undefined) {
-      return getProblemJson(404);
+      res.status(404).json(getProblemJson(404));
+      return;
     }
-    return { payload: userChoices[choice] };
+    res.json(userChoices[choice]);
   }
 );
-installHandler(
+addHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/user-data-processing"),
-  req => {
+  (req, res) => {
     const payload = validatePayload(UserDataProcessingChoiceRequest, req.body);
     const choice = payload.choice;
     if (
@@ -131,11 +113,11 @@ installHandler(
       DOWNLOAD: choice === "DOWNLOAD" ? data : userChoices.DOWNLOAD,
       DELETE: choice === "DELETE" ? data : userChoices.DELETE
     };
-    return { payload: userChoices[choice] };
+    res.json(userChoices[choice]);
   }
 );
 
-installCustomHandler(
+addHandler(
   profileRouter,
   "delete",
   addApiV1Prefix("/user-data-processing/:choice"),
@@ -180,7 +162,7 @@ installCustomHandler(
 
 // Email validation
 // return positive feedback on request to receive a new email message to verify his/her email
-installCustomHandler(
+addHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/email-validation-process"),
