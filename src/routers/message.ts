@@ -44,14 +44,6 @@ const createMessages = () => {
     iup: "0000X0NFM",
     prescriber_fiscal_code: fiscalCode as FiscalCode
   };
-  const attachments: ReadonlyArray<MessageAttachment> = [
-    { name: "attachment1", content: base64png, mime_type: "image/png" },
-    {
-      name: "attachment2",
-      content: base64svg,
-      mime_type: "image/svg+xml"
-    }
-  ];
 
   const messagesWC = new Array();
   const medicalPrescriptionMessage = withMessageContent(

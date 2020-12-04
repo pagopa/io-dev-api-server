@@ -94,7 +94,6 @@ addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
   res.json({ validationStatus });
 });
 
-// tslint:disable-next-line
 const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
 
 addHandler(

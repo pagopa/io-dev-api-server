@@ -301,21 +301,9 @@ export const getPspList = () => {
   return validatePayload(PspListResponse, data);
 };
 
-export const getPayResponse = () => {
-  return validatePayload(TransactionResponse, payResponse);
-};
-
-export const getTransactionResponseFirst = () => {
-  return validatePayload(TransactionResponse, transactionIdResponseFirst);
-};
-
-export const getTransactionResponseSecond = () => {
-  return validatePayload(TransactionResponse, transactionIdResponseSecond);
-};
-
 // tslint:disable-next-line: readonly-array
 export const getPaymentsArray = (): paymentItem[] => {
-  const localStorage = {} as any; //new LocalStorage("./scratch");
+  const localStorage = {} as any;
   const paymentsStorage = localStorage.getItem("payments");
   const paymentsArray =
     paymentsStorage !== null ? JSON.parse(paymentsStorage) : { payments: [] };

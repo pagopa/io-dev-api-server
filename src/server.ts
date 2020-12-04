@@ -1,4 +1,3 @@
-import { walletRouter } from "./routers/wallet";
 import bodyParser from "body-parser";
 import { Application, Router } from "express";
 import express from "express";
@@ -9,12 +8,13 @@ import { bpdAward } from "./routers/features/bdp/award";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
-import { profileRouter } from "./routers/profile";
 import { paymentRouter } from "./routers/payment";
+import { profileRouter } from "./routers/profile";
 import { publicRouter } from "./routers/public";
 import { serviceRouter } from "./routers/service";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
+import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/wallet_v2";
 import { delayer } from "./utils/delay_middleware";
 

@@ -58,23 +58,23 @@ const defaultWalletV2Config: WalletV2Config = {
   citizenSatispay: true,
   citizenBancomat: 3
 };
-// tslint:disable-next-line
+// tslint:disable-next-line: no-let
 let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
-// tslint:disable-next-line
+// tslint:disable-next-line: no-let
 export let walletV2Response: WalletV2ListResponse = {
   data: []
 };
-// tslint:disable-next-line
-let walletBancomat = [];
-// tslint:disable-next-line
-let walletCreditCards = [];
-// tslint:disable-next-line
-let walletSatispay = [];
-// tslint:disable-next-line
-let walletBancomatPay = [];
-// tslint:disable-next-line
+// tslint:disable-next-line: no-let
+let walletBancomat: ReadonlyArray<any> = [];
+// tslint:disable-next-line: no-let
+let walletCreditCards: ReadonlyArray<any> = [];
+// tslint:disable-next-line: no-let
+let walletSatispay: ReadonlyArray<any> = [];
+// tslint:disable-next-line: no-let
+let walletBancomatPay: ReadonlyArray<any> = [];
+// tslint:disable-next-line: no-let
 let walletV2Config = defaultWalletV2Config;
 
 // the bancomat owned by the citizen

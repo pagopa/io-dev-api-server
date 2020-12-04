@@ -19,10 +19,10 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { currentProfile } from "../routers/profile";
-import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
-import { listDir } from "../utils/file";
 import { assetsFolder } from "../global";
+import { currentProfile } from "../routers/profile";
+import { listDir } from "../utils/file";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
   prefix: string;

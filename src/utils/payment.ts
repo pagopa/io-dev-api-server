@@ -20,7 +20,6 @@ export const creditCardBrands: ReadonlyArray<CreditCardBrandEnum> = [
   CreditCardBrandEnum.AMEX,
   CreditCardBrandEnum.DINERS,
   CreditCardBrandEnum.DISCOVER,
-  //CreditCardBrandEnum.JCB,
   CreditCardBrandEnum.POSTEPAY
 ];
 

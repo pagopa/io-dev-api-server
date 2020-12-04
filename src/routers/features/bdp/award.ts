@@ -2,7 +2,6 @@
 import chalk from "chalk";
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import fs from "fs";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
 import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/winning_transactions/BpdWinningTransactions";
 import { TotalCashbackResource } from "../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
@@ -193,12 +192,15 @@ addHandler(
   addBPDPrefix("/winning-transactions/transactions/presets"),
   (req, res) => {
     const folders = listDir(assetsFolder + "/bpd/award/winning_transactions");
-    const folderFiles = folders.reduce((acc, curr) => {
-      const files = listDir(
-        `${assetsFolder}/bpd/award/winning_transactions/${curr}`
-      );
-      return { ...acc, [curr]: files };
-    }, {});
+    const folderFiles = folders.reduce(
+      (acc: Record<string, ReadonlyArray<string>>, curr: string) => {
+        const files = listDir(
+          `${assetsFolder}/bpd/award/winning_transactions/${curr}`
+        );
+        return { ...acc, [curr]: files };
+      },
+      {}
+    );
     res.json(folderFiles);
   }
 );
@@ -210,10 +212,15 @@ addHandler(
   addBPDPrefix("/winning-transactions/total_cashback/presets"),
   (_, res) => {
     const folders = listDir(assetsFolder + "/bpd/award/total_cashback");
-    const folderFiles = folders.reduce((acc, curr) => {
-      const files = listDir(`${assetsFolder}/bpd/award/total_cashback/${curr}`);
-      return { ...acc, [curr]: files };
-    }, {});
+    const folderFiles = folders.reduce(
+      (acc: Record<string, ReadonlyArray<string>>, curr: string) => {
+        const files = listDir(
+          `${assetsFolder}/bpd/award/total_cashback/${curr}`
+        );
+        return { ...acc, [curr]: files };
+      },
+      {}
+    );
     res.json(folderFiles);
   }
 );
