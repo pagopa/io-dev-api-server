@@ -1,0 +1,62 @@
+[
+  {
+    "amount": 0.159711,
+    "awardPeriodId": 0,
+    "cashback": 0.01571,
+    "circuitType": "00",
+    "hashPan": "2f969cf41246000a4f5a3b6e100e1826bd58205a0feba80f64c2a853fb8f4fa50000",
+    "idTrxAcquirer": "idTrxAcquirer",
+    "idTrxIssuer": "idTrxIssuer",
+    "trxDate": "2020-11-01T10:30:00.000Z"
+  },
+  {
+    "amount": 5000,
+    "awardPeriodId": 0,
+    "cashback": 15,
+    "circuitType": "01",
+    "hashPan": "d48a59cdfbe3da7e4fe25e28cbb47d5747720ecc6fc392c87f1636fe95db22f90005",
+    "idTrxAcquirer": "idTrxAcquirer",
+    "idTrxIssuer": "idTrxIssuer",
+    "trxDate": "2020-11-02"
+  },
+  {
+    "amount": 100,
+    "awardPeriodId": 0,
+    "cashback": 0,
+    "circuitType": "02",
+    "hashPan": "hashPan",
+    "idTrxAcquirer": "idTrxAcquirer0",
+    "idTrxIssuer": "idTrxIssuer0",
+    "trxDate": "2020-11-02"
+  },
+  {
+    "amount": -100,
+    "awardPeriodId": 0,
+    "cashback": -10,
+    "circuitType": "03",
+    "hashPan": "hashPan",
+    "idTrxAcquirer": "idTrxAcquirer1",
+    "idTrxIssuer": "idTrxIssuer1",
+    "trxDate": "2020-11-02T21:25:00.000Z"
+  },
+  {
+    "amount": 100,
+    "awardPeriodId": 0,
+    "cashback": 10,
+    "circuitType": "04",
+    "hashPan": "hashPan",
+    "idTrxAcquirer": "idTrxAcquirer2",
+    "idTrxIssuer": "idTrxIssuer2",
+    "trxDate": "2020-11-02T21:25:00.000Z"
+  },
+  {
+    "amount": 100,
+    "awardPeriodId": 0,
+    "cashback": 142,
+    "circuitType": "05",
+    "hashPan": "hashPan",
+    "idTrxAcquirer": "idTrxAcquirer3",
+    "idTrxIssuer": "idTrxIssuer3",
+    "trxDate": "2018-10-13"
+  }
+]

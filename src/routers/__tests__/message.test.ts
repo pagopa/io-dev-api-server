@@ -14,7 +14,7 @@ it("messages should return a valid messages list", async done => {
   );
   expect(list.isRight()).toBeTruthy();
   if (list.isRight()) {
-    expect(list.value).toEqual(messages.payload);
+    expect(list.value.items).toEqual(messages.payload.items);
   }
   done();
 });

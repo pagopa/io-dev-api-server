@@ -1,3 +1,8 @@
 // fiscalCode used within the client communication
-export const fiscalCode = "RSSMRA80A41H501Y";
+import { Millisecond } from "italia-ts-commons/lib/units";
+
+export const isTestEnv = process.env.NODE_ENV === "test";
+export const fiscalCode = "TAMMRA80A41H501Y";
 export const staticContentRootPath = "/static_contents";
+export const assetsFolder = __dirname + "/../assets";
+export const globalDelay = 0 as Millisecond;

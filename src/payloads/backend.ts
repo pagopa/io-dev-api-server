@@ -26,7 +26,7 @@ export type BackendStatus = t.TypeOf<typeof BackendStatus>;
 export const backendStatus = {
   is_alive: true,
   message: {
-    "it-IT": "messaggio in italiano",
+    "it-IT": "messaggio personalizzabile in italiano",
     "en-EN": "english message"
   }
 };

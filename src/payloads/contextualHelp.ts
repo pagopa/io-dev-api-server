@@ -6,9 +6,10 @@ const contextualHelp: ContextualHelp = {
   it: {
     screens: [
       {
-        route_name: "PROFILE_MAIN",
-        title: "title",
-        content: "**content**"
+        route_name: "SERVICE_DETAIL",
+        title: "remote title",
+        content: "**remote content**",
+        faqs: [{ title: "faq1 title", body: "faq1 body" }]
       }
     ],
     idps: {

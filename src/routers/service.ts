@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { notFound } from "../payloads/error";
-import { installHandler } from "../payloads/response";
+import { addHandler } from "../payloads/response";
 import {
   getServices,
   getServicesByScope,
@@ -13,24 +13,20 @@ export const services = getServices(5);
 export const visibleServices = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 
-installHandler(
-  serviceRouter,
-  "get",
-  addApiV1Prefix("/services"),
-  () => visibleServices
+addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) =>
+  res.json(visibleServices.payload)
 );
 
-installHandler(
+addHandler(
   serviceRouter,
   "get",
   addApiV1Prefix("/services/:service_id"),
 
   // return a mock service with the same requested id (always found!)
-  req => {
+  (req, res) => {
     const service = services.find(
       item => item.service_id === req.params.service_id
     );
-
-    return { payload: service || notFound.payload };
+    res.json(service || notFound.payload);
   }
 );

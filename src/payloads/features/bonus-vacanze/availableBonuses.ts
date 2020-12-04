@@ -32,7 +32,7 @@ Questi sono i passaggi che ti chiederemo di effettuare:
 - il tuo bonus sarà poi visibile nella sezione Pagamenti.
 `;
 
-export const availableBonuses: BonusesAvailable = [
+export const legacyAvailableBonuses: BonusesAvailable = [
   {
     id_type: 1,
     it: {
@@ -60,5 +60,48 @@ export const availableBonuses: BonusesAvailable = [
     sponsorship_description: "Agenzia delle Entrate",
     sponsorship_cover:
       "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_AgenziaEntrate.png"
+  },
+  {
+    id_type: 2,
+    it: {
+      name: "Cashback Pagamenti Digitali",
+      subtitle:
+        "Ottieni un rimborso quando usi i tuoi strumenti di pagamento elettronico per pagare nei negozi",
+      title: "Bonus Cashback Pagamenti Digitali",
+      content:
+        "#### Chi può richiederlo?\n\nSe hai compiuto i 18 anni e risiedi in Italia, puoi ottenere un **rimborso in denaro** a fronte di acquisti effettuati a titolo privato (cioè non per uso professionale) con **strumenti di pagamento elettronici** presso **punti vendita fisici** (non online) situati sul territorio nazionale.\n\n#### Come funziona il Cashback?\n1. Il programma Cashback si divide in periodi di durata variabile. Il primo periodo **sperimentale** dura un mese, **dal 1° al 31 dicembre 2020.** I successivi dureranno 6 mesi ciascuno, a partire dal 1° gennaio 2021.\n2. Per ogni periodo potrai ottenere un **rimborso massimo di €150**. Ogni acquisto effettuato con strumenti di pagamento elettronici **registrati** ai fini dell’iniziativa, ti farà accumulare il 10% dell’importo speso, fino ad un massimo di €15 per transazione.\n3. Il cashback accumulato ti verrà rimborsato solo se avrai raggiunto il numero minimo di transazioni valide: 10 nel periodo sperimentale**, 50 in ciascuno dei semestri successivi.\n4. Oltre al Cashback, **a partire dal 1° gennaio 2021**, **i primi 100mila** partecipanti che in ogni semestre hanno totalizzato il **maggior numero di transazioni valide**, ricevono un **Super Cashback di €1500**.\n5. Al termine del periodo, ricevi il rimborso complessivo accumulato **sull’IBAN che indicherai durante l’attivazione.**",
+      tos_url: "https://io.italia.it/cashback/privacy-policy",
+      urls: [
+        {
+          name: "leggi il regolamento completo",
+          url: "https://io.italia.it/cashback/guida"
+        }
+      ]
+    },
+    en: {
+      name: "Cashback Digital Payments",
+      subtitle:
+        "Get a refund on in-store purchases when using your electronic payment methods",
+      title: "Cashback Digital Payments",
+      content:
+        "#### Who can request it?\n\nIf you are 18 or above and officially registered as resident in Italy, you’re eligible for a **money refund** when you make purchases for personal purposes (i.e. not for business), in **physical point of sales** in Italy.\n\n#### How does Cashback work?\n1. The initiative consists of several periods with a variable duration. The first **test** period lasts 1 month, **from December 1st to 31th 2020.** The next ones will have a duration of 6 months each, starting from January 1st 2021.\n2. During each period you can get a **refund up to €150**. You’ll get a 10% cashback on your purchases performed with your enrolled payment methods, up to €15 per transaction.\n3. The collected Cashback will be refunded only after reaching **the minimum number of valid transactions: 10 within the test period**, 50 within each one of the following semesters.\n4.In addition to Cashback, **starting from January 1st 2021**, **the first 100k** participants who will have collected the **highest amount of valid transactions** in each semester, will get a **€1500 Super Cashback**.\n5. At the end of each period, you will receive the total amount of earned money **on the IBAN account you'll enter during the activation process.**",
+      tos_url: "https://io.italia.it/cashback/privacy-policy",
+      urls: [
+        {
+          name: "read the complete regulation",
+          url: "https://io.italia.it/cashback/guida"
+        }
+      ]
+    },
+    hidden: false,
+    service_id: "01EB8AXKNV6NMSP2R25KSGF743",
+    is_active: false,
+    valid_from: new Date("2020-07-01T00:00:00.000Z"),
+    valid_to: new Date("2020-12-31T00:00:00.000Z"),
+    cover:
+      "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-cashback.png",
+    sponsorship_description: "Ministero dell'Economia e delle Finanze",
+    sponsorship_cover:
+      "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-mef.png"
   }
 ];

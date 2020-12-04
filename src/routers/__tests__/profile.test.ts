@@ -6,7 +6,7 @@ import { UserMetadata } from "../../../generated/definitions/backend/UserMetadat
 import { Municipality } from "../../../generated/definitions/content/Municipality";
 import { fiscalCode } from "../../global";
 import { basePath } from "../../payloads/response";
-import { userMetadata } from "../../payloads/userMetadata";
+import { mockUserMetadata } from "../../payloads/userMetadata";
 import app from "../../server";
 
 const request = supertest(app);
@@ -65,13 +65,13 @@ it("get municipality should return a valid municipality", async done => {
 it("post user-metadata should return the updated user-metadata", async done => {
   const response = await request
     .post(`${basePath}/user-metadata`)
-    .send(userMetadata.payload)
+    .send(mockUserMetadata)
     .set("Content-Type", "application/json");
   expect(response.status).toBe(200);
   const updatedUsermetadata = UserMetadata.decode(response.body);
   expect(updatedUsermetadata.isRight()).toBeTruthy();
   if (updatedUsermetadata.isRight()) {
-    expect(updatedUsermetadata.value).toEqual(userMetadata.payload);
+    expect(updatedUsermetadata.value).toEqual(mockUserMetadata);
   }
   done();
 });

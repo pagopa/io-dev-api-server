@@ -12,6 +12,7 @@ import {
 } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { validatePayload } from "../utils/validator";
+import { frontMatterMyPortal } from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -116,7 +117,9 @@ export const getServiceMetadata = (
     app_ios: "https://www.google.com",
     support_url: "https://www.sos.com",
     tos_url: "https://www.tos.com",
-    privacy_url: "https://www.privacy.com"
+    privacy_url: "https://www.privacy.com",
+    token_name: "myPortalToken",
+    cta: frontMatterMyPortal
   };
   return { payload: validatePayload(Service, metaData), isJson: true };
 };

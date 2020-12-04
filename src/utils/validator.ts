@@ -30,3 +30,8 @@ export const validateAndCreatePayload = <T, O, I>(
   }
   return { payload: maybeValidPayload.value, isJson: true, status: statusCode };
 };
+
+export const toPayload = <T>(
+  payload: T,
+  statusCode: number = 200
+): IOResponse<T> => ({ payload, isJson: true, status: statusCode });
