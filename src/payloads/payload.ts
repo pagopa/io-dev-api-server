@@ -245,17 +245,14 @@ export const transactionIdResponseSecond = {
   }
 };
 
-export const getPaymentRequestsGetResponse = () => {
-  const data = {
-    importoSingoloVersamento: faker.random.number({ min: 1, max: 9999 }),
-    codiceContestoPagamento: faker.random.alphaNumeric(32),
-    ibanAccredito: faker.finance.iban(),
-    causaleVersamento: faker.finance.transactionDescription(),
-    enteBeneficiario: paymentData.enteBeneficiario,
-    spezzoniCausaleVersamento: [paymentData.spezzoniCausaleVersamento]
-  };
-  return data;
-};
+export const getPaymentRequestsGetResponse = () => ({
+  importoSingoloVersamento: faker.random.number({ min: 1, max: 9999 }),
+  codiceContestoPagamento: faker.random.alphaNumeric(32),
+  ibanAccredito: faker.finance.iban(),
+  causaleVersamento: faker.finance.transactionDescription(),
+  enteBeneficiario: paymentData.enteBeneficiario,
+  spezzoniCausaleVersamento: [paymentData.spezzoniCausaleVersamento]
+});
 
 export const getPaymentActivationsPostResponse = (): PaymentActivationsPostResponse => {
   const data: PaymentActivationsPostResponse = {

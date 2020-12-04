@@ -29,7 +29,7 @@ type CardConfig = {
   index: number;
 };
 
-// tslint:disable-next-line
+// tslint:disable-next-line: no-let
 let defaultCardConfig: CardConfig = { prefix: "00000000000", index: 0 };
 const cardConfigMap: Map<WalletTypeEnum, CardConfig> = new Map<
   WalletTypeEnum,
@@ -94,8 +94,7 @@ export const generateCards = (
   count: number = 10,
   cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
 ): ReadonlyArray<CardInfo> => {
-  // tslint:disable-next-line
-  const shuffledAbis = faker.helpers.shuffle(abis as Abi[]);
+  const shuffledAbis = faker.helpers.shuffle([...abis]);
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig
@@ -121,7 +120,7 @@ export const generateCards = (
 };
 
 const abiLogoFiles = listDir(assetsFolder + "/imgs/logos/abi");
-// tslint:disable-next-line
+// tslint:disable-next-line: no-let
 let millis = new Date().getTime();
 export const abiData = range(1, abiLogoFiles.length - 1).map<Abi>(_ => {
   faker.seed(millis++);
