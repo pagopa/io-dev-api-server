@@ -43,7 +43,7 @@
   "dependencies": {
     "@types/body-parser": "^1.17.1",
     "@types/date-fns": "^2.6.0",
-    "@types/faker": "^5.1.0",
+    "@types/faker": "^5.1.2",
     "@types/morgan": "^1.7.37",
     "@types/prettier": "^1.19.0",
     "@types/sha256": "^0.2.0",
