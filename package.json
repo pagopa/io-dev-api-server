@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
-    "@types/faker": "^5.1.2",
+    "@types/faker": "^5.1.4",
     "@types/morgan": "^1.7.37",
     "@types/prettier": "^1.19.0",
     "@types/swagger-parser": "^7.0.1",
