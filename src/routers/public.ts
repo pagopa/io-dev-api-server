@@ -2,7 +2,7 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
-import { backendInfo, BackendStatus, backendStatus } from "../payloads/backend";
+import { backendInfo, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";

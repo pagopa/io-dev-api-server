@@ -5,7 +5,6 @@ import { Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
 import { assetsFolder, staticContentRootPath } from "../global";
-import { contextualHelpData } from "../payloads/contextualHelp";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
@@ -121,6 +120,15 @@ addHandler(
   "get",
   addRoutePrefix("/contextualhelp/data.json"),
   (_, res) => {
-    res.json(contextualHelpData);
+    res.json(JSON.parse(readFile(assetsFolder + "/contextual_help/data.json")));
+  }
+);
+
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/data/abi.json"),
+  (_, res) => {
+    res.json(JSON.parse(readFile(assetsFolder + "/data/abi.json")));
   }
 );
