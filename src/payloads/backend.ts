@@ -64,7 +64,7 @@ export const backendStatus: BackendStatus = {
   },
   sections: {
     messages: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
         "it-IT":
@@ -74,7 +74,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     services: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -88,7 +88,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     login: {
-      is_visible: false,
+      is_visible: true,
       level: "normal",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -102,7 +102,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     wallets: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -116,7 +116,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     ingress: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",

@@ -21,7 +21,7 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../global";
 import { currentProfile } from "../routers/profile";
-import { listDir } from "../utils/file";
+import { listDir, readFile } from "../utils/file";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
@@ -119,14 +119,16 @@ export const generateCards = (
   });
 };
 
-const abiLogoFiles = listDir(assetsFolder + "/imgs/logos/abi");
+const abiCodes = JSON.parse(readFile(assetsFolder + "/data/abi.json")).data.map(
+  (a: any) => a.abi
+);
 // tslint:disable-next-line: no-let
 let millis = new Date().getTime();
-export const abiData = range(1, abiLogoFiles.length - 1).map<Abi>(_ => {
+export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   faker.seed(millis++);
   return {
-    abi: abiLogoFiles[
-      faker.random.number({ min: 0, max: abiLogoFiles.length - 1 })
+    abi: abiCodes[
+      faker.random.number({ min: 0, max: abiCodes.length - 1 })
     ].replace(".png", ""),
     name: faker.company.companyName()
   };

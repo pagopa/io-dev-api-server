@@ -9,7 +9,7 @@ import {
 import { addApiV1Prefix } from "../utils/strings";
 
 export const serviceRouter = Router();
-export const services = getServices(5);
+export const services = getServices(15);
 export const visibleServices = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 
