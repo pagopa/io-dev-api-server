@@ -191,7 +191,8 @@ addHandler<RestPanResponse>(
       }
     };
     if (abi === undefined) {
-      return toPayload(response);
+      res.json(response);
+      return;
     }
     res.json({
       ...response,
