@@ -127,7 +127,7 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/data/abi.json"),
+  addRoutePrefix("/status/abi.json"),
   (_, res) => {
     res.json(JSON.parse(readFile(assetsFolder + "/data/abi.json")));
   }
