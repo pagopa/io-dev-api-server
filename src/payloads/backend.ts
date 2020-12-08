@@ -68,17 +68,16 @@ export const backendStatus: BackendStatus = {
   },
   sections: {
     cashback: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
-        "it-IT":
-          "la sezione messaggi è in manutenzione, tornerà operativa a breve",
+        "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
         "en-EN":
-          "the messages section is under maintenance, it will be operational again shortly"
+          "Cashback is under maintenance, it will be operational again soon"
       }
     },
     emailValidation: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
         "it-IT":
