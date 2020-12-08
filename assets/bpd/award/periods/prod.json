@@ -10,7 +10,7 @@
     "maxPeriodCashback": 150,
     "cashbackPercentage": 10,
     "gracePeriod": 10,
-    "status": "INACTIVE",
+    "status": "ACTIVE",
     "maxTransactionEvaluated": 150
   },
   {
