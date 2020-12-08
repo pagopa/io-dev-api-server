@@ -46,7 +46,7 @@ const Sections = t.interface({
   wallets: SectionStatus,
   login: SectionStatus,
   services: SectionStatus,
-  emailValidation: SectionStatus,
+  email_validation: SectionStatus,
   cashback: SectionStatus
 });
 const BackendStatusO = t.partial({
@@ -76,7 +76,7 @@ export const backendStatus: BackendStatus = {
           "Cashback is under maintenance, it will be operational again soon"
       }
     },
-    emailValidation: {
+    email_validation: {
       is_visible: true,
       level: "warning",
       message: {
