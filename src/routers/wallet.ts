@@ -145,7 +145,7 @@ addHandler(
   "post",
   appendWalletPrefix("/payments/cc/actions/pay"),
   (_, res) => {
-    return toPayload({
+    res.json({
       data: {
         id: faker.random.number({ min: 20000, max: 30000 }),
         created: "2020-10-26T08:31:49Z",
