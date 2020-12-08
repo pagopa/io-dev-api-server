@@ -45,7 +45,9 @@ const Sections = t.interface({
   messages: SectionStatus,
   wallets: SectionStatus,
   login: SectionStatus,
-  services: SectionStatus
+  services: SectionStatus,
+  emailValidation: SectionStatus,
+  cashback: SectionStatus
 });
 const BackendStatusO = t.partial({
   sections: Sections
@@ -65,6 +67,26 @@ export const backendStatus: BackendStatus = {
     "en-EN": "english message"
   },
   sections: {
+    cashback: {
+      is_visible: false,
+      level: "warning",
+      message: {
+        "it-IT":
+          "la sezione messaggi è in manutenzione, tornerà operativa a breve",
+        "en-EN":
+          "the messages section is under maintenance, it will be operational again shortly"
+      }
+    },
+    emailValidation: {
+      is_visible: false,
+      level: "warning",
+      message: {
+        "it-IT":
+          "la sezione messaggi è in manutenzione, tornerà operativa a breve",
+        "en-EN":
+          "the messages section is under maintenance, it will be operational again shortly"
+      }
+    },
     messages: {
       is_visible: false,
       level: "warning",
