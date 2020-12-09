@@ -6,7 +6,6 @@ export const backendInfo = {
   version: "2.1.2"
 };
 
-// required attributes
 const LocalizedMessage = t.interface({
   "it-IT": t.string,
   "en-EN": t.string
@@ -31,7 +30,8 @@ const SectionStatusR = t.interface({
 });
 
 const SectionStatusO = t.partial({
-  web_url: LocalizedMessage
+  web_url: LocalizedMessage,
+  badge: LocalizedMessage
 });
 
 export const SectionStatus = t.intersection(
@@ -47,8 +47,14 @@ const Sections = t.interface({
   login: SectionStatus,
   services: SectionStatus,
   email_validation: SectionStatus,
-  cashback: SectionStatus
+  cashback: SectionStatus,
+  bancomat: SectionStatus,
+  satispay: SectionStatus,
+  bancomatpay: SectionStatus,
+  credit_card: SectionStatus,
+  digital_payments: SectionStatus
 });
+export type Sections = t.TypeOf<typeof Sections>;
 const BackendStatusO = t.partial({
   sections: Sections
 });
@@ -57,6 +63,7 @@ export const BackendStatus = t.intersection(
   [BackendStatusR, BackendStatusO],
   "BackendStatus"
 );
+export type SectionStatusKey = keyof Sections;
 export type BackendStatus = t.TypeOf<typeof BackendStatus>;
 
 // ref https://iopstcdnassets.z6.web.core.windows.net/status/backend.json
@@ -150,6 +157,54 @@ export const backendStatus: BackendStatus = {
           "i nostri sistemi potrebbero rispondere con lentezza, ci scusiamo per il disagio",
         "en-EN":
           "our systems may respond slowly, we apologize for the inconvenience"
+      }
+    },
+    credit_card: {
+      is_visible: true,
+      level: "warning",
+      badge: {
+        "it-IT": "credit card value",
+        "en-EN": "badge value"
+      },
+      message: {
+        "it-IT": "credit card badge",
+        "en-EN": "credit_card"
+      }
+    },
+    satispay: {
+      is_visible: false,
+      level: "critical",
+      message: {
+        "it-IT": "satispay",
+        "en-EN": "satispay"
+      }
+    },
+    bancomat: {
+      is_visible: true,
+      level: "normal",
+      message: {
+        "it-IT": "bancomat",
+        "en-EN": "bancomat"
+      },
+      badge: {
+        "it-IT": "bancomat badge",
+        "en-EN": "bancomat"
+      }
+    },
+    bancomatpay: {
+      is_visible: false,
+      level: "warning",
+      message: {
+        "it-IT": "bancomatpay",
+        "en-EN": "bancomatpay"
+      }
+    },
+    digital_payments: {
+      is_visible: false,
+      level: "warning",
+      message: {
+        "it-IT": "digital_payments",
+        "en-EN": "digital_payments"
       }
     }
   }
