@@ -68,7 +68,7 @@ export const backendStatus: BackendStatus = {
   },
   sections: {
     cashback: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       message: {
         "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
