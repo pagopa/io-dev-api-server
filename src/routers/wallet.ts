@@ -26,7 +26,7 @@ import {
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
-import { toPayload, validatePayload } from "../utils/validator";
+import { validatePayload } from "../utils/validator";
 import { addWalletV2 } from "./wallet_v2";
 export const walletCount = 4;
 export const walletRouter = Router();

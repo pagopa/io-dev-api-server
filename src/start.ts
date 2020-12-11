@@ -7,8 +7,9 @@ import { networkInterfaces } from "os";
 import { routes } from "./payloads/response";
 import app from "./server";
 import { interfaces, serverHostname, serverPort } from "./utils/server";
+import { readFileAsJSON } from "./utils/file";
 // read package.json to print some info
-const packageJson = JSON.parse(fs.readFileSync("./package.json").toString());
+const packageJson = readFileAsJSON("./package.json");
 
 app.listen(serverPort, serverHostname, async () => {
   child_process.exec("git branch --show-current", (err, stdout) => {

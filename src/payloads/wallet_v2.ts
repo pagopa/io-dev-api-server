@@ -21,7 +21,7 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../global";
 import { currentProfile } from "../routers/profile";
-import { listDir, readFile } from "../utils/file";
+import { readFileAsJSON } from "../utils/file";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
@@ -119,9 +119,8 @@ export const generateCards = (
   });
 };
 
-const abiCodes = JSON.parse(readFile(assetsFolder + "/data/abi.json")).data.map(
-  (a: any) => a.abi
-);
+const abiList = readFileAsJSON(assetsFolder + "/data/abi.json").data;
+const abiCodes = (abiList ?? []).map((a: any) => a.abi);
 // tslint:disable-next-line: no-let
 let millis = new Date().getTime();
 export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {

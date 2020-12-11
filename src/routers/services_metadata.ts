@@ -8,7 +8,7 @@ import { assetsFolder, staticContentRootPath } from "../global";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
-import { readFile, sendFile } from "../utils/file";
+import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
 
 export const servicesMetadataRouter = Router();
@@ -75,7 +75,9 @@ addHandler(
   addRoutePrefix("/bonus/vacanze/bonuses_available.json"),
   (_, res) =>
     res.json(
-      readFile(assetsFolder + "/bonus_available/bonus_available_legacy.json")
+      readFileAsJSON(
+        assetsFolder + "/bonus_available/bonus_available_legacy.json"
+      )
     )
 );
 
@@ -85,9 +87,7 @@ addHandler(
   addRoutePrefix("/bonus/bonus_available.json"),
   (_, res) =>
     res.json(
-      JSON.parse(
-        readFile(assetsFolder + "/bonus_available/bonus_available.json")
-      )
+      readFileAsJSON(assetsFolder + "/bonus_available/bonus_available.json")
     )
 );
 
@@ -97,9 +97,7 @@ addHandler(
   addRoutePrefix("/bonus/bonus_available_v1.json"),
   (_, res) =>
     res.json(
-      JSON.parse(
-        readFile(assetsFolder + "/bonus_available/bonus_available_v1.json")
-      )
+      readFileAsJSON(assetsFolder + "/bonus_available/bonus_available_v1.json")
     )
 );
 
@@ -109,9 +107,7 @@ addHandler(
   addRoutePrefix("/bonus/bonus_available_v2.json"),
   (_, res) =>
     res.json(
-      JSON.parse(
-        readFile(assetsFolder + "/bonus_available/bonus_available_v2.json")
-      )
+      readFileAsJSON(assetsFolder + "/bonus_available/bonus_available_v2.json")
     )
 );
 
@@ -119,9 +115,8 @@ addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/contextualhelp/data.json"),
-  (_, res) => {
-    res.json(JSON.parse(readFile(assetsFolder + "/contextual_help/data.json")));
-  }
+  (_, res) =>
+    res.json(readFileAsJSON(assetsFolder + "/contextual_help/data.json"))
 );
 
 addHandler(
@@ -129,6 +124,6 @@ addHandler(
   "get",
   addRoutePrefix("/status/abi.json"),
   (_, res) => {
-    res.json(JSON.parse(readFile(assetsFolder + "/data/abi.json")));
+    res.json(readFileAsJSON(assetsFolder + "/data/abi.json"));
   }
 );

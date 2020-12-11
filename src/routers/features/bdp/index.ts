@@ -8,7 +8,7 @@ import {
 } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
 import { assetsFolder, fiscalCode } from "../../../global";
 import { addHandler } from "../../../payloads/response";
-import { readFile } from "../../../utils/file";
+import { readFileAsJSON } from "../../../utils/file";
 
 export const bpd = Router();
 
@@ -127,8 +127,8 @@ addHandler(
   addBPDPrefix("/io/payment-instruments/number/"),
   (req, res) =>
     res.json(
-      JSON.parse(
-        readFile(assetsFolder + "/bpd/payment-instruments/number/default.json")
+      readFileAsJSON(
+        assetsFolder + "/bpd/payment-instruments/number/default.json"
       )
     )
 );

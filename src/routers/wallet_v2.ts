@@ -180,9 +180,9 @@ addHandler<RestPanResponse>(
   appendWalletPrefix("/bancomat/pans"),
   (req, res) => {
     const abi = req.query.abi;
-    const msg = JSON.parse(
-      fs.readFileSync(assetsFolder + "/pm/pans/messages.json").toString()
-    );
+    const msg = fs
+      .readFileSync(assetsFolder + "/pm/pans/messages.json")
+      .toString();
     const response = {
       ...pansResponse,
       data: {

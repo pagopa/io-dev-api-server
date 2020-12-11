@@ -7,25 +7,21 @@ import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/wi
 import { TotalCashbackResource } from "../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
-import { listDir, readFile } from "../../../utils/file";
+import { listDir, readFileAsJSON } from "../../../utils/file";
 import { addBPDPrefix } from "./index";
 
 export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
-  JSON.parse(readFile(assetsFolder + "/bpd/award/periods/" + fileName));
+  readFileAsJSON(assetsFolder + "/bpd/award/periods/" + fileName);
 
 const readTotalCashbackJson = (directoryName: string, fileName: string) =>
-  JSON.parse(
-    readFile(
-      `${assetsFolder}/bpd/award/total_cashback/${directoryName}/${fileName}`
-    )
+  readFileAsJSON(
+    `${assetsFolder}/bpd/award/total_cashback/${directoryName}/${fileName}`
   );
 
 const readWinningTransactions = (directoryName: string, fileName: string) =>
-  JSON.parse(
-    readFile(
-      `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
-    )
+  readFileAsJSON(
+    `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
   );
 
 // tslint:disable-next-line: no-let
