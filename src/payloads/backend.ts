@@ -163,12 +163,12 @@ export const backendStatus: BackendStatus = {
       is_visible: true,
       level: "warning",
       badge: {
-        "it-IT": "credit card value",
-        "en-EN": "badge value"
+        "it-IT": "warning message",
+        "en-EN": "possible slowness"
       },
       message: {
-        "it-IT": "credit card badge",
-        "en-EN": "credit_card"
+        "it-IT": "warning message",
+        "en-EN": "possible slowness"
       }
     },
     satispay: {
@@ -180,7 +180,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     bancomat: {
-      is_visible: true,
+      is_visible: false,
       level: "normal",
       message: {
         "it-IT": "bancomat",

@@ -1,18 +1,14 @@
-import { Router } from "express";
+import { Response, Router } from "express";
 import faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
-import {
-  DetailEnum,
-  PaymentProblemJson
-} from "../../generated/definitions/backend/PaymentProblemJson";
+import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
-import { getPaymentRequestsGetResponse } from "../payloads/payload";
-import { addHandler, IOResponse } from "../payloads/response";
+import { addHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
@@ -22,24 +18,26 @@ const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();
 
-const getVerificaError = (
-  detail: DetailEnum
-): IOResponse<PaymentProblemJson> => ({
-  payload: {
-    status: 500,
+const responseWithError = (detail: DetailEnum, res: Response) =>
+  res.status(500).json({
     detail
-  },
-  status: 500
-});
+  });
 
-// verifica
+/**
+ * user wants to pay.
+ * this is the first step
+ * could be:
+ * - ko: payment already done
+ * - ko: can't get the payment data
+ * - ok: payment data updated
+ */
 addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
   // success response: getVerificaSuccess()
   // errore response: getVerificaError(DetailEnum.PAYMENT_DUPLICATED)
-  (_, res) => res.json(getPaymentRequestsGetResponse())
+  (_, res) => responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
 );
 
 addHandler<PaymentActivationsPostResponse>(

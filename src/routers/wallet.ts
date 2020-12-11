@@ -107,6 +107,8 @@ addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
   res.json({ data: getPsps() })
 );
 
+// step 1/3 - credit card
+// adding a temporary wallet
 addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
   const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
   const walletV2 = generateWalletV2FromCard(cards[0], WalletTypeEnum.Card);
@@ -140,6 +142,8 @@ addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
 });
 
 const checkOutSuffix = "/wallet/loginMethod";
+// step 2/3 - credit card
+// verification
 addHandler(
   walletRouter,
   "post",

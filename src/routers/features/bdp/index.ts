@@ -6,8 +6,9 @@ import {
   PaymentInstrumentResource,
   StatusEnum
 } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
-import { fiscalCode } from "../../../global";
+import { assetsFolder, fiscalCode } from "../../../global";
 import { addHandler } from "../../../payloads/response";
+import { readFile } from "../../../utils/file";
 
 export const bpd = Router();
 
@@ -93,6 +94,44 @@ addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
   const validationStatus = "OK";
   res.json({ validationStatus });
 });
+
+/*
+ app-io-channel
+ Nexi	32875
+ Intesa San Paolo	03069
+ Poste	36081
+ Unicredit	02008
+ Banca Sella	03268
+ Nexi - UBI	03111
+ Nexi - ICCREA	08000
+ American Express	36019
+ Satispay	STPAY
+ ICCREA	12940
+ Diner's	70248
+ Axepta (BNP)	01005
+ Bancomat	COBAN
+ BancomatPay	BPAY1
+ SiaPay	33604
+ Paytipper
+ Reiffeisen
+ Cedacri
+ Deutsche
+ MPS
+ Equens Worldline
+ EVO Payments	EVODE
+ Nexi - Meps	16330
+ */
+addHandler(
+  bpd,
+  "get",
+  addBPDPrefix("/io/payment-instruments/number/"),
+  (req, res) =>
+    res.json(
+      JSON.parse(
+        readFile(assetsFolder + "/bpd/payment-instruments/number/default.json")
+      )
+    )
+);
 
 const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
 
