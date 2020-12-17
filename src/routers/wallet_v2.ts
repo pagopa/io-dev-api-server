@@ -121,7 +121,7 @@ const generateData = () => {
   };
 };
 
-// add a list of walletv2 to the current already added
+// add a list of walletv2 to the current ones
 export const addWalletV2 = (
   wallets: ReadonlyArray<WalletV2>,
   append: boolean = true
@@ -133,6 +133,18 @@ export const addWalletV2 = (
   walletV2Response = {
     data: [...wallets, ...(walletV2Response.data ?? [])]
   };
+};
+
+// return true if the given idWallet can be deleted
+export const removeWalletV2 = (idWallet: number): boolean => {
+  const wallets = walletV2Response.data ?? [];
+  const currentLength = wallets.length;
+  const updateWallets = wallets.filter(w => w.idWallet !== idWallet);
+  // update wallet Response
+  walletV2Response = {
+    data: updateWallets
+  };
+  return updateWallets.length < currentLength;
 };
 
 // return the list of wallets

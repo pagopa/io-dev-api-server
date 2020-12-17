@@ -27,7 +27,7 @@ import {
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import { addWalletV2 } from "./wallet_v2";
+import { addWalletV2, removeWalletV2 } from "./wallet_v2";
 export const walletCount = 4;
 export const walletRouter = Router();
 const walletPath = "/wallet/v1";
@@ -68,6 +68,7 @@ addHandler(
       );
   }
 );
+
 addHandler(
   walletRouter,
   "get",
@@ -105,6 +106,17 @@ addHandler(
 
 addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
   res.json({ data: getPsps() })
+);
+
+addHandler(
+  walletRouter,
+  "delete",
+  appendWalletPrefix("/wallet/:idWallet"),
+  (req, res) => {
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const hasBeenDelete = removeWalletV2(idWallet);
+    res.sendStatus(hasBeenDelete ? 200 : 404);
+  }
 );
 
 // step 1/3 - credit card
