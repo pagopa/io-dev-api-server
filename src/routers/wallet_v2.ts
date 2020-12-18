@@ -5,6 +5,7 @@ import * as t from "io-ts";
 import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
 import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
+import { BPayRequest } from "../../generated/definitions/pagopa/walletv2/BPayRequest";
 import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
@@ -30,7 +31,6 @@ import {
   satispay
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
-import { toPayload } from "../utils/validator";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -38,6 +38,7 @@ type WalletV2Config = {
   satispay: number;
   bPay: number;
   citizenBancomat: number;
+  citizenBPay: number;
   citizenSatispay: boolean;
 };
 
@@ -51,12 +52,13 @@ export const abiResponse: AbiListResponse = {
 };
 
 const defaultWalletV2Config: WalletV2Config = {
-  walletBancomat: 2,
+  walletBancomat: 1,
   walletCreditCard: 1,
-  satispay: 0,
+  satispay: 1,
   bPay: 1,
   citizenSatispay: true,
-  citizenBancomat: 3
+  citizenBancomat: 3,
+  citizenBPay: 3
 };
 // tslint:disable-next-line: no-let
 let pansResponse: RestPanResponse = {
@@ -306,13 +308,42 @@ addHandler<RestSatispayResponse>(
   }
 );
 
+// add the given list of bpay to the wallet
+addHandler<RestSatispayResponse>(
+  wallet2Router,
+  "post",
+  appendWalletPrefix("/bpay/add-wallets"),
+  (req, res) => {
+    const maybeBPayList = BPayRequest.decode(req.body.data);
+    maybeBPayList.fold(
+      () => {
+        res.sendStatus(400);
+      },
+      bpay => {
+        fromNullable(bpay.data).foldL(
+          () => {
+            res.sendStatus(400);
+          },
+          list => {
+            const w2BpayList = list.map(bp =>
+              generateWalletV2FromSatispayOrBancomatPay(bp, WalletTypeEnum.BPay)
+            );
+            addWalletV2(w2BpayList);
+            res.json({ data: w2BpayList });
+          }
+        );
+      }
+    );
+  }
+);
+
 // reset function
 export const resetWalletV2 = () => {
   generateData();
 };
 generateData();
 
-// DASHBOARD config API / functions
+// DASHBOARD config API / utility functions
 
 // get walletv2-bpd (dashboard web)
 addHandler(
