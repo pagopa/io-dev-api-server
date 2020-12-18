@@ -70,23 +70,25 @@ export const satispay = {
 };
 
 export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
-  const config = fromNullable(
-    cardConfigMap.get(WalletTypeEnum.Bancomat)
-  ).getOrElse(defaultCardConfig);
-  const uidHash =
-    sha256(config.prefix) + config.index.toString().padStart(4, "0");
-  cardConfigMap.set(WalletTypeEnum.Bancomat, {
-    ...config,
-    index: config.index + 1
+  return range(1, count).map(_ => {
+    const config = fromNullable(
+      cardConfigMap.get(WalletTypeEnum.BPay)
+    ).getOrElse(defaultCardConfig);
+    const suffix = config.index.toString().padStart(4, "0");
+    const cn = config.prefix + suffix;
+    const uidHash = sha256(cn);
+    cardConfigMap.set(WalletTypeEnum.BPay, {
+      ...config,
+      index: config.index + 1
+    });
+    return {
+      bankName: faker.company.companyName(),
+      instituteCode: config.index.toString(),
+      numberObfuscated: "*".repeat(7) + suffix,
+      paymentInstruments: [],
+      uidHash
+    };
   });
-  return range(1, count).map(_ => ({
-    bankName: faker.company.companyName(),
-    instituteCode: config.index.toString(),
-    numberObfuscated:
-      "+3934" + "*".repeat(7) + config.index.toString().padStart(3, "0"),
-    paymentInstruments: [],
-    uidHash
-  }));
 };
 
 export const generateCards = (
