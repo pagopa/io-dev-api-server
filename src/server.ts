@@ -17,6 +17,7 @@ import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/wallet_v2";
 import { delayer } from "./utils/delay_middleware";
+import { bpdRanking } from "./routers/features/bdp/ranking";
 
 // create express server
 const app: Application = express();
@@ -45,7 +46,8 @@ const routers: ReadonlyArray<Router> = [
   bonusVacanze,
   miscRouter,
   bpd,
-  bpdAward
+  bpdAward,
+  bpdRanking
 ];
 // add routers
 routers.forEach(r => app.use(r));

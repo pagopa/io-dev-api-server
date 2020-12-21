@@ -57,7 +57,6 @@ export const generateSatispayInfo = (
     index: config.index + 1
   });
   return range(1, count).map(_ => ({
-    brandLogo: faker.random.image(),
     uuid
   }));
 };

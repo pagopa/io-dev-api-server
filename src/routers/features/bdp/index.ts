@@ -135,6 +135,7 @@ addHandler(
 
 const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
 
+// get info about the given payment instrument
 addHandler(
   bpd,
   "get",
@@ -157,6 +158,7 @@ addHandler(
   }
 );
 
+// active the given payment instrument to the BPD program
 addHandler(
   bpd,
   "put",
@@ -172,6 +174,7 @@ addHandler(
   }
 );
 
+// remove the given payment instrument from the BPD program
 addHandler(
   bpd,
   "delete",
