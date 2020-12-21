@@ -1,70 +1,10 @@
-import * as t from "io-ts";
+import { BackendStatus } from "./types/backendStatus";
 
 export const backendInfo = {
   min_app_version: { android: "0.0.0", ios: "0.0.0" },
   min_app_version_pagopa: { android: "0.0.0", ios: "0.0.0" },
   version: "2.1.2"
 };
-
-const LocalizedMessage = t.interface({
-  "it-IT": t.string,
-  "en-EN": t.string
-});
-
-const BackendStatusR = t.interface({
-  is_alive: t.boolean,
-  message: LocalizedMessage
-});
-
-const Levels = t.keyof({
-  critical: null,
-  normal: null,
-  warning: null
-});
-
-// SectionStatus represents the status of a single section
-const SectionStatusR = t.interface({
-  is_visible: t.boolean,
-  message: LocalizedMessage,
-  level: Levels
-});
-
-const SectionStatusO = t.partial({
-  web_url: LocalizedMessage,
-  badge: LocalizedMessage
-});
-
-export const SectionStatus = t.intersection(
-  [SectionStatusR, SectionStatusO],
-  "SectionStatus"
-);
-export type SectionStatus = t.TypeOf<typeof SectionStatus>;
-
-const Sections = t.interface({
-  ingress: SectionStatus,
-  messages: SectionStatus,
-  wallets: SectionStatus,
-  login: SectionStatus,
-  services: SectionStatus,
-  email_validation: SectionStatus,
-  cashback: SectionStatus,
-  bancomat: SectionStatus,
-  satispay: SectionStatus,
-  bancomatpay: SectionStatus,
-  credit_card: SectionStatus,
-  digital_payments: SectionStatus
-});
-export type Sections = t.TypeOf<typeof Sections>;
-const BackendStatusO = t.partial({
-  sections: Sections
-});
-
-export const BackendStatus = t.intersection(
-  [BackendStatusR, BackendStatusO],
-  "BackendStatus"
-);
-export type SectionStatusKey = keyof Sections;
-export type BackendStatus = t.TypeOf<typeof BackendStatus>;
 
 // ref https://iopstcdnassets.z6.web.core.windows.net/status/backend.json
 export const backendStatus: BackendStatus = {
@@ -75,7 +15,7 @@ export const backendStatus: BackendStatus = {
   },
   sections: {
     cashback: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
         "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
@@ -94,7 +34,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     messages: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
         "it-IT":
@@ -104,7 +44,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     services: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -118,7 +58,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     login: {
-      is_visible: false,
+      is_visible: true,
       level: "normal",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -132,7 +72,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     wallets: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -146,7 +86,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     ingress: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -172,7 +112,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     satispay: {
-      is_visible: false,
+      is_visible: true,
       level: "critical",
       message: {
         "it-IT": "satispay",
@@ -180,7 +120,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     bancomat: {
-      is_visible: false,
+      is_visible: true,
       level: "normal",
       message: {
         "it-IT": "bancomat",
@@ -192,7 +132,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     bancomatpay: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
         "it-IT": "bancomatpay",
@@ -200,12 +140,13 @@ export const backendStatus: BackendStatus = {
       }
     },
     digital_payments: {
-      is_visible: false,
+      is_visible: true,
       level: "warning",
       message: {
         "it-IT": "digital_payments",
         "en-EN": "digital_payments"
       }
     }
-  }
+  },
+  config: undefined
 };
