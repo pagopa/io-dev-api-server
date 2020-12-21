@@ -2,12 +2,10 @@ import chalk from "chalk";
 import child_process from "child_process";
 import { cli } from "cli-ux";
 import { fromNullable } from "fp-ts/lib/Option";
-import fs from "fs";
-import { networkInterfaces } from "os";
 import { routes } from "./payloads/response";
 import app from "./server";
-import { interfaces, serverHostname, serverPort } from "./utils/server";
 import { readFileAsJSON } from "./utils/file";
+import { interfaces, serverHostname, serverPort } from "./utils/server";
 // read package.json to print some info
 const packageJson = readFileAsJSON("./package.json");
 

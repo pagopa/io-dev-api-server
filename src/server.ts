@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { globalDelay } from "./global";
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
+import { bpdRanking } from "./routers/features/bdp/ranking";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
@@ -17,8 +18,6 @@ import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/wallet_v2";
 import { delayer } from "./utils/delay_middleware";
-import { bpdRanking } from "./routers/features/bdp/ranking";
-
 // create express server
 const app: Application = express();
 // parse body request as json
