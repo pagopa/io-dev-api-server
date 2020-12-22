@@ -15,7 +15,7 @@ export const backendStatus: BackendStatus = {
   },
   sections: {
     cashback: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       message: {
         "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
@@ -24,7 +24,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     email_validation: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       message: {
         "it-IT":
@@ -34,7 +34,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     messages: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       message: {
         "it-IT":
@@ -44,7 +44,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     services: {
-      is_visible: true,
+      is_visible: false,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -58,7 +58,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     login: {
-      is_visible: true,
+      is_visible: false,
       level: "normal",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -72,7 +72,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     wallets: {
-      is_visible: true,
+      is_visible: false,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -86,7 +86,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     ingress: {
-      is_visible: true,
+      is_visible: false,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",
@@ -100,7 +100,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     credit_card: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       badge: {
         "it-IT": "warning message",
@@ -112,7 +112,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     satispay: {
-      is_visible: true,
+      is_visible: false,
       level: "critical",
       message: {
         "it-IT": "satispay",
@@ -120,7 +120,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     bancomat: {
-      is_visible: true,
+      is_visible: false,
       level: "normal",
       message: {
         "it-IT": "bancomat",
@@ -132,7 +132,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     bancomatpay: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       message: {
         "it-IT": "bancomatpay",
@@ -140,7 +140,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     digital_payments: {
-      is_visible: true,
+      is_visible: false,
       level: "warning",
       message: {
         "it-IT": "digital_payments",
