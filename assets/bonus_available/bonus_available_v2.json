@@ -18,7 +18,8 @@
       "tos_url": "https://io.italia.it/app-content/bonus_vacanze_tos.html"
     },
     "service_id": "01EB8AXKNV6NMSP2R25KSGF743",
-    "is_active": true,
+    "is_active": false,
+    "hidden": true,
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2021-06-30T00:00:00.000Z",
     "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_BonusVacanze.png",
