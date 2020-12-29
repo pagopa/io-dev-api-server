@@ -83,7 +83,7 @@ export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
     return {
       bankName: faker.company.companyName(),
       instituteCode: config.index.toString(),
-      numberObfuscated: "*".repeat(7) + suffix,
+      numberObfuscated: "+3934"+ "*".repeat(7) + suffix,
       paymentInstruments: [],
       uidHash
     };
