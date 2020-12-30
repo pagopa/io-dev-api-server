@@ -9,6 +9,7 @@ import { BPayRequest } from "../../generated/definitions/pagopa/walletv2/BPayReq
 import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
+import { RestBPayResponse } from "../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { RestSatispayResponse } from "../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
 import { Satispay } from "../../generated/definitions/pagopa/walletv2/Satispay";
@@ -64,6 +65,12 @@ const defaultWalletV2Config: WalletV2Config = {
 let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
+
+// tslint:disable-next-line: no-let
+let bPayResponse: RestBPayResponse = {
+  data: []
+};
+
 // tslint:disable-next-line: no-let
 export let walletV2Response: WalletV2ListResponse = {
   data: []
@@ -92,6 +99,11 @@ const generateData = () => {
   pansResponse = {
     data: { data: citizenBancomat() }
   };
+
+  bPayResponse = {
+    data: generateBancomatPay(walletV2Config.citizenBPay)
+  };
+
   // add bancomat
   walletBancomat = generateCards(
     abiResponse.data ?? [],
@@ -325,16 +337,28 @@ addHandler<RestSatispayResponse>(
             res.sendStatus(400);
           },
           list => {
+            const walletData = walletV2Response.data ?? [];
+            const walletsWithoutBPay = walletData.filter(
+              w => w.walletType !== WalletTypeEnum.BPay
+            );
             const w2BpayList = list.map(bp =>
               generateWalletV2FromSatispayOrBancomatPay(bp, WalletTypeEnum.BPay)
             );
-            addWalletV2(w2BpayList);
+            addWalletV2([...walletsWithoutBPay, w2BpayList], false);
             res.json({ data: w2BpayList });
           }
         );
       }
     );
   }
+);
+
+// return the bpay owned by the citized
+addHandler<RestSatispayResponse>(
+  wallet2Router,
+  "get",
+  appendWalletPrefix("/bpay/list"),
+  (req, res) => res.json(bPayResponse)
 );
 
 // reset function
