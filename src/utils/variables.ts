@@ -62,8 +62,19 @@ en:
 export const frontMatter1CTABonusBpd = `---
 it:
     cta_1: 
-        text: "BPD"
+        text: "BPD start"
         action: "ioit://CTA_START_BPD"
+---`;
+
+export const frontMatter1CTABonusBpdIban = `---
+it:
+    cta_1: 
+        text: "BPD Iban"
+        action: "ioit://CTA_BPD_IBAN_EDIT"
+en:
+    cta_1: 
+        text: "BPD Iban"
+        action: "ioit://CTA_BPD_IBAN_EDIT"
 ---`;
 
 export const frontMatter1CTA = `---

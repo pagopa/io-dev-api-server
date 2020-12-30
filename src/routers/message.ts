@@ -1,13 +1,10 @@
 import { Router } from "express";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
-  base64png,
-  base64svg,
   getMessages,
   withDueDate,
   withMessageContent,
@@ -18,13 +15,14 @@ import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTA,
   frontMatter1CTABonusBpd,
+  frontMatter1CTABonusBpdIban,
   frontMatter2CTA,
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
 
 export const messageRouter = Router();
-const totalMessages = 11;
+const totalMessages = 12;
 export const messages = getMessages(totalMessages, services, fiscalCode);
 // tslint:disable-next-line: no-let
 let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
@@ -77,10 +75,17 @@ const createMessages = () => {
 
   const message1NestedCtaBonusBpd = withMessageContent(
     nextMessage(),
-    `with 1 nested CTA BPD`,
+    `CTA start BPD`,
     frontMatter1CTABonusBpd + messageMarkdown
   );
   messagesWC.push(message1NestedCtaBonusBpd);
+
+  const message1NestedCtaBonusBpdIban = withMessageContent(
+    nextMessage(),
+    `CTA IBAN BPD`,
+    frontMatter1CTABonusBpdIban + messageMarkdown
+  );
+  messagesWC.push(message1NestedCtaBonusBpdIban);
 
   const withContent1 = withMessageContent(
     nextMessage(),

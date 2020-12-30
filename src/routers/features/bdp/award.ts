@@ -25,9 +25,7 @@ const readWinningTransactions = (directoryName: string, fileName: string) =>
   );
 
 // tslint:disable-next-line: no-let
-let awardPeriods: BpdAwardPeriods = BpdAwardPeriods.decode(
-  readPeriodPresetJson("default.json")
-).getOrElse([]);
+let awardPeriods: string = "default.json";
 
 // return the list of json file names to populate the web dashboard
 addHandler(
@@ -56,7 +54,7 @@ addHandler(
         console.log(chalk.red(`${file} is not a valid BpdAwardPeriods`));
         res.sendStatus(500);
       } else {
-        awardPeriods = maybeAwardPeriods.value;
+        awardPeriods = file;
         res.sendStatus(200);
       }
     }
@@ -65,7 +63,7 @@ addHandler(
 
 // response with the bpd award periods
 addHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), (_, res) =>
-  res.json(awardPeriods)
+  res.json(readPeriodPresetJson(awardPeriods))
 );
 
 // tslint:disable-next-line: no-let
