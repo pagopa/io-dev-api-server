@@ -13,6 +13,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
+import { getPaymentRequestsGetResponse } from "../payloads/payload";
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();
@@ -34,9 +35,9 @@ addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
-  // success response: getVerificaSuccess()
-  // errore response: getVerificaError(DetailEnum.PAYMENT_DUPLICATED)
-  (_, res) => responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
+  // success response: res.json(getPaymentRequestsGetResponse())
+  // errore response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
+  (_, res) => res.json(getPaymentRequestsGetResponse())
 );
 
 addHandler<PaymentActivationsPostResponse>(
