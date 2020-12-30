@@ -141,7 +141,7 @@ addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
         brandLogo:
           "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
         flag3dsVerified: false,
-        brand: "OTHER",
+        brand: info.brand,
         onUs: false
       },
       pspEditable: true,
