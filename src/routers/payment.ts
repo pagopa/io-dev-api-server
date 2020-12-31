@@ -8,12 +8,12 @@ import { PaymentActivationsPostResponse } from "../../generated/definitions/back
 import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
+import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import { getPaymentRequestsGetResponse } from "../payloads/payload";
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();
