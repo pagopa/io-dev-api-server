@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
-import { BackendStatus } from "../../payloads/backend";
+import { BackendStatus } from "../../payloads/types/backendStatus";
 import app from "../../server";
 
 const request = supertest(app);
