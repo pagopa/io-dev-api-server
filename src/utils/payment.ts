@@ -1,20 +1,20 @@
 export const enum CreditCardBrandEnum {
   "VISAELECTRON" = "VISAELECTRON",
   "MAESTRO" = "MAESTRO",
-  "UNIONPAY" = "UNIONPAY",
+  // "UNIONPAY" = "UNIONPAY",
   "VISA" = "VISA",
   "MASTERCARD" = "MASTERCARD",
   "AMEX" = "AMEX",
   "DINERS" = "DINERS",
   "DISCOVER" = "DISCOVER",
-  "JCB" = "JCB",
+  // "JCB" = "JCB",
   "POSTEPAY" = "POSTEPAY"
 }
 
 export const creditCardBrands: ReadonlyArray<CreditCardBrandEnum> = [
   CreditCardBrandEnum.VISAELECTRON,
   CreditCardBrandEnum.MAESTRO,
-  CreditCardBrandEnum.UNIONPAY,
+  // CreditCardBrandEnum.UNIONPAY,
   CreditCardBrandEnum.VISA,
   CreditCardBrandEnum.MASTERCARD,
   CreditCardBrandEnum.AMEX,
