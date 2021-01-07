@@ -101,7 +101,10 @@ const generateData = () => {
   };
 
   bPayResponse = {
-    data: generateBancomatPay(walletV2Config.citizenBPay)
+    data: generateBancomatPay(
+      abiResponse.data ?? [],
+      walletV2Config.citizenBPay
+    )
   };
 
   // add bancomat
@@ -121,9 +124,10 @@ const generateData = () => {
     generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.Satispay)
   );
   // add bancomatPay
-  walletBancomatPay = generateBancomatPay(walletV2Config.bPay).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay)
-  );
+  walletBancomatPay = generateBancomatPay(
+    abiResponse.data ?? [],
+    walletV2Config.bPay
+  ).map(c => generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay));
 
   walletV2Response = {
     data: [

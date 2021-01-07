@@ -22,7 +22,12 @@ import {
 import { assetsFolder } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
-import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import {
+  CreditCardBrandEnum,
+  creditCardBrands,
+  getCreditCardLogo
+} from "../utils/payment";
+import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
 
 type CardConfig = {
   prefix: string;
@@ -68,8 +73,12 @@ export const satispay = {
   uidSatispayHash: sha256("uidSatispay")
 };
 
-export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
-  return range(1, count).map(_ => {
+export const generateBancomatPay = (
+  abis: ReadonlyArray<Abi>,
+  count: number
+): ReadonlyArray<BPay> => {
+  const shuffledAbis = faker.helpers.shuffle([...abis]);
+  return range(1, count).map((_, idx) => {
     const config = fromNullable(
       cardConfigMap.get(WalletTypeEnum.BPay)
     ).getOrElse(defaultCardConfig);
@@ -82,7 +91,7 @@ export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
     });
     return {
       bankName: faker.company.companyName(),
-      instituteCode: config.index.toString(),
+      instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
       numberObfuscated: "+3934" + "*".repeat(7) + suffix,
       paymentInstruments: [],
       uidHash
@@ -147,7 +156,7 @@ export const generateWalletV2FromCard = (
   const ed = card.expiringDate
     ? new Date(card.expiringDate)
     : faker.date.future();
-  const ccBrand = faker.random.arrayElement(creditCardBrands);
+  const ccBrand = CreditCardBrandEnum.AMEX;
 
   const info = {
     blurredNumber: card.cardPartialNumber,
