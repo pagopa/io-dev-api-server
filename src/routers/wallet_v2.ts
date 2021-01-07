@@ -330,7 +330,7 @@ addHandler<RestSatispayResponse>(
   "post",
   appendWalletPrefix("/bpay/add-wallets"),
   (req, res) => {
-    const maybeBPayList = BPayRequest.decode(req.body.data);
+    const maybeBPayList = BPayRequest.decode(req.body);
     maybeBPayList.fold(
       () => {
         res.sendStatus(400);
