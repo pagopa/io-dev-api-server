@@ -32,6 +32,7 @@ import {
   satispay
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
+import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -340,15 +341,21 @@ addHandler<RestSatispayResponse>(
           () => {
             res.sendStatus(400);
           },
-          list => {
+          (bPayList: ReadonlyArray<BPay>) => {
             const walletData = walletV2Response.data ?? [];
-            const walletsWithoutBPay = walletData.filter(
-              w => w.walletType !== WalletTypeEnum.BPay
+            // all method different from the adding ones
+            const walletsBPay = walletData.filter(
+              w =>
+                w.walletType !== WalletTypeEnum.BPay ||
+                (w.walletType === WalletTypeEnum.BPay &&
+                  !bPayList.some(
+                    (bp: BPay) => bp.uidHash === (w.info as BPayInfo).uidHash
+                  ))
             );
-            const w2BpayList = list.map(bp =>
+            const w2BpayList = bPayList.map(bp =>
               generateWalletV2FromSatispayOrBancomatPay(bp, WalletTypeEnum.BPay)
             );
-            addWalletV2([...walletsWithoutBPay, w2BpayList], false);
+            addWalletV2([...walletsBPay, ...w2BpayList], false);
             res.json({ data: w2BpayList });
           }
         );
