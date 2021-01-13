@@ -94,6 +94,7 @@ export const generateBancomatPay = (
       instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
       numberObfuscated: "+3934" + "*".repeat(7) + suffix,
       paymentInstruments: [],
+      serviceState: "ATT",
       uidHash
     };
   });
