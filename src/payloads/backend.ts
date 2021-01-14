@@ -149,6 +149,7 @@ export const backendStatus: BackendStatus = {
     }
   },
   config: {
-    bpd_ranking: true
+    bpd_ranking: true,
+    bpd_ranking_v2: true
   }
 };
