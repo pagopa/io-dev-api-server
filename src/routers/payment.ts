@@ -6,6 +6,7 @@ import { PaymentActivationsGetResponse } from "../../generated/definitions/backe
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
@@ -23,41 +24,53 @@ const responseWithError = (detail: DetailEnum, res: Response) =>
     detail
   });
 
+// tslint:disable-next-line: no-let
+let paymentRequest: PaymentRequestsGetResponse | undefined;
 /**
- * user wants to pay.
+ * user wants to pay (VERIFICA)
+ * this API return the current status of the payment
  * this is the first step
  * could be:
  * - ko: payment already done
  * - ko: can't get the payment data
  * - ok: payment data updated
+ * STEP 1
  */
 addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
-  // success response: res.json(getPaymentRequestsGetResponse())
-  // errore response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
-  (_, res) => res.json(getPaymentRequestsGetResponse())
+  // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
+  // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
+  (_, res) => {
+    paymentRequest = getPaymentRequestsGetResponse(
+      faker.random.arrayElement(services)
+    );
+    res.json(paymentRequest);
+  }
 );
 
+/**
+ * the user wants to lock this payment (ATTIVA)
+ * this API return the
+ * STEP 2
+ */
 addHandler<PaymentActivationsPostResponse>(
   profileRouter,
   "post",
   addApiV1Prefix("/payment-activations"),
   (req, res) => {
+    if (paymentRequest === undefined) {
+      res.sendStatus(404);
+      return;
+    }
     const payload = PaymentActivationsPostRequest.decode(req.body);
     if (payload.isRight()) {
-      const activation = payload.value;
-      const service = faker.random.arrayElement(services);
-      const description = faker.finance.transactionDescription();
       const response: PaymentActivationsPostResponse = {
-        importoSingoloVersamento: activation.importoSingoloVersamento,
-        causaleVersamento: description,
+        importoSingoloVersamento: paymentRequest.importoSingoloVersamento,
+        causaleVersamento: paymentRequest.causaleVersamento,
         ibanAccredito: faker.finance.iban() as Iban,
-        enteBeneficiario: {
-          identificativoUnivocoBeneficiario: service.organization_fiscal_code,
-          denominazioneBeneficiario: service.organization_name
-        }
+        enteBeneficiario: paymentRequest.enteBeneficiario
       };
       res.json(response);
     } else {
@@ -66,6 +79,12 @@ addHandler<PaymentActivationsPostResponse>(
   }
 );
 
+/**
+ * the user wants to lock this payment (ATTIVA)
+ * the app stats a polling using codiceContestoPagamento as input
+ * when the payment is finally locked this API returns the idPagamento
+ * STEP 3
+ */
 addHandler<PaymentActivationsGetResponse>(
   profileRouter,
   "get",
@@ -78,6 +97,9 @@ addHandler<PaymentActivationsGetResponse>(
   }
 );
 
+/**
+ * STEP 4
+ */
 addHandler(
   walletRouter,
   "get",

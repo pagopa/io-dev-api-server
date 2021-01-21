@@ -33,6 +33,7 @@ import {
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
+import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -130,14 +131,15 @@ const generateData = () => {
     walletV2Config.bPay
   ).map(c => generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay));
 
-  walletV2Response = {
-    data: [
+  addWalletV2(
+    [
       ...walletBancomat,
       ...walletCreditCards,
       ...walletSatispay,
       ...walletBancomatPay
-    ]
-  };
+    ],
+    false
+  );
 };
 
 // add a list of walletv2 to the current ones
@@ -172,6 +174,29 @@ addHandler<WalletV2ListResponse>(
   "get",
   appendWallet2Prefix("/wallet"),
   (_, res) => res.json(walletV2Response)
+);
+
+// wallet/v1/wallet/21530/actions/favourite
+// set a credit card as favourite
+addHandler<WalletResponse>(
+  wallet2Router,
+  "post",
+  appendWalletPrefix("/wallet/:idWallet/actions/favourite"),
+  (req, res) => {
+    const walletData = walletV2Response.data ?? [];
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const creditCard = walletData.find(w => w.idWallet === idWallet);
+    if (creditCard) {
+      const favoriteCreditCard = { ...creditCard, favourite: true };
+      const newWalletsData: ReadonlyArray<WalletV2> = [
+        ...walletData.filter(w => w.idWallet !== idWallet),
+        favoriteCreditCard
+      ];
+      addWalletV2(newWalletsData, false);
+      return res.json({ data: favoriteCreditCard });
+    }
+    res.sendStatus(404);
+  }
 );
 
 /**

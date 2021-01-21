@@ -50,24 +50,6 @@ addHandler(
 addHandler(walletRouter, "get", appendWalletPrefix("/wallet"), (_, res) =>
   res.json(wallets)
 );
-addHandler(
-  walletRouter,
-  "post",
-  appendWalletPrefix("/wallet/:wallet_id/actions/favourite"),
-  (req, res) => {
-    fromNullable(wallets.data)
-      .chain((d: ReadonlyArray<Wallet>) => {
-        const maybeWallet = d.find(
-          w => w.idWallet === parseInt(req.params.wallet_id, 10)
-        );
-        return fromNullable(maybeWallet);
-      })
-      .foldL(
-        () => res.sendStatus(404),
-        w => res.json({ data: w })
-      );
-  }
-);
 
 addHandler(
   walletRouter,
