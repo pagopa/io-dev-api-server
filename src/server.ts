@@ -7,6 +7,7 @@ import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
 import { bpdRanking } from "./routers/features/bdp/ranking";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
+import { cgnRouter } from "./routers/features/cgn";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
 import { paymentRouter } from "./routers/payment";
@@ -46,7 +47,8 @@ const routers: ReadonlyArray<Router> = [
   miscRouter,
   bpd,
   bpdAward,
-  bpdRanking
+  bpdRanking,
+  cgnRouter
 ];
 // add routers
 routers.forEach(r => app.use(r));

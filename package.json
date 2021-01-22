@@ -6,7 +6,8 @@
   "api_beckend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.0.0/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.0.0/api_public.yaml",
   "api_bonus_vacanze": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_bonus.yaml",
-  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/support-cgn/definitions.yml",
+  "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/175896908_add_get_cgn_status_api/api_cgn.yaml",
+  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/definitions.yml",
   "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/pm/spec.json",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/walletv2.json",
   "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
@@ -30,11 +31,12 @@
     "generate:pagopa-api-definitions": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec $npm_package_api_pagopa --out-dir ./generated/definitions/pagopa",
     "generate:pagopa-walletv2-definitions": "rimraf generated/definitions/pagopa/walletv2 && mkdir -p generated/definitions/pagopa/walletv2 && gen-api-models --api-spec $npm_package_api_pagopa_walletv2 --out-dir ./generated/definitions/pagopa/walletv2",
     "generate:bonus-vacanze-definitions": "rimraf generated/definitions/bonus_vacanze && mkdir -p generated/definitions/bonus_vacanze && gen-api-models --api-spec $npm_package_api_bonus_vacanze --out-dir ./generated/definitions/bonus_vacanze ",
+    "generate:cgn-definitions": "rimraf generated/definitions/cgn && mkdir -p generated/definitions/cgn && gen-api-models --api-spec $npm_package_api_cgn --out-dir ./generated/definitions/cgn ",
     "generate:bpd-citizen": "rimraf generated/definitions/bpd/citizen && mkdir -p generated/definitions/bpd/citizen  && gen-api-models --api-spec $npm_package_api_bpd_citizen --out-dir ./generated/definitions/bpd/citizen --no-strict",
     "generate:bpd-payment": "rimraf generated/definitions/bpd/payment && mkdir -p generated/definitions/bpd/payment  && gen-api-models --api-spec $npm_package_api_bpd_payment --out-dir ./generated/definitions/bpd/payment --no-strict",
     "generate:bpd-award": "rimraf generated/definitions/bpd/award && mkdir -p generated/definitions/bpd/award  && gen-api-models --api-spec $npm_package_api_bpd_award --out-dir ./generated/definitions/bpd/award --no-strict",
     "generate:bpd-winning-transactions": "rimraf generated/definitions/bpd/winning_transactions && mkdir -p generated/definitions/bpd/winning_transactions  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions --out-dir ./generated/definitions/bpd/winning_transactions --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions"
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:cgn-definitions"
   },
   "jest": {
     "preset": "ts-jest",
@@ -77,5 +79,6 @@
     "ts-jest": "^24.2.0",
     "tslint": "^5.20.1",
     "typescript": "^3.8.3"
-  }
+  },
+  "repository": "git@github.com:pagopa/io-dev-api-server.git"
 }
