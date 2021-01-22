@@ -73,11 +73,19 @@ addHandler(
   }
 );
 
+/**
+ * invoked by the client when want to know if a payment ends successfully
+ * see https://docs.google.com/presentation/d/11rEttb7lJYlRqgFpl4QopyjFmjt2Q0K8uis6JhAQaCw/edit#slide=id.g854399c4e5_0_137
+ */
 addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/transactions/:idTransaction"),
   (req, res) => {
+    if (transactions.length === 0) {
+      res.sendStatus(404);
+      return;
+    }
     const transaction = transactions[0];
     res.json({ data: transaction });
   }
