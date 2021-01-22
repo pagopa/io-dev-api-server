@@ -23,13 +23,23 @@ import {
 import {
   abiData,
   generateCards,
-  generateWalletV1,
+  generateWalletV1FromCardInfo,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import { addWalletV2, getWallet, removeWalletV2 } from "./wallet_v2";
-export const walletCount = 4;
+import {
+  addWalletV2,
+  getWallet,
+  removeWalletV2,
+  walletV2Config
+} from "./wallet_v2";
+export const walletCount =
+  walletV2Config.satispay +
+  walletV2Config.walletBancomat +
+  walletV2Config.walletCreditCard +
+  walletV2Config.walletCreditCardCoBadge +
+  walletV2Config.bPay;
 export const walletRouter = Router();
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
@@ -140,7 +150,10 @@ addHandler(
       return;
     }
     res.json({
-      data: generateWalletV1(walletV2.idWallet!, walletV2.info as CardInfo)
+      data: generateWalletV1FromCardInfo(
+        walletV2.idWallet!,
+        walletV2.info as CardInfo
+      )
     });
   }
 );
@@ -149,7 +162,11 @@ addHandler(
 // adding a temporary wallet
 addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
   const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
-  const walletV2 = generateWalletV2FromCard(cards[0], WalletTypeEnum.Card);
+  const walletV2 = generateWalletV2FromCard(
+    cards[0],
+    WalletTypeEnum.Card,
+    true
+  );
   const info = walletV2.info as CardInfo;
   // add new wallet to the existing ones
   addWalletV2([walletV2]);

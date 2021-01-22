@@ -16,8 +16,10 @@ import {
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import { TypeEnum as WalletV1TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
-import { Wallet } from "../../generated/definitions/pagopa/walletv2/Wallet";
+import {
+  TypeEnum as WalletV1TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/walletv2/Wallet";
 import {
   WalletTypeEnum,
   WalletV2
@@ -145,6 +147,7 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
 export const generateWalletV2FromCard = (
   card: Card,
   walletType: WalletTypeEnum,
+  canMethodPay: boolean,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
 ): WalletV2 => {
   const ed = card.expiringDate
@@ -174,7 +177,7 @@ export const generateWalletV2FromCard = (
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
     info,
     onboardingChannel: "IO",
-    pagoPA: true,
+    pagoPA: canMethodPay,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
@@ -199,7 +202,10 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
   };
 };
 
-export const generateWalletV1 = (idWallet: number, info: CardInfo): Wallet => ({
+export const generateWalletV1FromCardInfo = (
+  idWallet: number,
+  info: CardInfo
+): Wallet => ({
   idWallet,
   type: WalletV1TypeEnum.CREDIT_CARD,
   favourite: false,

@@ -29,6 +29,7 @@
   <script>
     // wallet v2
     var wcc = undefined;
+    var wcc_cb = undefined;
     var wbc = undefined;
     var cbc = undefined;
     var wsp = undefined;
@@ -38,6 +39,7 @@
 
     const setForm = (config) => {
       wcc.val(config.walletCreditCard);
+      wcc_cb.val(config.walletCreditCardCoBadge);
       wbc.val(config.walletBancomat);
       cbc.val(config.citizenBancomat);
       wsp.val(config.satispay);
@@ -57,6 +59,7 @@
       const config = {
         walletBancomat: parseInt(wbc.val(),10),
         walletCreditCard: parseInt(wcc.val(),10),
+        walletCreditCardCoBadge: parseInt(wcc_cb.val(),10),
         satispay: parseInt(wsp.val(),10),
         citizenBancomat: parseInt(cbc.val(),10),
         bPay: parseInt(wbp.val(),10),
@@ -90,6 +93,7 @@
 
     const initWalletV2 = () => {
       wcc = $("#walletCreditCard");
+      wcc_cb = $("#walletCreditCardCoBadge");
       wbc = $("#walletBancomat");
       wsp = $("#walletSatispay");
       wbp = $("#walletBPay");
@@ -218,6 +222,11 @@
   <tr class="form_item">
     <td><label>wallet Credit Card</label></td>
     <td><input type="number" min="0" class="form_number" id="walletCreditCard"/>
+  </tr>
+
+  <tr class="form_item">
+    <td><label>wallet Credit Card (co-badge)</label></td>
+    <td><input type="number" min="0" class="form_number" id="walletCreditCardCoBadge"/>
   </tr>
 
   <tr class="form_item">

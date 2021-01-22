@@ -28,7 +28,7 @@ import {
   generateBancomatPay,
   generateCards,
   generateSatispayInfo,
-  generateWalletV1,
+  generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay,
   resetCardConfig,
@@ -39,6 +39,7 @@ import { sendFile } from "../utils/file";
 type WalletV2Config = {
   walletBancomat: number;
   walletCreditCard: number;
+  walletCreditCardCoBadge: number;
   satispay: number;
   bPay: number;
   citizenBancomat: number;
@@ -58,6 +59,7 @@ export const abiResponse: AbiListResponse = {
 const defaultWalletV2Config: WalletV2Config = {
   walletBancomat: 1,
   walletCreditCard: 1,
+  walletCreditCardCoBadge: 1,
   satispay: 1,
   bPay: 1,
   citizenSatispay: true,
@@ -79,15 +81,17 @@ export let walletV2Response: WalletV2ListResponse = {
   data: []
 };
 // tslint:disable-next-line: no-let
-let walletBancomat: ReadonlyArray<any> = [];
+let walletBancomat: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
-let walletCreditCards: ReadonlyArray<any> = [];
+let walletCreditCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
-let walletSatispay: ReadonlyArray<any> = [];
+let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
-let walletBancomatPay: ReadonlyArray<any> = [];
+let walletSatispay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
-let walletV2Config = defaultWalletV2Config;
+let walletBancomatPay: ReadonlyArray<WalletV2> = [];
+// tslint:disable-next-line: no-let
+export let walletV2Config = defaultWalletV2Config;
 
 // the bancomat owned by the citizen
 const citizenBancomat = () =>
@@ -129,13 +133,19 @@ const generateData = () => {
     abiResponse.data ?? [],
     walletV2Config.walletBancomat,
     WalletTypeEnum.Bancomat
-  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Bancomat));
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false));
   // add credit cards
   walletCreditCards = generateCards(
     abiResponse.data ?? [],
     walletV2Config.walletCreditCard,
     WalletTypeEnum.Card
-  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card));
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, true));
+  // add credit cards co-badge
+  walletCreditCardsCoBadges = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.walletCreditCardCoBadge,
+    WalletTypeEnum.Card
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false));
   // set a credit card as favorite
   if (walletCreditCards.length > 0) {
     const firstCard = walletCreditCards[0];
@@ -158,6 +168,7 @@ const generateData = () => {
     [
       ...walletBancomat,
       ...walletCreditCards,
+      ...walletCreditCardsCoBadges,
       ...walletSatispay,
       ...walletBancomatPay
     ],
@@ -210,7 +221,7 @@ addHandler<WalletResponse>(
       addWalletV2(newWalletsData, false);
       // this API requires to return a walletV1
       const walletV1 = {
-        ...generateWalletV1(
+        ...generateWalletV1FromCardInfo(
           favoriteCreditCard.idWallet!,
           favoriteCreditCard.info as CardInfo
         ),
@@ -323,12 +334,12 @@ addHandler<WalletV2ListResponse>(
     );
     // transform bancomat to walletv2
     const addedBancomatsWalletV2 = addedBancomats.map(c =>
-      generateWalletV2FromCard(c, WalletTypeEnum.Bancomat)
+      generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
     );
     addWalletV2([...walletData, ...addedBancomatsWalletV2], false);
     res.json({
       data: bancomatsToAdd.map(c =>
-        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat)
+        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
       )
     });
   }
