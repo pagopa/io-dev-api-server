@@ -11,11 +11,11 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler } from "../payloads/response";
+import { getTransactions } from "../payloads/wallet";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import { getTransactions, validPsp } from "../payloads/wallet";
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();

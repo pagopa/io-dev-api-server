@@ -4,6 +4,7 @@ import fs from "fs";
 import * as t from "io-ts";
 import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/AbiListResponse";
 import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
+import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { BPayRequest } from "../../generated/definitions/pagopa/walletv2/BPayRequest";
 import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
@@ -14,6 +15,7 @@ import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/Res
 import { RestSatispayResponse } from "../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
 import { Satispay } from "../../generated/definitions/pagopa/walletv2/Satispay";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
+import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
 import {
   WalletTypeEnum,
   WalletV2
@@ -33,8 +35,6 @@ import {
   satispay
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
-import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
-import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
 
 type WalletV2Config = {
   walletBancomat: number;
