@@ -25,11 +25,7 @@ import {
 import { assetsFolder } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
-import {
-  CreditCardBrandEnum,
-  creditCardBrands,
-  getCreditCardLogo
-} from "../utils/payment";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
   prefix: string;
