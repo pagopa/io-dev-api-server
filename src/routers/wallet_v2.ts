@@ -26,6 +26,7 @@ import {
   generateBancomatPay,
   generateCards,
   generateSatispayInfo,
+  generateWalletV1,
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay,
   resetCardConfig,
@@ -188,12 +189,21 @@ addHandler<WalletResponse>(
     const creditCard = walletData.find(w => w.idWallet === idWallet);
     if (creditCard) {
       const favoriteCreditCard = { ...creditCard, favourite: true };
+      // all wallets different from the favorite and then append it
       const newWalletsData: ReadonlyArray<WalletV2> = [
         ...walletData.filter(w => w.idWallet !== idWallet),
         favoriteCreditCard
       ];
       addWalletV2(newWalletsData, false);
-      return res.json({ data: favoriteCreditCard });
+      // this API requires to return a walletV1
+      const walletV1 = {
+        ...generateWalletV1(
+          favoriteCreditCard.idWallet!,
+          favoriteCreditCard.info as CardInfo
+        ),
+        favourite: true
+      };
+      return res.json({ data: walletV1 });
     }
     res.sendStatus(404);
   }
