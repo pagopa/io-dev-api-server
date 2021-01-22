@@ -97,6 +97,20 @@ const citizenBancomat = () =>
     WalletTypeEnum.Bancomat
   );
 
+// add a list of walletv2 to the current ones
+export const addWalletV2 = (
+  wallets: ReadonlyArray<WalletV2>,
+  append: boolean = true
+) => {
+  if (!append) {
+    walletV2Response = { data: wallets };
+    return;
+  }
+  walletV2Response = {
+    data: [...wallets, ...(walletV2Response.data ?? [])]
+  };
+};
+
 const generateData = () => {
   // bancomat owned by the citizen but not added in his wallet
   pansResponse = {
@@ -149,20 +163,6 @@ const generateData = () => {
     ],
     false
   );
-};
-
-// add a list of walletv2 to the current ones
-export const addWalletV2 = (
-  wallets: ReadonlyArray<WalletV2>,
-  append: boolean = true
-) => {
-  if (!append) {
-    walletV2Response = { data: wallets };
-    return;
-  }
-  walletV2Response = {
-    data: [...wallets, ...(walletV2Response.data ?? [])]
-  };
 };
 
 // return true if the given idWallet can be deleted
