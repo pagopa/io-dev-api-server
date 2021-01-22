@@ -73,6 +73,16 @@ addHandler(
   }
 );
 
+addHandler(
+  walletRouter,
+  "get",
+  appendWalletPrefix("/transactions/:idTransaction"),
+  (req, res) => {
+    const transaction = transactions[0];
+    res.json({ data: transaction });
+  }
+);
+
 addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
   res.json({ data: [validPsp] })
 );

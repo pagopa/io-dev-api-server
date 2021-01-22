@@ -15,7 +15,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import { validPsp } from "../payloads/wallet";
+import { getTransactions, validPsp } from "../payloads/wallet";
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();
@@ -102,7 +102,7 @@ addHandler<PaymentActivationsGetResponse>(
 );
 
 /**
- * user get info about payment starting from paymentID
+ * user gets info about payment starting from paymentID
  * this is a checks to ensure the payment activated through IO is now availbale also in the PM
  * STEP 4
  */
@@ -136,5 +136,23 @@ addHandler(
       }
     };
     res.json(payment);
+  }
+);
+
+/**
+ * user pays
+ * STEP 5
+ */
+addHandler(
+  walletRouter,
+  "post",
+  appendWalletPrefix("/payments/:idPagamento/actions/pay"),
+  (_, res) => {
+    if (idPagamento === undefined || paymentRequest === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.json({ data: getTransactions(1)[0] });
   }
 );
