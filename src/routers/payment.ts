@@ -15,6 +15,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
+import { validPsp } from "../payloads/wallet";
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();
@@ -26,6 +27,8 @@ const responseWithError = (detail: DetailEnum, res: Response) =>
 
 // tslint:disable-next-line: no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
+// tslint:disable-next-line: no-let
+let idPagamento: string | undefined;
 /**
  * user wants to pay (VERIFICA)
  * this API return the current status of the payment
@@ -90,6 +93,7 @@ addHandler<PaymentActivationsGetResponse>(
   "get",
   addApiV1Prefix("/payment-activations/:codiceContestopagamento"),
   (_, res) => {
+    idPagamento = faker.random.alphaNumeric(30);
     const response: PaymentActivationsGetResponse = {
       idPagamento: faker.random.alphaNumeric(30)
     };
@@ -98,6 +102,8 @@ addHandler<PaymentActivationsGetResponse>(
 );
 
 /**
+ * user get info about payment starting from paymentID
+ * this is a checks to ensure the payment activated through IO is now availbale also in the PM
  * STEP 4
  */
 addHandler(
@@ -105,24 +111,28 @@ addHandler(
   "get",
   appendWalletPrefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
+    if (idPagamento === undefined || paymentRequest === undefined) {
+      res.sendStatus(404);
+      return;
+    }
     const payment: PaymentResponse = {
       data: {
         id: faker.random.number(),
-        idPayment: faker.random.alphaNumeric(30),
+        idPayment: idPagamento,
         amount: {
           currency: "EUR",
-          amount: faker.random.number({ min: 1, max: 2000 }),
+          amount: paymentRequest.importoSingoloVersamento,
           decimalDigits: 2
         },
         subject: "/RFB/01343520000005561/32.00",
-        receiver: "Provincia di Viterbo",
+        receiver: paymentRequest.causaleVersamento,
         urlRedirectEc:
           "https://solutionpa-coll.intesasanpaolo.com/IntermediarioPAPortal/noauth/contribuente/pagamentoEsito?idSession=ad095398-2863-4951-b2b6-400ff8d8e95b&idDominio=80005570561",
         isCancelled: false,
         bolloDigitale: false,
         fiscalCode: fiscalCode as FiscalCode,
-        origin: "CITTADINANZA_DIGITALE",
-        iban: faker.finance.iban()
+        origin: "IO",
+        iban: paymentRequest.ibanAccredito
       }
     };
     res.json(payment);

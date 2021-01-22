@@ -122,6 +122,14 @@ const generateData = () => {
     walletV2Config.walletCreditCard,
     WalletTypeEnum.Card
   ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card));
+  // set a credit card as favorite
+  if (walletCreditCards.length > 0) {
+    const firstCard = walletCreditCards[0];
+    walletCreditCards = [
+      ...walletCreditCards.filter(w => w.idWallet !== firstCard.idWallet),
+      { ...firstCard, favourite: true }
+    ];
+  }
   // add satispay
   walletSatispay = generateSatispayInfo(walletV2Config.satispay).map(c =>
     generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.Satispay)
@@ -167,6 +175,11 @@ export const removeWalletV2 = (idWallet: number): boolean => {
     data: updateWallets
   };
   return updateWallets.length < currentLength;
+};
+
+export const getWallet = (idWallet: number): WalletV2 | undefined => {
+  const wallets = walletV2Response.data ?? [];
+  return wallets.find(w => w.idWallet === idWallet);
 };
 
 // return the list of wallets

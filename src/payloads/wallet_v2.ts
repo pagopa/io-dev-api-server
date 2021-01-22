@@ -16,16 +16,20 @@ import {
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
+import { TypeEnum as WalletV1TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
+import { Wallet } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { TypeEnum as WalletV1TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { assetsFolder } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
-import { CreditCardBrandEnum, getCreditCardLogo } from "../utils/payment";
-import { Wallet } from "../../generated/definitions/pagopa/walletv2/Wallet";
+import {
+  CreditCardBrandEnum,
+  creditCardBrands,
+  getCreditCardLogo
+} from "../utils/payment";
 
 type CardConfig = {
   prefix: string;
@@ -150,7 +154,7 @@ export const generateWalletV2FromCard = (
   const ed = card.expiringDate
     ? new Date(card.expiringDate)
     : faker.date.future();
-  const ccBrand = CreditCardBrandEnum.AMEX;
+  const ccBrand = faker.random.arrayElement(creditCardBrands);
 
   const info = {
     blurredNumber: card.cardPartialNumber,

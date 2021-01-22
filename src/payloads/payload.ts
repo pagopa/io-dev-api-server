@@ -15,7 +15,7 @@ import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
 import { validatePayload } from "../utils/validator";
-import { getPsps } from "./wallet";
+import { validPsp } from "./wallet";
 
 type settings = {
   user: string;
@@ -60,7 +60,6 @@ export const getRandomNoticeNumber = (): string => {
   return newStr + messageNumber;
 };
 
-const validPsp = getPsps()[0];
 export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,

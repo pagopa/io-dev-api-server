@@ -15,19 +15,20 @@ import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/Wall
 import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../payloads/response";
 import {
-  getPsps,
   getTransactions,
   getWallets,
-  sessionToken
+  sessionToken,
+  validPsp
 } from "../payloads/wallet";
 import {
   abiData,
   generateCards,
+  generateWalletV1,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import { addWalletV2, removeWalletV2 } from "./wallet_v2";
+import { addWalletV2, getWallet, removeWalletV2 } from "./wallet_v2";
 export const walletCount = 4;
 export const walletRouter = Router();
 const walletPath = "/wallet/v1";
@@ -72,22 +73,30 @@ addHandler(
   }
 );
 
+addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
+  res.json({ data: [validPsp] })
+);
+
+addHandler(
+  walletRouter,
+  "get",
+  appendWalletPrefix("/psps/selected"),
+  (_, res) => {
+    res.json({ data: [validPsp] });
+  }
+);
+
+addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (_, res) => {
+  res.json({ data: [validPsp] });
+});
+
 addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/psps/:psp_id"),
   (req, res) => {
-    fromNullable(
-      getPsps().find(p => p.id === parseInt(req.params.psp_id, 10))
-    ).foldL(
-      () => res.sendStatus(404),
-      p => res.json({ data: p })
-    );
+    res.json({ data: validPsp });
   }
-);
-
-addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
-  res.json({ data: getPsps() })
 );
 
 addHandler(
@@ -98,6 +107,23 @@ addHandler(
     const idWallet = parseInt(req.params.idWallet, 10);
     const hasBeenDelete = removeWalletV2(idWallet);
     res.sendStatus(hasBeenDelete ? 200 : 404);
+  }
+);
+
+addHandler(
+  walletRouter,
+  "put",
+  appendWalletPrefix("/wallet/:idWallet"),
+  (req, res) => {
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const walletV2 = getWallet(idWallet);
+    if (walletV2 === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+    res.json({
+      data: generateWalletV1(walletV2.idWallet!, walletV2.info as CardInfo)
+    });
   }
 );
 
