@@ -13,7 +13,7 @@ import { bonusVacanze } from "../bonus-vacanze";
 
 export const cgnRouter = Router();
 
-const addPrefix = (path: string) => addApiV1Prefix(`/bonus/cgn${path}`);
+const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
 
 // tslint:disable-next-line: no-let
 let idActivationCgn: string | undefined;
@@ -24,8 +24,8 @@ let firstCgnActivationRequestTime = 0;
 // 201 -> Request created.
 // 202 -> Processing request.
 // 401 -> Bearer token null or expired.
-// 409 -> Cannot activate a new bonus because another bonus related to this user was found.
-// 403 -> Cannot activate a new bonus because the eligibility data has expired.
+// 409 -> Cannot activate the user's cgn because another updateCgn request was found for this user or it is already active.
+// 403 -> Cannot activate a new CGN because the user is ineligible to get the CGN.
 addHandler(cgnRouter, "post", addPrefix("/activations"), (_, res) => {
   // if there is no previous activation -> Request created -> send back the created id
   fromNullable(idActivationCgn).foldL(
