@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CgnActivatedStatus";
-import { StatusEnum as PendingStatusEnum } from "../../../../generated/definitions/cgn/CgnPendingStatus";
+import {
+  CgnPendingStatus,
+  StatusEnum as PendingStatusEnum
+} from "../../../../generated/definitions/cgn/CgnPendingStatus";
 // tslint:disable-next-line:no-commented-code
 // import { StatusEnum as CanceledStatusEnum } from "../../../../generated/definitions/cgn/CgnCanceledStatus";
 // import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
@@ -36,7 +39,9 @@ addHandler(cgnRouter, "post", addPrefix("/activations"), (_, res) => {
     () => {
       idActivationCgn = getRandomStringId();
       firstCgnActivationRequestTime = new Date().getTime();
-      res.status(201).json({ id: idActivationCgn });
+      CgnPendingStatus.is(currentCGN)
+        ? res.status(202).json({ id: idActivationCgn })
+        : res.status(201).json({ id: idActivationCgn });
     },
     // Cannot activate a new bonus because another bonus related to this user was found.
     () => res.sendStatus(409)
