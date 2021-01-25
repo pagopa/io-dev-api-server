@@ -10,6 +10,8 @@ import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
+import { wallet2Router } from "./wallet_v2";
+import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/CoBadgeServices";
 
 export const servicesMetadataRouter = Router();
 
@@ -126,4 +128,14 @@ addHandler(
   (_, res) => {
     res.json(readFileAsJSON(assetsFolder + "/data/abi.json"));
   }
+);
+
+addHandler<CoBadgeServices>(
+  wallet2Router,
+  "get",
+  addRoutePrefix("/status/cobadgeServices.json"),
+  (req, res) =>
+    res.json(readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")),
+  0,
+  { codec: CoBadgeServices }
 );
