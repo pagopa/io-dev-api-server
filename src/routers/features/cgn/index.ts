@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CgnActivatedStatus";
+import { StatusEnum as PendingStatusEnum } from "../../../../generated/definitions/cgn/CgnPendingStatus";
 // tslint:disable-next-line:no-commented-code
 // import { StatusEnum as CanceledStatusEnum } from "../../../../generated/definitions/cgn/CgnCanceledStatus";
-// import { StatusEnum as PendingStatusEnum } from "../../../../generated/definitions/cgn/CgnPendingStatus";
 // import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
 import { CgnStatus } from "../../../../generated/definitions/cgn/CgnStatus";
 import { addHandler } from "../../../payloads/response";
@@ -20,6 +20,10 @@ let idActivationCgn: string | undefined;
 // tslint:disable-next-line: no-let
 let firstCgnActivationRequestTime = 0;
 
+// tslint:disable-next-line: no-let
+let currentCGN: CgnStatus = {
+  status: PendingStatusEnum.PENDING
+};
 // Start bonus activation request procedure
 // 201 -> Request created.
 // 202 -> Processing request.
@@ -43,7 +47,7 @@ addHandler(cgnRouter, "post", addPrefix("/activations"), (_, res) => {
 // 200 -> CGN current Status
 // 404 -> no CGN found
 addHandler(bonusVacanze, "get", addPrefix("/status"), (_, res) => {
-  const currentCGN: CgnStatus = {
+  currentCGN = {
     status: ActivatedStatusEnum.ACTIVATED,
     activation_date: new Date(firstCgnActivationRequestTime),
     expiration_date: new Date("2050-05-10")
