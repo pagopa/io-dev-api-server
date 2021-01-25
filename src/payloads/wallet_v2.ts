@@ -4,6 +4,7 @@ import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import sha256 from "sha256";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
+import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
 import {
   Card,
@@ -16,18 +17,17 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import {
+  TypeEnum as WalletV1TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/walletv2/Wallet";
+import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
-import {
-  CreditCardBrandEnum,
-  creditCardBrands,
-  getCreditCardLogo
-} from "../utils/payment";
-import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
   prefix: string;
@@ -144,20 +144,16 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   };
 });
 
-/**
- * info could be CardInfo (Card or Bancomat)
- * @param card
- * @param enableableFunctions
- */
 export const generateWalletV2FromCard = (
   card: Card,
   walletType: WalletTypeEnum,
+  canMethodPay: boolean,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
 ): WalletV2 => {
   const ed = card.expiringDate
     ? new Date(card.expiringDate)
     : faker.date.future();
-  const ccBrand = CreditCardBrandEnum.AMEX;
+  const ccBrand = faker.random.arrayElement(creditCardBrands);
 
   const info = {
     blurredNumber: card.cardPartialNumber,
@@ -181,15 +177,11 @@ export const generateWalletV2FromCard = (
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
     info,
     onboardingChannel: "IO",
-    pagoPA: true,
+    pagoPA: canMethodPay,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
 
-/**
- * @param satispay
- * @param enableableFunctions
- */
 export const generateWalletV2FromSatispayOrBancomatPay = (
   info: SatispayInfo | BPayInfo,
   walletType: WalletTypeEnum.Satispay | WalletTypeEnum.BPay,
@@ -209,3 +201,28 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
+
+export const generateWalletV1FromCardInfo = (
+  idWallet: number,
+  info: CardInfo
+): Wallet => ({
+  idWallet,
+  type: WalletV1TypeEnum.CREDIT_CARD,
+  favourite: false,
+  creditCard: {
+    id: idWallet,
+    holder: info.holder,
+    pan: "*".repeat(12) + (info.blurredNumber ?? ""),
+    expireMonth: info.expireMonth!.padStart(2, "0"),
+    expireYear: info.expireYear!.slice(-2),
+    brandLogo:
+      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
+    flag3dsVerified: false,
+    brand: info.brand,
+    onUs: false
+  },
+  pspEditable: true,
+  isPspToIgnore: false,
+  saved: false,
+  registeredNexi: false
+});
