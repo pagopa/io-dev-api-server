@@ -4,6 +4,7 @@
 import { Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/CoBadgeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
@@ -11,7 +12,6 @@ import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
 import { wallet2Router } from "./wallet_v2";
-import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/CoBadgeServices";
 
 export const servicesMetadataRouter = Router();
 
