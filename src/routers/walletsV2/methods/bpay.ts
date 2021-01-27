@@ -1,18 +1,18 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import { BPay } from "../../../generated/definitions/pagopa/walletv2/BPay";
-import { BPayInfo } from "../../../generated/definitions/pagopa/walletv2/BPayInfo";
-import { BPayRequest } from "../../../generated/definitions/pagopa/walletv2/BPayRequest";
-import { RestSatispayResponse } from "../../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
-import { WalletTypeEnum } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { addHandler } from "../../payloads/response";
-import { generateWalletV2FromSatispayOrBancomatPay } from "../../payloads/wallet_v2";
+import { BPay } from "../../../../generated/definitions/pagopa/walletv2/BPay";
+import { BPayInfo } from "../../../../generated/definitions/pagopa/walletv2/BPayInfo";
+import { BPayRequest } from "../../../../generated/definitions/pagopa/walletv2/BPayRequest";
+import { RestSatispayResponse } from "../../../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
+import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
+import { addHandler } from "../../../payloads/response";
+import { generateWalletV2FromSatispayOrBancomatPay } from "../../../payloads/wallet_v2";
 import {
   addWalletV2,
   appendWalletPrefix,
   bPayResponse,
   walletV2Response
-} from "./index";
+} from "../index";
 
 export const bpayRouter = Router();
 // add the given list of bpay to the wallet

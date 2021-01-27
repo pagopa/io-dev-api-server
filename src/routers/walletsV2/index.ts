@@ -19,6 +19,7 @@ import {
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay
 } from "../../payloads/wallet_v2";
+import { CobadgeResponse } from "../../../generated/definitions/pagopa/cobadge/CobadgeResponse";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -54,6 +55,8 @@ export const defaultWalletV2Config: WalletV2Config = {
 export let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
+
+export let cobadgeResponse: CobadgeResponse = {};
 
 // tslint:disable-next-line: no-let
 export let bPayResponse: RestBPayResponse = {
@@ -103,7 +106,7 @@ export const addWalletV2 = (
   };
 };
 
-export const generateData = () => {
+export const generateWalletV2Data = () => {
   // bancomat owned by the citizen but not added in his wallet
   pansResponse = {
     data: { data: citizenBancomat() }
@@ -164,7 +167,7 @@ export const generateData = () => {
   );
 };
 
-// return true if the given idWallet can be deleted
+// return true if wallet relative to the given idWallet has been deleted
 export const removeWalletV2 = (idWallet: number): boolean => {
   const wallets = walletV2Response.data ?? [];
   const currentLength = wallets.length;
@@ -189,7 +192,6 @@ addHandler<WalletV2ListResponse>(
   (_, res) => res.json(walletV2Response)
 );
 
-// wallet/v1/wallet/21530/actions/favourite
 // set a credit card as favourite
 addHandler<WalletResponse>(
   wallet2Router,
@@ -223,6 +225,7 @@ addHandler<WalletResponse>(
 
 // reset function
 export const resetWalletV2 = () => {
-  generateData();
+  generateWalletV2Data();
 };
-generateData();
+// at the server startup
+generateWalletV2Data();

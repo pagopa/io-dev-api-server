@@ -8,7 +8,7 @@ import { resetCardConfig } from "../../payloads/wallet_v2";
 import { sendFile } from "../../utils/file";
 import {
   defaultWalletV2Config,
-  generateData,
+  generateWalletV2Data,
   updateWalletV2Config,
   walletV2Config,
   walletV2Response
@@ -34,7 +34,7 @@ addHandler(dashboardWalletV2Router, "get", "/walletv2/config", (_, res) =>
 addHandler(dashboardWalletV2Router, "post", "/walletv2/config", (req, res) => {
   updateWalletV2Config(req.body);
   resetCardConfig();
-  generateData();
+  generateWalletV2Data();
   res.json(walletV2Config);
 });
 
@@ -82,6 +82,6 @@ addHandler(dashboardWalletV2Router, "get", "/walletv2/bpd-pans", (req, res) => {
 // reset walletv2-bpd config (dashboard web)
 addHandler(dashboardWalletV2Router, "get", "/walletv2/reset", (_, res) => {
   updateWalletV2Config(defaultWalletV2Config);
-  generateData();
+  generateWalletV2Data();
   res.json(walletV2Config);
 });

@@ -17,10 +17,10 @@ import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/walletsV2";
-import { bancomatRouter } from "./routers/walletsV2/bancomat";
-import { bpayRouter } from "./routers/walletsV2/bpay";
+import { bancomatRouter } from "./routers/walletsV2/methods/bancomat";
+import { bpayRouter } from "./routers/walletsV2/methods/bpay";
 import { dashboardWalletV2Router } from "./routers/walletsV2/configDashboard";
-import { satispayRouter } from "./routers/walletsV2/satispay";
+import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { delayer } from "./utils/delay_middleware";
 // create express server
 const app: Application = express();
