@@ -16,7 +16,7 @@ import { serviceRouter } from "./routers/service";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
-import { wallet2Router } from "./routers/wallet_v2";
+import { wallet2Router } from "./routers/walletsV2";
 import { bpayRouter } from "./routers/walletsV2/bpay";
 import { satispayRouter } from "./routers/walletsV2/satispay";
 import { delayer } from "./utils/delay_middleware";

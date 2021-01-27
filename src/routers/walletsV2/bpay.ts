@@ -12,7 +12,7 @@ import {
   appendWalletPrefix,
   bPayResponse,
   walletV2Response
-} from "../wallet_v2";
+} from "./index";
 
 export const bpayRouter = Router();
 // add the given list of bpay to the wallet

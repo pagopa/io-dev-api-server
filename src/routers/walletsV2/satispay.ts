@@ -11,7 +11,7 @@ import {
   appendWalletPrefix,
   walletV2Config,
   walletV2Response
-} from "../wallet_v2";
+} from "./index";
 import { Router } from "express";
 
 export const satispayRouter = Router();

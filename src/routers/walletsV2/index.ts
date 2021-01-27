@@ -2,25 +2,25 @@ import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import * as t from "io-ts";
-import { AbiListResponse } from "../../generated/definitions/pagopa/walletv2/AbiListResponse";
-import { BancomatCardsRequest } from "../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
-import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
-import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
-import { BPayRequest } from "../../generated/definitions/pagopa/walletv2/BPayRequest";
-import { Card } from "../../generated/definitions/pagopa/walletv2/Card";
-import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
-import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
-import { RestBPayResponse } from "../../generated/definitions/pagopa/walletv2/RestBPayResponse";
-import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
+import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/AbiListResponse";
+import { BancomatCardsRequest } from "../../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
+import { BPay } from "../../../generated/definitions/pagopa/walletv2/BPay";
+import { BPayInfo } from "../../../generated/definitions/pagopa/walletv2/BPayInfo";
+import { BPayRequest } from "../../../generated/definitions/pagopa/walletv2/BPayRequest";
+import { Card } from "../../../generated/definitions/pagopa/walletv2/Card";
+import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInfo";
+import { Message } from "../../../generated/definitions/pagopa/walletv2/Message";
+import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
+import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
+import { SatispayInfo } from "../../../generated/definitions/pagopa/walletv2/SatispayInfo";
+import { WalletResponse } from "../../../generated/definitions/pagopa/walletv2/WalletResponse";
 import {
   WalletTypeEnum,
   WalletV2
-} from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { WalletV2ListResponse } from "../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
-import { assetsFolder } from "../global";
-import { addHandler } from "../payloads/response";
+} from "../../../generated/definitions/pagopa/walletv2/WalletV2";
+import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
+import { assetsFolder } from "../../global";
+import { addHandler } from "../../payloads/response";
 import {
   abiData,
   generateBancomatPay,
@@ -30,8 +30,8 @@ import {
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay,
   resetCardConfig
-} from "../payloads/wallet_v2";
-import { sendFile } from "../utils/file";
+} from "../../payloads/wallet_v2";
+import { sendFile } from "../../utils/file";
 
 type WalletV2Config = {
   walletBancomat: number;

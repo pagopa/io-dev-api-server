@@ -9,7 +9,7 @@ import { sendFile } from "../utils/file";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetProfile } from "./profile";
-import { resetWalletV2 } from "./wallet_v2";
+import { resetWalletV2 } from "./walletsV2";
 
 export const publicRouter = Router();
 

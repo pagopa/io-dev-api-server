@@ -18,7 +18,7 @@ import {
   appendWalletPrefix,
   pansResponse,
   walletV2Response
-} from "../wallet_v2";
+} from "./index";
 
 export const bancomatRouter = Router();
 /**

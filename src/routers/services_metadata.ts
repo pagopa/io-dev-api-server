@@ -11,7 +11,7 @@ import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
-import { wallet2Router } from "./wallet_v2";
+import { wallet2Router } from "./walletsV2";
 
 export const servicesMetadataRouter = Router();
 
