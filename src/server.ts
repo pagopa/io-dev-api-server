@@ -1,5 +1,5 @@
 import bodyParser from "body-parser";
-import { Application, Router } from "express";
+import { Application } from "express";
 import express from "express";
 import morgan from "morgan";
 import { globalDelay } from "./global";
@@ -17,10 +17,11 @@ import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/walletsV2";
+import { bancomatRouter } from "./routers/walletsV2/bancomat";
 import { bpayRouter } from "./routers/walletsV2/bpay";
+import { dashboardWalletV2Router } from "./routers/walletsV2/configDashboard";
 import { satispayRouter } from "./routers/walletsV2/satispay";
 import { delayer } from "./utils/delay_middleware";
-import { bancomatRouter } from "./routers/walletsV2/bancomat";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -46,6 +47,7 @@ app.use(
   satispayRouter,
   bpayRouter,
   bancomatRouter,
+  dashboardWalletV2Router,
   paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,

@@ -1,25 +1,14 @@
 import { Router } from "express";
-import { fromNullable } from "fp-ts/lib/Option";
-import fs from "fs";
-import * as t from "io-ts";
 import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/AbiListResponse";
-import { BancomatCardsRequest } from "../../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
-import { BPay } from "../../../generated/definitions/pagopa/walletv2/BPay";
-import { BPayInfo } from "../../../generated/definitions/pagopa/walletv2/BPayInfo";
-import { BPayRequest } from "../../../generated/definitions/pagopa/walletv2/BPayRequest";
-import { Card } from "../../../generated/definitions/pagopa/walletv2/Card";
 import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInfo";
-import { Message } from "../../../generated/definitions/pagopa/walletv2/Message";
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { SatispayInfo } from "../../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import { WalletResponse } from "../../../generated/definitions/pagopa/walletv2/WalletResponse";
 import {
   WalletTypeEnum,
   WalletV2
 } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
-import { assetsFolder } from "../../global";
 import { addHandler } from "../../payloads/response";
 import {
   abiData,
@@ -28,10 +17,8 @@ import {
   generateSatispayInfo,
   generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
-  generateWalletV2FromSatispayOrBancomatPay,
-  resetCardConfig
+  generateWalletV2FromSatispayOrBancomatPay
 } from "../../payloads/wallet_v2";
-import { sendFile } from "../../utils/file";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -53,7 +40,7 @@ export const abiResponse: AbiListResponse = {
   data: abiData
 };
 
-const defaultWalletV2Config: WalletV2Config = {
+export const defaultWalletV2Config: WalletV2Config = {
   walletBancomat: 1,
   walletCreditCard: 1,
   walletCreditCardCoBadge: 1,
@@ -88,7 +75,11 @@ let walletSatispay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
-export let walletV2Config = defaultWalletV2Config;
+export let walletV2Config: WalletV2Config = defaultWalletV2Config;
+
+export const updateWalletV2Config = (config: WalletV2Config) => {
+  walletV2Config = config;
+};
 
 // the bancomat owned by the citizen
 const citizenBancomat = () =>
@@ -112,7 +103,7 @@ export const addWalletV2 = (
   };
 };
 
-const generateData = () => {
+export const generateData = () => {
   // bancomat owned by the citizen but not added in his wallet
   pansResponse = {
     data: { data: citizenBancomat() }
@@ -235,76 +226,3 @@ export const resetWalletV2 = () => {
   generateData();
 };
 generateData();
-
-// DASHBOARD config API / utility functions
-
-// get walletv2-bpd (dashboard web)
-addHandler(
-  wallet2Router,
-  "get",
-  "/",
-  (_, res) => sendFile("assets/html/wallet2_config.html", res),
-  0,
-  { description: "WalletV2 config dashboard" }
-);
-
-// get walletv2-bpd config (dashboard web)
-addHandler(wallet2Router, "get", "/walletv2/config", (_, res) =>
-  res.json(walletV2Config)
-);
-
-// update walletv2-bpd config (dashboard web)
-addHandler(wallet2Router, "post", "/walletv2/config", (req, res) => {
-  walletV2Config = req.body;
-  resetCardConfig();
-  generateData();
-  res.json(walletV2Config);
-});
-
-// get all payment methods compliant with BPD (dashboard web)
-export const getBPDPaymentMethod = () =>
-  (walletV2Response.data ?? [])
-    .filter(w => (w.enableableFunctions ?? []).some(ef => ef === "BPD"))
-    .map(bpd => {
-      if (
-        bpd.walletType === WalletTypeEnum.Card ||
-        bpd.walletType === WalletTypeEnum.Bancomat
-      ) {
-        return {
-          hpan: (bpd.info as CardInfo).hashPan,
-          pan: (bpd.info as CardInfo).blurredNumber,
-          type: bpd.walletType
-        };
-      }
-      if (bpd.walletType === WalletTypeEnum.Satispay) {
-        return {
-          hpan: (bpd.info as SatispayInfo).uuid,
-          pan: "--",
-          type: bpd.walletType
-        };
-      }
-      if (bpd.walletType === WalletTypeEnum.BPay) {
-        return {
-          hpan: (bpd.info as BPayInfo).uidHash,
-          pan: "--",
-          type: bpd.walletType
-        };
-      }
-      return {
-        hpan: "--",
-        pan: "--",
-        type: bpd.walletType
-      };
-    });
-
-// get the hpans of walletv2 that support BPD (dashboard web)
-addHandler(wallet2Router, "get", "/walletv2/bpd-pans", (req, res) => {
-  res.json(getBPDPaymentMethod());
-});
-
-// reset walletv2-bpd config (dashboard web)
-addHandler(wallet2Router, "get", "/walletv2/reset", (_, res) => {
-  walletV2Config = defaultWalletV2Config;
-  generateData();
-  res.json(walletV2Config);
-});
