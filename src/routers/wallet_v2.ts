@@ -12,8 +12,6 @@ import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Message } from "../../generated/definitions/pagopa/walletv2/Message";
 import { RestBPayResponse } from "../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { RestSatispayResponse } from "../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
-import { Satispay } from "../../generated/definitions/pagopa/walletv2/Satispay";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
 import {
@@ -31,8 +29,7 @@ import {
   generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay,
-  resetCardConfig,
-  satispay
+  resetCardConfig
 } from "../payloads/wallet_v2";
 import { sendFile } from "../utils/file";
 
@@ -48,7 +45,7 @@ type WalletV2Config = {
 };
 
 const walletV1Path = "/wallet/v1";
-const appendWalletPrefix = (path: string) => `${walletV1Path}${path}`;
+export const appendWalletPrefix = (path: string) => `${walletV1Path}${path}`;
 export const wallet2Router = Router();
 const walletPath = "/wallet/v2";
 const appendWallet2Prefix = (path: string) => `${walletPath}${path}`;
@@ -67,12 +64,12 @@ const defaultWalletV2Config: WalletV2Config = {
   citizenBPay: 3
 };
 // tslint:disable-next-line: no-let
-let pansResponse: RestPanResponse = {
+export let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
 
 // tslint:disable-next-line: no-let
-let bPayResponse: RestBPayResponse = {
+export let bPayResponse: RestBPayResponse = {
   data: []
 };
 
@@ -231,204 +228,6 @@ addHandler<WalletResponse>(
     }
     res.sendStatus(404);
   }
-);
-
-/**
- * return the banks list
- * if 'abiQuery' is defined in query string a filter on name and abi will be applied
- */
-addHandler<AbiListResponse>(
-  wallet2Router,
-  "get",
-  appendWalletPrefix("/bancomat/abi"),
-  (req, res) => {
-    const abiQuery = req.query.abiQuery;
-    if (abiQuery !== undefined) {
-      const s = abiQuery.toLowerCase().trim();
-      return {
-        payload: {
-          ...abiResponse,
-          data: (abiResponse.data ?? []).filter(
-            a =>
-              a.name!.toLowerCase().indexOf(s) !== -1 ||
-              a.abi!.toLowerCase().indexOf(s) !== -1
-          )
-        }
-      };
-    }
-    res.json(abiResponse);
-  }
-);
-
-/**
- * return the pans list (bancomat)
- * if 'abi' is defined in query string a filter on abi will be applied
- */
-addHandler<RestPanResponse>(
-  wallet2Router,
-  "get",
-  appendWalletPrefix("/bancomat/pans"),
-  (req, res) => {
-    const abi = req.query.abi;
-    const msg = fs
-      .readFileSync(assetsFolder + "/pm/pans/messages.json")
-      .toString();
-    const response = {
-      ...pansResponse,
-      data: {
-        ...pansResponse.data,
-        messages: t.readonlyArray(Message).decode(msg).value
-      }
-    };
-    if (abi === undefined) {
-      res.json(response);
-      return;
-    }
-    res.json({
-      ...response,
-      data: {
-        data:
-          response.data &&
-          response.data.data !== undefined &&
-          response.data.data.length > 0
-            ? response.data.data.filter(c =>
-                c.abi ? c.abi.indexOf(abi) !== -1 : false
-              )
-            : []
-      }
-    });
-  }
-);
-
-// add a list of bancomat to the wallet
-addHandler<WalletV2ListResponse>(
-  wallet2Router,
-  "post",
-  appendWalletPrefix("/bancomat/add-wallets"),
-  (req, res) => {
-    const data = req.body;
-    const maybeData = BancomatCardsRequest.decode(data);
-    // cant decode the body
-    if (maybeData.isLeft()) {
-      return res.sendStatus(400);
-    }
-    const walletData = walletV2Response.data ?? [];
-    const bancomatsToAdd = maybeData.value.data?.data ?? [];
-    // check if a bancomat is already present in the wallet list
-    const findBancomat = (card: Card): Card | undefined => {
-      return walletData.find(nc =>
-        fromNullable(nc)
-          .map(v => {
-            if (v.info) {
-              const info = v.info as any;
-              return card.hpan === info.hashPan;
-            }
-            return false;
-          })
-          .getOrElse(false)
-      );
-    };
-    // don't add bancomat already present in wallet list (same hpan)
-    const addedBancomats = bancomatsToAdd.filter(
-      c => findBancomat(c) === undefined
-    );
-    // transform bancomat to walletv2
-    const addedBancomatsWalletV2 = addedBancomats.map(c =>
-      generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
-    );
-    addWalletV2([...walletData, ...addedBancomatsWalletV2], false);
-    res.json({
-      data: bancomatsToAdd.map(c =>
-        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
-      )
-    });
-  }
-);
-
-// return the satispay owned by the user
-addHandler<RestSatispayResponse>(
-  wallet2Router,
-  "get",
-  appendWalletPrefix("/satispay/consumers"),
-  (req, res) => {
-    if (walletV2Config.citizenSatispay) {
-      res.json({ data: satispay });
-      return;
-    }
-    res.sendStatus(404);
-  }
-);
-
-// add the given satispay to the wallet
-addHandler<RestSatispayResponse>(
-  wallet2Router,
-  "post",
-  appendWalletPrefix("/satispay/add-wallet"),
-  (req, res) => {
-    const maybeSatispayInfo = Satispay.decode(req.body.data);
-    maybeSatispayInfo.fold(
-      () => res.sendStatus(400),
-      si => {
-        const walletData = walletV2Response.data ?? [];
-        const walletsWithoutSatispay = walletData.filter(
-          w => w.walletType !== WalletTypeEnum.Satispay
-        );
-        const w2Satispay = generateWalletV2FromSatispayOrBancomatPay(
-          { uuid: si.uidSatispayHash },
-          WalletTypeEnum.Satispay
-        );
-        addWalletV2([...walletsWithoutSatispay, w2Satispay], false);
-        return res.json({ data: w2Satispay });
-      }
-    );
-  }
-);
-
-// add the given list of bpay to the wallet
-addHandler<RestSatispayResponse>(
-  wallet2Router,
-  "post",
-  appendWalletPrefix("/bpay/add-wallets"),
-  (req, res) => {
-    const maybeBPayList = BPayRequest.decode(req.body);
-    maybeBPayList.fold(
-      () => {
-        res.sendStatus(400);
-      },
-      bpay => {
-        fromNullable(bpay.data).foldL(
-          () => {
-            res.sendStatus(400);
-          },
-          (bPayList: ReadonlyArray<BPay>) => {
-            const walletData = walletV2Response.data ?? [];
-            // all method different from the adding ones
-            const walletsBPay = walletData.filter(
-              w =>
-                w.walletType !== WalletTypeEnum.BPay ||
-                (w.walletType === WalletTypeEnum.BPay &&
-                  !bPayList.some(
-                    (bp: BPay) => bp.uidHash === (w.info as BPayInfo).uidHash
-                  ))
-            );
-            const w2BpayList = bPayList.map(bp =>
-              generateWalletV2FromSatispayOrBancomatPay(bp, WalletTypeEnum.BPay)
-            );
-            addWalletV2([...walletsBPay, ...w2BpayList], false);
-            res.json({ data: w2BpayList });
-          }
-        );
-      }
-    );
-  }
-);
-
-// return the bpay owned by the citized
-addHandler<RestSatispayResponse>(
-  wallet2Router,
-  "get",
-  appendWalletPrefix("/bpay/list"),
-  (req, res) => res.json(bPayResponse)
 );
 
 // reset function

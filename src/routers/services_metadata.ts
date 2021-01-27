@@ -4,7 +4,7 @@
 import { Router } from "express";
 import { Service } from "../../generated/definitions/content/Service";
 import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
-import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/CoBadgeServices";
+import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";

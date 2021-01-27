@@ -17,7 +17,10 @@ import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/wallet_v2";
+import { bpayRouter } from "./routers/walletsV2/bpay";
+import { satispayRouter } from "./routers/walletsV2/satispay";
 import { delayer } from "./utils/delay_middleware";
+import { bancomatRouter } from "./routers/walletsV2/bancomat";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -32,7 +35,7 @@ app.use(
   )
 );
 
-const routers: ReadonlyArray<Router> = [
+[
   publicRouter,
   profileRouter,
   sessionRouter,
@@ -40,6 +43,9 @@ const routers: ReadonlyArray<Router> = [
   serviceRouter,
   walletRouter,
   wallet2Router,
+  satispayRouter,
+  bpayRouter,
+  bancomatRouter,
   paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,
@@ -47,7 +53,6 @@ const routers: ReadonlyArray<Router> = [
   bpd,
   bpdAward,
   bpdRanking
-];
-// add routers
-routers.forEach(r => app.use(r));
+].forEach(r => app.use(r));
+
 export default app;
