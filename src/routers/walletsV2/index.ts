@@ -19,7 +19,6 @@ import {
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay
 } from "../../payloads/wallet_v2";
-import { CobadgeResponse } from "../../../generated/definitions/pagopa/cobadge/CobadgeResponse";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -29,6 +28,7 @@ type WalletV2Config = {
   bPay: number;
   citizenBancomat: number;
   citizenBPay: number;
+  citizenCreditCardCoBadge: number;
   citizenSatispay: boolean;
 };
 
@@ -49,14 +49,13 @@ export const defaultWalletV2Config: WalletV2Config = {
   bPay: 1,
   citizenSatispay: true,
   citizenBancomat: 3,
-  citizenBPay: 3
+  citizenBPay: 3,
+  citizenCreditCardCoBadge: 3
 };
 // tslint:disable-next-line: no-let
 export let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
-
-export let cobadgeResponse: CobadgeResponse = {};
 
 // tslint:disable-next-line: no-let
 export let bPayResponse: RestBPayResponse = {
@@ -73,6 +72,8 @@ let walletBancomat: ReadonlyArray<WalletV2> = [];
 let walletCreditCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
+// tslint:disable-next-line: no-let
+export let citizenCreditCardCoBadge: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
@@ -135,6 +136,12 @@ export const generateWalletV2Data = () => {
   walletCreditCardsCoBadges = generateCards(
     abiResponse.data ?? [],
     walletV2Config.walletCreditCardCoBadge,
+    WalletTypeEnum.Card
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false));
+  // cobadge owned by the citizen
+  citizenCreditCardCoBadge = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.citizenCreditCardCoBadge,
     WalletTypeEnum.Card
   ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false));
   // set a credit card as favorite

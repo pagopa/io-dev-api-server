@@ -1,12 +1,24 @@
-import { addHandler } from "../../../payloads/response";
-import { RestPanResponse } from "../../../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { appendWalletPrefix, pansResponse } from "../index";
+import { Router } from "express";
+import faker from "faker/locale/it";
 import fs from "fs";
+import { readableReport } from "italia-ts-commons/lib/reporters";
+import { CardInfo } from "../../../../generated/definitions/pagopa/CardInfo";
+import { CobadgeResponse } from "../../../../generated/definitions/pagopa/cobadge/CobadgeResponse";
+import {
+  PaymentInstrument,
+  PaymentNetworkEnum,
+  ProductTypeEnum,
+  ValidityStatusEnum
+} from "../../../../generated/definitions/pagopa/cobadge/PaymentInstrument";
+import { RestPanResponse } from "../../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { assetsFolder } from "../../../global";
-import * as t from "io-ts";
-import { Message } from "../../../../generated/definitions/pagopa/walletv2/Message";
+import { addHandler } from "../../../payloads/response";
+import { appendWalletPrefix, citizenCreditCardCoBadge } from "../index";
 import { bancomatRouter } from "./bancomat";
 
+const paymentNetworks = Object.values(PaymentNetworkEnum);
+const productTypes = Object.values(ProductTypeEnum);
+export const cobadgeRouter = Router();
 /**
  * return the cobadge list owned by the citizen
  */
@@ -15,33 +27,37 @@ addHandler<RestPanResponse>(
   "get",
   appendWalletPrefix("/cobadge/pans"),
   (req, res) => {
-    const abi = req.query.abi;
-    const msg = fs
-      .readFileSync(assetsFolder + "/pm/pans/messages.json")
+    // load the stub and fill it with cobadge cards
+    const pansStubData = fs
+      .readFileSync(assetsFolder + "/pm/cobadge/pans.json")
       .toString();
-    const response = {
-      ...pansResponse,
-      data: {
-        ...pansResponse.data,
-        messages: t.readonlyArray(Message).decode(msg).value
-      }
-    };
-    if (abi === undefined) {
-      res.json(response);
+    const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
+    if (maybeResponse.isLeft()) {
+      res.status(400).send(readableReport(maybeResponse.value));
       return;
     }
-    res.json({
-      ...response,
-      data: {
-        data:
-          response.data &&
-          response.data.data !== undefined &&
-          response.data.data.length > 0
-            ? response.data.data.filter(c =>
-                c.abi ? c.abi.indexOf(abi) !== -1 : false
-              )
-            : []
-      }
+    const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge.map<
+      PaymentInstrument
+    >(cb => {
+      const card = cb.info as CardInfo;
+      return {
+        abiCode: card.issuerAbiCode,
+        expiringDate: `01-${card.expireMonth}-${card.expireYear}`,
+        hpan: card.hashPan,
+        panCode: "123",
+        panPartialNumber: card.blurredNumber,
+        paymentNetwork: faker.random.arrayElement(paymentNetworks),
+        productType: faker.random.arrayElement(productTypes),
+        validityStatus: ValidityStatusEnum.VALID,
+        tokenMac: "tokenMac"
+      };
     });
-  }
+    const cobadgeResponse = maybeResponse.value;
+    res.json({
+      ...cobadgeResponse,
+      payload: { ...cobadgeResponse.payload, paymentInstruments }
+    });
+  },
+  0,
+  { codec: RestPanResponse }
 );

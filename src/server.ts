@@ -22,6 +22,7 @@ import { bpayRouter } from "./routers/walletsV2/methods/bpay";
 import { dashboardWalletV2Router } from "./routers/walletsV2/configDashboard";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { delayer } from "./utils/delay_middleware";
+import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -47,6 +48,7 @@ app.use(
   satispayRouter,
   bpayRouter,
   bancomatRouter,
+  cobadgeRouter,
   dashboardWalletV2Router,
   paymentRouter,
   servicesMetadataRouter,

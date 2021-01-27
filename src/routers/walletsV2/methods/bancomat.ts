@@ -66,13 +66,14 @@ addHandler<RestPanResponse>(
       ...pansResponse,
       data: {
         ...pansResponse.data,
-        messages: t.readonlyArray(Message).decode(msg).value
+        messages: t.readonlyArray(Message).decode(JSON.parse(msg)).value
       }
     };
     if (abi === undefined) {
       res.json(response);
       return;
     }
+    // return only the bancomat that match the abi query
     res.json({
       ...response,
       data: {

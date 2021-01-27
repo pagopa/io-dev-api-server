@@ -159,7 +159,7 @@ export const generateWalletV2FromCard = (
     blurredNumber: card.cardPartialNumber,
     brand: ccBrand,
     brandLogo: getCreditCardLogo(ccBrand),
-    expireMonth: (ed.getMonth() + 1).toString(),
+    expireMonth: (ed.getMonth() + 1).toString().padStart(2, "0"),
     expireYear: ed.getFullYear().toString(),
     hashPan: card.hpan,
     holder: `${currentProfile.name} ${currentProfile.family_name}`,
