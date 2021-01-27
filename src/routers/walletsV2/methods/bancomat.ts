@@ -100,7 +100,8 @@ addHandler<WalletV2ListResponse>(
     const maybeData = BancomatCardsRequest.decode(data);
     // cant decode the body
     if (maybeData.isLeft()) {
-      return res.sendStatus(400);
+      res.sendStatus(400);
+      return;
     }
     const walletData = walletV2Response.data ?? [];
     const bancomatsToAdd = maybeData.value.data?.data ?? [];
