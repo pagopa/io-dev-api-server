@@ -16,7 +16,7 @@ import {
 
 export const bpayRouter = Router();
 // add the given list of bpay to the wallet
-addHandler<RestSatispayResponse>(
+addHandler(
   bpayRouter,
   "post",
   appendWalletPrefix("/bpay/add-wallets"),
@@ -55,9 +55,6 @@ addHandler<RestSatispayResponse>(
 );
 
 // return the bpay owned by the citizen
-addHandler<RestSatispayResponse>(
-  bpayRouter,
-  "get",
-  appendWalletPrefix("/bpay/list"),
-  (req, res) => res.json(bPayResponse)
+addHandler(bpayRouter, "get", appendWalletPrefix("/bpay/list"), (req, res) =>
+  res.json(bPayResponse)
 );

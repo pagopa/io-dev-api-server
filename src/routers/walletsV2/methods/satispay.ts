@@ -17,7 +17,7 @@ import {
 export const satispayRouter = Router();
 
 // return the satispay owned by the user
-addHandler<RestSatispayResponse>(
+addHandler(
   satispayRouter,
   "get",
   appendWalletPrefix("/satispay/consumers"),
@@ -31,7 +31,7 @@ addHandler<RestSatispayResponse>(
 );
 
 // add the given satispay to the wallet
-addHandler<RestSatispayResponse>(
+addHandler(
   satispayRouter,
   "post",
   appendWalletPrefix("/satispay/add-wallet"),

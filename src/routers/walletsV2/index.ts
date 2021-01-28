@@ -192,15 +192,12 @@ export const getWallet = (idWallet: number): WalletV2 | undefined => {
 };
 
 // return the list of wallets
-addHandler<WalletV2ListResponse>(
-  wallet2Router,
-  "get",
-  appendWallet2Prefix("/wallet"),
-  (_, res) => res.json(walletV2Response)
+addHandler(wallet2Router, "get", appendWallet2Prefix("/wallet"), (_, res) =>
+  res.json(walletV2Response)
 );
 
 // set a credit card as favourite
-addHandler<WalletResponse>(
+addHandler(
   wallet2Router,
   "post",
   appendWalletPrefix("/wallet/:idWallet/actions/favourite"),

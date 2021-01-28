@@ -58,7 +58,7 @@ addHandler(
  * this API return the
  * STEP 2
  */
-addHandler<PaymentActivationsPostResponse>(
+addHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/payment-activations"),
@@ -88,7 +88,7 @@ addHandler<PaymentActivationsPostResponse>(
  * when the payment is finally locked this API returns the idPagamento
  * STEP 3
  */
-addHandler<PaymentActivationsGetResponse>(
+addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-activations/:codiceContestopagamento"),

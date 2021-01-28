@@ -10,11 +10,7 @@ import {
   ProductTypeEnum,
   ValidityStatusEnum
 } from "../../../../generated/definitions/pagopa/cobadge/PaymentInstrument";
-import { RestPanResponse } from "../../../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import {
-  WalletTypeEnum,
-  WalletV2
-} from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
+import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
 import {
@@ -31,7 +27,11 @@ export const cobadgeRouter = Router();
 
 const fromCardInfoToCardBadge = (card: CardInfo): PaymentInstrument => ({
   abiCode: card.issuerAbiCode,
-  expiringDate: `01-${card.expireMonth}-${card.expireYear}`,
+  expiringDate: new Date(
+    parseInt(card.expireYear!, 10),
+    parseInt(card.expireMonth!, 10) - 1,
+    1
+  ),
   hpan: card.hashPan,
   panCode: "123",
   panPartialNumber: card.blurredNumber,
@@ -44,7 +44,7 @@ const fromCardInfoToCardBadge = (card: CardInfo): PaymentInstrument => ({
 /**
  * return the cobadge list owned by the citizen
  */
-addHandler<CobadgeResponse>(
+addHandler(
   bancomatRouter,
   "get",
   appendWalletPrefix("/cobadge/pans"),
@@ -68,23 +68,32 @@ addHandler<CobadgeResponse>(
         fromCardInfoToCardBadge(cb.info as CardInfo)
       );
     const cobadgeResponse = maybeResponse.value;
-    res.status(201).json({
+    const response = {
       ...cobadgeResponse,
       payload: { ...cobadgeResponse.payload, paymentInstruments }
-    });
+    };
+    const validResponse = CobadgeResponse.decode(response);
+    if (validResponse.isLeft()) {
+      res.status(500).send(readableReport(validResponse.value));
+      return;
+    }
+    res.status(201).json(response);
   },
-  0,
-  { codec: CobadgeResponse }
+  0
 );
 
 /**
  * return the cobadge list owned by the citizen (when pans can't return a response)
  */
-addHandler<CobadgeResponse>(
+addHandler(
   bancomatRouter,
   "get",
   appendWalletPrefix("/cobadge/search/:searchRequestId"),
   (req, res) => {
+    if (req.params.searchRequestId === undefined) {
+      res.sendStatus(400);
+      return;
+    }
     // load the stub and fill it with cobadge cards
     const pansStubData = fs
       .readFileSync(assetsFolder + "/pm/cobadge/search.json")
@@ -98,19 +107,24 @@ addHandler<CobadgeResponse>(
       PaymentInstrument
     >(cb => fromCardInfoToCardBadge(cb.info as CardInfo));
     const cobadgeResponse = maybeResponse.value;
-    res.json({
+    const response = {
       ...cobadgeResponse,
       payload: { ...cobadgeResponse.payload, paymentInstruments }
-    });
+    };
+    const validResponse = CobadgeResponse.decode(response);
+    if (validResponse.isLeft()) {
+      res.status(500).send(readableReport(validResponse.value));
+      return;
+    }
+    res.status(201).json(response);
   },
-  0,
-  { codec: CobadgeResponse }
+  0
 );
 
 /**
  * return the cobadge list owned by the citizen (when pans can't return a response)
  */
-addHandler<WalletV2>(
+addHandler(
   bancomatRouter,
   "post",
   appendWalletPrefix("/cobadge/add-wallets"),
@@ -146,6 +160,5 @@ addHandler<WalletV2>(
     addWalletV2([cobadge], true);
     res.json(cobadge);
   },
-  0,
-  { codec: RestPanResponse }
+  0
 );

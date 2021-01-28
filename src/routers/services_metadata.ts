@@ -17,7 +17,7 @@ export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
 
-addHandler<Service | ServicesByScope>(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix(`/services/:service_id`),
@@ -130,12 +130,11 @@ addHandler(
   }
 );
 
-addHandler<CoBadgeServices>(
+addHandler(
   wallet2Router,
   "get",
   addRoutePrefix("/status/cobadgeServices.json"),
   (req, res) =>
     res.json(readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")),
-  0,
-  { codec: CoBadgeServices }
+  0
 );

@@ -26,7 +26,7 @@ export const bancomatRouter = Router();
  * if 'abiQuery' is defined in query string a filter on name and abi will be applied
  * NOTE: actually the app doesn't use this API, it uses /services_metadata.ts/api.json instead
  */
-addHandler<AbiListResponse>(
+addHandler(
   bancomatRouter,
   "get",
   appendWalletPrefix("/bancomat/abi"),
@@ -53,7 +53,7 @@ addHandler<AbiListResponse>(
  * return the pans list (bancomat)
  * if 'abi' is defined in query string a filter on abi will be applied
  */
-addHandler<RestPanResponse>(
+addHandler(
   bancomatRouter,
   "get",
   appendWalletPrefix("/bancomat/pans"),
@@ -91,7 +91,7 @@ addHandler<RestPanResponse>(
 );
 
 // add a list of bancomat to the wallet
-addHandler<WalletV2ListResponse>(
+addHandler(
   bancomatRouter,
   "post",
   appendWalletPrefix("/bancomat/add-wallets"),

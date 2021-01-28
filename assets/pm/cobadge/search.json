@@ -10,7 +10,7 @@
     "paymentInstruments": [],
     "searchRequestId": "searchRequestIdXXX",
     "searchRequestMetadata":[{
-      "executionStatus": "executionStatus",
+      "executionStatus": "OK",
       "retrievedInstrumentsCount": 1,
       "serviceProviderName": "serviceProviderName"
     }]
