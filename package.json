@@ -10,7 +10,7 @@
   "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/pm/spec.json",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/walletv2.json",
   "pagopa_cobadge_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/cobadge/abi_definitions.yml",
-  "pagopa_cobadge_api" : "/Users/matteo/Documents/TeamDigitale/io-services-metadata/pagopa/cobadge/cobadge_1.6.4.json",
+  "pagopa_cobadge_api" : "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/cobadge/cobadge_1.6.4.json",
   "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
   "api_bpd_payment": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/payment.json",
   "api_bpd_award": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/award.json",
