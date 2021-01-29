@@ -1,6 +1,6 @@
 {
   "NEXI": {
-    "status": "active",
+    "status": "enabled",
     "issuers": [
       {
         "abi": "01015",

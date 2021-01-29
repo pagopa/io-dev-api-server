@@ -12,6 +12,7 @@ import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
 import { wallet2Router } from "./walletsV2";
+import { readableReport } from "italia-ts-commons/lib/reporters";
 
 export const servicesMetadataRouter = Router();
 
@@ -134,7 +135,15 @@ addHandler(
   wallet2Router,
   "get",
   addRoutePrefix("/status/cobadgeServices.json"),
-  (req, res) =>
-    res.json(readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")),
+  (req, res) => {
+    const decoded = CoBadgeServices.decode(
+      readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")
+    );
+    if (decoded.isLeft()) {
+      res.status(500).send(readableReport(decoded.value));
+      return;
+    }
+    res.json(decoded.value);
+  },
   0
 );

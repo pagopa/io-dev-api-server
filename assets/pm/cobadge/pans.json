@@ -15,7 +15,7 @@
       "serviceProviderName": "serviceProviderName"
     },
       {
-        "executionStatus": "KO",
+        "executionStatus": "OK",
         "retrievedInstrumentsCount": 1,
         "serviceProviderName": "serviceProviderName"
       }]
