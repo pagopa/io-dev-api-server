@@ -20,6 +20,7 @@ import {
   walletV2Response
 } from "../index";
 import { bancomatRouter } from "./bancomat";
+import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definitions/pagopa/walletv2/CobadegPaymentInstrumentsRequest";
 
 const productTypes = Object.values(ProductTypeEnum);
 export const cobadgeRouter = Router();
@@ -128,14 +129,15 @@ addHandler(
   appendWalletPrefix("/cobadge/add-wallets"),
   (req, res) => {
     const data = req.body;
-    const maybeData = CobadgeResponse.decode(data);
+    const maybeData = CobadegPaymentInstrumentsRequest.decode(data);
     // cant decode the body
     if (maybeData.isLeft()) {
       res.status(400).send(readableReport(maybeData.value));
       return;
     }
     // assume the request includes only ONE card
-    const paymentInstrument = maybeData.value.payload!.paymentInstruments![0];
+    const paymentInstrument = maybeData.value.data!.payload!
+      .paymentInstruments![0];
     const cobadge = citizenCreditCardCoBadge.find(
       cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
     );
@@ -152,7 +154,7 @@ addHandler(
     );
     // already present
     if (walletV2) {
-      res.json(walletV2);
+      res.json({ data: [walletV2] });
       return;
     }
     addWalletV2([cobadge], true);
