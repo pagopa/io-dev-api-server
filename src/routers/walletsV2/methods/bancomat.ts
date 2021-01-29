@@ -129,9 +129,7 @@ addHandler(
     );
     addWalletV2([...walletData, ...addedBancomatsWalletV2], false);
     res.json({
-      data: bancomatsToAdd.map(c =>
-        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
-      )
+      data: addedBancomatsWalletV2
     });
   }
 );

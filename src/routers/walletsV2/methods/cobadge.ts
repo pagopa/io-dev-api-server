@@ -3,13 +3,13 @@ import faker from "faker/locale/it";
 import fs from "fs";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CardInfo } from "../../../../generated/definitions/pagopa/CardInfo";
-import { CobadgeResponse } from "../../../../generated/definitions/pagopa/cobadge/CobadgeResponse";
+import { CobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/CobadgeResponse";
 import {
   PaymentInstrument,
-  PaymentNetworkEnum,
   ProductTypeEnum,
   ValidityStatusEnum
-} from "../../../../generated/definitions/pagopa/cobadge/PaymentInstrument";
+} from "../../../../generated/definitions/pagopa/walletv2/PaymentInstrument";
+import { RestCobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/RestCobadgeResponse";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
@@ -21,7 +21,6 @@ import {
 } from "../index";
 import { bancomatRouter } from "./bancomat";
 
-const paymentNetworks = Object.values(PaymentNetworkEnum);
 const productTypes = Object.values(ProductTypeEnum);
 export const cobadgeRouter = Router();
 
@@ -35,7 +34,6 @@ const fromCardInfoToCardBadge = (card: CardInfo): PaymentInstrument => ({
   hpan: card.hashPan,
   panCode: "123",
   panPartialNumber: card.blurredNumber,
-  paymentNetwork: faker.random.arrayElement(paymentNetworks),
   productType: faker.random.arrayElement(productTypes),
   validityStatus: ValidityStatusEnum.VALID,
   tokenMac: "tokenMac"
@@ -72,12 +70,12 @@ addHandler(
       ...cobadgeResponse,
       payload: { ...cobadgeResponse.payload, paymentInstruments }
     };
-    const validResponse = CobadgeResponse.decode(response);
+    const validResponse = RestCobadgeResponse.decode({ data: response });
     if (validResponse.isLeft()) {
       res.status(500).send(readableReport(validResponse.value));
       return;
     }
-    res.status(201).json(response);
+    res.status(200).json(validResponse.value);
   },
   0
 );
@@ -111,12 +109,12 @@ addHandler(
       ...cobadgeResponse,
       payload: { ...cobadgeResponse.payload, paymentInstruments }
     };
-    const validResponse = CobadgeResponse.decode(response);
+    const validResponse = RestCobadgeResponse.decode({ data: response });
     if (validResponse.isLeft()) {
       res.status(500).send(readableReport(validResponse.value));
       return;
     }
-    res.status(201).json(response);
+    res.status(200).json(validResponse.value);
   },
   0
 );
@@ -158,7 +156,7 @@ addHandler(
       return;
     }
     addWalletV2([cobadge], true);
-    res.json(cobadge);
+    res.json({ data: [cobadge] });
   },
   0
 );

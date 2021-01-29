@@ -13,7 +13,12 @@
       "executionStatus": "OK",
       "retrievedInstrumentsCount": 1,
       "serviceProviderName": "serviceProviderName"
-    }]
+    },
+      {
+        "executionStatus": "KO",
+        "retrievedInstrumentsCount": 1,
+        "serviceProviderName": "serviceProviderName"
+      }]
   },
   "status": "OK"
 }
