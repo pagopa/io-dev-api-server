@@ -44,7 +44,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     services: {
-      is_visible: true,
+      is_visible: false,
       level: "critical",
       web_url: {
         "it-IT": "https://io.italia.it/",

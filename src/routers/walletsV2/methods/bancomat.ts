@@ -120,16 +120,25 @@ addHandler(
       );
     };
     // don't add bancomat already present in wallet list (same hpan)
-    const addedBancomats = bancomatsToAdd.filter(
+    const bancomatNotPresent = bancomatsToAdd.filter(
       c => findBancomat(c) === undefined
     );
+    const bancomatAlreadyPresent = bancomatsToAdd.filter(
+      c => findBancomat(c) !== undefined
+    );
+    const bancomatAdded: ReadonlyArray<Card> = [
+      ...bancomatNotPresent,
+      ...bancomatAlreadyPresent
+    ];
     // transform bancomat to walletv2
-    const addedBancomatsWalletV2 = addedBancomats.map(c =>
+    const addedBancomatsWalletV2 = bancomatNotPresent.map(c =>
       generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
     );
     addWalletV2([...walletData, ...addedBancomatsWalletV2], false);
     res.json({
-      data: addedBancomatsWalletV2
+      data: bancomatAdded.map(c =>
+        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
+      )
     });
   }
 );
