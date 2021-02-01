@@ -100,13 +100,10 @@ const createMessages = () => {
 
   const withContent2 = withMessageContent(
     nextMessage(),
-    `with payment [expiring]`,
+    `only due date`,
     messageMarkdown
   );
-  const message2 = withDueDate(
-    withPaymentData(withContent2, true),
-    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 3)
-  );
+  const message2 = withDueDate(withContent2, new Date());
 
   messagesWC.push(message2);
 

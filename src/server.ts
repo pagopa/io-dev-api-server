@@ -1,5 +1,5 @@
 import bodyParser from "body-parser";
-import { Application, Router } from "express";
+import { Application } from "express";
 import express from "express";
 import morgan from "morgan";
 import { globalDelay } from "./global";
@@ -16,7 +16,12 @@ import { serviceRouter } from "./routers/service";
 import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
-import { wallet2Router } from "./routers/wallet_v2";
+import { wallet2Router } from "./routers/walletsV2";
+import { dashboardWalletV2Router } from "./routers/walletsV2/configDashboard";
+import { bancomatRouter } from "./routers/walletsV2/methods/bancomat";
+import { bpayRouter } from "./routers/walletsV2/methods/bpay";
+import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
+import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { delayer } from "./utils/delay_middleware";
 // create express server
 const app: Application = express();
@@ -32,7 +37,7 @@ app.use(
   )
 );
 
-const routers: ReadonlyArray<Router> = [
+[
   publicRouter,
   profileRouter,
   sessionRouter,
@@ -40,6 +45,11 @@ const routers: ReadonlyArray<Router> = [
   serviceRouter,
   walletRouter,
   wallet2Router,
+  satispayRouter,
+  bpayRouter,
+  bancomatRouter,
+  cobadgeRouter,
+  dashboardWalletV2Router,
   paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,
@@ -47,7 +57,6 @@ const routers: ReadonlyArray<Router> = [
   bpd,
   bpdAward,
   bpdRanking
-];
-// add routers
-routers.forEach(r => app.use(r));
+].forEach(r => app.use(r));
+
 export default app;
