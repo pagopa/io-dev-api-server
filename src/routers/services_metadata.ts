@@ -2,8 +2,7 @@
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
 import { Router } from "express";
-import { Service } from "../../generated/definitions/content/Service";
-import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
 import { municipality } from "../payloads/municipality";
@@ -12,7 +11,6 @@ import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
 import { wallet2Router } from "./walletsV2";
-import { readableReport } from "italia-ts-commons/lib/reporters";
 
 export const servicesMetadataRouter = Router();
 

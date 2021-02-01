@@ -17,12 +17,12 @@ import { servicesMetadataRouter } from "./routers/services_metadata";
 import { sessionRouter } from "./routers/session";
 import { walletRouter } from "./routers/wallet";
 import { wallet2Router } from "./routers/walletsV2";
+import { dashboardWalletV2Router } from "./routers/walletsV2/configDashboard";
 import { bancomatRouter } from "./routers/walletsV2/methods/bancomat";
 import { bpayRouter } from "./routers/walletsV2/methods/bpay";
-import { dashboardWalletV2Router } from "./routers/walletsV2/configDashboard";
+import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { delayer } from "./utils/delay_middleware";
-import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 // create express server
 const app: Application = express();
 // parse body request as json
