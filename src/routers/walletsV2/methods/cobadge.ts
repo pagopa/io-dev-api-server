@@ -2,7 +2,8 @@ import { Router } from "express";
 import faker from "faker/locale/it";
 import fs from "fs";
 import { readableReport } from "italia-ts-commons/lib/reporters";
-import { CardInfo } from "../../../../generated/definitions/pagopa/CardInfo";
+import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
+import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definitions/pagopa/walletv2/CobadegPaymentInstrumentsRequest";
 import { CobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/CobadgeResponse";
 import {
   PaymentInstrument,
@@ -20,7 +21,6 @@ import {
   walletV2Response
 } from "../index";
 import { bancomatRouter } from "./bancomat";
-import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definitions/pagopa/walletv2/CobadegPaymentInstrumentsRequest";
 
 const productTypes = Object.values(ProductTypeEnum);
 export const cobadgeRouter = Router();
