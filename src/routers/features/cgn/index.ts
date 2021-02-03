@@ -60,7 +60,7 @@ addHandler(bonusVacanze, "get", addPrefix("/status"), (_, res) => {
       expiration_date: new Date("2050-05-10")
     };
     res.status(200).json(currentCGN);
+  } else {
+    res.sendStatus(404);
   }
-  // first time return the id of the created task -> request accepted
-  res.sendStatus(404);
 });
