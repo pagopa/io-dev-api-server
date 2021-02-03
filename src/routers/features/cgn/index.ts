@@ -53,11 +53,14 @@ addHandler(cgnRouter, "post", addPrefix("/activations"), (_, res) => {
 // 200 -> CGN current Status
 // 404 -> no CGN found
 addHandler(bonusVacanze, "get", addPrefix("/status"), (_, res) => {
-  currentCGN = {
-    status: ActivatedStatusEnum.ACTIVATED,
-    activation_date: new Date(firstCgnActivationRequestTime),
-    expiration_date: new Date("2050-05-10")
-  };
+  if (firstCgnActivationRequestTime > 0) {
+    currentCGN = {
+      status: ActivatedStatusEnum.ACTIVATED,
+      activation_date: new Date(firstCgnActivationRequestTime),
+      expiration_date: new Date("2050-05-10")
+    };
+    res.status(200).json(currentCGN);
+  }
   // first time return the id of the created task -> request accepted
-  res.status(200).json(currentCGN);
+  res.sendStatus(404);
 });
