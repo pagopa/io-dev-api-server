@@ -33,7 +33,7 @@ import {
   getWallet,
   removeWalletV2,
   walletV2Config
-} from "./wallet_v2";
+} from "./walletsV2";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.walletBancomat +

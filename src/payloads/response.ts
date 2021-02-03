@@ -23,30 +23,17 @@ const addNewRoute = (
   routes = [...routes, { path, method, description }];
 };
 
-export const allRegisteredRoutes = (joiner: string = "\n") =>
-  [...routes]
-    .sort((a, b) => a.path.localeCompare(b.path))
-    .map(
-      r =>
-        `[${r.method}]\t${r.path} ${fromNullable(r.description)
-          // tslint:disable-next-line:no-nested-template-literals
-          .map(d => `(${d})`)
-          .getOrElse("")}`
-    )
-    .join(joiner);
-
-type HandlerOptions<T> = {
-  codec?: t.Type<T>;
+type HandlerOptions = {
   description?: string;
 };
 
-export const addHandler = <T>(
+export const addHandler = (
   router: Router,
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void,
   delay?: number,
-  options?: HandlerOptions<T>
+  options?: HandlerOptions
 ) => {
   addNewRoute(method, path, options?.description);
   router[method](path, (req, res) => {
