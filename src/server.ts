@@ -59,8 +59,6 @@ app.use(
   bpdAward,
   bpdRanking,
   cgnRouter
-];
-// add routers
-routers.forEach(r => app.use(r));
+].forEach(r => app.use(r));
 
 export default app;
