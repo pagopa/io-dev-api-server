@@ -24,7 +24,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { assetsFolder } from "../global";
+import { assetsFolder, shouldShuffle } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
@@ -105,7 +105,7 @@ export const generateCards = (
   count: number = 10,
   cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
 ): ReadonlyArray<CardInfo> => {
-  const shuffledAbis = faker.helpers.shuffle([...abis]);
+  const abiList = shouldShuffle ? faker.helpers.shuffle([...abis]) : abis;
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig
@@ -118,7 +118,7 @@ export const generateCards = (
     }
     const ed = faker.date.future();
     return {
-      abi: shuffledAbis[idx % shuffledAbis.length].abi,
+      abi: abiList[idx % abiList.length].abi,
       cardNumber: cn,
       cardPartialNumber: cn.slice(-4),
       expiringDate: ed.toISOString(),
