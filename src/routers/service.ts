@@ -7,9 +7,10 @@ import {
   getServicesTuple
 } from "../payloads/service";
 import { addApiV1Prefix } from "../utils/strings";
+import { servicesNumber } from "../global";
 
 export const serviceRouter = Router();
-export const services = getServices(10);
+export const services = getServices(servicesNumber);
 export const visibleServices = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 
