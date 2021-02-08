@@ -7,6 +7,7 @@ import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definiti
 import { CobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/CobadgeResponse";
 import {
   PaymentInstrument,
+  PaymentNetworkEnum,
   ProductTypeEnum,
   ValidityStatusEnum
 } from "../../../../generated/definitions/pagopa/walletv2/PaymentInstrument";
@@ -23,9 +24,13 @@ import {
 import { bancomatRouter } from "./bancomat";
 
 const productTypes = Object.values(ProductTypeEnum);
+const paymentNetworks = Object.values(PaymentNetworkEnum);
 export const cobadgeRouter = Router();
 
-const fromCardInfoToCardBadge = (card: CardInfo): PaymentInstrument => ({
+const fromCardInfoToCardBadge = (
+  idWallet: number,
+  card: CardInfo
+): PaymentInstrument => ({
   abiCode: card.issuerAbiCode,
   expiringDate: new Date(
     parseInt(card.expireYear!, 10),
@@ -35,7 +40,8 @@ const fromCardInfoToCardBadge = (card: CardInfo): PaymentInstrument => ({
   hpan: card.hashPan,
   panCode: "123",
   panPartialNumber: card.blurredNumber,
-  productType: faker.random.arrayElement(productTypes),
+  productType: productTypes[idWallet % productTypes.length],
+  paymentNetwork: paymentNetworks[idWallet % paymentNetworks.length],
   validityStatus: ValidityStatusEnum.VALID,
   tokenMac: "tokenMac"
 });
@@ -64,7 +70,7 @@ addHandler(
         queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
       )
       .map<PaymentInstrument>(cb =>
-        fromCardInfoToCardBadge(cb.info as CardInfo)
+        fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
       );
     const cobadgeResponse = maybeResponse.value;
     const response = {
@@ -104,7 +110,7 @@ addHandler(
     }
     const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge.map<
       PaymentInstrument
-    >(cb => fromCardInfoToCardBadge(cb.info as CardInfo));
+    >(cb => fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo));
     const cobadgeResponse = maybeResponse.value;
     const response = {
       ...cobadgeResponse,
