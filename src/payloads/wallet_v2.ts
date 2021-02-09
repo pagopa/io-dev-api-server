@@ -105,7 +105,7 @@ export const generateCards = (
   count: number = 10,
   cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
 ): ReadonlyArray<CardInfo> => {
-  const abiList = shouldShuffle ? faker.helpers.shuffle([...abis]) : abis;
+  const listAbi = shouldShuffle ? faker.helpers.shuffle([...abis]) : abis;
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig
@@ -118,7 +118,7 @@ export const generateCards = (
     }
     const ed = faker.date.future();
     return {
-      abi: abiList[idx % abiList.length].abi,
+      abi: listAbi[idx % listAbi.length].abi,
       cardNumber: cn,
       cardPartialNumber: cn.slice(-4),
       expiringDate: ed.toISOString(),
