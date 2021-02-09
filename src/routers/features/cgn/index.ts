@@ -1,6 +1,12 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
+import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CgnActivatedStatus";
+import {
+  CgnActivationDetail,
+  CgnActivationDetailInstance_id,
+  StatusEnum
+} from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
   CgnPendingStatus,
   StatusEnum as PendingStatusEnum
@@ -33,7 +39,7 @@ let currentCGN: CgnStatus = {
 // 401 -> Bearer token null or expired.
 // 409 -> Cannot activate the user's cgn because another updateCgn request was found for this user or it is already active.
 // 403 -> Cannot activate a new CGN because the user is ineligible to get the CGN.
-addHandler(cgnRouter, "post", addPrefix("/activations"), (_, res) => {
+addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
   // if there is no previous activation -> Request created -> send back the created id
   fromNullable(idActivationCgn).foldL(
     () => {
@@ -48,6 +54,27 @@ addHandler(cgnRouter, "post", addPrefix("/activations"), (_, res) => {
         : res.sendStatus(409)
   );
 });
+
+/**
+ * Get the CGN activation status
+ * Used by the app as polling during the activation workflow
+ * status code 200 returns the current status of the job
+ * status 404 means no activation job has been found
+ */
+addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
+  // if there is no previous activation -> Request created -> send back the created id
+  fromNullable(idActivationCgn).foldL(
+    // No CGN was found return a 404
+    () => res.sendStatus(404),
+    id => {
+      const response = {
+        instance_id: id,
+        status: StatusEnum.COMPLETED
+      };
+      return res.status(200).json(response);
+    }
+  )
+);
 
 // Start activation check
 // 200 -> CGN current Status
