@@ -8,6 +8,7 @@ import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
+import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
 
@@ -51,6 +52,7 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
     [resetProfile, "bonus vacanze"],
     [resetBonusVacanze, "user delete/download"],
     [resetBpd, "bdp"],
+    [resetCgn, "cgn"],
     [resetWalletV2, "walletV2"]
   ];
   res.send(

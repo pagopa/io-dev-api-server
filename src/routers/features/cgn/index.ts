@@ -1,12 +1,7 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CgnActivatedStatus";
-import {
-  CgnActivationDetail,
-  CgnActivationDetailInstance_id,
-  StatusEnum
-} from "../../../../generated/definitions/cgn/CgnActivationDetail";
+import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
   CgnPendingStatus,
   StatusEnum as PendingStatusEnum
@@ -18,7 +13,6 @@ import { CgnStatus } from "../../../../generated/definitions/cgn/CgnStatus";
 import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { bonusVacanze } from "../bonus-vacanze";
 
 export const cgnRouter = Router();
 
@@ -79,7 +73,7 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
 // Start activation check
 // 200 -> CGN current Status
 // 404 -> no CGN found
-addHandler(bonusVacanze, "get", addPrefix("/status"), (_, res) => {
+addHandler(cgnRouter, "get", addPrefix("/status"), (_, res) => {
   if (firstCgnActivationRequestTime > 0) {
     currentCGN = {
       status: ActivatedStatusEnum.ACTIVATED,
@@ -91,3 +85,11 @@ addHandler(bonusVacanze, "get", addPrefix("/status"), (_, res) => {
     res.sendStatus(404);
   }
 });
+
+export const resetCgn = () => {
+  idActivationCgn = undefined;
+  firstCgnActivationRequestTime = 0;
+  currentCGN = {
+    status: PendingStatusEnum.PENDING
+  };
+};
