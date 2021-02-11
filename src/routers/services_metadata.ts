@@ -2,20 +2,21 @@
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
 import { Router } from "express";
-import { Service } from "../../generated/definitions/content/Service";
-import { ServicesByScope } from "../../generated/definitions/content/ServicesByScope";
+import { readableReport } from "italia-ts-commons/lib/reporters";
+import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
+import { wallet2Router } from "./walletsV2";
 
 export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
 
-addHandler<Service | ServicesByScope>(
+addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix(`/services/:service_id`),
@@ -126,4 +127,21 @@ addHandler(
   (_, res) => {
     res.json(readFileAsJSON(assetsFolder + "/data/abi.json"));
   }
+);
+
+addHandler(
+  wallet2Router,
+  "get",
+  addRoutePrefix("/status/cobadgeServices.json"),
+  (req, res) => {
+    const decoded = CoBadgeServices.decode(
+      readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")
+    );
+    if (decoded.isLeft()) {
+      res.status(500).send(readableReport(decoded.value));
+      return;
+    }
+    res.json(decoded.value);
+  },
+  0
 );

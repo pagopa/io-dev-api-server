@@ -6,15 +6,16 @@ import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEur
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
+import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definitions/backend/SpezzoneStrutturatoCausaleVersamento";
 import { Payment } from "../../generated/definitions/pagopa/walletv2/Payment";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
-import { TransactionResponse } from "../../generated/definitions/pagopa/walletv2/TransactionResponse";
 import { validatePayload } from "../utils/validator";
-import { getPsps } from "./wallet";
+import { validPsp } from "./wallet";
 
 type settings = {
   user: string;
@@ -59,7 +60,6 @@ export const getRandomNoticeNumber = (): string => {
   return newStr + messageNumber;
 };
 
-const validPsp = getPsps()[0];
 export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,
@@ -245,13 +245,27 @@ export const transactionIdResponseSecond = {
   }
 };
 
-export const getPaymentRequestsGetResponse = () => ({
-  importoSingoloVersamento: faker.random.number({ min: 1, max: 9999 }),
-  codiceContestoPagamento: faker.random.alphaNumeric(32),
-  ibanAccredito: faker.finance.iban(),
+export const getPaymentRequestsGetResponse = (
+  senderService: ServicePublic
+): PaymentRequestsGetResponse => ({
+  importoSingoloVersamento: faker.random.number({
+    min: 1,
+    max: 9999
+  }) as PaymentRequestsGetResponse["importoSingoloVersamento"],
+  codiceContestoPagamento: faker.random.alphaNumeric(
+    32
+  ) as PaymentRequestsGetResponse["codiceContestoPagamento"],
+  ibanAccredito: faker.finance.iban() as PaymentRequestsGetResponse["ibanAccredito"],
   causaleVersamento: faker.finance.transactionDescription(),
-  enteBeneficiario: paymentData.enteBeneficiario,
-  spezzoniCausaleVersamento: [paymentData.spezzoniCausaleVersamento]
+  enteBeneficiario: {
+    identificativoUnivocoBeneficiario: senderService.organization_fiscal_code,
+    denominazioneBeneficiario: senderService.organization_name
+  },
+  spezzoniCausaleVersamento: [
+    {
+      spezzoneCausaleVersamento: faker.commerce.product()
+    }
+  ]
 });
 
 export const getPaymentActivationsPostResponse = (): PaymentActivationsPostResponse => {

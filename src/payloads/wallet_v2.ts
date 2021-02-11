@@ -4,6 +4,7 @@ import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import sha256 from "sha256";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
+import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
 import {
   Card,
@@ -16,10 +17,14 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import {
+  TypeEnum as WalletV1TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/walletv2/Wallet";
+import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { assetsFolder } from "../global";
+import { assetsFolder, shouldShuffle } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
@@ -68,8 +73,12 @@ export const satispay = {
   uidSatispayHash: sha256("uidSatispay")
 };
 
-export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
-  return range(1, count).map(_ => {
+export const generateBancomatPay = (
+  abis: ReadonlyArray<Abi>,
+  count: number
+): ReadonlyArray<BPay> => {
+  const shuffledAbis = faker.helpers.shuffle([...abis]);
+  return range(1, count).map((_, idx) => {
     const config = fromNullable(
       cardConfigMap.get(WalletTypeEnum.BPay)
     ).getOrElse(defaultCardConfig);
@@ -82,9 +91,10 @@ export const generateBancomatPay = (count: number): ReadonlyArray<BPayInfo> => {
     });
     return {
       bankName: faker.company.companyName(),
-      instituteCode: config.index.toString(),
+      instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
       numberObfuscated: "+3934" + "*".repeat(7) + suffix,
       paymentInstruments: [],
+      serviceState: "ATT",
       uidHash
     };
   });
@@ -95,7 +105,7 @@ export const generateCards = (
   count: number = 10,
   cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
 ): ReadonlyArray<CardInfo> => {
-  const shuffledAbis = faker.helpers.shuffle([...abis]);
+  const listAbi = shouldShuffle ? faker.helpers.shuffle([...abis]) : abis;
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig
@@ -108,7 +118,7 @@ export const generateCards = (
     }
     const ed = faker.date.future();
     return {
-      abi: shuffledAbis[idx % shuffledAbis.length].abi,
+      abi: listAbi[idx % listAbi.length].abi,
       cardNumber: cn,
       cardPartialNumber: cn.slice(-4),
       expiringDate: ed.toISOString(),
@@ -134,14 +144,10 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   };
 });
 
-/**
- * info could be CardInfo (Card or Bancomat)
- * @param card
- * @param enableableFunctions
- */
 export const generateWalletV2FromCard = (
   card: Card,
   walletType: WalletTypeEnum,
+  canMethodPay: boolean,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
 ): WalletV2 => {
   const ed = card.expiringDate
@@ -153,7 +159,7 @@ export const generateWalletV2FromCard = (
     blurredNumber: card.cardPartialNumber,
     brand: ccBrand,
     brandLogo: getCreditCardLogo(ccBrand),
-    expireMonth: (ed.getMonth() + 1).toString(),
+    expireMonth: (ed.getMonth() + 1).toString().padStart(2, "0"),
     expireYear: ed.getFullYear().toString(),
     hashPan: card.hpan,
     holder: `${currentProfile.name} ${currentProfile.family_name}`,
@@ -171,15 +177,11 @@ export const generateWalletV2FromCard = (
     idWallet: faker.random.number({ min: 20000, max: 30000 }),
     info,
     onboardingChannel: "IO",
-    pagoPA: true,
+    pagoPA: canMethodPay,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
 
-/**
- * @param satispay
- * @param enableableFunctions
- */
 export const generateWalletV2FromSatispayOrBancomatPay = (
   info: SatispayInfo | BPayInfo,
   walletType: WalletTypeEnum.Satispay | WalletTypeEnum.BPay,
@@ -199,3 +201,28 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
+
+export const generateWalletV1FromCardInfo = (
+  idWallet: number,
+  info: CardInfo
+): Wallet => ({
+  idWallet,
+  type: WalletV1TypeEnum.CREDIT_CARD,
+  favourite: false,
+  creditCard: {
+    id: idWallet,
+    holder: info.holder,
+    pan: "*".repeat(12) + (info.blurredNumber ?? ""),
+    expireMonth: info.expireMonth!.padStart(2, "0"),
+    expireYear: info.expireYear!.slice(-2),
+    brandLogo:
+      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
+    flag3dsVerified: false,
+    brand: info.brand,
+    onUs: false
+  },
+  pspEditable: true,
+  isPspToIgnore: false,
+  saved: false,
+  registeredNexi: false
+});

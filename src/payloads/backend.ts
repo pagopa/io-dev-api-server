@@ -146,9 +146,18 @@ export const backendStatus: BackendStatus = {
         "it-IT": "digital_payments",
         "en-EN": "digital_payments"
       }
+    },
+    cobadge: {
+      is_visible: false,
+      level: "warning",
+      message: {
+        "it-IT": "cobadge",
+        "en-EN": "cobadge"
+      }
     }
   },
   config: {
-    bpd_ranking: true
+    bpd_ranking: true,
+    bpd_ranking_v2: true
   }
 };

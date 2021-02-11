@@ -1,10 +1,10 @@
 [
   {
-    "ranking": 943534,
+    "ranking": 12345,
     "totalParticipants": 3582401,
     "maxTransactionNumber": 190,
-    "minTransactionNumber": 0,
-    "transactionNumber": 8,
-    "awardPeriodId": 1
+    "minTransactionNumber": 123456,
+    "transactionNumber": 10,
+    "awardPeriodId": 2
   }
 ]

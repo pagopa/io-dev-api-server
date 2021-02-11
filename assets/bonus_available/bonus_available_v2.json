@@ -20,6 +20,7 @@
     "service_id": "01EB8AXKNV6NMSP2R25KSGF743",
     "is_active": false,
     "hidden": true,
+    "visibility": "hidden",
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2021-06-30T00:00:00.000Z",
     "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_BonusVacanze.png",
@@ -59,6 +60,47 @@
     "hidden": false,
     "service_id": "01EB8AXKNV6NMSP2R25KSGF743",
     "is_active": true,
+    "visibility": "visible",
+    "valid_from": "2020-07-01T00:00:00.000Z",
+    "valid_to": "2020-12-31T00:00:00.000Z",
+    "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-cashback.png",
+    "sponsorship_description": "Ministero dell'Economia e delle Finanze",
+    "sponsorship_cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-mef.png"
+  },
+  {
+    "id_type": 3,
+    "it": {
+      "name": "Carta Giovani Nazionale",
+      "description": "Un rimborso del 10% sui tuoi pagamenti elettronici e un premio fino a 1500€ per chi fa più transazioni",
+      "subtitle": "Ottieni un rimborso quando usi carte o app di pagamento per gli acquisti nei negozi o per i servizi di artigiani e professionisti",
+      "title": "Carta Giovani Nazionale",
+      "content": "#### Cos'è il Cashback?\n\nSe hai compiuto i 18 anni e risiedi in Italia, con il programma Cashback puoi ottenere un rimborso per acquisti effettuati a titolo privato (cioè non per uso professionale) sul territorio nazionale con carte e app di pagamento in negozi, bar, ristoranti, supermercati e grande distribuzione o per artigiani e professionisti. **Non concorrono gli acquisti online. Prima di iniziare gli acquisti per il Cashback, verifica che la tua carta o app di pagamento siano tra quelle già attivabili.**\n\n#### Come funziona il Cashback?\n1. Il programma Cashback si divide in periodi. Il primo periodo sperimentale, detto **'Extra Cashback di Natale'**, inizia **l'8 dicembre** e termina il **31 dicembre 2020**. I tre periodi successivi durano 6 mesi ciascuno, a partire dal 1° gennaio 2021.\n2. Non c’è un importo minimo di spesa. Per ogni periodo, puoi ottenere un rimborso **massimo** di €150, pari a **€300 annui**. Ogni acquisto effettuato con carte e app di pagamento registrate al programma Cashback, ti fa accumulare il 10% dell’importo speso, fino a un massimo di €15 per singola transazione.\n[Verifica quali carte e app sono attivabili](https://io.italia.it/metodi-pagamento)\n3. Otterrai il rimborso accumulato solo se avrai raggiunto il **numero minimo** di pagamenti validi: **10 per l’Extra Cashback di Natale, 50 in ciascuno dei semestri successivi**.\n4. Inoltre, dal 1° gennaio 2021 senza alcun importo minimo di spesa, i primi 100mila partecipanti che in ogni semestre hanno totalizzato il maggior numero di transazioni valide, ricevono un Super Cashback di €1500. Quindi, anche fino a €3000 euro l’anno.\n5. Il rimborso accumulato al termine di ciascun periodo, ti sarà accreditato sull’IBAN indicato durante l’attivazione o in un momento successivo.",
+      "tos_url": "https://io.italia.it/cashback/privacy-policy",
+      "urls": [
+        {
+          "name": "Leggi la Guida completa",
+          "url": "https://io.italia.it/cashback/guida"
+
+        }]
+    },
+    "en": {
+      "name": "Carta Giovani Nazionale",
+      "description": "A 10% refund on your electronic payments and a premium of up to € 1500 for those who make more transactions",
+      "subtitle": "Get a refund when using your electronic payment methods, on in-store purchases and services by artisans and professionals",
+      "title": "Carta Giovani Nazionale",
+      "content": "#### What is Cashback?\n\nIf you are 18 or above and officially registered as a resident in Italy, by joining the initiative you’re eligible for a refund when you make purchases for personal purposes (i.e. not for business) within Italy, using your cards and payment apps, in stores, cafés, restaurants, supermarkets, etc. – or to pay artisans and professionals. **Online purchases are not part of the initiative. Before shopping for Cashback purposes, please check if your card or payment app is compatible with the initiative.**\n\n#### How does Cashback work?\n1. The initiative consists of several phases. The first test phase, named **'Christmas Extra Cashback'** starts on **December 8th, 2020 and ends on the 31st of the same month.** The next 3 phases will have a duration of 6 months each, starting from January 1st, 2021.\n2. There is no minimum amount required. During each phase, you can get a refund of up to €150, equal to **€300 per year**. You’ll get a 10% cashback on your purchases made with your cards and payment apps enrolled in the Cashback program, up to €15 per transaction.\n[Check compatible cards and payment apps](https://io.italia.it/metodi-pagamento)\n3. You will get the collected Cashback only if you reach the **minimum number** of valid transactions: **10 during the Xmas Extra Cashback phase, 50 within each one of the following semesters**.\n4.Starting from January 1st, 2021, with no minimum amount required, the top 100k participants who will have collected the highest amount of valid transactions in each semester, will get a €1500 Super Cashback – meaning up to €3000 per year.\n5. At the end of each phase, you will receive the total amount of earned money **on the IBAN account you'll enter during the activation process.**",
+      "tos_url": "https://io.italia.it/cashback/privacy-policy",
+      "urls": [
+        {
+          "name": "Read the full guide",
+          "url": "https://io.italia.it/cashback/guida"
+        }
+      ]
+    },
+    "hidden": false,
+    "service_id": "01EB8AXKNV6NMSP2R25KSGF743",
+    "is_active": true,
+    "visibility": "experimental",
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2020-12-31T00:00:00.000Z",
     "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-cashback.png",

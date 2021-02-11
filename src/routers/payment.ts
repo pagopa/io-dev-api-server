@@ -6,10 +6,12 @@ import { PaymentActivationsGetResponse } from "../../generated/definitions/backe
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler } from "../payloads/response";
+import { getTransactions } from "../payloads/wallet";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
@@ -23,41 +25,55 @@ const responseWithError = (detail: DetailEnum, res: Response) =>
     detail
   });
 
+// tslint:disable-next-line: no-let
+let paymentRequest: PaymentRequestsGetResponse | undefined;
+// tslint:disable-next-line: no-let
+let idPagamento: string | undefined;
 /**
- * user wants to pay.
+ * user wants to pay (VERIFICA)
+ * this API return the current status of the payment
  * this is the first step
  * could be:
  * - ko: payment already done
  * - ko: can't get the payment data
  * - ok: payment data updated
+ * STEP 1
  */
 addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
-  // success response: res.json(getPaymentRequestsGetResponse())
-  // errore response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
-  (_, res) => res.json(getPaymentRequestsGetResponse())
+  // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
+  // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
+  (_, res) => {
+    paymentRequest = getPaymentRequestsGetResponse(
+      faker.random.arrayElement(services)
+    );
+    res.json(paymentRequest);
+  }
 );
 
-addHandler<PaymentActivationsPostResponse>(
+/**
+ * the user wants to lock this payment (ATTIVA)
+ * this API return the
+ * STEP 2
+ */
+addHandler(
   profileRouter,
   "post",
   addApiV1Prefix("/payment-activations"),
   (req, res) => {
+    if (paymentRequest === undefined) {
+      res.sendStatus(404);
+      return;
+    }
     const payload = PaymentActivationsPostRequest.decode(req.body);
     if (payload.isRight()) {
-      const activation = payload.value;
-      const service = faker.random.arrayElement(services);
-      const description = faker.finance.transactionDescription();
       const response: PaymentActivationsPostResponse = {
-        importoSingoloVersamento: activation.importoSingoloVersamento,
-        causaleVersamento: description,
+        importoSingoloVersamento: paymentRequest.importoSingoloVersamento,
+        causaleVersamento: paymentRequest.causaleVersamento,
         ibanAccredito: faker.finance.iban() as Iban,
-        enteBeneficiario: {
-          identificativoUnivocoBeneficiario: service.organization_fiscal_code,
-          denominazioneBeneficiario: service.organization_name
-        }
+        enteBeneficiario: paymentRequest.enteBeneficiario
       };
       res.json(response);
     } else {
@@ -66,11 +82,18 @@ addHandler<PaymentActivationsPostResponse>(
   }
 );
 
-addHandler<PaymentActivationsGetResponse>(
+/**
+ * the user wants to lock this payment (ATTIVA)
+ * the app stats a polling using codiceContestoPagamento as input
+ * when the payment is finally locked this API returns the idPagamento
+ * STEP 3
+ */
+addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-activations/:codiceContestopagamento"),
   (_, res) => {
+    idPagamento = faker.random.alphaNumeric(30);
     const response: PaymentActivationsGetResponse = {
       idPagamento: faker.random.alphaNumeric(30)
     };
@@ -78,31 +101,58 @@ addHandler<PaymentActivationsGetResponse>(
   }
 );
 
+/**
+ * user gets info about payment starting from paymentID
+ * this is a checks to ensure the payment activated through IO is now availbale also in the PM
+ * STEP 4
+ */
 addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
+    if (idPagamento === undefined || paymentRequest === undefined) {
+      res.sendStatus(404);
+      return;
+    }
     const payment: PaymentResponse = {
       data: {
         id: faker.random.number(),
-        idPayment: faker.random.alphaNumeric(30),
+        idPayment: idPagamento,
         amount: {
           currency: "EUR",
-          amount: faker.random.number({ min: 1, max: 2000 }),
+          amount: paymentRequest.importoSingoloVersamento,
           decimalDigits: 2
         },
         subject: "/RFB/01343520000005561/32.00",
-        receiver: "Provincia di Viterbo",
+        receiver: paymentRequest.causaleVersamento,
         urlRedirectEc:
           "https://solutionpa-coll.intesasanpaolo.com/IntermediarioPAPortal/noauth/contribuente/pagamentoEsito?idSession=ad095398-2863-4951-b2b6-400ff8d8e95b&idDominio=80005570561",
         isCancelled: false,
         bolloDigitale: false,
         fiscalCode: fiscalCode as FiscalCode,
-        origin: "CITTADINANZA_DIGITALE",
-        iban: faker.finance.iban()
+        origin: "IO",
+        iban: paymentRequest.ibanAccredito
       }
     };
     res.json(payment);
+  }
+);
+
+/**
+ * user pays
+ * STEP 5
+ */
+addHandler(
+  walletRouter,
+  "post",
+  appendWalletPrefix("/payments/:idPagamento/actions/pay"),
+  (_, res) => {
+    if (idPagamento === undefined || paymentRequest === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.json({ data: getTransactions(1)[0] });
   }
 );

@@ -27,32 +27,29 @@ const validAmount: { [key: string]: any } = {
   amount: 1000,
   decimalDigits: 2
 };
-export const getPsps = (): ReadonlyArray<Psp> => [
-  {
-    id: 43188,
-    idPsp: "idPsp1",
-    businessName: "WHITE bank",
-    paymentType: "CP",
-    idIntermediary: "idIntermediario1",
-    idChannel: "idCanale14",
-    logoPSP:
-      "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
-    serviceLogo:
-      "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
-    serviceName: "nomeServizio 10 white",
-    fixedCost: validAmount,
-    appChannel: false,
-    tags: ["MAESTRO", "VISA"],
-    serviceDescription: "DESCRIZIONE servizio: CP mod1",
-    serviceAvailability: "DISPONIBILITA servizio 24/7",
-    paymentModel: 1,
-    flagStamp: true,
-    idCard: 91,
-    lingua: "IT" as LinguaEnum
-  }
-];
+export const validPsp: Psp = {
+  id: 43188,
+  idPsp: "idPsp1",
+  businessName: "WHITE bank",
+  paymentType: "CP",
+  idIntermediary: "idIntermediario1",
+  idChannel: "idCanale14",
+  logoPSP:
+    "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
+  serviceLogo:
+    "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
+  serviceName: "nomeServizio 10 white",
+  fixedCost: validAmount,
+  appChannel: false,
+  tags: ["MAESTRO", "VISA"],
+  serviceDescription: "DESCRIZIONE servizio: CP mod1",
+  serviceAvailability: "DISPONIBILITA servizio 24/7",
+  paymentModel: 1,
+  flagStamp: true,
+  idCard: 91,
+  lingua: "IT" as LinguaEnum
+};
 
-const validPsp = getPsps()[0];
 export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let walletId = 0;

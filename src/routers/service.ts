@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { servicesNumber } from "../global";
 import { notFound } from "../payloads/error";
 import { addHandler } from "../payloads/response";
 import {
@@ -9,7 +10,7 @@ import {
 import { addApiV1Prefix } from "../utils/strings";
 
 export const serviceRouter = Router();
-export const services = getServices(15);
+export const services = getServices(servicesNumber);
 export const visibleServices = getServicesTuple(services);
 export const servicesByScope = getServicesByScope(services);
 
