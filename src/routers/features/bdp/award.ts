@@ -2,11 +2,12 @@
 import chalk from "chalk";
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
+import { readableReport } from "italia-ts-commons/lib/reporters";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
-import { BpdWinningTransactions } from "../../../../generated/definitions/bpd/winning_transactions/BpdWinningTransactions";
 import { TotalCashbackResource } from "../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
+import { PatchedBpdWinningTransactions } from "../../../types/PatchedBpdWinningTransactions";
 import { listDir, readFileAsJSON } from "../../../utils/file";
 import { addBPDPrefix } from "./index";
 
@@ -133,13 +134,15 @@ addHandler(
       return;
     }
     const response = (period: number, file: string) => {
-      const maybeTransactions = BpdWinningTransactions.decode(
+      const maybeTransactions = PatchedBpdWinningTransactions.decode(
         readWinningTransactions(period.toString(), file)
       );
       if (maybeTransactions.isLeft()) {
         console.log(
           chalk.red(
-            `${period.toString()}/${file} is not a valid BpdWinningTransactions`
+            `${period.toString()}/${file} is not a valid PatchedBpdWinningTransactions\n${readableReport(
+              maybeTransactions.value
+            )}`
           )
         );
         res.sendStatus(500);
@@ -164,12 +167,14 @@ addHandler(
   (req, res) => {
     const payload = req.body;
     // check if the json is valid
-    const maybeTransactions = BpdWinningTransactions.decode(
+    const maybeTransactions = PatchedBpdWinningTransactions.decode(
       readWinningTransactions(payload.period, payload.file)
     );
     if (maybeTransactions.isLeft()) {
       console.log(
-        chalk.red(`${payload.file} is not a valid BpdWinningTransactions`)
+        chalk.red(
+          `${payload.file} is not a valid PatchedBpdWinningTransactions`
+        )
       );
       res.sendStatus(500);
     } else {

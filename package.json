@@ -6,7 +6,7 @@
   "api_beckend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.0.0/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.0.0/api_public.yaml",
   "api_bonus_vacanze": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_bonus.yaml",
-  "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/176782092_add_cgn_activation_polling_API/api_cgn.yaml",
+  "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_cgn.yaml",
   "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/definitions.yml",
   "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/pm/spec.json",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/walletv2.json",
