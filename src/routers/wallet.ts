@@ -109,13 +109,15 @@ addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/psps/selected"),
-  (_, res) => {
-    res.json({ data: [validPsp] });
+  (req, res) => {
+    const language = req.query.language ?? "IT";
+    res.json({ data: [{ ...validPsp, lingua: language.toUpperCase() }] });
   }
 );
 
-addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (_, res) => {
-  res.json({ data: [validPsp] });
+addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (req, res) => {
+  const language = req.query.language ?? "IT";
+  res.json({ data: [{ ...validPsp, lingua: language.toUpperCase() }] });
 });
 
 addHandler(
