@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
+import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
-import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
   CardPending,
   StatusEnum as PendingStatusEnum
 } from "../../../../generated/definitions/cgn/CardPending";
+import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 // tslint:disable-next-line:no-commented-code
 // import { StatusEnum as CanceledStatusEnum } from "../../../../generated/definitions/cgn/CgnCanceledStatus";
 // import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
-import { Card } from "../../../../generated/definitions/cgn/Card";
 import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
 import { addApiV1Prefix } from "../../../utils/strings";
