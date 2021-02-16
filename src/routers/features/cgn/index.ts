@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CgnActivatedStatus";
+import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
-  CgnPendingStatus,
+  CardPending,
   StatusEnum as PendingStatusEnum
-} from "../../../../generated/definitions/cgn/CgnPendingStatus";
+} from "../../../../generated/definitions/cgn/CardPending";
 // tslint:disable-next-line:no-commented-code
 // import { StatusEnum as CanceledStatusEnum } from "../../../../generated/definitions/cgn/CgnCanceledStatus";
 // import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
-import { CgnStatus } from "../../../../generated/definitions/cgn/CgnStatus";
+import { Card } from "../../../../generated/definitions/cgn/Card";
 import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
 import { addApiV1Prefix } from "../../../utils/strings";
@@ -24,7 +24,7 @@ let idActivationCgn: string | undefined;
 let firstCgnActivationRequestTime = 0;
 
 // tslint:disable-next-line: no-let
-let currentCGN: CgnStatus = {
+let currentCGN: Card = {
   status: PendingStatusEnum.PENDING
 };
 // Start bonus activation request procedure
@@ -43,7 +43,7 @@ addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
     },
     // Cannot activate a new bonus because another bonus related to this user was found.
     () =>
-      CgnPendingStatus.is(currentCGN)
+      CardPending.is(currentCGN)
         ? res.status(202).json({ id: idActivationCgn })
         : res.sendStatus(409)
   );
