@@ -1,3 +1,4 @@
+import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
@@ -21,7 +22,7 @@ export const getService = (serviceId: string): ServicePublic => {
     organization_fiscal_code: "00514490010" as OrganizationFiscalCode,
     organization_name: "dev organization name" as OrganizationName,
     service_id: serviceId,
-    service_name: `mock service [${serviceId}]` as ServiceName,
+    service_name: `${faker.company.bs()}` as ServiceName,
     available_notification_channels: [
       NotificationChannelEnum.EMAIL,
       NotificationChannelEnum.WEBHOOK
@@ -44,13 +45,13 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     // first half have organization_fiscal_code === organizationFiscalCodes[0]
     // second half have organization_fiscal_code === organizationFiscalCodes[1]
     return {
-      ...getService(`dev-service_${idx}`),
+      ...getService(`serviceid-[${idx}]`),
       organization_fiscal_code: `${organizationCount + 1}`.padStart(
         11,
         "0"
       ) as OrganizationFiscalCode,
-      organization_name: `organization name_${organizationCount +
-        1}` as OrganizationName
+      organization_name: `${faker.company.companyName()} [${organizationCount +
+        1}]` as OrganizationName
     };
   });
 };

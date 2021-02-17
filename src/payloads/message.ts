@@ -25,7 +25,7 @@ let messageIdIndex = 0;
  * @param count the number of messages to generate
  * @param fiscal_code
  */
-const createMessageItem = (
+export const createMessage = (
   fiscalCode: string,
   senderServiceId: string,
   timeToLive: number = 3600
@@ -68,7 +68,7 @@ export const withPaymentData = (
   };
 };
 
-export const withMessageContent = (
+export const withContent = (
   message: CreatedMessageWithoutContent,
   subject: string,
   markdown: string,
@@ -94,7 +94,7 @@ const createMessageList = (
   services: ReadonlyArray<ServicePublic>
 ): PaginatedCreatedMessageWithoutContentCollection => {
   const items = range(1, count).map(c => {
-    return createMessageItem(
+    return createMessage(
       fiscalCode,
       index((c - 1) % services.length, [...services]).fold(
         "n/a",
@@ -110,20 +110,13 @@ const createMessageList = (
 
 /**
  * return a list containing count messages
- * @param count the number of message to generate
- * @param randomId if true a random id is generated, a fixed one otherwise
  */
 export const getMessages = (
   count: number,
   services: ReadonlyArray<ServicePublic>,
   fiscalCode: string
-): IOResponse<PaginatedCreatedMessageWithoutContentCollection> => {
-  const payload = createMessageList(count, fiscalCode, services);
-  return {
-    payload,
-    isJson: true
-  };
-};
+): PaginatedCreatedMessageWithoutContentCollection =>
+  createMessageList(count, fiscalCode, services);
 
 // 404 - message NOT found
 export const messagesResponseNotFound: IOResponse<string> = {
