@@ -1,13 +1,14 @@
 import { Router } from "express";
+import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
-  getMessages,
+  createMessage,
+  withContent,
   withDueDate,
-  withMessageContent,
   withPaymentData
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
@@ -22,83 +23,78 @@ import {
 import { services } from "./service";
 
 export const messageRouter = Router();
-const totalMessages = 12;
-export const messages = getMessages(totalMessages, services, fiscalCode);
-// tslint:disable-next-line: no-let
-let messagesWithContent: ReadonlyArray<CreatedMessageWithContent> = [];
+
+// tslint:disable-next-line
+let messagesWithContent: CreatedMessageWithContent[] = [];
+
+const getRandomServiceId = (): string => {
+  if (services.length === 0) {
+    throw new Error(
+      "to create messages, at least one sender service must exist!"
+    );
+  }
+  return faker.random.arrayElement(services).service_id;
+};
+
+const getNewMessage = (
+  subject: string,
+  markdown: string,
+  prescriptionData?: PrescriptionData
+): CreatedMessageWithContent =>
+  withContent(
+    createMessage(fiscalCode, getRandomServiceId()),
+    subject,
+    markdown,
+    prescriptionData
+  );
+
+const addMessage = (message: CreatedMessageWithContent) =>
+  messagesWithContent.push(message);
 
 const createMessages = () => {
-  const now = new Date();
-  // tslint:disable-next-line: no-let
-  let messageIndex = 0;
-  const nextMessage = () => {
-    const m = messages.payload.items[messageIndex];
-    messageIndex++;
-    return m;
-  };
-
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
     iup: "0000X0NFM",
     prescriber_fiscal_code: fiscalCode as FiscalCode
   };
 
-  const messagesWC = new Array();
-  const medicalPrescriptionMessage = withMessageContent(
-    nextMessage(),
+  const medicalPrescriptionMessage = getNewMessage(
     `medical prescription`,
     messageMarkdown,
     medicalPrescription
   );
-  messagesWC.push(medicalPrescriptionMessage);
 
-  const messageDefault = withMessageContent(
-    nextMessage(),
-    `default message`,
-    messageMarkdown
+  addMessage(getNewMessage(`default message`, messageMarkdown));
+  addMessage(
+    getNewMessage(`with 2 nested CTA`, frontMatter2CTA + messageMarkdown)
   );
-  messagesWC.push(messageDefault);
+  addMessage(
+    getNewMessage(`with 1 nested CTA`, frontMatter1CTA + messageMarkdown)
+  );
+  addMessage(
+    getNewMessage(`CTA start BPD`, frontMatter1CTABonusBpd + messageMarkdown)
+  );
+  addMessage(
+    getNewMessage(`CTA IBAN BPD`, frontMatter1CTABonusBpdIban + messageMarkdown)
+  );
+  const now = new Date();
+  addMessage(
+    withDueDate(
+      withPaymentData(
+        getNewMessage(`with payment [valid]`, messageMarkdown),
+        true
+      ),
+      new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+    )
+  );
 
-  const message2NestedCta = withMessageContent(
-    nextMessage(),
-    `with 2 nested CTA`,
-    frontMatter2CTA + messageMarkdown
-  );
-  messagesWC.push(message2NestedCta);
-
-  const message1NestedCta = withMessageContent(
-    nextMessage(),
-    `with 1 nested CTA`,
-    frontMatter1CTA + messageMarkdown
-  );
-  messagesWC.push(message1NestedCta);
-
-  const message1NestedCtaBonusBpd = withMessageContent(
-    nextMessage(),
-    `CTA start BPD`,
-    frontMatter1CTABonusBpd + messageMarkdown
-  );
-  messagesWC.push(message1NestedCtaBonusBpd);
-
-  const message1NestedCtaBonusBpdIban = withMessageContent(
-    nextMessage(),
-    `CTA IBAN BPD`,
-    frontMatter1CTABonusBpdIban + messageMarkdown
-  );
-  messagesWC.push(message1NestedCtaBonusBpdIban);
-
-  const withContent1 = withMessageContent(
-    nextMessage(),
-    `with payment [valid]`,
-    messageMarkdown
-  );
   const message1 = withDueDate(
     withPaymentData(withContent1, true),
     new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
   );
   messagesWC.push(message1);
 
-  const withContent2 = withMessageContent(
+  const withContent2 = withContent(
     nextMessage(),
     `only due date`,
     messageMarkdown
@@ -107,7 +103,7 @@ const createMessages = () => {
 
   messagesWC.push(message2);
 
-  const withContent3 = withMessageContent(
+  const withContent3 = withContent(
     nextMessage(),
     `with payment [expired]`,
     messageMarkdown
@@ -119,7 +115,7 @@ const createMessages = () => {
 
   messagesWC.push(message3);
 
-  const withContent4 = withMessageContent(
+  const withContent4 = withContent(
     nextMessage(),
     `with payment [expiring] without invalid after due date`,
     messageMarkdown
@@ -131,7 +127,7 @@ const createMessages = () => {
 
   messagesWC.push(message4);
 
-  const withContent5 = withMessageContent(
+  const withContent5 = withContent(
     nextMessage(),
     `with payment [expired] without invalid after due date`,
     messageMarkdown
@@ -143,7 +139,7 @@ const createMessages = () => {
 
   messagesWC.push(message5);
 
-  const withContent6 = withMessageContent(
+  const withContent6 = withContent(
     nextMessage(),
     `with payment [valid] without invalid after due date`,
     messageMarkdown
