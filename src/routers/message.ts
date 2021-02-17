@@ -24,8 +24,8 @@ import { services } from "./service";
 
 export const messageRouter = Router();
 
-// tslint:disable-next-line
-let messagesWithContent: CreatedMessageWithContent[] = [];
+// tslint:disable-next-line: readonly-array
+const messagesWithContent: CreatedMessageWithContent[] = [];
 
 const getRandomServiceId = (): string => {
   if (services.length === 0) {

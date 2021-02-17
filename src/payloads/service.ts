@@ -1,5 +1,5 @@
-import { range } from "fp-ts/lib/Array";
 import * as faker from "faker/locale/it";
+import { range } from "fp-ts/lib/Array";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
