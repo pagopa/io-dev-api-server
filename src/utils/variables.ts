@@ -45,18 +45,18 @@ en:
 export const frontMatter2CTA2 = `---
 it:
     cta_1: 
-        text: "cta 1"
-        action: "iohandledlink://email:test@test.it"
+        text: "io.italia.it"
+        action: "iohandledlink://https://io.italia.it"
     cta_2: 
-        text: "cta 2"
+        text: "internal webview"
         action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
 en:
     cta_1: 
-        text: "cta 1 EN"
-        action: "iohandledlink://email:test@test.it"
+        text: "io.italia.it"
+        action: "iohandledlink://https://io.italia.it"
     cta_2: 
-        text: "cta 2 EN"
-        action: "ioit://WALLET_HOME"
+        text: "internal webview"
+        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
 ---`;
 
 export const frontMatter1CTABonusBpd = `---

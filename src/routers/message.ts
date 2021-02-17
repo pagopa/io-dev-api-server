@@ -21,6 +21,7 @@ import {
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
   frontMatter2CTA,
+  frontMatter2CTA2,
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
@@ -70,7 +71,7 @@ const createMessages = () => {
     )
   );
   addMessage(getNewMessage(`standard message`, messageMarkdown));
-  addMessage(getNewMessage(`2 nested CTA`, frontMatter2CTA + messageMarkdown));
+  addMessage(getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown));
   addMessage(
     getNewMessage(
       `1 nested CTA ISEE bonus vacanze`,
@@ -153,8 +154,8 @@ export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollecti
   items: messagesWithContent.map(m => ({
     id: m.id,
     fiscal_code: fiscalCode as FiscalCode,
-    created_at: m.created_at as Timestamp,
-    sender_service_id: m.sender_service_id as ServiceId,
+    created_at: m.created_at,
+    sender_service_id: m.sender_service_id,
     time_to_live: m.time_to_live
   }))
 });
