@@ -57,107 +57,99 @@ const createMessages = () => {
     iup: "0000X0NFM",
     prescriber_fiscal_code: fiscalCode as FiscalCode
   };
-
-  const medicalPrescriptionMessage = getNewMessage(
-    `medical prescription`,
-    messageMarkdown,
-    medicalPrescription
-  );
-
-  addMessage(getNewMessage(`default message`, messageMarkdown));
-  addMessage(
-    getNewMessage(`with 2 nested CTA`, frontMatter2CTA + messageMarkdown)
-  );
-  addMessage(
-    getNewMessage(`with 1 nested CTA`, frontMatter1CTA + messageMarkdown)
-  );
-  addMessage(
-    getNewMessage(`CTA start BPD`, frontMatter1CTABonusBpd + messageMarkdown)
-  );
-  addMessage(
-    getNewMessage(`CTA IBAN BPD`, frontMatter1CTABonusBpdIban + messageMarkdown)
-  );
   const now = new Date();
+
+  addMessage(
+    getNewMessage(
+      `💊 medical prescription`,
+      messageMarkdown,
+      medicalPrescription
+    )
+  );
+  addMessage(getNewMessage(`standard message`, messageMarkdown));
+  addMessage(getNewMessage(`2 nested CTA`, frontMatter2CTA + messageMarkdown));
+  addMessage(
+    getNewMessage(
+      `1 nested CTA ISEE bonus vacanze`,
+      frontMatter1CTA + messageMarkdown
+    )
+  );
+  addMessage(
+    getNewMessage(
+      `1 nested CTA start BPD`,
+      frontMatter1CTABonusBpd + messageMarkdown
+    )
+  );
+  addMessage(
+    getNewMessage(
+      `1 nested CTA IBAN BPD`,
+      frontMatter1CTABonusBpdIban + messageMarkdown
+    )
+  );
+
   addMessage(
     withDueDate(
       withPaymentData(
-        getNewMessage(`with payment [valid]`, messageMarkdown),
+        getNewMessage(`💰🕙✅ payment message - valid`, messageMarkdown),
         true
       ),
       new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
     )
   );
 
-  const message1 = withDueDate(
-    withPaymentData(withContent1, true),
-    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
-  );
-  messagesWC.push(message1);
-
-  const withContent2 = withContent(
-    nextMessage(),
-    `only due date`,
-    messageMarkdown
-  );
-  const message2 = withDueDate(withContent2, new Date());
-
-  messagesWC.push(message2);
-
-  const withContent3 = withContent(
-    nextMessage(),
-    `with payment [expired]`,
-    messageMarkdown
-  );
-  const message3 = withDueDate(
-    withPaymentData(withContent3, true),
-    new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+  addMessage(
+    withPaymentData(
+      getNewMessage(`💰✅ payment message `, messageMarkdown),
+      false
+    )
   );
 
-  messagesWC.push(message3);
-
-  const withContent4 = withContent(
-    nextMessage(),
-    `with payment [expiring] without invalid after due date`,
-    messageMarkdown
-  );
-  const message4 = withDueDate(
-    withPaymentData(withContent4, false),
-    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 3)
-  );
-
-  messagesWC.push(message4);
-
-  const withContent5 = withContent(
-    nextMessage(),
-    `with payment [expired] without invalid after due date`,
-    messageMarkdown
-  );
-  const message5 = withDueDate(
-    withPaymentData(withContent5, false),
-    new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+  addMessage(
+    withDueDate(
+      withPaymentData(
+        getNewMessage(
+          `💰🕙❌ payment - expired - invalid after due date`,
+          messageMarkdown
+        ),
+        true
+      ),
+      new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+    )
   );
 
-  messagesWC.push(message5);
-
-  const withContent6 = withContent(
-    nextMessage(),
-    `with payment [valid] without invalid after due date`,
-    messageMarkdown
+  addMessage(
+    withDueDate(
+      withPaymentData(
+        getNewMessage(
+          `💰🕙❌ payment - expired - not invalid after due date`,
+          messageMarkdown
+        ),
+        false
+      ),
+      new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+    )
   );
-  const message6 = withDueDate(
-    withPaymentData(withContent6, false),
-    new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
-  );
-  messagesWC.push(message6);
 
-  return messagesWC;
+  addMessage(
+    withDueDate(
+      getNewMessage(`🕙✅ due date - valid`, messageMarkdown),
+      new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+    )
+  );
+
+  addMessage(
+    withDueDate(
+      getNewMessage(`🕙✅ due date - expired`, messageMarkdown),
+      new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
+    )
+  );
 };
 
-messagesWithContent = createMessages();
+createMessages();
 
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   res.json({
-    items: messages.payload.items
+    items: messagesWithContent
   });
 });
 
@@ -167,7 +159,7 @@ addHandler(
   addApiV1Prefix("/messages/:id"),
   (req, res) => {
     // retrieve the messageIndex from id
-    const msgIndex = messages.payload.items.findIndex(
+    const msgIndex = messagesWithContent.findIndex(
       item => item.id === req.params.id
     );
     if (msgIndex === -1) {
