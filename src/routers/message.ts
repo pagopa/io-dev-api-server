@@ -99,7 +99,7 @@ const createMessages = () => {
 
   addMessage(
     withPaymentData(
-      getNewMessage(`💰✅ payment message `, messageMarkdown),
+      getNewMessage(`💰✅ payment message`, messageMarkdown),
       false
     )
   );
@@ -139,7 +139,7 @@ const createMessages = () => {
 
   addMessage(
     withDueDate(
-      getNewMessage(`🕙✅ due date - expired`, messageMarkdown),
+      getNewMessage(`🕙❌ due date - expired`, messageMarkdown),
       new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
     )
   );
