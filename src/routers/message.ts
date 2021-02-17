@@ -21,6 +21,10 @@ import {
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
+import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
+import * as t from "io-ts";
+import { Timestamp } from "../../generated/definitions/backend/Timestamp";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 
 export const messageRouter = Router();
 
@@ -146,11 +150,17 @@ const createMessages = () => {
 };
 
 createMessages();
-
+export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollection => ({
+  items: messagesWithContent.map(m => ({
+    id: m.id,
+    fiscal_code: fiscalCode as FiscalCode,
+    created_at: m.created_at as Timestamp,
+    sender_service_id: m.sender_service_id as ServiceId,
+    time_to_live: m.time_to_live
+  }))
+});
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
-  res.json({
-    items: messagesWithContent
-  });
+  res.json(getMessageWithoutContent());
 });
 
 addHandler(
