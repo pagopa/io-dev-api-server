@@ -2,7 +2,10 @@ import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
+import { Timestamp } from "../../generated/definitions/backend/Timestamp";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
@@ -21,10 +24,6 @@ import {
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
-import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
-import * as t from "io-ts";
-import { Timestamp } from "../../generated/definitions/backend/Timestamp";
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 
 export const messageRouter = Router();
 
