@@ -7,6 +7,7 @@ import { backendInfo, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
+import { interfaces, serverPort } from "../utils/server";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -48,11 +49,11 @@ addHandler(publicRouter, "get", "/status/backend.json", (_, res) =>
 
 // only for app development purposes see https://github.com/pagopa/io-app/pull/2832
 publicRouter.post("/pay-webview", multer().none(), (req, res) => {
-  console.log(Object.keys(req.body));
   const formData = Object.keys(req.body)
     .map(k => `<b>${k}</b>: ${req.body[k]}`)
     .join("<br/>");
-  res.send(`<h1>received data</h1><br/>${formData}<br/>`);
+  const exitRedirect = `<script>setTimeout(() => document.location = "http://${interfaces.name}:${serverPort}/payExitUrl/name?code=123456",5000);</script>`;
+  res.send(`<h1>received data</h1><br/>${formData}<br/>${exitRedirect}`);
 });
 
 addHandler(publicRouter, "get", "/paywebview", (_, res) => {
