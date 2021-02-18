@@ -46,6 +46,7 @@ addHandler(publicRouter, "get", "/status/backend.json", (_, res) =>
   res.json(backendStatus)
 );
 
+// only for app development purposes see https://github.com/pagopa/io-app/pull/2832
 publicRouter.post("/pay-webview", multer().none(), (req, res) => {
   console.log(Object.keys(req.body));
   const formData = Object.keys(req.body)
