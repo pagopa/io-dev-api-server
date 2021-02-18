@@ -2,6 +2,7 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
+import multer from "multer";
 import { backendInfo, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import { addHandler } from "../payloads/response";
@@ -44,6 +45,19 @@ addHandler(publicRouter, "post", "/test-login", (_, res) =>
 addHandler(publicRouter, "get", "/status/backend.json", (_, res) =>
   res.json(backendStatus)
 );
+
+// only for app development purposes see https://github.com/pagopa/io-app/pull/2832
+publicRouter.post("/pay-webview", multer().none(), (req, res) => {
+  console.log(Object.keys(req.body));
+  const formData = Object.keys(req.body)
+    .map(k => `<b>${k}</b>: ${req.body[k]}`)
+    .join("<br/>");
+  res.send(`<h1>received data</h1><br/>${formData}<br/>`);
+});
+
+addHandler(publicRouter, "get", "/paywebview", (_, res) => {
+  sendFile("assets/imgs/how_to_login.png", res);
+});
 
 // it should be useful to reset some states
 addHandler(publicRouter, "get", "/reset", (_, res) => {
