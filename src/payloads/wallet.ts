@@ -1,5 +1,5 @@
 import * as faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
+import { index, range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
 import {
@@ -22,13 +22,8 @@ export const sessionToken: SessionResponse = {
   }
 };
 
-const validAmount: { [key: string]: any } = {
-  currency: "EUR",
-  amount: 1000,
-  decimalDigits: 2
-};
 export const validPsp: Psp = {
-  id: 43188,
+  id: 40000,
   idPsp: "idPsp1",
   businessName: "WHITE bank",
   paymentType: "CP",
@@ -39,7 +34,11 @@ export const validPsp: Psp = {
   serviceLogo:
     "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
   serviceName: "nomeServizio 10 white",
-  fixedCost: validAmount,
+  fixedCost: {
+    currency: "EUR",
+    amount: faker.random.number({ min: 1, max: 150 }),
+    decimalDigits: 2
+  },
   appChannel: false,
   tags: ["MAESTRO", "VISA"],
   serviceDescription: "DESCRIZIONE servizio: CP mod1",
@@ -49,6 +48,60 @@ export const validPsp: Psp = {
   idCard: 91,
   lingua: "IT" as LinguaEnum
 };
+
+const validPsp2: Psp = {
+  id: 40001,
+  idPsp: "idPsp1",
+  businessName: "Red bank",
+  paymentType: "CP",
+  idIntermediary: "idIntermediario1",
+  idChannel: "idCanale14",
+  logoPSP: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
+  serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
+  serviceName: "nomeServizio 10 red",
+  fixedCost: {
+    currency: "EUR",
+    amount: faker.random.number({ min: 1, max: 250 }),
+    decimalDigits: 2
+  },
+  appChannel: false,
+  tags: ["AMEX"],
+  serviceDescription: "DESCRIZIONE servizio: CP mod1",
+  serviceAvailability: "DISPONIBILITA servizio 24/7",
+  paymentModel: 1,
+  flagStamp: true,
+  idCard: 91,
+  lingua: "IT" as LinguaEnum
+};
+
+const validPsp3: Psp = {
+  id: 40002,
+  idPsp: "idPsp1",
+  businessName: "Blu bank",
+  paymentType: "CP",
+  idIntermediary: "idIntermediario1",
+  idChannel: "idCanale14",
+  logoPSP: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
+  serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
+  serviceName: "nomeServizio 10 Blu",
+  fixedCost: {
+    currency: "EUR",
+    amount: faker.random.number({ min: 1, max: 250 }),
+    decimalDigits: 2
+  },
+  appChannel: false,
+  tags: ["MASTERCARD", "POSTE"],
+  serviceDescription: "DESCRIZIONE servizio: CP mod1",
+  serviceAvailability: "DISPONIBILITA servizio 24/7",
+  paymentModel: 1,
+  flagStamp: true,
+  idCard: 91,
+  lingua: "IT" as LinguaEnum
+};
+
+export const pspList: ReadonlyArray<Psp> = [validPsp, validPsp2, validPsp3];
+export const getPspFromId = (idPsp: number) =>
+  pspList.find(p => p.id === idPsp);
 
 export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let

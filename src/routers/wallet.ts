@@ -1,22 +1,21 @@
 /**
  * this router handles all requests about wallets
  */
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
-import {
-  TypeEnum,
-  Wallet
-} from "../../generated/definitions/pagopa/walletv2/Wallet";
+import { TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
 import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../payloads/response";
 import {
+  getPspFromId,
   getTransactions,
   getWallets,
+  pspList,
   sessionToken,
   validPsp
 } from "../payloads/wallet";
@@ -30,7 +29,7 @@ import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import {
   addWalletV2,
-  getWallet,
+  findWalletfromId,
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
@@ -105,20 +104,22 @@ addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
   res.json({ data: [validPsp] })
 );
 
+const getPspListLocalized = (req: Request, res: Response) => {
+  const language = req.query.language ?? "IT";
+  res.json({
+    data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
+  });
+};
 addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/psps/selected"),
-  (req, res) => {
-    const language = req.query.language ?? "IT";
-    res.json({ data: [{ ...validPsp, lingua: language.toUpperCase() }] });
-  }
+  (req, res) => getPspListLocalized(req, res)
 );
 
-addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (req, res) => {
-  const language = req.query.language ?? "IT";
-  res.json({ data: [{ ...validPsp, lingua: language.toUpperCase() }] });
-});
+addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (req, res) =>
+  getPspListLocalized(req, res)
+);
 
 addHandler(
   walletRouter,
@@ -146,16 +147,19 @@ addHandler(
   appendWalletPrefix("/wallet/:idWallet"),
   (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
-    const walletV2 = getWallet(idWallet);
-    if (walletV2 === undefined) {
+    const idPsp = req.body.data.idPsp;
+    const psp = getPspFromId(idPsp);
+    const walletV2 = findWalletfromId(idWallet);
+    if (walletV2 === undefined || psp === undefined) {
       res.sendStatus(404);
       return;
     }
+    const updatedWalletV1 = generateWalletV1FromCardInfo(
+      walletV2.idWallet!,
+      walletV2.info as CardInfo
+    );
     res.json({
-      data: generateWalletV1FromCardInfo(
-        walletV2.idWallet!,
-        walletV2.info as CardInfo
-      )
+      data: { ...updatedWalletV1, psp }
     });
   }
 );

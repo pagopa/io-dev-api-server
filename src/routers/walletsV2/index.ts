@@ -186,7 +186,7 @@ export const removeWalletV2 = (idWallet: number): boolean => {
   return updateWallets.length < currentLength;
 };
 
-export const getWallet = (idWallet: number): WalletV2 | undefined => {
+export const findWalletfromId = (idWallet: number): WalletV2 | undefined => {
   const wallets = walletV2Response.data ?? [];
   return wallets.find(w => w.idWallet === idWallet);
 };
