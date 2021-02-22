@@ -73,7 +73,11 @@
         type: 'POST',
         url: "/walletv2/config",
         data: JSON.stringify(config),
-        success: function(data) { setForm(data); alert("done! refresh your wallet!") },
+        success: function(data) {
+          setForm(data);
+          alert("done! refresh your wallet!");
+          buildWalletDetailTable();
+          },
         contentType: "application/json",
         dataType: 'json'
       });
@@ -90,7 +94,11 @@
       $.ajax({
         type: 'GET',
         url: "/winning-transactions/reset",
-        success: function(data) { setForm(data); alert("reset completed!") },
+        success: function(data) {
+          setForm(data);
+          alert("reset completed!");
+          buildWalletDetailTable();
+          },
       });
     }
 
@@ -185,14 +193,13 @@
       });
     }
 
-    const initWinningTransactions = () => {
+    const buildWalletDetailTable = () => {
       const container = $("#winning_transactions");
-      $.getJSON("/walletv2/bpd-pans", function(pans) {
+      $.getJSON("/walletv2/table-details", function(pans) {
         const style = 'style="border: 1px solid black;"';
-        const formattedPans = pans.map(p => `<tr><td ${style}>${p.type}</td><td ${style}>${p.hpan}</td><td align="center" ${style}>${p.pan}</td></tr>`);
-        const header = "<tr><th>type</th><th>hash pan</th><th>last 4 digits</th></tr>";
-        $("#bpdPaymentInstruments").append(`<table ${style}>${header}${formattedPans.join("")}</table>`);
-        const options = pans.map(p => `<option value="${p.hpan}">${p.pan}</option>`);
+        const formattedPans = pans.map(p => `<tr><td ${style}>${p.type}</td><td ${style}>${p.hpan}</td><td align="center" ${style}>${p.pan}</td><td align="center" ${style}>${p.abiCode ?? ""}</td><td align="center" ${style}>${p.pagopa ?? ""}</td></tr>`);
+        const header = "<tr><th>type</th><th>hash pan</th><th>last 4 digits</th><th>abi</th><th>pagopa</th></tr>";
+        $("#walletPaymentMethods").html(`<table ${style}>${header}${formattedPans.join("")}</table>`);
         $.getJSON("/bonus/bpd/winning-transactions/transactions/presets", function(presets) {
           Object.keys(presets).forEach(p => {
               const button = `<button onclick="updateWinningTransaction(${p})">flush</button>`;
@@ -210,7 +217,7 @@
       initWalletV2();
       initBPD();
       initTotalCashBack();
-      initWinningTransactions();
+      buildWalletDetailTable();
     });
   </script>
 </head>
@@ -272,6 +279,12 @@
   <tr>
     <td colspan="2">
       <button value="reset" onclick="resetConfig()">reset</button>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <div><b>Wallet</b></div>
+      <div id="walletPaymentMethods"></div>
     </td>
   </tr>
 </table>
@@ -345,12 +358,7 @@
     <td colspan="2" class="divider"/>
   </tr>
 
-  <tr>
-    <td colspan="2">
-      <div><b>BPD payment instruments</b></div>
-      <div id="bpdPaymentInstruments"></div>
-    </td>
-  </tr>
+
   <tr>
     <td colspan="2">
       <button value="reset" onclick="resetBPDConfig()">reset</button>

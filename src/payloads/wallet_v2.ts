@@ -100,6 +100,11 @@ export const generateBancomatPay = (
   });
 };
 
+export const isCobadge = (wallet: WalletV2, card: CardInfo) =>
+  wallet.walletType === WalletTypeEnum.Card &&
+  wallet.pagoPA === false &&
+  card.issuerAbiCode !== undefined;
+
 export const generateCards = (
   abis: ReadonlyArray<Abi>,
   count: number = 10,
@@ -164,7 +169,7 @@ export const generateWalletV2FromCard = (
     hashPan: card.hpan,
     holder: `${currentProfile.name} ${currentProfile.family_name}`,
     htokenList: card.tokens,
-    issuerAbiCode: card.abi,
+    issuerAbiCode: canMethodPay ? undefined : card.abi,
     type: TypeEnum.PP
   };
 
