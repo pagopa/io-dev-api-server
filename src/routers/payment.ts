@@ -1,6 +1,7 @@
 import { Response, Router } from "express";
 import faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
+import multer from "multer";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -10,10 +11,12 @@ import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
-import { addHandler } from "../payloads/response";
+import { addHandler, addNewRoute } from "../payloads/response";
 import { getTransactions } from "../payloads/wallet";
+import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
+import { publicRouter } from "./public";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
 const walletPath = "/wallet/v1";
@@ -156,3 +159,28 @@ addHandler(
     res.json({ data: getTransactions(1)[0] });
   }
 );
+
+// using router directly since it need multipart parser instead of the default one (json)
+walletRouter.post(
+  "/wallet/v3/webview/transactions/pay",
+  multer().none(),
+  (req, res) => {
+    const formData = Object.keys(req.body)
+      .map(k => `<b>${k}</b>: ${req.body[k]}`)
+      .join("<br/>");
+    // set a timeout to redirect to the exit url
+    const exitPathName = "wallet/v3/webview/logout/bye";
+    const outcomeParamname = "outcome";
+    const outcomeValue = 123456;
+    const secondsToRedirect = 5;
+    const exitRedirect = `<script>setTimeout(() => document.location = "http://${
+      interfaces.name
+    }:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}",${secondsToRedirect *
+      1000});</script>`;
+    res.send(
+      `<h1>Pay web page</h1><h1>wait ${secondsToRedirect} to load exit url</h1><h3>received data</h3>${formData}<br/>${exitRedirect}`
+    );
+  }
+);
+// only for stats displaying purposes
+addNewRoute("post", "/wallet/v3/webview/transactions/pay");

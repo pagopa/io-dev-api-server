@@ -47,19 +47,6 @@ addHandler(publicRouter, "get", "/status/backend.json", (_, res) =>
   res.json(backendStatus)
 );
 
-// only for app development purposes see https://github.com/pagopa/io-app/pull/2832
-publicRouter.post("/pay-webview", multer().none(), (req, res) => {
-  const formData = Object.keys(req.body)
-    .map(k => `<b>${k}</b>: ${req.body[k]}`)
-    .join("<br/>");
-  // set a timeout to redirect to the exit url
-  const exitPathName = "/payExitUrl/name";
-  const outcomeParamname = "code";
-  const outcomeValue = 123456;
-  const exitRedirect = `<script>setTimeout(() => document.location = "http://${interfaces.name}:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}",5000);</script>`;
-  res.send(`<h1>received data</h1><br/>${formData}<br/>${exitRedirect}`);
-});
-
 addHandler(publicRouter, "get", "/paywebview", (_, res) => {
   sendFile("assets/imgs/how_to_login.png", res);
 });

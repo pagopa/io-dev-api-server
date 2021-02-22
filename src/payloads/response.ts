@@ -15,7 +15,7 @@ export type IOResponse<T> = {
 type Route = { path: string; method: SupportedMethod; description?: string };
 // tslint:disable-next-line: no-let
 export let routes: ReadonlyArray<Route> = [];
-const addNewRoute = (
+export const addNewRoute = (
   method: SupportedMethod,
   path: string,
   description?: string
