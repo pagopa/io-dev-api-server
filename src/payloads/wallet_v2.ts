@@ -53,17 +53,21 @@ export const resetCardConfig = () => {
 export const generateSatispayInfo = (
   count: number
 ): ReadonlyArray<SatispayInfo> => {
-  const config = fromNullable(
-    cardConfigMap.get(WalletTypeEnum.Satispay)
-  ).getOrElse(defaultCardConfig);
-  const uuid = sha256(config.prefix) + config.index.toString().padStart(4, "0");
-  cardConfigMap.set(WalletTypeEnum.Satispay, {
-    ...config,
-    index: config.index + 1
+  return range(1, count).map(_ => {
+    const config = fromNullable(
+      cardConfigMap.get(WalletTypeEnum.Satispay)
+    ).getOrElse(defaultCardConfig);
+    const uuid = sha256(
+      config.prefix + config.index.toString().padStart(4, "0")
+    );
+    cardConfigMap.set(WalletTypeEnum.Satispay, {
+      ...config,
+      index: config.index + 1
+    });
+    return {
+      uuid
+    };
   });
-  return range(1, count).map(_ => ({
-    uuid
-  }));
 };
 
 export const satispay = {
