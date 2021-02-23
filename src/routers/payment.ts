@@ -1,4 +1,4 @@
-import { Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { Iban } from "../../generated/definitions/backend/Iban";
@@ -158,28 +158,38 @@ addHandler(
   }
 );
 
+const handlePaymentPostAndRedirect = (req: Request, res: Response) => {
+  const formData = Object.keys(req.body)
+    .map(k => `<b>${k}</b>: ${req.body[k]}`)
+    .join("<br/>");
+  // set a timeout to redirect to the exit url
+  const exitPathName = "wallet/v3/webview/logout/bye";
+  const outcomeParamname = "outcome";
+  const outcomeValue = 0;
+  const secondsToRedirect = 3;
+  const exitRedirect = `<script>setTimeout(() => document.location = "http://${
+    interfaces.name
+  }:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}",${secondsToRedirect *
+    1000});</script>`;
+  res.send(
+    `<h1>Pay web page</h1><h1>wait ${secondsToRedirect} to load exit url</h1><h3>received data</h3>${formData}<br/>${exitRedirect}`
+  );
+};
+
+// credit card - payment
+addHandler(
+  walletRouter,
+  "post",
+  "/v3/webview/transactions/cc/verify",
+  handlePaymentPostAndRedirect
+);
+
 // payment
 addHandler(
   walletRouter,
   "post",
   "/wallet/v3/webview/transactions/pay",
-  (req, res) => {
-    const formData = Object.keys(req.body)
-      .map(k => `<b>${k}</b>: ${req.body[k]}`)
-      .join("<br/>");
-    // set a timeout to redirect to the exit url
-    const exitPathName = "wallet/v3/webview/logout/bye";
-    const outcomeParamname = "outcome";
-    const outcomeValue = 123456;
-    const secondsToRedirect = 5;
-    const exitRedirect = `<script>setTimeout(() => document.location = "http://${
-      interfaces.name
-    }:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}",${secondsToRedirect *
-      1000});</script>`;
-    res.send(
-      `<h1>Pay web page</h1><h1>wait ${secondsToRedirect} to load exit url</h1><h3>received data</h3>${formData}<br/>${exitRedirect}`
-    );
-  }
+  handlePaymentPostAndRedirect
 );
 // only for stats displaying purposes
 addNewRoute("post", "/wallet/v3/webview/transactions/pay");
