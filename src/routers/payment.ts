@@ -1,7 +1,6 @@
 import { Response, Router } from "express";
 import faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
-import multer from "multer";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -16,7 +15,6 @@ import { getTransactions } from "../payloads/wallet";
 import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
-import { publicRouter } from "./public";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
 const walletPath = "/wallet/v1";
@@ -160,10 +158,11 @@ addHandler(
   }
 );
 
-// using router directly since it need multipart parser instead of the default one (json)
-walletRouter.post(
+// payment
+addHandler(
+  walletRouter,
+  "post",
   "/wallet/v3/webview/transactions/pay",
-  multer().none(),
   (req, res) => {
     const formData = Object.keys(req.body)
       .map(k => `<b>${k}</b>: ${req.body[k]}`)

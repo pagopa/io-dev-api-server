@@ -2,12 +2,10 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
-import multer from "multer";
 import { backendInfo, backendStatus } from "../payloads/backend";
 import { loginSessionToken, loginWithToken } from "../payloads/login";
 import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
-import { interfaces, serverPort } from "../utils/server";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";

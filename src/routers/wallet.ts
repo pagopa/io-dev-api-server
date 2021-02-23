@@ -104,22 +104,25 @@ addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
   res.json({ data: [validPsp] })
 );
 
-const getPspListLocalized = (req: Request, res: Response) => {
-  const language = req.query.language ?? "IT";
-  res.json({
-    data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
-  });
-};
 addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/psps/selected"),
-  (req, res) => getPspListLocalized(req, res)
+  (req, res) => {
+    const randomPsp = faker.random.arrayElement(pspList);
+    const language = req.query.language ?? "IT";
+    res.json({
+      data: [{ ...randomPsp, lingua: language.toUpperCase() }]
+    });
+  }
 );
 
-addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (req, res) =>
-  getPspListLocalized(req, res)
-);
+addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (req, res) => {
+  const language = req.query.language ?? "IT";
+  res.json({
+    data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
+  });
+});
 
 addHandler(
   walletRouter,
