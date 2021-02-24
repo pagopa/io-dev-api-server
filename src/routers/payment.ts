@@ -180,7 +180,7 @@ const handlePaymentPostAndRedirect = (req: Request, res: Response) => {
 addHandler(
   walletRouter,
   "post",
-  "/v3/webview/transactions/cc/verify",
+  "/wallet/v3/webview/transactions/cc/verify",
   handlePaymentPostAndRedirect
 );
 
