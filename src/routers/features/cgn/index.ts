@@ -62,7 +62,7 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
     () => res.sendStatus(404),
     id => {
       const response = {
-        instance_id: id,
+        instance_id: { id },
         status: StatusEnum.COMPLETED
       };
       return res.status(200).json(response);
