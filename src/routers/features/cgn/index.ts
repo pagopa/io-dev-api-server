@@ -6,7 +6,9 @@ import {
   CardPending,
   StatusEnum as PendingStatusEnum
 } from "../../../../generated/definitions/cgn/CardPending";
+import { CcdbNumber } from "../../../../generated/definitions/cgn/CcdbNumber";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
+import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 // tslint:disable-next-line:no-commented-code
 // import { StatusEnum as CanceledStatusEnum } from "../../../../generated/definitions/cgn/CgnCanceledStatus";
 // import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
@@ -86,10 +88,92 @@ addHandler(cgnRouter, "get", addPrefix("/status"), (_, res) => {
   }
 });
 
+// tslint:disable-next-line: no-let
+let idActivationEyca: string | undefined;
+// tslint:disable-next-line: no-let
+let firstEycaActivationRequestTime = 0;
+
+// tslint:disable-next-line: no-let
+let currentEyca: EycaCard = {
+  status: PendingStatusEnum.PENDING
+};
+
+const eycaCardNumber = "W413-K096-O814-Z223";
+
+// Start bonus activation request procedure
+// 201 -> Request created.
+// 202 -> Processing request.
+// 401 -> Bearer token null or expired.
+// 409 -> Cannot activate the user's EYCA because another request was found for this user or it is already active.
+// 403 -> Cannot activate an EYCA card because the user is ineligible to get the EYCA.
+addHandler(cgnRouter, "post", addPrefix("/eyca/activation"), (_, res) => {
+  // if there is no previous activation -> Request created -> send back the created id
+  fromNullable(idActivationCgn).foldL(
+    () => {
+      idActivationEyca = getRandomStringId();
+      firstEycaActivationRequestTime = new Date().getTime();
+      res.status(201).json({ id: idActivationEyca });
+    },
+    // Cannot activate a new bonus because another bonus related to this user was found.
+    () =>
+      CardPending.is(currentEyca)
+        ? res.status(202).json({ id: idActivationCgn })
+        : res.sendStatus(409)
+  );
+});
+
+/**
+ * Get the EYCA activation status
+ * Used by the app as polling during the activation workflow
+ * status code 200 returns the current status of the job
+ * status 404 means no activation job has been found
+ */
+addHandler(cgnRouter, "get", addPrefix("/eyca/activation"), (_, res) =>
+  // if there is no previous activation -> Request created -> send back the created id
+  fromNullable(idActivationEyca).foldL(
+    // No CGN was found return a 404
+    () => res.sendStatus(404),
+    id => {
+      const response = {
+        status: StatusEnum.COMPLETED
+      };
+      return res.status(200).json(response);
+    }
+  )
+);
+
+// Eyca details
+// 200 -> EYCA current Status
+// 404 -> no EYCA found
+// 403 -> user's not EYCA Eligible
+// 409 -> Error encountered but user's EYCA Eligible
+addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
+  if (firstCgnActivationRequestTime > 0) {
+    currentEyca = {
+      status: ActivatedStatusEnum.ACTIVATED,
+      card_number: eycaCardNumber as CcdbNumber,
+      activation_date: new Date(
+        firstCgnActivationRequestTime > firstEycaActivationRequestTime
+          ? firstCgnActivationRequestTime
+          : firstEycaActivationRequestTime
+      ),
+      expiration_date: new Date("2050-05-10")
+    };
+    res.status(200).json(currentEyca);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 export const resetCgn = () => {
   idActivationCgn = undefined;
   firstCgnActivationRequestTime = 0;
   currentCGN = {
+    status: PendingStatusEnum.PENDING
+  };
+  idActivationEyca = undefined;
+  firstEycaActivationRequestTime = 0;
+  currentEyca = {
     status: PendingStatusEnum.PENDING
   };
 };
