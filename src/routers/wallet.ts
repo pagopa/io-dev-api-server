@@ -55,7 +55,7 @@ addHandler(
   walletRouter,
   "get",
   appendWalletPrefix("/users/actions/start-session"),
-  (_, res) => res.json(sessionToken)
+  (_, res) => res.send(sessionToken)
 );
 addHandler(walletRouter, "get", appendWalletPrefix("/wallet"), (_, res) =>
   res.json(wallets)

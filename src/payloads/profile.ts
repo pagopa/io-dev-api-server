@@ -26,7 +26,7 @@ const spidProfile: InitializedProfile = {
   spid_email: user.spid_email as EmailAddress,
   spid_mobile_phone: user.mobile as NonEmptyString,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6),
+  date_of_birth: new Date(1991, 0, 6).toISOString(),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -43,7 +43,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   spid_email: user.spid_email as EmailAddress,
   spid_mobile_phone: user.mobile as NonEmptyString,
   version: 0,
-  date_of_birth: new Date(1991, 0, 6),
+  date_of_birth: new Date(1991, 0, 6).toISOString(),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -58,7 +58,7 @@ const cieProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: user.name,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6),
+  date_of_birth: new Date(1991, 0, 6).toISOString(),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -72,7 +72,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   is_webhook_enabled: false,
   name: user.name,
   version: 0,
-  date_of_birth: new Date(1991, 0, 6),
+  date_of_birth: new Date(1991, 0, 6).toISOString(),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 

@@ -1,8 +1,8 @@
 import supertest, { Response, Test } from "supertest";
-import { Psp } from "../../../generated/definitions/pagopa/Psp";
-import { SessionResponse } from "../../../generated/definitions/pagopa/SessionResponse";
-import { TransactionListResponse } from "../../../generated/definitions/pagopa/TransactionListResponse";
-import { WalletListResponse } from "../../../generated/definitions/pagopa/WalletListResponse";
+import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
+import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
+import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
+import { WalletListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletListResponse";
 import { sessionToken } from "../../payloads/wallet";
 import app from "../../server";
 import {
