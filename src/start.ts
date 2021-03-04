@@ -6,6 +6,7 @@ import { routes } from "./payloads/response";
 import app from "./server";
 import { readFileAsJSON } from "./utils/file";
 import { interfaces, serverHostname, serverPort } from "./utils/server";
+import figlet from "figlet";
 // read package.json to print some info
 const packageJson = readFileAsJSON("./package.json");
 
@@ -38,9 +39,12 @@ app.listen(serverPort, serverHostname, async () => {
       }
     });
     console.log(
+      chalk.bgBlue(chalk.white(figlet.textSync(packageJson.pretty_name)))
+    );
+    console.log(
       chalk.bgBlack(
         chalk.green(
-          `\n${packageJson.name} is running on\n${Object.keys(interfaces)
+          `\n${packageJson.pretty_name} is running on\n${Object.keys(interfaces)
             .map(
               ni =>
                 // tslint:disable-next-line:no-nested-template-literals
