@@ -11,6 +11,7 @@ import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
 import { wallet2Router } from "./walletsV2";
+import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 
 export const servicesMetadataRouter = Router();
 
@@ -136,6 +137,24 @@ addHandler(
   (req, res) => {
     const decoded = CoBadgeServices.decode(
       readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")
+    );
+    if (decoded.isLeft()) {
+      res.status(500).send(readableReport(decoded.value));
+      return;
+    }
+    res.json(decoded.value);
+  },
+  0
+);
+
+
+addHandler(
+  wallet2Router,
+  "get",
+  addRoutePrefix("/status/privativeServices.json"),
+  (req, res) => {
+    const decoded = PrivativeServices.decode(
+      readFileAsJSON(assetsFolder + "/data/privativeServices.json")
     );
     if (decoded.isLeft()) {
       res.status(500).send(readableReport(decoded.value));

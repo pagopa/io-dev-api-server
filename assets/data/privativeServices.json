@@ -1,0 +1,22 @@
+{
+  "N&TS": {
+    "status": "enabled",
+    "issuers": [
+      {
+        "id": "Esselunga",
+        "gdo": "Esselunga",
+        "loyalty": "Fìdaty Oro"
+      },
+      {
+        "id": "Conad",
+        "gdo": "Conad",
+        "loyalty": "Carta Insieme Più"
+      },
+      {
+        "id": "Unicoop Firenze",
+        "gdo": "Unicoop Firenze",
+        "loyalty": "Spesa IN"
+      }
+    ]
+  }
+}
