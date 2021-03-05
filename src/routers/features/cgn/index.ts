@@ -8,9 +8,13 @@ import {
 } from "../../../../generated/definitions/cgn/CardPending";
 import { CcdbNumber } from "../../../../generated/definitions/cgn/CcdbNumber";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
+import {
+  StatusEnum as EycaStatusEnum,
+  EycaActivationDetail
+} from "../../../../generated/definitions/cgn/EycaActivationDetail";
 import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 // tslint:disable-next-line:no-commented-code
-// import { StatusEnum as CanceledStatusEnum } from "../../../../generated/definitions/cgn/CgnCanceledStatus";
+// import { StatusEnum as ExpiredStatusEnum } from "../../../../generated/definitions/cgn/CardExpired";
 // import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
 import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
@@ -29,6 +33,24 @@ let firstCgnActivationRequestTime = 0;
 let currentCGN: Card = {
   status: PendingStatusEnum.PENDING
 };
+
+// tslint:disable-next-line: no-let
+let idActivationEyca: string | undefined;
+// tslint:disable-next-line: no-let
+let firstEycaActivationRequestTime = 0;
+
+// tslint:disable-next-line: no-let
+let currentEyca: EycaCard = {
+  status: PendingStatusEnum.PENDING
+};
+
+// tslint:disable-next-line: no-let
+let eycaActivationStatus: EycaActivationDetail = {
+  status: EycaStatusEnum.UNKNOWN
+};
+
+const eycaCardNumber = "W413-K096-O814-Z223";
+
 // Start bonus activation request procedure
 // 201 -> Request created.
 // 202 -> Processing request.
@@ -41,6 +63,8 @@ addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
     () => {
       idActivationCgn = getRandomStringId();
       firstCgnActivationRequestTime = new Date().getTime();
+      // idActivationEyca = getRandomStringId();
+      // firstEycaActivationRequestTime = new Date().getTime();
       res.status(201).json({ id: idActivationCgn });
     },
     // Cannot activate a new bonus because another bonus related to this user was found.
@@ -88,18 +112,6 @@ addHandler(cgnRouter, "get", addPrefix("/status"), (_, res) => {
   }
 });
 
-// tslint:disable-next-line: no-let
-let idActivationEyca: string | undefined;
-// tslint:disable-next-line: no-let
-let firstEycaActivationRequestTime = 0;
-
-// tslint:disable-next-line: no-let
-let currentEyca: EycaCard = {
-  status: PendingStatusEnum.PENDING
-};
-
-const eycaCardNumber = "W413-K096-O814-Z223";
-
 // Start bonus activation request procedure
 // 201 -> Request created.
 // 202 -> Processing request.
@@ -108,10 +120,11 @@ const eycaCardNumber = "W413-K096-O814-Z223";
 // 403 -> Cannot activate an EYCA card because the user is ineligible to get the EYCA.
 addHandler(cgnRouter, "post", addPrefix("/eyca/activation"), (_, res) => {
   // if there is no previous activation -> Request created -> send back the created id
-  fromNullable(idActivationCgn).foldL(
+  fromNullable(idActivationEyca).foldL(
     () => {
       idActivationEyca = getRandomStringId();
       firstEycaActivationRequestTime = new Date().getTime();
+      eycaActivationStatus = { status: StatusEnum.RUNNING };
       res.status(201).json({ id: idActivationEyca });
     },
     // Cannot activate a new bonus because another bonus related to this user was found.
@@ -134,10 +147,13 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/activation"), (_, res) =>
     // No CGN was found return a 404
     () => res.sendStatus(404),
     id => {
-      const response = {
+      eycaActivationStatus = {
         status: StatusEnum.COMPLETED
       };
-      return res.status(200).json(response);
+      currentEyca = {
+        status: PendingStatusEnum.PENDING
+      };
+      return res.status(200).json(eycaActivationStatus);
     }
   )
 );
@@ -148,7 +164,7 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/activation"), (_, res) =>
 // 403 -> user's not EYCA Eligible
 // 409 -> Error encountered but user's EYCA Eligible
 addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
-  if (firstCgnActivationRequestTime > 0) {
+  if (firstEycaActivationRequestTime > 0 && idActivationEyca) {
     currentEyca = {
       status: ActivatedStatusEnum.ACTIVATED,
       card_number: eycaCardNumber as CcdbNumber,
@@ -161,7 +177,7 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
     };
     res.status(200).json(currentEyca);
   } else {
-    res.sendStatus(404);
+    res.sendStatus(409);
   }
 });
 
@@ -173,6 +189,9 @@ export const resetCgn = () => {
   };
   idActivationEyca = undefined;
   firstEycaActivationRequestTime = 0;
+  eycaActivationStatus = {
+    status: EycaStatusEnum.UNKNOWN
+  };
   currentEyca = {
     status: PendingStatusEnum.PENDING
   };
