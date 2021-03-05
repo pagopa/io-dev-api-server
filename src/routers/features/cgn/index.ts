@@ -63,10 +63,8 @@ addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
     () => {
       idActivationCgn = getRandomStringId();
       firstCgnActivationRequestTime = new Date().getTime();
-      /**
-       * idActivationEyca = getRandomStringId();
-       * firstEycaActivationRequestTime = new Date().getTime();
-       */
+      idActivationEyca = getRandomStringId();
+      firstEycaActivationRequestTime = new Date().getTime();
       res.status(201).json({ id: idActivationCgn });
     },
     // Cannot activate a new bonus because another bonus related to this user was found.
