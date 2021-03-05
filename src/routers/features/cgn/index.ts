@@ -9,8 +9,8 @@ import {
 import { CcdbNumber } from "../../../../generated/definitions/cgn/CcdbNumber";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
-  StatusEnum as EycaStatusEnum,
-  EycaActivationDetail
+  EycaActivationDetail,
+  StatusEnum as EycaStatusEnum
 } from "../../../../generated/definitions/cgn/EycaActivationDetail";
 import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 // tslint:disable-next-line:no-commented-code
@@ -63,8 +63,10 @@ addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
     () => {
       idActivationCgn = getRandomStringId();
       firstCgnActivationRequestTime = new Date().getTime();
-      // idActivationEyca = getRandomStringId();
-      // firstEycaActivationRequestTime = new Date().getTime();
+      /**
+       * idActivationEyca = getRandomStringId();
+       * firstEycaActivationRequestTime = new Date().getTime();
+       */
       res.status(201).json({ id: idActivationCgn });
     },
     // Cannot activate a new bonus because another bonus related to this user was found.

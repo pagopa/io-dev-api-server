@@ -1,12 +1,12 @@
 import chalk from "chalk";
 import child_process from "child_process";
 import { cli } from "cli-ux";
+import figlet from "figlet";
 import { fromNullable } from "fp-ts/lib/Option";
 import { routes } from "./payloads/response";
 import app from "./server";
 import { readFileAsJSON } from "./utils/file";
 import { interfaces, serverHostname, serverPort } from "./utils/server";
-import figlet from "figlet";
 // read package.json to print some info
 const packageJson = readFileAsJSON("./package.json");
 
