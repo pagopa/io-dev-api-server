@@ -4,14 +4,13 @@
 import { Router } from "express";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
+import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { servicesByScope, visibleServices } from "./service";
-import { wallet2Router } from "./walletsV2";
-import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 
 export const servicesMetadataRouter = Router();
 
@@ -131,7 +130,7 @@ addHandler(
 );
 
 addHandler(
-  wallet2Router,
+  servicesMetadataRouter,
   "get",
   addRoutePrefix("/status/cobadgeServices.json"),
   (req, res) => {
@@ -147,9 +146,8 @@ addHandler(
   0
 );
 
-
 addHandler(
-  wallet2Router,
+  servicesMetadataRouter,
   "get",
   addRoutePrefix("/status/privativeServices.json"),
   (req, res) => {
