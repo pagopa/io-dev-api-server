@@ -1,369 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <meta charset="UTF-8">
-  <title>WalletV2 configuration</title>
-<style>
-  .form_item{
-      margin-top: 10px;
-  }
-  .form_number{
-      width: 50px;
-  }
-  .divider{
-      height: 1px;
-      margin-top: 14px;
-      background-color: #b8b8b8;
-  }
-  .presets
-  {
-      font-style: italic;
-      color: #a72e00;
-      background-color: #cfcfcf;
-      padding-left: 4px;
-      padding-right: 4px;
-      border-radius: 2px;
-  }
-</style>
-  <script>
-    // wallet v2
-    var wcc = undefined;
-    var wcc_cb = undefined;
-    var wbc = undefined;
-    var cbc = undefined;
-    var wsp = undefined;
-    var wbp = undefined;
-    var csp = undefined;
-    var cbp = undefined;
-    var ccb = undefined;
-
-    const setForm = (config) => {
-      wcc.val(config.walletCreditCard);
-      wcc_cb.val(config.walletCreditCardCoBadge);
-      wbc.val(config.walletBancomat);
-      cbc.val(config.citizenBancomat);
-      wsp.val(config.satispay);
-      wbp.val(config.bPay);
-      cbp.val(config.citizenBPay);
-      ccb.val(config.citizenCreditCardCoBadge);
-      if(config.citizenSatispay){
-        csp.attr('checked', config.citizenSatispay ? 'checked' : '');
-      }
-      else{
-        csp.removeAttr('checked');
-      }
-
-
-    }
-
-    const updateConfig = () => {
-      const config = {
-        walletBancomat: parseInt(wbc.val(),10),
-        walletCreditCard: parseInt(wcc.val(),10),
-        walletCreditCardCoBadge: parseInt(wcc_cb.val(),10),
-        satispay: parseInt(wsp.val(),10),
-        citizenBancomat: parseInt(cbc.val(),10),
-        bPay: parseInt(wbp.val(),10),
-        citizenSatispay: csp.is(":checked"),
-        citizenBPay: parseInt(cbp.val(),10),
-        citizenCreditCardCoBadge: parseInt(ccb.val(),10),
-      }
-      $.ajax({
-        type: 'POST',
-        url: "/walletv2/config",
-        data: JSON.stringify(config),
-        success: function(data) {
-          setForm(data);
-          alert("done! refresh your wallet!");
-          buildWalletDetailTable();
-          },
-        contentType: "application/json",
-        dataType: 'json'
-      });
-    }
-
-    const resetConfig = () => {
-      $.getJSON("/walletv2/reset", function(data) {
-          setForm(data);
-        }
-      );
-    }
-
-    const resetBPDConfig = () => {
-      $.ajax({
-        type: 'GET',
-        url: "/winning-transactions/reset",
-        success: function(data) {
-          setForm(data);
-          alert("reset completed!");
-          buildWalletDetailTable();
-          },
-      });
-    }
-
-    const initWalletV2 = () => {
-      wcc = $("#walletCreditCard");
-      wcc_cb = $("#walletCreditCardCoBadge");
-      wbc = $("#walletBancomat");
-      wsp = $("#walletSatispay");
-      wbp = $("#walletBPay");
-      cbc = $("#citizenBancomat");
-      csp = $("#citizenSatispay");
-      cbp = $("#citizenBPay");
-      ccb = $("#citizenCobadge");
-      $.getJSON("/walletv2/config", function(data) {
-          setForm(data);
-        }
-      );
-    }
-
-    var awardPeriodsPreset;
-    var rankingPreset;
-    const initBPD = () => {
-      wcc = $("#walletCreditCard");
-      awardPeriodsPreset = $("#awardPeriodsPreset");
-      $.getJSON("/bonus/bpd/award/periods/presets", function(presets) {
-        presets.forEach(p => {
-          awardPeriodsPreset.append(new Option(p.replace(".json",""), p));
-        });
-        }
-      );
-      rankingPreset = $("#rankingPreset");
-      $.getJSON("/bonus/bpd/ranking/presets", function(presets) {
-          presets.forEach(p => {
-            rankingPreset.append(new Option(p.replace(".json",""), p));
-          });
-        }
-      );
-    }
-
-
-    const onFlushTotalCashBack = (directory) => {
-      const select =  $("#tc_"+directory);
-      $.ajax({
-        type: 'POST',
-        url: "/bonus/bpd/winning-transactions/total_cashback/presets",
-        data: JSON.stringify({directory,file: select.val()}),
-        success: function() {alert(`${select.val()} flushed!`) },
-        contentType: "application/json",
-      });
-    }
-
-    const initTotalCashBack = () => {
-
-      const container = $("#total_cashback");
-      $.getJSON("/bonus/bpd/winning-transactions/total_cashback/presets", function(presets) {
-          Object.keys(presets).forEach(p => {
-            const options = presets[p].map(v => `<option value="${v}">${v}</option>`);
-            container.append(`<label>${p}</label> <select id="tc_${p}">${options}</select>`);
-            container.append(` <button onclick="onFlushTotalCashBack(${p})">flush</button>`);
-            container.append(`<br/>`);
-          });
-        }
-      );
-    }
-
-    const updateAwardPeriods = () => {
-      $.ajax({
-        type: 'POST',
-        url: "/bonus/bpd/award/periods/presets/"+ awardPeriodsPreset.val(),
-        data: JSON.stringify({}),
-        success: function() {alert(`${awardPeriodsPreset.val()} flushed!`) }
-      });
-    }
-
-    const updateRanking = () => {
-      $.ajax({
-        type: 'POST',
-        url: "/bonus/bpd/ranking/presets/"+ rankingPreset.val(),
-        data: JSON.stringify({}),
-        success: function() {alert(`${rankingPreset.val()} flushed!`) }
-      });
-    }
-
-    const updateWinningTransaction = (period) => {
-      const s = $("#wt_"+period);
-      $.ajax({
-        type: 'POST',
-        url: "/bonus/bpd/winning-transactions/transactions/presets",
-        data: JSON.stringify({period,file:s.val()}),
-        success: function() {alert(`${period}/${s.val()} flushed!`) },
-        contentType: "application/json",
-      });
-    }
-
-    const buildWalletDetailTable = () => {
-      const container = $("#winning_transactions");
-      $.getJSON("/walletv2/table-details", function(pans) {
-        const style = 'style="border: 1px solid black;"';
-        const formattedPans = pans.map(p => `<tr><td ${style}>${p.type}</td><td ${style}>${p.hpan}</td><td align="center" ${style}>${p.pan}</td><td align="center" ${style}>${p.abiCode ?? ""}</td><td align="center" ${style}>${p.pagopa ?? ""}</td></tr>`);
-        const header = "<tr><th>type</th><th>hash pan</th><th>last 4 digits</th><th>abi</th><th>pagopa</th></tr>";
-        $("#walletPaymentMethods").html(`<table ${style}>${header}${formattedPans.join("")}</table>`);
-        $.getJSON("/bonus/bpd/winning-transactions/transactions/presets", function(presets) {
-          Object.keys(presets).forEach(p => {
-              const button = `<button onclick="updateWinningTransaction(${p})">flush</button>`;
-              const options = presets[p].map(v => `<option value="${v}">${v}</option>`);
-              const select = `<select id="wt_${p}">${options}</select>`;
-              container.append(`<div>${p} ${select} ${button}</div>`);
-          });
-          }
-        );
-        }
-      );
-    }
-
-    $(document).ready(function() {
-      initWalletV2();
-      initBPD();
-      initTotalCashBack();
-      buildWalletDetailTable();
-    });
-  </script>
-</head>
+<html>
 <body>
+<svg width="1000" viewBox = "0 0 300 1000">
+  <svg>
+    <g transform="scale(0.5)">
+      <path d="M210.82,134c.84-37.64-29.89-86.36-56.21-102.85C126.82,16.47,48.61-10.19,16.2,10.36c-33.63,18,1.38,93.26.29,124.61,1.14,31.26-7.74,78.81,25.85,96.73,32.39,20.51,69.63-11.14,97.39-25.92C166.74,188.88,212.81,173,210.82,134Z" fill-opacity="0.5">
+        <animate
+          dur='6s'
+          attributeType="XML"
+          attributeName='d'
+          repeatCount='indefinite'
 
-<table style="padding:16px;border: 1px solid black;">
-  <tr>
-    <td colspan="2">
-      <b>WalletV2 configuration</b>
-    </td>
-  </tr>
-  <tr>
-  <tr class="form_item">
-    <td><label>wallet Credit Card</label></td>
-    <td><input type="number" min="0" class="form_number" id="walletCreditCard"/>
-  </tr>
+          values="M210.82,134c.84-37.64-29.89-86.36-56.21-102.85C126.82,16.47,48.61-10.19,16.2,10.36c-33.63,18,1.38,93.26.29,124.61,1.14,31.26-7.74,78.81,25.85,96.73,32.39,20.51,69.63-11.14,97.39-25.92C166.74,188.88,212.81,173,210.82,134Z;
 
-  <tr class="form_item">
-    <td><label>wallet Credit Card (co-badge)</label></td>
-    <td><input type="number" min="0" class="form_number" id="walletCreditCardCoBadge"/>
-  </tr>
+          M194.63,135c.84-37.64-44.79-53.72-71.1-70.22-27.79-14.71-65-46.45-97.39-25.91C-7.48,56.9,1.38,104.62.3,136c1.14,31.26-7.74,78.81,25.85,96.73,32.38,20.51,69.62-11.14,97.38-25.92C150.54,189.88,196.62,174,194.63,135Z;
 
-  <tr class="form_item">
-    <td><label>wallet Bancomat</label></td>
-    <td><input type="number" min="0" class="form_number" id="walletBancomat"/></td>
-  </tr>
+          M207.46,135c.84-37.64-32.62-72.11-58.93-88.61C120.74,31.72,71.39,18.37,39,38.91,5.35,56.9,1.08,144.11,0,175.46c1.14,31.26,5.39,39.32,39,57.24,32.38,20.51,112.37,25.8,140.12,11C206.12,226.82,209.45,174,207.46,135Z;
 
-  <tr class="form_item">
-    <td><label>wallet Satispay</label></td>
-    <td><input type="number" min="0" class="form_number" id="walletSatispay"/></td>
-  </tr>
+M194.63,117.79c.57-21.28-44.79-53.72-71.1-70.21-27.79-14.72-65-46.46-97.39-25.92C-7.48,39.65,1.38,87.37.3,118.72,1.44,150-7.44,197.53,26.15,215.46,58.53,236,139.9,248,167.66,233.24,194.67,216.34,196.62,156.78,194.63,117.79Z;
 
-  <tr class="form_item">
-    <td><label>wallet Bpay</label></td>
-    <td><input type="number" min="0" class="form_number" id="walletBPay"/></td>
-  </tr>
+M215.35,127.15C216.19,89.5,230,21.54,203.71,5.05,175.92-9.67,79.28,10.47,46.87,31,13.24,49,4.75,108.21,3.67,139.56c1.14,31.25,9.61,67.33,43.2,85.25,32.38,20.5,69.62-11.14,97.38-25.92C171.26,182,217.34,166.14,215.35,127.15Z;
 
-  <tr class="form_item">
-    <td><label>owned Bancomat (pans)</label></td>
-    <td><input type="number" min="0" class="form_number" id="citizenBancomat"/></td>
-  </tr>
-  <tr class="form_item">
-    <td><label>owned BancomatPay (pans)</label></td>
-    <td><input type="number" min="0" class="form_number" id="citizenBPay"/></td>
-  </tr>
-  <tr class="form_item">
-    <td><label>owned Cobadge (pans)</label></td>
-    <td><input type="number" min="0" class="form_number" id="citizenCobadge"/></td>
-  </tr>
-  <tr class="form_item">
-    <td><label>owned Satispay</label></td>
-    <td><input type="checkbox" id="citizenSatispay"/></td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <button value="update" onclick="updateConfig()">flush</button>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <button value="reset" onclick="resetConfig()">reset</button>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <div><b>Wallet</b></div>
-      <div id="walletPaymentMethods"></div>
-    </td>
-  </tr>
-</table>
+M210.82,134c.84-37.64-29.89-86.36-56.21-102.85C126.82,16.47,48.61-10.19,16.2,10.36c-33.63,18,1.38,93.26.29,124.61,1.14,31.26-7.74,78.81,25.85,96.73,32.39,20.51,69.63-11.14,97.39-25.92C166.74,188.88,212.81,173,210.82,134Z;"
+        />
 
-<table style="padding:16px;border: 1px solid black; margin-top: 20px;">
-  <tr>
-    <td colspan="2">
-      <b>BPD configuration</b>
-    </td>
-  </tr>
+        <animate
+          attributeName="fill"
+          dur="20s"
+          repeatCount="indefinite"
+          values="red;green;red"
+        />
+        <animateTransform
+          type="translate"
+          attributeName="transform"
+          dur="12s"
+          begin="0s"
+          repeatCount="indefinite"
+          values="0 0;150 50;320 120;600 200;320 120;150 50;0 0;"
+        />
+      </path>
+    </g>
+  </svg>
+  <svg>
+    <g transform="scale(0.8) translate(-100, 0)">
+      <path d="M210.82,134c.84-37.64-29.89-86.36-56.21-102.85C126.82,16.47,48.61-10.19,16.2,10.36c-33.63,18,1.38,93.26.29,124.61,1.14,31.26-7.74,78.81,25.85,96.73,32.39,20.51,69.63-11.14,97.39-25.92C166.74,188.88,212.81,173,210.82,134Z" fill-opacity="0.5">
+        <animate
+          dur='10s'
+          attributeType="XML"
+          attributeName='d'
+          repeatCount='indefinite'
 
-  <tr class="form_item">
-    <td><label style="font-weight: bold">award periods</label></td>
-    <td><select id="awardPeriodsPreset" style="width: 100px;"></select> <button value="reset" onclick="updateAwardPeriods()">flush</button></td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      place your json presets into <label class="presets">/assets/bpd/award/periods</label>
-    </td>
-  </tr>
+          values="M210.82,134c.84-37.64-29.89-86.36-56.21-102.85C126.82,16.47,48.61-10.19,16.2,10.36c-33.63,18,1.38,93.26.29,124.61,1.14,31.26-7.74,78.81,25.85,96.73,32.39,20.51,69.63-11.14,97.39-25.92C166.74,188.88,212.81,173,210.82,134Z;
 
-  <tr>
-    <td colspan="2" class="divider"/>
-  </tr>
+          M194.63,135c.84-37.64-44.79-53.72-71.1-70.22-27.79-14.71-65-46.45-97.39-25.91C-7.48,56.9,1.38,104.62.3,136c1.14,31.26-7.74,78.81,25.85,96.73,32.38,20.51,69.62-11.14,97.38-25.92C150.54,189.88,196.62,174,194.63,135Z;
 
-  <tr class="form_item">
-    <td><label style="font-weight: bold">amount</label></td>
-    <td><div id="total_cashback"></div></td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <br/>
-      place your json presets into <label class="presets">/assets/bpd/award/total_cashback</label>
-    </td>
-  </tr>
+          M207.46,135c.84-37.64-32.62-72.11-58.93-88.61C120.74,31.72,71.39,18.37,39,38.91,5.35,56.9,1.08,144.11,0,175.46c1.14,31.26,5.39,39.32,39,57.24,32.38,20.51,112.37,25.8,140.12,11C206.12,226.82,209.45,174,207.46,135Z;
 
-  <tr>
-    <td colspan="2" class="divider"/>
-  </tr>
+M194.63,117.79c.57-21.28-44.79-53.72-71.1-70.21-27.79-14.72-65-46.46-97.39-25.92C-7.48,39.65,1.38,87.37.3,118.72,1.44,150-7.44,197.53,26.15,215.46,58.53,236,139.9,248,167.66,233.24,194.67,216.34,196.62,156.78,194.63,117.79Z;
 
+M215.35,127.15C216.19,89.5,230,21.54,203.71,5.05,175.92-9.67,79.28,10.47,46.87,31,13.24,49,4.75,108.21,3.67,139.56c1.14,31.25,9.61,67.33,43.2,85.25,32.38,20.5,69.62-11.14,97.38-25.92C171.26,182,217.34,166.14,215.35,127.15Z;
 
-  <tr class="form_item">
-  <td><label style="font-weight: bold">winning transactions</label></td>
-  <td><div id="winning_transactions"></div></td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <br/>
-      place your json presets into <label class="presets">/assets/bpd/award/winning_transactions</label>
-    </td>
-  </tr>
+M210.82,134c.84-37.64-29.89-86.36-56.21-102.85C126.82,16.47,48.61-10.19,16.2,10.36c-33.63,18,1.38,93.26.29,124.61,1.14,31.26-7.74,78.81,25.85,96.73,32.39,20.51,69.63-11.14,97.39-25.92C166.74,188.88,212.81,173,210.82,134Z;"
+        />
 
-  <tr>
-    <td colspan="2" class="divider"/>
-  </tr>
+        <animate
+          attributeName="fill"
+          dur="20s"
+          repeatCount="indefinite"
+          values="green;red;green"
+        />
 
-  <tr class="form_item">
+        <animateTransform
+          type="translate"
+          attributeName="transform"
+          dur="12s"
+          begin="0s"
+          repeatCount="indefinite"
+          values="700 200;500 150;300 100;100 0;300 10;500 150;700 200;"
+        />
 
-  <td><label style="font-weight: bold">supercashback ranking</label>
-    <img style="width: 64px;" src="data:image/png;base64,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"/></td>
-    <td><select id="rankingPreset" style="width: 100px;"></select> <button value="reset" onclick="updateRanking()">flush</button></td>
-
-  <tr>
-    <td colspan="2">
-      place your json presets into <label class="presets">/assets/bpd/ranking</label>
-    </td>
-  </tr>
-  </tr>
-
-  <tr>
-    <td colspan="2" class="divider"/>
-  </tr>
-
-
-  <tr>
-    <td colspan="2">
-      <button value="reset" onclick="resetBPDConfig()">reset</button>
-    </td>
-  </tr>
-</table>
+      </path>
+    </g>
+  </svg>
+</svg>
 </body>
 </html>

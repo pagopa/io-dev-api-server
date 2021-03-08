@@ -4,8 +4,6 @@ import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
-import { Timestamp } from "../../generated/definitions/backend/Timestamp";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
@@ -20,7 +18,6 @@ import {
   frontMatter1CTA,
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
-  frontMatter2CTA,
   frontMatter2CTA2,
   messageMarkdown
 } from "../utils/variables";
