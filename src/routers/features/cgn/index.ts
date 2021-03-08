@@ -1,5 +1,7 @@
 import { Router } from "express";
+import * as faker from "faker/locale/it";
 import { fromNullable } from "fp-ts/lib/Option";
+import { readableReport } from "italia-ts-commons/lib/reporters";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -13,9 +15,8 @@ import {
   StatusEnum as EycaStatusEnum
 } from "../../../../generated/definitions/cgn/EycaActivationDetail";
 import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
-// tslint:disable-next-line:no-commented-code
-// import { StatusEnum as ExpiredStatusEnum } from "../../../../generated/definitions/cgn/CardExpired";
-// import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CgnRevokedStatus";
+import { Otp } from "../../../../generated/definitions/cgn/Otp";
+import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
 import { addApiV1Prefix } from "../../../utils/strings";
@@ -179,6 +180,18 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
   } else {
     res.sendStatus(409);
   }
+});
+
+addHandler(cgnRouter, "post", addPrefix("/otp"), (_, res) => {
+  const otp = {
+    code: genRandomBonusCode(11),
+    expires_at: faker.date.future().toISOString(),
+    ttl: 100
+  };
+  Otp.decode(otp).fold(
+    e => res.status(500).send(readableReport(e)),
+    v => res.json(v)
+  );
 });
 
 export const resetCgn = () => {

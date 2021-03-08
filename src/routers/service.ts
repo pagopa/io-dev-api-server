@@ -7,9 +7,8 @@ import {
   getServicesByScope,
   getServicesTuple
 } from "../payloads/service";
-import { addApiV1Prefix } from "../utils/strings";
-import { loginWithToken } from "../payloads/login";
 import { sendFile } from "../utils/file";
+import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 
 export const serviceRouter = Router();
