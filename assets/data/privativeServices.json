@@ -3,17 +3,17 @@
     "status": "enabled",
     "issuers": [
       {
-        "id": "Esselunga",
+        "id": "ESSEL",
         "gdo": "Esselunga",
         "loyalty": "Fìdaty Oro"
       },
       {
-        "id": "Conad",
+        "id": "CONAD",
         "gdo": "Conad",
         "loyalty": "Carta Insieme Più"
       },
       {
-        "id": "Unicoop Firenze",
+        "id": "COOP1",
         "gdo": "Unicoop Firenze",
         "loyalty": "Spesa IN"
       }
