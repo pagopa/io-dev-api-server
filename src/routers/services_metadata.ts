@@ -62,6 +62,25 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
+  addRoutePrefix("/logos/privative/gdo/:logo_id"),
+  (req, res) => {
+    sendFile(`assets/imgs/logos/privative/gdo/${req.params.logo_id}`, res);
+  }
+);
+
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/logos/privative/loyalty/:logo_id"),
+  (req, res) => {
+    sendFile(`assets/imgs/logos/privative/loyalty/${req.params.logo_id}`, res);
+  }
+);
+
+
+addHandler(
+  servicesMetadataRouter,
+  "get",
   addRoutePrefix("/municipalities/:a/:b/:code"),
   (_, res) => {
     // return always the same municipality
