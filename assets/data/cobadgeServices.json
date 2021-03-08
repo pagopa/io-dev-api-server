@@ -549,7 +549,7 @@
     ]
   },
   "ICCREA": {
-    "status": "disabled",
+    "status": "enabled",
     "issuers": [
       {
         "abi": "03139",
@@ -1102,7 +1102,7 @@
     ]
   },
   "SIA": {
-    "status": "disabled",
+    "status": "enabled",
     "issuers": [
       {
         "abi": "02008",
