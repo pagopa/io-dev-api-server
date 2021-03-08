@@ -52,9 +52,9 @@ export const backendStatus: BackendStatus = {
       },
       message: {
         "it-IT":
-          "la sezione messaggi è in manutenzione, tornerà operativa a breve",
+          "la sezione servizi è in manutenzione, tornerà operativa a breve",
         "en-EN":
-          "the messages section is under maintenance, it will be operational again shortly"
+          "the services section is under maintenance, it will be operational again shortly"
       }
     },
     login: {
