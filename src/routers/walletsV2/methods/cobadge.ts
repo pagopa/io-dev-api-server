@@ -63,8 +63,7 @@ const handleCobadge = (req: Request, res: Response) => {
       // filter only the card that match the query abi if it is defined
       queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
     )
-    .map<PaymentInstrument>(cb =>
-      ({...fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo), productType: ProductTypeEnum.PRIVATIVE})
+    .map<PaymentInstrument>(cb =>fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
     );
   const cobadgeResponse = maybeResponse.value;
   const response = {
@@ -91,7 +90,7 @@ const handlePrivative = (req: Request, res: Response) => {
   const queryAbi: string | undefined = req.query.abi;
   const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenPrivativeCard
     .map<PaymentInstrument>(cp =>
-      fromCardInfoToCardBadge(cp.idWallet!, {...cp.info, abiCode: queryAbi} as CardInfo)
+      ({...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo), productType: ProductTypeEnum.PRIVATIVE})
     );
   const cobadgeResponse = maybeResponse.value;
   const response = {
