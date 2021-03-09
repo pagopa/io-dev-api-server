@@ -3,17 +3,14 @@ import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { WalletResponse } from "../../../generated/definitions/pagopa/walletv2/WalletResponse";
-import {
-  WalletTypeEnum,
-  WalletV2
-} from "../../../generated/definitions/pagopa/walletv2/WalletV2";
+import { WalletTypeEnum, WalletV2 } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
 import { addHandler } from "../../payloads/response";
 import {
   abiData,
   generateBancomatPay,
-  generateCards, generatePrivativeFromWalletV2,
+  generateCards,
+  generatePrivativeFromWalletV2,
   generateSatispayInfo,
   generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
@@ -76,6 +73,7 @@ let walletCreditCards: ReadonlyArray<WalletV2> = [];
 let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 export let citizenCreditCardCoBadge: ReadonlyArray<WalletV2> = [];
+export let citizenPrivativeCard: ReadonlyArray<WalletV2> = [];
 let privativeCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
@@ -141,19 +139,26 @@ export const generateWalletV2Data = () => {
     walletV2Config.walletCreditCardCoBadge,
     WalletTypeEnum.Card
   ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false));
-  privativeCards = generateCards(
-    abiResponse.data ?? [],
-    walletV2Config.privative,
-    WalletTypeEnum.Card
-  ).map(c => generatePrivativeFromWalletV2(generateWalletV2FromCard(c, WalletTypeEnum.Card, false)));
-
-
   // cobadge owned by the citizen
   citizenCreditCardCoBadge = generateCards(
     abiResponse.data ?? [],
     walletV2Config.citizenCreditCardCoBadge,
     WalletTypeEnum.Card
   ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false));
+  // add privative cards
+  privativeCards = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.privative,
+    WalletTypeEnum.Card
+  ).map(c => generatePrivativeFromWalletV2(generateWalletV2FromCard(c, WalletTypeEnum.Card, false)));
+
+  citizenPrivativeCard = generateCards(
+    abiResponse.data ?? [],
+    1,
+    WalletTypeEnum.Card
+  ).map(c => generatePrivativeFromWalletV2(generateWalletV2FromCard(c, WalletTypeEnum.Card, false)));
+
+
   // set a credit card as favorite
   if (walletCreditCards.length > 0) {
     const firstCard = walletCreditCards[0];
