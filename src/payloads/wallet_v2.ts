@@ -195,6 +195,9 @@ export const generateWalletV2FromCard = (
   };
 };
 
+export const generatePrivativeFromWalletV2 = (w2: WalletV2): WalletV2 =>
+  ({...w2, info:{...w2.info, issuerAbiCode: "COOP1", type: TypeEnum.PRV }})
+
 export const generateWalletV2FromSatispayOrBancomatPay = (
   info: SatispayInfo | BPayInfo,
   walletType: WalletTypeEnum.Satispay | WalletTypeEnum.BPay,

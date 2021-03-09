@@ -13,7 +13,7 @@ import { addHandler } from "../../payloads/response";
 import {
   abiData,
   generateBancomatPay,
-  generateCards,
+  generateCards, generatePrivativeFromWalletV2,
   generateSatispayInfo,
   generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
@@ -24,6 +24,7 @@ type WalletV2Config = {
   walletBancomat: number;
   walletCreditCard: number;
   walletCreditCardCoBadge: number;
+  privative: number;
   satispay: number;
   bPay: number;
   citizenBancomat: number;
@@ -45,6 +46,7 @@ export const defaultWalletV2Config: WalletV2Config = {
   walletBancomat: 1,
   walletCreditCard: 1,
   walletCreditCardCoBadge: 1,
+  privative: 1,
   satispay: 1,
   bPay: 1,
   citizenSatispay: true,
@@ -74,6 +76,7 @@ let walletCreditCards: ReadonlyArray<WalletV2> = [];
 let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 export let citizenCreditCardCoBadge: ReadonlyArray<WalletV2> = [];
+let privativeCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
@@ -138,6 +141,13 @@ export const generateWalletV2Data = () => {
     walletV2Config.walletCreditCardCoBadge,
     WalletTypeEnum.Card
   ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false));
+  privativeCards = generateCards(
+    abiResponse.data ?? [],
+    walletV2Config.privative,
+    WalletTypeEnum.Card
+  ).map(c => generatePrivativeFromWalletV2(generateWalletV2FromCard(c, WalletTypeEnum.Card, false)));
+
+
   // cobadge owned by the citizen
   citizenCreditCardCoBadge = generateCards(
     abiResponse.data ?? [],
@@ -167,6 +177,7 @@ export const generateWalletV2Data = () => {
       ...walletBancomat,
       ...walletCreditCards,
       ...walletCreditCardsCoBadges,
+      ...privativeCards,
       ...walletSatispay,
       ...walletBancomatPay
     ],
