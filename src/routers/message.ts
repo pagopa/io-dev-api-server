@@ -18,6 +18,7 @@ import {
   frontMatter1CTA,
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
+  frontMatter1CTABonusCgn,
   frontMatter2CTA2,
   messageMarkdown
 } from "../utils/variables";
@@ -85,6 +86,12 @@ const createMessages = () => {
     getNewMessage(
       `1 nested CTA IBAN BPD`,
       frontMatter1CTABonusBpdIban + messageMarkdown
+    )
+  );
+  addMessage(
+    getNewMessage(
+      `1 nested CTA start CGN`,
+      frontMatter1CTABonusCgn + messageMarkdown
     )
   );
 

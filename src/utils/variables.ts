@@ -95,6 +95,17 @@ en:
         action: "dummy://PROFILE_MAIN"
 ---`;
 
+export const frontMatter1CTABonusCgn = `---
+it:
+    cta_1: 
+        text: "CGN start"
+        action: "ioit://CTA_START_CGN"
+en:
+    cta_1: 
+        text: "CGN start"
+        action: "ioit://CTA_START_CGN"
+---`;
+
 export const messageMarkdown = `
 # H1 
 
