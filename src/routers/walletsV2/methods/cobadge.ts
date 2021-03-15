@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
+import { take } from "fp-ts/lib/Array";
 import fs from "fs";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definitions/pagopa/walletv2/CobadegPaymentInstrumentsRequest";
 import { CobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/CobadgeResponse";
 import {
@@ -13,6 +15,7 @@ import { RestCobadgeResponse } from "../../../../generated/definitions/pagopa/wa
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
+import { readFileAsJSON } from "../../../utils/file";
 import {
   addWalletV2,
   appendWalletPrefix,
@@ -21,7 +24,6 @@ import {
   walletV2Response
 } from "../index";
 import { bancomatRouter } from "./bancomat";
-import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
 
 const productTypes = Object.values(ProductTypeEnum);
 const paymentNetworks = Object.values(PaymentNetworkEnum);
@@ -46,7 +48,6 @@ const fromCardInfoToCardBadge = (
   tokenMac: "tokenMac"
 });
 
-
 const handleCobadge = (req: Request, res: Response) => {
   // load the stub and fill it with cobadge cards
   const pansStubData = fs
@@ -63,7 +64,8 @@ const handleCobadge = (req: Request, res: Response) => {
       // filter only the card that match the query abi if it is defined
       queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
     )
-    .map<PaymentInstrument>(cb =>fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
+    .map<PaymentInstrument>(cb =>
+      fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
     );
   const cobadgeResponse = maybeResponse.value;
   const response = {
@@ -79,23 +81,30 @@ const handleCobadge = (req: Request, res: Response) => {
 };
 
 const handlePrivative = (req: Request, res: Response) => {
-  const pansStubData = fs
-    .readFileSync(assetsFolder + "/pm/cobadge/pans.json")
-    .toString();
-  const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
+  const maybeResponse = CobadgeResponse.decode(
+    readFileAsJSON(assetsFolder + "/pm/cobadge/pans.json")
+  );
   if (maybeResponse.isLeft()) {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
   const queryAbi: string | undefined = req.query.abi;
   const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenPrivativeCard
-    .map<PaymentInstrument>(cp =>
-      ({...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo), productType: ProductTypeEnum.PRIVATIVE})
-    );
+    .filter(cb =>
+      // filter only the card that match the query abi if it is defined
+      queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
+    )
+    .map<PaymentInstrument>(cp => ({
+      ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
+      productType: ProductTypeEnum.PRIVATIVE
+    }));
   const cobadgeResponse = maybeResponse.value;
   const response = {
     ...cobadgeResponse,
-    payload: { ...cobadgeResponse.payload, paymentInstruments }
+    payload: {
+      ...cobadgeResponse.payload,
+      paymentInstruments: take(1, [...paymentInstruments])
+    }
   };
   const validResponse = RestCobadgeResponse.decode({ data: response });
   if (validResponse.isLeft()) {
@@ -103,7 +112,7 @@ const handlePrivative = (req: Request, res: Response) => {
     return;
   }
   res.status(200).json(validResponse.value);
-}
+};
 
 /**
  * return the cobadge list owned by the citizen
@@ -113,11 +122,10 @@ addHandler(
   "get",
   appendWalletPrefix("/cobadge/pans"),
   (req, res) => {
-    if(req.headers["pancode"]!== undefined){
-      handlePrivative( req, res)
-    }
-    else {
-      handleCobadge(req, res)
+    if (req.headers.pancode !== undefined) {
+      handlePrivative(req, res);
+    } else {
+      handleCobadge(req, res);
     }
   },
   0
@@ -180,7 +188,7 @@ addHandler(
     // assume the request includes only ONE card
     const paymentInstrument = maybeData.value.data!.payload!
       .paymentInstruments![0];
-    const cobadge = citizenCreditCardCoBadge.find(
+    const cobadge = [...citizenCreditCardCoBadge, ...citizenPrivativeCard].find(
       cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
     );
     if (cobadge === undefined) {

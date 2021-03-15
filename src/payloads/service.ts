@@ -57,12 +57,17 @@ export const getServices = (count: number): readonly ServicePublic[] => {
 };
 
 export const getServicesTuple = (
-  services: readonly ServicePublic[]
+  services: readonly ServicePublic[],
+  servicesByScope: ServicesByScope
 ): IOResponse<PaginatedServiceTupleCollection> => {
   const items = services.map(s => {
     return {
       service_id: s.service_id,
-      version: s.version
+      version: s.version,
+      scope:
+        servicesByScope.LOCAL.indexOf(s.service_id) !== -1
+          ? "LOCAL"
+          : "NATIONAL"
     };
   });
   const payload = validatePayload(PaginatedServiceTupleCollection, {
@@ -74,7 +79,7 @@ export const getServicesTuple = (
 
 export const getServicesByScope = (
   services: readonly ServicePublic[]
-): IOResponse<ServicesByScope> => {
+): ServicesByScope => {
   // first half -> LOCAL
   // second half -> NATIONAL
   const servicesByScope = { NATIONAL: Array<string>(), LOCAL: Array<string>() };
@@ -86,10 +91,7 @@ export const getServicesByScope = (
     }
     servicesByScope[serviceScope].push(s.service_id);
   });
-  return {
-    payload: validatePayload(ServicesByScope, servicesByScope),
-    isJson: true
-  };
+  return servicesByScope;
 };
 
 export const getServiceMetadata = (

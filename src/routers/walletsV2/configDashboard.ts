@@ -4,7 +4,11 @@ import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInf
 import { SatispayInfo } from "../../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import { WalletTypeEnum } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../../payloads/response";
-import { isCobadge, resetCardConfig } from "../../payloads/wallet_v2";
+import {
+  isCobadge,
+  isPrivative,
+  resetCardConfig
+} from "../../payloads/wallet_v2";
 import { sendFile } from "../../utils/file";
 import {
   defaultWalletV2Config,
@@ -48,7 +52,11 @@ export const getBPDPaymentMethod = () =>
       return {
         hpan: (bpd.info as CardInfo).hashPan,
         pan: (bpd.info as CardInfo).blurredNumber,
-        type: isCobadge(bpd, bpd.info as CardInfo) ? "Cobadge" : bpd.walletType,
+        type: isPrivative(bpd, bpd.info as CardInfo)
+          ? "Privative"
+          : isCobadge(bpd, bpd.info as CardInfo)
+          ? "Cobadge"
+          : bpd.walletType,
         pagopa: bpd.pagoPA,
         abiCode: isCobadge(bpd, bpd.info as CardInfo)
           ? (bpd.info as CardInfo).issuerAbiCode

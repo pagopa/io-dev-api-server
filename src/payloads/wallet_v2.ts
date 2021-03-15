@@ -113,6 +113,11 @@ export const isCobadge = (wallet: WalletV2, card: CardInfo) =>
   wallet.pagoPA === false &&
   card.issuerAbiCode !== undefined;
 
+export const isPrivative = (wallet: WalletV2, card: CardInfo) =>
+  wallet.walletType === WalletTypeEnum.Card &&
+  wallet.pagoPA === false &&
+  privativeIssuers.indexOf(card.issuerAbiCode ?? "") !== -1;
+
 export const generateCards = (
   abis: ReadonlyArray<Abi>,
   count: number = 10,
@@ -195,8 +200,22 @@ export const generateWalletV2FromCard = (
   };
 };
 
-export const generatePrivativeFromWalletV2 = (w2: WalletV2): WalletV2 =>
-  ({...w2, info:{...w2.info, issuerAbiCode: "COOP1", type: TypeEnum.PRV }})
+export const privativeIssuers: ReadonlyArray<string> = [
+  "ESSEL",
+  "COOP1",
+  "CONAD"
+];
+export const generatePrivativeFromWalletV2 = (
+  w2: WalletV2,
+  idx: number
+): WalletV2 => ({
+  ...w2,
+  info: {
+    ...w2.info,
+    issuerAbiCode: privativeIssuers[idx % privativeIssuers.length],
+    type: TypeEnum.PRV
+  }
+});
 
 export const generateWalletV2FromSatispayOrBancomatPay = (
   info: SatispayInfo | BPayInfo,
