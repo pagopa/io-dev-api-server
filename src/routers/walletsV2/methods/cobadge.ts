@@ -89,12 +89,13 @@ const handlePrivative = (req: Request, res: Response) => {
     return;
   }
   const queryAbi: string | undefined = req.query.abiCode;
-  const paymentInstruments: ReadonlyArray<PaymentInstrument> = take(1, [
-    ...citizenPrivativeCard.filter(cb =>
-      // filter only the card that match the query abi if it is defined
-      queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
-    )
-  ]).map<PaymentInstrument>(cp => ({
+  const foundPrivative = citizenPrivativeCard.filter(cb =>
+    // filter only the card that match the query abi if it is defined
+    queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
+  );
+  const paymentInstruments: ReadonlyArray<PaymentInstrument> = foundPrivative.map<
+    PaymentInstrument
+  >(cp => ({
     ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
     productType: ProductTypeEnum.PRIVATIVE
   }));

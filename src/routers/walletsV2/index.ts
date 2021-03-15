@@ -168,6 +168,7 @@ export const generateWalletV2Data = () => {
 
   citizenPrivativeCard = generateCards(
     abiResponse.data ?? [],
+    // if privative is enabled generate a full deck of all privative types
     walletV2Config.citizenPrivative ? privativeIssuers.length : 0,
     WalletTypeEnum.Card
   ).map((c, idx) =>
