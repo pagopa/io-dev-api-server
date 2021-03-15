@@ -17,7 +17,8 @@ import {
   generateSatispayInfo,
   generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
-  generateWalletV2FromSatispayOrBancomatPay
+  generateWalletV2FromSatispayOrBancomatPay,
+  privativeIssuers
 } from "../../payloads/wallet_v2";
 
 type WalletV2Config = {
@@ -31,7 +32,7 @@ type WalletV2Config = {
   citizenBPay: number;
   citizenCreditCardCoBadge: number;
   citizenSatispay: boolean;
-  citizenPrivative: number;
+  citizenPrivative: boolean;
 };
 
 const walletV1Path = "/wallet/v1";
@@ -54,7 +55,7 @@ export const defaultWalletV2Config: WalletV2Config = {
   citizenBancomat: 3,
   citizenBPay: 3,
   citizenCreditCardCoBadge: 3,
-  citizenPrivative: 3
+  citizenPrivative: true
 };
 
 // tslint:disable-next-line: no-let
@@ -167,7 +168,7 @@ export const generateWalletV2Data = () => {
 
   citizenPrivativeCard = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.citizenPrivative,
+    walletV2Config.citizenPrivative ? privativeIssuers.length : 0,
     WalletTypeEnum.Card
   ).map((c, idx) =>
     generatePrivativeFromWalletV2(

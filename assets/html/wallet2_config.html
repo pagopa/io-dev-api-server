@@ -50,12 +50,17 @@
       wbp.val(config.bPay);
       cbp.val(config.citizenBPay);
       ccb.val(config.citizenCreditCardCoBadge);
-      cpr.val(config.citizenPrivative);
       if(config.citizenSatispay){
         csp.attr('checked', config.citizenSatispay ? 'checked' : '');
       }
       else{
         csp.removeAttr('checked');
+      }
+      if(config.citizenPrivative){
+        cpr.attr('checked', config.citizenPrivative ? 'checked' : '');
+      }
+      else{
+        cpr.removeAttr('checked');
       }
 
 
@@ -285,7 +290,7 @@
   </tr>
   <tr class="form_item">
     <td><label>owned Privative</label></td>
-    <td><input type="number" min="0" class="form_number" id="citizenPrivative"/></td>
+    <td><input type="checkbox"id="citizenPrivative"/></td>
   </tr>
   <tr>
     <td colspan="2">

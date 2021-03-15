@@ -116,7 +116,7 @@ export const isCobadge = (wallet: WalletV2, card: CardInfo) =>
 export const isPrivative = (wallet: WalletV2, card: CardInfo) =>
   wallet.walletType === WalletTypeEnum.Card &&
   wallet.pagoPA === false &&
-  privativeIssuers.indexOf(card.issuerAbiCode ?? "") !== -1;
+  card.type === TypeEnum.PRV;
 
 export const generateCards = (
   abis: ReadonlyArray<Abi>,

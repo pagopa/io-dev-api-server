@@ -58,7 +58,7 @@ const handleCobadge = (req: Request, res: Response) => {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
-  const queryAbi: string | undefined = req.query.abi;
+  const queryAbi: string | undefined = req.query.abiCode;
   const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge
     .filter(cb =>
       // filter only the card that match the query abi if it is defined
@@ -88,22 +88,22 @@ const handlePrivative = (req: Request, res: Response) => {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
-  const queryAbi: string | undefined = req.query.abi;
-  const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenPrivativeCard
-    .filter(cb =>
+  const queryAbi: string | undefined = req.query.abiCode;
+  const paymentInstruments: ReadonlyArray<PaymentInstrument> = take(1, [
+    ...citizenPrivativeCard.filter(cb =>
       // filter only the card that match the query abi if it is defined
       queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
     )
-    .map<PaymentInstrument>(cp => ({
-      ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
-      productType: ProductTypeEnum.PRIVATIVE
-    }));
+  ]).map<PaymentInstrument>(cp => ({
+    ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
+    productType: ProductTypeEnum.PRIVATIVE
+  }));
   const cobadgeResponse = maybeResponse.value;
   const response = {
     ...cobadgeResponse,
     payload: {
       ...cobadgeResponse.payload,
-      paymentInstruments: take(1, [...paymentInstruments])
+      paymentInstruments
     }
   };
   const validResponse = RestCobadgeResponse.decode({ data: response });
