@@ -3,7 +3,10 @@ import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
-import { WalletTypeEnum, WalletV2 } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
+import {
+  WalletTypeEnum,
+  WalletV2
+} from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
 import { addHandler } from "../../payloads/response";
 import {
@@ -14,7 +17,8 @@ import {
   generateSatispayInfo,
   generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
-  generateWalletV2FromSatispayOrBancomatPay
+  generateWalletV2FromSatispayOrBancomatPay,
+  privativeIssuers
 } from "../../payloads/wallet_v2";
 
 type WalletV2Config = {
@@ -28,6 +32,7 @@ type WalletV2Config = {
   citizenBPay: number;
   citizenCreditCardCoBadge: number;
   citizenSatispay: boolean;
+  citizenPrivative: boolean;
 };
 
 const walletV1Path = "/wallet/v1";
@@ -43,14 +48,16 @@ export const defaultWalletV2Config: WalletV2Config = {
   walletBancomat: 1,
   walletCreditCard: 1,
   walletCreditCardCoBadge: 1,
-  privative: 1,
+  privative: 2,
   satispay: 1,
   bPay: 1,
   citizenSatispay: true,
   citizenBancomat: 3,
   citizenBPay: 3,
-  citizenCreditCardCoBadge: 3
+  citizenCreditCardCoBadge: 3,
+  citizenPrivative: true
 };
+
 // tslint:disable-next-line: no-let
 export let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
@@ -73,7 +80,9 @@ let walletCreditCards: ReadonlyArray<WalletV2> = [];
 let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 export let citizenCreditCardCoBadge: ReadonlyArray<WalletV2> = [];
+// tslint:disable-next-line: no-let
 export let citizenPrivativeCard: ReadonlyArray<WalletV2> = [];
+// tslint:disable-next-line: no-let
 let privativeCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
@@ -150,14 +159,24 @@ export const generateWalletV2Data = () => {
     abiResponse.data ?? [],
     walletV2Config.privative,
     WalletTypeEnum.Card
-  ).map(c => generatePrivativeFromWalletV2(generateWalletV2FromCard(c, WalletTypeEnum.Card, false)));
+  ).map((c, idx) =>
+    generatePrivativeFromWalletV2(
+      generateWalletV2FromCard(c, WalletTypeEnum.Card, false),
+      idx
+    )
+  );
 
   citizenPrivativeCard = generateCards(
     abiResponse.data ?? [],
-    1,
+    // if privative is enabled generate a full deck of all privative types
+    walletV2Config.citizenPrivative ? privativeIssuers.length : 0,
     WalletTypeEnum.Card
-  ).map(c => generatePrivativeFromWalletV2(generateWalletV2FromCard(c, WalletTypeEnum.Card, false)));
-
+  ).map((c, idx) =>
+    generatePrivativeFromWalletV2(
+      generateWalletV2FromCard(c, WalletTypeEnum.Card, false),
+      idx
+    )
+  );
 
   // set a credit card as favorite
   if (walletCreditCards.length > 0) {
@@ -179,10 +198,10 @@ export const generateWalletV2Data = () => {
 
   addWalletV2(
     [
+      ...privativeCards,
       ...walletBancomat,
       ...walletCreditCards,
       ...walletCreditCardsCoBadges,
-      ...privativeCards,
       ...walletSatispay,
       ...walletBancomatPay
     ],

@@ -35,6 +35,7 @@ import {
 } from "./walletsV2";
 export const walletCount =
   walletV2Config.satispay +
+  walletV2Config.privative +
   walletV2Config.walletBancomat +
   walletV2Config.walletCreditCard +
   walletV2Config.walletCreditCardCoBadge +

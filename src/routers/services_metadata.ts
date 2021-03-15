@@ -23,7 +23,7 @@ addHandler(
   (req, res) => {
     const serviceId = req.params.service_id.replace(".json", "");
     if (serviceId === "servicesByScope") {
-      res.json(servicesByScope.payload);
+      res.json(servicesByScope);
       return;
     }
     res.json(getServiceMetadata(serviceId, visibleServices.payload).payload);
@@ -76,7 +76,6 @@ addHandler(
     sendFile(`assets/imgs/logos/privative/loyalty/${req.params.logo_id}`, res);
   }
 );
-
 
 addHandler(
   servicesMetadataRouter,
