@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { fromNullable } from "fp-ts/lib/Option";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { Millisecond } from "italia-ts-commons/lib/units";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -41,9 +42,7 @@ let idActivationEyca: string | undefined;
 let firstEycaActivationRequestTime = 0;
 
 // tslint:disable-next-line: no-let
-let currentEyca: EycaCard = {
-  status: PendingStatusEnum.PENDING
-};
+let currentEyca: EycaCard | undefined;
 
 // tslint:disable-next-line: no-let
 let eycaActivationStatus: EycaActivationDetail = {
@@ -51,7 +50,7 @@ let eycaActivationStatus: EycaActivationDetail = {
 };
 
 const eycaCardNumber = "W413-K096-O814-Z223";
-
+const activationTime = 16000 as Millisecond;
 // Start bonus activation request procedure
 // 201 -> Request created.
 // 202 -> Processing request.
@@ -147,7 +146,13 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/activation"), (_, res) =>
   fromNullable(idActivationEyca).foldL(
     // No CGN was found return a 404
     () => res.sendStatus(404),
-    id => {
+    __ => {
+      const now = new Date().getTime();
+      if (now - firstEycaActivationRequestTime < activationTime) {
+        return res.status(200).json({
+          status: StatusEnum.RUNNING
+        });
+      }
       eycaActivationStatus = {
         status: StatusEnum.COMPLETED
       };
@@ -196,6 +201,7 @@ addHandler(cgnRouter, "post", addPrefix("/otp"), (_, res) => {
 
 export const resetCgn = () => {
   idActivationCgn = undefined;
+  currentEyca = undefined;
   firstCgnActivationRequestTime = 0;
   currentCGN = {
     status: PendingStatusEnum.PENDING
@@ -204,8 +210,5 @@ export const resetCgn = () => {
   firstEycaActivationRequestTime = 0;
   eycaActivationStatus = {
     status: EycaStatusEnum.UNKNOWN
-  };
-  currentEyca = {
-    status: PendingStatusEnum.PENDING
   };
 };
