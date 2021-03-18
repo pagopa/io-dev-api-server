@@ -188,10 +188,12 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
 });
 
 addHandler(cgnRouter, "post", addPrefix("/otp"), (_, res) => {
+  const now = new Date().getTime();
+  const secondsInTheFuture = 30;
   const otp = {
     code: genRandomBonusCode(11),
-    expires_at: faker.date.future().toISOString(),
-    ttl: 100
+    expires_at: new Date(now + secondsInTheFuture * 1000).toISOString(), // secondsInTheFuture seconds in the future
+    ttl: secondsInTheFuture
   };
   Otp.decode(otp).fold(
     e => res.status(500).send(readableReport(e)),
