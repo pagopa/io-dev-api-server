@@ -104,7 +104,7 @@ addHandler(cgnRouter, "get", addPrefix("/status"), (_, res) => {
     currentCGN = {
       status: ActivatedStatusEnum.ACTIVATED,
       activation_date: new Date(firstCgnActivationRequestTime),
-      expiration_date: new Date("2050-05-10")
+      expiration_date: faker.date.future()
     };
     res.status(200).json(currentCGN);
   } else {
