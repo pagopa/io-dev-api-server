@@ -9,6 +9,8 @@ import {
   CardPending,
   StatusEnum as PendingStatusEnum
 } from "../../../../generated/definitions/cgn/CardPending";
+import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CardRevoked";
+import { StatusEnum as ExpiredStatusEnum } from "../../../../generated/definitions/cgn/CardExpired";
 import { CcdbNumber } from "../../../../generated/definitions/cgn/CcdbNumber";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
@@ -179,7 +181,7 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
           ? firstCgnActivationRequestTime
           : firstEycaActivationRequestTime
       ),
-      expiration_date: new Date("2050-05-10")
+      expiration_date: faker.date.future()
     };
     res.status(200).json(currentEyca);
   } else {
