@@ -103,8 +103,8 @@
     "visibility": "experimental",
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2020-12-31T00:00:00.000Z",
-    "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/cgn/logo/logo-cgn.png",
+    "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/3b511b3b3e6efa268ca0fae21f5173df5f4d7550/bonus/cgn/logo/logo-cgn.png",
     "sponsorship_description": "PCM - Dipartimento per le Politiche Giovanili e il Servizio Civile Universale",
-    "sponsorship_cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/cgn/logo/logo-cgn.png"
+    "sponsorship_cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/3b511b3b3e6efa268ca0fae21f5173df5f4d7550/bonus/cgn/logo/logo-cgn.png"
   }
 ]
