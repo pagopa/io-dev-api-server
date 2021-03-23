@@ -97,9 +97,9 @@
         }
       ]
     },
-    "hidden": false,
+    "hidden": true,
     "service_id": "01F0V4627SXZMVDSPD69GMXE53",
-    "is_active": true,
+    "is_active": false,
     "visibility": "experimental",
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2020-12-31T00:00:00.000Z",
