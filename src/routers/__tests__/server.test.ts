@@ -6,6 +6,13 @@ import app from "../../server";
 
 const request = supertest(app);
 
+const testForPng = async (url: string) => {
+  const response = await request.get(url);
+  expect(response.status).toBe(200);
+  expect(response.get("content-type")).toBe("image/png");
+  return;
+};
+
 it("login should response with a welcome page", async done => {
   const response = await request.get("/login");
   expect(response.status).toBe(200);
@@ -43,16 +50,13 @@ it("test-login /test-login should always return sessionToken", async done => {
   done();
 });
 
-it("Pay webview should response 200", async done => {
-  const response = await request.get("/paywebview");
-  expect(response.status).toBe(200);
+it("Pay webview route should always response 200", async done => {
+  await testForPng("/paywebview");
   done();
 });
 
 it("Route /assets/imgs/how_to_login.png should response 200", async done => {
-  const response = await request.get("/assets/imgs/how_to_login.png");
-  expect(response.status).toBe(200);
-  expect(response.get("content-type")).toBe("image/png");
+  await testForPng("/assets/imgs/how_to_login.png");
   done();
 });
 
