@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
+import { CitizenResource as CitizenResourceV2 } from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 import {
@@ -21,8 +22,19 @@ const citizen: CitizenResource = {
   timestampTC: new Date()
 };
 
+const citizenV2: CitizenResourceV2 = {
+  enabled: false,
+  fiscalCode,
+  payoffInstr: "",
+  payoffInstrType: "IBAN",
+  timestampTC: new Date(),
+  technicalAccount: "This is a technical account"
+};
+
 // tslint:disable-next-line: no-let
 let currentCitizen: CitizenResource | undefined;
+// tslint:disable-next-line: no-let
+let currentCitizenV2: CitizenResourceV2 | undefined;
 
 /**
  * return the citizen
@@ -35,6 +47,13 @@ addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
     return;
   }
   res.json(currentCitizen);
+});
+addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
+  if (currentCitizenV2 === undefined) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(currentCitizenV2);
 });
 
 addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
@@ -57,6 +76,13 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
     enabled: true
   };
   res.json(currentCitizen);
+});
+addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (_, res) => {
+  currentCitizenV2 = {
+    ...citizenV2,
+    enabled: true
+  };
+  res.json(currentCitizenV2);
 });
 
 /**
