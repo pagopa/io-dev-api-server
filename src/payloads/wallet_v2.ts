@@ -134,7 +134,7 @@ export const generateCards = (
     } else {
       defaultCardConfig = { ...config, index: config.index + 1 };
     }
-    const ed = faker.date.future();
+    const ed = faker.date.past();
     return {
       abi: listAbi[idx % listAbi.length].abi,
       cardNumber: cn,
@@ -168,9 +168,7 @@ export const generateWalletV2FromCard = (
   canMethodPay: boolean,
   enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
 ): WalletV2 => {
-  const ed = card.expiringDate
-    ? new Date(card.expiringDate)
-    : faker.date.future();
+  const ed = faker.date.past();
   const ccBrand = CreditCardBrandEnum.MAESTRO;
 
   const info = {
