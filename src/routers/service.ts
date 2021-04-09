@@ -2,11 +2,7 @@ import { Router } from "express";
 import { servicesNumber } from "../global";
 import { notFound } from "../payloads/error";
 import { addHandler } from "../payloads/response";
-import {
-  getServices,
-  getServicesByScope,
-  getServicesTuple
-} from "../payloads/service";
+import { getServices, getServicesTuple } from "../payloads/service";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
