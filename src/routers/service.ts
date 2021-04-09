@@ -13,8 +13,7 @@ import { publicRouter } from "./public";
 
 export const serviceRouter = Router();
 export const services = getServices(servicesNumber);
-export const servicesByScope = getServicesByScope(services);
-export const visibleServices = getServicesTuple(services, servicesByScope);
+export const visibleServices = getServicesTuple(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) =>
   res.json(visibleServices.payload)

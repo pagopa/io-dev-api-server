@@ -7,6 +7,7 @@ import { OrganizationName } from "../../generated/definitions/backend/Organizati
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServiceName } from "../../generated/definitions/backend/ServiceName";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import {
   ScopeEnum,
   Service
@@ -51,23 +52,25 @@ export const getServices = (count: number): readonly ServicePublic[] => {
         "0"
       ) as OrganizationFiscalCode,
       organization_name: `${faker.company.companyName()} [${organizationCount +
-        1}]` as OrganizationName
+        1}]` as OrganizationName,
+      service_metadata: {
+        scope:
+          idx + 1 <= count * 0.5
+            ? ServiceScopeEnum.LOCAL
+            : ServiceScopeEnum.NATIONAL
+      }
     };
   });
 };
 
 export const getServicesTuple = (
-  services: readonly ServicePublic[],
-  servicesByScope: ServicesByScope
+  services: readonly ServicePublic[]
 ): IOResponse<PaginatedServiceTupleCollection> => {
   const items = services.map(s => {
     return {
       service_id: s.service_id,
       version: s.version,
-      scope:
-        servicesByScope.LOCAL.indexOf(s.service_id) !== -1
-          ? "LOCAL"
-          : "NATIONAL"
+      scope: s.service_metadata?.scope
     };
   });
   const payload = validatePayload(PaginatedServiceTupleCollection, {
@@ -77,6 +80,10 @@ export const getServicesTuple = (
   return { payload, isJson: true };
 };
 
+/**
+ * @deprecated use the instead scope attribute inside visibile services or service detail
+ * @param services
+ */
 export const getServicesByScope = (
   services: readonly ServicePublic[]
 ): ServicesByScope => {

@@ -10,7 +10,8 @@ import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
-import { servicesByScope, visibleServices } from "./service";
+import { visibleServices } from "./service";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 
 export const servicesMetadataRouter = Router();
 
@@ -23,6 +24,15 @@ addHandler(
   (req, res) => {
     const serviceId = req.params.service_id.replace(".json", "");
     if (serviceId === "servicesByScope") {
+      const servicesByScope = visibleServices.payload.items.reduce(
+        (acc, curr) => {
+          return {
+            ...acc,
+            [curr.scope ?? ServiceScopeEnum.LOCAL]: curr.service_id
+          };
+        },
+        { [ServiceScopeEnum.LOCAL]: [], [ServiceScopeEnum.NATIONAL]: [] }
+      );
       res.json(servicesByScope);
       return;
     }
