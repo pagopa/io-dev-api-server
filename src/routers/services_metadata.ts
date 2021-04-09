@@ -26,9 +26,10 @@ addHandler(
     if (serviceId === "servicesByScope") {
       const servicesByScope = visibleServices.payload.items.reduce(
         (acc, curr) => {
+          const scope = curr.scope ?? ServiceScopeEnum.LOCAL;
           return {
             ...acc,
-            [curr.scope ?? ServiceScopeEnum.LOCAL]: curr.service_id
+            [scope]: [...acc[scope], curr.service_id]
           };
         },
         { [ServiceScopeEnum.LOCAL]: [], [ServiceScopeEnum.NATIONAL]: [] }
