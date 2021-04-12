@@ -5,10 +5,12 @@ import { readableReport } from "italia-ts-commons/lib/reporters";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
+import { StatusEnum as ExpiredStatusEnum } from "../../../../generated/definitions/cgn/CardExpired";
 import {
   CardPending,
   StatusEnum as PendingStatusEnum
 } from "../../../../generated/definitions/cgn/CardPending";
+import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CardRevoked";
 import { CcdbNumber } from "../../../../generated/definitions/cgn/CcdbNumber";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
-import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
+import { CitizenResource as CitizenResourceV2 } from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 import {
   PaymentInstrumentResource,
@@ -13,36 +13,47 @@ import { readFileAsJSON } from "../../../utils/file";
 export const bpd = Router();
 
 export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
-const citizen: CitizenResource = {
+
+const citizenV2: CitizenResourceV2 = {
   enabled: false,
   fiscalCode,
   payoffInstr: "",
   payoffInstrType: "IBAN",
-  timestampTC: new Date()
+  timestampTC: new Date(),
+  technicalAccount: "This is a technical account"
 };
 
 // tslint:disable-next-line: no-let
-let currentCitizen: CitizenResource | undefined;
+let currentCitizenV2: CitizenResourceV2 | undefined;
 
 /**
  * return the citizen
  * can return these codes: 200, 401, 404, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
+ * TODO: remove GET '/io/citizen' when technical account and remove tslint:disable to GET '/io/citizen/v2'
  */
 addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
-  if (currentCitizen === undefined) {
+  if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
-  res.json(currentCitizen);
+  res.json(currentCitizenV2);
+});
+// tslint:disable-next-line:no-identical-functions
+addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
+  if (currentCitizenV2 === undefined) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(currentCitizenV2);
 });
 
 addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
-  if (currentCitizen === undefined) {
+  if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
-  currentCitizen = undefined;
+  currentCitizenV2 = undefined;
   res.sendStatus(204);
 });
 
@@ -50,13 +61,22 @@ addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
  * update the citizen
  * can return these codes: 200, 401, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
+ * TODO: remove PUT '/io/citizen' when technical account and remove tslint:disable to PUT '/io/citizen/v2'
  */
 addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
-  currentCitizen = {
-    ...citizen,
+  currentCitizenV2 = {
+    ...citizenV2,
     enabled: true
   };
-  res.json(currentCitizen);
+  res.json(currentCitizenV2);
+});
+// tslint:disable-next-line:no-identical-functions
+addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (_, res) => {
+  currentCitizenV2 = {
+    ...citizenV2,
+    enabled: true
+  };
+  res.json(currentCitizenV2);
 });
 
 /**
@@ -71,7 +91,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
  */
 addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
   // citizen not found
-  if (currentCitizen === undefined) {
+  if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
@@ -81,10 +101,11 @@ addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
     res.sendStatus(400);
     return;
   }
-  currentCitizen = {
-    ...currentCitizen,
+  currentCitizenV2 = {
+    ...currentCitizenV2,
     payoffInstr,
-    payoffInstrType
+    payoffInstrType,
+    technicalAccount: undefined
   };
 
   // possible values
@@ -191,6 +212,6 @@ addHandler(
 );
 
 export const resetBpd = () => {
-  currentCitizen = undefined;
+  currentCitizenV2 = undefined;
   activeHashPan.clear();
 };
