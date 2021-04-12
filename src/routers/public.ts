@@ -3,7 +3,11 @@
  */
 import { Router } from "express";
 import { backendInfo, backendStatus } from "../payloads/backend";
-import { loginSessionToken, loginWithToken } from "../payloads/login";
+import {
+  errorRedirectUrl,
+  loginSessionToken,
+  loginWithToken
+} from "../payloads/login";
 import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
 import { resetBpd } from "./features/bdp";
@@ -15,8 +19,12 @@ import { resetWalletV2 } from "./walletsV2";
 export const publicRouter = Router();
 
 addHandler(publicRouter, "get", "/login", (req, res) => {
-  if (req.query.authorized && req.query.authorized === "1") {
+  if (req.query.authorized === "1") {
     res.redirect(loginWithToken);
+    return;
+  }
+  if (req.query.error) {
+    res.redirect(errorRedirectUrl + req.query.error);
     return;
   }
   sendFile("assets/html/login.html", res);
