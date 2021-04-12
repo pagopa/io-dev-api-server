@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { CitizenResource as CitizenResourceV2 } from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
-import { CitizenResource } from "../../../../generated/definitions/bpd/citizen/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 import {
   PaymentInstrumentResource,
@@ -31,6 +30,7 @@ let currentCitizenV2: CitizenResourceV2 | undefined;
  * return the citizen
  * can return these codes: 200, 401, 404, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
+ * TODO: remove GET '/io/citizen' when technical account and remove tslint:disable to GET '/io/citizen/v2'
  */
 addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
   if (currentCitizenV2 === undefined) {
@@ -39,6 +39,7 @@ addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
   }
   res.json(currentCitizenV2);
 });
+// tslint:disable-next-line:no-identical-functions
 addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
   if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
@@ -60,6 +61,7 @@ addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
  * update the citizen
  * can return these codes: 200, 401, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
+ * TODO: remove PUT '/io/citizen' when technical account and remove tslint:disable to PUT '/io/citizen/v2'
  */
 addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
   currentCitizenV2 = {
@@ -68,6 +70,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
   };
   res.json(currentCitizenV2);
 });
+// tslint:disable-next-line:no-identical-functions
 addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (_, res) => {
   currentCitizenV2 = {
     ...citizenV2,
