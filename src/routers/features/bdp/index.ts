@@ -14,13 +14,6 @@ import { readFileAsJSON } from "../../../utils/file";
 export const bpd = Router();
 
 export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
-const citizen: CitizenResource = {
-  enabled: false,
-  fiscalCode,
-  payoffInstr: "",
-  payoffInstrType: "IBAN",
-  timestampTC: new Date()
-};
 
 const citizenV2: CitizenResourceV2 = {
   enabled: false,
@@ -32,8 +25,6 @@ const citizenV2: CitizenResourceV2 = {
 };
 
 // tslint:disable-next-line: no-let
-let currentCitizen: CitizenResource | undefined;
-// tslint:disable-next-line: no-let
 let currentCitizenV2: CitizenResourceV2 | undefined;
 
 /**
@@ -42,11 +33,11 @@ let currentCitizenV2: CitizenResourceV2 | undefined;
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  */
 addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
-  if (currentCitizen === undefined) {
+  if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
-  res.json(currentCitizen);
+  res.json(currentCitizenV2);
 });
 addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
   if (currentCitizenV2 === undefined) {
@@ -57,11 +48,11 @@ addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
 });
 
 addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
-  if (currentCitizen === undefined) {
+  if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
-  currentCitizen = undefined;
+  currentCitizenV2 = undefined;
   res.sendStatus(204);
 });
 
@@ -71,11 +62,11 @@ addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  */
 addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
-  currentCitizen = {
-    ...citizen,
+  currentCitizenV2 = {
+    ...citizenV2,
     enabled: true
   };
-  res.json(currentCitizen);
+  res.json(currentCitizenV2);
 });
 addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (_, res) => {
   currentCitizenV2 = {
@@ -97,7 +88,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (_, res) => {
  */
 addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
   // citizen not found
-  if (currentCitizen === undefined) {
+  if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
@@ -107,10 +98,11 @@ addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
     res.sendStatus(400);
     return;
   }
-  currentCitizen = {
-    ...currentCitizen,
+  currentCitizenV2 = {
+    ...currentCitizenV2,
     payoffInstr,
-    payoffInstrType
+    payoffInstrType,
+    technicalAccount: undefined
   };
 
   // possible values
@@ -217,6 +209,6 @@ addHandler(
 );
 
 export const resetBpd = () => {
-  currentCitizen = undefined;
+  currentCitizenV2 = undefined;
   activeHashPan.clear();
 };
