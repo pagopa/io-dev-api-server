@@ -2,19 +2,14 @@ import { Router } from "express";
 import { servicesNumber } from "../global";
 import { notFound } from "../payloads/error";
 import { addHandler } from "../payloads/response";
-import {
-  getServices,
-  getServicesByScope,
-  getServicesTuple
-} from "../payloads/service";
+import { getServices, getServicesTuple } from "../payloads/service";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 
 export const serviceRouter = Router();
 export const services = getServices(servicesNumber);
-export const servicesByScope = getServicesByScope(services);
-export const visibleServices = getServicesTuple(services, servicesByScope);
+export const visibleServices = getServicesTuple(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) =>
   res.json(visibleServices.payload)
