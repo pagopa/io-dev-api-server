@@ -24,7 +24,7 @@ addHandler(publicRouter, "get", "/login", (req, res) => {
     return;
   }
   if (req.query.error) {
-    res.redirect(errorRedirectUrl + req.query.error);
+    res.redirect(`${errorRedirectUrl}${req.query.error}`);
     return;
   }
   sendFile("assets/html/login.html", res);

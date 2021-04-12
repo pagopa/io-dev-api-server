@@ -3,6 +3,7 @@
  */
 import { Router } from "express";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
@@ -11,7 +12,6 @@ import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { visibleServices } from "./service";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 
 export const servicesMetadataRouter = Router();
 
