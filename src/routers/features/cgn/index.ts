@@ -9,8 +9,6 @@ import {
   CardPending,
   StatusEnum as PendingStatusEnum
 } from "../../../../generated/definitions/cgn/CardPending";
-import { StatusEnum as RevokedStatusEnum } from "../../../../generated/definitions/cgn/CardRevoked";
-import { StatusEnum as ExpiredStatusEnum } from "../../../../generated/definitions/cgn/CardExpired";
 import { CcdbNumber } from "../../../../generated/definitions/cgn/CcdbNumber";
 import { StatusEnum } from "../../../../generated/definitions/cgn/CgnActivationDetail";
 import {
