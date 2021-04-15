@@ -17,7 +17,7 @@
     "hashPan": "d48a59cdfbe3da7e4fe25e28cbb47d5747720ecc6fc392c87f1636fe95db22f90005",
     "idTrxAcquirer": "idTrxAcquirer",
     "idTrxIssuer": "idTrxIssuer",
-    "trxDate": "2020-11-02"
+    "trxDate": "2020-11-02T10:30:00.000Z"
   },
   {
     "amount": 100,
@@ -27,7 +27,7 @@
     "hashPan": "hashPan",
     "idTrxAcquirer": "idTrxAcquirer0",
     "idTrxIssuer": "idTrxIssuer0",
-    "trxDate": "2020-11-02"
+    "trxDate": "2020-11-02T10:30:00.000Z"
   },
   {
     "amount": -100,
@@ -57,6 +57,6 @@
     "hashPan": "hashPan",
     "idTrxAcquirer": "idTrxAcquirer3",
     "idTrxIssuer": "idTrxIssuer3",
-    "trxDate": "2018-10-13"
+    "trxDate": "2018-10-13T10:30:00.000Z"
   }
 ]
