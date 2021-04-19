@@ -17,6 +17,7 @@
   "api_bpd_payment": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/payment.json",
   "api_bpd_award": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/award.json",
   "api_bpd_winning_transactions": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions.json",
+  "api_bpd_winning_transactions_v2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions_v2.json",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -41,7 +42,8 @@
     "generate:bpd-payment": "rimraf generated/definitions/bpd/payment && mkdir -p generated/definitions/bpd/payment  && gen-api-models --api-spec $npm_package_api_bpd_payment --out-dir ./generated/definitions/bpd/payment --no-strict",
     "generate:bpd-award": "rimraf generated/definitions/bpd/award && mkdir -p generated/definitions/bpd/award  && gen-api-models --api-spec $npm_package_api_bpd_award --out-dir ./generated/definitions/bpd/award --no-strict",
     "generate:bpd-winning-transactions": "rimraf generated/definitions/bpd/winning_transactions && mkdir -p generated/definitions/bpd/winning_transactions  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions --out-dir ./generated/definitions/bpd/winning_transactions --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:cgn-definitions"
+    "generate:bpd-winning-transactions-v2": "rimraf generated/definitions/bpd/winning_transactions/v2 && mkdir -p generated/definitions/bpd/winning_transactions/v2  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions_v2 --out-dir ./generated/definitions/bpd/winning_transactions/v2 --no-strict",
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:bpd-winning-transactions-v2 generate:cgn-definitions"
   },
   "jest": {
     "preset": "ts-jest",

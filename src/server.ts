@@ -25,6 +25,7 @@ import { delayer } from "./utils/delay_middleware";
 import { bpdRankingV2 } from "./routers/features/bdp/ranking/v2";
 import { bpdRanking } from "./routers/features/bdp/ranking/v1";
 import { bpdWinningTransactionsV1 } from "./routers/features/bdp/winning-transactions/v1";
+import { bpdWinningTransactionsV2 } from "./routers/features/bdp/winning-transactions/v2";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -62,6 +63,7 @@ app.use(
   bpdRanking,
   bpdRankingV2,
   bpdWinningTransactionsV1,
+  bpdWinningTransactionsV2,
   cgnRouter
 ].forEach(r => app.use(r));
 
