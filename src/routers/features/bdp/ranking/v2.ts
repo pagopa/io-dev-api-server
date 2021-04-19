@@ -7,9 +7,9 @@ import { addBPDPrefix } from "../index";
 
 // tslint:disable-next-line: no-let
 let rankingJsonFile: string = "default.json";
-export const bpdRankingv2 = Router();
+export const bpdRankingV2 = Router();
 addHandler(
-  bpdRankingv2,
+  bpdRankingV2,
   "get",
   addBPDPrefix("/io/citizen/v2/ranking"),
   (req, res) => {
@@ -18,14 +18,14 @@ addHandler(
 );
 
 // get the available presets (dashboard web)
-addHandler(bpdRankingv2, "get", addBPDPrefix("/ranking/preset/v2"), (_, res) => {
+addHandler(bpdRankingV2, "get", addBPDPrefix("/ranking/preset/v2"), (_, res) => {
   const rankingFiles = listDir(assetsFolder + "/bpd/ranking/v2");
   res.json(rankingFiles);
 });
 
 // update the current ranking preset (dashboard web)
 addHandler(
-  bpdRankingv2,
+  bpdRankingV2,
   "post",
   addBPDPrefix("/ranking/presets/v2/:file"),
   (req, res) => {
