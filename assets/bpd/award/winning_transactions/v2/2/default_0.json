@@ -1,0 +1,125 @@
+{
+  "nextCursor": 1,
+  "transactions": [
+    {
+      "date": "2021-01-01",
+      "transactions": [
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx01",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-01T10:15:51.726Z"
+        }
+      ]
+    },
+    {
+      "date": "2021-01-02",
+      "transactions": [
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx02",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx03",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx04",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx05",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx06",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx07",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx08",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx09",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        },
+        {
+          "amount": 150,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "hPan",
+          "idTrx": "trx10",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-01-02T10:15:51.726Z"
+        }
+      ]
+    }
+  ]
+}
