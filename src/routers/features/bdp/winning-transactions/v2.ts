@@ -10,6 +10,7 @@ import { listDir, readFileAsJSON } from "../../../../utils/file";
 import { assetsFolder } from "../../../../global";
 import { bpdAward } from "../award";
 import { WinningTransactionPageResource } from "../../../../../generated/definitions/bpd/winning_transactions/v2/WinningTransactionPageResource";
+import { TrxCountByDayResourceArray } from "../../../../../generated/definitions/bpd/winning_transactions/v2/TrxCountByDayResourceArray";
 
 
 export const bpdWinningTransactionsV2 = Router();
@@ -22,6 +23,11 @@ const readTotalCashbackJson = (directoryName: string, fileName: string) =>
 const readWinningTransactions = (directoryName: string, fileName: string) =>
   readFileAsJSON(
     `${assetsFolder}/bpd/award/winning_transactions/v2/${directoryName}/${fileName}`
+  );
+
+const readCountByDayJson = (directoryName: string, fileName: string) =>
+  readFileAsJSON(
+    `${assetsFolder}/bpd/award/winning_transactions/v2/countByDay/${directoryName}/${fileName}`
   );
 
 
@@ -101,7 +107,7 @@ addHandler(
         if (maybeTransactions.isLeft()) {
           console.log(
             chalk.red(
-              `${period.toString()}/${file} is not a valid PatchedBpdWinningTransactions\n${readableReport(
+              `${period.toString()}/${file} is not a valid WinningTransactionPageResource\n${readableReport(
                 maybeTransactions.value
               )}`
             )
@@ -131,6 +137,47 @@ addHandler(
   }
 );
 
+// tslint:disable-next-line: no-let
+let countByDay: Map<number, string>;
+
+const initCountByDay = () => {
+  countByDay = new Map<number, string>([
+    [0, "default.json"],
+    [1, "default.json"],
+    [2, "default.json"],
+    [3, "default.json"],
+    [4, "default.json"]
+  ]);
+};
+initCountByDay();
+
+// get the countbyday a given awardPeriodId
+addHandler(
+  bpdWinningTransactionsV2,
+  "get",
+  addBPDPrefix("/io/winning-transactions/v2/countbyday"),
+  (req, res) => {
+    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    fromNullable(countByDay.get(awardPeriodId)).foldL(
+      () => {
+        res.sendStatus(404);
+      },
+      p => {
+        const maybeCountByDay = TrxCountByDayResourceArray.decode(
+          readCountByDayJson(req.query.awardPeriodId, p)
+        );
+
+        if (maybeCountByDay.isLeft()) {
+          console.log(chalk.red(`${p} is not a valid TrxCountByDayResourceArray`));
+          res.sendStatus(500);
+        } else {
+          res.json(maybeCountByDay.value);
+        }
+      }
+    );
+  }
+);
+
 // update the configuration for winning transactions (web dashboard)
 addHandler(
   bpdWinningTransactionsV2,
@@ -139,13 +186,13 @@ addHandler(
   (req, res) => {
     const payload = req.body;
     // check if the json is valid
-    const maybeTransactions = PatchedBpdWinningTransactions.decode(
+    const maybeTransactions = WinningTransactionPageResource.decode(
       readWinningTransactions(payload.period, payload.file)
     );
     if (maybeTransactions.isLeft()) {
       console.log(
         chalk.red(
-          `${payload.file} is not a valid PatchedBpdWinningTransactions`
+          `${payload.file} is not a valid WinningTransactionPageResource`
         )
       );
       res.sendStatus(500);
