@@ -1,11 +1,9 @@
 import bodyParser from "body-parser";
-import { Application } from "express";
-import express from "express";
+import express, { Application } from "express";
 import morgan from "morgan";
 import { globalDelay } from "./global";
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
-import { bpdRanking } from "./routers/features/bdp/ranking";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { cgnRouter } from "./routers/features/cgn";
 import { messageRouter } from "./routers/message";
@@ -24,6 +22,10 @@ import { bpayRouter } from "./routers/walletsV2/methods/bpay";
 import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { delayer } from "./utils/delay_middleware";
+import { bpdRankingV2 } from "./routers/features/bdp/ranking/v2";
+import { bpdRanking } from "./routers/features/bdp/ranking/v1";
+import { bpdWinningTransactionsV1 } from "./routers/features/bdp/winning-transactions/v1";
+import { bpdWinningTransactionsV2 } from "./routers/features/bdp/winning-transactions/v2";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -59,6 +61,9 @@ app.use(
   bpd,
   bpdAward,
   bpdRanking,
+  bpdRankingV2,
+  bpdWinningTransactionsV1,
+  bpdWinningTransactionsV2,
   cgnRouter
 ].forEach(r => app.use(r));
 

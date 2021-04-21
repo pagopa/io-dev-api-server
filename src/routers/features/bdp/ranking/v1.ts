@@ -1,9 +1,9 @@
 // return the list of ranking info for each BPD period
 import { Router } from "express";
-import { assetsFolder } from "../../../global";
-import { addHandler } from "../../../payloads/response";
-import { listDir, readFileAsJSON } from "../../../utils/file";
-import { addBPDPrefix } from "./index";
+import { assetsFolder } from "../../../../global";
+import { addHandler } from "../../../../payloads/response";
+import { listDir, readFileAsJSON } from "../../../../utils/file";
+import { addBPDPrefix } from "../index";
 
 // tslint:disable-next-line: no-let
 let rankingJsonFile: string = "default.json";

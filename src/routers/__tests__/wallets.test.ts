@@ -1,4 +1,4 @@
-import supertest, { Response, Test } from "supertest";
+import supertest, { Response } from "supertest";
 import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";

@@ -1,11 +1,21 @@
 [
   {
-    "hashPan": "0d4194712c5d820fcbbb2e7ba199e15f73cfd43f8fe49f0aa62e7901253506df",
+    "hashPan": "e6c06d0c9bd58ea972edc10ac98acb5494721583477024f82251b1d600c8913f",
     "idTrxAcquirer": "14890495670I210111",
     "idTrxIssuer": "R47288",
     "amount": 45.00,
     "trxDate": "2021-01-11T00:00:00+01:00",
     "cashback": 4.500,
+    "circuitType": "09",
+    "awardPeriodId": 2
+  },
+  {
+    "hashPan": "0d4194712c5d820fcbbb2e7ba199e15f73cfd43f8fe49f0aa62e7901253506df",
+    "idTrxAcquirer": "10126487773E",
+    "idTrxIssuer": "R64692",
+    "amount": -87.79,
+    "trxDate": "2021-01-11T00:00:00+01:00",
+    "cashback": -8.779,
     "circuitType": "02",
     "awardPeriodId": 2
   },
@@ -13,9 +23,9 @@
     "hashPan": "0d4194712c5d820fcbbb2e7ba199e15f73cfd43f8fe49f0aa62e7901253506df",
     "idTrxAcquirer": "10126487773E",
     "idTrxIssuer": "R64692",
-    "amount": 87.79,
+    "amount": 0.02,
     "trxDate": "2021-01-11T00:00:00+01:00",
-    "cashback": 8.779,
+    "cashback": 0.00,
     "circuitType": "02",
     "awardPeriodId": 2
   },
@@ -25,7 +35,7 @@
     "idTrxIssuer": "835550",
     "amount": 36.17,
     "trxDate": "2021-01-09T13:24:12+01:00",
-    "cashback": 3.617,
+    "cashback": 300.617,
     "circuitType": "00",
     "awardPeriodId": 2
   },

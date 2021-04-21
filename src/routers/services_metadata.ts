@@ -3,6 +3,7 @@
  */
 import { Router } from "express";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
@@ -10,7 +11,7 @@ import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
-import { servicesByScope, visibleServices } from "./service";
+import { visibleServices } from "./service";
 
 export const servicesMetadataRouter = Router();
 
@@ -23,6 +24,16 @@ addHandler(
   (req, res) => {
     const serviceId = req.params.service_id.replace(".json", "");
     if (serviceId === "servicesByScope") {
+      const servicesByScope = visibleServices.payload.items.reduce(
+        (acc, curr) => {
+          const scope = curr.scope ?? ServiceScopeEnum.LOCAL;
+          return {
+            ...acc,
+            [scope]: [...acc[scope], curr.service_id]
+          };
+        },
+        { [ServiceScopeEnum.LOCAL]: [], [ServiceScopeEnum.NATIONAL]: [] }
+      );
       res.json(servicesByScope);
       return;
     }

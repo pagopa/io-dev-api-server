@@ -1,7 +1,5 @@
 import chalk from "chalk";
 import { Request, Response, Router } from "express";
-import { fromNullable } from "fp-ts/lib/Option";
-import * as t from "io-ts";
 
 export const basePath = "/api/v1";
 export type SupportedMethod = "get" | "post" | "put" | "delete" | "patch";
