@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Testing
           command: yarn test
-      - run: "bash <(curl -s https://codecov.io/bash)"
+      - run: ./scripts/codecov.sh
 
 workflows:
   version: 2
