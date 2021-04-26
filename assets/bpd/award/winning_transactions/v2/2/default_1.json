@@ -3,7 +3,7 @@
   "nextCursor": 2,
   "transactions": [
     {
-      "date": "2021-02-05",
+      "date": "2021-02-08",
       "transactions": [
         {
           "amount": 150,
@@ -14,7 +14,7 @@
           "idTrx": "trx11",
           "idTrxAcquirer": "idTrxAcquirer",
           "idTrxIssuer": "idTrxIssuer",
-          "trxDate": "2021-02-05T10:15:51.726Z"
+          "trxDate": "2021-02-08T10:15:51.726Z"
         }
       ]
     },
