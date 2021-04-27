@@ -94,7 +94,7 @@
           "trxDate": "2021-02-05T10:15:51.726Z"
         },
         {
-          "amount": 150,
+          "amount": 1500,
           "awardPeriodId": 2,
           "cashback": 15,
           "circuitType": "01",
@@ -105,9 +105,9 @@
           "trxDate": "2021-02-05T10:15:51.726Z"
         },
         {
-          "amount": 150,
+          "amount": 10,
           "awardPeriodId": 2,
-          "cashback": 15,
+          "cashback": 1,
           "circuitType": "01",
           "hashPan": "hPan",
           "idTrx": "trx30",
