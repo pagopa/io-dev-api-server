@@ -1,17 +1,15 @@
-import { Router } from "express";
-import { addHandler } from "../../../../payloads/response";
-import { addBPDPrefix } from "../index";
-import { fromNullable } from "fp-ts/lib/Option";
-import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import chalk from "chalk";
-import { PatchedBpdWinningTransactions } from "../../../../types/PatchedBpdWinningTransactions";
+import { Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
 import { readableReport } from "italia-ts-commons/lib/reporters";
-import { listDir, readFileAsJSON } from "../../../../utils/file";
-import { assetsFolder } from "../../../../global";
-import { bpdAward } from "../award";
-import { WinningTransactionPageResource } from "../../../../../generated/definitions/bpd/winning_transactions/v2/WinningTransactionPageResource";
+import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { TrxCountByDayResourceArray } from "../../../../../generated/definitions/bpd/winning_transactions/v2/TrxCountByDayResourceArray";
-
+import { WinningTransactionPageResource } from "../../../../../generated/definitions/bpd/winning_transactions/v2/WinningTransactionPageResource";
+import { assetsFolder } from "../../../../global";
+import { addHandler } from "../../../../payloads/response";
+import { listDir, readFileAsJSON } from "../../../../utils/file";
+import { bpdAward } from "../award";
+import { addBPDPrefix } from "../index";
 
 export const bpdWinningTransactionsV2 = Router();
 
@@ -29,7 +27,6 @@ const readCountByDayJson = (directoryName: string, fileName: string) =>
   readFileAsJSON(
     `${assetsFolder}/bpd/award/winning_transactions/v2/countByDay/${directoryName}/${fileName}`
   );
-
 
 // tslint:disable-next-line: no-let
 let totalCashback: Map<number, string>;
@@ -97,7 +94,9 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const cursor = req.query.nextCursor ? parseInt(req.query.nextCursor, 10) : 0;
+    const cursor = req.query.nextCursor
+      ? parseInt(req.query.nextCursor, 10)
+      : 0;
 
     const response = (period: number, file: string) => {
       try {
@@ -116,10 +115,11 @@ addHandler(
         } else {
           res.json(maybeTransactions.value);
         }
-      }
-      catch (e)
-      {
-        if (e instanceof Error && e.message.includes("no such file or directory")) {
+      } catch (e) {
+        if (
+          e instanceof Error &&
+          e.message.includes("no such file or directory")
+        ) {
           console.log(chalk.red(e.message));
           res.sendStatus(404);
           return;
@@ -168,7 +168,9 @@ addHandler(
         );
 
         if (maybeCountByDay.isLeft()) {
-          console.log(chalk.red(`${p} is not a valid TrxCountByDayResourceArray`));
+          console.log(
+            chalk.red(`${p} is not a valid TrxCountByDayResourceArray`)
+          );
           res.sendStatus(500);
         } else {
           res.json(maybeCountByDay.value);

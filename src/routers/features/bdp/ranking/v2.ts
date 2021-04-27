@@ -13,15 +13,22 @@ addHandler(
   "get",
   addBPDPrefix("/io/citizen/v2/ranking"),
   (req, res) => {
-    res.json(readFileAsJSON(assetsFolder + "/bpd/ranking/v2/" + rankingJsonFile));
+    res.json(
+      readFileAsJSON(assetsFolder + "/bpd/ranking/v2/" + rankingJsonFile)
+    );
   }
 );
 
 // get the available presets (dashboard web)
-addHandler(bpdRankingV2, "get", addBPDPrefix("/ranking/preset/v2"), (_, res) => {
-  const rankingFiles = listDir(assetsFolder + "/bpd/ranking/v2");
-  res.json(rankingFiles);
-});
+addHandler(
+  bpdRankingV2,
+  "get",
+  addBPDPrefix("/ranking/preset/v2"),
+  (_, res) => {
+    const rankingFiles = listDir(assetsFolder + "/bpd/ranking/v2");
+    res.json(rankingFiles);
+  }
+);
 
 // update the current ranking preset (dashboard web)
 addHandler(

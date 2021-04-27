@@ -11,8 +11,6 @@ export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
   readFileAsJSON(assetsFolder + "/bpd/award/periods/" + fileName);
 
-
-
 // tslint:disable-next-line: no-let
 let awardPeriods: string = "default.json";
 
@@ -54,4 +52,3 @@ addHandler(
 addHandler(bpdAward, "get", addBPDPrefix("/io/award-periods"), (_, res) =>
   res.json(readPeriodPresetJson(awardPeriods))
 );
-

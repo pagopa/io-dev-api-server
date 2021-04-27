@@ -1,15 +1,14 @@
-import { Router } from "express";
-import { addHandler } from "../../../../payloads/response";
-import { addBPDPrefix } from "../index";
-import { fromNullable } from "fp-ts/lib/Option";
-import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import chalk from "chalk";
-import { PatchedBpdWinningTransactions } from "../../../../types/PatchedBpdWinningTransactions";
+import { Router } from "express";
+import { fromNullable } from "fp-ts/lib/Option";
 import { readableReport } from "italia-ts-commons/lib/reporters";
-import { listDir, readFileAsJSON } from "../../../../utils/file";
+import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { assetsFolder } from "../../../../global";
+import { addHandler } from "../../../../payloads/response";
+import { PatchedBpdWinningTransactions } from "../../../../types/PatchedBpdWinningTransactions";
+import { listDir, readFileAsJSON } from "../../../../utils/file";
 import { bpdAward } from "../award";
-
+import { addBPDPrefix } from "../index";
 
 export const bpdWinningTransactionsV1 = Router();
 
@@ -22,7 +21,6 @@ const readWinningTransactions = (directoryName: string, fileName: string) =>
   readFileAsJSON(
     `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
   );
-
 
 // tslint:disable-next-line: no-let
 let totalCashback: Map<number, string>;
