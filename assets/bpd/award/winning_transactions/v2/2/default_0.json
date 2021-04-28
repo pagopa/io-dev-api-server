@@ -5,11 +5,11 @@
       "date": "2021-03-15",
       "transactions": [
         {
-          "amount": 150,
+          "amount": 149,
           "awardPeriodId": 2,
-          "cashback": 15,
+          "cashback": 14.95,
           "circuitType": "01",
-          "hashPan": "hPan",
+          "hashPan": "93e130797a3fb136c0c877e0b388f194a8b02b39f620ca0ba83cc274008fae7c",
           "idTrx": "trx01",
           "idTrxAcquirer": "idTrxAcquirer",
           "idTrxIssuer": "idTrxIssuer",
