@@ -191,3 +191,19 @@ addHandler(
   },
   0
 );
+
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/spid/idps/list.json"),
+  (_, res) => res.json(readFileAsJSON(assetsFolder + "/spid/idps/list.json"))
+);
+
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/spid/idps/:spid_logo"),
+  (req, res) => {
+    sendFile(`assets/imgs/logos/spid/${req.params.spid_logo}`, res);
+  }
+);
