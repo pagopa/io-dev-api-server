@@ -202,7 +202,7 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/spid/idps/:spid_logo"),
+  addRoutePrefix("/logos/spid/idps/:spid_logo"),
   (req, res) => {
     sendFile(`assets/imgs/logos/spid/${req.params.spid_logo}`, res);
   }
