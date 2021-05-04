@@ -3,7 +3,7 @@
     "status": "enabled",
     "issuers": [
       {
-        "abi": "08720",
+        "abi": "01015",
         "name": "BANCO DI SARDEGNA - S.P.A."
       },
       {
@@ -532,7 +532,7 @@
       },
       {
         "abi": "08540",
-        "name": "Banca di San Marino"
+        "name": "BANCA DI SAN MARINO - S.P.A."
       },
       {
         "abi": "08562",
@@ -1081,7 +1081,7 @@
       },
       {
         "abi": "08979",
-        "name": "BC.C. SAN MICHELE DI CALTANISSETTA E PIETRAPERZIA"
+        "name": "B.C.C. SAN MICHELE DI CALTANISSETTA E PIETRAPERZIA"
       },
       {
         "abi": "08987",
@@ -1107,6 +1107,176 @@
       {
         "abi": "02008",
         "name": "UNICREDIT S.P.A."
+      },
+      {
+        "abi": "03599",
+        "name": "Cassa Centrale Banca – Credito Cooperativo Italiano S.p.A."
+      }
+    ]
+  },
+  "INTESA" : {
+    "status" : "enabled",
+    "issuers" : [
+      {
+        "abi": "06225",
+        "name": "CASSA DI RISPARMIO DEL VENETO"
+      },
+      {
+        "abi": "01010",
+        "name": "BANCO DI NAPOLI S.P.A."
+      },
+      {
+        "abi": "01025",
+        "name": "SANPAOLO IMI S.P.A."
+      },
+      {
+        "abi": "02002",
+        "name": "Banca Commerciale Italiana"
+      },
+      {
+        "abi": "03001",
+        "name": "BANCO AMBROSIANO VENETO S.P.A."
+      },
+      {
+        "abi": "03059",
+        "name": "BANCA DI CREDITO SARDO S.P.A."
+      },
+      {
+        "abi": "03069",
+        "name": "INTESA SANPAOLO - S.P.A."
+      },
+      {
+        "abi": "03142",
+        "name": "BANCA SANPAOLO INVEST S.P.A."
+      },
+      {
+        "abi": "03239",
+        "name": "INTESA SANPAOLO PRIVATE BANKING - S.P.A."
+      },
+      {
+        "abi": "03240",
+        "name": "BANCA DI TRENTO E BOLZANO"
+      },
+      {
+        "abi": "03296",
+        "name": "BANCA FIDEURAM - S.P.A."
+      },
+      {
+        "abi": "03309",
+        "name": "Banca Infrastrutture Innovazione e Sviluppo S.p.A."
+      },
+      {
+        "abi": "03359",
+        "name": "BANCA PROSSIMA S.P.A."
+      },
+      {
+        "abi": "05748",
+        "name": "BANCA DELL’ADRIATICO"
+      },
+      {
+        "abi": "06010",
+        "name": "CASSA DEI RISPARMI DI FORLÌ E DELLA ROMAGNA"
+      },
+      {
+        "abi": "06065",
+        "name": "CASSA DI RISPARMIO DELLA PROVINCIA DI VITERBO"
+      },
+      {
+        "abi": "06070",
+        "name": "CARIPLO SPA"
+      },
+      {
+        "abi": "06080",
+        "name": "CASSA DI RISPARMIO DI ASCOLI PICENO"
+      },
+      {
+        "abi": "06125",
+        "name": "CASSA DI RISPARMIO DI CITTA DI CASTELLO"
+      },
+      {
+        "abi": "06130",
+        "name": "CASSA DI RISPARMIO DI CIVITAVECCHIA"
+      },
+      {
+        "abi": "06160",
+        "name": "CASSA DI RISPARMIO DI FIRENZE"
+      },
+      {
+        "abi": "06165",
+        "name": "CASSA DI RISPARMIO DI FOLIGNO"
+      },
+      {
+        "abi": "06225",
+        "name": "CASSA DI RISPARMIO DEL VENETO"
+      },
+      {
+        "abi": "06260",
+        "name": "C. R. DI PISTOIA E DELLA LUCCHESIA S.P.A."
+      },
+      {
+        "abi": "06280",
+        "name": "CASSA DI RISPARMIO DI RIETI"
+      },
+      {
+        "abi": "06315",
+        "name": "CASSE DI RISPARMIO DELL'UMBRIA"
+      },
+      {
+        "abi": "06340",
+        "name": "CASSA DI RISPARMIO DEL FRIULI VENEZIA GIULIA"
+      },
+      {
+        "abi": "06345",
+        "name": "CASSA DI RISPARMIO DI VENEZIA SPA"
+      },
+      {
+        "abi": "06380",
+        "name": "CASSA DI RISPARMIO DI TERNI E NARNI"
+      },
+      {
+        "abi": "06385",
+        "name": "CASSA DI RISPARMIO IN BOLOGNA SPA"
+      },
+      {
+        "abi": "06930",
+        "name": "BANCA MONTE PARMA SPA"
+      },
+      {
+        "abi": "03186",
+        "name": "B@nca 24-7 S.p.a."
+      },
+      {
+        "abi": "05026",
+        "name": "BPU Banca - Banche Popolari Unite"
+      },
+      {
+        "abi": "05352",
+        "name": "BANCA POPOLARE DI TODI"
+      },
+      {
+        "abi": "05600",
+        "name": "BANCA POPOLARE DI NAPOLI"
+      },
+      {
+        "abi": "03060",
+        "name": "BANCA BRIGNONE SPA"
+      },
+      {
+        "abi": "05526",
+        "name": "BANCO SAN GIORGIO"
+      },
+      {
+        "abi": "06325",
+        "name": "Cassa di Risparmio di Tortona S.p.A."
+      }
+    ]
+  },
+  "POSTE":{
+    "status" : "enabled",
+    "issuers" : [
+      {
+        "abi": "07601",
+        "name": "Poste Italiane S.p.A."
       }
     ]
   }
