@@ -90,6 +90,10 @@ addHandler(
   addBPDPrefix("/io/winning-transactions/v2"),
   (req, res) => {
     const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+
+    // res.sendStatus(500);
+    // return;
+
     if (!winningTransactions.has(awardPeriodId)) {
       res.sendStatus(404);
       return;
