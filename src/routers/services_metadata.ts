@@ -6,6 +6,7 @@ import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
+import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { getServiceMetadata } from "../payloads/service";
@@ -24,6 +25,14 @@ addHandler(
     const serviceId = req.params.service_id.replace(".json", "");
     res.json(getServiceMetadata(serviceId, visibleServices.payload).payload);
   }
+);
+
+// backend service status
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/status/backend.json"),
+  (_, res) => res.json(backendStatus)
 );
 
 addHandler(
