@@ -5,7 +5,7 @@ export const enum CreditCardBrandEnum {
   "VISA" = "VISA",
   "MASTERCARD" = "MASTERCARD",
   "AMEX" = "AMEX",
-  // "DINERS" = "DINERS",
+  "DINERS" = "DINERS",
   // "DISCOVER" = "DISCOVER",
   // "JCB" = "JCB",
   "POSTEPAY" = "POSTEPAY"
@@ -18,7 +18,7 @@ export const creditCardBrands: ReadonlyArray<CreditCardBrandEnum> = [
   CreditCardBrandEnum.VISA,
   CreditCardBrandEnum.MASTERCARD,
   CreditCardBrandEnum.AMEX,
-  // CreditCardBrandEnum.DINERS,
+  CreditCardBrandEnum.DINERS,
   // CreditCardBrandEnum.DISCOVER,
   CreditCardBrandEnum.POSTEPAY
 ];
@@ -32,8 +32,8 @@ const creditCardLogoMap: Map<CreditCardBrandEnum, string> = new Map<
   [CreditCardBrandEnum.VISAELECTRON, "visaelectron"],
   [CreditCardBrandEnum.AMEX, "amex"],
   [CreditCardBrandEnum.MAESTRO, "maestro"],
-  [CreditCardBrandEnum.POSTEPAY, "poste"]
-  // [CreditCardBrandEnum.DINERS, "diners"]
+  [CreditCardBrandEnum.POSTEPAY, "poste"],
+  [CreditCardBrandEnum.DINERS, "diners"]
 ]);
 export const getCreditCardLogo = (cc: CreditCardBrandEnum) =>
   creditCardLogoMap.has(cc)
