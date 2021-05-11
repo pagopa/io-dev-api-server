@@ -22,7 +22,7 @@ addHandler(
   "get",
   addRoutePrefix(`/services/:service_id`),
   (req, res) => {
-    const serviceId = req.params.service_id.replace(".json", "");
+    const serviceId = req.params.service_id;
     res.json(getServiceMetadata(serviceId, visibleServices.payload).payload);
   }
 );

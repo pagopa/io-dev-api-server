@@ -1,17 +1,19 @@
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
+import {
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServiceName } from "../../generated/definitions/backend/ServiceName";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import {
-  ScopeEnum,
-  Service
-} from "../../generated/definitions/content/Service";
+  ServicePublic,
+  ServicePublicService_metadata
+} from "../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
 import { frontMatterMyPortal } from "../utils/variables";
 import { IOResponse } from "./response";
@@ -82,32 +84,32 @@ export const getServicesTuple = (
 export const getServiceMetadata = (
   serviceId: string,
   services: PaginatedServiceTupleCollection
-): IOResponse<Service> => {
+): IOResponse<ServicePublicService_metadata> => {
   const serviceIndex = services.items.findIndex(
     s => s.service_id === serviceId
   );
   // tslint:disable-next-line: no-let
-  let serviceScope: ScopeEnum = ScopeEnum.NATIONAL;
+  let serviceScope: ServiceScopeEnum = ServiceScopeEnum.NATIONAL;
   // first half -> LOCAL
   // second half -> NATIONAL
   if (serviceIndex + 1 <= services.items.length * 0.5) {
-    serviceScope = ScopeEnum.LOCAL;
+    serviceScope = ServiceScopeEnum.LOCAL;
   }
-  const metaData: Service = {
-    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
+  const metaData: ServicePublicService_metadata = {
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope: serviceScope,
-    address: "Piazza di Spagna, Roma, Italia",
-    email: "mock.service@email.com",
-    pec: "mock.pec@email.com",
-    phone: "5555555",
-    web_url: "https://www.google.com",
-    app_android: "https://www.google.com",
-    app_ios: "https://www.google.com",
-    support_url: "https://www.sos.com",
-    tos_url: "https://www.tos.com",
-    privacy_url: "https://www.privacy.com",
-    token_name: "myPortalToken",
-    cta: frontMatterMyPortal
+    address: "Piazza di Spagna, Roma, Italia" as NonEmptyString,
+    email: "mock.service@email.com" as NonEmptyString,
+    pec: "mock.pec@email.com" as NonEmptyString,
+    phone: "5555555" as NonEmptyString,
+    web_url: "https://www.google.com" as NonEmptyString,
+    app_android: "https://www.google.com" as NonEmptyString,
+    app_ios: "https://www.google.com" as NonEmptyString,
+    tos_url: "https://www.tos.com" as NonEmptyString,
+    privacy_url: "https://www.privacy.com" as NonEmptyString
   };
-  return { payload: validatePayload(Service, metaData), isJson: true };
+  return {
+    payload: validatePayload(ServicePublicService_metadata, metaData),
+    isJson: true
+  };
 };
