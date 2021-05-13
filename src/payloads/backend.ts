@@ -6,7 +6,7 @@ export const backendInfo = {
   version: "2.1.2"
 };
 
-// ref https://iopstcdnassets.z6.web.core.windows.net/status/backend.json
+// ref https://assets.cdn.io.italia.it/status/backend.json
 export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
@@ -158,6 +158,7 @@ export const backendStatus: BackendStatus = {
   },
   config: {
     bpd_ranking: true,
-    bpd_ranking_v2: true
+    bpd_ranking_v2: true,
+    cgn_merchants_v2: true
   }
 };
