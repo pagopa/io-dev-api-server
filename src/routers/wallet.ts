@@ -33,6 +33,7 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
+import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.privative +
@@ -47,8 +48,9 @@ const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
-export const transactions = getTransactions(
-  transactionsTotal,
+export const transactions: ReadonlyArray<Transaction> = getTransactions(
+  30,
+  true,
   true,
   wallets.data
 );
@@ -96,7 +98,12 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const transaction = transactions[0];
+    const idTransactions = parseInt(req.params.idTransaction, 10);
+    const transaction = transactions.find(t => t.id === idTransactions);
+    if (transaction === undefined) {
+      res.sendStatus(404);
+      return;
+    }
     res.json({ data: transaction });
   }
 );
