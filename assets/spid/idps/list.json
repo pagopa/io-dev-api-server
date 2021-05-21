@@ -4,35 +4,30 @@
             "id": "arubaid",
             "name": "Aruba",
             "logo":  "http://localhost:3000/static_contents/logos/spid/idps/spid-idp-arubaid.png",
-            "entityID": "arubaid",
             "profileUrl": "http://selfcarespid.aruba.it"
           },
           {
             "id": "infocertid",
             "name": "Infocert",
             "logo": "http://localhost:3000/static_contents/logos/spid/idps/spid-idp-infocertid.png",
-            "entityID": "infocertid",
             "profileUrl": "https://my.infocert.it/selfcare"
           },
           {
             "id": "intesaid",
             "name": "Intesa",
             "logo": "http://localhost:3000/static_contents/logos/spid/idps/spid-idp-intesaid.png",
-            "entityID": "intesaid",
             "profileUrl": "https://spid.intesa.it"
           },
           {
             "id": "lepidaid",
             "name": "Lepida",
             "logo": "http://localhost:3000/static_contents/logos/spid/idps/spid-idp-lepidaid.png",
-            "entityID": "lepidaid",
             "profileUrl": "https://id.lepida.it/"
           },
           {
             "id": "namirialid",
             "name": "Namirial",
             "logo": "http://localhost:3000/static_contents/logos/spid/idps/spid-idp-namirialid.png",
-            "entityID": "namirialid",
             "profileUrl": "https://idp.namirialtsp.com/idp"
           },
           {
