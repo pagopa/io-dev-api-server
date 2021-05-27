@@ -15,11 +15,11 @@ import {
 import { addHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import {
-  frontMatter1CTA,
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
   frontMatter1CTABonusCgn,
   frontMatter2CTA2,
+  frontMatterBonusVacanze,
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
@@ -72,27 +72,21 @@ const createMessages = () => {
   addMessage(getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown));
   addMessage(
     getNewMessage(
-      `1 nested CTA ISEE bonus vacanze`,
-      frontMatter1CTA + messageMarkdown
+      `2 CTA bonus vacanze`,
+      frontMatterBonusVacanze + messageMarkdown
     )
   );
   addMessage(
-    getNewMessage(
-      `1 nested CTA start BPD`,
-      frontMatter1CTABonusBpd + messageMarkdown
-    )
+    getNewMessage(`1 CTA start BPD`, frontMatter1CTABonusBpd + messageMarkdown)
   );
   addMessage(
     getNewMessage(
-      `1 nested CTA IBAN BPD`,
+      `1 CTA IBAN BPD`,
       frontMatter1CTABonusBpdIban + messageMarkdown
     )
   );
   addMessage(
-    getNewMessage(
-      `1 nested CTA start CGN`,
-      frontMatter1CTABonusCgn + messageMarkdown
-    )
+    getNewMessage(`1 CTA start CGN`, frontMatter1CTABonusCgn + messageMarkdown)
   );
 
   addMessage(

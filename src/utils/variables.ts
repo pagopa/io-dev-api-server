@@ -42,6 +42,23 @@ en:
         action: "ioit://WALLET_HOME"
 ---`;
 
+export const frontMatterBonusVacanze = `---
+it:
+    cta_1: 
+        text: "start eligibility"
+        action: "ioit://BONUS_CTA_ELIGILITY_START"
+    cta_2: 
+        text: "bonus list"
+        action: "ioit://BONUS_AVAILABLE_LIST"
+en:
+    cta_1: 
+        text: "start eligibility"
+        action: "ioit://BONUS_CTA_ELIGILITY_START"
+    cta_2: 
+        text: "bonus list"
+        action: "ioit://BONUS_AVAILABLE_LIST"
+---`;
+
 export const frontMatter2CTA2 = `---
 it:
     cta_1: 
@@ -75,13 +92,6 @@ en:
     cta_1: 
         text: "BPD Iban"
         action: "ioit://CTA_BPD_IBAN_EDIT"
----`;
-
-export const frontMatter1CTA = `---
-it:
-    cta_1: 
-        text: "verifica ISEE"
-        action: "ioit://BONUS_CTA_ELIGILITY_START"
 ---`;
 
 export const frontMatterInvalid = `---
