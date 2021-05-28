@@ -21,7 +21,7 @@ const revokedCertificate: Certificate = RevokedCertificate.decode(
 /* use this config to setup the API response */
 const responseConfig = {
   returnStatus: 200,
-  payload200: revokedCertificate,
+  payload200: validCertificate,
   isAuthenticated: true
 };
 
