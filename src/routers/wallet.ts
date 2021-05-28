@@ -6,6 +6,7 @@ import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
+import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
@@ -33,7 +34,6 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
-import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.privative +

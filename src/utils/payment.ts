@@ -28,7 +28,7 @@ export const creditCardBrands: ReadonlyArray<CreditCardBrandEnum> = [
 const creditCardLogoMap: Map<CreditCardBrandEnum, string> = new Map<
   CreditCardBrandEnum,
   string
-  >([
+>([
   [CreditCardBrandEnum.MASTERCARD, "mc"],
   [CreditCardBrandEnum.VISA, "visa"],
   [CreditCardBrandEnum.VISAELECTRON, "visaelectron"],
@@ -41,6 +41,6 @@ const creditCardLogoMap: Map<CreditCardBrandEnum, string> = new Map<
 export const getCreditCardLogo = (cc: CreditCardBrandEnum) =>
   creditCardLogoMap.has(cc)
     ? `https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/carta_${creditCardLogoMap.get(
-    cc
-    )}.png`
+        cc
+      )}.png`
     : undefined;
