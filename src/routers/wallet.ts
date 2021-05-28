@@ -6,6 +6,7 @@ import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
+import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
@@ -33,7 +34,6 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
-import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.privative +
@@ -49,7 +49,7 @@ export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export const transactions: ReadonlyArray<Transaction> = getTransactions(
-  30,
+  transactionsTotal,
   true,
   true,
   wallets.data
@@ -178,6 +178,8 @@ addHandler(
 // step 1/3 - credit card
 // adding a temporary wallet
 addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
+  res.sendStatus(500);
+  return;
   const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
   const walletV2 = generateWalletV2FromCard(
     cards[0],

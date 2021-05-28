@@ -18,6 +18,7 @@
   "api_bpd_award": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/award.json",
   "api_bpd_winning_transactions": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions.json",
   "api_bpd_winning_transactions_v2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions_v2.json",
+  "api_eu_covid_cert": "https://raw.githubusercontent.com/pagopa/io-backend/6c1dbbd598b9861837621ef0917f33e4d199748a/api_eucovidcert.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -43,13 +44,15 @@
     "generate:bpd-award": "rimraf generated/definitions/bpd/award && mkdir -p generated/definitions/bpd/award  && gen-api-models --api-spec $npm_package_api_bpd_award --out-dir ./generated/definitions/bpd/award --no-strict",
     "generate:bpd-winning-transactions": "rimraf generated/definitions/bpd/winning_transactions && mkdir -p generated/definitions/bpd/winning_transactions  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions --out-dir ./generated/definitions/bpd/winning_transactions --no-strict",
     "generate:bpd-winning-transactions-v2": "rimraf generated/definitions/bpd/winning_transactions/v2 && mkdir -p generated/definitions/bpd/winning_transactions/v2  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions_v2 --out-dir ./generated/definitions/bpd/winning_transactions/v2 --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:bpd-winning-transactions-v2 generate:cgn-definitions"
+    "generate:eu-covid-cert-definitions": "rimraf generated/definitions/eu_covid_cert && mkdir -p generated/definitions/eu_covid_cert && gen-api-models --api-spec $npm_package_api_eu_covid_cert --out-dir ./generated/definitions/eu_covid_cert --no-strict",
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:bpd-winning-transactions-v2 generate:cgn-definitions generate:eu-covid-cert-definitions"
   },
   "jest": {
     "preset": "ts-jest",
     "collectCoverage": true
   },
   "dependencies": {
+    "@pagopa/ts-commons": "^9.4.0",
     "@types/body-parser": "^1.17.1",
     "@types/date-fns": "^2.6.0",
     "@types/faker": "^5.1.2",

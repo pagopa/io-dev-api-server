@@ -1,0 +1,7 @@
+{
+   "id": "validCertificateId",
+   "status": "revoked",
+   "info": "## some markdown\n\n[A LINK](https://www.google.com)\n\n### END",
+   "revoke_reason": "the revoked reason",
+   "revoked_on": "2021-05-28T13:04:54.961Z"
+}
