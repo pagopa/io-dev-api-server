@@ -178,6 +178,8 @@ addHandler(
 // step 1/3 - credit card
 // adding a temporary wallet
 addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
+  res.sendStatus(500);
+  return;
   const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
   const walletV2 = generateWalletV2FromCard(
     cards[0],
