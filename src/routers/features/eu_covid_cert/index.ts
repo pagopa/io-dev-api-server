@@ -1,27 +1,30 @@
 import { Router } from "express";
 import * as t from "io-ts";
 import { Certificate } from "../../../../generated/definitions/eu_covid_cert/Certificate";
-import { RevokedCertificate } from "../../../../generated/definitions/eu_covid_cert/RevokedCertificate";
-import { ValidCertificate } from "../../../../generated/definitions/eu_covid_cert/ValidCertificate";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
 import { readFileAsJSON } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
+import { validatePayload } from "../../../utils/validator";
 
 export const euCovidCertRouter = Router();
 const addPrefix = (path: string) => addApiV1Prefix(`/eucovidcert${path}`);
 
-const validCertificate: Certificate = ValidCertificate.decode(
-  readFileAsJSON(assetsFolder + "/eu_covid_cert/valid.json")
-).value as ValidCertificate;
-const revokedCertificate: Certificate = RevokedCertificate.decode(
-  readFileAsJSON(assetsFolder + "/eu_covid_cert/revoked.json")
-).value as RevokedCertificate;
+const validCertificate = readFileAsJSON(
+  assetsFolder + "/eu_covid_cert/valid.json"
+);
 
+const revokedCertificate = readFileAsJSON(
+  assetsFolder + "/eu_covid_cert/revoked.json"
+);
+
+// an error will be throw if these payloads don't respect that type
+validatePayload(Certificate, validCertificate);
+validatePayload(Certificate, revokedCertificate);
 /* use this config to setup the API response */
 const responseConfig = {
   returnStatus: 200,
-  payload200: validCertificate,
+  payload200: revokedCertificate,
   isAuthenticated: true
 };
 
