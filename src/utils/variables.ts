@@ -29,14 +29,14 @@ export const frontMatterMyPortal = `---
 it:
     cta_1: 
         text: "email"
-        action: "iohandledlink://email:test@test.it"
+        action: "iohandledlink://mailto:test@test.it"
     cta_2: 
         text: "myportal"
         action: "ioit://SERVICE_WEBVIEW?url=http://127.0.0.1:3000/myportal_playground.html"
 en:
     cta_1: 
         text: "email"
-        action: "iohandledlink://email:test@test.it"
+        action: "iohandledlink://mailto:test@test.it"
     cta_2: 
         text: "payments"
         action: "ioit://WALLET_HOME"
@@ -188,4 +188,18 @@ il link deve **sempre** includere il protocollo (http:// o https://)
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
+
+### Handled link
+[http](iohandledlink://http://www.google.com)
+
+[https](iohandledlink://https://www.google.com)
+
+[copy](iohandledlink://copy:textcopy)
+
+[sms](iohandledlink://sms:+123456789)
+
+[tel](iohandledlink://tel:+123456789)
+
+[mailto](iohandledlink://mailto:name.surname@email.com)
+
 `;

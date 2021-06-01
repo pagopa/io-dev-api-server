@@ -1,5 +1,5 @@
 {
-   "id": "validCertificateId",
+   "id": "revokedCertificateId",
    "status": "revoked",
    "info": "## some markdown\n\n[A LINK](https://www.google.com)\n\n### END",
    "revoke_reason": "the revoked reason",
