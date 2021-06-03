@@ -23,6 +23,7 @@ import {
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
+import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 
 export const messageRouter = Router();
 
@@ -41,13 +42,15 @@ const getRandomServiceId = (): string => {
 const getNewMessage = (
   subject: string,
   markdown: string,
-  prescriptionData?: PrescriptionData
+  prescriptionData?: PrescriptionData,
+  euCovidCert?: MessageContentEu_covid_cert
 ): CreatedMessageWithContent =>
   withContent(
     createMessage(fiscalCode, getRandomServiceId()),
     subject,
     markdown,
-    prescriptionData
+    prescriptionData,
+    euCovidCert
   );
 
 const addMessage = (message: CreatedMessageWithContent) =>
@@ -144,6 +147,12 @@ const createMessages = () => {
       getNewMessage(`🕙❌ due date - expired`, messageMarkdown),
       new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
     )
+  );
+
+  addMessage(
+    getNewMessage(`🏥 EU Covid Cert`, messageMarkdown, undefined, {
+      auth_code: "authCode123"
+    })
   );
 };
 
