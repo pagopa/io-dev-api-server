@@ -3,6 +3,7 @@ import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
+import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
@@ -23,7 +24,6 @@ import {
   messageMarkdown
 } from "../utils/variables";
 import { services } from "./service";
-import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 
 export const messageRouter = Router();
 
