@@ -1,7 +1,7 @@
 {
    "id": "validCertificateId",
    "status": "valid",
-   "info": "## info markdown\n\n[A LINK](https://www.google.com)\n\n### END",
+   "info": "Surname(s) and forename(s)  \n*Cognome e Nome*  \n### Di Caprio Marilù Teresa\n\nDate of birth  \n*Data di nascita (aaaa-mm-gg)*  \n### 1977-06-16\n\nUnique Certifcate Identifier  \n*Identificativo univoco del certificato*  \n### ITOZQWGY3IOJUXGYTBOVWWC3TO\n[copia l’identificativo](iohandledlink://copy:ITOZQWGY3IOJUXGYTBOVWWC3TO)\n",
    "detail": "## detail markdown\n\n[A LINK](https://www.google.com)\n\n### END",
    "qr_code": {
       "mime_type": "image/png",
