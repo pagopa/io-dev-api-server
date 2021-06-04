@@ -1,5 +1,5 @@
 {
-   "id": "validCertificateId",
+   "uvci": "validCertificateId",
    "status": "valid",
    "info": "## info markdown\n\n[A LINK](https://www.google.com)\n\n### END",
    "detail": "## detail markdown\n\n[A LINK](https://www.google.com)\n\n### END",
