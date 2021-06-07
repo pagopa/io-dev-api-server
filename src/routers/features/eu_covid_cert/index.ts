@@ -13,14 +13,17 @@ const addPrefix = (path: string) => addApiV1Prefix(`/eucovidcert${path}`);
 const validCertificate = readFileAsJSON(
   assetsFolder + "/eu_covid_cert/valid.json"
 );
-
 const revokedCertificate = readFileAsJSON(
   assetsFolder + "/eu_covid_cert/revoked.json"
+);
+const expiredCertificate = readFileAsJSON(
+  assetsFolder + "/eu_covid_cert/expired.json"
 );
 
 // an error will be throw if these payloads don't respect that type
 validatePayload(Certificate, validCertificate);
 validatePayload(Certificate, revokedCertificate);
+validatePayload(Certificate, expiredCertificate);
 /* use this config to setup the API response */
 const responseConfig = {
   returnStatus: 200,
