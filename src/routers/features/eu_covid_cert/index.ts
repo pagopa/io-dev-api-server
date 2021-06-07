@@ -33,7 +33,7 @@ const responseConfig = {
  * '400': Payload has bad format
  * '401': Bearer token null or expired
  * '403': Access data provided are invalid or no Certificate has been emitted for the given Citizen
- * '410': Endpoint no longer avaible
+ * '410': Endpoint no longer available
  * '500': Generic server error
  * '504': Gateway Timeout
  */
