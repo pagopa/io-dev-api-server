@@ -23,6 +23,7 @@ import {
   frontMatterBonusVacanze,
   messageMarkdown
 } from "../utils/variables";
+import { authResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
 
 export const messageRouter = Router();
@@ -149,11 +150,19 @@ const createMessages = () => {
     )
   );
 
-  addMessage(
-    getNewMessage(`🏥 EU Covid Cert`, messageMarkdown, undefined, {
-      auth_code: "authCode123"
-    })
-  );
+  authResponses.forEach(config => {
+    const [authCode, description] = config;
+    addMessage(
+      getNewMessage(
+        `🏥 EUCovidCert - ${description}`,
+        messageMarkdown,
+        undefined,
+        {
+          auth_code: authCode
+        }
+      )
+    );
+  });
 };
 
 createMessages();

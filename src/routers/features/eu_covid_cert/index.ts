@@ -24,13 +24,22 @@ const expiredCertificate = readFileAsJSON(
 validatePayload(Certificate, validCertificate);
 validatePayload(Certificate, revokedCertificate);
 validatePayload(Certificate, expiredCertificate);
-/* use this config to setup the API response */
-const responseConfig = {
-  returnStatus: 200,
-  payload200: validCertificate,
-  isAuthenticated: true
-};
 
+export const authResponses: ReadonlyArray<[
+  string,
+  string,
+  number,
+  Certificate | undefined
+]> = [
+  ["auth8", "gateway timeout", 504, undefined],
+  ["auth7", "generic error", 500, undefined],
+  ["auth6", "endpoint no longer valid", 410, undefined],
+  ["auth5", "no certificate", 403, undefined],
+  ["auth4", "bad format", 400, undefined],
+  ["auth3", "expired", 200, expiredCertificate],
+  ["auth2", "revoked", 200, revokedCertificate],
+  ["auth1", "valid", 200, validCertificate]
+];
 /**
  * '200': A Certificate exists and it's found for the given access data. It is retrieved regardless of it's expired or its current status
  * '400': Payload has bad format
@@ -41,20 +50,16 @@ const responseConfig = {
  * '504': Gateway Timeout
  */
 addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
-  if (!responseConfig.isAuthenticated) {
-    // Bearer token null or expired
-    res.sendStatus(401);
-    return;
-  }
-  if (responseConfig.returnStatus !== 200) {
-    res.sendStatus(responseConfig.returnStatus);
-    return;
-  }
   const { auth_code } = req.body;
-  if (t.string.decode(auth_code).isLeft()) {
+  const config = authResponses.find(i => i[0] === auth_code);
+  if (t.string.decode(auth_code).isLeft() || config === undefined) {
     // Payload has bad format
     res.sendStatus(400);
     return;
   }
-  res.json(responseConfig.payload200);
+  if (config[3]) {
+    res.json(config[3]);
+    return;
+  }
+  res.sendStatus(config[2]);
 });
