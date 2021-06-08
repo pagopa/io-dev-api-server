@@ -25,7 +25,13 @@ validatePayload(Certificate, validCertificate);
 validatePayload(Certificate, revokedCertificate);
 validatePayload(Certificate, expiredCertificate);
 
-export const authResponses: ReadonlyArray<[
+/**
+ * authCode
+ * description
+ * status code
+ * response payload
+ */
+export const authResponses: ReadonlyArray<readonly [
   string,
   string,
   number,
