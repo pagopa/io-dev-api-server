@@ -56,9 +56,9 @@ export const authResponses: ReadonlyArray<readonly [
  * '504': Gateway Timeout
  */
 addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
-  const { auth_code } = req.body;
-  const config = authResponses.find(i => i[0] === auth_code);
-  if (t.string.decode(auth_code).isLeft() || config === undefined) {
+  const { accessData } = req.body;
+  const config = authResponses.find(i => i[0] === accessData?.auth_code);
+  if (t.string.decode(accessData?.auth_code).isLeft() || config === undefined) {
     // Payload has bad format
     res.sendStatus(400);
     return;
