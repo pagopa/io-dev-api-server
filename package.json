@@ -19,7 +19,7 @@
   "api_bpd_award": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/award.json",
   "api_bpd_winning_transactions": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions.json",
   "api_bpd_winning_transactions_v2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/winning_transactions_v2.json",
-  "api_eu_covid_cert": "https://raw.githubusercontent.com/pagopa/io-backend/52ddb4f2d6f69af414df23a97c82117c0b68ff79/api_eucovidcert.yaml",
+  "api_eu_covid_cert": "https://raw.githubusercontent.com/pagopa/io-backend/67bfd680f2485f735521467813cdd212bf2617fe/openapi/api_eucovidcert.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
