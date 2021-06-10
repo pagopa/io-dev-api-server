@@ -1,3 +1,4 @@
+import { Router } from "express";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
@@ -18,7 +19,11 @@ import {
 import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { cgnRouter } from "./index";
+
+export const cgnMerchantsRouter = Router();
+
+const addPrefix = (path: string) =>
+  addApiV1Prefix(`/cgn-operator-search${path}`);
 
 const productCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.books,
@@ -76,52 +81,59 @@ export const offlineMerchants: OfflineMerchants = {
   })
 };
 
-const addPrefix = (path: string) =>
-  addApiV1Prefix(`cgn-operator-search${path}`);
-
-addHandler(cgnRouter, "post", addPrefix("/online-merchants"), (req, res) => {
-  if (OnlineMerchantSearchRequest.is(req.body)) {
-    // tslint:disable-next-line:no-shadowed-variable
-    const { productCategories, merchantName } = req.body;
-    const merchantsFilteredByName = onlineMerchants.items.filter(om =>
-      fromNullable(merchantName).fold(true, mn => om.name.includes(mn))
-    );
-
-    const filteredMerchants = merchantsFilteredByName.filter(m =>
-      fromNullable(productCategories).fold(true, pc => {
-        return m.productCategories.some(cat => pc.includes(cat));
-      })
-    );
-    return res.status(200).json({ items: filteredMerchants });
-  }
-  return res.status(500);
-});
-
-addHandler(cgnRouter, "post", addPrefix("/offline-merchants"), (req, res) => {
-  if (OfflineMerchantSearchRequest.is(req.body)) {
-    const {
+addHandler(
+  cgnMerchantsRouter,
+  "post",
+  addPrefix("/online-merchants"),
+  (req, res) => {
+    if (OnlineMerchantSearchRequest.is(req.body)) {
       // tslint:disable-next-line:no-shadowed-variable
-      productCategories,
-      merchantName
-    } = req.body;
+      const { productCategories, merchantName } = req.body;
+      const merchantsFilteredByName = onlineMerchants.items.filter(om =>
+        fromNullable(merchantName).fold(true, mn => om.name.includes(mn))
+      );
 
-    const merchantsFilteredByName = offlineMerchants.items.filter(m =>
-      fromNullable(merchantName).fold(true, mn => m.name.includes(mn))
-    );
-
-    const filteredMerchants = merchantsFilteredByName.filter(m =>
-      fromNullable(productCategories).fold(true, pc => {
-        return m.productCategories.some(cat => pc.includes(cat));
-      })
-    );
-
-    return res.status(200).json({ items: filteredMerchants });
+      const filteredMerchants = merchantsFilteredByName.filter(m =>
+        fromNullable(productCategories).fold(true, pc => {
+          return m.productCategories.some(cat => pc.includes(cat));
+        })
+      );
+      return res.status(200).json({ items: filteredMerchants });
+    }
+    return res.status(500);
   }
-  return res.status(500);
-});
+);
 
 addHandler(
-  cgnRouter,
+  cgnMerchantsRouter,
+  "post",
+  addPrefix("/offline-merchants"),
+  (req, res) => {
+    if (OfflineMerchantSearchRequest.is(req.body)) {
+      const {
+        // tslint:disable-next-line:no-shadowed-variable
+        productCategories,
+        merchantName
+      } = req.body;
+
+      const merchantsFilteredByName = offlineMerchants.items.filter(m =>
+        fromNullable(merchantName).fold(true, mn => m.name.includes(mn))
+      );
+
+      const filteredMerchants = merchantsFilteredByName.filter(m =>
+        fromNullable(productCategories).fold(true, pc => {
+          return m.productCategories.some(cat => pc.includes(cat));
+        })
+      );
+
+      return res.status(200).json({ items: filteredMerchants });
+    }
+    return res.status(500);
+  }
+);
+
+addHandler(
+  cgnMerchantsRouter,
   "get",
   addPrefix("/merchants/:merchantId"),
   (req, res) => {
@@ -130,7 +142,9 @@ addHandler(
       ...onlineMerchants.items
     ];
 
-    const merchIndex = merchants.findIndex(item => item.id === req.params.id);
+    const merchIndex = merchants.findIndex(
+      item => item.id === req.params.merchantId
+    );
     if (merchIndex === -1) {
       res.json(getProblemJson(404, "message not found"));
     }

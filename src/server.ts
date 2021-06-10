@@ -10,6 +10,7 @@ import { bpdWinningTransactionsV1 } from "./routers/features/bdp/winning-transac
 import { bpdWinningTransactionsV2 } from "./routers/features/bdp/winning-transactions/v2";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { cgnRouter } from "./routers/features/cgn";
+import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
 import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
@@ -66,6 +67,7 @@ app.use(
   bpdWinningTransactionsV1,
   bpdWinningTransactionsV2,
   cgnRouter,
+  cgnMerchantsRouter,
   euCovidCertRouter
 ].forEach(r => app.use(r));
 
