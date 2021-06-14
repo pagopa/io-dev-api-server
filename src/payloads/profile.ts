@@ -5,7 +5,7 @@ import { profile } from "../global";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
-const currentTosVersion = 2.1;
+const currentTosVersion = 2.4;
 // define here the fiscalCode used within the client communication
 const spidProfile: InitializedProfile = {
   accepted_tos_version: currentTosVersion,
