@@ -11,7 +11,6 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
-import { getTransactions } from "../payloads/wallet";
 import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
@@ -148,7 +147,7 @@ const handlePaymentPostAndRedirect = (req: Request, res: Response) => {
   const exitPathName = "/wallet/v3/webview/logout/bye";
   const outcomeParamname = "outcome";
   const outcomeValue = 0;
-  const secondsToRedirect = 2;
+  const secondsToRedirect = 10;
   const redirectUrl = `"http://${interfaces.name}:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
   const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
     1000});</script>`;
