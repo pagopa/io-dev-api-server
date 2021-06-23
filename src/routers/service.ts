@@ -1,13 +1,12 @@
 import { Router } from "express";
 import { servicesNumber } from "../global";
-import { notFound } from "../payloads/error";
 import { addHandler } from "../payloads/response";
 import { getServices, getServicesTuple } from "../payloads/service";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
-
 export const serviceRouter = Router();
+
 export const services = getServices(servicesNumber);
 export const visibleServices = getServicesTuple(services);
 
@@ -19,13 +18,15 @@ addHandler(
   serviceRouter,
   "get",
   addApiV1Prefix("/services/:service_id"),
-
-  // return a mock service with the same requested id (always found!)
   (req, res) => {
     const service = services.find(
       item => item.service_id === req.params.service_id
     );
-    res.json(service || notFound.payload);
+    if (service === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+    res.json(service);
   }
 );
 
