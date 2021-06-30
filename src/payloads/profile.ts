@@ -1,6 +1,8 @@
 import { FiscalCode, NonEmptyString } from "italia-ts-commons/lib/strings";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { ServicePreferencesSettings } from "../../generated/definitions/backend/ServicePreferencesSettings";
+import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
 import { profile } from "../global";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
@@ -8,6 +10,10 @@ import { IOResponse } from "./response";
 const currentTosVersion = 2.4;
 // define here the fiscalCode used within the client communication
 const spidProfile: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.AUTO,
+    version: 0 as ServicePreferencesSettings["version"]
+  },
   accepted_tos_version: currentTosVersion,
   email: profile.email as EmailAddress,
   family_name: profile.family_name,
@@ -26,6 +32,10 @@ const spidProfile: InitializedProfile = {
 
 // mock a SPID profile on first onboarding
 const spidProfileFirstOnboarding: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.AUTO,
+    version: 0 as ServicePreferencesSettings["version"]
+  },
   email: profile.email as EmailAddress,
   family_name: profile.family_name,
   has_profile: true,
@@ -42,6 +52,10 @@ const spidProfileFirstOnboarding: InitializedProfile = {
 };
 
 const cieProfile: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.AUTO,
+    version: 0 as ServicePreferencesSettings["version"]
+  },
   email: profile.email as EmailAddress,
   accepted_tos_version: currentTosVersion,
   family_name: profile.family_name,
@@ -58,6 +72,10 @@ const cieProfile: InitializedProfile = {
 
 // mock a cie profile on first onboarding
 const cieProfileFirstOnboarding: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.AUTO,
+    version: 0 as ServicePreferencesSettings["version"]
+  },
   family_name: profile.family_name,
   has_profile: true,
   is_email_enabled: true,

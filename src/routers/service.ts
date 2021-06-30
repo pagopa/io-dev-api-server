@@ -1,7 +1,14 @@
 import { Router } from "express";
+import * as faker from "faker";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
+import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { servicesNumber } from "../global";
 import { addHandler } from "../payloads/response";
-import { getServices, getServicesTuple } from "../payloads/service";
+import {
+  getServices,
+  getServicesPreferences,
+  getServicesTuple
+} from "../payloads/service";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
@@ -9,6 +16,7 @@ export const serviceRouter = Router();
 
 export const services = getServices(servicesNumber);
 export const visibleServices = getServicesTuple(services);
+const servicesPreferences = getServicesPreferences(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) =>
   res.json(visibleServices.payload)
@@ -27,6 +35,57 @@ addHandler(
       return;
     }
     res.json(service);
+  }
+);
+
+addHandler(
+  serviceRouter,
+  "get",
+  addApiV1Prefix("/services/:service_id/preferences"),
+  (req, res) => {
+    const servicePreference = servicesPreferences.get(
+      req.params.service_id as ServiceId
+    );
+
+    if (servicePreference === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+    res.json(servicePreference);
+  }
+);
+
+addHandler(
+  serviceRouter,
+  "post",
+  addApiV1Prefix("/services/:service_id/preferences"),
+  (req, res) => {
+    const updatedPreference: ServicePreference = req.body;
+
+    const currentPreference = servicesPreferences.get(
+      req.params.service_id as ServiceId
+    );
+
+    if (currentPreference === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+
+    if (
+      currentPreference.settings_version !== updatedPreference.settings_version
+    ) {
+      res.sendStatus(409);
+      return;
+    }
+    servicesPreferences.set(req.params.service_id as ServiceId, {
+      ...updatedPreference,
+      settings_version: (currentPreference.settings_version +
+        1) as ServicePreference["settings_version"]
+    });
+    res.json({
+      ...updatedPreference,
+      settings_version: currentPreference.settings_version + 1
+    });
   }
 );
 
