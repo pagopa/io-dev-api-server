@@ -16,9 +16,7 @@ import {
   ServicePublicService_metadata
 } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
-import { services } from "../routers/service";
 import { validatePayload } from "../utils/validator";
-import { frontMatterMyPortal } from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {

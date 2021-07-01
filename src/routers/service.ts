@@ -1,5 +1,5 @@
+import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { Router } from "express";
-import * as faker from "faker";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { servicesNumber } from "../global";
@@ -77,15 +77,17 @@ addHandler(
       res.sendStatus(409);
       return;
     }
-    servicesPreferences.set(req.params.service_id as ServiceId, {
+    const increasedSettingsVersion = ((currentPreference.settings_version as number) +
+      1) as ServicePreference["settings_version"];
+    const servicePreference = {
       ...updatedPreference,
-      settings_version: (currentPreference.settings_version +
-        1) as ServicePreference["settings_version"]
-    });
-    res.json({
-      ...updatedPreference,
-      settings_version: currentPreference.settings_version + 1
-    });
+      settings_version: increasedSettingsVersion
+    };
+    servicesPreferences.set(
+      req.params.service_id as ServiceId,
+      servicePreference
+    );
+    res.json(servicePreference);
   }
 );
 
