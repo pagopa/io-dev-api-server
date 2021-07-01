@@ -1,16 +1,14 @@
 import { FiscalCode, NonEmptyString } from "italia-ts-commons/lib/strings";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
-import { ServicePreferencesSettings } from "../../generated/definitions/backend/ServicePreferencesSettings";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
 import { profile } from "../global";
 import { validatePayload } from "../utils/validator";
-import { IOResponse } from "./response";
 
 const currentTosVersion = 2.4;
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
-    mode: ServicesPreferencesModeEnum.AUTO
+    mode: ServicesPreferencesModeEnum.MANUAL
   },
   accepted_tos_version: currentTosVersion,
   email: profile.email as EmailAddress,
