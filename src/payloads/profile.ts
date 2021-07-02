@@ -8,7 +8,7 @@ import { validatePayload } from "../utils/validator";
 const currentTosVersion = 2.4;
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
-    mode: ServicesPreferencesModeEnum.MANUAL
+    mode: ServicesPreferencesModeEnum.AUTO
   },
   accepted_tos_version: currentTosVersion,
   email: profile.email as EmailAddress,
