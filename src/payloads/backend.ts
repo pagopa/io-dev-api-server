@@ -1,7 +1,7 @@
 import { BackendStatus } from "./types/backendStatus";
 
 export const backendInfo = {
-  min_app_version: { android: "0.0.0", ios: "0.0.0" },
+  min_app_version: { android: "1.27.0", ios: "1.27.0" },
   min_app_version_pagopa: { android: "0.0.0", ios: "0.0.0" },
   version: "2.1.2"
 };
@@ -165,6 +165,10 @@ export const backendStatus: BackendStatus = {
     }
   },
   config: {
+    bpd:
+      {
+        enroll_bpd_after_add_payment_method: false
+      },
     bpd_ranking: true,
     bpd_ranking_v2: true,
     cgn_merchants_v2: true
