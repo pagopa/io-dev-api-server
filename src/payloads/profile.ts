@@ -8,7 +8,7 @@ import { validatePayload } from "../utils/validator";
 const currentTosVersion = 2.4;
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
-    mode: ServicesPreferencesModeEnum.AUTO
+    mode: ServicesPreferencesModeEnum.LEGACY
   },
   accepted_tos_version: currentTosVersion,
   email: profile.email as EmailAddress,
@@ -29,7 +29,7 @@ const spidProfile: InitializedProfile = {
 // mock a SPID profile on first onboarding
 const spidProfileFirstOnboarding: InitializedProfile = {
   service_preferences_settings: {
-    mode: ServicesPreferencesModeEnum.AUTO
+    mode: ServicesPreferencesModeEnum.LEGACY
   },
   email: profile.email as EmailAddress,
   family_name: profile.family_name,
