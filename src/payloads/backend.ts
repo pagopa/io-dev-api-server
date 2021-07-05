@@ -171,6 +171,6 @@ export const backendStatus: BackendStatus = {
       },
     bpd_ranking: true,
     bpd_ranking_v2: true,
-    cgn_merchants_v2: true
+    cgn_merchants_v2: false
   }
 };

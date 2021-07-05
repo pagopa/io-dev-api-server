@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
   UserDataProcessingChoice,
@@ -18,7 +17,7 @@ import { validatePayload } from "../utils/validator";
 
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
-export let currentProfile = { ...profile.payload };
+export let currentProfile = { ...profile };
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
 type UserDeleteDownloadData = {
@@ -174,5 +173,5 @@ addHandler(
 // reset function
 export const resetProfile = () => {
   userChoices = initialUserChoice;
-  currentProfile = { ...profile.payload };
+  currentProfile = { ...profile };
 };
