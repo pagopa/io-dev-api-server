@@ -1,0 +1,34 @@
+[
+  {
+    "ranking": 1,
+    "totalParticipants": 0,
+    "maxTransactionNumber": 0,
+    "minTransactionNumber": 0,
+    "transactionNumber": 0,
+    "awardPeriodId": 3
+  },
+  {
+    "ranking": 1,
+    "totalParticipants": 0,
+    "maxTransactionNumber": 0,
+    "minTransactionNumber": 0,
+    "transactionNumber": 0,
+    "awardPeriodId": 4
+  },
+  {
+    "ranking": 1331027,
+    "totalParticipants": 4637370,
+    "maxTransactionNumber": 442,
+    "minTransactionNumber": -1,
+    "transactionNumber": 17,
+    "awardPeriodId": 1
+  },
+  {
+    "ranking": 5074122,
+    "totalParticipants": 7822725,
+    "maxTransactionNumber": 5205,
+    "minTransactionNumber": 642,
+    "transactionNumber": 57,
+    "awardPeriodId": 2
+  }
+]
