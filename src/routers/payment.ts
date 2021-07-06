@@ -147,7 +147,7 @@ const handlePaymentPostAndRedirect = (req: Request, res: Response) => {
   const exitPathName = "/wallet/v3/webview/logout/bye";
   const outcomeParamname = "outcome";
   const outcomeValue = 0;
-  const secondsToRedirect = 10;
+  const secondsToRedirect = 2;
   const redirectUrl = `"http://${interfaces.name}:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
   const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
     1000});</script>`;
