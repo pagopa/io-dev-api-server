@@ -1,4 +1,3 @@
-import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { Router } from "express";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
@@ -46,7 +45,6 @@ addHandler(
     const servicePreference = servicesPreferences.get(
       req.params.service_id as ServiceId
     );
-
     if (servicePreference === undefined) {
       res.sendStatus(404);
       return;
@@ -60,6 +58,11 @@ addHandler(
   "post",
   addApiV1Prefix("/services/:service_id/preferences"),
   (req, res) => {
+    const maybeUpdatePreference = ServicePreference.decode(req.body);
+    if (maybeUpdatePreference.isLeft()) {
+      res.sendStatus(400);
+      return;
+    }
     const updatedPreference: ServicePreference = req.body;
 
     const currentPreference = servicesPreferences.get(
