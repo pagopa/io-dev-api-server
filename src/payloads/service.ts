@@ -48,7 +48,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     // first half have organization_fiscal_code === organizationFiscalCodes[0]
     // second half have organization_fiscal_code === organizationFiscalCodes[1]
     return {
-      ...getService(`serviceid-[${idx}]`),
+      ...getService(`service${idx}`),
       organization_fiscal_code: `${organizationCount + 1}`.padStart(
         11,
         "0"
