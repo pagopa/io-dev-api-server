@@ -93,7 +93,7 @@ export const getServiceMetadata = (
   let serviceScope: ServiceScopeEnum = ServiceScopeEnum.NATIONAL;
   // first half -> LOCAL
   // second half -> NATIONAL
-  if (serviceIndex + 1 <= services.items.length * 0.5) {
+  if ((serviceIndex as number) + 1 <= services.items.length * 0.5) {
     serviceScope = ServiceScopeEnum.LOCAL;
   }
   const metaData: ServicePublicService_metadata = {
