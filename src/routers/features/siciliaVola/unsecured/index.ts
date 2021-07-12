@@ -1,24 +1,13 @@
 import { Router } from "express";
+import { assetsFolder } from "../../../../global";
 import { addHandler } from "../../../../payloads/response";
+import { readFileAsJSON } from "../../../../utils/file";
 import { addApiV1Prefix } from "../../../../utils/strings";
-import { serviceRouter, visibleServices } from "../../../service";
 
 export const unsecuredSvRouter = Router();
 
-const addPrefix = (path: string) =>
-  addApiV1Prefix(`/sv/rest/unsecured/${path}`);
+const addPrefix = (path: string) => addApiV1Prefix(`/sv/rest/unsecured${path}`);
 
-addHandler(serviceRouter, "get", addPrefix("/statiUE"), (_, res) =>
-  res.json([
-    {
-      id: 1,
-      descrizione: "AUSTRIA",
-      iso: "AUT"
-    },
-    {
-      id: 2,
-      descrizione: "BELGIO",
-      iso: "BEL"
-    }
-  ])
+addHandler(unsecuredSvRouter, "get", addPrefix("/statiUE"), (_, res) =>
+  res.json(readFileAsJSON(assetsFolder + "/siciliaVola/states.json"))
 );
