@@ -39,7 +39,7 @@ it("profile should return a valid updated profile (version increased)", async do
   const updatedProfile = InitializedProfile.decode(response.body);
   expect(updatedProfile.isRight()).toBeTruthy();
   if (updatedProfile.isRight()) {
-    expect(updatedProfile.value.version).toBe(profile.version + 1);
+    expect(updatedProfile.value.version).toBe((profile.version as number) + 1);
   }
   done();
 });
