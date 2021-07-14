@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
-import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { Profile } from "../../generated/definitions/backend/Profile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
   UserDataProcessingChoice,
@@ -15,7 +15,6 @@ import { addHandler } from "../payloads/response";
 import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
-import { Profile } from "../../generated/definitions/backend/Profile";
 
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
