@@ -58,3 +58,17 @@ addHandler(
     res.json(readFileAsJSON(assetsFolder + "/siciliaVola/municipalities.json"));
   }
 );
+
+/**
+ * Get the list of the beneficiary categories
+ */
+addHandler(
+  unsecuredSvRouter,
+  "get",
+  addPrefix("/categorieBeneficiario"),
+  (_, res) => {
+    res.json(
+      readFileAsJSON(assetsFolder + "/siciliaVola/beneficiaryCategories.json")
+    );
+  }
+);
