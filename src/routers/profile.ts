@@ -15,10 +15,11 @@ import { addHandler } from "../payloads/response";
 import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+import { Profile } from "../../generated/definitions/backend/Profile";
 
 const profile = getProfile(fiscalCode);
 // tslint:disable-next-line: no-let
-export let currentProfile = { ...profile.payload };
+export let currentProfile = { ...profile };
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
 type UserDeleteDownloadData = {
@@ -50,15 +51,21 @@ addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) =>
 
 // update profile
 addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
+  const maybeProfileToUpdate = Profile.decode(req.body);
+  if (maybeProfileToUpdate.isLeft()) {
+    res.sendStatus(400);
+    return;
+  }
   // profile is merged with the one coming from request.
   // furthermore this profile's version is increased by 1
-  const clientProfileIncreased = {
-    ...req.body,
+  const clientProfileIncreased: Profile = {
+    ...maybeProfileToUpdate.value,
     version: parseInt(req.body.version, 10) + 1
   };
   currentProfile = {
     ...currentProfile,
-    ...clientProfileIncreased
+    ...clientProfileIncreased,
+    is_inbox_enabled: (clientProfileIncreased.accepted_tos_version ?? 0) > 0
   };
   res.json(currentProfile);
 });
@@ -174,5 +181,5 @@ addHandler(
 // reset function
 export const resetProfile = () => {
   userChoices = initialUserChoice;
-  currentProfile = { ...profile.payload };
+  currentProfile = { ...profile };
 };

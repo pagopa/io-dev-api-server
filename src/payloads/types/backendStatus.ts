@@ -53,8 +53,19 @@ const Sections = t.interface({
 });
 export type Sections = t.TypeOf<typeof Sections>;
 
+/**
+ * Bpd configuration
+ * enroll_cashback_after_add_payment_method: if true and the user is not enrolled to the cashback, when he adds
+ * a payment method he is suggested to register for cashback
+ */
+const BpdConfig = t.interface({
+  enroll_bpd_after_add_payment_method: t.boolean
+});
+
+
 // it represents a remote config to switch on/off a specific section,feature,module,etc
 const Config = t.interface({
+  bpd: BpdConfig,
   // bpd_ranking is legacy, don't use it anymore see https://www.pivotaltracker.com/story/show/176498731
   bpd_ranking: t.boolean,
   bpd_ranking_v2: t.boolean,
