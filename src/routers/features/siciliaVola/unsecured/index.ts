@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ProvinciaBean } from "../../../../../generated/definitions/siciliaVola/ProvinciaBean";
 import { assetsFolder } from "../../../../global";
 import { addHandler } from "../../../../payloads/response";
 import { readFileAsJSON } from "../../../../utils/file";
@@ -20,4 +21,40 @@ addHandler(unsecuredSvRouter, "get", addPrefix("/statiUE"), (_, res) =>
  */
 addHandler(unsecuredSvRouter, "get", addPrefix("/regioni"), (_, res) =>
   res.json(readFileAsJSON(assetsFolder + "/siciliaVola/regions.json"))
+);
+
+/**
+ * Get the province list given a RegionID
+ */
+addHandler(
+  unsecuredSvRouter,
+  "get",
+  addPrefix("/province/:region_id"),
+  (req, res) => {
+    const regionId = req.params.region_id;
+
+    const regions = readFileAsJSON(
+      assetsFolder + "/siciliaVola/regions.json"
+    ).map((r: ProvinciaBean) => r.idRegione);
+
+    const regionIdAccepted = regionId in regions;
+
+    if (regionIdAccepted) {
+      res.json(readFileAsJSON(assetsFolder + "/siciliaVola/provinces.json"));
+    } else {
+      res.sendStatus(404);
+    }
+  }
+);
+
+/**
+ * Get the municipality list given a siglaProvincia
+ */
+addHandler(
+  unsecuredSvRouter,
+  "get",
+  addPrefix("/comuni/:sigla_provincia"),
+  (_, res) => {
+    res.json(readFileAsJSON(assetsFolder + "/siciliaVola/municipalities.json"));
+  }
 );
