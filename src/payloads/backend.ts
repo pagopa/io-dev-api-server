@@ -163,6 +163,14 @@ export const backendStatus: BackendStatus = {
         "it-IT": "euCovidCert banner test",
         "en-EN": "euCovidCert banner test"
       }
+    },
+    favourite_language: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      }
     }
   },
   config: {
