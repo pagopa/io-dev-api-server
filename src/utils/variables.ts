@@ -29,17 +29,34 @@ export const frontMatterMyPortal = `---
 it:
     cta_1: 
         text: "email"
-        action: "iohandledlink://email:test@test.it"
+        action: "iohandledlink://mailto:test@test.it"
     cta_2: 
         text: "myportal"
         action: "ioit://SERVICE_WEBVIEW?url=http://127.0.0.1:3000/myportal_playground.html"
 en:
     cta_1: 
         text: "email"
-        action: "iohandledlink://email:test@test.it"
+        action: "iohandledlink://mailto:test@test.it"
     cta_2: 
         text: "payments"
         action: "ioit://WALLET_HOME"
+---`;
+
+export const frontMatterBonusVacanze = `---
+it:
+    cta_1: 
+        text: "start eligibility"
+        action: "ioit://BONUS_CTA_ELIGILITY_START"
+    cta_2: 
+        text: "bonus list"
+        action: "ioit://BONUS_AVAILABLE_LIST"
+en:
+    cta_1: 
+        text: "start eligibility"
+        action: "ioit://BONUS_CTA_ELIGILITY_START"
+    cta_2: 
+        text: "bonus list"
+        action: "ioit://BONUS_AVAILABLE_LIST"
 ---`;
 
 export const frontMatter2CTA2 = `---
@@ -64,6 +81,10 @@ it:
     cta_1: 
         text: "BPD start"
         action: "ioit://CTA_START_BPD"
+en:
+    cta_1: 
+        text: "BPD start EN"
+        action: "ioit://CTA_BPD_IBAN_EDIT"
 ---`;
 
 export const frontMatter1CTABonusBpdIban = `---
@@ -73,15 +94,8 @@ it:
         action: "ioit://CTA_BPD_IBAN_EDIT"
 en:
     cta_1: 
-        text: "BPD Iban"
+        text: "BPD Iban EN"
         action: "ioit://CTA_BPD_IBAN_EDIT"
----`;
-
-export const frontMatter1CTA = `---
-it:
-    cta_1: 
-        text: "verifica ISEE"
-        action: "ioit://BONUS_CTA_ELIGILITY_START"
 ---`;
 
 export const frontMatterInvalid = `---
@@ -178,4 +192,18 @@ il link deve **sempre** includere il protocollo (http:// o https://)
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
+
+### Handled link
+[http](iohandledlink://http://www.google.com)
+
+[https](iohandledlink://https://www.google.com)
+
+[copy](iohandledlink://copy:textcopy)
+
+[sms](iohandledlink://sms:+123456789)
+
+[tel](iohandledlink://tel:+123456789)
+
+[mailto](iohandledlink://mailto:name.surname@email.com)
+
 `;

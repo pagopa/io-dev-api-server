@@ -1,19 +1,22 @@
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
+import {
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "italia-ts-commons/lib/strings";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServiceName } from "../../generated/definitions/backend/ServiceName";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
+import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import {
-  ScopeEnum,
-  Service
-} from "../../generated/definitions/content/Service";
+  ServicePublic,
+  ServicePublicService_metadata
+} from "../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
-import { frontMatterMyPortal } from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -45,7 +48,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     // first half have organization_fiscal_code === organizationFiscalCodes[0]
     // second half have organization_fiscal_code === organizationFiscalCodes[1]
     return {
-      ...getService(`serviceid-[${idx}]`),
+      ...getService(`service${idx}`),
       organization_fiscal_code: `${organizationCount + 1}`.padStart(
         11,
         "0"
@@ -82,32 +85,50 @@ export const getServicesTuple = (
 export const getServiceMetadata = (
   serviceId: string,
   services: PaginatedServiceTupleCollection
-): IOResponse<Service> => {
+): IOResponse<ServicePublicService_metadata> => {
   const serviceIndex = services.items.findIndex(
     s => s.service_id === serviceId
   );
   // tslint:disable-next-line: no-let
-  let serviceScope: ScopeEnum = ScopeEnum.NATIONAL;
+  let serviceScope: ServiceScopeEnum = ServiceScopeEnum.NATIONAL;
   // first half -> LOCAL
   // second half -> NATIONAL
   if (serviceIndex + 1 <= services.items.length * 0.5) {
-    serviceScope = ScopeEnum.LOCAL;
+    serviceScope = ServiceScopeEnum.LOCAL;
   }
-  const metaData: Service = {
-    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
+  const metaData: ServicePublicService_metadata = {
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope: serviceScope,
-    address: "Piazza di Spagna, Roma, Italia",
-    email: "mock.service@email.com",
-    pec: "mock.pec@email.com",
-    phone: "5555555",
-    web_url: "https://www.google.com",
-    app_android: "https://www.google.com",
-    app_ios: "https://www.google.com",
-    support_url: "https://www.sos.com",
-    tos_url: "https://www.tos.com",
-    privacy_url: "https://www.privacy.com",
-    token_name: "myPortalToken",
-    cta: frontMatterMyPortal
+    address: "Piazza di Spagna, Roma, Italia" as NonEmptyString,
+    email: "mock.service@email.com" as NonEmptyString,
+    pec: "mock.pec@email.com" as NonEmptyString,
+    phone: "5555555" as NonEmptyString,
+    web_url: "https://www.google.com" as NonEmptyString,
+    app_android: "https://www.google.com" as NonEmptyString,
+    app_ios: "https://www.google.com" as NonEmptyString,
+    tos_url: "https://www.tos.com" as NonEmptyString,
+    privacy_url: "https://www.privacy.com" as NonEmptyString
   };
-  return { payload: validatePayload(Service, metaData), isJson: true };
+  return {
+    payload: validatePayload(ServicePublicService_metadata, metaData),
+    isJson: true
+  };
 };
+
+export const getServicesPreferences = (
+  services: ReadonlyArray<ServicePublic>
+) =>
+  new Map<ServiceId, ServicePreference>(
+    services.map(s => {
+      const isInboxEnabled = faker.random.boolean();
+      return [
+        s.service_id,
+        {
+          is_inbox_enabled: isInboxEnabled,
+          is_email_enabled: isInboxEnabled ? faker.random.boolean() : false,
+          is_webhook_enabled: isInboxEnabled ? faker.random.boolean() : false,
+          settings_version: 0 as ServicePreference["settings_version"]
+        }
+      ];
+    })
+  );
