@@ -163,11 +163,20 @@ export const backendStatus: BackendStatus = {
         "it-IT": "euCovidCert banner test",
         "en-EN": "euCovidCert banner test"
       }
+    },
+    favourite_language: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      }
     }
   },
   config: {
     bpd: {
-      enroll_bpd_after_add_payment_method: false
+      enroll_bpd_after_add_payment_method: false,
+      program_active: true
     },
     bpd_ranking: true,
     bpd_ranking_v2: true,
