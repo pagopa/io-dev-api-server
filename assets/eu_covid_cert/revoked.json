@@ -1,6 +1,6 @@
 {
    "uvci": "revokedCertificateId",
    "status": "revoked",
-   "revoke_info": "Potrebbero esserti richiesti questi dati per approfondire il problema:\n\nIdentificativo univoco del certificato\n[copia l’identificativo](iohandledlink://copy:ITOZQWGY3IOJUXGYTBOVWWC3TO)",
+   "info": "Potrebbero esserti richiesti questi dati per approfondire il problema:\n\nIdentificativo univoco del certificato\n[copia l’identificativo](iohandledlink://copy:ITOZQWGY3IOJUXGYTBOVWWC3TO)",
    "revoked_on": "2021-05-28T13:04:54.961Z"
 }

@@ -8,14 +8,15 @@ import { DepartmentName } from "../../generated/definitions/backend/DepartmentNa
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServiceName } from "../../generated/definitions/backend/ServiceName";
+import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import {
   ServicePublic,
   ServicePublicService_metadata
 } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
-import { frontMatterMyPortal } from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -47,7 +48,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
     // first half have organization_fiscal_code === organizationFiscalCodes[0]
     // second half have organization_fiscal_code === organizationFiscalCodes[1]
     return {
-      ...getService(`serviceid-[${idx}]`),
+      ...getService(`service${idx}`),
       organization_fiscal_code: `${organizationCount + 1}`.padStart(
         11,
         "0"
@@ -113,3 +114,21 @@ export const getServiceMetadata = (
     isJson: true
   };
 };
+
+export const getServicesPreferences = (
+  services: ReadonlyArray<ServicePublic>
+) =>
+  new Map<ServiceId, ServicePreference>(
+    services.map(s => {
+      const isInboxEnabled = faker.random.boolean();
+      return [
+        s.service_id,
+        {
+          is_inbox_enabled: isInboxEnabled,
+          is_email_enabled: isInboxEnabled ? faker.random.boolean() : false,
+          is_webhook_enabled: isInboxEnabled ? faker.random.boolean() : false,
+          settings_version: 0 as ServicePreference["settings_version"]
+        }
+      ];
+    })
+  );

@@ -1,7 +1,8 @@
-import { BackendStatus } from "./types/backendStatus";
+import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
+import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 
 export const backendInfo = {
-  min_app_version: { android: "0.0.0", ios: "0.0.0" },
+  min_app_version: { android: "1.27.0", ios: "1.27.0" },
   min_app_version_pagopa: { android: "0.0.0", ios: "0.0.0" },
   version: "2.1.2"
 };
@@ -16,7 +17,7 @@ export const backendStatus: BackendStatus = {
   sections: {
     cashback: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
         "en-EN":
@@ -25,7 +26,7 @@ export const backendStatus: BackendStatus = {
     },
     email_validation: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT":
           "la sezione messaggi è in manutenzione, tornerà operativa a breve",
@@ -35,7 +36,7 @@ export const backendStatus: BackendStatus = {
     },
     messages: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT":
           "la sezione messaggi è in manutenzione, tornerà operativa a breve",
@@ -45,7 +46,7 @@ export const backendStatus: BackendStatus = {
     },
     services: {
       is_visible: false,
-      level: "critical",
+      level: LevelEnum.critical,
       web_url: {
         "it-IT": "https://io.italia.it/",
         "en-EN": "https://io.italia.it/"
@@ -59,7 +60,7 @@ export const backendStatus: BackendStatus = {
     },
     login: {
       is_visible: false,
-      level: "normal",
+      level: LevelEnum.normal,
       web_url: {
         "it-IT": "https://io.italia.it/",
         "en-EN": "https://io.italia.it/"
@@ -73,7 +74,7 @@ export const backendStatus: BackendStatus = {
     },
     wallets: {
       is_visible: false,
-      level: "critical",
+      level: LevelEnum.critical,
       web_url: {
         "it-IT": "https://io.italia.it/",
         "en-EN": "https://io.italia.it/"
@@ -87,7 +88,7 @@ export const backendStatus: BackendStatus = {
     },
     ingress: {
       is_visible: false,
-      level: "critical",
+      level: LevelEnum.critical,
       web_url: {
         "it-IT": "https://io.italia.it/",
         "en-EN": "https://io.italia.it/"
@@ -101,7 +102,7 @@ export const backendStatus: BackendStatus = {
     },
     credit_card: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       badge: {
         "it-IT": "warning message",
         "en-EN": "possible slowness"
@@ -113,7 +114,7 @@ export const backendStatus: BackendStatus = {
     },
     satispay: {
       is_visible: false,
-      level: "critical",
+      level: LevelEnum.critical,
       message: {
         "it-IT": "satispay",
         "en-EN": "satispay"
@@ -121,7 +122,7 @@ export const backendStatus: BackendStatus = {
     },
     bancomat: {
       is_visible: false,
-      level: "normal",
+      level: LevelEnum.normal,
       message: {
         "it-IT": "bancomat",
         "en-EN": "bancomat"
@@ -133,7 +134,7 @@ export const backendStatus: BackendStatus = {
     },
     bancomatpay: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT": "bancomatpay",
         "en-EN": "bancomatpay"
@@ -141,7 +142,7 @@ export const backendStatus: BackendStatus = {
     },
     digital_payments: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT": "digital_payments",
         "en-EN": "digital_payments"
@@ -149,7 +150,7 @@ export const backendStatus: BackendStatus = {
     },
     cobadge: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT": "cobadge",
         "en-EN": "cobadge"
@@ -157,16 +158,27 @@ export const backendStatus: BackendStatus = {
     },
     euCovidCert: {
       is_visible: false,
-      level: "warning",
+      level: LevelEnum.warning,
       message: {
         "it-IT": "euCovidCert banner test",
         "en-EN": "euCovidCert banner test"
       }
+    },
+    favourite_language: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      }
     }
   },
   config: {
+    bpd: {
+      enroll_bpd_after_add_payment_method: false
+    },
     bpd_ranking: true,
     bpd_ranking_v2: true,
-    cgn_merchants_v2: true
+    cgn_merchants_v2: false
   }
 };

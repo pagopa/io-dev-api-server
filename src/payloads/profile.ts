@@ -1,13 +1,15 @@
 import { FiscalCode, NonEmptyString } from "italia-ts-commons/lib/strings";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
 import { profile } from "../global";
 import { validatePayload } from "../utils/validator";
-import { IOResponse } from "./response";
 
-const currentTosVersion = 2.1;
-// define here the fiscalCode used within the client communication
+const currentTosVersion = 2.4;
 const spidProfile: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.AUTO
+  },
   accepted_tos_version: currentTosVersion,
   email: profile.email as EmailAddress,
   family_name: profile.family_name,
@@ -26,6 +28,9 @@ const spidProfile: InitializedProfile = {
 
 // mock a SPID profile on first onboarding
 const spidProfileFirstOnboarding: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.LEGACY
+  },
   email: profile.email as EmailAddress,
   family_name: profile.family_name,
   has_profile: true,
@@ -42,6 +47,9 @@ const spidProfileFirstOnboarding: InitializedProfile = {
 };
 
 const cieProfile: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.AUTO
+  },
   email: profile.email as EmailAddress,
   accepted_tos_version: currentTosVersion,
   family_name: profile.family_name,
@@ -58,6 +66,9 @@ const cieProfile: InitializedProfile = {
 
 // mock a cie profile on first onboarding
 const cieProfileFirstOnboarding: InitializedProfile = {
+  service_preferences_settings: {
+    mode: ServicesPreferencesModeEnum.LEGACY
+  },
   family_name: profile.family_name,
   has_profile: true,
   is_email_enabled: true,
@@ -71,15 +82,8 @@ const cieProfileFirstOnboarding: InitializedProfile = {
 };
 
 const currentProfile = spidProfile;
-export const getProfile = (
-  fiscalCode: string
-): IOResponse<InitializedProfile> => {
-  return {
-    // inject the fiscal code
-    payload: validatePayload(InitializedProfile, {
-      ...currentProfile,
-      fiscal_code: fiscalCode
-    }),
-    isJson: true
-  };
-};
+export const getProfile = (fiscalCode: string): InitializedProfile =>
+  validatePayload(InitializedProfile, {
+    ...currentProfile,
+    fiscal_code: fiscalCode
+  });
