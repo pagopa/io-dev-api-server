@@ -45,17 +45,15 @@ export const backendStatus: BackendStatus = {
       }
     },
     services: {
-      is_visible: false,
+      is_visible: true,
       level: LevelEnum.critical,
       web_url: {
         "it-IT": "https://io.italia.it/",
         "en-EN": "https://io.italia.it/"
       },
       message: {
-        "it-IT":
-          "la sezione servizi è in manutenzione, tornerà operativa a breve",
-        "en-EN":
-          "the services section is under maintenance, it will be operational again shortly"
+        "it-IT": "Ciao Mondo",
+        "en-EN": "Helloi World"
       }
     },
     login: {
@@ -176,7 +174,7 @@ export const backendStatus: BackendStatus = {
   config: {
     bpd: {
       enroll_bpd_after_add_payment_method: false,
-      program_active: true
+      program_active: false
     },
     bpd_ranking: true,
     bpd_ranking_v2: true,

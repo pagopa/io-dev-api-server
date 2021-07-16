@@ -30,7 +30,7 @@ let idActivationBonus: string | undefined;
 const aLotOfBonus = range(1, 1).map(_ => ({
   ...activeBonus,
   id: genRandomBonusCode(),
-  status: BonusActivationStatusEnum.ACTIVE
+  status: BonusActivationStatusEnum.REDEEMED
 }));
 
 // since all these apis implements a specific flow, if you want re-run it
