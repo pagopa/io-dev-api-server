@@ -10,9 +10,8 @@ addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
   res.json(session.payload)
 );
 
-// TODO replace with the relative generated codec when all specs will be updated
-addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), _ =>
-  toPayload({
+addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), (_, res) =>
+  res.json({
     access_token: faker.random.uuid(),
     expires_in: faker.random.number()
   })

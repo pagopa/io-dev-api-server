@@ -6,6 +6,7 @@ import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
+import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
@@ -47,8 +48,9 @@ const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
-export const transactions = getTransactions(
+export const transactions: ReadonlyArray<Transaction> = getTransactions(
   transactionsTotal,
+  true,
   true,
   wallets.data
 );
@@ -96,7 +98,12 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const transaction = transactions[0];
+    const idTransactions = parseInt(req.params.idTransaction, 10);
+    const transaction = transactions.find(t => t.id === idTransactions);
+    if (transaction === undefined) {
+      res.sendStatus(404);
+      return;
+    }
     res.json({ data: transaction });
   }
 );
