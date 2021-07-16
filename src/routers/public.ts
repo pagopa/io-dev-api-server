@@ -2,7 +2,7 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
-import { backendInfo, backendStatus } from "../payloads/backend";
+import { backendInfo } from "../payloads/backend";
 import {
   errorRedirectUrl,
   loginSessionToken,
@@ -46,11 +46,6 @@ addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 // test login
 addHandler(publicRouter, "post", "/test-login", (_, res) =>
   res.json({ token: loginSessionToken })
-);
-
-// backend service status
-addHandler(publicRouter, "get", "/status/backend.json", (_, res) =>
-  res.json(backendStatus)
 );
 
 addHandler(publicRouter, "get", "/paywebview", (_, res) => {

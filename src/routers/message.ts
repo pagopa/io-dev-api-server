@@ -3,6 +3,7 @@ import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
+import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
@@ -15,13 +16,14 @@ import {
 import { addHandler } from "../payloads/response";
 import { addApiV1Prefix } from "../utils/strings";
 import {
-  frontMatter1CTA,
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
   frontMatter1CTABonusCgn,
   frontMatter2CTA2,
+  frontMatterBonusVacanze,
   messageMarkdown
 } from "../utils/variables";
+import { authResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
 
 export const messageRouter = Router();
@@ -41,13 +43,15 @@ const getRandomServiceId = (): string => {
 const getNewMessage = (
   subject: string,
   markdown: string,
-  prescriptionData?: PrescriptionData
+  prescriptionData?: PrescriptionData,
+  euCovidCert?: MessageContentEu_covid_cert
 ): CreatedMessageWithContent =>
   withContent(
     createMessage(fiscalCode, getRandomServiceId()),
     subject,
     markdown,
-    prescriptionData
+    prescriptionData,
+    euCovidCert
   );
 
 const addMessage = (message: CreatedMessageWithContent) =>
@@ -72,27 +76,21 @@ const createMessages = () => {
   addMessage(getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown));
   addMessage(
     getNewMessage(
-      `1 nested CTA ISEE bonus vacanze`,
-      frontMatter1CTA + messageMarkdown
+      `2 CTA bonus vacanze`,
+      frontMatterBonusVacanze + messageMarkdown
     )
   );
   addMessage(
-    getNewMessage(
-      `1 nested CTA start BPD`,
-      frontMatter1CTABonusBpd + messageMarkdown
-    )
+    getNewMessage(`1 CTA start BPD`, frontMatter1CTABonusBpd + messageMarkdown)
   );
   addMessage(
     getNewMessage(
-      `1 nested CTA IBAN BPD`,
+      `1 CTA IBAN BPD`,
       frontMatter1CTABonusBpdIban + messageMarkdown
     )
   );
   addMessage(
-    getNewMessage(
-      `1 nested CTA start CGN`,
-      frontMatter1CTABonusCgn + messageMarkdown
-    )
+    getNewMessage(`1 CTA start CGN`, frontMatter1CTABonusCgn + messageMarkdown)
   );
 
   addMessage(
@@ -151,6 +149,20 @@ const createMessages = () => {
       new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
     )
   );
+
+  authResponses.forEach(config => {
+    const [authCode, description] = config;
+    addMessage(
+      getNewMessage(
+        `🏥 EUCovidCert - ${description}`,
+        messageMarkdown,
+        undefined,
+        {
+          auth_code: authCode
+        }
+      )
+    );
+  });
 };
 
 createMessages();

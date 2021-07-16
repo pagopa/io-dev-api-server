@@ -11,7 +11,6 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
-import { getTransactions } from "../payloads/wallet";
 import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";

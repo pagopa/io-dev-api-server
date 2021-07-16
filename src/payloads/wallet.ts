@@ -156,6 +156,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
 
 export const getTransactions = (
   count: number,
+  confirmed: boolean = true,
   randomData: boolean = true,
   wallets?: ReadonlyArray<Wallet>
 ): ReadonlyArray<Transaction> => {
@@ -179,7 +180,8 @@ export const getTransactions = (
       : new Date(now.getTime() + idx * delta);
     const merchant = randomData ? faker.company.companyName() : "merchant";
     return validatePayload(Transaction, {
-      accountingStatus: 1,
+      // 1 === transaction confirmed!
+      accountingStatus: confirmed ? 1 : 0,
       amount: { amount },
       created,
       description,
