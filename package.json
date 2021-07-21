@@ -58,8 +58,8 @@
   "dependencies": {
     "@pagopa/ts-commons": "^9.4.0",
     "@types/body-parser": "^1.17.1",
+    "@types/faker": "^5.1.4",
     "@types/date-fns": "^2.6.0",
-    "@types/faker": "^5.1.2",
     "@types/figlet": "^1.2.1",
     "@types/morgan": "^1.9.2",
     "@types/prettier": "^1.19.0",
