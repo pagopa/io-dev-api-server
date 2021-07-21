@@ -23,8 +23,10 @@ export const BONUSCODE_LENGTH = 12;
 /**
  * Generates a new random bonus code
  */
-export function genRandomBonusCode(): BonusCode {
-  const randomBuffer = randomBytes(BONUSCODE_LENGTH);
+export function genRandomBonusCode(
+  length: number = BONUSCODE_LENGTH
+): BonusCode {
+  const randomBuffer = randomBytes(length);
   const code = [...Array.from(randomBuffer)]
     .map(b => ALPHABET[b % ALPHABET_LEN])
     .join("");
@@ -46,6 +48,7 @@ export const activeBonus: BonusActivationWithQrCode = {
   ],
   dsu_request: dsuData,
   created_at: new Date(),
+  redeemed_at: new Date(),
   status: BonusActivationStatusEnum.ACTIVE
 };
 

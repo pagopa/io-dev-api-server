@@ -1,0 +1,797 @@
+{
+  "version": 1,
+  "it": {
+    "screens": [
+      {
+        "route_name": "CGN_INFORMATION_TOS",
+        "title": "Attiva la Carta Giovani Nazionale",
+        "content": "Qui sono visualizzate tutte le informazioni relative alla Carta Giovani Nazionale, il provvedimento istituito dal Dipartimento per le Politiche Giovanili e il Servizio Civile Universale che dà diritto a sconti e agevolazioni ai giovani residenti in Italia sull'acquisto di determinati beni e servizi.",
+        "faqs": [
+          {
+            "title": "Come faccio a richiedere la Carta Giovani Nazionale?",
+            "body": "Se sei maggiorenne e risiedi in Italia, semplicemente premi sul pulsante 'Attiva la tua Carta Giovani' in fondo alla pagina e segui le indicazioni in app. L'App IO effettuerà un controllo sulla tua età e, se risulterà idonea, attiverà la Carta Giovani Nazionale."
+          },
+          {
+            "title": "Cos'è il circuito EYCA?",
+            "body": "Il circuito EYCA unisce tutte le carte giovani dei diversi Paesi europei e offre agevolazioni in ottica di reciprocità: un giovane italiano con Carta Giovani Nazionale aderente a EYCA può usufruire dei benefici previsti nei Paesi aderenti, così come i giovani stranieri in visita nel nostro Paese, potranno utilizzare le loro carte EYCA presso gli esercenti aderenti a Carta Giovani Nazionale."
+          },
+          {
+            "title": "Cosa devo fare per aderire a EYCA?",
+            "body": "L'adesione ad EYCA è prevista solo per giovani fino ai 30 anni compiuti. Se rientri in questa fascia d'età non dovrai fare nulla. L'App IO comunicherà la richiesta ai sistemi di EYCA. Se nel dettaglio della tua Carta Giovani Nazionale compaiono anche il numero di carta EYCA e il relativo logo, puoi considerarla abilitata anche al circuito europeo."
+          },
+          {
+            "title": "Quanto tempo passa dal momento della richiesta al momento dell’attivazione della mia Carta Giovani Nazionale?",
+            "body": "Se sei in possesso di tutti i requisiti che danno diritto alla Carta Giovani Nazionale, l’attivazione è pressoché immediata: in pochi minuti, dal momento della richiesta, l’App completa le verifiche necessarie e attiva la tua Carta."
+          },
+          {
+            "title": "Posso condividere le agevolazioni della Carta Giovani Nazionale con i miei familiari e amici?",
+            "body": "No, le agevolazioni promosse dalla Carta Giovani Nazionale hanno carattere individuale e nominativo, e possono quindi essere utilizzate esclusivamente dal titolare della Carta. L’uso improprio della carta può comportare la sua revoca."
+          },
+          {
+            "title": "Devo aggiungere una carta di credito sull’app IO per richiedere e utilizzare la Carta Giovani Nazionale?",
+            "body": "No. Anche se trovi la funzione per richiedere la Carta Giovani all’interno della sezione “Portafoglio” dell’App IO, il suo utilizzo non è associato in alcun modo alla disponibilità di una carta di credito né di altri metodi di pagamento salvati nell’app. Quando utilizzerai le agevolazioni della Carta per ottenere uno sconto - sull’e-commerce o presso le strutture fisiche dell’esercente convenzionato - provvederai al pagamento con la modalità che preferisci."
+          },
+          {
+            "title": "Se utilizzo le agevolazioni della mia Carta Giovani Nazionale per un acquisto online, l’applicazione dello sconto è immediata o riceverò un rimborso successivamente?",
+            "body": "L’applicazione dello sconto è immediata. Assicurati di digitare correttamente il codice sconto in fase di acquisto, per vederlo subito applicato nel carrello dell’e-commerce dell’esercente."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_DETAILS",
+        "title": "La tua Carta Giovani Nazionale",
+        "content": "Questa è la schermata di dettaglio della tua Carta Giovani Nazionale. Da qui puoi visualizzare la lista degli esercenti che aderiscono all'iniziativa, generare un codice sconto temporaneo o copiare il tuo numero di carta EYCA se hai tra i 18 e i 30 anni.",
+        "faqs": [
+          {
+            "title": "Come si usa la Carta Giovani Nazionale per ottenere gli sconti?",
+            "body": "Per acquisti presso strutture fisiche basterà aprire l'App IO e mostrare la Carta Giovani Nazionale alla cassa. Per gli acquisti online devi generare un codice sconto temporaneo e incollarlo nel campo sconto presente nel portale dell'esercente. Se il codice sconto non dovesse funzionare verifica nella scheda dell'esercente di tuo interesse se è presente un codice sconto. Se lo fosse, inserisci quel codice nel campo sconto. Se il codice inserito è valido, lo sconto verrà automaticamente calcolato al tuo carrello."
+          },
+          {
+            "title": "Cos'è il circuito EYCA?",
+            "body": "Il circuito EYCA unisce tutte le carte giovani dei diversi Paesi europei e offre agevolazioni in ottica di reciprocità: un giovane italiano con Carta Giovani Nazionale aderente a EYCA può usufruire dei benefici previsti nei Paesi aderenti, così come i giovani stranieri in visita nel nostro Paese, potranno utilizzare le loro carte EYCA presso gli esercenti aderenti a Carta Giovani Nazionale."
+          },
+          {
+            "title": "Cosa devo fare per aderire a EYCA?",
+            "body": "L'adesione ad EYCA è prevista solo per giovani fino ai 30 anni compiuti. Se rientri in questa fascia d'età non dovrai fare nulla. L'App IO comunicherà la richiesta ai sistemi di EYCA. Se nel dettaglio della tua Carta Giovani Nazionale compaiono anche il numero di carta EYCA e il relativo logo, puoi considerarla abilitata anche al circuito europeo."
+          },
+          {
+            "title": "Quando scade la mia Carta Giovani Nazionale?",
+            "body": "La tua Carta Giovani Nazionale perde validità al compimento del 36esimo anno di età. La data di scadenza è indicata nel dettaglio della tua Carta sempre consultabile nella sezione “Portafoglio” dell’App. Dopo i 30 anni, in ogni caso, puoi usufruire soltanto delle agevolazioni promosse sul territorio nazionale, dal momento che quelle offerte dal circuito EYCA a livello europeo sono valide fino al compimento del 31° anno di età."
+          },
+          {
+            "title": "Posso disattivare la mia Carta Giovani Nazionale?",
+            "body": "No, la tua Carta verrà disattivata alla sua scadenza naturale. L’attivazione, in ogni caso, non comporta vincoli di alcun tipo; se non ti interessano gli sconti a cui dà diritto, puoi semplicemente non usarla."
+          },
+          {
+            "title": "Posso condividere le agevolazioni della Carta Giovani Nazionale con i miei familiari e amici?",
+            "body": "No, le agevolazioni promosse dalla Carta Giovani Nazionale hanno carattere individuale e nominativo, e possono quindi essere utilizzate esclusivamente dal titolare della Carta. L’uso improprio della carta può comportare la sua revoca."
+          },
+          {
+            "title": "Se utilizzo le agevolazioni della mia Carta Giovani Nazionale per un acquisto online, l’applicazione dello sconto è immediata o riceverò un rimborso successivamente?",
+            "body": "L’applicazione dello sconto è immediata. Assicurati di digitare correttamente il codice sconto in fase di acquisto, per vederlo subito applicato nel carrello dell’e-commerce dell’esercente."
+          },
+          {
+            "title": "Quanti acquisti, online o fisici, posso effettuare usufruendo delle agevolazioni della Carta Giovani Nazionale?",
+            "body": "L’iniziativa non prevede un limite al numero degli sconti utilizzabili. In ogni caso, ogni esercente convenzionato può disporre autonomamente delle modalità di utilizzo dei codici sconto che mette a disposizione rendendo esplicite eventuali condizioni relative alle proprie agevolazioni."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_MERCHANTS_LIST",
+        "title": "Lista esercenti",
+        "content": "Qui puoi visualizzare la lista sempre aggiornata degli esercenti che aderiscono all'iniziativa. La lista contiene sia strutture fisiche che operatori online.",
+        "faqs": [
+          {
+            "title": "Come si usa la Carta Giovani Nazionale per ottenere gli sconti?",
+            "body": "Per acquisti presso strutture fisiche basterà aprire l'App IO e mostrare la Carta Giovani Nazionale alla cassa. Per gli acquisti online devi generare un codice sconto temporaneo e incollarlo nel campo sconto presente nel portale dell'esercente. Se il codice sconto non dovesse funzionare verifica nella scheda dell'esercente di tuo interesse se è presente un codice sconto. Se lo fosse, inserisci quel codice nel campo sconto. Se il codice inserito è valido, lo sconto verrà automaticamente calcolato al tuo carrello."
+          },
+          {
+            "title": "Perché il codice sconto temporaneo non funziona?",
+            "body": "Se il codice non risulta valido, può dipendere da diversi motivi: \n\n - non hai digitato correttamente il codice sconto in fase di acquisto; \n\n - l’esercente prescelto applica particolari condizioni relative alle modalità di utilizzo e alla validità dello sconto: verifica nella scheda servizi dell’esercente se ci sono indicazioni al riguardo. \n\n - hai utilizzato un codice generato tramite l’app IO, ma l’esercente fornisce uno specifico codice sconto per quel servizio: verifica nella scheda servizi dell’esercente se è già presente un codice sconto. \n\n Se i casi descritti sopra non ti aiutano a risolvere il tuo problema, contatta l'assistenza, aprendo una segnalazione qui sotto."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_MERCHANTS_DETAIL",
+        "title": "Dettaglio esercente",
+        "content": "In questa schermata trovi tutte le informazioni relative all'esercente che hai selezionato, incluse le agevolazioni in corso.",
+        "faqs": [
+          {
+            "title": "Come si usa la Carta Giovani Nazionale per ottenere gli sconti?",
+            "body": "Per acquisti presso strutture fisiche basterà aprire l'App IO e mostrare la Carta Giovani Nazionale alla cassa. Per gli acquisti online devi generare un codice sconto temporaneo e incollarlo nel campo sconto presente nel portale dell'esercente. Se il codice sconto non dovesse funzionare verifica nella scheda dell'esercente di tuo interesse se è presente un codice sconto. Se lo fosse, inserisci quel codice nel campo sconto. Se il codice inserito è valido, lo sconto verrà automaticamente calcolato al tuo carrello."
+          },
+          {
+            "title": "Perché il codice sconto temporaneo non funziona?",
+            "body": "Se il codice non risulta valido, può dipendere da diversi motivi: \n\n - non hai digitato correttamente il codice sconto in fase di acquisto; \n\n - l’esercente prescelto applica particolari condizioni relative alle modalità di utilizzo e alla validità dello sconto: verifica nella scheda servizi dell’esercente se ci sono indicazioni al riguardo. \n\n - hai utilizzato un codice generato tramite l’app IO, ma l’esercente fornisce uno specifico codice sconto per quel servizio: verifica nella scheda servizi dell’esercente se è già presente un codice sconto. \n\n Se i casi descritti sopra non ti aiutano a risolvere il tuo problema, contatta l'assistenza, aprendo una segnalazione qui sotto."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_DETAILS_OTP",
+        "title": "Il tuo codice sconto temporaneo",
+        "content": "Questa schermata mostra il codice sconto temporaneo che hai generato e che dovrai inserire nell'apposito campo presente nel portale dell'esercente aderente all'iniziativa di tuo interesse.",
+        "faqs": [
+          {
+            "title": "Perché il codice sconto temporaneo non funziona?",
+            "body": "Se il codice non risulta valido, può dipendere da diversi motivi: \n\n - non hai digitato correttamente il codice sconto in fase di acquisto; \n\n - l’esercente prescelto applica particolari condizioni relative alle modalità di utilizzo e alla validità dello sconto: verifica nella scheda servizi dell’esercente se ci sono indicazioni al riguardo. \n\n - hai utilizzato un codice generato tramite l’app IO, ma l’esercente fornisce uno specifico codice sconto per quel servizio: verifica nella scheda servizi dell’esercente se è già presente un codice sconto. \n\n Se i casi descritti sopra non ti aiutano a risolvere il tuo problema, contatta l'assistenza, aprendo una segnalazione qui sotto."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_INFORMATION_TOS",
+        "title": "Programma Cashback",
+        "content": "Qui sono visualizzate tutte le informazioni relative al Cashback, il provvedimento istituito dal Ministero dell'Economia e delle Finanze per incentivare l'utilizzo della moneta elettronica anche per piccole somme.",
+        "faqs": [
+          {
+            "title": "Come faccio a richiedere il Cashback?",
+            "body": "Se sei maggiorenne e risiedi in Italia, semplicemente premi sul pulsante 'Attiva il Cashback' in fondo alla pagina e segui il flusso che ti viene proposto.\nA seguito dell'autodichiarazione, ti verrà chiesto di:\n- inserire un IBAN, che utilizzeremo a fine periodo per rimborsarti eventuali importi accumulati;\n- aggiungere metodi di pagamento elettronici (o attivare quelli già presenti nel tuo portafoglio).\n\nEntrambi i passaggi sono facoltativi, ma ti consigliamo di effettuarli subito per evitare di dimenticarti e iniziare quanto prima ad accumulare transazioni valide."
+          },
+          {
+            "title": "Cosa serve per richiedere il Cashback?",
+            "body": "Devi essere maggiorenne, risiedere in Italia e avere almeno un IBAN a te intestato o cointestato e almeno un metodo di pagamento elettronico."
+          },
+          {
+            "title": "Ci sono limiti di reddito? Serve presentare una DSU per il calcolo dell’ISEE per accedere al Cashback?",
+            "body": "No, l’erogazione dei rimborsi previsti dal programma non è legata in alcun modo al reddito né alla situazione patrimoniale dei partecipanti."
+          },
+          {
+            "title": "Possono partecipare tutti i componenti maggiorenni dello stesso nucleo familiare?",
+            "body": "Per aderire al Cashback non c’è un limite al numero di partecipanti per nucleo familiare. Ogni componente maggiorenne e residente in Italia può iscriversi individualmente al programma e ricevere il proprio rimborso."
+          },
+          {
+            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
+            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_DECLARATION",
+        "title": "Iscrizione al Cashback",
+        "content": "Leggi le condizioni descritte in questa pagina e, se corrispondono al vero, spunta i relativi quadratini, premendoli.\nPuoi proseguire nell'attivazione del Cashback solo se tutti e 4 i quadratini sono spuntati.\nTi ricordiamo che dichiarando il falso potrai incorrere in sanzioni penali, oltre a perdere il diritto al rimborso di eventuali importi accumulati ai sensi degli [Articoli 46 e 47 del Dpr 28 dicembre 2000 n. 445](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:2000-12-28;445)",
+        "faqs": [
+          {
+            "title": "Cosa vuole dire \"acquisti non legati ad attività di Impresa, Arte o Professione\"?",
+            "body": "Significa che non sono valide le transazioni per acquisti legati alla propria attività professionale, ad esempio per l'acquisto di materiale per l'ufficio. I cittadini devono attivare al Cashback solo i metodi di pagamento con cui effettuano acquisti di carattere esclusivamente personale."
+          },
+          {
+            "title": "Per aderire devo avere la cittadinanza italiana?",
+            "body": "No, è sufficiente che tu abbia la residenza in Italia."
+          },
+          {
+            "title": "Mio/a figlio/a è minorenne, ma ha una carta; può partecipare all’iniziativa?",
+            "body": "No, un minorenne non può partecipare al Cashback. Solo se sei il o la titolare della carta di tuo/a figlio/a, puoi registrarla tra i metodi di pagamento elettronici e attivarla sul tuo profilo ai fini del Cashback."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_ENROLL_PAYMENT_METHODS",
+        "title": "Abilita i tuoi metodi di pagamento al Cashback",
+        "content": "In questa schermata ti mostriamo i metodi di pagamento che hai già registrato nel tuo Portafoglio in IO.\nSeleziona quelli che vuoi attivare per il Cashback – premendo sull'icona grigia alla destra dell'elemento nella lista – e conferma la tua scelta.\nTi ricordiamo che puoi attivare ai fini del Cashback solo i metodi di pagamento **a te intestati.**",
+        "faqs": [
+          {
+            "title": "Cosa vuol dire 'Metodi di pagamento non attivabili o non compatibili'?",
+            "body": "Se nella lista vedi metodi di pagamento sotto questa dicitura, significa che alcuni metodi che hai salvato non possono essere attivati ai fini del Cashback. Puoi toccare la 'i' a fianco di ciascun elemento per leggere la motivazione."
+          },
+          {
+            "title": "Quali metodi di pagamento posso usare per il Cashback?",
+            "body": "Ti invitiamo a controllare la lista completa al seguente link: [Metodi di Pagamento](https://io.italia.it/metodi-pagamento).\nStiamo lavorando per includere quanti più metodi di pagamento elettronico possibile, per cui la lista si potrebbe presto aggiornare!"
+          },
+          {
+            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
+            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
+            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
+            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_NO_PAYMENT_METHODS",
+        "title": "Salva i tuoi metodi di pagamento e abilitali al Cashback",
+        "content": "Per iniziare a collezionare transazioni valide che ti permettano di accumulare il cashback, è necessario salvare in IO i tuoi metodi di pagamento elettronico e abilitarli al Cashback.\nPuoi farlo anche in un secondo momento, ma ti informiamo che inizieremo a collezionare le transazioni su un determinato metodo a partire dalle 00:01 del giorno successivo alla sua attivazione in IO.\nTi ricordiamo che puoi attivare ai fini del Cashback solo i metodi di pagamento **a te intestati**.",
+        "faqs": [
+          {
+            "title": "Quali metodi di pagamento posso usare per il Cashback?",
+            "body": "Ti invitiamo a controllare la lista completa al seguente link: [Metodi di Pagamento](https://io.italia.it/metodi-pagamento).\nStiamo lavorando per includere quanti più metodi di pagamento elettronico possibile, per cui la lista si potrebbe presto aggiornare!"
+          },
+          {
+            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
+            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)."
+          },
+          {
+            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
+            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)."
+          },
+          {
+            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
+            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_IBAN",
+        "title": "Inserisci il tuo IBAN",
+        "content": "In questa schermata puoi inserire l'IBAN di un conto o di una carta dotata di IBAN su cui vuoi ricevere gli eventuali rimborsi a periodo concluso. Il conto o la carta in questione **devono essere intestate o cointestate a te.**\nQuesto passaggio non è obbligatorio, ma ti raccomandiamo di farlo entro la fine del periodo per evitare eventuali problemi con i rimborsi.",
+        "faqs": [
+          {
+            "title": "Posso cambiare l’IBAN con cui ho aderito al Cashback?",
+            "body": "Sì, puoi modificare l’IBAN in ogni momento fino alla scadenza di ciascun periodo."
+          },
+          {
+            "title": "Due partecipanti al Cashback possono indicare per i rimborsi lo stesso codice IBAN, se sono co-intestatari?",
+            "body": "Sì, dal momento che quel codice IBAN risulta associato ai Codici Fiscali di entrambi partecipanti, iscritti individualmente al programma."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_DETAILS",
+        "title": "Cashback",
+        "content": "Qui sono visualizzati i dettagli del Cashback e le azioni necessarie per gestire i tuoi metodi di pagamento associati e l'IBAN per ricevere l'eventuale rimborso. Se vuoi vedere tutte le informazioni relative al programma, visita il sito [io.italia.it/cashback](https://io.italia.it/cashback)",
+        "faqs": [
+          {
+            "title": "Perché vedo il cashback a cui ho diritto espresso in migliaia?",
+            "body": "In alcuni dispositivi il messaggio sul cashback a cui hai diritto riporta la cifra in un formato errato: verrà corretto a partire dalla prossima versione dell'app. Il valore corretto è quello riportato nella card del Cashback: ti ricordiamo che in ciascun periodo puoi accumulare al massimo € 150,00 di rimborso."
+          },
+          {
+            "title": "Come devo leggere questa schermata?",
+            "body": "Nella card in alto è riportato il periodo relativo al Cashback e se si tratta di un periodo attivo, o concluso. Inoltre l'importo descrive la cifra di Cashback accumulato fino a questo momento. Se vicino all'importo c'è un lucchetto, significa che ancora non si è raggiunto il numero minimo di transazioni richieste.\n\nAppena sotto le statistiche descrivono lo stato e l'andamento nell'iniziativa, ad esempio il numero di transazioni accumulate ed eventualmente la posizione in classifica per ottenere il Super Cashback."
+          },
+          {
+            "title": "Cosa posso fare in questa schermata?",
+            "body": "Il modulo relativo ai metodi permette di attivare/disattivare o aggiungere nuovi metodi di pagamento, così come il modulo dell'IBAN permette di inserire o modificare l'IBAN già inserito.\n\nInfine i due pulsanti in basso permettono di visualizzare il dettaglio di tutte le transazioni valide registrate o disiscriversi dal Cashback."
+          },
+          {
+            "title": "Quali metodi di pagamento posso usare per partecipare al Cashback?",
+            "body": "Puoi partecipare al Cashback con:\n- carte di credito;\n- carte di debito su circuiti internazionali e su circuito PagoBANCOMAT;\n- carte prepagate;\n- le cosiddette carte fedeltà, ovvero carte e app di pagamento connesse a circuiti privativi e/o a spendibilità limitata (_esclusi, quindi, quelli solo per accumulo punti_);\n- app di pagamento, come ad esempio Satispay o BANCOMAT Pay;\n- altri sistemi di pagamento, come ad esempio Google Pay e Apple Pay (**sull'App IO a partire dal 2021**).\n\n**Nota bene**: All’avvio del Programma, alcune carte o app di pagamento che utilizzi potrebbero NON essere registrabili da subito, seppur inclusi nelle categorie di cui sopra, o potrebbero essere registrabili solo da un [canale alternativo a IO](https://io.italia.it/cashback/issuer/). Questo potrebbe dipendere dai tempi tecnici necessari per rendere operativi i metodi di pagamento elettronici nell’ambito del Cashback. [Verifica quali metodi di pagamento puoi già attivare per il Cashback](https://io.italia.it/metodi-pagamento/)."
+          },
+          {
+            "title": "Quali acquisti sono validi ai fini del Cashback?",
+            "body": "In generale, sono validi gli acquisti effettuati sul territorio nazionale, con i metodi di pagamento elettronico attivati al Cashback, tramite dispositivi fisici di accettazione, come i POS, forniti da [Acquirer Convenzionati che ti permettano di partecipare all’iniziativa](https://io.italia.it/cashback/acquirer). Per questo, prima di eseguire un pagamento verifica sempre con l’esercente se il suo sistema di incasso consente la partecipazione al Cashback. Gli acquisti effettuati con una carta PagoBANCOMAT risulteranno sempre validi a prescindere dal dispositivo di accettazione."
+          },
+          {
+            "title": "Quando vengono aggiunte transazioni alla lista?",
+            "body": "Possono passare in media 3 giorni lavorativi. Non vedi ancora la transazione?\n- Controlla se la tua banca ha già contabilizzato la transazione: i dati vengono trasmessi all’app entro 5 giorni lavorativi dalla contabilizzazione.\n- La transazione potrebbe essere stata gestita con il POS di un soggetto (acquirer) [non ancora convenzionato](https://io.italia.it/cashback/acquirer).\n\nRicorda! Quando si aggiunge un nuovo metodo di pagamento, verranno collezionate le transazioni effettuate a partire dalle 00:01 del giorno successivo a quello dell'attivazione."
+          },
+          {
+            "title": "Perché vedo carte che non riconosco nella sezione 'Attivati su altri canali'?",
+            "body": "In questa sezione trovi tutti i metodi di pagamento elettronici attivati tramite i canali messi a disposizione dei cosiddetti [Issuer Convenzionati](https://io.italia.it/cashback/issuer).\nAlcuni operatori consentono anche l’aggiunta delle rispettive carte abilitate attraverso i cosiddetti 'wallet' come **Apple Pay, Google Pay o Samsung Pay**.\n\n**In questo periodo sperimentale**, detto 'Extra Cashback di Natale', potresti vedere perciò dei numeri di carta differenti rispetto a quello che vedi sulla carta fisica.\n\nTi assicuriamo che non c’è nessun errore o problema di privacy: **si tratta delle versioni virtuali associate alla tua carta**, composte da codici casuali (detti in gergo tecnico 'token'), utilizzati per mettere in sicurezza i pagamenti che effettui tramite smartphone.\n\nPer questo motivo, ad ogni transazione effettuata con il tuo smartphone, non viene mostrato all’esercente il numero della carta fisica, ma si ricorre a questo tipo di versione 'cifrata' (detta anche 'tokenizzata').\n\nStiamo lavorando con i soggetti del settore dei pagamenti coinvolti nell’iniziativa per migliorare la visualizzazione sull’app IO di questo tipo di carte.\n\nPer maggiori informazioni puoi rivolgerti all’[Issuer Convenzionato](https://io.italia.it/cashback/issuer) con cui hai attivato la tua carta per il Cashback."
+          },
+          {
+            "title": "Posso cambiare l’IBAN con cui ho aderito al Cashback?",
+            "body": "Sì, puoi modificare l’IBAN in ogni momento fino alla scadenza di ciascun periodo."
+          },
+          {
+            "title": "Sono validi anche gli acquisti effettuati con una carta aziendale?",
+            "body": "No, solo quelli a carattere privato. Le spese che rispondono a esigenze lavorative, professionali o aziendali non sono valide ai fini del Cashback."
+          },
+          {
+            "title": "Qual è l'importo massimo del Cashback che posso ottenere?",
+            "body": "Il rimborso è pari al 10% dell’importo di ogni transazione valida ai fini del programma, effettuata durante uno dei periodi previsti. L’importo considerato per singola transazione è di massimo 150 euro, mentre non è previsto un importo minimo.\nIl rimborso massimo che puoi ottenere in ciascun periodo è pari a 150 euro. Ad esempio, se hai effettuato:\n- una spesa di 20 euro, l’importo ottenuto per il Cashback sarà di 2 euro;\n- una spesa di 150 euro, l’importo accumulato sarà di 15 euro;\n- una spesa superiore a 150 euro, ad esempio di 700 euro, accumulerai comunque 15 euro di Cashback.\nNell’app IO è sempre possibile visualizzare l’importo del Cashback accumulato fino a quel momento e il dettaglio delle singole transazioni che lo hanno generato. Come già scritto, l’importo massimo che puoi ottenere per singolo periodo è di 150 euro, per cui una volta raggiunto questo limite, eventuali nuove transazioni non genereranno ulteriori rimborsi."
+          },
+          {
+            "title": "Quando riceverò il rimborso ottenuto sul mio conto corrente?",
+            "body": "I rimborsi sono erogati entro 60 giorni dal termine del periodo, con un bonifico sull’IBAN che hai comunicato."
+          },
+          {
+            "title": "Se sono iscritto al Cashback in un certo periodo, resterò iscritto anche per il periodo successivo?",
+            "body": "Sì, considera, però, che al termine di ciascun periodo si conclude il calcolo delle transazioni che ti consentono di ottenere i relativi rimborsi e si riparte da zero all’avvio del periodo successivo. In ogni momento hai la possibilità di attivare o disattivare i tuoi metodi di pagamento o di cancellarti dal programma."
+          },
+          {
+            "title": "Cosa succede se mi cancello dal programma?",
+            "body": "La cancellazione dal programma comporta la perdita del diritto ai rimborsi per il periodo in corso. Se non vuoi perdere i rimborsi accumulati, devi aspettare che ti vengano accreditati sull’IBAN che hai comunicato (solitamente entro 60 giorni successivi alla fine di ciascun periodo)."
+          }
+        ]
+      },
+      {
+        "route_name": "BPD_TRANSACTIONS",
+        "title": "Le tue transazioni valide ai fini del Cashback",
+        "content": "In questa pagina sono visualizzate tutte le transazioni che ti hanno permesso di accumulare dei rimborsi, o di acquisire posizioni nella classifica del Super Cashback (a partire da gennaio 2021).\n\nPremendo su una transazione si apre un dettaglio con maggiori informazioni.\n\nI dati relativi alle transazioni non contengono informazioni circa il tipo di esercente presso cui è avvenuta.",
+        "faqs": [
+          {
+            "title": "Quali acquisti sono validi ai fini del Cashback?",
+            "body": "In generale, sono validi gli acquisti effettuati sul territorio nazionale, con i metodi di pagamento elettronico attivati al Cashback, tramite dispositivi fisici di accettazione, come i POS, forniti da [Acquirer Convenzionati che ti permettano di partecipare all’iniziativa](https://io.italia.it/cashback/acquirer). Per questo, prima di eseguire un pagamento verifica sempre con l’esercente se il suo sistema di incasso consente la partecipazione al Cashback. Gli acquisti effettuati con una carta PagoBANCOMAT risulteranno sempre validi a prescindere dal dispositivo di accettazione."
+          },
+          {
+            "title": "Quando vengono aggiunte transazioni alla lista?",
+            "body": "Possono passare in media 3 giorni lavorativi. Non vedi ancora la transazione?\n- Controlla se la tua banca ha già contabilizzato la transazione: i dati vengono trasmessi all’app entro 5 giorni lavorativi dalla contabilizzazione.\n- La transazione potrebbe essere stata gestita con il POS di un soggetto (acquirer) [non ancora convenzionato](https://io.italia.it/cashback/acquirer).\n\nRicorda! Quando si aggiunge un nuovo metodo di pagamento, verranno collezionate le transazioni effettuate a partire dalle 00:01 del giorno successivo a quello dell'attivazione."
+          },
+          {
+            "title": "Perché vedo carte che non riconosco nella lista delle transazioni?",
+            "body": "Alcuni operatori consentono anche l’aggiunta delle rispettive carte abilitate attraverso i cosiddetti 'wallet' come **Apple Pay, Google Pay o Samsung Pay**.\n\n**In questo periodo sperimentale**, detto 'Extra Cashback di Natale', potresti vedere perciò dei numeri di carta differenti rispetto a quello che vedi sulla carta fisica.\n\nTi assicuriamo che non c’è nessun errore o problema di privacy: **si tratta delle versioni virtuali associate alla tua carta**, composte da codici casuali (detti in gergo tecnico 'token'), utilizzati per mettere in sicurezza i pagamenti che effettui tramite smartphone.\n\nPer questo motivo, ad ogni transazione effettuata con il tuo smartphone, non viene mostrato all’esercente il numero della carta fisica, ma si ricorre a questo tipo di versione 'cifrata' (detta anche 'tokenizzata').\n\nStiamo lavorando con i soggetti del settore dei pagamenti coinvolti nell’iniziativa per migliorare la visualizzazione sull’app IO di questo tipo di carte.\n\nPer maggiori informazioni puoi rivolgerti all’[Issuer Convenzionato](https://io.italia.it/cashback/issuer) con cui hai attivato la tua carta per il Cashback."
+          },
+          {
+            "title": "Perché vedo una transazione con €0 di cashback?",
+            "body": "Se alcune transazioni della lista mostrano €0 come cashback accumulato, significa che probabilmente hai già raggiunto il massimo importo di Cashback ottenibile. Tutte le transazioni collezionate dopo aver raggiunto il traguardo, frutteranno €0, ma contribuiranno alla tua posizione per ottenere il Super Cashback, se attivo nel periodo corrente."
+          },
+          {
+            "title": "C’è un importo minimo sugli acquisti per far sì che le transazioni vengano conteggiate?",
+            "body": "No, per le transazioni **non è previsto un importo minimo**. Ma, nel caso del rimborso percentuale (Cashback 10%), l’importo massimo ottenibile per singola transazione è 15 euro, anche se la transazione supera i 150 euro."
+          },
+          {
+            "title": "C’è un numero massimo di acquisti (nell’arco di una giornata o per la durata di un periodo del programma), oltre il quale le transazioni non sono più conteggiate per il Cashback?",
+            "body": "No, non c’è un numero massimo di acquisti. Esiste però un importo massimo dei rimborsi che puoi ottenere, ovvero 150 euro per ciascun periodo. Una volta raggiunto l’importo massimo, le nuove transazioni concorreranno alla tua posizione nella classifica del Super Cashback (da gennaio 2021). [Consulta la Guida per saperne di più](https://io.italia.it/cashback/guida)"
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BANCOMAT_CHOOSE_BANK",
+        "title": "Informativa sul trattamento dei dati personali",
+        "content": "In questa schermata ti invitiamo a leggere l'informativa prima di procedere all'aggiunta delle tue carte PagoBANCOMAT.",
+        "faqs": [
+          {
+            "title": "Cosa devo fare adesso?",
+            "body": "IO è in grado di risalire a tutte le carte PagoBANCOMAT a te intestate sulla base del tuo codice fiscale, che viene preso dall'account SPID o CIE con cui hai effettuato l'accesso. **In questo caso premi semplicemente su Continua.**\nSe vuoi puoi anche cercare il nome della tua banca, ma non è necessario."
+          },
+          {
+            "title": "Perché non trovo la mia banca?",
+            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una Banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni.\n\n**Premi su Continua e IO cercherà tutte le carte PagoBANCOMAT a te intestate** sulla base del tuo codice fiscale, che viene preso dall'account SPID o CIE con cui hai effettuato l'accesso."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BANCOMAT_SEARCH_AVAILABLE_USER_BANCOMAT",
+        "title": "Le tue carte PagoBANCOMAT",
+        "content": "In questa schermata ti mostriamo la o le carte PagoBANCOMAT a te intestate. Puoi aggiungerle premendo 'Aggiungi', oppure saltare la carta in questione per uscire dal flusso o passare alla carta successiva nel caso ne siano state trovate più di una.",
+        "faqs": [
+          {
+            "title": "Una volta abilitata la carta, posso iniziare subito a collezionare transazioni?",
+            "body": "No, quando si aggiunge un nuovo metodo di pagamento, verranno collezionate le transazioni effettuate a partire dalle 00:01 del giorno successivo a quello dell'attivazione."
+          },
+          {
+            "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
+            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni."
+          },
+          {
+            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
+            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
+            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Posso salvare tra i metodi di pagamento per il Cashback una carta già registrata ai fini del programma da un altro partecipante?",
+            "body": "No, lo stesso metodo di pagamento non può essere attivato contemporaneamente da due o più partecipanti al programma."
+          },
+          {
+            "title": "Ho appena registrato un metodo di pagamento al Cashback sull’app IO, posso fare da subito acquisti validi ai fini del programma?",
+            "body": "No, saranno conteggiati come validi per il Cashback gli acquisti effettuati con il metodo di pagamento che hai attivato, a partire dalle ore 00:01 del giorno seguente all’attivazione."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BANCOMAT_SUGGEST_BPD_ACTIVATION",
+        "title": "Vuoi iscriverti al programma Cashback?",
+        "content": "Se stai visualizzando questa schermata, significa che hai appena aggiunto metodi di pagamento compatibili con l'iniziativa Cashback.\nSe vuoi iscriverti per provare a ottenere un rimborso sui tuoi acquisti effettuati con strumenti di pagamento elettronico, premi su **Info e Attivazione**, altrimenti premi **No, grazie.**",
+        "faqs": [
+          {
+            "title": "Quali metodi di pagamento posso usare per partecipare al Cashback?",
+            "body": "Puoi partecipare al Cashback con:\n- carte di credito;\n-carte di debito su circuiti internazionali e su circuito PagoBANCOMAT;\n- carte prepagate;\n- le cosiddette carte fedeltà, ovvero carte e app di pagamento connesse a circuiti privativi e/o a spendibilità limitata (esclusi, quindi, quelli solo per accumulo punti);\n- app di pagamento, come ad esempio Satispay o BANCOMAT Pay;\n- altri sistemi di pagamento, come ad esempio Google Pay e Apple Pay (a partire dal 2021)."
+          },
+          {
+            "title": "Posso cancellarmi dal Cashback in qualsiasi momento?",
+            "body": "Sì. Se ti sei iscritto al programma tramite app IO, puoi sempre recedere cliccando su 'Cancella la tua iscrizione al Cashback' dalla schermata di dettaglio Cashback nella sezione 'Portafoglio'.\nSe invece per iscriverti hai usato uno di uno degli [Issuer Convenzionati](https://io.italia.it/cashback/issuer), puoi cancellarti  solo se non hai attivi altri metodi di pagamento su altri canali."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BANCOMAT_ACTIVATE_BPD_NEW",
+        "title": "Attiva il Cashback sulle tue carte PagoBANCOMAT",
+        "content": "In questa schermata ti chiediamo di abilitare i metodi di pagamento appena aggiunti per il Cashback.\nUna volta attivi, potrai iniziare a collezionare transazioni valide a partire dal giorno successivo alla data di attivazione.\n\nPer attivare i metodi, devi semplicemente premere sull'icona grigia alla destra dell'elemento. Se l'icona diventa blu, allora il metodo selezionato è attivo.",
+        "faqs": [
+          {
+            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
+            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
+            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
+            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
+          },
+          {
+            "title": "Ho appena registrato la mia carta al Cashback sull’app IO, posso fare da subito acquisti validi ai fini del programma?",
+            "body": "No, saranno conteggiati come validi per il Cashback gli acquisti effettuati con il metodo di pagamento che hai attivato, a partire dalle ore 00:01 del giorno seguente all’attivazione."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_CREDIT_CARD_ACTIVATE_BPD_NEW",
+        "title": "Attiva il Cashback sulle tue carte",
+        "content": "In questa schermata ti chiediamo di abilitare i metodi di pagamento appena aggiunti per il Cashback.\nUna volta attivi, potrai iniziare a collezionare transazioni valide a partire dal giorno successivo alla data di attivazione.\n\nPer attivare i metodi, devi semplicemente premere sull'icona grigia alla destra dell'elemento. Se l'icona diventa blu, allora il metodo selezionato è attivo.",
+        "faqs": [
+          {
+            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
+            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
+            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
+          },
+          {
+            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
+            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
+          },
+          {
+            "title": "Ho appena registrato la mia carta al Cashback sull’app IO, posso fare da subito acquisti validi ai fini del programma?",
+            "body": "No, saranno conteggiati come validi per il Cashback gli acquisti effettuati con il metodo di pagamento che hai attivato, a partire dalle ore 00:01 del giorno seguente all’attivazione."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_BANCOMAT_DETAIL",
+        "title": "La tua carta PagoBANCOMAT",
+        "content": "Questa è la schermata di dettaglio della tua carta PagoBANCOMAT. Sulla carta sono rappresentati il logo della banca che ha emesso la carta e la data di scadenza.",
+        "faqs": [
+          {
+            "title": "Cosa posso fare da qui?",
+            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento, come ad esempio il Cashback.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
+          },
+          {
+            "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
+            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni."
+          },
+          {
+            "title": "Perché c'è scritto che la mia carta non è compatibile con i pagamenti in app?",
+            "body": "Il circuito PagoBANCOMAT non ti consente di effettuare pagamenti online, ma esistono altri modi per pagare su IO con la tua carta: \n- aggiungi al Portafoglio BANCOMAT Pay, se la tua banca offre questo servizio;\n- aggiungi il secondo circuito, se la tua carta ha il codice di sicurezza ed è già abilitata ai pagamenti online."
+          },
+          {
+            "title": "Cosa succede se disattivo o elimino dall’app IO un metodo di pagamento su cui è attivo il Cashback?",
+            "body": "Continuerai a vedere le transazioni valide effettuate con quel metodo fino a quel giorno, ma non potrai accumularne di nuove dopo la mezzanotte del giorno in cui l’hai cancellato."
+          },
+          {
+            "title": "Ho disattivato il Cashback su una mia carta ma vedo che, con quella carta, continuo ancora a collezionare acquisti validi ai fini del programma, come mai?",
+            "body": "Se scegli di cancellare o sospendere temporaneamente un metodo di pagamento precedentemente registrato, la disattivazione o la sospensione della raccolta delle transazioni su quello strumento è effettiva a partire dalla mezzanotte del giorno successivo."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_COBADGE_CHOOSE_TYPE",
+        "title": "Aggiungi il secondo circuito della tua carta PagoBANCOMAT",
+        "content": "Per aggiungere correttamente il circuito internazionale associato alla tua carta PagoBANCOMAT, ci serve sapere se hai mai utilizzato questa carta online, così da indirizzarti verso la pagina più adatta al tuo caso.",
+        "faqs": [
+          {
+            "title": "Come faccio a capire se la mia carta è abilitata ai pagamenti online?",
+            "body": "La tua carta deve avere un codice di sicurezza: è di 3 cifre ed è stampato sul retro. Se non lo trovi, significa che puoi utilizzare la tua carta soltanto nei negozi.\n\nAssicurati inoltre di aver abilitato il servizio 3D Secure (Mastercard Identity Check per le carte Mastercard) e Verified By Visa/Visa Secure (per le carte Visa). Per maggiori informazioni, accedi al tuo Home Banking o contatta la tua banca."
+          },
+          {
+            "title": "La mia carta ha il codice di sicurezza, ma non riesco comunque a salvarla in app.",
+            "body": "Dopo aver inserito i dati della tua carta, la tua banca effettua una verifica, solitamente via SMS o con una notifica tramite la propria app. Segui bene le istruzioni mostrate dalla tua banca e, in caso di problemi, contatta il loro servizio clienti.\n\nSe non ricevi alcun messaggio (oppure la transazione viene negata) significa che la tua carta non è abilitata ai pagamenti online. Rivolgiti alla tua banca e chiedi come attivare il servizio 3D Secure (Mastercard Identity Check per le carte Mastercard) e Verified By Visa/Visa Secure (per le carte Visa)."
+          },
+          {
+            "title": "Ho già aggiunto il secondo circuito, cosa devo fare?",
+            "body": "Se hai già aggiunto al Portafoglio il circuito internazionale come 'carta di debito/credito', non è necessario aggiungere nuovamente la carta tramite questa funzionalità."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_COBADGE_START",
+        "title": "Aggiungi il secondo circuito della tua carta PagoBANCOMAT",
+        "content": "Questo servizio ti permette di cercare tutte le carte con circuito internazionale (Maestro, Mastercard, Visa e V-Pay) a te intestate.",
+        "faqs": [
+          {
+            "title": "Perché non trovo alcuna carta?",
+            "body": "Il servizio cerca soltanto carte intestate a te, su circuito internazionale (Maestro, Mastercard, Visa e V-Pay) presso le banche aderenti al servizio. Assicurati che la carta in tuo possesso sia effettivamente intestata a te."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_COBADGE_SEARCH_AVAILABLE",
+        "title": "Aggiungi il secondo circuito della tua carta PagoBANCOMAT",
+        "content": "In questa pagina vengono mostrate tutte le carte intestate a te, su circuito internazionale (Maestro, Mastercard, Visa e V-Pay) presso le banche aderenti al servizio. Se non desideri aggiungere una delle carte mostrate, premi 'Salta' per passare a quella successiva.",
+        "faqs": [
+          {
+            "title": "Perché la data di scadenza è diversa?",
+            "body": "In alcuni casi, la data di scadenza mostrata in app può essere diversa rispetto a quella stampata sulla carta fisica, ma ciò non inficia l'aggiunta."
+          },
+          {
+            "title": "Perché il numero della carta è diverso?",
+            "body": "IO ti mostra le ultime 4 cifre relative al circuito internazionale. Tale numero viene riportato anche sugli scontrini, quando effettui acquisti usando tale circuito. In alcuni casi, la carta potrebbe invece mostrare un numero differente, ma ciò non inficia l'aggiunta."
+          },
+          {
+            "title": "Ho già aggiunto il secondo circuito, cosa devo fare?",
+            "body": "Se hai già aggiunto al Portafoglio il circuito internazionale come 'carta di debito/credito', non è necessario aggiungere nuovamente la carta tramite questa funzionalità."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_COBADGE_DETAIL",
+        "title": "La tua carta con circuito internazionale",
+        "content": "Questa è la schermata di dettaglio della tua carta con circuito internazionale. Sulla carta sono rappresentati il logo della banca che ha emesso la carta, la data di scadenza e logo e numero relativi al circuito internazionale.",
+        "faqs": [
+          {
+            "title": "Cosa posso fare da qui?",
+            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento, come ad esempio il Cashback.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
+          },
+          {
+            "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
+            "body": "Probabilmente la tua carta è stata emessa da una banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni."
+          },
+          {
+            "title": "Perché la data di scadenza è diversa?",
+            "body": "In alcuni casi, la data di scadenza mostrata in app può essere diversa rispetto a quella stampata sulla carta fisica, ma ciò non inficia l'aggiunta."
+          },
+          {
+            "title": "Perché il numero della carta è diverso?",
+            "body": "IO ti mostra le ultime 4 cifre relative al circuito internazionale. Tale numero viene riportato anche sugli scontrini, quando effettui acquisti usando tale circuito. In alcuni casi, la carta potrebbe invece mostrare un numero differente, ma ciò non inficia l'aggiunta."
+          },
+          {
+            "title": "Cosa succede se disattivo o elimino dall’app IO un metodo di pagamento su cui è attivo il Cashback?",
+            "body": "Continuerai a vedere le transazioni valide effettuate con quel metodo fino a quel giorno, ma non potrai accumularne di nuove dopo la mezzanotte del giorno in cui l’hai cancellato."
+          },
+          {
+            "title": "Ho disattivato il Cashback su una mia carta ma vedo che, con quella carta, continuo ancora a collezionare acquisti validi ai fini del programma, come mai?",
+            "body": "Se scegli di cancellare o sospendere temporaneamente un metodo di pagamento precedentemente registrato, la disattivazione o la sospensione della raccolta delle transazioni su quello strumento è effettiva a partire dalla mezzanotte del giorno successivo."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_CARD_TRANSACTION",
+        "title": "La tua carta di debito (o credito)",
+        "content": "Questa è la schermata di dettaglio della tua carta di debito (o credito). Sulla carta sono rappresentati il logo del circuito, l'intestatario, la data di scadenza e le ultime 4 cifre della carta.",
+        "faqs": [
+          {
+            "title": "Cosa posso fare da qui?",
+            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento, come ad esempio il Cashback.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
+          },
+          {
+            "title": "Cosa sono i pagamenti in app?",
+            "body": "Se lo desideri, questo metodo ti permette di pagare su IO tutti gli avvisi pagoPA, anche quelli cartacei."
+          },
+          {
+            "title": "Cosa significa 'Usa come preferito'?",
+            "body": "Quando paghi in app, IO può mostrare in automatico questo metodo di pagamento se lo imposti come preferito. È necessario avere almeno un metodo preferito nel tuo Portafoglio."
+          },
+          {
+            "title": "Cosa succede se disattivo o elimino dall’app IO un metodo di pagamento su cui è attivo il Cashback?",
+            "body": "Continuerai a vedere le transazioni valide effettuate con quel metodo fino a quel giorno, ma non potrai accumularne di nuove dopo la mezzanotte del giorno in cui l’hai cancellato."
+          },
+          {
+            "title": "Ho disattivato il Cashback su una mia carta ma vedo che, con quella carta, continuo ancora a collezionare acquisti validi ai fini del programma, come mai?",
+            "body": "Se scegli di cancellare o sospendere temporaneamente un metodo di pagamento precedentemente registrato, la disattivazione o la sospensione della raccolta delle transazioni su quello strumento è effettiva a partire dalla mezzanotte del giorno successivo."
+          }
+        ]
+      },
+      {
+        "route_name": "EUCOVIDCERT_CERTIFICATE",
+        "title": "La tua Certificazione Verde COVID-19",
+        "content": "Questo è il messaggio contenente il codice QR e tutte le informazioni relative alla tua Certificazione Verde COVID-19, il documento che attesta un vaccino, l'esito di un tampone o l'avvenuta guarigione da COVID-19 e che permette di circolare in sicurezza in Italia e in Europa",
+        "faqs": [
+          {
+            "title": "Posso ricevere su IO più di un certificato verde?",
+            "body": "Sì, ad esempio perchè hai effettuato diversi tamponi, o perchè hai un certificato di guarigione e hai comunque fatto il vaccino."
+          },
+          {
+            "title": "Come faccio a vedere il certificato se non ho disponibile la connessione ad Internet?",
+            "body": "IO chiede il QR code dei certificati alla Piattaforma Nazionale DGC ogni volta che apri il relativo messaggio, quindi in quel momento devi essere connesso. Una volta ottenuto il certificato, puoi però salvare il relativo QR code nella galleria imagini del tuo dispositivo con l'apposito pulsante, così da poterlo mostrare all'occorrenza anche in assenza di connessione."
+          },
+          {
+            "title": "Come faccio a distinguere fra due certificati, ad esempio vaccinazione o un tampone, se vedo solo il QR Code?",
+            "body": "Quando esibirai il tuo Certificato Verde, chi lo verificherà non dovrà conoscere i tuoi dati sanitari ma solo essere sicuro che sia valido: per questo nessun dato sanitario è visibile nella schemata dove trovi il QR code. Per leggere i dati sanitari relativi al certificato premi il pulsante 'Dettagli'."
+          },
+          {
+            "title": "Posso ricevere su IO i certificati dei miei familiari?",
+            "body": "No, su IO vengono inviati esclusivamente i certificati relativi all'utente autenticato nell'app attraverso le proprie credenziali SPID o CIE. Puoi comunque ottenere i certificati relativi ai tuoi familiari attraverso gli altri canali disponibili. Per saperne di più vai sul sito dedicato [dgc.gov.it](https://www.dgc.gov.it/)"
+          },
+          {
+            "title": "Il certificato digitale che trovo su IO sostituisce quello cartaceo?",
+            "body": "Sì, il certificato digitale e quello cartaceo contengono le stesse informazioni."
+          },
+          {
+            "title": "Cosa succede se, dopo aver ricevuto il certificato, disattivo IO?",
+            "body": "Se hai salvato il certificato come immagine sul tuo dispositivo, continuerà ad essere disponibile. Altrimenti potrai scaricarlo nuovamente attraverso gli altri canali disponibili. Consulta il sito dedicato [dgc.gov.it](https://www.dgc.gov.it/)"
+          },
+          {
+            "title": "Fino a quando è valido il mio certificato su IO?",
+            "body": "Il certificato Verde su IO ha la stessa validità dei certificati ottenibili presso gli altri canali. La decisione sulla durata della validità dei certificati è indipendente da IO e spetta alle autorità competenti. Consulta il sito dedicato [dgc.gov.it](https://www.dgc.gov.it/) ed eventualmente il sito del Ministero della Salute [www.salute.gov.it](www.salute.gov.it) per maggiori informazioni."
+          },
+          {
+            "title": "Dove posso salvare il certificato sull'app IO?",
+            "body": "Premendo il pulsante 'Salva', puoi salvare il QR code del certificato nella galleria immagini del tuo dispositivo per poterlo usare anche se non sei connesso ad internet."
+          },
+          {
+            "title": "Vuoi saperne di più sulla Certificazione Verde COVID-19?",
+            "body": "Per la Certificazione Verde su IO app, vai su [io.italia.it/certificato-verde-green-pass-covid](https://io.italia.it/certificato-verde-green-pass-covid) \nPer conoscere meglio l’iniziativa o gli altri canali disponibili visita [dgc.gov.it](https://www.dgc.gov.it/)"
+          }
+        ]
+      },
+      {
+        "route_name": "EUCOVIDCERT_MARKDOWN_DETAILS",
+        "title": "I dettagli della tua Certificazione Verde COVID-19",
+        "content": "Qui trovi tutte le informazioni relative alla tua Certificazione Verde COVID-19.",
+        "faqs": [
+          {
+            "title": "Posso ricevere su IO più di un certificato verde?",
+            "body": "Sì, ad esempio perchè hai effettuato diversi tamponi, o perchè hai un certificato di guarigione e hai comunque fatto il vaccino."
+          },
+          {
+            "title": "Posso ricevere su IO i certificati dei miei familiari?",
+            "body": "No, su IO vengono inviati esclusivamente i certificati relativi all'utente autenticato nell'app attraverso le proprie credenziali SPID o CIE. Puoi comunque ottenere i certificati relativi ai tuoi familiari attraverso gli altri canali disponibili. Per saperne di più vai sul sito dedicato [dgc.gov.it](https://www.dgc.gov.it/)"
+          },
+          {
+            "title": "Il certificato digitale che trovo su IO sostituisce quello cartaceo?",
+            "body": "Sì, il certificato digitale e quello cartaceo contengono le stesse informazioni."
+          },
+          {
+            "title": "Cosa succede se, dopo aver ricevuto il certificato, disattivo IO?",
+            "body": "Se hai salvato il certificato come immagine sul tuo dispositivo, continuerà ad essere disponibile. Altrimenti potrai scaricarlo nuovamente attraverso gli altri canali disponibili. Consulta il sito dedicato [dgc.gov.it](https://www.dgc.gov.it/)"
+          },
+          {
+            "title": "Fino a quando è valido il mio certificato su IO?",
+            "body": "Il certificato Verde su IO ha la stessa validità dei certificati ottenibili presso gli altri canali. La decisione sulla durata della validità dei certificati è indipendente da IO e spetta alle autorità competenti. Consulta il sito dedicato [dgc.gov.it](https://www.dgc.gov.it/) ed eventualmente il sito del Ministero della Salute [www.salute.gov.it](www.salute.gov.it) per maggiori informazioni."
+          },
+          {
+            "title": "Dove posso salvare il certificato sull'app IO?",
+            "body": "Premendo il pulsante 'Salva', puoi salvare il QR code del certificato nella galleria immagini del tuo dispositivo per poterlo usare anche se non sei connesso ad internet."
+          },
+          {
+            "title": "Vuoi saperne di più sulla Certificazione Verde COVID-19?",
+            "body": "Per la Certificazione Verde su IO app, vai su [io.italia.it/certificato-verde-green-pass-covid](https://io.italia.it/certificato-verde-green-pass-covid) \nPer conoscere meglio l’iniziativa o gli altri canali disponibili visita [dgc.gov.it](https://www.dgc.gov.it/)"
+          }
+        ]
+      }
+    ],
+    "idps": {
+      "arubaid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Aruba selezionando una delle opzioni disponibili qui.",
+        "helpdesk_form": "https://selfcarespid.aruba.it/#/recovery-emergency-code",
+        "phone": "003905750504",
+        "web_site": "https://www.pec.it/richiedi-spid-aruba-id.aspx",
+        "recover_username": "https://selfcarespid.aruba.it/#/recovery-username",
+        "recover_password": "https://selfcarespid.aruba.it/#/recovery-password",
+        "recover_emergency_code": "https://selfcarespid.aruba.it/#/recovery-emergency-code"
+      },
+      "infocertid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da InfoCert  selezionando una delle opzioni disponibili qui di seguito. \n Inoltre, per ulteriori informazioni puoi consultare la [le FAQ e le guide](https://help.infocert.it/Cerca?searchText=spid) fornite dal tuo Identity Provider.",
+        "helpdesk_form": "https://contatta.infocert.it/ticket/",
+        "phone": "00390654641489",
+        "web_site": "https://identitadigitale.infocert.it/",
+        "recover_username": "https://help.infocert.it/home/faq/come-posso-recuperare-la-user-id-di-accesso-alla-mia-identita-digitale",
+        "recover_password": "https://my.infocert.it/selfcare/#/recoveryPin"
+      },
+      "intesaid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Intesa  selezionando una delle opzioni disponibili qui di seguito.",
+        "email": "hdintesa@advalia.com",
+        "helpdesk_form": "https://www.hda.intesa.it/area-clienti",
+        "phone": "800805093",
+        "phone_international": "00390287119396",
+        "web_site": "https://www.intesa.it/intesaid",
+        "recover_password": "https://spid.intesa.it/area-privata/recupera-password.aspx"
+      },
+      "lepidaid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Lepida selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://id.lepida.it/docs/manuale_utente.pdf) fornito da tuo Identity Provider.",
+        "email": "helpdesk@lepida.it",
+        "helpdesk_form": "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid",
+        "phone": "800445500",
+        "web_site": "https://id.lepida.it/idm/app/#lepida-spid-id",
+        "recover_username": "https://id.lepida.it/lepidaid/recuperausername",
+        "recover_password": "https://id.lepida.it/lepidaid/recuperapassword"
+      },
+      "namirialid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Namirial selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) fornite dal tuo Identity Provider.",
+        "helpdesk_form": "https://support.namirial.com/it/supporto-tecnico",
+        "phone": "003907163494",
+        "web_site": "https://www.namirialtsp.com/spid/",
+        "recover_username": "https://portal.namirialtsp.com/public/retrieveUsername.xhtml",
+        "recover_password": "https://portal.namirialtsp.com/public/resetPassword.xhtml"
+      },
+      "posteid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+        "helpdesk_form": "https://www.poste.it/scrivici.html",
+        "phone": "800007777",
+        "web_site": "https://posteid.poste.it",
+        "recover_username": "https://posteid.poste.it/recuperocredenziali.shtml",
+        "recover_password": "https://posteid.poste.it/recuperocredenziali.shtml"
+      },
+      "sielteid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
+        "helpdesk_form": "https://www.sielteid.it/contact.html#blocco-contatti-form",
+        "phone": "00390957171301",
+        "web_site": "https://www.sielteid.it/che-cos-e-sielteid.html",
+        "recover_password": "https://myid.sieltecloud.it/profile/forgotPassword"
+      },
+      "spiditalia": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Register mediante il bottone qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.register.it/spid#pgc-23051-10-0) fornite dal tuo Identity Provider ed il [Manuale Utente](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+        "phone": "+390355787979",
+        "web_site": "https://www.register.it/spid/ ",
+        "recover_username": "https://spid.register.it/selfcare/recovery/username ",
+        "recover_password": "https://spid.register.it/selfcare/recovery/password"
+      },
+      "timid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
+        "email": "supportotimid@telecomitalia.it",
+        "helpdesk_form": "https://www.trusttechnologies.it/contatti/#form",
+        "phone": "800405800",
+        "web_site": "https://spid.tim.it/tim-id-portal",
+        "recover_username": "https://login.id.tim.it/mps/fu.php",
+        "recover_password": "https://login.id.tim.it/mps/fp.php"
+      }
+    }
+  },
+  "en": {
+    "screens": [],
+    "idps": {
+      "arubaid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Aruba by selecting  one of the options presented below.",
+        "helpdesk_form": "https://selfcarespid.aruba.it/#/recovery-emergency-code",
+        "phone": "003905750504",
+        "web_site": "https://www.pec.it/richiedi-spid-aruba-id.aspx",
+        "recover_username": "https://selfcarespid.aruba.it/#/recovery-username",
+        "recover_password": "https://selfcarespid.aruba.it/#/recovery-password",
+        "recover_emergency_code": "https://selfcarespid.aruba.it/#/recovery-emergency-code"
+      },
+      "infocertid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of InfoCert by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://help.infocert.it/Cerca?searchText=spid) gathered by your Identity Provider.",
+        "helpdesk_form": "https://contatta.infocert.it/ticket/",
+        "phone": "00390654641489",
+        "web_site": "https://identitadigitale.infocert.it/",
+        "recover_username": "https://help.infocert.it/home/faq/come-posso-recuperare-la-user-id-di-accesso-alla-mia-identita-digitale",
+        "recover_password": "https://my.infocert.it/selfcare/#/recoveryPin"
+      },
+      "intesaid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Intesa by selecting  one of the options presented below.",
+        "email": "hdintesa@advalia.com",
+        "helpdesk_form": "https://www.hda.intesa.it/area-clienti",
+        "phone": "800805093",
+        "phone_international": "00390287119396",
+        "web_site": "https://www.intesa.it/intesaid",
+        "recover_password": "https://spid.intesa.it/area-privata/recupera-password.aspx"
+      },
+      "lepidaid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Lepida by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
+        "email": "helpdesk@lepida.it",
+        "helpdesk_form": "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid",
+        "phone": "800445500",
+        "web_site": "https://id.lepida.it/idm/app/#lepida-spid-id",
+        "recover_username": "https://id.lepida.it/lepidaid/recuperausername",
+        "recover_password": "https://id.lepida.it/lepidaid/recuperapassword"
+      },
+      "namirialid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Namirial by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
+        "helpdesk_form": "https://support.namirial.com/it/supporto-tecnico",
+        "phone": "003907163494",
+        "web_site": "https://www.namirialtsp.com/spid/",
+        "recover_username": "https://portal.namirialtsp.com/public/retrieveUsername.xhtml",
+        "recover_password": "https://portal.namirialtsp.com/public/resetPassword.xhtml"
+      },
+      "posteid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Poste Italiane by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+        "helpdesk_form": "https://www.poste.it/scrivici.html",
+        "phone": "800007777",
+        "web_site": "https://posteid.poste.it",
+        "recover_username": "https://posteid.poste.it/recuperocredenziali.shtml",
+        "recover_password": "https://posteid.poste.it/recuperocredenziali.shtml"
+      },
+      "sielteid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
+        "helpdesk_form": "https://www.sielteid.it/contact.html#blocco-contatti-form",
+        "phone": "00390957171301",
+        "web_site": "https://www.sielteid.it/che-cos-e-sielteid.html",
+        "recover_password": "https://myid.sieltecloud.it/profile/forgotPassword"
+      },
+      "spiditalia": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting  the button below. \n For further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+        "phone": "+390355787979",
+        "web_site": "https://www.register.it/spid/ ",
+        "recover_username": "https://spid.register.it/selfcare/recovery/username ",
+        "recover_password": "https://spid.register.it/selfcare/recovery/password"
+      },
+      "timid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Tim by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
+        "email": "supportotimid@telecomitalia.it",
+        "helpdesk_form": "https://www.trusttechnologies.it/contatti/#form",
+        "phone": "800405800",
+        "web_site": "https://spid.tim.it/tim-id-portal",
+        "recover_username": "https://login.id.tim.it/mps/fu.php",
+        "recover_password": "https://login.id.tim.it/mps/fp.php"
+      }
+    }
+  }
+}

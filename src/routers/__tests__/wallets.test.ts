@@ -1,12 +1,11 @@
-import supertest, { Response, Test } from "supertest";
-import { Psp } from "../../../generated/definitions/pagopa/Psp";
-import { SessionResponse } from "../../../generated/definitions/pagopa/SessionResponse";
-import { TransactionListResponse } from "../../../generated/definitions/pagopa/TransactionListResponse";
-import { WalletListResponse } from "../../../generated/definitions/pagopa/WalletListResponse";
+import supertest, { Response } from "supertest";
+import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
+import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
+import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
+import { WalletListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletListResponse";
 import { sessionToken } from "../../payloads/wallet";
 import app from "../../server";
 import {
-  appendWalletPrefix,
   transactionPageSize,
   transactions,
   transactionsTotal,
@@ -14,7 +13,10 @@ import {
 } from "../wallet";
 
 const request = supertest(app);
-
+const walletPath = "/wallet/v1";
+const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
+const walletV2Path = "/wallet/v2";
+const appendWallet2Prefix = (path: string) => `${walletV2Path}${path}`;
 const testGetWallets = (response: Response) => {
   expect(response.status).toBe(200);
   const wallets = WalletListResponse.decode(response.body);
@@ -45,7 +47,7 @@ it("should start a valid session", async done => {
 });
 
 it("should set a wallet as favourite", async done => {
-  const responseWallets = await request.get(appendWalletPrefix("/wallet"));
+  const responseWallets = await request.get(appendWallet2Prefix("/wallet"));
   const wallets: any = testGetWallets(responseWallets);
   const firstWallet = wallets.data[0];
   const response = await request.post(

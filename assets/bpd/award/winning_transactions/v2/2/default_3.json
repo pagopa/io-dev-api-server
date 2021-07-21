@@ -1,0 +1,21 @@
+{
+  "prevCursor": 2,
+  "transactions": [
+    {
+      "date": "2021-02-05",
+      "transactions": [
+        {
+          "amount": 151,
+          "awardPeriodId": 2,
+          "cashback": 15,
+          "circuitType": "01",
+          "hashPan": "e105a87731025d54181d8e4c4c04ff344ce82e57d6a3d6c6911e8eadb0348d7b",
+          "idTrx": "trx31",
+          "idTrxAcquirer": "idTrxAcquirer",
+          "idTrxIssuer": "idTrxIssuer",
+          "trxDate": "2021-02-05T00:15:51.726Z"
+        }
+      ]
+    }
+  ]
+}

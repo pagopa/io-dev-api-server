@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Services Web view</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="application/javascript">
+    function sendMessagesToRN(serviceId) {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(serviceId);
+        }
+    }
+
+
+    function loadServices(){
+      const container = $("#container");
+      $.getJSON("/api/v1/services", function(services) {
+        services.items.filter(p => p.scope === "LOCAL").forEach(s => {
+          container.append(`<div><h1 style="font-size: 40px;color: blue; cursor: pointer;" onclick="sendMessagesToRN('${s.service_id}')">${s.service_id}</h1></div>`);
+        });
+        }
+      );
+    }
+
+    $(document).ready(function() {
+      loadServices();
+    });
+
+
+
+  </script>
+</head>
+<body style="padding:10px;">
+<div style="font-size: 60px;">WEB VIEW</div>
+<div id="container"></div>
+
+</body>
+</html>

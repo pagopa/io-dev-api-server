@@ -1,0 +1,67 @@
+[
+  {
+    "id_type": 1,
+    "it": {
+      "name": "Bonus Vacanze",
+      "description": "Fino a 500€ a nucleo familiare per andare in vacanza in Italia",
+      "subtitle": "L'incentivo per supportare il settore del turismo dopo il lockdown richiesto dal COVID-19",
+      "title": "Richiesta Bonus Vacanze",
+      "content": "#### Chi può richiederlo?\n\nIl bonus è destinato a tutte le famiglie che hanno un ISEE ordinario o corrente, in corso di validità, non superiore a 40.000€.\n\nIl richiedente deve aver compiuto i 18 anni di età.\n\n#### Quanto vale?\nIl valore del bonus cambia in base al numero di componenti del nuceo familiare:\n- 150€ per un solo componente; \n- 300€ per due componenti; \n- 500€ per più di due componenti.\n\nL’incentivo consiste in uno sconto pari all’80% del valore del bonus, che viene applicato dalla struttura turistica al momento del pagamento della vacanza. Il restante 20% sarà fruito in forma di detrazione fiscale nella dichiarazione dei redditi.\n\n#### Chi, dove e quando può spenderlo?\nCiascun membro del nucleo familiare può usufruire del bonus. \n\nIl bonus vacanze è spendibile in un’unica soluzione nelle strutture ricettive italiane,  dal 1 luglio 2020 al 30 giugno 2021. \n\nIl pagamento deve essere eseguito direttamente alla struttura e deve essere documentato tramite fattura, documento commerciale, o scontrino/ricevuta fiscale in cui sia indicato il codice fiscale del beneficiario.\n\n#### Come funziona il processo di richiesta?\nL’app IO è l’unico canale attraverso cui richiedere il bonus. Puoi richiedere il bonus se hai un ISEE valido e non superiore a 40.000€.\n\nQuesti sono i passaggi che ti chiederemo di effettuare:\n- inizia la richiesta, cliccando sul bottone qui sotto; \n- leggi i termini di servizio e la privacy; \n- l'app IO chiederà a INPS di verificare l'ISEE del tuo nucleo familiare; \n- se hai un ISEE ordinario o corrente, valido e sotto la soglia fissata, ti mostreremo a quanto ammonta il tuo bonus e chi sono i componenti del tuo nucleo familiare che potranno beneficiarne; \n- se confermi la richiesta, IO genera il tuo Bonus Vacanze; \n- una volta attivo, il tuo bonus sarà visibile nella sezione Pagamenti.\n",
+      "tos_url": "https://io.italia.it/app-content/bonus_vacanze_tos.html"
+    },
+    "en": {
+      "name": "Bonus Vacanze",
+      "description": "Up to € 500 per family to go on holiday in Italy",
+      "subtitle": "The incentive established to support tourism after the lockdown due to the Coronavirus emergency.",
+      "title": "Bonus Vacanze Request",
+      "content": "#### Who can request it?\n\nThe bonus is intended for all families with a valid ISEE ordinario or corrente family income of no more than € 40,000.\n\nThe applicant must be over 18 years of age.\n\n#### How much is it worth?\nThe bonus value changes according to the number of members of the family:\n- € 150 for one person; \n- € 300 for two people; \n- € 500 for more than two people.\n\nThe incentive consists of a discount equal to 80% of the bonus value, which is applied by the tourist facility when paying for the holiday. The remaining 20% ​​will be used in the form of a tax deduction in the individual income tax return.\n\n#### Who, where and when can spend it?\nEach member of the household can use the bonus. \n\nIt has to be spent in a single payment in Italian accommodation facilities, from 1 July to 31 December 2020. \n\nPayment must be made directly to the structure and must be documented through an invoice, commercial document, or receipt showing the beneficiary's tax code.\n\n#### How does the application process work?\nIO app is the only channel through which it is possible to request the bonus. You can claim the bonus if you or somebody in your household have a valid ISEE not exceeding € 40,000.\n\nThis is the process in app:\n- start the request by clicking on the button below; \n- read the terms of service and privacy; \n- IO will ask INPS to verify your family's ISEE; \n- if you have a valid ISEE ordinario or corrente below the set threshold, we will show you how much your bonus is worth and the members of your family who can use it; \n- if you confirm the request, IO generates your Bonus Vacanze; \n- once activated, your bonus will be visible in the Payments section of the app.\n",
+      "tos_url": "https://io.italia.it/app-content/bonus_vacanze_tos.html"
+    },
+    "service_id": "01EB8AXKNV6NMSP2R25KSGF743",
+    "is_active": true,
+    "valid_from": "2020-07-01T00:00:00.000Z",
+    "valid_to": "2021-06-30T00:00:00.000Z",
+    "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_BonusVacanze.png",
+    "sponsorship_description": "Agenzia delle Entrate",
+    "sponsorship_cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/vacanze/logo/logo_AgenziaEntrate.png"
+  },
+  {
+    "id_type": 2,
+    "it": {
+      "name": "Cashback",
+      "description": "Un rimborso del 10% sui tuoi pagamenti elettronici e un premio fino a 1500€ per chi fa più transazioni",
+      "subtitle": "Ottieni un rimborso quando usi carte o app di pagamento per gli acquisti nei negozi o per i servizi di artigiani e professionisti",
+      "title": "Cashback",
+      "content": "#### Cos'è il Cashback?\n\nSe hai compiuto i 18 anni e risiedi in Italia, con il programma Cashback puoi ottenere un rimborso per acquisti effettuati a titolo privato (cioè non per uso professionale) sul territorio nazionale con carte e app di pagamento in negozi, bar, ristoranti, supermercati e grande distribuzione o per artigiani e professionisti. **Non concorrono gli acquisti online. Prima di iniziare gli acquisti per il Cashback, verifica che la tua carta o app di pagamento siano tra quelle già attivabili.**\n\n#### Come funziona il Cashback?\n1. Il programma Cashback si divide in periodi. Il primo periodo sperimentale, detto **'Extra Cashback di Natale'**, inizia **l'8 dicembre** e termina il **31 dicembre 2020**. I tre periodi successivi durano 6 mesi ciascuno, a partire dal 1° gennaio 2021.\n2. Non c’è un importo minimo di spesa. Per ogni periodo, puoi ottenere un rimborso **massimo** di €150, pari a **€300 annui**. Ogni acquisto effettuato con carte e app di pagamento registrate al programma Cashback, ti fa accumulare il 10% dell’importo speso, fino a un massimo di €15 per singola transazione.\n[Verifica quali carte e app sono attivabili](https://io.italia.it/metodi-pagamento)\n3. Otterrai il rimborso accumulato solo se avrai raggiunto il **numero minimo** di pagamenti validi: **10 per l’Extra Cashback di Natale, 50 in ciascuno dei semestri successivi**.\n4. Inoltre, dal 1° gennaio 2021 senza alcun importo minimo di spesa, i primi 100mila partecipanti che in ogni semestre hanno totalizzato il maggior numero di transazioni valide, ricevono un Super Cashback di €1500. Quindi, anche fino a €3000 euro l’anno.\n5. Il rimborso accumulato al termine di ciascun periodo, ti sarà accreditato sull’IBAN indicato durante l’attivazione o in un momento successivo.",
+      "tos_url": "https://io.italia.it/cashback/privacy-policy",
+      "urls": [
+        {
+          "name": "Leggi la Guida completa",
+          "url": "https://io.italia.it/cashback/guida"
+
+        }]
+    },
+    "en": {
+      "name": "Cashback",
+      "description": "A 10% refund on your electronic payments and a premium of up to € 1500 for those who make more transactions",
+      "subtitle": "Get a refund when using your electronic payment methods, on in-store purchases and services by artisans and professionals",
+      "title": "Cashback",
+      "content": "#### What is Cashback?\n\nIf you are 18 or above and officially registered as a resident in Italy, by joining the initiative you’re eligible for a refund when you make purchases for personal purposes (i.e. not for business) within Italy, using your cards and payment apps, in stores, cafés, restaurants, supermarkets, etc. – or to pay artisans and professionals. **Online purchases are not part of the initiative. Before shopping for Cashback purposes, please check if your card or payment app is compatible with the initiative.**\n\n#### How does Cashback work?\n1. The initiative consists of several phases. The first test phase, named **'Christmas Extra Cashback'** starts on **December 8th, 2020 and ends on the 31st of the same month.** The next 3 phases will have a duration of 6 months each, starting from January 1st, 2021.\n2. There is no minimum amount required. During each phase, you can get a refund of up to €150, equal to **€300 per year**. You’ll get a 10% cashback on your purchases made with your cards and payment apps enrolled in the Cashback program, up to €15 per transaction.\n[Check compatible cards and payment apps](https://io.italia.it/metodi-pagamento)\n3. You will get the collected Cashback only if you reach the **minimum number** of valid transactions: **10 during the Xmas Extra Cashback phase, 50 within each one of the following semesters**.\n4.Starting from January 1st, 2021, with no minimum amount required, the top 100k participants who will have collected the highest amount of valid transactions in each semester, will get a €1500 Super Cashback – meaning up to €3000 per year.\n5. At the end of each phase, you will receive the total amount of earned money **on the IBAN account you'll enter during the activation process.**",
+      "tos_url": "https://io.italia.it/cashback/privacy-policy",
+      "urls": [
+        {
+          "name": "Read the full guide",
+          "url": "https://io.italia.it/cashback/guida"
+        }
+      ]
+    },
+    "hidden": false,
+    "service_id": "01EB8AXKNV6NMSP2R25KSGF743",
+    "is_active": true,
+    "valid_from": "2020-07-01T00:00:00.000Z",
+    "valid_to": "2020-12-31T00:00:00.000Z",
+    "cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-cashback.png",
+    "sponsorship_description": "Ministero dell'Economia e delle Finanze",
+    "sponsorship_cover": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/bpd/logo/logo-mef.png"
+  }
+]

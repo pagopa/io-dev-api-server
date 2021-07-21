@@ -1,34 +1,39 @@
+import * as faker from "faker";
 import { index, range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
-import { MessageContent } from "../../generated/definitions/backend/MessageContent";
+import {
+  MessageContent,
+  MessageContentEu_covid_cert
+} from "../../generated/definitions/backend/MessageContent";
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
 import { PaymentData } from "../../generated/definitions/backend/PaymentData";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
+import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { getRandomIntInRange } from "../../src/utils/id";
-import { validatePayload } from "../../src/utils/validator";
-import { uuidv4 } from "../utils/strings";
-import { IOResponse } from "./response";
+import { getRandomIntInRange } from "../utils/id";
+import { validatePayload } from "../utils/validator";
 
+// tslint:disable-next-line: no-let
+let messageIdIndex = 0;
 /**
  * generate a list containg count messages with the given fiscal_code
- * @param count the number of messages to generate
- * @param fiscal_code
+ * @param fiscalCode
+ * @param senderServiceId
+ * @param timeToLive
  */
-const createMessageItem = (
+export const createMessage = (
   fiscalCode: string,
   senderServiceId: string,
-  messageId: string = uuidv4()
-    .toUpperCase()
-    .substr(0, 26),
   timeToLive: number = 3600
 ): CreatedMessageWithoutContent => {
+  const id = messageIdIndex.toString().padStart(26, "0");
+  messageIdIndex++;
   return validatePayload(CreatedMessageWithoutContent, {
     created_at: new Date().toISOString(),
     fiscal_code: fiscalCode,
-    id: messageId,
+    id,
     sender_service_id: senderServiceId,
     time_to_live: timeToLive
   });
@@ -43,9 +48,11 @@ export const withDueDate = (
 
 export const withPaymentData = (
   message: CreatedMessageWithContent,
-  noticeNumber: string = "012345678912345678",
-  amount: number = getRandomIntInRange(1, 10000),
-  invalidAfterDueDate: boolean = false
+  invalidAfterDueDate: boolean = false,
+  noticeNumber: string = faker.helpers.replaceSymbolWithNumber(
+    "0#################"
+  ),
+  amount: number = getRandomIntInRange(1, 10000)
 ): CreatedMessageWithContent => {
   const data: PaymentData = {
     notice_number: noticeNumber as PaymentNoticeNumber,
@@ -59,14 +66,18 @@ export const withPaymentData = (
   };
 };
 
-export const withMessageContent = (
+export const withContent = (
   message: CreatedMessageWithoutContent,
   subject: string,
-  markdown: string
+  markdown: string,
+  prescriptionData?: PrescriptionData,
+  euCovidCert?: MessageContentEu_covid_cert
 ): CreatedMessageWithContent => {
   const content = validatePayload(MessageContent, {
     subject,
-    markdown
+    markdown,
+    prescription_data: prescriptionData,
+    eu_covid_cert: euCovidCert
   });
   return { ...message, content };
 };
@@ -74,8 +85,8 @@ export const withMessageContent = (
 /**
  * return a list of count messages without content
  * @param count the number of messages
- * @param randomId if true a random if will be generated
  * @param fiscalCode the receiver fiscal code
+ * @param services
  */
 const createMessageList = (
   count: number,
@@ -83,37 +94,16 @@ const createMessageList = (
   services: ReadonlyArray<ServicePublic>
 ): PaginatedCreatedMessageWithoutContentCollection => {
   const items = range(1, count).map(c => {
-    return createMessageItem(
+    return createMessage(
       fiscalCode,
-      index(c - 1, [...services]).fold("n/a", s => s.service_id as string)
+      index((c - 1) % services.length, [...services]).fold(
+        "n/a",
+        s => s.service_id as string
+      )
     );
   });
   return validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
     items,
     page_size: count
   });
-};
-
-/**
- * return a list containing count messages
- * @param count the number of message to generate
- * @param randomId if true a random id is generated, a fixed one otherwise
- */
-export const getMessages = (
-  count: number,
-  services: ReadonlyArray<ServicePublic>,
-  fiscalCode: string
-): IOResponse<PaginatedCreatedMessageWithoutContentCollection> => {
-  const payload = createMessageList(count, fiscalCode, services);
-  return {
-    payload,
-    isJson: true
-  };
-};
-
-// 404 - message NOT found
-export const messagesResponseNotFound: IOResponse<string> = {
-  payload: "not found",
-  isJson: false,
-  status: 404
 };

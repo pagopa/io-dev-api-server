@@ -8,16 +8,12 @@ export const getProblemJson = (
   detail?: string,
   type?: string,
   instance?: string
-): IOResponse<ProblemJson> => {
+): ProblemJson => {
   return {
-    payload: validatePayload(ProblemJson, {
-      type,
-      title,
-      instance,
-      detail,
-      status
-    }),
-    isJson: true,
+    type,
+    title,
+    instance,
+    detail,
     status
   };
 };
