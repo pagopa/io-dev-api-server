@@ -66,14 +66,14 @@ it:
         action: "iohandledlink://https://io.italia.it"
     cta_2: 
         text: "internal webview"
-        action: "iohandledlink://https://io.italia.it"
+        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
 en:
     cta_1: 
         text: "io.italia.it"
         action: "iohandledlink://https://io.italia.it"
     cta_2: 
         text: "internal webview"
-        action: "iohandledlink://https://io.italia.it"
+        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
 ---`;
 
 export const frontMatter1CTABonusBpd = `---
@@ -113,7 +113,7 @@ export const frontMatter1CTABonusCgn = `---
 it:
     cta_1: 
         text: "CGN start"
-        action: "ioit://PROFILE_PREFERENCES_HOME"
+        action: "ioit://CTA_START_CGN"
 en:
     cta_1: 
         text: "CGN start"
