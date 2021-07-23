@@ -66,14 +66,14 @@ it:
         action: "iohandledlink://https://io.italia.it"
     cta_2: 
         text: "internal webview"
-        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
+        action: "iohandledlink://https://io.italia.it"
 en:
     cta_1: 
         text: "io.italia.it"
         action: "iohandledlink://https://io.italia.it"
     cta_2: 
         text: "internal webview"
-        action: "ioit://SERVICE_WEBVIEW?url=https://www.google.com"
+        action: "iohandledlink://https://io.italia.it"
 ---`;
 
 export const frontMatter1CTABonusBpd = `---
@@ -113,11 +113,28 @@ export const frontMatter1CTABonusCgn = `---
 it:
     cta_1: 
         text: "CGN start"
-        action: "ioit://CTA_START_CGN"
+        action: "ioit://PROFILE_PREFERENCES_HOME"
 en:
     cta_1: 
         text: "CGN start"
         action: "ioit://CTA_START_CGN"
+---`;
+
+export const frontMatter1CTASiciliaVola = `---
+it:
+    cta_1: 
+        text: "Generate voucher"
+        action: "ioit://SV_CHECK_STATUS"
+    cta_2: 
+        text: "Voucher List"
+        action: "ioit://SV_VOUCHER_LIST"
+en:
+    cta_1: 
+        text: "Generate voucher"
+        action: "ioit://SV_CHECK_STATUS"
+    cta_2: 
+        text: "Voucher List"
+        action: "ioit://SV_VOUCHER_LIST"
 ---`;
 
 export const messageMarkdown = `
