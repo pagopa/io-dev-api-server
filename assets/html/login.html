@@ -73,6 +73,12 @@
             const select = `<select id="spidSelect" style="width: 400px;height: 40px;font-size: 20px">${options}</select>`;
             const container = document.getElementById("select_container");
             container.innerHTML = `<div>${select}</div>`;
+
+          if (__ENV_E2E_LOGIN_HAPPY_PATH__) {
+            setTimeout(() => {
+              window.location.href = document.getElementById("login-link").getAttribute("href")
+            }, 250)
+          }
         }
 
     </script>
@@ -86,6 +92,7 @@
   <img src="assets/imgs/how_to_login.png" width="100%">
   <div style="width: 100%; margin-top: 30px">
     <a href="/login?authorized=1"
+       id="login-link"
        style="padding: 16px; font-size: 50px; color: white; background-color: #0073E6; text-decoration: none;">
       LOGIN</a>
   </div>
