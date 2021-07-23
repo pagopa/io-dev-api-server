@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="application/javascript">
         const spidErrors = [
             ["2", "Indisponibilità sistema"],
@@ -64,23 +63,23 @@
         ];
 
         const simulateSpidError = () => {
-            const container = $("#spidSelect");
-            window.location.href = `/login?authorized=0&error=${container.val()}`;
+            const container = document.getElementById("spidSelect");
+            window.location.href = `/login?authorized=0&error=${container.value}`;
             return false;
         }
 
-        $(document).ready(function() {
-            const options = spidErrors.map(v => `<option value="${v[0]}">${v[1]}</option>`);
+        function onLoad() {
+            const options = spidErrors.map(v => `<option value="${v[0]}">${v[1]}</option>`).join();
             const select = `<select id="spidSelect" style="width: 400px;height: 40px;font-size: 20px">${options}</select>`;
-            const container = $("#select_container");
-            container.append(`<div>${select}</div>`);
-        });
+            const container = document.getElementById("select_container");
+            container.innerHTML = `<div>${select}</div>`;
+        }
 
     </script>
   <meta charset="UTF-8">
   <title>Welcome in IO</title>
 </head>
-<body>
+<body onload="onLoad()">
 
 <div align="center" style="width: 100%; height:100%;margin: auto; margin-top: 20%;">
   <h1 style="font-size: 50px;"><a href="https://github.com/pagopa/io-dev-api-server">io-dev-api-server</a></h1>
