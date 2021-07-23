@@ -6,14 +6,15 @@ import { addHandler } from "../payloads/response";
 import {
   getServices,
   getServicesPreferences,
-  getServicesTuple
+  getServicesTuple,
+  withSiciliaVolaService
 } from "../payloads/service";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
-export const services = getServices(servicesNumber);
+export const services = withSiciliaVolaService(getServices(servicesNumber));
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 

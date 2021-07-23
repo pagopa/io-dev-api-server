@@ -17,6 +17,12 @@ import {
 } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
+import {
+  frontMatter1CTABonusBpd,
+  frontMatter1CTABonusCgn,
+  frontMatter1CTASiciliaVola,
+  frontMatter2CTA2
+} from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -34,6 +40,22 @@ export const getService = (serviceId: string): ServicePublic => {
   };
   return validatePayload(ServicePublic, service);
 };
+
+export const siciliaVolaServiceId = "serviceSv";
+const siciliaVolaService: ServicePublic = {
+  ...getService(siciliaVolaServiceId),
+  organization_fiscal_code: "18".padStart(11, "0") as OrganizationFiscalCode,
+  organization_name: "Sicilia Vola" as OrganizationName,
+  service_name: "Sicilia Vola" as ServiceName,
+  service_metadata: {
+    scope: ServiceScopeEnum.NATIONAL
+  },
+  version: 1
+};
+
+export const withSiciliaVolaService = (
+  services: readonly ServicePublic[]
+): readonly ServicePublic[] => services.concat(siciliaVolaService);
 
 export const getServices = (count: number): readonly ServicePublic[] => {
   const aggregation = 3;
@@ -59,8 +81,10 @@ export const getServices = (count: number): readonly ServicePublic[] => {
         scope:
           idx + 1 <= count * 0.5
             ? ServiceScopeEnum.LOCAL
-            : ServiceScopeEnum.NATIONAL
-      }
+            : ServiceScopeEnum.NATIONAL,
+        cta: frontMatter2CTA2 as NonEmptyString
+      },
+      version: 45
     };
   });
 };
@@ -96,6 +120,7 @@ export const getServiceMetadata = (
   if (serviceIndex + 1 <= services.items.length * 0.5) {
     serviceScope = ServiceScopeEnum.LOCAL;
   }
+
   const metaData: ServicePublicService_metadata = {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope: serviceScope,
@@ -107,7 +132,11 @@ export const getServiceMetadata = (
     app_android: "https://www.google.com" as NonEmptyString,
     app_ios: "https://www.google.com" as NonEmptyString,
     tos_url: "https://www.tos.com" as NonEmptyString,
-    privacy_url: "https://www.privacy.com" as NonEmptyString
+    privacy_url: "https://www.privacy.com" as NonEmptyString,
+    cta:
+      serviceId.split(".")[0] === siciliaVolaServiceId.toLocaleLowerCase()
+        ? (frontMatter1CTASiciliaVola as NonEmptyString)
+        : undefined
   };
   return {
     payload: validatePayload(ServicePublicService_metadata, metaData),
