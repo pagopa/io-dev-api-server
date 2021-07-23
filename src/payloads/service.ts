@@ -83,8 +83,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
             ? ServiceScopeEnum.LOCAL
             : ServiceScopeEnum.NATIONAL,
         cta: frontMatter2CTA2 as NonEmptyString
-      },
-      version: 45
+      }
     };
   });
 };
