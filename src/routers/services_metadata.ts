@@ -10,7 +10,7 @@ import { PrivativeServices } from "../../generated/definitions/pagopa/privative/
 import { assetsFolder, staticContentRootPath } from "../global";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
-import { addHandler } from "../payloads/response";
+import { addHandler, IOResponse } from "../payloads/response";
 import { getServiceMetadata, siciliaVolaServiceId } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { frontMatter1CTASiciliaVola } from "../utils/variables";
@@ -20,25 +20,28 @@ export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
 
-const servicesMetadata = services.map(
+const servicesMetadata: ReadonlyArray<ServicePublicService_metadata> = services.map(
   service =>
     getServiceMetadata(service.service_id, visibleServices.payload).payload
 );
 const servicesMetadataMapping: Record<
   string,
   ServicePublicService_metadata
-> = servicesMetadata.reduce((acc, curr, idx) => {
-  if (services[idx].service_id === siciliaVolaServiceId) {
-    return {
-      ...acc,
-      [services[idx].service_id.toLowerCase()]: {
-        ...curr,
-        cta: frontMatter1CTASiciliaVola as NonEmptyString
-      }
-    };
-  }
-  return { ...acc, [services[idx].service_id.toLowerCase()]: curr };
-}, {});
+> = servicesMetadata.reduce(
+  (acc: Record<string, ServicePublicService_metadata>, curr, idx) => {
+    if (services[idx].service_id === siciliaVolaServiceId) {
+      return {
+        ...acc,
+        [services[idx].service_id.toLowerCase()]: {
+          ...curr,
+          cta: frontMatter1CTASiciliaVola as NonEmptyString
+        }
+      };
+    }
+    return { ...acc, [services[idx].service_id.toLowerCase()]: curr };
+  },
+  {}
+);
 
 addHandler(
   servicesMetadataRouter,
