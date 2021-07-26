@@ -3,27 +3,51 @@
  */
 import { Router } from "express";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { NonEmptyString } from "italia-ts-commons/lib/strings";
+import { ServicePublicService_metadata } from "../../generated/definitions/backend/ServicePublic";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../global";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
-import { getServiceMetadata } from "../payloads/service";
+import { getServiceMetadata, siciliaVolaServiceId } from "../payloads/service";
 import { readFileAsJSON, sendFile } from "../utils/file";
-import { visibleServices } from "./service";
+import { frontMatter1CTASiciliaVola } from "../utils/variables";
+import { services, visibleServices } from "./service";
 
 export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
+
+const servicesMetadata = services.map(
+  service =>
+    getServiceMetadata(service.service_id, visibleServices.payload).payload
+);
+const servicesMetadataMapping: Record<
+  string,
+  ServicePublicService_metadata
+> = servicesMetadata.reduce((acc, curr, idx) => {
+  if (services[idx].service_id === siciliaVolaServiceId) {
+    return {
+      ...acc,
+      [services[idx].service_id.toLowerCase()]: {
+        ...curr,
+        cta: frontMatter1CTASiciliaVola as NonEmptyString
+      }
+    };
+  }
+  return { ...acc, [services[idx].service_id.toLowerCase()]: curr };
+}, {});
 
 addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix(`/services/:service_id`),
   (req, res) => {
-    const serviceId = req.params.service_id;
-    res.json(getServiceMetadata(serviceId, visibleServices.payload).payload);
+    const serviceId = req.params.service_id.split(".")[0];
+
+    res.json(servicesMetadataMapping[serviceId]);
   }
 );
 

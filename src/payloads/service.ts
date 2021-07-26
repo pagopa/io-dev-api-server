@@ -140,11 +140,7 @@ export const getServiceMetadata = (
     app_android: "https://www.google.com" as NonEmptyString,
     app_ios: "https://www.google.com" as NonEmptyString,
     tos_url: "https://www.tos.com" as NonEmptyString,
-    privacy_url: "https://www.privacy.com" as NonEmptyString,
-    cta:
-      serviceId.split(".")[0] === siciliaVolaServiceId.toLocaleLowerCase()
-        ? (frontMatter1CTASiciliaVola as NonEmptyString)
-        : undefined
+    privacy_url: "https://www.privacy.com" as NonEmptyString
   };
   return {
     payload: validatePayload(ServicePublicService_metadata, metaData),
