@@ -44,18 +44,27 @@ export const getService = (serviceId: string): ServicePublic => {
 export const siciliaVolaServiceId = "serviceSv";
 const siciliaVolaService: ServicePublic = {
   ...getService(siciliaVolaServiceId),
-  organization_fiscal_code: "18".padStart(11, "0") as OrganizationFiscalCode,
   organization_name: "Sicilia Vola" as OrganizationName,
   service_name: "Sicilia Vola" as ServiceName,
   service_metadata: {
     scope: ServiceScopeEnum.NATIONAL
-  },
-  version: 1
+  }
 };
 
 export const withSiciliaVolaService = (
   services: readonly ServicePublic[]
-): readonly ServicePublic[] => services.concat(siciliaVolaService);
+): readonly ServicePublic[] => {
+  const organizationsCount = new Set(
+    services.map(s => s.organization_fiscal_code)
+  ).size;
+  return services.concat({
+    ...siciliaVolaService,
+    organization_fiscal_code: `${organizationsCount + 1}`.padStart(
+      11,
+      "0"
+    ) as OrganizationFiscalCode
+  });
+};
 
 export const getServices = (count: number): readonly ServicePublic[] => {
   const aggregation = 3;
