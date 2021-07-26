@@ -65,6 +65,20 @@ const createMessages = () => {
   };
   const now = new Date();
 
+  authResponses.forEach(config => {
+    const [authCode, description] = config;
+    addMessage(
+      getNewMessage(
+        `🏥 EUCovidCert - ${description}`,
+        messageMarkdown,
+        undefined,
+        {
+          auth_code: authCode
+        }
+      )
+    );
+  });
+
   addMessage(
     getNewMessage(
       `💊 medical prescription`,
@@ -149,20 +163,6 @@ const createMessages = () => {
       new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
     )
   );
-
-  authResponses.forEach(config => {
-    const [authCode, description] = config;
-    addMessage(
-      getNewMessage(
-        `🏥 EUCovidCert - ${description}`,
-        messageMarkdown,
-        undefined,
-        {
-          auth_code: authCode
-        }
-      )
-    );
-  });
 };
 
 createMessages();
