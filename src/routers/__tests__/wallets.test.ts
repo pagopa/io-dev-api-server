@@ -29,16 +29,6 @@ const testGetWallets = (response: Response) => {
   return wallets.value;
 };
 
-const testGetWalletsV2 = (response: Response) => {
-  expect(response.status).toBe(200);
-  const wallets = WalletV2ListResponse.decode(response.body);
-  expect(wallets.isRight()).toBeTruthy();
-  if (wallets.isRight() && wallets.value.data) {
-    expect(wallets.value.data.length).toBe(walletCount);
-  }
-  return wallets.value;
-};
-
 it("/wallet should return a list of wallets (payments method instances)", async done => {
   const response = await request.get(appendWalletPrefix("/wallet"));
   testGetWallets(response);
