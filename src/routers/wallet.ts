@@ -1,10 +1,11 @@
 /**
  * this router handles all requests about wallets
  */
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { WalletPaymentstatus } from "../../generated/definitions/pagopa/WalletPaymentstatus";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
@@ -267,5 +268,34 @@ addHandler(
   appendWalletPrefix(checkOutSuffix),
   (req, res) => {
     res.sendStatus(200);
+  }
+);
+
+addHandler(
+  walletRouter,
+  "put",
+  appendWalletPrefix("/wallet/:idWallet/payment-status"),
+  (req, res) => {
+    const payload = WalletPaymentstatus.decode(req.body);
+    // bad request
+    if (payload.isLeft()) {
+      res.sendStatus(400);
+      return;
+    }
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const wallet = findWalletfromId(idWallet);
+    // wallet not found
+    if (wallet === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+    const updatedWallet = {
+      ...wallet,
+      pagoPA: payload.value.pagoPA,
+      favourite: false
+    };
+    removeWalletV2(updatedWallet.idWallet!);
+    addWalletV2([updatedWallet], true);
+    res.json(payload.value);
   }
 );
