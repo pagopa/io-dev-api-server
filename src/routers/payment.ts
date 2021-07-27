@@ -7,7 +7,6 @@ import { PaymentActivationsPostRequest } from "../../generated/definitions/backe
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
-import { WalletPaymentstatus } from "../../generated/definitions/pagopa/WalletPaymentstatus";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
@@ -17,7 +16,6 @@ import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import { findWalletfromId } from "./walletsV2";
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();

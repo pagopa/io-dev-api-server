@@ -271,6 +271,7 @@ addHandler(
   }
 );
 
+// update the payment status (enable/disable pay with pagoPA)
 addHandler(
   walletRouter,
   "put",
