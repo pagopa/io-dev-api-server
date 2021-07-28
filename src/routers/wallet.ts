@@ -36,7 +36,6 @@ import {
   addWalletV2,
   findWalletfromId,
   removeWalletV2,
-  wallet2Router,
   walletV2Config,
   walletV2Response
 } from "./walletsV2";
@@ -278,7 +277,7 @@ addHandler(
 
 // set a credit card as favourite
 addHandler(
-  wallet2Router,
+  walletRouter,
   "post",
   appendWalletPrefix("/wallet/:idWallet/actions/favourite"),
   (req, res) => {
