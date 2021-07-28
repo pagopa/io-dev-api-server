@@ -11,7 +11,10 @@ import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transac
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
-import { WalletTypeEnum } from "../../generated/definitions/pagopa/walletv2/WalletV2";
+import {
+  WalletTypeEnum,
+  WalletV2
+} from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../payloads/response";
 import {
   getPspFromId,
@@ -33,7 +36,9 @@ import {
   addWalletV2,
   findWalletfromId,
   removeWalletV2,
-  walletV2Config
+  wallet2Router,
+  walletV2Config,
+  walletV2Response
 } from "./walletsV2";
 export const walletCount =
   walletV2Config.satispay +
@@ -271,6 +276,38 @@ addHandler(
   }
 );
 
+// set a credit card as favourite
+addHandler(
+  wallet2Router,
+  "post",
+  appendWalletPrefix("/wallet/:idWallet/actions/favourite"),
+  (req, res) => {
+    const walletData = walletV2Response.data ?? [];
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const creditCard = walletData.find(w => w.idWallet === idWallet);
+    if (creditCard) {
+      const favoriteCreditCard = { ...creditCard, favourite: true };
+      // all wallets different from the favorite and then append it
+      const newWalletsData: ReadonlyArray<WalletV2> = [
+        ...walletData.filter(w => w.idWallet !== idWallet),
+        favoriteCreditCard
+      ];
+      addWalletV2(newWalletsData, false);
+      // this API requires to return a walletV1
+      const walletV1 = {
+        ...generateWalletV1FromCardInfo(
+          favoriteCreditCard.idWallet!,
+          favoriteCreditCard.info as CardInfo
+        ),
+        favourite: true
+      };
+      res.json({ data: walletV1 });
+      return;
+    }
+    res.sendStatus(404);
+  }
+);
+
 // update the payment status (enable/disable pay with pagoPA)
 addHandler(
   walletRouter,
@@ -284,19 +321,20 @@ addHandler(
       return;
     }
     const idWallet = parseInt(req.params.idWallet, 10);
-    const wallet = findWalletfromId(idWallet);
+    const wallet: WalletV2 | undefined = findWalletfromId(idWallet);
     // wallet not found
     if (wallet === undefined) {
       res.sendStatus(404);
       return;
     }
-    const updatedWallet = {
+    const updatedWallet: WalletV2 = {
       ...wallet,
       pagoPA: payload.value.pagoPA,
-      favourite: false
+      // remove favourite if pagoPA===false
+      favourite: !payload.value.pagoPA ? false : wallet.favourite
     };
     removeWalletV2(updatedWallet.idWallet!);
     addWalletV2([updatedWallet], true);
-    res.json(payload.value);
+    res.json({ data: updatedWallet });
   }
 );

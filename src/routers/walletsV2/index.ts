@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/AbiListResponse";
-import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import {
@@ -15,7 +14,6 @@ import {
   generateCards,
   generatePrivativeFromWalletV2,
   generateSatispayInfo,
-  generateWalletV1FromCardInfo,
   generateWalletV2FromCard,
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
@@ -229,37 +227,6 @@ export const findWalletfromId = (idWallet: number): WalletV2 | undefined => {
 // return the list of wallets
 addHandler(wallet2Router, "get", appendWallet2Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
-);
-
-// set a credit card as favourite
-addHandler(
-  wallet2Router,
-  "post",
-  appendWalletPrefix("/wallet/:idWallet/actions/favourite"),
-  (req, res) => {
-    const walletData = walletV2Response.data ?? [];
-    const idWallet = parseInt(req.params.idWallet, 10);
-    const creditCard = walletData.find(w => w.idWallet === idWallet);
-    if (creditCard) {
-      const favoriteCreditCard = { ...creditCard, favourite: true };
-      // all wallets different from the favorite and then append it
-      const newWalletsData: ReadonlyArray<WalletV2> = [
-        ...walletData.filter(w => w.idWallet !== idWallet),
-        favoriteCreditCard
-      ];
-      addWalletV2(newWalletsData, false);
-      // this API requires to return a walletV1
-      const walletV1 = {
-        ...generateWalletV1FromCardInfo(
-          favoriteCreditCard.idWallet!,
-          favoriteCreditCard.info as CardInfo
-        ),
-        favourite: true
-      };
-      return res.json({ data: walletV1 });
-    }
-    res.sendStatus(404);
-  }
 );
 
 // reset function

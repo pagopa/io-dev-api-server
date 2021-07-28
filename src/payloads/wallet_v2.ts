@@ -250,8 +250,7 @@ export const generateWalletV1FromCardInfo = (
     pan: "*".repeat(12) + (info.blurredNumber ?? ""),
     expireMonth: info.expireMonth!.padStart(2, "0"),
     expireYear: info.expireYear!.slice(-2),
-    brandLogo:
-      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
+    brandLogo: info.brandLogo,
     flag3dsVerified: false,
     brand: info.brand,
     onUs: false
