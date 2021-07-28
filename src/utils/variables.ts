@@ -120,6 +120,23 @@ en:
         action: "ioit://CTA_START_CGN"
 ---`;
 
+export const frontMatter1CTASiciliaVola = `---
+it:
+    cta_1: 
+        text: "Generate voucher"
+        action: "ioit://SV_CHECK_STATUS"
+    cta_2: 
+        text: "Voucher List"
+        action: "ioit://SV_VOUCHER_LIST"
+en:
+    cta_1: 
+        text: "Generate voucher"
+        action: "ioit://SV_CHECK_STATUS"
+    cta_2: 
+        text: "Voucher List"
+        action: "ioit://SV_VOUCHER_LIST"
+---`;
+
 export const messageMarkdown = `
 # H1 
 
