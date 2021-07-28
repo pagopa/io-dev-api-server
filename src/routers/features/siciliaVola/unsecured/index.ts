@@ -7,7 +7,8 @@ import { addApiV1Prefix } from "../../../../utils/strings";
 
 export const unsecuredSvRouter = Router();
 
-const addPrefix = (path: string) => addApiV1Prefix(`/sv/rest/unsecured${path}`);
+const addPrefix = (path: string) =>
+  addApiV1Prefix(`/mitvoucher/data/rest/unsecured${path}`);
 
 /**
  * Get the states list
