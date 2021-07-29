@@ -68,8 +68,8 @@ addHandler(
         ...vouchersBeneficiary,
         listaRisultati: vouchersBeneficiary.listaRisultati.filter(
           v => v.idVoucher !== voucherId
-        );
-      }
+        )
+      };
     }
     res.sendStatus(200);
     return;
