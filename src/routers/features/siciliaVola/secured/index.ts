@@ -29,12 +29,22 @@ addHandler(
 );
 
 /**
- * Get the airport destination list
+ * Get the airport destination list given a region
  */
 addHandler(
   securedSvRouter,
   "get",
   addPrefix("/beneficiario/aeroportiSede/:region_id"),
+  (_, res) => res.json(getAereoportiSede(5))
+);
+
+/**
+ * Get the airport destination list given a state
+ */
+addHandler(
+  securedSvRouter,
+  "get",
+  addPrefix("/beneficiario/aeroportiStato/:state_id"),
   (_, res) => res.json(getAereoportiSede(5))
 );
 
