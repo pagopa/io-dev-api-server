@@ -83,7 +83,7 @@ it("should set pagoPa to false", async done => {
   }
   // invert
   const responseInvert = await request
-    .put(appendWalletV1Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
+    .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ pagoPA: true });
   expect(responseInvert.status).toBe(200);
   const responsePayloadInvert = WalletV2Response.decode(responseInvert.body);
