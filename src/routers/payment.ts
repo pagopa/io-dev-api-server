@@ -13,10 +13,10 @@ import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
 import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
+import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import { appendWalletV1Prefix } from "../utils/wallet";
 export const paymentRouter = Router();
 
 const responseWithError = (detail: DetailEnum, res: Response) =>

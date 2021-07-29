@@ -16,6 +16,7 @@ import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
 import { readFileAsJSON } from "../../../utils/file";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
 import {
   addWalletV2,
   citizenCreditCardCoBadge,
@@ -23,7 +24,6 @@ import {
   walletV2Response
 } from "../index";
 import { bancomatRouter } from "./bancomat";
-import { appendWalletV1Prefix } from "../../../utils/wallet";
 
 const productTypes = Object.values(ProductTypeEnum);
 const paymentNetworks = Object.values(PaymentNetworkEnum);

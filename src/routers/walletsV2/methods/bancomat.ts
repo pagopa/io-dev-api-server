@@ -9,13 +9,13 @@ import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
 import { generateWalletV2FromCard } from "../../../payloads/wallet_v2";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
 import {
   abiResponse,
   addWalletV2,
   pansResponse,
   walletV2Response
 } from "../index";
-import { appendWalletV1Prefix } from "../../../utils/wallet";
 
 export const bancomatRouter = Router();
 /**

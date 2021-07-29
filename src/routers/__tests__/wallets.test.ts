@@ -7,13 +7,13 @@ import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/wall
 import { WalletV2Response } from "../../../generated/definitions/pagopa/WalletV2Response";
 import { sessionToken } from "../../payloads/wallet";
 import app from "../../server";
+import { appendWalletV1Prefix, appendWalletV2Prefix } from "../../utils/wallet";
 import {
   transactionPageSize,
   transactions,
   transactionsTotal,
   walletCount
 } from "../wallet";
-import { appendWalletV2Prefix, appendWalletV1Prefix } from "../../utils/wallet";
 
 const request = supertest(app);
 const testGetWallets = (response: Response) => {

@@ -32,6 +32,7 @@ import {
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
+import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
 import {
   addWalletV2,
   findWalletfromId,
@@ -39,7 +40,6 @@ import {
   walletV2Config,
   walletV2Response
 } from "./walletsV2";
-import { appendWalletV2Prefix, appendWalletV1Prefix } from "../utils/wallet";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.privative +
