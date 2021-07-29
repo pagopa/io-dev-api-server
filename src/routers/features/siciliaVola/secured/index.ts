@@ -64,9 +64,12 @@ addHandler(
     }
 
     if (vouchersBeneficiary.listaRisultati) {
-      vouchersBeneficiary.listaRisultati = vouchersBeneficiary.listaRisultati.filter(
-        v => v.idVoucher !== voucherId
-      );
+      vouchersBeneficiary = {
+        ...vouchersBeneficiary,
+        listaRisultati: vouchersBeneficiary.listaRisultati.filter(
+          v => v.idVoucher !== voucherId
+        );
+      }
     }
     res.sendStatus(200);
     return;
