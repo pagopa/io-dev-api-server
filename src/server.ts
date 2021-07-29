@@ -13,6 +13,7 @@ import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
 import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
+import { authSvRouter } from "./routers/features/siciliaVola/auth";
 import { securedSvRouter } from "./routers/features/siciliaVola/secured";
 import { unsecuredSvRouter } from "./routers/features/siciliaVola/unsecured";
 import { messageRouter } from "./routers/message";
@@ -74,7 +75,8 @@ app.use(
   cgnGeoRouter,
   euCovidCertRouter,
   unsecuredSvRouter,
-  securedSvRouter
+  securedSvRouter,
+  authSvRouter
 ].forEach(r => app.use(r));
 
 export default app;
