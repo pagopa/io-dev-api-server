@@ -18,12 +18,12 @@ import { addHandler } from "../../../payloads/response";
 import { readFileAsJSON } from "../../../utils/file";
 import {
   addWalletV2,
-  appendWalletPrefix,
   citizenCreditCardCoBadge,
   citizenPrivativeCard,
   walletV2Response
 } from "../index";
 import { bancomatRouter } from "./bancomat";
+import { appendWalletPrefix } from "../../../utils/wallet";
 
 const productTypes = Object.values(ProductTypeEnum);
 const paymentNetworks = Object.values(PaymentNetworkEnum);

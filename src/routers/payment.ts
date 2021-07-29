@@ -16,8 +16,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-const walletPath = "/wallet/v1";
-const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
+import { appendWalletPrefix } from "../utils/wallet";
 export const paymentRouter = Router();
 
 const responseWithError = (detail: DetailEnum, res: Response) =>

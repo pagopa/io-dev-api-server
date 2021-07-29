@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { RestSatispayResponse } from "../../../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
 import { Satispay } from "../../../../generated/definitions/pagopa/walletv2/Satispay";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../../../payloads/response";
@@ -7,12 +6,8 @@ import {
   generateWalletV2FromSatispayOrBancomatPay,
   satispay
 } from "../../../payloads/wallet_v2";
-import {
-  addWalletV2,
-  appendWalletPrefix,
-  walletV2Config,
-  walletV2Response
-} from "../index";
+import { appendWalletPrefix } from "../../../utils/wallet";
+import { addWalletV2, walletV2Config, walletV2Response } from "../index";
 
 export const satispayRouter = Router();
 

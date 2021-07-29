@@ -13,12 +13,9 @@ import {
   transactionsTotal,
   walletCount
 } from "../wallet";
+import { appendWalletV2Prefix, appendWalletPrefix } from "../../utils/wallet";
 
 const request = supertest(app);
-const walletPath = "/wallet/v1";
-const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
-const walletV2Path = "/wallet/v2";
-const appendWallet2Prefix = (path: string) => `${walletV2Path}${path}`;
 const testGetWallets = (response: Response) => {
   expect(response.status).toBe(200);
   const wallets = WalletListResponse.decode(response.body);
@@ -59,7 +56,7 @@ it("should start a valid session", async done => {
 });
 
 it("should set a wallet as favourite", async done => {
-  const responseWallets = await request.get(appendWallet2Prefix("/wallet"));
+  const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets: any = testGetWalletsV2(responseWallets);
   const firstWallet = wallets.data[0];
   const response = await request.post(
@@ -70,11 +67,11 @@ it("should set a wallet as favourite", async done => {
 });
 
 it("should set pagoPa to false", async done => {
-  const responseWallets = await request.get(appendWallet2Prefix("/wallet"));
+  const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets: any = testGetWalletsV2(responseWallets);
   const firstWallet = wallets.data[0];
   const response = await request
-    .put(appendWallet2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
+    .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ pagoPA: false });
   expect(response.status).toBe(200);
   const responsePayload = WalletV2Response.decode(response.body);

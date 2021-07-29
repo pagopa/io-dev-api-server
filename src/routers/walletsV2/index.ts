@@ -18,6 +18,7 @@ import {
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
 } from "../../payloads/wallet_v2";
+import { appendWalletV2Prefix } from "../../utils/wallet";
 
 type WalletV2Config = {
   walletBancomat: number;
@@ -33,11 +34,7 @@ type WalletV2Config = {
   citizenPrivative: boolean;
 };
 
-const walletV1Path = "/wallet/v1";
-export const appendWalletPrefix = (path: string) => `${walletV1Path}${path}`;
 export const wallet2Router = Router();
-const walletPath = "/wallet/v2";
-const appendWallet2Prefix = (path: string) => `${walletPath}${path}`;
 export const abiResponse: AbiListResponse = {
   data: abiData
 };
@@ -225,7 +222,7 @@ export const findWalletfromId = (idWallet: number): WalletV2 | undefined => {
 };
 
 // return the list of wallets
-addHandler(wallet2Router, "get", appendWallet2Prefix("/wallet"), (_, res) =>
+addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
 );
 

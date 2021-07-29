@@ -39,6 +39,7 @@ import {
   walletV2Config,
   walletV2Response
 } from "./walletsV2";
+import { appendWalletV2Prefix, appendWalletPrefix } from "../utils/wallet";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.privative +
@@ -47,10 +48,6 @@ export const walletCount =
   walletV2Config.walletCreditCardCoBadge +
   walletV2Config.bPay;
 export const walletRouter = Router();
-const walletPath = "/wallet/v1";
-const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
-const walletV2Path = "/wallet/v2";
-const appendWalletV2Prefix = (path: string) => `${walletV2Path}${path}`;
 // wallets and transactions
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
