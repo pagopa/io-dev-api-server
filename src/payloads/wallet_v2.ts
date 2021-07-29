@@ -27,11 +27,7 @@ import {
 import { assetsFolder, shouldShuffle } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
-import {
-  CreditCardBrandEnum,
-  creditCardBrands,
-  getCreditCardLogo
-} from "../utils/payment";
+import { CreditCardBrandEnum, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
   prefix: string;
@@ -40,6 +36,13 @@ type CardConfig = {
 
 // tslint:disable-next-line: no-let
 let defaultCardConfig: CardConfig = { prefix: "00000000000", index: 0 };
+// tslint:disable-next-line: no-let
+let incrementalIdWallet = 1;
+export const getNextIdWallet = (): number => {
+  incrementalIdWallet++;
+  return incrementalIdWallet;
+};
+
 const cardConfigMap: Map<WalletTypeEnum, CardConfig> = new Map<
   WalletTypeEnum,
   CardConfig
@@ -192,7 +195,7 @@ export const generateWalletV2FromCard = (
     createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
     enableableFunctions,
     favourite: false,
-    idWallet: faker.random.number({ min: 20000, max: 30000 }),
+    idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canMethodPay,
@@ -229,7 +232,7 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
     enableableFunctions,
     favourite: false,
-    idWallet: faker.random.number({ min: 20000, max: 30000 }),
+    idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: false,
@@ -250,8 +253,7 @@ export const generateWalletV1FromCardInfo = (
     pan: "*".repeat(12) + (info.blurredNumber ?? ""),
     expireMonth: info.expireMonth!.padStart(2, "0"),
     expireYear: info.expireYear!.slice(-2),
-    brandLogo:
-      "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
+    brandLogo: info.brandLogo,
     flag3dsVerified: false,
     brand: info.brand,
     onUs: false

@@ -2,20 +2,17 @@ import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import fs from "fs";
 import * as t from "io-ts";
-import { AbiListResponse } from "../../../../generated/definitions/pagopa/walletv2/AbiListResponse";
 import { BancomatCardsRequest } from "../../../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
 import { Card } from "../../../../generated/definitions/pagopa/walletv2/Card";
 import { Message } from "../../../../generated/definitions/pagopa/walletv2/Message";
-import { RestPanResponse } from "../../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { WalletV2ListResponse } from "../../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
 import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
 import { generateWalletV2FromCard } from "../../../payloads/wallet_v2";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
 import {
   abiResponse,
   addWalletV2,
-  appendWalletPrefix,
   pansResponse,
   walletV2Response
 } from "../index";
@@ -29,7 +26,7 @@ export const bancomatRouter = Router();
 addHandler(
   bancomatRouter,
   "get",
-  appendWalletPrefix("/bancomat/abi"),
+  appendWalletV1Prefix("/bancomat/abi"),
   (req, res) => {
     const abiQuery = req.query.abiQuery;
     if (abiQuery !== undefined) {
@@ -56,7 +53,7 @@ addHandler(
 addHandler(
   bancomatRouter,
   "get",
-  appendWalletPrefix("/bancomat/pans"),
+  appendWalletV1Prefix("/bancomat/pans"),
   (req, res) => {
     const abi = req.query.abi;
     const msg = fs
@@ -94,7 +91,7 @@ addHandler(
 addHandler(
   bancomatRouter,
   "post",
-  appendWalletPrefix("/bancomat/add-wallets"),
+  appendWalletV1Prefix("/bancomat/add-wallets"),
   (req, res) => {
     const data = req.body;
     const maybeData = BancomatCardsRequest.decode(data);

@@ -13,11 +13,10 @@ import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
 import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
+import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-const walletPath = "/wallet/v1";
-const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
 export const paymentRouter = Router();
 
 const responseWithError = (detail: DetailEnum, res: Response) =>
@@ -109,7 +108,7 @@ addHandler(
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/payments/:idPagamento/actions/check"),
+  appendWalletV1Prefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
     if (idPagamento === undefined || paymentRequest === undefined) {
       res.sendStatus(404);
