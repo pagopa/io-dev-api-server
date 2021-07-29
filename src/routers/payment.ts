@@ -16,7 +16,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import { appendWalletPrefix } from "../utils/wallet";
+import { appendWalletV1Prefix } from "../utils/wallet";
 export const paymentRouter = Router();
 
 const responseWithError = (detail: DetailEnum, res: Response) =>
@@ -108,7 +108,7 @@ addHandler(
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/payments/:idPagamento/actions/check"),
+  appendWalletV1Prefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
     if (idPagamento === undefined || paymentRequest === undefined) {
       res.sendStatus(404);

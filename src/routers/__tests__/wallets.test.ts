@@ -13,7 +13,7 @@ import {
   transactionsTotal,
   walletCount
 } from "../wallet";
-import { appendWalletV2Prefix, appendWalletPrefix } from "../../utils/wallet";
+import { appendWalletV2Prefix, appendWalletV1Prefix } from "../../utils/wallet";
 
 const request = supertest(app);
 const testGetWallets = (response: Response) => {
@@ -37,14 +37,14 @@ const testGetWalletsV2 = (response: Response) => {
 };
 
 it("/wallet should return a list of wallets (payments method instances)", async done => {
-  const response = await request.get(appendWalletPrefix("/wallet"));
+  const response = await request.get(appendWalletV1Prefix("/wallet"));
   testGetWallets(response);
   done();
 });
 
 it("should start a valid session", async done => {
   const response = await request.get(
-    appendWalletPrefix("/users/actions/start-session")
+    appendWalletV1Prefix("/users/actions/start-session")
   );
   expect(response.status).toBe(200);
   const session = SessionResponse.decode(response.body);
@@ -60,7 +60,7 @@ it("should set a wallet as favourite", async done => {
   const wallets: any = testGetWalletsV2(responseWallets);
   const firstWallet = wallets.data[0];
   const response = await request.post(
-    appendWalletPrefix(`/wallet/${firstWallet.idWallet}/actions/favourite`)
+    appendWalletV1Prefix(`/wallet/${firstWallet.idWallet}/actions/favourite`)
   );
   expect(response.status).toBe(200);
   done();
@@ -83,7 +83,7 @@ it("should set pagoPa to false", async done => {
   }
   // invert
   const responseInvert = await request
-    .put(appendWalletPrefix(`/wallet/${firstWallet.idWallet}/payment-status`))
+    .put(appendWalletV1Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ pagoPA: true });
   expect(responseInvert.status).toBe(200);
   const responsePayloadInvert = WalletV2Response.decode(responseInvert.body);
@@ -98,14 +98,14 @@ it("should set pagoPa to false", async done => {
 
 it("should fails to set a non existing wallet as favourite", async done => {
   const response = await request.post(
-    appendWalletPrefix(`/wallet/-1234/actions/favourite`)
+    appendWalletV1Prefix(`/wallet/-1234/actions/favourite`)
   );
   expect(response.status).toBe(404);
   done();
 });
 
 it("services should return a valid transactions list", async done => {
-  const response = await request.get(appendWalletPrefix("/transactions"));
+  const response = await request.get(appendWalletV1Prefix("/transactions"));
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
   expect(list.isRight()).toBeTruthy();
@@ -122,7 +122,7 @@ it("services should return a valid transactions list", async done => {
 
 it("services should return a valid transactions list slice", async done => {
   const response = await request.get(
-    appendWalletPrefix(`/transactions?start=${transactionsTotal - 1}`)
+    appendWalletV1Prefix(`/transactions?start=${transactionsTotal - 1}`)
   );
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
@@ -135,7 +135,7 @@ it("services should return a valid transactions list slice", async done => {
 
 it("services should return an empty data transactions", async done => {
   const response = await request.get(
-    appendWalletPrefix(`/transactions?start=${transactionsTotal + 1}`)
+    appendWalletV1Prefix(`/transactions?start=${transactionsTotal + 1}`)
   );
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
@@ -147,7 +147,7 @@ it("services should return an empty data transactions", async done => {
 });
 
 it("should return a valid psp", async done => {
-  const response = await request.get(appendWalletPrefix(`/psps/43188`));
+  const response = await request.get(appendWalletV1Prefix(`/psps/43188`));
   expect(response.status).toBe(200);
   const psp = Psp.decode(response.body);
   expect(psp.isRight()).toBeTruthy();

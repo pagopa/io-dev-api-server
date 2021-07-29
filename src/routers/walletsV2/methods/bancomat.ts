@@ -15,7 +15,7 @@ import {
   pansResponse,
   walletV2Response
 } from "../index";
-import { appendWalletPrefix } from "../../../utils/wallet";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
 
 export const bancomatRouter = Router();
 /**
@@ -26,7 +26,7 @@ export const bancomatRouter = Router();
 addHandler(
   bancomatRouter,
   "get",
-  appendWalletPrefix("/bancomat/abi"),
+  appendWalletV1Prefix("/bancomat/abi"),
   (req, res) => {
     const abiQuery = req.query.abiQuery;
     if (abiQuery !== undefined) {
@@ -53,7 +53,7 @@ addHandler(
 addHandler(
   bancomatRouter,
   "get",
-  appendWalletPrefix("/bancomat/pans"),
+  appendWalletV1Prefix("/bancomat/pans"),
   (req, res) => {
     const abi = req.query.abi;
     const msg = fs
@@ -91,7 +91,7 @@ addHandler(
 addHandler(
   bancomatRouter,
   "post",
-  appendWalletPrefix("/bancomat/add-wallets"),
+  appendWalletV1Prefix("/bancomat/add-wallets"),
   (req, res) => {
     const data = req.body;
     const maybeData = BancomatCardsRequest.decode(data);

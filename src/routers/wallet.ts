@@ -39,7 +39,7 @@ import {
   walletV2Config,
   walletV2Response
 } from "./walletsV2";
-import { appendWalletV2Prefix, appendWalletPrefix } from "../utils/wallet";
+import { appendWalletV2Prefix, appendWalletV1Prefix } from "../utils/wallet";
 export const walletCount =
   walletV2Config.satispay +
   walletV2Config.privative +
@@ -61,17 +61,17 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/users/actions/start-session"),
+  appendWalletV1Prefix("/users/actions/start-session"),
   (_, res) => res.send(sessionToken)
 );
-addHandler(walletRouter, "get", appendWalletPrefix("/wallet"), (_, res) =>
+addHandler(walletRouter, "get", appendWalletV1Prefix("/wallet"), (_, res) =>
   res.json(wallets)
 );
 
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/transactions"),
+  appendWalletV1Prefix("/transactions"),
   (req, res) => {
     const start = fromNullable(req.query.start)
       .map(s => Math.max(parseInt(s, 10), 0))
@@ -96,7 +96,7 @@ addHandler(
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/transactions/:idTransaction"),
+  appendWalletV1Prefix("/transactions/:idTransaction"),
   (req, res) => {
     if (transactions.length === 0) {
       res.sendStatus(404);
@@ -112,14 +112,14 @@ addHandler(
   }
 );
 
-addHandler(walletRouter, "get", appendWalletPrefix("/psps"), (_, res) =>
+addHandler(walletRouter, "get", appendWalletV1Prefix("/psps"), (_, res) =>
   res.json({ data: [validPsp] })
 );
 
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/psps/selected"),
+  appendWalletV1Prefix("/psps/selected"),
   (req, res) => {
     const randomPsp = faker.random.arrayElement(pspList);
     const language = req.query.language ?? "IT";
@@ -129,17 +129,22 @@ addHandler(
   }
 );
 
-addHandler(walletRouter, "get", appendWalletPrefix("/psps/all"), (req, res) => {
-  const language = req.query.language ?? "IT";
-  res.json({
-    data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
-  });
-});
+addHandler(
+  walletRouter,
+  "get",
+  appendWalletV1Prefix("/psps/all"),
+  (req, res) => {
+    const language = req.query.language ?? "IT";
+    res.json({
+      data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
+    });
+  }
+);
 
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix("/psps/:psp_id"),
+  appendWalletV1Prefix("/psps/:psp_id"),
   (req, res) => {
     res.json({ data: validPsp });
   }
@@ -148,7 +153,7 @@ addHandler(
 addHandler(
   walletRouter,
   "delete",
-  appendWalletPrefix("/wallet/:idWallet"),
+  appendWalletV1Prefix("/wallet/:idWallet"),
   (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
     const hasBeenDelete = removeWalletV2(idWallet);
@@ -159,7 +164,7 @@ addHandler(
 addHandler(
   walletRouter,
   "put",
-  appendWalletPrefix("/wallet/:idWallet"),
+  appendWalletV1Prefix("/wallet/:idWallet"),
   (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
     const idPsp = req.body.data.idPsp;
@@ -181,41 +186,46 @@ addHandler(
 
 // step 1/3 - credit card
 // adding a temporary wallet
-addHandler(walletRouter, "post", appendWalletPrefix("/wallet/cc"), (_, res) => {
-  const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
-  const walletV2 = generateWalletV2FromCard(
-    cards[0],
-    WalletTypeEnum.Card,
-    true
-  );
-  const info = walletV2.info as CardInfo;
-  // add new wallet to the existing ones
-  addWalletV2([walletV2]);
-  const response: WalletResponse = {
-    data: {
-      idWallet: walletV2.idWallet,
-      type: TypeEnum.CREDIT_CARD,
-      favourite: false,
-      creditCard: {
-        id: walletV2.idWallet,
-        holder: info.holder,
-        pan: "*".repeat(12) + (info.blurredNumber ?? ""),
-        expireMonth: info.expireMonth!.padStart(2, "0"),
-        expireYear: info.expireYear!.slice(-2),
-        brandLogo:
-          "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
-        flag3dsVerified: false,
-        brand: info.brand,
-        onUs: false
-      },
-      pspEditable: true,
-      isPspToIgnore: false,
-      saved: false,
-      registeredNexi: false
-    }
-  };
-  res.json(response);
-});
+addHandler(
+  walletRouter,
+  "post",
+  appendWalletV1Prefix("/wallet/cc"),
+  (_, res) => {
+    const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
+    const walletV2 = generateWalletV2FromCard(
+      cards[0],
+      WalletTypeEnum.Card,
+      true
+    );
+    const info = walletV2.info as CardInfo;
+    // add new wallet to the existing ones
+    addWalletV2([walletV2]);
+    const response: WalletResponse = {
+      data: {
+        idWallet: walletV2.idWallet,
+        type: TypeEnum.CREDIT_CARD,
+        favourite: false,
+        creditCard: {
+          id: walletV2.idWallet,
+          holder: info.holder,
+          pan: "*".repeat(12) + (info.blurredNumber ?? ""),
+          expireMonth: info.expireMonth!.padStart(2, "0"),
+          expireYear: info.expireYear!.slice(-2),
+          brandLogo:
+            "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
+          flag3dsVerified: false,
+          brand: info.brand,
+          onUs: false
+        },
+        pspEditable: true,
+        isPspToIgnore: false,
+        saved: false,
+        registeredNexi: false
+      }
+    };
+    res.json(response);
+  }
+);
 
 const checkOutSuffix = "/wallet/loginMethod";
 // step 2/3 - credit card
@@ -223,7 +233,7 @@ const checkOutSuffix = "/wallet/loginMethod";
 addHandler(
   walletRouter,
   "post",
-  appendWalletPrefix("/payments/cc/actions/pay"),
+  appendWalletV1Prefix("/payments/cc/actions/pay"),
   (_, res) => {
     res.json({
       data: {
@@ -268,7 +278,7 @@ addHandler(
 addHandler(
   walletRouter,
   "get",
-  appendWalletPrefix(checkOutSuffix),
+  appendWalletV1Prefix(checkOutSuffix),
   (req, res) => {
     res.sendStatus(200);
   }
@@ -278,7 +288,7 @@ addHandler(
 addHandler(
   walletRouter,
   "post",
-  appendWalletPrefix("/wallet/:idWallet/actions/favourite"),
+  appendWalletV1Prefix("/wallet/:idWallet/actions/favourite"),
   (req, res) => {
     const walletData = walletV2Response.data ?? [];
     const idWallet = parseInt(req.params.idWallet, 10);

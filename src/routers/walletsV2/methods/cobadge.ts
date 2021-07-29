@@ -23,7 +23,7 @@ import {
   walletV2Response
 } from "../index";
 import { bancomatRouter } from "./bancomat";
-import { appendWalletPrefix } from "../../../utils/wallet";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
 
 const productTypes = Object.values(ProductTypeEnum);
 const paymentNetworks = Object.values(PaymentNetworkEnum);
@@ -121,7 +121,7 @@ const handlePrivative = (req: Request, res: Response) => {
 addHandler(
   bancomatRouter,
   "get",
-  appendWalletPrefix("/cobadge/pans"),
+  appendWalletV1Prefix("/cobadge/pans"),
   (req, res) => {
     if (req.headers.pancode !== undefined) {
       handlePrivative(req, res);
@@ -138,7 +138,7 @@ addHandler(
 addHandler(
   bancomatRouter,
   "get",
-  appendWalletPrefix("/cobadge/search/:searchRequestId"),
+  appendWalletV1Prefix("/cobadge/search/:searchRequestId"),
   (req, res) => {
     if (req.params.searchRequestId === undefined) {
       res.sendStatus(400);
@@ -177,7 +177,7 @@ addHandler(
 addHandler(
   bancomatRouter,
   "post",
-  appendWalletPrefix("/cobadge/add-wallets"),
+  appendWalletV1Prefix("/cobadge/add-wallets"),
   (req, res) => {
     const data = req.body;
     const maybeData = CobadegPaymentInstrumentsRequest.decode(data);
