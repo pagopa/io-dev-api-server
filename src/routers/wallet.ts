@@ -49,6 +49,8 @@ export const walletCount =
 export const walletRouter = Router();
 const walletPath = "/wallet/v1";
 const appendWalletPrefix = (path: string) => `${walletPath}${path}`;
+const walletV2Path = "/wallet/v2";
+const appendWalletV2Prefix = (path: string) => `${walletV2Path}${path}`;
 // wallets and transactions
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
@@ -311,7 +313,7 @@ addHandler(
 addHandler(
   walletRouter,
   "put",
-  appendWalletPrefix("/wallet/:idWallet/payment-status"),
+  appendWalletV2Prefix("/wallet/:idWallet/payment-status"),
   (req, res) => {
     const payload = WalletPaymentstatus.decode(req.body);
     // bad request

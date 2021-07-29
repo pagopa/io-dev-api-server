@@ -74,7 +74,7 @@ it("should set pagoPa to false", async done => {
   const wallets: any = testGetWalletsV2(responseWallets);
   const firstWallet = wallets.data[0];
   const response = await request
-    .put(appendWalletPrefix(`/wallet/${firstWallet.idWallet}/payment-status`))
+    .put(appendWallet2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ pagoPA: false });
   expect(response.status).toBe(200);
   const responsePayload = WalletV2Response.decode(response.body);
