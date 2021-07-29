@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { RestSatispayResponse } from "../../../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
 import { Satispay } from "../../../../generated/definitions/pagopa/walletv2/Satispay";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../../../payloads/response";
@@ -7,12 +6,8 @@ import {
   generateWalletV2FromSatispayOrBancomatPay,
   satispay
 } from "../../../payloads/wallet_v2";
-import {
-  addWalletV2,
-  appendWalletPrefix,
-  walletV2Config,
-  walletV2Response
-} from "../index";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
+import { addWalletV2, walletV2Config, walletV2Response } from "../index";
 
 export const satispayRouter = Router();
 
@@ -20,7 +15,7 @@ export const satispayRouter = Router();
 addHandler(
   satispayRouter,
   "get",
-  appendWalletPrefix("/satispay/consumers"),
+  appendWalletV1Prefix("/satispay/consumers"),
   (req, res) => {
     if (walletV2Config.citizenSatispay) {
       res.json({ data: satispay });
@@ -34,7 +29,7 @@ addHandler(
 addHandler(
   satispayRouter,
   "post",
-  appendWalletPrefix("/satispay/add-wallet"),
+  appendWalletV1Prefix("/satispay/add-wallet"),
   (req, res) => {
     const maybeSatispayInfo = Satispay.decode(req.body.data);
     maybeSatispayInfo.fold(

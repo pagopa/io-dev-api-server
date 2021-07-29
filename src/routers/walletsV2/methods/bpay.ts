@@ -3,23 +3,18 @@ import { fromNullable } from "fp-ts/lib/Option";
 import { BPay } from "../../../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { BPayRequest } from "../../../../generated/definitions/pagopa/walletv2/BPayRequest";
-import { RestSatispayResponse } from "../../../../generated/definitions/pagopa/walletv2/RestSatispayResponse";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../../../payloads/response";
 import { generateWalletV2FromSatispayOrBancomatPay } from "../../../payloads/wallet_v2";
-import {
-  addWalletV2,
-  appendWalletPrefix,
-  bPayResponse,
-  walletV2Response
-} from "../index";
+import { appendWalletV1Prefix } from "../../../utils/wallet";
+import { addWalletV2, bPayResponse, walletV2Response } from "../index";
 
 export const bpayRouter = Router();
 // add the given list of bpay to the wallet
 addHandler(
   bpayRouter,
   "post",
-  appendWalletPrefix("/bpay/add-wallets"),
+  appendWalletV1Prefix("/bpay/add-wallets"),
   (req, res) => {
     const maybeBPayList = BPayRequest.decode(req.body);
     maybeBPayList.fold(
@@ -55,6 +50,6 @@ addHandler(
 );
 
 // return the bpay owned by the citizen
-addHandler(bpayRouter, "get", appendWalletPrefix("/bpay/list"), (req, res) =>
+addHandler(bpayRouter, "get", appendWalletV1Prefix("/bpay/list"), (req, res) =>
   res.json(bPayResponse)
 );
