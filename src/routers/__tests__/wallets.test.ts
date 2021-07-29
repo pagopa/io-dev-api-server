@@ -66,7 +66,7 @@ it("should set a wallet as favourite", async done => {
   done();
 });
 
-it("should set pagoPa to false", async done => {
+it("should change pagoPa flag false->true", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets: any = testGetWalletsV2(responseWallets);
   const firstWallet = wallets.data[0];
