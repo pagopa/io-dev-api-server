@@ -1,4 +1,7 @@
 import { Router } from "express";
+import * as t from "io-ts";
+import { CategoriaBeneficiarioBean } from "../../../../../generated/definitions/siciliaVola/CategoriaBeneficiarioBean";
+import { ComuneBean } from "../../../../../generated/definitions/siciliaVola/ComuneBean";
 import { ProvinciaBean } from "../../../../../generated/definitions/siciliaVola/ProvinciaBean";
 import { assetsFolder } from "../../../../global";
 import { addHandler } from "../../../../payloads/response";
@@ -34,13 +37,31 @@ addHandler(
   (req, res) => {
     const regionId = req.params.region_id;
 
-    const regions = readFileAsJSON(
-      assetsFolder + "/siciliaVola/regions.json"
-    ).map((r: ProvinciaBean) => r.idRegione);
+    if (t.number.decode(regionId).isLeft()) {
+      res.sendStatus(500);
+      return;
+    }
 
+    const maybeRegions = t
+      .readonlyArray(ProvinciaBean)
+      .decode(readFileAsJSON(assetsFolder + "/siciliaVola/regions.json"));
+
+    if (maybeRegions.isLeft()) {
+      res.sendStatus(500);
+      return;
+    }
+    const regions = maybeRegions.value.map((r: ProvinciaBean) => r.idRegione);
     const regionIdAccepted = regionId in regions;
 
     if (regionIdAccepted) {
+      const maybeProvinces = t
+        .readonlyArray(ProvinciaBean)
+        .decode(readFileAsJSON(assetsFolder + "/siciliaVola/provinces.json"));
+
+      if (maybeProvinces.isLeft()) {
+        res.sendStatus(500);
+        return;
+      }
       res.json(readFileAsJSON(assetsFolder + "/siciliaVola/provinces.json"));
     } else {
       res.sendStatus(404);
@@ -55,7 +76,18 @@ addHandler(
   unsecuredSvRouter,
   "get",
   addPrefix("/comuni/:sigla_provincia"),
-  (_, res) => {
+  (req, res) => {
+    const maybeSiglaProvincia = t.string.decode(req.params.region_id);
+    const maybeMunicipalities = t
+      .readonlyArray(ComuneBean)
+      .decode(
+        readFileAsJSON(assetsFolder + "/siciliaVola/municipalities.json")
+      );
+    if (maybeMunicipalities.isLeft() || maybeSiglaProvincia.isLeft()) {
+      res.sendStatus(500);
+      return;
+    }
+
     res.json(readFileAsJSON(assetsFolder + "/siciliaVola/municipalities.json"));
   }
 );
@@ -68,6 +100,15 @@ addHandler(
   "get",
   addPrefix("/categorieBeneficiario"),
   (_, res) => {
+    const maybeCategorieBeneficiario = t
+      .readonlyArray(CategoriaBeneficiarioBean)
+      .decode(
+        readFileAsJSON(assetsFolder + "/siciliaVola/beneficiaryCategories.json")
+      );
+    if (maybeCategorieBeneficiario.isLeft()) {
+      res.sendStatus(500);
+      return;
+    }
     res.json(
       readFileAsJSON(assetsFolder + "/siciliaVola/beneficiaryCategories.json")
     );
