@@ -17,12 +17,7 @@ import {
 } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
-import {
-  frontMatter1CTABonusBpd,
-  frontMatter1CTABonusCgn,
-  frontMatter1CTASiciliaVola,
-  frontMatter2CTA2
-} from "../utils/variables";
+import { frontMatter2CTA2 } from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -132,15 +127,15 @@ export const getServiceMetadata = (
   const metaData: ServicePublicService_metadata = {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope: serviceScope,
-    address: "Piazza di Spagna, Roma, Italia" as NonEmptyString,
-    email: "mock.service@email.com" as NonEmptyString,
-    pec: "mock.pec@email.com" as NonEmptyString,
-    phone: "5555555" as NonEmptyString,
-    web_url: "https://www.google.com" as NonEmptyString,
-    app_android: "https://www.google.com" as NonEmptyString,
-    app_ios: "https://www.google.com" as NonEmptyString,
-    tos_url: "https://www.tos.com" as NonEmptyString,
-    privacy_url: "https://www.privacy.com" as NonEmptyString
+    address: faker.address.streetAddress() as NonEmptyString,
+    email: faker.internet.email() as NonEmptyString,
+    pec: faker.internet.email() as NonEmptyString,
+    phone: faker.phone.phoneNumber() as NonEmptyString,
+    web_url: faker.internet.url() as NonEmptyString,
+    app_android: faker.internet.url() as NonEmptyString,
+    app_ios: faker.internet.url() as NonEmptyString,
+    tos_url: faker.internet.url() as NonEmptyString,
+    privacy_url: faker.internet.url() as NonEmptyString
   };
   return {
     payload: validatePayload(ServicePublicService_metadata, metaData),
