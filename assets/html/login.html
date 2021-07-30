@@ -74,9 +74,11 @@
             const container = document.getElementById("select_container");
             container.innerHTML = `<div>${select}</div>`;
 
-          if (__ENV_E2E_LOGIN_HAPPY_PATH__) {
+          if (window.__ENV_E2E_LOGIN_HAPPY_PATH__) {
             setTimeout(() => {
-              window.location.href = document.getElementById("login-link").getAttribute("href")
+              // we want to simulate user's interaction as much as possible
+              const link = document.getElementById("login-link")
+              link.click()
             }, 250)
           }
         }

@@ -8,5 +8,5 @@ EXPOSE 3000
 
 RUN yarn install
 
-CMD [ "sh", "-c", "yarn start"]
+CMD [ "sh", "-c", "yarn configure && yarn start"]
 
