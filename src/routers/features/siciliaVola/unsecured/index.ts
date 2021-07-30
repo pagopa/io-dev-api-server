@@ -35,9 +35,9 @@ addHandler(
   "get",
   addPrefix("/province/:region_id"),
   (req, res) => {
-    const regionId = req.params.region_id;
+    const maybeRegionId = t.number.decode(req.params.region_id);
 
-    if (t.number.decode(regionId).isLeft()) {
+    if (maybeRegionId.isLeft()) {
       res.sendStatus(500);
       return;
     }
@@ -51,7 +51,7 @@ addHandler(
       return;
     }
     const regions = maybeRegions.value.map((r: ProvinciaBean) => r.idRegione);
-    const regionIdAccepted = regionId in regions;
+    const regionIdAccepted = regions.includes(maybeRegionId.value);
 
     if (regionIdAccepted) {
       const maybeProvinces = t
