@@ -57,7 +57,8 @@ addHandler(
   addPrefix("/beneficiario/annullaVoucher"),
   (req, res) => {
     const { voucherId } = req.body;
-    if (t.Integer.decode(voucherId).isLeft()) {
+    const maybeVoucherId = t.Integer.decode(voucherId);
+    if (maybeVoucherId.isLeft()) {
       // validate the body value
       res.sendStatus(500);
       return;
@@ -67,7 +68,7 @@ addHandler(
       vouchersBeneficiary = {
         ...vouchersBeneficiary,
         listaRisultati: vouchersBeneficiary.listaRisultati.filter(
-          v => v.idVoucher !== voucherId
+          v => v.idVoucher !== maybeVoucherId.value
         )
       };
     }
