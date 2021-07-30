@@ -11,7 +11,7 @@ export const cgnGeoRouter = Router();
 const addPrefix = (path: string) => addApiV1Prefix(`/geo${path}`);
 
 const addresses = range(0, 10000).map<AutocompleteResultItem>(_ => ({
-  id: faker.random.uuid(),
+  id: faker.datatype.uuid(),
   title: faker.address.streetAddress(true),
   address: {
     label: faker.address.streetAddress(false),

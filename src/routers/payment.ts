@@ -116,7 +116,7 @@ addHandler(
     }
     const payment: PaymentResponse = {
       data: {
-        id: faker.random.number(),
+        id: faker.datatype.number(),
         idPayment: idPagamento,
         amount: {
           currency: "EUR",

@@ -42,12 +42,12 @@ export const onlineMerchants: OnlineMerchants = {
   items: range(1, 100).map<OnlineMerchant>(_ => {
     faker.seed(millis++);
     return {
-      id: faker.random.number().toString() as NonEmptyString,
+      id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 3).map<ProductCategory>(
         __ =>
           productCategories[
-            faker.random.number({ min: 0, max: productCategories.length - 1 })
+            faker.datatype.number({ min: 0, max: productCategories.length - 1 })
           ]
       ),
       websiteUrl: faker.internet.url() as NonEmptyString
@@ -59,13 +59,13 @@ export const offlineMerchants: OfflineMerchants = {
   items: range(1, 100).map<OfflineMerchant>(_ => {
     faker.seed(millis++);
     return {
-      id: faker.random.number().toString() as NonEmptyString,
+      id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 3).map<ProductCategory>(
         // tslint:disable-next-line:no-shadowed-variable
         _ =>
           productCategories[
-            faker.random.number({ min: 0, max: productCategories.length - 1 })
+            faker.datatype.number({ min: 0, max: productCategories.length - 1 })
           ]
       ),
       address: {
@@ -73,7 +73,7 @@ export const offlineMerchants: OfflineMerchants = {
         latitude: parseFloat(faker.address.latitude()),
         longitude: parseFloat(faker.address.longitude())
       },
-      distance: faker.random.number({
+      distance: faker.datatype.number({
         min: 0,
         max: 50000
       }) as NonNegativeInteger
@@ -162,16 +162,16 @@ addHandler(
           name: faker.commerce.productName() as NonEmptyString,
           startDate: faker.date.past().toISOString(),
           endDate: faker.date.future().toISOString(),
-          discount: faker.random.number({ min: 10, max: 30 }),
+          discount: faker.datatype.number({ min: 10, max: 30 }),
           description: faker.lorem.lines(1) as NonEmptyString,
           staticCode: faker.random.boolean()
-            ? (faker.random.number().toString() as NonEmptyString)
+            ? (faker.datatype.number().toString() as NonEmptyString)
             : undefined,
           productCategories: range(1, 3).map<ProductCategory>(
             // tslint:disable-next-line:no-shadowed-variable
             _ =>
               productCategories[
-                faker.random.number({
+                faker.datatype.number({
                   min: 0,
                   max: productCategories.length - 1
                 })
@@ -191,13 +191,13 @@ addHandler(
           name: faker.commerce.productName() as NonEmptyString,
           startDate: faker.date.past().toISOString(),
           endDate: faker.date.future().toISOString(),
-          discount: faker.random.number({ min: 10, max: 30 }),
+          discount: faker.datatype.number({ min: 10, max: 30 }),
           description: faker.lorem.lines(1) as NonEmptyString,
           productCategories: range(1, 3).map<ProductCategory>(
             // tslint:disable-next-line:no-shadowed-variable
             _ =>
               productCategories[
-                faker.random.number({
+                faker.datatype.number({
                   min: 0,
                   max: productCategories.length - 1
                 })
