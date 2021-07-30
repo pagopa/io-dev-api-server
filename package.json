@@ -12,6 +12,7 @@
   "api_cgn_geo": "https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml",
   "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/IA-172-add-status-section/definitions.yml",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/walletv2.json",
+  "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/pm/spec.json",
   "pagopa_cobadge_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/cobadge/abi_definitions.yml",
   "pagopa_privative_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/privative/definitions.yml",
   "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
@@ -38,6 +39,7 @@
     "generate:pagopa-cobadge-configuration-definitions": "rimraf generated/definitions/pagopa/cobadge/configuration && mkdir -p generated/definitions/pagopa/cobadge/configuration && gen-api-models --api-spec $npm_package_pagopa_cobadge_configuration --out-dir ./generated/definitions/pagopa/cobadge/configuration",
     "generate:pagopa-privative-configuration-definitions": "rimraf generated/definitions/pagopa/privative/configuration && mkdir -p generated/definitions/pagopa/privative/configuration && gen-api-models --api-spec $npm_package_pagopa_privative_configuration --out-dir ./generated/definitions/pagopa/privative/configuration",
     "generate:pagopa-walletv2-definitions": "rimraf generated/definitions/pagopa/walletv2 && mkdir -p generated/definitions/pagopa/walletv2 && gen-api-models --api-spec $npm_package_api_pagopa_walletv2 --out-dir ./generated/definitions/pagopa/walletv2",
+    "generate:pagopa-api": "rimraf generated/definitions/pagopa && mkdir -p generated/definitions/pagopa && gen-api-models --api-spec $npm_package_api_pagopa --out-dir ./generated/definitions/pagopa",
     "generate:bonus-vacanze-definitions": "rimraf generated/definitions/bonus_vacanze && mkdir -p generated/definitions/bonus_vacanze && gen-api-models --api-spec $npm_package_api_bonus_vacanze --out-dir ./generated/definitions/bonus_vacanze ",
     "generate:cgn-definitions": "rimraf generated/definitions/cgn && mkdir -p generated/definitions/cgn && gen-api-models --api-spec $npm_package_api_cgn --out-dir ./generated/definitions/cgn ",
     "generate:cgn-merchants-definitions": "rimraf generated/definitions/cgn/merchants && mkdir -p generated/definitions/cgn/merchants && gen-api-models --api-spec $npm_package_api_cgn_merchants --out-dir ./generated/definitions/cgn/merchants ",
@@ -49,7 +51,7 @@
     "generate:bpd-winning-transactions": "rimraf generated/definitions/bpd/winning_transactions && mkdir -p generated/definitions/bpd/winning_transactions  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions --out-dir ./generated/definitions/bpd/winning_transactions --no-strict",
     "generate:bpd-winning-transactions-v2": "rimraf generated/definitions/bpd/winning_transactions/v2 && mkdir -p generated/definitions/bpd/winning_transactions/v2  && gen-api-models --api-spec $npm_package_api_bpd_winning_transactions_v2 --out-dir ./generated/definitions/bpd/winning_transactions/v2 --no-strict",
     "generate:eu-covid-cert-definitions": "rimraf generated/definitions/eu_covid_cert && mkdir -p generated/definitions/eu_covid_cert && gen-api-models --api-spec $npm_package_api_eu_covid_cert --out-dir ./generated/definitions/eu_covid_cert --no-strict",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:bpd-winning-transactions-v2 generate:cgn-definitions generate:cgn-merchants-definitions generate:cgn-geo-definitions generate:eu-covid-cert-definitions"
+    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:bpd-winning-transactions-v2 generate:cgn-definitions generate:cgn-merchants-definitions generate:cgn-geo-definitions generate:eu-covid-cert-definitions"
   },
   "jest": {
     "preset": "ts-jest",
@@ -58,7 +60,7 @@
   "dependencies": {
     "@pagopa/ts-commons": "^9.4.0",
     "@types/body-parser": "^1.17.1",
-    "@types/faker": "^5.1.4",
+    "@types/faker": "^5.5.7",
     "@types/date-fns": "^2.6.0",
     "@types/figlet": "^1.2.1",
     "@types/morgan": "^1.9.2",
@@ -71,16 +73,16 @@
     "crypto": "^1.0.1",
     "date-fns": "^2.22.1",
     "express": "^4.17.1",
-    "faker": "^5.1.0",
+    "faker": "^5.5.3",
     "figlet": "^1.5.0",
     "italia-ts-commons": "^5.1.13",
     "italia-tslint-rules": "^1.1.3",
     "italia-utils": "4.1.1",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.2",
+    "nodemon": "^2.0.12",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
+    "rimraf": "^3.0.2",
     "sha256": "^0.2.0",
     "swagger-parser": "^8.0.3",
     "ts-node": "8.10.2"
