@@ -60,7 +60,7 @@
     "collectCoverage": true
   },
   "dependencies": {
-    "@pagopa/ts-commons": "^9.4.0",
+    "@pagopa/ts-commons": "^9.6.0",
     "@types/body-parser": "^1.17.1",
     "@types/faker": "^5.5.7",
     "@types/date-fns": "^2.6.0",
