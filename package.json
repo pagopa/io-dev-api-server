@@ -64,7 +64,7 @@
     "@types/body-parser": "^1.17.1",
     "@types/faker": "^5.5.7",
     "@types/date-fns": "^2.6.0",
-    "@types/figlet": "^1.2.1",
+    "@types/figlet": "^1.5.4",
     "@types/morgan": "^1.9.2",
     "@types/prettier": "^1.19.0",
     "@types/sha256": "^0.2.0",
