@@ -148,13 +148,13 @@ export const getServicesPreferences = (
 ) =>
   new Map<ServiceId, ServicePreference>(
     services.map(s => {
-      const isInboxEnabled = faker.random.boolean();
+      const isInboxEnabled = faker.datatype.boolean();
       return [
         s.service_id,
         {
           is_inbox_enabled: isInboxEnabled,
-          is_email_enabled: isInboxEnabled ? faker.random.boolean() : false,
-          is_webhook_enabled: isInboxEnabled ? faker.random.boolean() : false,
+          is_email_enabled: isInboxEnabled ? faker.datatype.boolean() : false,
+          is_webhook_enabled: isInboxEnabled ? faker.datatype.boolean() : false,
           settings_version: 0 as ServicePreference["settings_version"]
         }
       ];
