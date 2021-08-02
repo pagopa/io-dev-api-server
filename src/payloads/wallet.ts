@@ -36,7 +36,7 @@ export const validPsp: Psp = {
   serviceName: "nomeServizio 10 white",
   fixedCost: {
     currency: "EUR",
-    amount: faker.random.number({ min: 1, max: 150 }),
+    amount: faker.datatype.number({ min: 1, max: 150 }),
     decimalDigits: 2
   },
   appChannel: false,
@@ -61,7 +61,7 @@ const validPsp2: Psp = {
   serviceName: "nomeServizio 10 red",
   fixedCost: {
     currency: "EUR",
-    amount: faker.random.number({ min: 1, max: 250 }),
+    amount: faker.datatype.number({ min: 1, max: 250 }),
     decimalDigits: 2
   },
   appChannel: false,
@@ -86,7 +86,7 @@ const validPsp3: Psp = {
   serviceName: "nomeServizio 10 Blu",
   fixedCost: {
     currency: "EUR",
-    amount: faker.random.number({ min: 1, max: 250 }),
+    amount: faker.datatype.number({ min: 1, max: 250 }),
     decimalDigits: 2
   },
   appChannel: false,
@@ -160,10 +160,10 @@ export const getTransactions = (
   randomData: boolean = true,
   wallets?: ReadonlyArray<Wallet>
 ): ReadonlyArray<Transaction> => {
-  const startId = faker.random.number();
+  const startId = faker.datatype.number();
   return range(1, count).map(idx => {
     const amount = randomData
-      ? faker.random.number({ min: 100, max: 999999 })
+      ? faker.datatype.number({ min: 100, max: 999999 })
       : 20000 + idx * 10;
     const fee = randomData ? Math.trunc(Math.random() * 150) : 1;
     const description = randomData
@@ -192,11 +192,11 @@ export const getTransactions = (
       idPayment: 1,
       idPsp: fromNullable(wallets)
         .map(ws => ws[idx % ws.length].idPsp)
-        .getOrElse(faker.random.number(10000)),
+        .getOrElse(faker.datatype.number(10000)),
       idStatus: 3,
       idWallet: fromNullable(wallets)
         .map(ws => ws[idx % ws.length].idWallet)
-        .getOrElse(faker.random.number(10000)),
+        .getOrElse(faker.datatype.number(10000)),
       merchant,
       nodoIdPayment: "nodoIdPayment",
       paymentModel: 5,

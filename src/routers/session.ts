@@ -12,7 +12,7 @@ addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
 
 addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), (_, res) =>
   res.json({
-    access_token: faker.random.uuid(),
-    expires_in: faker.random.number()
+    access_token: faker.datatype.uuid(),
+    expires_in: faker.datatype.number()
   })
 );

@@ -159,7 +159,7 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   faker.seed(millis++);
   return {
     abi: abiCodes[
-      faker.random.number({ min: 0, max: abiCodes.length - 1 })
+      faker.datatype.number({ min: 0, max: abiCodes.length - 1 })
     ].replace(".png", ""),
     name: faker.company.companyName()
   };

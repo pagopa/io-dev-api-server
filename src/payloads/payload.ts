@@ -248,7 +248,7 @@ export const transactionIdResponseSecond = {
 export const getPaymentRequestsGetResponse = (
   senderService: ServicePublic
 ): PaymentRequestsGetResponse => ({
-  importoSingoloVersamento: faker.random.number({
+  importoSingoloVersamento: faker.datatype.number({
     min: 1,
     max: 9999
   }) as PaymentRequestsGetResponse["importoSingoloVersamento"],
