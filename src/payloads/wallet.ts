@@ -118,7 +118,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
       holder: `${faker.name.firstName()} ${faker.name.lastName()}`,
       pan:
         "************" +
-        faker.random
+        faker.datatype
           .number(9999)
           .toString()
           .padStart(4, "0"),
@@ -167,7 +167,7 @@ export const getTransactions = (
       : 20000 + idx * 10;
     const fee = randomData ? Math.trunc(Math.random() * 150) : 1;
     const description = randomData
-      ? `/RFB/${faker.random
+      ? `/RFB/${faker.datatype
           .number(1000000)
           .toString()
           .padStart(17, "0")}/${amount /
