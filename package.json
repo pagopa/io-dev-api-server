@@ -65,7 +65,7 @@
     "@types/faker": "^5.5.7",
     "@types/date-fns": "^2.6.0",
     "@types/figlet": "^1.2.1",
-    "@types/morgan": "^1.9.2",
+    "@types/morgan": "^1.9.3",
     "@types/prettier": "^1.19.0",
     "@types/sha256": "^0.2.0",
     "@types/swagger-parser": "^7.0.1",
