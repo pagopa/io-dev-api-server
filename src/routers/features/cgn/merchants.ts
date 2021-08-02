@@ -164,7 +164,7 @@ addHandler(
           endDate: faker.date.future().toISOString(),
           discount: faker.datatype.number({ min: 10, max: 30 }),
           description: faker.lorem.lines(1) as NonEmptyString,
-          staticCode: faker.random.boolean()
+          staticCode: faker.datatype.boolean()
             ? (faker.datatype.number().toString() as NonEmptyString)
             : undefined,
           productCategories: range(1, 3).map<ProductCategory>(
