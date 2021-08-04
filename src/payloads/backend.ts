@@ -171,6 +171,18 @@ export const backendStatus: BackendStatus = {
         "it-IT": "",
         "en-EN": ""
       }
+    },
+    app_update_required: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      web_url: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      message: {
+        "it-IT": "aggiornamento richiesto",
+        "en-EN": "update required"
+      }
     }
   },
   config: {
