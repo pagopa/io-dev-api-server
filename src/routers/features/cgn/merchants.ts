@@ -12,10 +12,7 @@ import { OfflineMerchantSearchRequest } from "../../../../generated/definitions/
 import { OnlineMerchant } from "../../../../generated/definitions/cgn/merchants/OnlineMerchant";
 import { OnlineMerchants } from "../../../../generated/definitions/cgn/merchants/OnlineMerchants";
 import { OnlineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OnlineMerchantSearchRequest";
-import {
-  ProductCategory,
-  ProductCategoryEnum
-} from "../../../../generated/definitions/cgn/merchants/ProductCategory";
+import { ProductCategory, ProductCategoryEnum } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
@@ -26,14 +23,15 @@ const addPrefix = (path: string) =>
   addApiV1Prefix(`/cgn-operator-search${path}`);
 
 const productCategories: ReadonlyArray<ProductCategory> = [
-  ProductCategoryEnum.books,
-  ProductCategoryEnum.arts,
-  ProductCategoryEnum.connectivity,
   ProductCategoryEnum.health,
+  ProductCategoryEnum.foodDrink,
+  ProductCategoryEnum.hotels,
+  ProductCategoryEnum.learning,
+  ProductCategoryEnum.services,
+  ProductCategoryEnum.entertainment,
+  ProductCategoryEnum.shopping,
   ProductCategoryEnum.sports,
-  ProductCategoryEnum.entertainments,
-  ProductCategoryEnum.transportation,
-  ProductCategoryEnum.travels
+  ProductCategoryEnum.travelling
 ];
 
 // tslint:disable-next-line: no-let
