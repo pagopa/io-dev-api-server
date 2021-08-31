@@ -110,23 +110,6 @@ const createMessages = () => {
   addMessage(
     withDueDate(
       withPaymentData(
-        getNewMessage(`💰🕙✅ payment message - valid`, messageMarkdown),
-        true
-      ),
-      new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
-    )
-  );
-
-  addMessage(
-    withPaymentData(
-      getNewMessage(`💰✅ payment message`, messageMarkdown),
-      false
-    )
-  );
-
-  addMessage(
-    withDueDate(
-      withPaymentData(
         getNewMessage(
           `💰🕙❌ payment - expired - invalid after due date`,
           messageMarkdown
@@ -161,6 +144,23 @@ const createMessages = () => {
     withDueDate(
       getNewMessage(`🕙❌ due date - expired`, messageMarkdown),
       new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
+    )
+  );
+
+  addMessage(
+    withDueDate(
+      withPaymentData(
+        getNewMessage(`💰🕙✅ payment message`, messageMarkdown),
+        true
+      ),
+      new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+    )
+  );
+
+  addMessage(
+    withPaymentData(
+      getNewMessage(`💰✅ payment message`, messageMarkdown),
+      false
     )
   );
 };
