@@ -10,12 +10,7 @@ import { assetsFolder } from "../../../global";
 import { addHandler } from "../../../payloads/response";
 import { generateWalletV2FromCard } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
-import {
-  abiResponse,
-  addWalletV2,
-  pansResponse,
-  walletV2Response
-} from "../index";
+import { abiResponse, addWalletV2, getWalletV2, pansResponse } from "../index";
 
 export const bancomatRouter = Router();
 /**
@@ -100,7 +95,7 @@ addHandler(
       res.sendStatus(400);
       return;
     }
-    const walletData = walletV2Response.data ?? [];
+    const walletData = getWalletV2();
     const bancomatsToAdd = maybeData.value.data?.data ?? [];
     // check if a bancomat is already present in the wallet list
     const findBancomat = (card: Card): Card | undefined => {

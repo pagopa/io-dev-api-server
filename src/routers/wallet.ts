@@ -35,10 +35,10 @@ import { validatePayload } from "../utils/validator";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
 import {
   addWalletV2,
-  findWalletfromId,
+  findWalletById,
+  getWalletV2,
   removeWalletV2,
-  walletV2Config,
-  walletV2Response
+  walletV2Config
 } from "./walletsV2";
 export const walletCount =
   walletV2Config.satispay +
@@ -169,7 +169,7 @@ addHandler(
     const idWallet = parseInt(req.params.idWallet, 10);
     const idPsp = req.body.data.idPsp;
     const psp = getPspFromId(idPsp);
-    const walletV2 = findWalletfromId(idWallet);
+    const walletV2 = findWalletById(idWallet);
     if (walletV2 === undefined || psp === undefined) {
       res.sendStatus(404);
       return;
@@ -290,7 +290,7 @@ addHandler(
   "post",
   appendWalletV1Prefix("/wallet/:idWallet/actions/favourite"),
   (req, res) => {
-    const walletData = walletV2Response.data ?? [];
+    const walletData = getWalletV2();
     const idWallet = parseInt(req.params.idWallet, 10);
     const creditCard = walletData.find(w => w.idWallet === idWallet);
     if (creditCard) {
@@ -329,7 +329,7 @@ addHandler(
       return;
     }
     const idWallet = parseInt(req.params.idWallet, 10);
-    const wallet: WalletV2 | undefined = findWalletfromId(idWallet);
+    const wallet: WalletV2 | undefined = findWalletById(idWallet);
     // wallet not found
     if (wallet === undefined) {
       res.sendStatus(404);
