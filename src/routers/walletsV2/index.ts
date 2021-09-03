@@ -68,8 +68,32 @@ export let bPayResponse: RestBPayResponse = {
 let walletV2Response: WalletV2ListResponse = {
   data: []
 };
+
+// some utils functions
+
+/**
+ * return true if the wallet relative to the given idWallet has been deleted
+ * this functions updates the wallets list
+ * @param idWallet
+ */
+export const removeWalletV2 = (idWallet: number): boolean => {
+  const wallets = getWalletV2();
+  const currentLength = wallets.length;
+  const updateWallets = wallets.filter(w => w.idWallet !== idWallet);
+  // update wallet Response
+  walletV2Response = {
+    data: updateWallets
+  };
+  return updateWallets.length < currentLength;
+};
+
+export const findWalletById = (idWallet: number): WalletV2 | undefined => {
+  const wallets = getWalletV2();
+  return wallets.find(w => w.idWallet === idWallet);
+};
 export const getWalletV2 = (): ReadonlyArray<WalletV2> =>
   walletV2Response.data ?? [];
+
 // tslint:disable-next-line: no-let
 let walletBancomat: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
@@ -238,7 +262,7 @@ addHandler(
     const walletsToDelete = getWalletV2().filter(w =>
       (w.enableableFunctions ?? []).includes(service)
     );
-    walletsToDelete.map(w => {
+    walletsToDelete.forEach(w => {
       const idWallet = w.idWallet ?? -1;
       if (removeWalletV2(idWallet)) {
         deletedWallets.push(idWallet);
@@ -257,29 +281,6 @@ addHandler(
 // reset function
 export const resetWalletV2 = () => {
   generateWalletV2Data();
-};
-
-// some utils functions
-
-/**
- * return true if the wallet relative to the given idWallet has been deleted
- * this functions updates the wallets list
- * @param idWallet
- */
-export const removeWalletV2 = (idWallet: number): boolean => {
-  const wallets = getWalletV2();
-  const currentLength = wallets.length;
-  const updateWallets = wallets.filter(w => w.idWallet !== idWallet);
-  // update wallet Response
-  walletV2Response = {
-    data: updateWallets
-  };
-  return updateWallets.length < currentLength;
-};
-
-export const findWalletById = (idWallet: number): WalletV2 | undefined => {
-  const wallets = getWalletV2();
-  return wallets.find(w => w.idWallet === idWallet);
 };
 
 // at the server startup
