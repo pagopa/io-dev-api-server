@@ -72,7 +72,7 @@ it("should change pagoPa flag false->true", async done => {
   const firstWallet = wallets.data[0];
   const response = await request
     .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
-    .send({ pagoPA: false });
+    .send({ data: { pagoPA: false } });
   expect(response.status).toBe(200);
   const responsePayload = WalletV2Response.decode(response.body);
   expect(responsePayload.isRight()).toBeTruthy();
@@ -84,7 +84,7 @@ it("should change pagoPa flag false->true", async done => {
   // invert
   const responseInvert = await request
     .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
-    .send({ pagoPA: true });
+    .send({ data: { pagoPA: true } });
   expect(responseInvert.status).toBe(200);
   const responsePayloadInvert = WalletV2Response.decode(responseInvert.body);
   expect(responsePayloadInvert.isRight()).toBeTruthy();

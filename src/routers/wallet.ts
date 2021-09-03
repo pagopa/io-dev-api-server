@@ -5,7 +5,7 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
-import { WalletPaymentstatus } from "../../generated/definitions/pagopa/WalletPaymentstatus";
+import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
@@ -322,7 +322,7 @@ addHandler(
   "put",
   appendWalletV2Prefix("/wallet/:idWallet/payment-status"),
   (req, res) => {
-    const payload = WalletPaymentstatus.decode(req.body);
+    const payload = WalletPaymentStatusRequest.decode(req.body);
     // bad request
     if (payload.isLeft()) {
       res.sendStatus(400);
@@ -337,9 +337,9 @@ addHandler(
     }
     const updatedWallet: WalletV2 = {
       ...wallet,
-      pagoPA: payload.value.pagoPA,
+      pagoPA: payload.value.data.pagoPA,
       // remove favourite if pagoPA===false
-      favourite: !payload.value.pagoPA ? false : wallet.favourite
+      favourite: !payload.value.data.pagoPA ? false : wallet.favourite
     };
     removeWalletV2(updatedWallet.idWallet!);
     addWalletV2([updatedWallet], true);
