@@ -70,7 +70,8 @@ let walletV2Response: WalletV2ListResponse = {
 };
 
 // some utils functions
-
+export const getWalletV2 = (): ReadonlyArray<WalletV2> =>
+  walletV2Response.data ?? [];
 /**
  * return true if the wallet relative to the given idWallet has been deleted
  * this functions updates the wallets list
@@ -91,8 +92,6 @@ export const findWalletById = (idWallet: number): WalletV2 | undefined => {
   const wallets = getWalletV2();
   return wallets.find(w => w.idWallet === idWallet);
 };
-export const getWalletV2 = (): ReadonlyArray<WalletV2> =>
-  walletV2Response.data ?? [];
 
 // tslint:disable-next-line: no-let
 let walletBancomat: ReadonlyArray<WalletV2> = [];
