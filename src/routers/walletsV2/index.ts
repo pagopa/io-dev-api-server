@@ -226,7 +226,7 @@ addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
 );
 
-// remove from wallet all these methods that are a specific function enabled (BPD, PagoPA, etc..)
+// remove from wallet all these methods that have a specific function enabled (BPD, PagoPA, etc..)
 addHandler(
   wallet2Router,
   "delete",
