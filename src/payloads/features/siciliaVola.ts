@@ -2,16 +2,25 @@ import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { AeroportoSedeBean } from "../../../generated/definitions/siciliaVola/AeroportoSedeBean";
 import { ListaVoucherBeneficiarioOutputBean } from "../../../generated/definitions/siciliaVola/ListaVoucherBeneficiarioOutputBean";
+import { StatoVoucherBean } from "../../../generated/definitions/siciliaVola/StatoVoucherBean";
 import { VoucherBeneficiarioOutputBean } from "../../../generated/definitions/siciliaVola/VoucherBeneficiarioOutputBean";
 
+export const getPossibleVoucherStates: StatoVoucherBean = [
+  { idStato: 2, statoDesc: "UTILIZZATO" },
+  { idStato: 1, statoDesc: "DISPONIBILE" },
+  { idStato: 4, statoDesc: "SCADUTO" },
+  { idStato: 3, statoDesc: "ANNULLATO" }
+];
+
 export const getVouchersBeneficiary = (
-  size: number
+  size: number,
+  lastId: number
 ): ListaVoucherBeneficiarioOutputBean => {
   const voucher: ReadonlyArray<VoucherBeneficiarioOutputBean> = range(
     0,
     size - 1
   ).map(i => ({
-    idVoucher: i,
+    idVoucher: lastId + 1 + i,
     aeroportoDest: faker.address.city(),
     dataVolo: faker.date.future()
   }));
