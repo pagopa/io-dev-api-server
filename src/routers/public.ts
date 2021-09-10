@@ -52,6 +52,10 @@ addHandler(publicRouter, "get", "/paywebview", (_, res) => {
   sendFile("assets/imgs/how_to_login.png", res);
 });
 
+addHandler(publicRouter, "get", "/test_pdf", (_, res) => {
+  sendFile("assets/pdf/tos.pdf", res);
+});
+
 // it should be useful to reset some states
 addHandler(publicRouter, "get", "/reset", (_, res) => {
   type emptyFunc = () => void;
