@@ -92,18 +92,14 @@ addHandler(
   "get",
   addPrefix("/beneficiario/stampaVoucher"),
   (_, res) => {
-    const voucherPdf = fs
-      .readFileSync("assets/siciliaVola/pdfVoucher.pdf")
-      .toString("binary");
-
-    // res.setHeader("Content-Type", "application/octect-stream");
-    res.setHeader("Transfer-Encoding", "chunked");
-    // res.setHeader(
-    //   "Content-Disposition",
-    //   "attachment; filename=bonus_sicilia.pdf"
-    // );
-
-    res.send(voucherPdf);
+    const filename = "pdfVoucherMatteo.pdf";
+    const data = fs.readFileSync(`assets/siciliaVola/${filename}`);
+    res.writeHead(200, {
+      "Content-Type": "application/pdf",
+      "Content-disposition": "attachment;filename=" + filename,
+      "Content-Length": data.length
+    });
+    res.end(data);
   }
 );
 
