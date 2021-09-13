@@ -646,6 +646,40 @@ paths:
             $ref: "#/definitions/ListaVoucherBeneficiarioOutputBean"
         500:
           description: "Errore interno."
+  /rest/secured/beneficiario/stampaVoucher:
+    post:
+      tags:
+        - securedBeneficiario
+      operationId: getPdf
+      requestBody:
+        $ref: '#/components/requestBodies/VoucherBean'
+      responses:
+        '200':
+          description: Tutto OK
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/VoucherBean'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/VoucherBean'
+        '400':
+          description: Validazioni non superate
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ProblemBean'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemBean'
+        '500':
+          description: Errore interno.
+        '401':
+          $ref: '#/components/responses/AuthnProblem'
+        '403':
+          $ref: '#/components/responses/AuthzProblem'
+        '503':
+          $ref: '#/components/responses/GenericProblem'
   /rest/secured/beneficiario/statiVoucher:
     get:
       tags:
