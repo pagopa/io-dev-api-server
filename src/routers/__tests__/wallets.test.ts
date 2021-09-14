@@ -112,17 +112,17 @@ it("should remove in bulk all these methods that have a specific function enable
   );
   const response = await request.delete(
     appendWalletV2Prefix(
-      `/delete-wallets?service=${EnableableFunctionsEnum.pagoPA}`
+      `/wallet/delete-wallets?service=${EnableableFunctionsEnum.pagoPA}`
     )
   );
   const responseBpd = await request.delete(
     appendWalletV2Prefix(
-      `/delete-wallets?service=${EnableableFunctionsEnum.BPD}`
+      `/wallet/delete-wallets?service=${EnableableFunctionsEnum.BPD}`
     )
   );
   const responseFa = await request.delete(
     appendWalletV2Prefix(
-      `/delete-wallets?service=${EnableableFunctionsEnum.FA}`
+      `/wallet/delete-wallets?service=${EnableableFunctionsEnum.FA}`
     )
   );
   const testResponse = (toBeDeleted: number, res: typeof response) => {

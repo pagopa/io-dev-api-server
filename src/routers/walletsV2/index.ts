@@ -253,7 +253,7 @@ addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
 addHandler(
   wallet2Router,
   "delete",
-  appendWalletV2Prefix("/delete-wallets"),
+  appendWalletV2Prefix("/wallet/delete-wallets"),
   (req, res) => {
     const service = req.query.service;
     // tslint:disable-next-line: readonly-array
