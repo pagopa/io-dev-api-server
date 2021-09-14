@@ -17,10 +17,9 @@ export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
 const citizenV2: CitizenResourceV2 = {
   enabled: false,
   fiscalCode,
-  payoffInstr: "TECHIBAN",
+  payoffInstr: "",
   payoffInstrType: "IBAN",
-  timestampTC: new Date(),
-  technicalAccount: "This is a technical account"
+  timestampTC: new Date()
 };
 
 // tslint:disable-next-line: no-let
