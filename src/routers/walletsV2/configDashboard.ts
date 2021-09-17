@@ -13,9 +13,9 @@ import { sendFile } from "../../utils/file";
 import {
   defaultWalletV2Config,
   generateWalletV2Data,
+  getWalletV2,
   updateWalletV2Config,
-  walletV2Config,
-  walletV2Response
+  walletV2Config
 } from "./index";
 
 export const dashboardWalletV2Router = Router();
@@ -44,7 +44,7 @@ addHandler(dashboardWalletV2Router, "post", "/walletv2/config", (req, res) => {
 
 // get all payment methods compliant with BPD (dashboard web)
 export const getBPDPaymentMethod = () =>
-  (walletV2Response.data ?? []).map(bpd => {
+  getWalletV2().map(bpd => {
     if (
       bpd.walletType === WalletTypeEnum.Card ||
       bpd.walletType === WalletTypeEnum.Bancomat
