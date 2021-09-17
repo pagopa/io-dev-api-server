@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/AbiListResponse";
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
@@ -64,9 +65,34 @@ export let bPayResponse: RestBPayResponse = {
 };
 
 // tslint:disable-next-line: no-let
-export let walletV2Response: WalletV2ListResponse = {
+let walletV2Response: WalletV2ListResponse = {
   data: []
 };
+
+// some utils functions
+export const getWalletV2 = (): ReadonlyArray<WalletV2> =>
+  walletV2Response.data ?? [];
+/**
+ * return true if the wallet relative to the given idWallet has been deleted
+ * this functions updates the wallets list
+ * @param idWallet
+ */
+export const removeWalletV2 = (idWallet: number): boolean => {
+  const wallets = getWalletV2();
+  const currentLength = wallets.length;
+  const updateWallets = wallets.filter(w => w.idWallet !== idWallet);
+  // update wallet Response
+  walletV2Response = {
+    data: updateWallets
+  };
+  return updateWallets.length < currentLength;
+};
+
+export const findWalletById = (idWallet: number): WalletV2 | undefined => {
+  const wallets = getWalletV2();
+  return wallets.find(w => w.idWallet === idWallet);
+};
+
 // tslint:disable-next-line: no-let
 let walletBancomat: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
@@ -218,31 +244,43 @@ export const generateWalletV2Data = () => {
   );
 };
 
-// return true if wallet relative to the given idWallet has been deleted
-export const removeWalletV2 = (idWallet: number): boolean => {
-  const wallets = walletV2Response.data ?? [];
-  const currentLength = wallets.length;
-  const updateWallets = wallets.filter(w => w.idWallet !== idWallet);
-  // update wallet Response
-  walletV2Response = {
-    data: updateWallets
-  };
-  return updateWallets.length < currentLength;
-};
-
-export const findWalletfromId = (idWallet: number): WalletV2 | undefined => {
-  const wallets = walletV2Response.data ?? [];
-  return wallets.find(w => w.idWallet === idWallet);
-};
-
 // return the list of wallets
 addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
+);
+
+// remove from wallet all these methods that have a specific function enabled (BPD, PagoPA, etc..)
+addHandler(
+  wallet2Router,
+  "delete",
+  appendWalletV2Prefix("/wallet/delete-wallets"),
+  (req, res) => {
+    const service = req.query.service;
+    // tslint:disable-next-line: readonly-array
+    const deletedWallets: number[] = [];
+    const walletsToDelete = getWalletV2().filter(w =>
+      (w.enableableFunctions ?? []).includes(service)
+    );
+    walletsToDelete.forEach(w => {
+      const idWallet = w.idWallet ?? -1;
+      if (removeWalletV2(idWallet)) {
+        deletedWallets.push(idWallet);
+      }
+    });
+    const response: DeletedWalletsResponse = {
+      data: {
+        deletedWallets: deletedWallets.length,
+        notDeletedWallets: walletsToDelete.length - deletedWallets.length
+      }
+    };
+    res.json(response);
+  }
 );
 
 // reset function
 export const resetWalletV2 = () => {
   generateWalletV2Data();
 };
+
 // at the server startup
 generateWalletV2Data();

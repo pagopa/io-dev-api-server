@@ -7,7 +7,7 @@ import {
   satispay
 } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
-import { addWalletV2, walletV2Config, walletV2Response } from "../index";
+import { addWalletV2, getWalletV2, walletV2Config } from "../index";
 
 export const satispayRouter = Router();
 
@@ -35,7 +35,7 @@ addHandler(
     maybeSatispayInfo.fold(
       () => res.sendStatus(400),
       si => {
-        const walletData = walletV2Response.data ?? [];
+        const walletData = getWalletV2();
         const walletsWithoutSatispay = walletData.filter(
           w => w.walletType !== WalletTypeEnum.Satispay
         );

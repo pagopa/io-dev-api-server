@@ -1,4 +1,6 @@
 import supertest, { Response } from "supertest";
+import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
+import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
 import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
@@ -57,8 +59,8 @@ it("should start a valid session", async done => {
 
 it("should set a wallet as favourite", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
-  const wallets: any = testGetWalletsV2(responseWallets);
-  const firstWallet = wallets.data[0];
+  const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
+  const firstWallet = (wallets.data ?? [])[0];
   const response = await request.post(
     appendWalletV1Prefix(`/wallet/${firstWallet.idWallet}/actions/favourite`)
   );
@@ -68,8 +70,8 @@ it("should set a wallet as favourite", async done => {
 
 it("should change pagoPa flag false->true", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
-  const wallets: any = testGetWalletsV2(responseWallets);
-  const firstWallet = wallets.data[0];
+  const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
+  const firstWallet = (wallets.data ?? [])[0];
   const response = await request
     .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ data: { pagoPA: false } });
@@ -93,6 +95,48 @@ it("should change pagoPa flag false->true", async done => {
       data: { ...firstWallet, pagoPA: true }
     });
   }
+  done();
+});
+
+it("should remove in bulk all these methods that have a specific function enabled", async done => {
+  const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
+  const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
+  const pagopaWallets = (wallets.data ?? []).filter(w =>
+    (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.pagoPA)
+  );
+  const bpdWallets = (wallets.data ?? []).filter(w =>
+    (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.BPD)
+  );
+  const faWallets = (wallets.data ?? []).filter(w =>
+    (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.FA)
+  );
+  const response = await request.delete(
+    appendWalletV2Prefix(
+      `/wallet/delete-wallets?service=${EnableableFunctionsEnum.pagoPA}`
+    )
+  );
+  const responseBpd = await request.delete(
+    appendWalletV2Prefix(
+      `/wallet/delete-wallets?service=${EnableableFunctionsEnum.BPD}`
+    )
+  );
+  const responseFa = await request.delete(
+    appendWalletV2Prefix(
+      `/wallet/delete-wallets?service=${EnableableFunctionsEnum.FA}`
+    )
+  );
+  const testResponse = (toBeDeleted: number, res: typeof response) => {
+    expect(res.status).toBe(200);
+    const deleteResponse = DeletedWalletsResponse.decode(res.body);
+    expect(deleteResponse.isRight()).toBeTruthy();
+    if (deleteResponse.isRight() && deleteResponse.value.data) {
+      expect(deleteResponse.value.data.deletedWallets).toBe(toBeDeleted);
+      expect(deleteResponse.value.data.notDeletedWallets).toBe(0);
+    }
+    testResponse(pagopaWallets.length, response);
+    testResponse(bpdWallets.length, responseBpd);
+    testResponse(faWallets.length, responseFa);
+  };
   done();
 });
 

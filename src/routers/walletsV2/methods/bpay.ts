@@ -7,7 +7,7 @@ import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv
 import { addHandler } from "../../../payloads/response";
 import { generateWalletV2FromSatispayOrBancomatPay } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
-import { addWalletV2, bPayResponse, walletV2Response } from "../index";
+import { addWalletV2, bPayResponse, getWalletV2 } from "../index";
 
 export const bpayRouter = Router();
 // add the given list of bpay to the wallet
@@ -27,7 +27,7 @@ addHandler(
             res.sendStatus(400);
           },
           (bPayList: ReadonlyArray<BPay>) => {
-            const walletData = walletV2Response.data ?? [];
+            const walletData = getWalletV2();
             // all method different from the adding ones
             const walletsBPay = walletData.filter(
               w =>

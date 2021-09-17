@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { take } from "fp-ts/lib/Array";
 import fs from "fs";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
@@ -21,7 +20,7 @@ import {
   addWalletV2,
   citizenCreditCardCoBadge,
   citizenPrivativeCard,
-  walletV2Response
+  getWalletV2
 } from "../index";
 import { bancomatRouter } from "./bancomat";
 
@@ -196,7 +195,7 @@ addHandler(
       res.sendStatus(400);
       return;
     }
-    const walletData = walletV2Response.data ?? [];
+    const walletData = getWalletV2();
     const walletV2 = walletData.find(
       w =>
         w.info &&
