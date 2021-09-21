@@ -8,7 +8,7 @@ import {
 } from "../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
-import { fiscalCode } from "../global";
+import { ioDevServerConfig } from "../global";
 import { getProblemJson } from "../payloads/error";
 import { getProfile } from "../payloads/profile";
 import { addHandler } from "../payloads/response";
@@ -16,7 +16,7 @@ import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
-const profile = getProfile(fiscalCode);
+const profile = getProfile(ioDevServerConfig.profileAttrs.fiscalCode);
 // tslint:disable-next-line: no-let
 export let currentProfile = { ...profile };
 // define user UserDataProcessing (download / delete)

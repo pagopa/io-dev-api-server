@@ -5,7 +5,7 @@ import { CreatedMessageWithContent } from "../../generated/definitions/backend/C
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
 import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { fiscalCode } from "../global";
+import { ioDevServerConfig } from "../global";
 import { getProblemJson } from "../payloads/error";
 import {
   createMessage,
@@ -47,7 +47,10 @@ const getNewMessage = (
   euCovidCert?: MessageContentEu_covid_cert
 ): CreatedMessageWithContent =>
   withContent(
-    createMessage(fiscalCode, getRandomServiceId()),
+    createMessage(
+      ioDevServerConfig.profileAttrs.fiscalCode,
+      getRandomServiceId()
+    ),
     subject,
     markdown,
     prescriptionData,
@@ -61,7 +64,7 @@ const createMessages = () => {
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
     iup: "0000X0NFM",
-    prescriber_fiscal_code: fiscalCode as FiscalCode
+    prescriber_fiscal_code: ioDevServerConfig.profileAttrs.fiscalCode
   };
   const now = new Date();
 
@@ -169,7 +172,7 @@ createMessages();
 export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollection => ({
   items: messagesWithContent.map(m => ({
     id: m.id,
-    fiscal_code: fiscalCode as FiscalCode,
+    fiscal_code: ioDevServerConfig.profileAttrs.fiscalCode,
     created_at: m.created_at,
     sender_service_id: m.sender_service_id,
     time_to_live: m.time_to_live

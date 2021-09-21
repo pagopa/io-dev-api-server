@@ -1,3 +1,4 @@
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
 import { index, range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
@@ -24,7 +25,7 @@ let messageIdIndex = 0;
  * @param timeToLive
  */
 export const createMessage = (
-  fiscalCode: string,
+  fiscalCode: FiscalCode,
   senderServiceId: string,
   timeToLive: number = 3600
 ): CreatedMessageWithoutContent => {
@@ -90,7 +91,7 @@ export const withContent = (
  */
 const createMessageList = (
   count: number,
-  fiscalCode: string,
+  fiscalCode: FiscalCode,
   services: ReadonlyArray<ServicePublic>
 ): PaginatedCreatedMessageWithoutContentCollection => {
   const items = range(1, count).map(c => {

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import { servicesNumber } from "../global";
+import { ioDevServerConfig } from "../global";
 import { addHandler } from "../payloads/response";
 import {
   getServices,
@@ -14,7 +14,9 @@ import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
-export const services = withSiciliaVolaService(getServices(servicesNumber));
+export const services = withSiciliaVolaService(
+  getServices(ioDevServerConfig.servicesCount)
+);
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 

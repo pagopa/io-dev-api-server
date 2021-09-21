@@ -8,7 +8,7 @@ import { PaymentActivationsPostResponse } from "../../generated/definitions/back
 import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
-import { fiscalCode } from "../global";
+import { ioDevServerConfig } from "../global";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
 import { interfaces, serverPort } from "../utils/server";
@@ -129,7 +129,7 @@ addHandler(
           "https://solutionpa-coll.intesasanpaolo.com/IntermediarioPAPortal/noauth/contribuente/pagamentoEsito?idSession=ad095398-2863-4951-b2b6-400ff8d8e95b&idDominio=80005570561",
         isCancelled: false,
         bolloDigitale: false,
-        fiscalCode: fiscalCode as FiscalCode,
+        fiscalCode: ioDevServerConfig.profileAttrs.fiscalCode,
         origin: "IO",
         iban: paymentRequest.ibanAccredito
       }
