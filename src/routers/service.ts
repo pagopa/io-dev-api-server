@@ -15,7 +15,7 @@ import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
 export const services = withSiciliaVolaService(
-  getServices(ioDevServerConfig.servicesCount)
+  getServices(ioDevServerConfig.services.servicesCount)
 );
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);

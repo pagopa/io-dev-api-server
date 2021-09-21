@@ -31,7 +31,7 @@ validatePayload(Certificate, expiredCertificate);
  * status code
  * response payload
  */
-export const authResponses: ReadonlyArray<readonly [
+export const eucovidCertAuthResponses: ReadonlyArray<readonly [
   string,
   string,
   number,
@@ -57,7 +57,9 @@ export const authResponses: ReadonlyArray<readonly [
  */
 addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
   const { accessData } = req.body;
-  const config = authResponses.find(i => i[0] === accessData?.auth_code);
+  const config = eucovidCertAuthResponses.find(
+    i => i[0] === accessData?.auth_code
+  );
   if (t.string.decode(accessData?.auth_code).isLeft() || config === undefined) {
     // Payload has bad format
     res.sendStatus(400);

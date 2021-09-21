@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
+import { range } from "fp-ts/lib/Array";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
@@ -23,7 +24,7 @@ import {
   frontMatterBonusVacanze,
   messageMarkdown
 } from "../utils/variables";
-import { authResponses } from "./features/eu_covid_cert";
+import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
 
 export const messageRouter = Router();
@@ -68,102 +69,160 @@ const createMessages = () => {
   };
   const now = new Date();
 
-  authResponses.forEach(config => {
-    const [authCode, description] = config;
+  /* with CTAs */
+  if (ioDevServerConfig.messages.withCTA) {
+    addMessage(
+      getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown)
+    );
     addMessage(
       getNewMessage(
-        `🏥 EUCovidCert - ${description}`,
-        messageMarkdown,
-        undefined,
-        {
-          auth_code: authCode
-        }
+        `2 CTA bonus vacanze`,
+        frontMatterBonusVacanze + messageMarkdown
       )
     );
-  });
+    addMessage(
+      getNewMessage(
+        `1 CTA start BPD`,
+        frontMatter1CTABonusBpd + messageMarkdown
+      )
+    );
+    addMessage(
+      getNewMessage(
+        `1 CTA IBAN BPD`,
+        frontMatter1CTABonusBpdIban + messageMarkdown
+      )
+    );
+    addMessage(
+      getNewMessage(
+        `1 CTA start CGN`,
+        frontMatter1CTABonusCgn + messageMarkdown
+      )
+    );
+  }
 
-  addMessage(
-    getNewMessage(
-      `💊 medical prescription`,
-      messageMarkdown,
-      medicalPrescription
-    )
-  );
-  addMessage(getNewMessage(`standard message`, messageMarkdown));
-  addMessage(getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown));
-  addMessage(
-    getNewMessage(
-      `2 CTA bonus vacanze`,
-      frontMatterBonusVacanze + messageMarkdown
-    )
-  );
-  addMessage(
-    getNewMessage(`1 CTA start BPD`, frontMatter1CTABonusBpd + messageMarkdown)
-  );
-  addMessage(
-    getNewMessage(
-      `1 CTA IBAN BPD`,
-      frontMatter1CTABonusBpdIban + messageMarkdown
-    )
-  );
-  addMessage(
-    getNewMessage(`1 CTA start CGN`, frontMatter1CTABonusCgn + messageMarkdown)
-  );
-
-  addMessage(
-    withDueDate(
-      withPaymentData(
+  /* with EUCovidCert */
+  if (ioDevServerConfig.messages.withEUCovidCert) {
+    eucovidCertAuthResponses.forEach(config => {
+      const [authCode, description] = config;
+      addMessage(
         getNewMessage(
-          `💰🕙❌ payment - expired - invalid after due date`,
-          messageMarkdown
+          `🏥 EUCovidCert - ${description}`,
+          messageMarkdown,
+          undefined,
+          {
+            auth_code: authCode
+          }
+        )
+      );
+    });
+  }
+
+  /* medical */
+  range(1, ioDevServerConfig.messages.medicalCount).map(count =>
+    addMessage(
+      getNewMessage(
+        `💊 medical prescription - ${count}`,
+        messageMarkdown,
+        medicalPrescription
+      )
+    )
+  );
+
+  /* standard message */
+  range(1, ioDevServerConfig.messages.standardMessageCount).map(count =>
+    addMessage(getNewMessage(`standard message - ${count}`, messageMarkdown))
+  );
+
+  /* due date */
+  range(1, ioDevServerConfig.messages.withValidDueDateCount).map(count =>
+    addMessage(
+      withDueDate(
+        getNewMessage(`🕙✅ due date valid - ${count}`, messageMarkdown),
+        new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+      )
+    )
+  );
+
+  range(1, ioDevServerConfig.messages.withInValidDueDateCount).map(count =>
+    addMessage(
+      withDueDate(
+        getNewMessage(`🕙❌ due date invalid - ${count}`, messageMarkdown),
+        new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
+      )
+    )
+  );
+
+  /* payments */
+
+  range(
+    1,
+    ioDevServerConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
+  ).map(count =>
+    addMessage(
+      withDueDate(
+        withPaymentData(
+          getNewMessage(
+            `💰🕙❌ payment - expired - invalid after due date - ${count}`,
+            messageMarkdown
+          ),
+          true
         ),
-        true
-      ),
-      new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+        new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+      )
     )
   );
 
-  addMessage(
-    withDueDate(
-      withPaymentData(
-        getNewMessage(
-          `💰🕙❌ payment - expired - not invalid after due date`,
-          messageMarkdown
+  range(
+    1,
+    ioDevServerConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
+  ).map(count =>
+    addMessage(
+      withDueDate(
+        withPaymentData(
+          getNewMessage(
+            `💰🕙✅ payment - valid - invalid after due date - ${count}`,
+            messageMarkdown
+          ),
+          true
         ),
-        false
-      ),
-      new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+        new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+      )
     )
   );
 
-  addMessage(
-    withDueDate(
-      getNewMessage(`🕙✅ due date - valid`, messageMarkdown),
-      new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+  range(
+    1,
+    ioDevServerConfig.messages.paymentWithExpiredDueDateCount
+  ).map(count =>
+    addMessage(
+      withDueDate(
+        withPaymentData(
+          getNewMessage(`💰🕙 payment - expired - ${count}`, messageMarkdown),
+          false
+        ),
+        new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+      )
     )
   );
 
-  addMessage(
-    withDueDate(
-      getNewMessage(`🕙❌ due date - expired`, messageMarkdown),
-      new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
+  range(1, ioDevServerConfig.messages.paymentWithValidDueDateCount).map(count =>
+    addMessage(
+      withDueDate(
+        withPaymentData(
+          getNewMessage(`💰🕙✅ payment message - ${count}`, messageMarkdown),
+          true
+        ),
+        new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+      )
     )
   );
 
-  addMessage(
-    withDueDate(
+  range(1, ioDevServerConfig.messages.paymentsCount).map(count =>
+    addMessage(
       withPaymentData(
-        getNewMessage(`💰🕙✅ payment message`, messageMarkdown),
+        getNewMessage(`💰✅ payment - ${count} `, messageMarkdown),
         true
-      ),
-      new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
-    )
-  );
-
-  addMessage(
-    withPaymentData(
-      getNewMessage(`💰✅ payment message`, messageMarkdown),
-      false
+      )
     )
   );
 };

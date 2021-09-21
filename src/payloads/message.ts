@@ -1,18 +1,15 @@
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
-import { index, range } from "fp-ts/lib/Array";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import {
   MessageContent,
   MessageContentEu_covid_cert
 } from "../../generated/definitions/backend/MessageContent";
-import { PaginatedCreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
 import { PaymentData } from "../../generated/definitions/backend/PaymentData";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { getRandomIntInRange } from "../utils/id";
 import { validatePayload } from "../utils/validator";
 
@@ -81,30 +78,4 @@ export const withContent = (
     eu_covid_cert: euCovidCert
   });
   return { ...message, content };
-};
-
-/**
- * return a list of count messages without content
- * @param count the number of messages
- * @param fiscalCode the receiver fiscal code
- * @param services
- */
-const createMessageList = (
-  count: number,
-  fiscalCode: FiscalCode,
-  services: ReadonlyArray<ServicePublic>
-): PaginatedCreatedMessageWithoutContentCollection => {
-  const items = range(1, count).map(c => {
-    return createMessage(
-      fiscalCode,
-      index((c - 1) % services.length, [...services]).fold(
-        "n/a",
-        s => s.service_id as string
-      )
-    );
-  });
-  return validatePayload(PaginatedCreatedMessageWithoutContentCollection, {
-    items,
-    page_size: count
-  });
 };
