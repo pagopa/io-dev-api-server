@@ -14,9 +14,13 @@ import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
-export const services = withSiciliaVolaService(
-  getServices(ioDevServerConfig.services.servicesCount)
+const nationalLocalServices = getServices(
+  ioDevServerConfig.services.national,
+  ioDevServerConfig.services.local
 );
+export const services = ioDevServerConfig.services.includeSiciliaVola
+  ? withSiciliaVolaService(nationalLocalServices)
+  : nationalLocalServices;
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 

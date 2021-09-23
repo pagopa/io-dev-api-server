@@ -13,6 +13,16 @@ export const ProfileAttrs = t.interface({
 });
 export type ProfileAttrs = t.TypeOf<typeof ProfileAttrs>;
 
+/* messages */
+const MessagesResponseCode = t.keyof({
+  200: null,
+  400: null,
+  401: null,
+  404: null,
+  429: null,
+  500: null
+});
+
 const IoDevServerConfigR = t.interface({});
 
 const IoDevServerConfigO = t.partial({
@@ -21,10 +31,16 @@ const IoDevServerConfigO = t.partial({
   // the global delay applied to all responses (0 means immediately response)
   globalDelay: t.number,
   services: t.interface({
-    // number of services returned
-    servicesCount: t.number
+    // number of services national
+    national: t.number,
+    local: t.number,
+    includeSiciliaVola: t.boolean
   }),
   messages: t.interface({
+    // 200 success with payload
+    getMessagesResponseCode: MessagesResponseCode,
+    // 200 success with payload
+    getMessageResponseCode: MessagesResponseCode,
     // number of messages containing payment (valid with no due date and invalid after due date)
     paymentsCount: t.number,
     // number of message - invalid after due date - containing a payment and a valid (not expired) due date

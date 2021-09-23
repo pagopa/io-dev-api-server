@@ -238,6 +238,10 @@ export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollecti
   }))
 });
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
+  if (ioDevServerConfig.messages.getMessagesResponseCode !== 200) {
+    res.sendStatus(ioDevServerConfig.messages.getMessagesResponseCode);
+    return;
+  }
   res.json(getMessageWithoutContent());
 });
 
@@ -246,6 +250,10 @@ addHandler(
   "get",
   addApiV1Prefix("/messages/:id"),
   (req, res) => {
+    if (ioDevServerConfig.messages.getMessageResponseCode !== 200) {
+      res.sendStatus(ioDevServerConfig.messages.getMessagesResponseCode);
+      return;
+    }
     // retrieve the messageIndex from id
     const msgIndex = messagesWithContent.findIndex(
       item => item.id === req.params.id

@@ -47,7 +47,7 @@ addHandler(
   (_, res) => {
     res.status(500).json({
       detail: "PAYMENT_DUPLICATED",
-      detail_v2: "PAA_PAGAMENTO_DUPLICATO"
+      detail_v2: "PPT_INTERMEDIARIO_PSP_SCONOSCIUTO"
     });
   }
 );

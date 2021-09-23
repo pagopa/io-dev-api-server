@@ -61,35 +61,38 @@ export const withSiciliaVolaService = (
   });
 };
 
-export const getServices = (count: number): readonly ServicePublic[] => {
+export const getServices = (
+  national: number,
+  local: number
+): readonly ServicePublic[] => {
   const aggregation = 3;
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
-  return range(0, count - 1).map(idx => {
-    organizationCount =
-      idx !== 0 && idx % aggregation === 0
-        ? organizationCount + 1
-        : organizationCount;
-    // first half have organization_fiscal_code === organizationFiscalCodes[0]
-    // second half have organization_fiscal_code === organizationFiscalCodes[1]
-    return {
-      ...getService(`service${idx}`),
-      organization_fiscal_code: `${organizationCount + 1}`.padStart(
-        11,
-        "0"
-      ) as OrganizationFiscalCode,
-      organization_name: `${faker.company.companyName()} [${organizationCount +
-        1}]` as OrganizationName,
-      service_metadata: {
-        scope:
-          idx + 1 <= count * 0.5
-            ? ServiceScopeEnum.LOCAL
-            : ServiceScopeEnum.NATIONAL,
-        cta: frontMatter2CTA2 as NonEmptyString
-      }
-    };
-  });
+  const createService = (scope: ServiceScopeEnum, count: number) =>
+    range(0, count - 1).map(idx => {
+      organizationCount =
+        idx !== 0 && idx % aggregation === 0
+          ? organizationCount + 1
+          : organizationCount;
+      return {
+        ...getService(`service${idx}`),
+        organization_fiscal_code: `${organizationCount + 1}`.padStart(
+          11,
+          "0"
+        ) as OrganizationFiscalCode,
+        organization_name: `${faker.company.companyName()} [${organizationCount +
+          1}]` as OrganizationName,
+        service_metadata: {
+          scope,
+          cta: frontMatter2CTA2 as NonEmptyString
+        }
+      };
+    });
+  return [
+    ...createService(ServiceScopeEnum.LOCAL, local),
+    ...createService(ServiceScopeEnum.NATIONAL, national)
+  ];
 };
 
 export const getServicesTuple = (
