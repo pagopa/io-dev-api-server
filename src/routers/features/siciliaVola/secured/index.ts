@@ -56,7 +56,6 @@ addHandler(
       return;
     }
 
-    console.log(vouchersParams.pageNum, vouchersParams.elementsXPage);
     if (vouchersParams.pageNum > 5) {
       res.sendStatus(500);
       return;
