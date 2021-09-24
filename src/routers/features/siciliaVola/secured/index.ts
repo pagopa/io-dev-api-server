@@ -70,15 +70,14 @@ addHandler(
       lastId
     );
 
-    res.json(newVouchers);
-
     vouchersBeneficiary =
       vouchersBeneficiary !== undefined
         ? vouchersBeneficiary.concat(newVouchers)
         : newVouchers.listaRisultati ?? [];
 
     lastId += vouchersParams.elementsXPage;
-    return;
+
+    res.json(newVouchers);
   }
 );
 
