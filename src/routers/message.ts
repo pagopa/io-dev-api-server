@@ -118,7 +118,7 @@ const createMessages = () => {
   }
 
   /* medical */
-  range(1, ioDevServerConfig.messages.medicalCount).map(count =>
+  range(1, ioDevServerConfig.messages.medicalCount).forEach(count =>
     addMessage(
       getNewMessage(
         `💊 medical prescription - ${count}`,
@@ -129,12 +129,12 @@ const createMessages = () => {
   );
 
   /* standard message */
-  range(1, ioDevServerConfig.messages.standardMessageCount).map(count =>
+  range(1, ioDevServerConfig.messages.standardMessageCount).forEach(count =>
     addMessage(getNewMessage(`standard message - ${count}`, messageMarkdown))
   );
 
   /* due date */
-  range(1, ioDevServerConfig.messages.withValidDueDateCount).map(count =>
+  range(1, ioDevServerConfig.messages.withValidDueDateCount).forEach(count =>
     addMessage(
       withDueDate(
         getNewMessage(`🕙✅ due date valid - ${count}`, messageMarkdown),
@@ -143,7 +143,7 @@ const createMessages = () => {
     )
   );
 
-  range(1, ioDevServerConfig.messages.withInValidDueDateCount).map(count =>
+  range(1, ioDevServerConfig.messages.withInValidDueDateCount).forEach(count =>
     addMessage(
       withDueDate(
         getNewMessage(`🕙❌ due date invalid - ${count}`, messageMarkdown),
@@ -157,7 +157,7 @@ const createMessages = () => {
   range(
     1,
     ioDevServerConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
-  ).map(count =>
+  ).forEach(count =>
     addMessage(
       withDueDate(
         withPaymentData(
@@ -175,7 +175,7 @@ const createMessages = () => {
   range(
     1,
     ioDevServerConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
-  ).map(count =>
+  ).forEach(count =>
     addMessage(
       withDueDate(
         withPaymentData(
@@ -193,7 +193,7 @@ const createMessages = () => {
   range(
     1,
     ioDevServerConfig.messages.paymentWithExpiredDueDateCount
-  ).map(count =>
+  ).forEach(count =>
     addMessage(
       withDueDate(
         withPaymentData(
@@ -205,7 +205,10 @@ const createMessages = () => {
     )
   );
 
-  range(1, ioDevServerConfig.messages.paymentWithValidDueDateCount).map(count =>
+  range(
+    1,
+    ioDevServerConfig.messages.paymentWithValidDueDateCount
+  ).forEach(count =>
     addMessage(
       withDueDate(
         withPaymentData(
@@ -217,7 +220,7 @@ const createMessages = () => {
     )
   );
 
-  range(1, ioDevServerConfig.messages.paymentsCount).map(count =>
+  range(1, ioDevServerConfig.messages.paymentsCount).forEach(count =>
     addMessage(
       withPaymentData(
         getNewMessage(`💰✅ payment - ${count} `, messageMarkdown),
