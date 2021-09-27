@@ -79,8 +79,19 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   date_of_birth: new Date(1991, 0, 6).toISOString(),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
-
-const currentProfile = spidProfile;
+const spidCie = {
+  spid: {
+    first: spidProfileFirstOnboarding,
+    notFirst: spidProfile
+  },
+  cie: {
+    first: cieProfileFirstOnboarding,
+    notFirst: cieProfile
+  }
+};
+const currentProfile = ioDevServerConfig.profile.firstOnboarding
+  ? spidCie[ioDevServerConfig.profile.authenticationProvider].first
+  : spidCie[ioDevServerConfig.profile.authenticationProvider].notFirst;
 export const getProfile = (fiscalCode: string): InitializedProfile =>
   validatePayload(InitializedProfile, {
     ...currentProfile,
