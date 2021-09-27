@@ -45,10 +45,10 @@ addHandler(
   // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
   (_, res) => {
-    res.status(500).json({
-      detail: "PAYMENT_DUPLICATED",
-      detail_v2: "PPT_INTERMEDIARIO_PSP_SCONOSCIUTO"
-    });
+    paymentRequest = getPaymentRequestsGetResponse(
+      faker.random.arrayElement(services)
+    );
+    res.json(paymentRequest);
   }
 );
 

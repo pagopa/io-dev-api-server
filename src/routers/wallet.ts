@@ -5,6 +5,7 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
@@ -40,7 +41,6 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
-import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 export const walletCount =
   walletV2Config.satispayCount +
   walletV2Config.privativeCount +
