@@ -18,7 +18,7 @@ it("profile should return a valid profile", async done => {
   expect(profile.isRight()).toBeTruthy();
   if (profile.isRight()) {
     expect(profile.value.fiscal_code).toBe(
-      ioDevServerConfig.profileAttrs.fiscalCode
+      ioDevServerConfig.profile.attrs.fiscalCode
     );
   }
   done();

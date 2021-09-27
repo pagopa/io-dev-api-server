@@ -36,7 +36,11 @@ const paymentMethods: WalletMethodConfig = {
 };
 
 const defaultConfig: Required<IoDevServerConfig> = {
-  profileAttrs: defaultProfileAttrs,
+  profile: {
+    attrs: defaultProfileAttrs,
+    authenticationProvider: "spid",
+    firstOnboarding: false
+  },
   globalDelay: 0,
   autoLogin: false,
   messages: {

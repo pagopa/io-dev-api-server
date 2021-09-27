@@ -16,7 +16,7 @@ import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
-const profile = getProfile(ioDevServerConfig.profileAttrs.fiscalCode);
+const profile = getProfile(ioDevServerConfig.profile.attrs.fiscalCode);
 // tslint:disable-next-line: no-let
 export let currentProfile = { ...profile };
 // define user UserDataProcessing (download / delete)

@@ -55,7 +55,14 @@ const IoDevServerConfigR = t.interface({});
 
 const IoDevServerConfigO = t.partial({
   // some attributes of the profile used as citizen
-  profileAttrs: ProfileAttrs,
+  profile: t.interface({
+    attrs: ProfileAttrs,
+    authenticationProvider: t.keyof({
+      cie: null,
+      spid: null
+    }),
+    firstOnboarding: t.boolean
+  }),
   // the global delay applied to all responses (0 means instant response)
   globalDelay: t.number,
   // if true, no login page will be shown (SPID)

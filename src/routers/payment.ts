@@ -129,7 +129,7 @@ addHandler(
           "https://solutionpa-coll.intesasanpaolo.com/IntermediarioPAPortal/noauth/contribuente/pagamentoEsito?idSession=ad095398-2863-4951-b2b6-400ff8d8e95b&idDominio=80005570561",
         isCancelled: false,
         bolloDigitale: false,
-        fiscalCode: ioDevServerConfig.profileAttrs.fiscalCode,
+        fiscalCode: ioDevServerConfig.profile.attrs.fiscalCode,
         origin: "IO",
         iban: paymentRequest.ibanAccredito
       }

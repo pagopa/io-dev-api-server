@@ -34,7 +34,7 @@ export function genRandomBonusCode(
 
 export const activeBonus: BonusActivationWithQrCode = {
   id: genRandomBonusCode(),
-  applicant_fiscal_code: ioDevServerConfig.profileAttrs.fiscalCode,
+  applicant_fiscal_code: ioDevServerConfig.profile.attrs.fiscalCode,
   qr_code: [
     {
       mime_type: "image/png",
@@ -53,7 +53,7 @@ export const activeBonus: BonusActivationWithQrCode = {
 
 export const redeemedBonus: BonusActivationWithQrCode = {
   id: "ACEFGHLMN346" as BonusCode,
-  applicant_fiscal_code: ioDevServerConfig.profileAttrs.fiscalCode,
+  applicant_fiscal_code: ioDevServerConfig.profile.attrs.fiscalCode,
   qr_code: [
     {
       mime_type: "image/png",
