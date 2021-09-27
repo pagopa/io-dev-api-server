@@ -68,31 +68,42 @@ it("should set a wallet as favourite", async done => {
   done();
 });
 
-it("should change pagoPa flag false->true", async done => {
+it("should set pagoPa flag to false (if credit card > 1)", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
-  const firstWallet = (wallets.data ?? [])[0];
+  const walletsData = wallets.data ?? [];
+  const firstWallet = walletsData.find(w =>
+    (w.enableableFunctions ?? []).some(
+      ef => ef === EnableableFunctionsEnum.pagoPA
+    )
+  );
+  // wallet should include at least 1 credit card (check global/config)
+  expect(firstWallet).toBeDefined();
   const response = await request
-    .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
+    .put(
+      appendWalletV2Prefix(`/wallet/${firstWallet!.idWallet}/payment-status`)
+    )
     .send({ data: { pagoPA: false } });
   expect(response.status).toBe(200);
   const responsePayload = WalletV2Response.decode(response.body);
   expect(responsePayload.isRight()).toBeTruthy();
   if (responsePayload.isRight()) {
     expect(responsePayload.value).toEqual({
-      data: { ...firstWallet, pagoPA: false }
+      data: { ...firstWallet, favourite: false, pagoPA: false }
     });
   }
   // invert
   const responseInvert = await request
-    .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
+    .put(
+      appendWalletV2Prefix(`/wallet/${firstWallet!.idWallet}/payment-status`)
+    )
     .send({ data: { pagoPA: true } });
   expect(responseInvert.status).toBe(200);
   const responsePayloadInvert = WalletV2Response.decode(responseInvert.body);
   expect(responsePayloadInvert.isRight()).toBeTruthy();
   if (responsePayloadInvert.isRight()) {
     expect(responsePayloadInvert.value).toEqual({
-      data: { ...firstWallet, pagoPA: true }
+      data: { ...firstWallet, favourite: false, pagoPA: true }
     });
   }
   done();

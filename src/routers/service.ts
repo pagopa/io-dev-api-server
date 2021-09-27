@@ -24,15 +24,23 @@ export const services = ioDevServerConfig.services.includeSiciliaVola
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 
-addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) =>
-  res.json(visibleServices.payload)
-);
+addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
+  if (ioDevServerConfig.services.getServicesResponseCode !== 200) {
+    res.sendStatus(ioDevServerConfig.services.getServicesResponseCode);
+    return;
+  }
+  res.json(visibleServices.payload);
+});
 
 addHandler(
   serviceRouter,
   "get",
   addApiV1Prefix("/services/:service_id"),
   (req, res) => {
+    if (ioDevServerConfig.services.getServiceResponseCode !== 200) {
+      res.sendStatus(ioDevServerConfig.services.getServiceResponseCode);
+      return;
+    }
     const service = services.find(
       item => item.service_id === req.params.service_id
     );
@@ -49,6 +57,10 @@ addHandler(
   "get",
   addApiV1Prefix("/services/:service_id/preferences"),
   (req, res) => {
+    if (ioDevServerConfig.services.getServicesPreference !== 200) {
+      res.sendStatus(ioDevServerConfig.services.getServicesPreference);
+      return;
+    }
     const servicePreference = servicesPreferences.get(
       req.params.service_id as ServiceId
     );
@@ -65,6 +77,10 @@ addHandler(
   "post",
   addApiV1Prefix("/services/:service_id/preferences"),
   (req, res) => {
+    if (ioDevServerConfig.services.postServicesPreference !== 200) {
+      res.sendStatus(ioDevServerConfig.services.postServicesPreference);
+      return;
+    }
     const maybeUpdatePreference = ServicePreference.decode(req.body);
     if (maybeUpdatePreference.isLeft()) {
       res.sendStatus(400);

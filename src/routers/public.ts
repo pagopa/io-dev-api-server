@@ -2,6 +2,7 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
+import { ioDevServerConfig } from "../global";
 import { backendInfo } from "../payloads/backend";
 import {
   errorRedirectUrl,
@@ -19,7 +20,7 @@ import { resetWalletV2 } from "./walletsV2";
 export const publicRouter = Router();
 
 addHandler(publicRouter, "get", "/login", (req, res) => {
-  if (req.query.authorized === "1") {
+  if (req.query.authorized === "1" || ioDevServerConfig.autoLogin) {
     res.redirect(loginWithToken);
     return;
   }

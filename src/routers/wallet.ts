@@ -40,13 +40,14 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
+import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 export const walletCount =
-  walletV2Config.satispay +
-  walletV2Config.privative +
-  walletV2Config.walletBancomat +
-  walletV2Config.walletCreditCard +
-  walletV2Config.walletCreditCardCoBadge +
-  walletV2Config.bPay;
+  walletV2Config.satispayCount +
+  walletV2Config.privativeCount +
+  walletV2Config.walletBancomatCount +
+  walletV2Config.walletCreditCardCount +
+  walletV2Config.walletCreditCardCoBadgeCount +
+  walletV2Config.bPayCount;
 export const walletRouter = Router();
 // wallets and transactions
 export const wallets = getWallets(walletCount);
@@ -333,6 +334,15 @@ addHandler(
     // wallet not found
     if (wallet === undefined) {
       res.sendStatus(404);
+      return;
+    }
+    // wallet has not pagoPa flag
+    if (
+      !(wallet.enableableFunctions ?? []).some(
+        ef => ef === EnableableFunctionsEnum.pagoPA
+      )
+    ) {
+      res.sendStatus(400);
       return;
     }
     const updatedWallet: WalletV2 = {

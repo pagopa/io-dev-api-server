@@ -3,6 +3,7 @@ import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 
+/* profile */
 export const ProfileAttrs = t.interface({
   fiscalCode: FiscalCode,
   name: t.string,
@@ -13,8 +14,35 @@ export const ProfileAttrs = t.interface({
 });
 export type ProfileAttrs = t.TypeOf<typeof ProfileAttrs>;
 
-/* messages */
-const MessagesResponseCode = t.keyof({
+/* wallet */
+export const WalletMethodConfig = t.interface({
+  // bancomats enrolled
+  walletBancomatCount: t.number,
+  // creditcards enrolled
+  walletCreditCardCount: t.number,
+  // creditcards-cobadge enrolled
+  walletCreditCardCoBadgeCount: t.number,
+  // privative enrolled
+  privativeCount: t.number,
+  // satispay enrolled
+  satispayCount: t.number,
+  // bancomat pay enrolled
+  bPayCount: t.number,
+  // bancomat owned by the citizen (shown when he/she search about them)
+  citizenBancomatCount: t.number,
+  // bancomat pay owned by the citizen (shown when he/she search about them)
+  citizenBPayCount: t.number,
+  // creditcards-cobadge pay owned by the citizen (shown when he/she search about them)
+  citizenCreditCardCoBadgeCount: t.number,
+  // if true -> citizen has satispay (when he/she search about it)
+  citizenSatispay: t.boolean,
+  // if true -> citizen has privative cards (when he/she search about it)
+  citizenPrivative: t.boolean
+});
+export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
+
+/* general */
+const HttpResponseCode = t.keyof({
   200: null,
   400: null,
   401: null,
@@ -26,21 +54,17 @@ const MessagesResponseCode = t.keyof({
 const IoDevServerConfigR = t.interface({});
 
 const IoDevServerConfigO = t.partial({
-  // some attributes of the profile used as citized
+  // some attributes of the profile used as citizen
   profileAttrs: ProfileAttrs,
-  // the global delay applied to all responses (0 means immediately response)
+  // the global delay applied to all responses (0 means instant response)
   globalDelay: t.number,
-  services: t.interface({
-    // number of services national
-    national: t.number,
-    local: t.number,
-    includeSiciliaVola: t.boolean
-  }),
+  // if true, no login page will be shown (SPID)
+  autoLogin: t.boolean,
   messages: t.interface({
     // 200 success with payload
-    getMessagesResponseCode: MessagesResponseCode,
+    getMessagesResponseCode: HttpResponseCode,
     // 200 success with payload
-    getMessageResponseCode: MessagesResponseCode,
+    getMessageResponseCode: HttpResponseCode,
     // number of messages containing payment (valid with no due date and invalid after due date)
     paymentsCount: t.number,
     // number of message - invalid after due date - containing a payment and a valid (not expired) due date
@@ -62,6 +86,23 @@ const IoDevServerConfigO = t.partial({
     // with invalid (expired) due date
     withInValidDueDateCount: t.number,
     standardMessageCount: t.number
+  }),
+  services: t.interface({
+    // 200 success with payload
+    getServicesResponseCode: HttpResponseCode,
+    // 200 success with payload
+    getServiceResponseCode: HttpResponseCode,
+    // 200 success
+    postServicesPreference: HttpResponseCode,
+    // 200 success with payload
+    getServicesPreference: HttpResponseCode,
+    // number of services national
+    national: t.number,
+    local: t.number,
+    includeSiciliaVola: t.boolean
+  }),
+  wallet: t.interface({
+    methods: WalletMethodConfig
   })
 });
 
