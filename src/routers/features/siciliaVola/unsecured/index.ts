@@ -35,7 +35,7 @@ addHandler(
   "get",
   addPrefix("/province/:region_id"),
   (req, res) => {
-    const maybeRegionId = t.number.decode(req.params.region_id);
+    const maybeRegionId = t.number.decode(Number(req.params.region_id));
 
     if (maybeRegionId.isLeft()) {
       res.sendStatus(500);
@@ -50,6 +50,7 @@ addHandler(
       res.sendStatus(500);
       return;
     }
+
     const regions = maybeRegions.value.map((r: ProvinciaBean) => r.idRegione);
     const regionIdAccepted = regions.includes(maybeRegionId.value);
 
@@ -62,6 +63,7 @@ addHandler(
         res.sendStatus(500);
         return;
       }
+
       res.json(readFileAsJSON(assetsFolder + "/siciliaVola/provinces.json"));
     } else {
       res.sendStatus(404);
@@ -77,12 +79,13 @@ addHandler(
   "get",
   addPrefix("/comuni/:sigla_provincia"),
   (req, res) => {
-    const maybeSiglaProvincia = t.string.decode(req.params.region_id);
+    const maybeSiglaProvincia = t.string.decode(req.params.sigla_provincia);
     const maybeMunicipalities = t
       .readonlyArray(ComuneBean)
       .decode(
         readFileAsJSON(assetsFolder + "/siciliaVola/municipalities.json")
       );
+
     if (maybeMunicipalities.isLeft() || maybeSiglaProvincia.isLeft()) {
       res.sendStatus(500);
       return;
