@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import faker from "faker/locale/it";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
