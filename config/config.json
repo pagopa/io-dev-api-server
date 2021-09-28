@@ -1,13 +1,7 @@
 {
   "profile": {
     "attrs": {
-      "name": "Matteo"
-    }
-  },
-  "messages": {
-    "paymentsCount": 0,
-    "response": {
-      "getMessagesResponseCode": 500
+      "name": "Gian Maria"
     }
   }
 }

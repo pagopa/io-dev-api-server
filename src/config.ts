@@ -15,6 +15,8 @@ export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
 export const assetsFolder = root + "/assets";
 export const configFolder = root + "/config";
+// true if the env is in testing phase
+export const isTestEnv = process.env.NODE_ENV === "test";
 
 const defaultProfileAttrs: ProfileAttrs = {
   name: "Maria Giovanna",
@@ -75,14 +77,16 @@ const defaultConfig: IoDevServerConfig = {
       postServicesPreference: 200,
       getServiceResponseCode: 200
     },
-    national: 0,
-    local: 1,
+    national: 5,
+    local: 5,
     includeSiciliaVola: false
   }
 };
 const customConfigFile = "config.json";
-const customConfig =
-  readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {};
+// don't use custom config in test env
+const customConfig = !isTestEnv
+  ? readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {}
+  : {};
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
   defaultConfig,
   customConfig
