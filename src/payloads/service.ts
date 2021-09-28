@@ -69,14 +69,17 @@ export const getServices = (
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
+  // tslint:disable-next-line: no-let
+  let serviceIndex = 0;
   const createService = (scope: ServiceScopeEnum, count: number) =>
-    range(0, count - 1).map(idx => {
+    range(0, count - 1).map(_ => {
       organizationCount =
-        idx !== 0 && idx % aggregation === 0
+        serviceIndex !== 0 && serviceIndex % aggregation === 0
           ? organizationCount + 1
           : organizationCount;
+      serviceIndex++;
       return {
-        ...getService(`service${idx}`),
+        ...getService(`service${serviceIndex}`),
         organization_fiscal_code: `${organizationCount + 1}`.padStart(
           11,
           "0"
