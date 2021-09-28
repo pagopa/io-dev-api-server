@@ -28,7 +28,7 @@ import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
 
 export const messageRouter = Router();
-
+const configResponse = ioDevServerConfig.messages.response;
 // tslint:disable-next-line: readonly-array
 export const messagesWithContent: CreatedMessageWithContent[] = [];
 
@@ -241,8 +241,8 @@ export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollecti
   }))
 });
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
-  if (ioDevServerConfig.messages.getMessagesResponseCode !== 200) {
-    res.sendStatus(ioDevServerConfig.messages.getMessagesResponseCode);
+  if (configResponse.getMessagesResponseCode !== 200) {
+    res.sendStatus(configResponse.getMessagesResponseCode);
     return;
   }
   res.json(getMessageWithoutContent());
@@ -253,8 +253,8 @@ addHandler(
   "get",
   addApiV1Prefix("/messages/:id"),
   (req, res) => {
-    if (ioDevServerConfig.messages.getMessageResponseCode !== 200) {
-      res.sendStatus(ioDevServerConfig.messages.getMessagesResponseCode);
+    if (configResponse.getMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getMessagesResponseCode);
       return;
     }
     // retrieve the messageIndex from id

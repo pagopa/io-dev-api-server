@@ -42,18 +42,16 @@ export const WalletMethodConfig = t.interface({
 export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
 
 /* general */
-const HttpResponseCode = t.keyof({
-  200: null,
-  400: null,
-  401: null,
-  404: null,
-  429: null,
-  500: null
-});
+const HttpResponseCode = t.union([
+  t.literal(200),
+  t.literal(400),
+  t.literal(401),
+  t.literal(404),
+  t.literal(429),
+  t.literal(500)
+]);
 
-const IoDevServerConfigR = t.interface({});
-
-const IoDevServerConfigO = t.partial({
+export const IoDevServerConfig = t.interface({
   // some attributes of the profile used as citizen
   profile: t.interface({
     attrs: ProfileAttrs,
@@ -68,11 +66,14 @@ const IoDevServerConfigO = t.partial({
   // if true, no login page will be shown (SPID)
   autoLogin: t.boolean,
   messages: t.interface({
-    // 200 success with payload
-    getMessagesResponseCode: HttpResponseCode,
-    // 200 success with payload
-    getMessageResponseCode: HttpResponseCode,
-    // number of messages containing payment (valid with no due date and invalid after due date)
+    // configure some API response error code
+    response: t.interface({
+      // 200 success with payload
+      getMessagesResponseCode: HttpResponseCode,
+      // 200 success with payload
+      getMessageResponseCode: HttpResponseCode
+      // number of messages containing payment (valid with no due date and invalid after due date)
+    }),
     paymentsCount: t.number,
     // number of message - invalid after due date - containing a payment and a valid (not expired) due date
     paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
@@ -95,26 +96,26 @@ const IoDevServerConfigO = t.partial({
     standardMessageCount: t.number
   }),
   services: t.interface({
-    // 200 success with payload
-    getServicesResponseCode: HttpResponseCode,
-    // 200 success with payload
-    getServiceResponseCode: HttpResponseCode,
-    // 200 success
-    postServicesPreference: HttpResponseCode,
-    // 200 success with payload
-    getServicesPreference: HttpResponseCode,
-    // number of services national
+    // configure some API response error code
+    response: t.interface({
+      // 200 success with payload
+      getServicesResponseCode: HttpResponseCode,
+      // 200 success with payload
+      getServiceResponseCode: HttpResponseCode,
+      // 200 success
+      postServicesPreference: HttpResponseCode,
+      // 200 success with payload
+      getServicesPreference: HttpResponseCode
+      // number of services national
+    }),
     national: t.number,
     local: t.number,
     includeSiciliaVola: t.boolean
   }),
   wallet: t.interface({
-    methods: WalletMethodConfig
+    methods: WalletMethodConfig,
+    shuffleAbi: t.boolean
   })
 });
-
-export const IoDevServerConfig = t.exact(
-  t.intersection([IoDevServerConfigR, IoDevServerConfigO], "IoDevServerConfig")
-);
 
 export type IoDevServerConfig = t.TypeOf<typeof IoDevServerConfig>;

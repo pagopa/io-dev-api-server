@@ -1,5 +1,7 @@
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
+import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import {
@@ -7,10 +9,12 @@ import {
   ProfileAttrs,
   WalletMethodConfig
 } from "./types/config";
+import { readFileAsJSON } from "./utils/file";
 
 export const staticContentRootPath = "/static_contents";
-export const assetsFolder = path.resolve(".") + "/assets";
-export const shouldShuffle = false;
+const root = path.resolve(".");
+export const assetsFolder = root + "/assets";
+export const configFolder = root + "/config";
 
 const defaultProfileAttrs: ProfileAttrs = {
   name: "Maria Giovanna",
@@ -35,7 +39,7 @@ const paymentMethods: WalletMethodConfig = {
   citizenPrivative: true
 };
 
-const defaultConfig: Required<IoDevServerConfig> = {
+const defaultConfig: IoDevServerConfig = {
   profile: {
     attrs: defaultProfileAttrs,
     authenticationProvider: "spid",
@@ -44,32 +48,51 @@ const defaultConfig: Required<IoDevServerConfig> = {
   globalDelay: 0,
   autoLogin: false,
   messages: {
-    getMessagesResponseCode: 200,
-    getMessageResponseCode: 200,
+    response: {
+      getMessagesResponseCode: 200,
+      getMessageResponseCode: 200
+    },
     paymentsCount: 2,
-    paymentInvalidAfterDueDateWithValidDueDateCount: 0,
-    paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
-    paymentWithValidDueDateCount: 0,
-    paymentWithExpiredDueDateCount: 0,
-    medicalCount: 0,
-    withCTA: false,
-    withEUCovidCert: false,
-    withValidDueDateCount: 0,
-    withInValidDueDateCount: 0,
-    standardMessageCount: 0
+    paymentInvalidAfterDueDateWithValidDueDateCount: 1,
+    paymentInvalidAfterDueDateWithExpiredDueDateCount: 1,
+    paymentWithValidDueDateCount: 1,
+    paymentWithExpiredDueDateCount: 1,
+    medicalCount: 1,
+    withCTA: true,
+    withEUCovidCert: true,
+    withValidDueDateCount: 1,
+    withInValidDueDateCount: 1,
+    standardMessageCount: 1
   },
   wallet: {
-    methods: paymentMethods
+    methods: paymentMethods,
+    shuffleAbi: false
   },
   services: {
-    getServicesPreference: 200,
-    getServicesResponseCode: 200,
-    postServicesPreference: 200,
-    getServiceResponseCode: 200,
+    response: {
+      getServicesPreference: 200,
+      getServicesResponseCode: 200,
+      postServicesPreference: 200,
+      getServiceResponseCode: 200
+    },
     national: 0,
     local: 1,
     includeSiciliaVola: false
   }
 };
-
-export const ioDevServerConfig: Required<IoDevServerConfig> = defaultConfig;
+const customConfigFile = "no_messages.json";
+const customConfig =
+  readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {};
+export const ioDevServerConfig: typeof defaultConfig = _.merge(
+  defaultConfig,
+  customConfig
+);
+const checkData = IoDevServerConfig.decode(ioDevServerConfig);
+console.log(JSON.stringify(ioDevServerConfig));
+if (checkData.isLeft()) {
+  throw new Error(
+    `your custom config file ${customConfig} contains some invalid data:\n${readableReport(
+      checkData.value
+    )}`
+  );
+}

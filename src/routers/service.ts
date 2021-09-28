@@ -14,6 +14,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
+const configResponse = ioDevServerConfig.services.response;
 const nationalLocalServices = getServices(
   ioDevServerConfig.services.national,
   ioDevServerConfig.services.local
@@ -25,8 +26,8 @@ export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
-  if (ioDevServerConfig.services.getServicesResponseCode !== 200) {
-    res.sendStatus(ioDevServerConfig.services.getServicesResponseCode);
+  if (configResponse.getServicesResponseCode !== 200) {
+    res.sendStatus(configResponse.getServicesResponseCode);
     return;
   }
   res.json(visibleServices.payload);
@@ -37,8 +38,8 @@ addHandler(
   "get",
   addApiV1Prefix("/services/:service_id"),
   (req, res) => {
-    if (ioDevServerConfig.services.getServiceResponseCode !== 200) {
-      res.sendStatus(ioDevServerConfig.services.getServiceResponseCode);
+    if (configResponse.getServiceResponseCode !== 200) {
+      res.sendStatus(configResponse.getServiceResponseCode);
       return;
     }
     const service = services.find(
@@ -57,8 +58,8 @@ addHandler(
   "get",
   addApiV1Prefix("/services/:service_id/preferences"),
   (req, res) => {
-    if (ioDevServerConfig.services.getServicesPreference !== 200) {
-      res.sendStatus(ioDevServerConfig.services.getServicesPreference);
+    if (configResponse.getServicesPreference !== 200) {
+      res.sendStatus(configResponse.getServicesPreference);
       return;
     }
     const servicePreference = servicesPreferences.get(
@@ -77,8 +78,8 @@ addHandler(
   "post",
   addApiV1Prefix("/services/:service_id/preferences"),
   (req, res) => {
-    if (ioDevServerConfig.services.postServicesPreference !== 200) {
-      res.sendStatus(ioDevServerConfig.services.postServicesPreference);
+    if (configResponse.postServicesPreference !== 200) {
+      res.sendStatus(configResponse.postServicesPreference);
       return;
     }
     const maybeUpdatePreference = ServicePreference.decode(req.body);
