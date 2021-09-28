@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import faker from "faker/locale/it";
+import { fromNullable } from "fp-ts/lib/Option";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -22,13 +23,10 @@ import { walletRouter } from "./wallet";
 
 export const paymentRouter = Router();
 
-const responseWithError = (
-  detail: DetailEnum,
-  detailV2: Detail_v2Enum,
-  res: Response
-) =>
+const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
   res.status(500).json({
-    detail,
+    // deprecated, it is just a placeholder
+    detail: DetailEnum.PAYMENT_UNKNOWN,
     detail_v2: detailV2
   });
 
@@ -53,10 +51,15 @@ addHandler(
   // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
   (_, res) => {
-    paymentRequest = getPaymentRequestsGetResponse(
-      faker.random.arrayElement(services)
+    fromNullable(ioDevServerConfig.wallet.verificaError).foldL(
+      () => {
+        paymentRequest = getPaymentRequestsGetResponse(
+          faker.random.arrayElement(services)
+        );
+        res.json(paymentRequest);
+      },
+      error => responseWithError(error, res)
     );
-    res.json(paymentRequest);
   }
 );
 

@@ -10,6 +10,7 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
+import { Detail_v2Enum } from "../generated/definitions/backend/PaymentProblemJson";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");

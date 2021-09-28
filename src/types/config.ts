@@ -2,6 +2,8 @@ import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
+import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
+import { enumType } from "italia-ts-commons/lib/types";
 
 /* profile */
 export const ProfileAttrs = t.interface({
@@ -112,10 +114,18 @@ export const IoDevServerConfig = t.interface({
     local: t.number,
     includeSiciliaVola: t.boolean
   }),
-  wallet: t.interface({
-    methods: WalletMethodConfig,
-    shuffleAbi: t.boolean
-  })
+  wallet: t.intersection([
+    t.interface({
+      methods: WalletMethodConfig,
+      shuffleAbi: t.boolean
+    }),
+    t.partial({
+      // if defined attiva will serve the given error
+      attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      // if verifica attiva will serve the given error
+      verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2")
+    })
+  ])
 });
 
 export type IoDevServerConfig = t.TypeOf<typeof IoDevServerConfig>;
