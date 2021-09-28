@@ -4,7 +4,7 @@ import { InitializedProfile } from "../../../generated/definitions/backend/Initi
 import { Profile } from "../../../generated/definitions/backend/Profile";
 import { UserMetadata } from "../../../generated/definitions/backend/UserMetadata";
 import { Municipality } from "../../../generated/definitions/content/Municipality";
-import { ioDevServerConfig } from "../../global";
+import { ioDevServerConfig } from "../../config";
 import { basePath } from "../../payloads/response";
 import { mockUserMetadata } from "../../payloads/userMetadata";
 import app from "../../server";

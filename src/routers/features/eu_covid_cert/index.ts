@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as t from "io-ts";
 import { Certificate } from "../../../../generated/definitions/eu_covid_cert/Certificate";
-import { assetsFolder } from "../../../global";
+import { assetsFolder } from "../../../config";
 import { addHandler } from "../../../payloads/response";
 import { readFileAsJSON } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";

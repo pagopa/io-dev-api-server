@@ -2,7 +2,7 @@
 import chalk from "chalk";
 import { Router } from "express";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
-import { assetsFolder } from "../../../global";
+import { assetsFolder } from "../../../config";
 import { addHandler } from "../../../payloads/response";
 import { listDir, readFileAsJSON } from "../../../utils/file";
 import { addBPDPrefix } from "./index";

@@ -6,7 +6,7 @@ import { BancomatCardsRequest } from "../../../../generated/definitions/pagopa/w
 import { Card } from "../../../../generated/definitions/pagopa/walletv2/Card";
 import { Message } from "../../../../generated/definitions/pagopa/walletv2/Message";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { assetsFolder } from "../../../global";
+import { assetsFolder } from "../../../config";
 import { addHandler } from "../../../payloads/response";
 import { generateWalletV2FromCard } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";

@@ -25,7 +25,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { assetsFolder, ioDevServerConfig } from "../global";
+import { assetsFolder, ioDevServerConfig } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";

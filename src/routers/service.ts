@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import { ioDevServerConfig } from "../global";
+import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
   getServices,

@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { BonusActivationWithQrCode } from "../../../../generated/definitions/bonus_vacanze/BonusActivationWithQrCode";
 import { BonusCode } from "../../../../generated/definitions/bonus_vacanze/BonusCode";
-import { ioDevServerConfig } from "../../../global";
+import { ioDevServerConfig } from "../../../config";
 import { dsuData } from "./eligibility";
 
 const qrCodeBonusVacanzeSvg =

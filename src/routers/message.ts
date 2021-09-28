@@ -6,7 +6,7 @@ import { CreatedMessageWithContent } from "../../generated/definitions/backend/C
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
 import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { ioDevServerConfig } from "../global";
+import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import {
   createMessage,

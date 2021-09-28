@@ -2,7 +2,7 @@ import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import bodyParser from "body-parser";
 import express, { Application } from "express";
 import morgan from "morgan";
-import { ioDevServerConfig } from "./global";
+import { ioDevServerConfig } from "./config";
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
 import { bpdRanking } from "./routers/features/bdp/ranking/v1";

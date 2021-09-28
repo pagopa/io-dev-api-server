@@ -8,7 +8,7 @@ import {
 } from "../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
-import { ioDevServerConfig } from "../global";
+import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import { getProfile } from "../payloads/profile";
 import { addHandler } from "../payloads/response";

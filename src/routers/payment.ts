@@ -10,7 +10,7 @@ import {
 } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
-import { ioDevServerConfig } from "../global";
+import { ioDevServerConfig } from "../config";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
 import { interfaces, serverPort } from "../utils/server";

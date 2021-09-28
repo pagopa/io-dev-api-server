@@ -1,7 +1,7 @@
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
-import { ioDevServerConfig } from "../global";
+import { ioDevServerConfig } from "../config";
 import { validatePayload } from "../utils/validator";
 
 const currentTosVersion = 2.4;

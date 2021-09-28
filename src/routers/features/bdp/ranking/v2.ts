@@ -1,6 +1,6 @@
 // return the list of ranking info for each BPD period
 import { Router } from "express";
-import { assetsFolder } from "../../../../global";
+import { assetsFolder } from "../../../../config";
 import { addHandler } from "../../../../payloads/response";
 import { listDir, readFileAsJSON } from "../../../../utils/file";
 import { addBPDPrefix } from "../index";

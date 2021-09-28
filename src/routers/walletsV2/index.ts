@@ -8,7 +8,7 @@ import {
   WalletV2
 } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
-import { ioDevServerConfig } from "../../global";
+import { ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
 import {
   abiData,

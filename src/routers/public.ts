@@ -2,7 +2,7 @@
  * this router serves all public API (those ones don't need session)
  */
 import { Router } from "express";
-import { ioDevServerConfig } from "../global";
+import { ioDevServerConfig } from "../config";
 import { backendInfo } from "../payloads/backend";
 import {
   errorRedirectUrl,

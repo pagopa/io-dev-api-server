@@ -6,7 +6,7 @@ import {
   PaymentInstrumentResource,
   StatusEnum
 } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
-import { assetsFolder, ioDevServerConfig } from "../../../global";
+import { assetsFolder, ioDevServerConfig } from "../../../config";
 import { addHandler } from "../../../payloads/response";
 import { readFileAsJSON } from "../../../utils/file";
 

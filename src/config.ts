@@ -80,7 +80,7 @@ const defaultConfig: IoDevServerConfig = {
     includeSiciliaVola: false
   }
 };
-const customConfigFile = "no_messages.json";
+const customConfigFile = "config.json";
 const customConfig =
   readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {};
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
@@ -88,7 +88,6 @@ export const ioDevServerConfig: typeof defaultConfig = _.merge(
   customConfig
 );
 const checkData = IoDevServerConfig.decode(ioDevServerConfig);
-console.log(JSON.stringify(ioDevServerConfig));
 if (checkData.isLeft()) {
   throw new Error(
     `your custom config file ${customConfig} contains some invalid data:\n${readableReport(

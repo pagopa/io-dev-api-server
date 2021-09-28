@@ -3,7 +3,7 @@ import * as t from "io-ts";
 import { CategoriaBeneficiarioBean } from "../../../../../generated/definitions/siciliaVola/CategoriaBeneficiarioBean";
 import { ComuneBean } from "../../../../../generated/definitions/siciliaVola/ComuneBean";
 import { ProvinciaBean } from "../../../../../generated/definitions/siciliaVola/ProvinciaBean";
-import { assetsFolder } from "../../../../global";
+import { assetsFolder } from "../../../../config";
 import { addHandler } from "../../../../payloads/response";
 import { readFileAsJSON } from "../../../../utils/file";
 import { addApiV1Prefix } from "../../../../utils/strings";
