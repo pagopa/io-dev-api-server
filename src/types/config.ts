@@ -43,7 +43,7 @@ export const WalletMethodConfig = t.interface({
 });
 export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
 
-/* general */
+/* general http response codes */
 const HttpResponseCode = t.union([
   t.literal(200),
   t.literal(400),
