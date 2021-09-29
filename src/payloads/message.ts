@@ -31,7 +31,7 @@ export const createMessage = (
   const id = messageIdIndex.toString().padStart(26, "0");
   messageIdIndex++;
   return validatePayload(CreatedMessageWithoutContent, {
-    created_at: new Date().toISOString(),
+    created_at: new Date(new Date().getTime() + messageIdIndex * 1000),
     fiscal_code: fiscalCode,
     id,
     sender_service_id: senderServiceId,

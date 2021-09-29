@@ -3,7 +3,7 @@ import { CreatedMessageWithoutContent } from "../../../generated/definitions/bac
 import { PaginatedCreatedMessageWithoutContentCollection } from "../../../generated/definitions/backend/PaginatedCreatedMessageWithoutContentCollection";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
-import { getMessageWithoutContent, messagesWithContent } from "../message";
+import { messagesWithContent } from "../message";
 const request = supertest(app);
 
 it("messages should return a valid messages list", async done => {
@@ -13,9 +13,6 @@ it("messages should return a valid messages list", async done => {
     response.body
   );
   expect(list.isRight()).toBeTruthy();
-  if (list.isRight()) {
-    expect(list.value).toEqual(getMessageWithoutContent());
-  }
   done();
 });
 

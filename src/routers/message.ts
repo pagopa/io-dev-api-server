@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
+import _ from "lodash";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
 import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
@@ -14,6 +15,7 @@ import {
   withPaymentData
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
+import { GetMessagesParameters } from "../types/parameters";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTABonusBpd,
@@ -166,17 +168,61 @@ const createMessages = () => {
 };
 
 createMessages();
-export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollection => ({
-  items: messagesWithContent.map(m => ({
-    id: m.id,
-    fiscal_code: fiscalCode as FiscalCode,
-    created_at: m.created_at,
-    sender_service_id: m.sender_service_id,
-    time_to_live: m.time_to_live
-  }))
-});
+
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
-  res.json(getMessageWithoutContent());
+  const paginatedQuery = GetMessagesParameters.decode({
+    // default pageSize = 100
+    pageSize: req.query.page_size ?? "100",
+    // default enrichResultData = false
+    enrichResultData: (req.query.enrich_result_data ?? false) === "true",
+    maximumId: req.query.maximum_id,
+    minimumId: req.query.minimum_id
+  });
+  if (paginatedQuery.isLeft()) {
+    // bad request
+    res.sendStatus(400);
+    return;
+  }
+
+  const getItems = (items: ReadonlyArray<CreatedMessageWithContent>) =>
+    items.map(m => ({
+      id: m.id,
+      fiscal_code: fiscalCode as FiscalCode,
+      created_at: m.created_at,
+      sender_service_id: m.sender_service_id,
+      time_to_live: m.time_to_live
+    }));
+  const params = paginatedQuery.value;
+  // creation date desc
+  const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
+  // tslint:disable-next-line: no-let
+  let slice: ReadonlyArray<CreatedMessageWithContent> = _.slice(
+    orderedList,
+    0,
+    params.pageSize
+  );
+  // tslint:disable-next-line: no-let
+  let next = slice[params.pageSize! - 1]?.id ?? undefined;
+  if (params.maximumId) {
+    const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
+    if (startIndex === -1 || startIndex + 1 >= orderedList.length) {
+      res.json({ items: [] });
+      return;
+    }
+    slice = _.slice(
+      orderedList,
+      startIndex + 1,
+      startIndex + 1 + params.pageSize!
+    );
+  } else if (params.minimumId) {
+    const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
+    if (startIndex === -1 || startIndex === 0) {
+      res.json({ items: [] });
+      return;
+    }
+    slice = _.slice(orderedList, startIndex - 1 - params.pageSize!, startIndex);
+  }
+  res.json({ items: getItems(slice), next });
 });
 
 addHandler(
