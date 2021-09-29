@@ -1,9 +1,9 @@
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
+import { enumType } from "italia-ts-commons/lib/types";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
-import { enumType } from "italia-ts-commons/lib/types";
 
 /* profile */
 export const ProfileAttrs = t.interface({
@@ -108,9 +108,10 @@ export const IoDevServerConfig = t.interface({
       postServicesPreference: HttpResponseCode,
       // 200 success with payload
       getServicesPreference: HttpResponseCode
-      // number of services national
     }),
+    // number of services national
     national: t.number,
+    // number of services local
     local: t.number,
     includeSiciliaVola: t.boolean
   }),

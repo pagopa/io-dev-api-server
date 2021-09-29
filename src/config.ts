@@ -10,7 +10,6 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
-import { Detail_v2Enum } from "../generated/definitions/backend/PaymentProblemJson";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
@@ -80,7 +79,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     national: 5,
     local: 5,
-    includeSiciliaVola: false
+    includeSiciliaVola: true
   }
 };
 const customConfigFile = "config.json";
