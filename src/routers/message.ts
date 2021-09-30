@@ -170,14 +170,31 @@ const createMessages = () => {
 createMessages();
 
 /* helper function to build messages response */
-const getItems = (items: ReadonlyArray<CreatedMessageWithContent>) =>
-  items.map(m => ({
-    id: m.id,
-    fiscal_code: fiscalCode as FiscalCode,
-    created_at: m.created_at,
-    sender_service_id: m.sender_service_id,
-    time_to_live: m.time_to_live
-  }));
+const getItems = (
+  items: ReadonlyArray<CreatedMessageWithContent>,
+  enrichData: boolean
+) => {
+  return items.map(m => {
+    const senderService = services.find(
+      s => s.service_id === m.sender_service_id
+    );
+    const extraData = enrichData
+      ? {
+          service_name: senderService!.service_name,
+          organization_name: senderService!.organization_name,
+          message_title: m.content.subject
+        }
+      : {};
+    return {
+      id: m.id,
+      fiscal_code: fiscalCode as FiscalCode,
+      created_at: m.created_at,
+      sender_service_id: m.sender_service_id,
+      time_to_live: m.time_to_live,
+      ...extraData
+    };
+  });
+};
 
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   const paginatedQuery = GetMessagesParameters.decode({
@@ -241,7 +258,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   }
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
   res.json({
-    items: getItems(slice),
+    items: getItems(slice, params.enrichResultData!),
     prev:
       indexes.startIndex > 0 ? orderedList[indexes.startIndex]?.id : undefined,
     next:
