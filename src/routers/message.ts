@@ -169,6 +169,16 @@ const createMessages = () => {
 
 createMessages();
 
+/* helper function to build messages response */
+const getItems = (items: ReadonlyArray<CreatedMessageWithContent>) =>
+  items.map(m => ({
+    id: m.id,
+    fiscal_code: fiscalCode as FiscalCode,
+    created_at: m.created_at,
+    sender_service_id: m.sender_service_id,
+    time_to_live: m.time_to_live
+  }));
+
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   const paginatedQuery = GetMessagesParameters.decode({
     // default pageSize = 100
@@ -184,45 +194,61 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     return;
   }
 
-  const getItems = (items: ReadonlyArray<CreatedMessageWithContent>) =>
-    items.map(m => ({
-      id: m.id,
-      fiscal_code: fiscalCode as FiscalCode,
-      created_at: m.created_at,
-      sender_service_id: m.sender_service_id,
-      time_to_live: m.time_to_live
-    }));
   const params = paginatedQuery.value;
-  // creation date desc
+  // order messages by creation date (desc)
   const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
   // tslint:disable-next-line: no-let
-  let slice: ReadonlyArray<CreatedMessageWithContent> = _.slice(
-    orderedList,
-    0,
-    params.pageSize
-  );
-  // tslint:disable-next-line: no-let
-  let next = slice[params.pageSize! - 1]?.id ?? undefined;
-  if (params.maximumId) {
+  let indexes = {
+    startIndex: 0,
+    endIndex: params.pageSize
+  };
+  // when both id are defined return the messages included in that interval ]min,max[
+  if (params.maximumId && params.minimumId) {
+    const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
+    const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
+    // if index are defined and in the expected order
+    if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
+      indexes = {
+        startIndex: startIndex + 1,
+        endIndex
+      };
+    } else {
+      res.json({ items: [] });
+      return;
+    }
+  } else if (params.maximumId) {
     const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
+    // index not found or index is the last item (can't go forward) -> return empty list
     if (startIndex === -1 || startIndex + 1 >= orderedList.length) {
       res.json({ items: [] });
       return;
     }
-    slice = _.slice(
-      orderedList,
-      startIndex + 1,
-      startIndex + 1 + params.pageSize!
-    );
+    indexes = {
+      startIndex: startIndex + 1,
+      endIndex: startIndex + 1 + params.pageSize!
+    };
   } else if (params.minimumId) {
-    const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
-    if (startIndex === -1 || startIndex === 0) {
+    // index not found or index is the first item (can't go back) -> return empty list
+    const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+    if (endIndex === -1 || endIndex === 0) {
       res.json({ items: [] });
       return;
     }
-    slice = _.slice(orderedList, startIndex - 1 - params.pageSize!, startIndex);
+    indexes = {
+      startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
+      endIndex
+    };
   }
-  res.json({ items: getItems(slice), next });
+  const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
+  res.json({
+    items: getItems(slice),
+    prev:
+      indexes.startIndex > 0 ? orderedList[indexes.startIndex]?.id : undefined,
+    next:
+      slice.length < orderedList.length
+        ? slice[slice.length - 1]?.id
+        : undefined
+  });
 });
 
 addHandler(
