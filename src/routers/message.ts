@@ -246,7 +246,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   } else if (params.minimumId) {
     // index not found or index is the first item (can't go back) -> return empty list
     const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-    if (endIndex === -1 || endIndex === 0) {
+    if (endIndex <= 0) {
       res.json({ items: [] });
       return;
     }
@@ -259,8 +259,10 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   res.json({
     items: getItems(slice, params.enrichResultData!),
     prev:
+      // if the current slice doesn't coincide with the beginning of the list, prev is the first item id
       indexes.startIndex > 0 ? orderedList[indexes.startIndex]?.id : undefined,
     next:
+      // if the current slice doesn't coincide with the end of the list, next is the last item id
       slice.length < orderedList.length
         ? slice[slice.length - 1]?.id
         : undefined
