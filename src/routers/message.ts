@@ -3,7 +3,6 @@ import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
 import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
@@ -274,12 +273,10 @@ addHandler(
   addApiV1Prefix("/messages/:id"),
   (req, res) => {
     // retrieve the messageIndex from id
-    const msgIndex = messagesWithContent.findIndex(
-      item => item.id === req.params.id
-    );
-    if (msgIndex === -1) {
+    const message = messagesWithContent.find(item => item.id === req.params.id);
+    if (message === undefined) {
       res.json(getProblemJson(404, "message not found"));
     }
-    res.json(messagesWithContent[msgIndex]);
+    res.json(message);
   }
 );
