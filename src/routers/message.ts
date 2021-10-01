@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
+import { match } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
@@ -26,6 +27,7 @@ import {
 } from "../utils/variables";
 import { authResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
+import { isDefined } from "../utils/guards";
 
 export const messageRouter = Router();
 
@@ -160,7 +162,10 @@ const createMessages = () => {
 
   addMessage(
     withPaymentData(
-      getNewMessage(`💰✅ payment message`, messageMarkdown),
+      getNewMessage(
+        `💰✅ payment message payment message payment message payment message payment message payment message payment message`,
+        messageMarkdown
+      ),
       false
     )
   );
@@ -213,47 +218,65 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   const params = paginatedQuery.value;
   // order messages by creation date (desc)
   const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
-  // tslint:disable-next-line: no-let
-  let indexes = {
-    startIndex: 0,
-    endIndex: params.pageSize
-  };
-  // when both id are defined return the messages included in that interval ]min,max[
-  if (params.maximumId && params.minimumId) {
-    const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
-    const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
-    // if index are defined and in the expected order
-    if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
-      indexes = {
-        startIndex: startIndex + 1,
-        endIndex
-      };
-    } else {
-      res.json({ items: [] });
-      return;
-    }
-  } else if (params.maximumId) {
-    const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
-    // index not found or index is the last item (can't go forward) -> return empty list
-    if (startIndex === -1 || startIndex + 1 >= orderedList.length) {
-      res.json({ items: [] });
-      return;
-    }
-    indexes = {
-      startIndex: startIndex + 1,
-      endIndex: startIndex + 1 + params.pageSize!
-    };
-  } else if (params.minimumId) {
-    // index not found or index is the first item (can't go back) -> return empty list
-    const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-    if (endIndex <= 0) {
-      res.json({ items: [] });
-      return;
-    }
-    indexes = {
-      startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
-      endIndex
-    };
+
+  const indexes: { startIndex: number; endIndex: number } | undefined = match(
+    params
+  )
+    .when(
+      p => [p.maximumId, p.minimumId].every(isDefined),
+      () => {
+        const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
+        const startIndex = orderedList.findIndex(
+          m => m.id === params.minimumId
+        );
+        // if index are defined and in the expected order
+        if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
+          return {
+            startIndex: startIndex + 1,
+            endIndex
+          };
+        }
+        return undefined;
+      }
+    )
+    .when(
+      p => p.maximumId !== undefined,
+      () => {
+        const startIndex = orderedList.findIndex(
+          m => m.id === params.maximumId
+        );
+        // index not found or index is the last item (can't go forward) -> return empty list
+        if (startIndex === -1 || startIndex + 1 >= orderedList.length) {
+          return undefined;
+        }
+        return {
+          startIndex: startIndex + 1,
+          endIndex: startIndex + 1 + params.pageSize!
+        };
+      }
+    )
+    .when(
+      p => p.minimumId !== undefined,
+      () => {
+        // index not found or index is the first item (can't go back) -> return empty list
+        const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+        if (endIndex <= 0) {
+          return undefined;
+        }
+        return {
+          startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
+          endIndex
+        };
+      }
+    )
+    .otherwise(() => ({
+      startIndex: 0,
+      endIndex: params.pageSize!
+    }));
+  // not a valid request with params
+  if (indexes === undefined) {
+    res.json({ items: [] });
+    return;
   }
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
   res.json({
