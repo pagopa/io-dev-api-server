@@ -226,14 +226,13 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
         const startIndex = orderedList.findIndex(
           m => m.id === params.minimumId
         );
-        // if index are defined and in the expected order
+        // if indexes are defined and in the expected order
         if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
           return {
             startIndex: startIndex + 1,
             endIndex
           };
         }
-        return undefined;
       }
     )
     .when(
@@ -242,14 +241,13 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
         const startIndex = orderedList.findIndex(
           m => m.id === params.maximumId
         );
-        // index not found or index is the last item (can't go forward) -> return empty list
-        if (startIndex === -1 || startIndex + 1 >= orderedList.length) {
-          return undefined;
+        // index is defined and not at the end of the list
+        if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
+          return {
+            startIndex: startIndex + 1,
+            endIndex: startIndex + 1 + params.pageSize!
+          };
         }
-        return {
-          startIndex: startIndex + 1,
-          endIndex: startIndex + 1 + params.pageSize!
-        };
       }
     )
     .when(
@@ -257,13 +255,12 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
       () => {
         // index not found or index is the first item (can't go back) -> return empty list
         const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-        if (endIndex <= 0) {
-          return undefined;
+        if (endIndex > 0) {
+          return {
+            startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
+            endIndex
+          };
         }
-        return {
-          startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
-          endIndex
-        };
       }
     )
     .otherwise(() => ({
