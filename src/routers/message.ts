@@ -162,10 +162,7 @@ const createMessages = () => {
 
   addMessage(
     withPaymentData(
-      getNewMessage(
-        `💰✅ payment message payment message payment message payment message payment message payment message payment message`,
-        messageMarkdown
-      ),
+      getNewMessage(`💰✅ payment message`, messageMarkdown),
       false
     )
   );
