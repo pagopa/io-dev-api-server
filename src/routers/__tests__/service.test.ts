@@ -11,8 +11,10 @@ it("services should return a valid services list", async done => {
   const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
+
   expect(list.isRight()).toBeTruthy();
   if (list.isRight()) {
+    console.log(list, list.value, list.value.items);
     expect(list.value).toEqual(visibleServices.payload);
   }
   done();

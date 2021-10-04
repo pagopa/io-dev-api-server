@@ -15,8 +15,6 @@ export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
 export const assetsFolder = root + "/assets";
 export const configFolder = root + "/config";
-// true if the env is in testing phase
-export const isTestEnv = process.env.NODE_ENV === "test";
 
 const defaultProfileAttrs: ProfileAttrs = {
   name: "Maria Giovanna",
@@ -29,7 +27,7 @@ const defaultProfileAttrs: ProfileAttrs = {
 
 const paymentMethods: WalletMethodConfig = {
   walletBancomatCount: 1,
-  walletCreditCardCount: 1,
+  walletCreditCardCount: 2,
   walletCreditCardCoBadgeCount: 0,
   privativeCount: 0,
   satispayCount: 0,
@@ -68,7 +66,9 @@ const defaultConfig: IoDevServerConfig = {
   },
   wallet: {
     methods: paymentMethods,
-    shuffleAbi: false
+    shuffleAbi: false,
+    verificaError: undefined,
+    attivaError: undefined
   },
   services: {
     response: {
@@ -82,11 +82,12 @@ const defaultConfig: IoDevServerConfig = {
     includeSiciliaVola: true
   }
 };
+/**
+ * set your config file you want to load and apply
+ * config file should be included in "config" directory
+ */
 const customConfigFile = "config.json";
-// don't use custom config in test env
-const customConfig = !isTestEnv
-  ? readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {}
-  : {};
+const customConfig = {};
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
   defaultConfig,
   customConfig

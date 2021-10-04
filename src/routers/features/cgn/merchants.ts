@@ -177,8 +177,8 @@ addHandler(
         discounts: range(1, 3).map<Discount>(_ => {
           const discount: Discount = {
             name: faker.commerce.productName() as NonEmptyString,
-            startDate: faker.date.past().toISOString(),
-            endDate: faker.date.future().toISOString(),
+            startDate: faker.date.past(),
+            endDate: faker.date.future(),
             discount: faker.datatype.number({ min: 10, max: 30 }),
             description: faker.lorem.lines(1) as NonEmptyString,
             condition: faker.lorem.lines(1) as NonEmptyString,
@@ -234,8 +234,8 @@ addHandler(
         description: faker.lorem.paragraphs(2) as NonEmptyString,
         discounts: range(1, 3).map<Discount>(_ => ({
           name: faker.commerce.productName() as NonEmptyString,
-          startDate: faker.date.past().toISOString(),
-          endDate: faker.date.future().toISOString(),
+          startDate: faker.date.past(),
+          endDate: faker.date.future(),
           discount: faker.datatype.boolean()
             ? faker.datatype.number({ min: 10, max: 30 })
             : undefined,

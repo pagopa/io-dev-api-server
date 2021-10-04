@@ -21,7 +21,7 @@ const spidProfile: InitializedProfile = {
   spid_email: ioDevServerConfig.profile.attrs.spid_email,
   spid_mobile_phone: ioDevServerConfig.profile.attrs.mobile,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -41,7 +41,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   spid_email: ioDevServerConfig.profile.attrs.spid_email,
   spid_mobile_phone: ioDevServerConfig.profile.attrs.mobile,
   version: 0,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -59,7 +59,7 @@ const cieProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: ioDevServerConfig.profile.attrs.name,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -76,7 +76,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   is_webhook_enabled: false,
   name: ioDevServerConfig.profile.attrs.name,
   version: 0,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 const spidCie = {

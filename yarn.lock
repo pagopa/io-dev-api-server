@@ -2826,7 +2826,21 @@ istanbul-reports@^2.2.6:
   dependencies:
     handlebars "^4.1.2"
 
-italia-ts-commons@^5.0.1, italia-ts-commons@^5.1.13:
+italia-ts-commons@8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/italia-ts-commons/-/italia-ts-commons-8.6.0.tgz#d0e944ae7fb52d63ec016e172e6950529924f2fb"
+  integrity sha512-fMBhaqcGa5GD7/PmXWbjnCVUGcUWuRnZ5wF0hswkh0UMCGSozg3t3neSAqZGTF3eZaUEUk9WLkYSpTNxfeH1jw==
+  dependencies:
+    abort-controller "^3.0.0"
+    agentkeepalive "^4.1.2"
+    applicationinsights "^1.7.4"
+    fp-ts "1.17.4"
+    io-ts "1.8.5"
+    json-set-map "^1.0.2"
+    node-fetch "^2.6.0"
+    validator "^10.1.0"
+
+italia-ts-commons@^5.0.1:
   version "5.1.13"
   resolved "https://registry.yarnpkg.com/italia-ts-commons/-/italia-ts-commons-5.1.13.tgz#7ae919374f9c03c04e38603b7f7e9681ebee79b7"
   integrity sha512-mXtrNG/HR6lRCOTtBrEzsxGmkHccoDXKqoc9i+J2+yGhhxcznASu+0KMC05ZR1yJP4bWliC9rXJ3hnCw0rMSnQ==
@@ -2849,10 +2863,10 @@ italia-tslint-rules@^1.1.3:
     tslint-sonarts "^1.9.0"
     typestrict "^1.0.2"
 
-italia-utils@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/italia-utils/-/italia-utils-4.1.1.tgz#aff499d380f8de04e04c85affad654baa7416bda"
-  integrity sha512-BElPtWi/wvqx5i2ZiaLD6dYRGewPcbhtQvKCG3Zxbekw+QHVDOKMECewdehFwU4Iz6ycztTwWBxxQanHhkW+Zw==
+italia-utils@^4.1.1:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/italia-utils/-/italia-utils-4.3.0.tgz#a59755333013364018194e181c4de98404ff8240"
+  integrity sha512-xPuRI+Mf5ualHhQvhsG9GDi1jNcBikDjNam5lz28BvEd1jPUKDgLpnVpw0g+MZrbV+pFN7i/Fkt6uQVlttssTA==
   dependencies:
     fs-extra "^6.0.0"
     italia-ts-commons "^5.0.1"

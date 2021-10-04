@@ -23,6 +23,7 @@ export const services = ioDevServerConfig.services.includeSiciliaVola
   ? withSiciliaVolaService(nationalLocalServices)
   : nationalLocalServices;
 export const visibleServices = getServicesTuple(services);
+console.log("visibleServices", JSON.stringify(visibleServices.payload));
 const servicesPreferences = getServicesPreferences(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
