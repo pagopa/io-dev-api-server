@@ -16,6 +16,7 @@ import {
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import { GetMessagesParameters } from "../types/parameters";
+import { isDefined } from "../utils/guards";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTABonusBpd,
@@ -27,7 +28,6 @@ import {
 } from "../utils/variables";
 import { authResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
-import { isDefined } from "../utils/guards";
 
 export const messageRouter = Router();
 
@@ -253,8 +253,8 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     .when(
       p => p.minimumId !== undefined,
       () => {
-        // index not found or index is the first item (can't go back) -> return empty list
         const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+        // index found and it isn't the first item (can't go back)
         if (endIndex > 0) {
           return {
             startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
