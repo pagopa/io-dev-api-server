@@ -181,7 +181,10 @@ addHandler(
   handlePaymentPostAndRedirect
 );
 
-// delete payment
+/**
+ * delete payment
+ * user wants to stop the current payment
+ */
 addHandler(
   walletRouter,
   "delete",
