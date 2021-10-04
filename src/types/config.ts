@@ -67,6 +67,8 @@ export const IoDevServerConfig = t.interface({
   globalDelay: t.number,
   // if true, no login page will be shown (SPID)
   autoLogin: t.boolean,
+  // if false no random value will be created and used
+  allowRandomValues: t.boolean,
   messages: t.interface({
     // configure some API response error code
     response: t.interface({

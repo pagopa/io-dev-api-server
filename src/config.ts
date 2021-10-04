@@ -40,13 +40,14 @@ const paymentMethods: WalletMethodConfig = {
 };
 
 const defaultConfig: IoDevServerConfig = {
+  globalDelay: 0,
+  autoLogin: false,
+  allowRandomValues: false,
   profile: {
     attrs: defaultProfileAttrs,
     authenticationProvider: "spid",
     firstOnboarding: false
   },
-  globalDelay: 0,
-  autoLogin: false,
   messages: {
     response: {
       getMessagesResponseCode: 200,
@@ -87,7 +88,8 @@ const defaultConfig: IoDevServerConfig = {
  * config file should be included in "config" directory
  */
 const customConfigFile = "config.json";
-const customConfig = {};
+const customConfig =
+  readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {};
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
   defaultConfig,
   customConfig
