@@ -93,7 +93,6 @@ addHandler(
 );
 
 /**
- * the user wants to lock this payment (ATTIVA)
  * the app stats a polling using codiceContestoPagamento as input
  * when the payment is finally locked this API returns the idPagamento
  * STEP 3
@@ -105,7 +104,7 @@ addHandler(
   (_, res) => {
     idPagamento = faker.random.alphaNumeric(30);
     const response: PaymentActivationsGetResponse = {
-      idPagamento: faker.random.alphaNumeric(30)
+      idPagamento
     };
     res.json(response);
   }
@@ -156,7 +155,7 @@ const handlePaymentPostAndRedirect = (req: Request, res: Response) => {
   // set a timeout to redirect to the exit url
   const exitPathName = "/wallet/v3/webview/logout/bye";
   const outcomeParamname = "outcome";
-  const outcomeValue = 0;
+  const outcomeValue = 7;
   const secondsToRedirect = 2;
   const redirectUrl = `"http://${interfaces.name}:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
   const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
@@ -181,5 +180,21 @@ addHandler(
   "/wallet/v3/webview/transactions/pay",
   handlePaymentPostAndRedirect
 );
+
+// delete payment
+addHandler(
+  walletRouter,
+  "delete",
+  appendWalletV1Prefix("/payments/:idPagamento/actions/delete"),
+  (req, res) => {
+    if (idPagamento !== req.params.idPagamento) {
+      res.sendStatus(404);
+      return;
+    }
+    idPagamento = undefined;
+    res.sendStatus(200);
+  }
+);
+
 // only for stats displaying purposes
 addNewRoute("post", "/wallet/v3/webview/transactions/pay");
