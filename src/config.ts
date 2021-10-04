@@ -42,7 +42,7 @@ const paymentMethods: WalletMethodConfig = {
 const defaultConfig: IoDevServerConfig = {
   globalDelay: 0,
   autoLogin: false,
-  allowRandomValues: false,
+  allowRandomValues: true,
   profile: {
     attrs: defaultProfileAttrs,
     authenticationProvider: "spid",
@@ -66,6 +66,7 @@ const defaultConfig: IoDevServerConfig = {
     standardMessageCount: 1
   },
   wallet: {
+    allowRandomValues: true,
     methods: paymentMethods,
     shuffleAbi: false,
     verificaError: undefined,

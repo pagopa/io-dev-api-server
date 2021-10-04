@@ -56,7 +56,6 @@ export const transactionsTotal = 25;
 export const transactions: ReadonlyArray<Transaction> = getTransactions(
   transactionsTotal,
   true,
-  true,
   wallets.data
 );
 addHandler(

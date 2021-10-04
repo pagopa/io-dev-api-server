@@ -1,5 +1,5 @@
 import * as faker from "faker/locale/it";
-import { index, range } from "fp-ts/lib/Array";
+import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
 import {
@@ -13,7 +13,9 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
+import { ioDevServerConfig } from "../config";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
@@ -21,7 +23,12 @@ export const sessionToken: SessionResponse = {
     sessionToken: faker.random.alphaNumeric(128)
   }
 };
-
+const getAmount = () =>
+  getRandomValue(
+    1000,
+    faker.datatype.number({ min: 1, max: 150 }),
+    ioDevServerConfig.wallet.allowRandomValues
+  );
 export const validPsp: Psp = {
   id: 40000,
   idPsp: "idPsp1",
@@ -36,7 +43,7 @@ export const validPsp: Psp = {
   serviceName: "nomeServizio 10 white",
   fixedCost: {
     currency: "EUR",
-    amount: faker.datatype.number({ min: 1, max: 150 }),
+    amount: getAmount(),
     decimalDigits: 2
   },
   appChannel: false,
@@ -61,7 +68,7 @@ const validPsp2: Psp = {
   serviceName: "nomeServizio 10 red",
   fixedCost: {
     currency: "EUR",
-    amount: faker.datatype.number({ min: 1, max: 250 }),
+    amount: getAmount(),
     decimalDigits: 2
   },
   appChannel: false,
@@ -86,7 +93,7 @@ const validPsp3: Psp = {
   serviceName: "nomeServizio 10 Blu",
   fixedCost: {
     currency: "EUR",
-    amount: faker.datatype.number({ min: 1, max: 250 }),
+    amount: getAmount(),
     decimalDigits: 2
   },
   appChannel: false,
@@ -109,7 +116,11 @@ export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let creditCardId = 0;
   const generateCreditCard = (): CreditCard => {
-    const ccBrand = faker.random.arrayElement(creditCardBrands);
+    const ccBrand = getRandomValue(
+      creditCardBrands[0],
+      faker.random.arrayElement(creditCardBrands),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
     creditCardId++;
     const expDate = faker.date.future();
     return {
@@ -118,10 +129,14 @@ export const getWallets = (count: number = 4): WalletListResponse => {
       holder: `${faker.name.firstName()} ${faker.name.lastName()}`,
       pan:
         "************" +
-        faker.datatype
-          .number(9999)
-          .toString()
-          .padStart(4, "0"),
+        getRandomValue(
+          faker.datatype
+            .number(9999)
+            .toString()
+            .padStart(4, "0"),
+          creditCardId.toString().padStart(4, "0"),
+          ioDevServerConfig.wallet.allowRandomValues
+        ),
       expireMonth: (expDate.getMonth() + 1).toString().padStart(2, "0"),
       expireYear: expDate
         .getFullYear()
@@ -157,28 +172,43 @@ export const getWallets = (count: number = 4): WalletListResponse => {
 export const getTransactions = (
   count: number,
   confirmed: boolean = true,
-  randomData: boolean = true,
   wallets?: ReadonlyArray<Wallet>
 ): ReadonlyArray<Transaction> => {
-  const startId = faker.datatype.number();
   return range(1, count).map(idx => {
-    const amount = randomData
-      ? faker.datatype.number({ min: 100, max: 999999 })
-      : 20000 + idx * 10;
-    const fee = randomData ? Math.trunc(Math.random() * 150) : 1;
-    const description = randomData
-      ? `/RFB/${faker.datatype
-          .number(1000000)
-          .toString()
-          .padStart(17, "0")}/${amount /
-          100}/TXT/${faker.finance.transactionDescription()}`
-      : `/RFB/02000000000495213/0.01/TXT/${idx} - TEST CAUSALE`;
+    const amount = getRandomValue(
+      20000 + idx * 10,
+      faker.datatype.number({ min: 100, max: 20000 }),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
+    const fee = getRandomValue(
+      100,
+      faker.datatype.number({ min: 1, max: 150 }),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
+    const transactionId = getRandomValue(
+      idx,
+      faker.datatype.number(1000000),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
+    const transactionDescription = getRandomValue(
+      `transaction - ${idx}`,
+      faker.finance.transactionDescription(),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
+    const description = `/RFB/${transactionId}/${amount /
+      100}/TXT/${transactionDescription}`;
     const delta = 1000 * 60 * 60;
     const now = new Date();
-    const created = randomData
-      ? faker.date.past()
-      : new Date(now.getTime() + idx * delta);
-    const merchant = randomData ? faker.company.companyName() : "merchant";
+    const created = getRandomValue(
+      new Date(now.getTime() + idx * delta),
+      faker.date.past(),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
+    const merchant = getRandomValue(
+      `merchant-${idx}`,
+      faker.company.companyName(),
+      ioDevServerConfig.wallet.allowRandomValues
+    );
     return validatePayload(Transaction, {
       // 1 === transaction confirmed!
       accountingStatus: confirmed ? 1 : 0,
@@ -188,7 +218,7 @@ export const getTransactions = (
       error: false,
       fee: { amount: fee },
       grandTotal: { amount: amount + fee },
-      id: startId + idx,
+      id: idx,
       idPayment: 1,
       idPsp: fromNullable(wallets)
         .map(ws => ws[idx % ws.length].idPsp)
@@ -196,7 +226,7 @@ export const getTransactions = (
       idStatus: 3,
       idWallet: fromNullable(wallets)
         .map(ws => ws[idx % ws.length].idWallet)
-        .getOrElse(faker.datatype.number(10000)),
+        .toUndefined(),
       merchant,
       nodoIdPayment: "nodoIdPayment",
       paymentModel: 5,

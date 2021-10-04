@@ -67,7 +67,7 @@ export const IoDevServerConfig = t.interface({
   globalDelay: t.number,
   // if true, no login page will be shown (SPID)
   autoLogin: t.boolean,
-  // if false no random value will be created and used
+  // if false fixed values will be used
   allowRandomValues: t.boolean,
   messages: t.interface({
     // configure some API response error code
@@ -119,6 +119,8 @@ export const IoDevServerConfig = t.interface({
   }),
   wallet: t.intersection([
     t.interface({
+      // if false fixed values will be used
+      allowRandomValues: t.boolean,
       methods: WalletMethodConfig,
       shuffleAbi: t.boolean
     }),
