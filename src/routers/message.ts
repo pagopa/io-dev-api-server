@@ -4,7 +4,7 @@ import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
 import { match } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
+import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
@@ -47,7 +47,7 @@ const getNewMessage = (
   subject: string,
   markdown: string,
   prescriptionData?: PrescriptionData,
-  euCovidCert?: MessageContentEu_covid_cert
+  euCovidCert?: EUCovidCert
 ): CreatedMessageWithContent =>
   withContent(
     createMessage(fiscalCode, getRandomServiceId()),
