@@ -1,3 +1,4 @@
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
@@ -10,7 +11,6 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");

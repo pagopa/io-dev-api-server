@@ -1,10 +1,10 @@
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 /* profile */
 export const ProfileAttrs = t.interface({
