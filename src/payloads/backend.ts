@@ -59,7 +59,7 @@ export const backendStatus: BackendStatus = {
       }
     },
     login: {
-      is_visible: true,
+      is_visible: false,
       level: LevelEnum.normal,
       web_url: {
         "it-IT": "https://io.italia.it/",

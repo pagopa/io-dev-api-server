@@ -4,22 +4,22 @@ import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend
 import { ioDevServerConfig } from "../config";
 import { validatePayload } from "../utils/validator";
 
-const currentTosVersion = 2.4;
+const profileAttrConfig = ioDevServerConfig.profile.attrs;
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.AUTO
   },
-  accepted_tos_version: currentTosVersion,
-  email: ioDevServerConfig.profile.attrs.email,
-  family_name: ioDevServerConfig.profile.attrs.family_name,
+  accepted_tos_version: profileAttrConfig.accepted_tos_version,
+  email: profileAttrConfig.email,
+  family_name: profileAttrConfig.family_name,
   has_profile: true,
   is_inbox_enabled: true,
   is_email_enabled: true,
   is_email_validated: true,
   is_webhook_enabled: true,
-  name: ioDevServerConfig.profile.attrs.name,
-  spid_email: ioDevServerConfig.profile.attrs.spid_email,
-  spid_mobile_phone: ioDevServerConfig.profile.attrs.mobile,
+  name: profileAttrConfig.name,
+  spid_email: profileAttrConfig.spid_email,
+  spid_mobile_phone: profileAttrConfig.mobile,
   version: 1,
   date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
@@ -30,16 +30,16 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.LEGACY
   },
-  email: ioDevServerConfig.profile.attrs.email,
-  family_name: ioDevServerConfig.profile.attrs.family_name,
+  email: profileAttrConfig.email,
+  family_name: profileAttrConfig.family_name,
   has_profile: true,
   is_inbox_enabled: false,
   is_webhook_enabled: false,
   is_email_enabled: true,
   is_email_validated: true,
-  name: ioDevServerConfig.profile.attrs.name,
-  spid_email: ioDevServerConfig.profile.attrs.spid_email,
-  spid_mobile_phone: ioDevServerConfig.profile.attrs.mobile,
+  name: profileAttrConfig.name,
+  spid_email: profileAttrConfig.spid_email,
+  spid_mobile_phone: profileAttrConfig.mobile,
   version: 0,
   date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
@@ -49,15 +49,15 @@ const cieProfile: InitializedProfile = {
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.AUTO
   },
-  email: ioDevServerConfig.profile.attrs.email,
-  accepted_tos_version: currentTosVersion,
-  family_name: ioDevServerConfig.profile.attrs.family_name,
+  email: profileAttrConfig.email,
+  accepted_tos_version: profileAttrConfig.accepted_tos_version,
+  family_name: profileAttrConfig.family_name,
   has_profile: true,
   is_inbox_enabled: true,
   is_email_enabled: true,
   is_email_validated: true,
   is_webhook_enabled: true,
-  name: ioDevServerConfig.profile.attrs.name,
+  name: profileAttrConfig.name,
   version: 1,
   date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
@@ -68,13 +68,13 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.LEGACY
   },
-  family_name: ioDevServerConfig.profile.attrs.family_name,
+  family_name: profileAttrConfig.family_name,
   has_profile: true,
   is_email_enabled: true,
   is_email_validated: false,
   is_inbox_enabled: false,
   is_webhook_enabled: false,
-  name: ioDevServerConfig.profile.attrs.name,
+  name: profileAttrConfig.name,
   version: 0,
   date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
@@ -82,16 +82,16 @@ const cieProfileFirstOnboarding: InitializedProfile = {
 const spidCie = {
   spid: {
     first: spidProfileFirstOnboarding,
-    notFirst: spidProfile
+    existing: spidProfile
   },
   cie: {
     first: cieProfileFirstOnboarding,
-    notFirst: cieProfile
+    existing: cieProfile
   }
 };
 const currentProfile = ioDevServerConfig.profile.firstOnboarding
   ? spidCie[ioDevServerConfig.profile.authenticationProvider].first
-  : spidCie[ioDevServerConfig.profile.authenticationProvider].notFirst;
+  : spidCie[ioDevServerConfig.profile.authenticationProvider].existing;
 export const getProfile = (fiscalCode: string): InitializedProfile =>
   validatePayload(InitializedProfile, {
     ...currentProfile,

@@ -10,6 +10,7 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
@@ -22,7 +23,8 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscalCode: "TAMMRA80A41H501I" as FiscalCode,
   spid_email: "maria.giovanna.rossi@spid-email.it" as EmailAddress,
-  email: "maria.giovanna.rossi@email.it" as EmailAddress
+  email: "maria.giovanna.rossi@email.it" as EmailAddress,
+  accepted_tos_version: 2.4 as NonNegativeNumber
 };
 
 const paymentMethods: WalletMethodConfig = {

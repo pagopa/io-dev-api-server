@@ -4,6 +4,7 @@ import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 /* profile */
 export const ProfileAttrs = t.interface({
@@ -12,7 +13,8 @@ export const ProfileAttrs = t.interface({
   family_name: t.string,
   mobile: NonEmptyString,
   spid_email: EmailAddress,
-  email: EmailAddress
+  email: EmailAddress,
+  accepted_tos_version: NonNegativeNumber
 });
 export type ProfileAttrs = t.TypeOf<typeof ProfileAttrs>;
 
