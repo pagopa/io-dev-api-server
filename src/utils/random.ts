@@ -1,10 +1,10 @@
 import { ioDevServerConfig } from "../config";
+import { AllorRandomValueKeys } from "../types/config";
 
 type RandomValueFunc = <T>(
   defaultValue: T,
   randomValue: T,
-  // tslint:disable-next-line:bool-param-default
-  randomAllowed?: boolean
+  configSectionKey: AllorRandomValueKeys
 ) => T;
 
 const getValueGlobalRandomOff: RandomValueFunc = <T>(defaultValue: T) =>
@@ -13,14 +13,18 @@ const getValueGlobalRandomOff: RandomValueFunc = <T>(defaultValue: T) =>
 const getValueGlobalRandomOn: RandomValueFunc = <T>(
   defaultValue: T,
   randomValue: T,
-  randomAllowed: boolean = true
-) => (!randomAllowed ? defaultValue : randomValue);
+  configSectionKey: AllorRandomValueKeys
+) =>
+  ioDevServerConfig[configSectionKey].allowRandomValues
+    ? randomValue
+    : defaultValue;
 
 /**
  * if global random (allowRandomValues) is OFF this will be a function that will always return the default value
  * otherwise it will be a function that checks if random is enabled for that specific section (if it is omitted if, random is allowed by default)
  * if the specific random section is enabled then the random value will be returned, the default value otherwise
  */
-export const getRandomValue: RandomValueFunc = ioDevServerConfig.allowRandomValues
+export const getRandomValue: RandomValueFunc = ioDevServerConfig.global
+  .allowRandomValues
   ? getValueGlobalRandomOn
   : getValueGlobalRandomOff;

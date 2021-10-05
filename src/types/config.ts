@@ -53,70 +53,86 @@ const HttpResponseCode = t.union([
   t.literal(500)
 ]);
 
+const AllowRandomValue = t.interface({ allowRandomValues: t.boolean });
+
 export const IoDevServerConfig = t.interface({
+  global: t.intersection([
+    t.interface({
+      // the global delay applied to all responses (0 means instant response)
+      delay: t.number,
+      // if true, no login page will be shown (SPID)
+      autoLogin: t.boolean,
+      // if false fixed values will be used
+      allowRandomValues: t.boolean
+    }),
+    AllowRandomValue
+  ]),
   // some attributes of the profile used as citizen
-  profile: t.interface({
-    attrs: ProfileAttrs,
-    authenticationProvider: t.keyof({
-      cie: null,
-      spid: null
+  profile: t.intersection([
+    t.interface({
+      attrs: ProfileAttrs,
+      authenticationProvider: t.keyof({
+        cie: null,
+        spid: null
+      }),
+      firstOnboarding: t.boolean
     }),
-    firstOnboarding: t.boolean
-  }),
-  // the global delay applied to all responses (0 means instant response)
-  globalDelay: t.number,
-  // if true, no login page will be shown (SPID)
-  autoLogin: t.boolean,
-  // if false fixed values will be used
-  allowRandomValues: t.boolean,
-  messages: t.interface({
-    // configure some API response error code
-    response: t.interface({
-      // 200 success with payload
-      getMessagesResponseCode: HttpResponseCode,
-      // 200 success with payload
-      getMessageResponseCode: HttpResponseCode
-      // number of messages containing payment (valid with no due date and invalid after due date)
+    AllowRandomValue
+  ]),
+  messages: t.intersection([
+    t.interface({
+      // configure some API response error code
+      response: t.interface({
+        // 200 success with payload
+        getMessagesResponseCode: HttpResponseCode,
+        // 200 success with payload
+        getMessageResponseCode: HttpResponseCode
+        // number of messages containing payment (valid with no due date and invalid after due date)
+      }),
+      paymentsCount: t.number,
+      // number of message - invalid after due date - containing a payment and a valid (not expired) due date
+      paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
+      // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
+      paymentInvalidAfterDueDateWithExpiredDueDateCount: t.number,
+      // number of message containing a payment and a valid (not expired) due date
+      paymentWithValidDueDateCount: t.number,
+      // number of message containing a payment and a not valid (expired) due date
+      paymentWithExpiredDueDateCount: t.number,
+      // number of medical messages
+      medicalCount: t.number,
+      // if true, messages (all available) with nested CTA will be included
+      withCTA: t.boolean,
+      // if true, messages (all available) with EUCovidCert will be included
+      withEUCovidCert: t.boolean,
+      // with valid due date
+      withValidDueDateCount: t.number,
+      // with invalid (expired) due date
+      withInValidDueDateCount: t.number,
+      standardMessageCount: t.number
     }),
-    paymentsCount: t.number,
-    // number of message - invalid after due date - containing a payment and a valid (not expired) due date
-    paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
-    // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
-    paymentInvalidAfterDueDateWithExpiredDueDateCount: t.number,
-    // number of message containing a payment and a valid (not expired) due date
-    paymentWithValidDueDateCount: t.number,
-    // number of message containing a payment and a not valid (expired) due date
-    paymentWithExpiredDueDateCount: t.number,
-    // number of medical messages
-    medicalCount: t.number,
-    // if true, messages (all available) with nested CTA will be included
-    withCTA: t.boolean,
-    // if true, messages (all available) with EUCovidCert will be included
-    withEUCovidCert: t.boolean,
-    // with valid due date
-    withValidDueDateCount: t.number,
-    // with invalid (expired) due date
-    withInValidDueDateCount: t.number,
-    standardMessageCount: t.number
-  }),
-  services: t.interface({
-    // configure some API response error code
-    response: t.interface({
-      // 200 success with payload
-      getServicesResponseCode: HttpResponseCode,
-      // 200 success with payload
-      getServiceResponseCode: HttpResponseCode,
-      // 200 success
-      postServicesPreference: HttpResponseCode,
-      // 200 success with payload
-      getServicesPreference: HttpResponseCode
+    AllowRandomValue
+  ]),
+  services: t.intersection([
+    t.interface({
+      // configure some API response error code
+      response: t.interface({
+        // 200 success with payload
+        getServicesResponseCode: HttpResponseCode,
+        // 200 success with payload
+        getServiceResponseCode: HttpResponseCode,
+        // 200 success
+        postServicesPreference: HttpResponseCode,
+        // 200 success with payload
+        getServicesPreference: HttpResponseCode
+      }),
+      // number of services national
+      national: t.number,
+      // number of services local
+      local: t.number,
+      includeSiciliaVola: t.boolean
     }),
-    // number of services national
-    national: t.number,
-    // number of services local
-    local: t.number,
-    includeSiciliaVola: t.boolean
-  }),
+    AllowRandomValue
+  ]),
   wallet: t.intersection([
     t.interface({
       // if false fixed values will be used
@@ -129,8 +145,9 @@ export const IoDevServerConfig = t.interface({
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // if verifica attiva will serve the given error
       verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2")
-    })
+    }),
+    AllowRandomValue
   ])
 });
-
+export type AllorRandomValueKeys = keyof IoDevServerConfig;
 export type IoDevServerConfig = t.TypeOf<typeof IoDevServerConfig>;

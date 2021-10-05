@@ -20,7 +20,7 @@ import { resetWalletV2 } from "./walletsV2";
 export const publicRouter = Router();
 
 addHandler(publicRouter, "get", "/login", (req, res) => {
-  if (req.query.authorized === "1" || ioDevServerConfig.autoLogin) {
+  if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     res.redirect(loginWithToken);
     return;
   }

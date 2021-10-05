@@ -12,7 +12,11 @@ addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
 
 addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), (_, res) =>
   res.json({
-    access_token: getRandomValue("supportToken", faker.datatype.uuid()),
-    expires_in: getRandomValue(180, faker.datatype.number())
+    access_token: getRandomValue(
+      "supportToken",
+      faker.datatype.uuid(),
+      "global"
+    ),
+    expires_in: getRandomValue(180, faker.datatype.number(), "global")
   })
 );

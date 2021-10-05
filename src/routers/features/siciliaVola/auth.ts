@@ -13,5 +13,7 @@ const addPrefix = (path: string) => addApiV1Prefix(`/mitvoucher/auth${path}`);
  * Get the mit auth token
  */
 addHandler(securedSvRouter, "get", addPrefix("/token"), (_, res) =>
-  res.json({ token: getRandomValue("svAuthToken", faker.datatype.uuid()) })
+  res.json({
+    token: getRandomValue("svAuthToken", faker.datatype.uuid(), "global")
+  })
 );

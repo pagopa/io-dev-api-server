@@ -13,7 +13,6 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
-import { ioDevServerConfig } from "../config";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
@@ -24,11 +23,7 @@ export const sessionToken: SessionResponse = {
   }
 };
 const getAmount = () =>
-  getRandomValue(
-    1000,
-    faker.datatype.number({ min: 1, max: 150 }),
-    ioDevServerConfig.wallet.allowRandomValues
-  );
+  getRandomValue(1000, faker.datatype.number({ min: 1, max: 150 }), "wallet");
 export const validPsp: Psp = {
   id: 40000,
   idPsp: "idPsp1",
@@ -119,7 +114,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
     const ccBrand = getRandomValue(
       creditCardBrands[0],
       faker.random.arrayElement(creditCardBrands),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     creditCardId++;
     const expDate = faker.date.future();
@@ -135,7 +130,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
             .toString()
             .padStart(4, "0"),
           creditCardId.toString().padStart(4, "0"),
-          ioDevServerConfig.wallet.allowRandomValues
+          "wallet"
         ),
       expireMonth: (expDate.getMonth() + 1).toString().padStart(2, "0"),
       expireYear: expDate
@@ -178,22 +173,22 @@ export const getTransactions = (
     const amount = getRandomValue(
       20000 + idx * 10,
       faker.datatype.number({ min: 100, max: 20000 }),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     const fee = getRandomValue(
       100,
       faker.datatype.number({ min: 1, max: 150 }),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     const transactionId = getRandomValue(
       idx,
       faker.datatype.number(1000000),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     const transactionDescription = getRandomValue(
       `transaction - ${idx}`,
       faker.finance.transactionDescription(),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     const description = `/RFB/${transactionId}/${amount /
       100}/TXT/${transactionDescription}`;
@@ -202,12 +197,12 @@ export const getTransactions = (
     const created = getRandomValue(
       new Date(now.getTime() + idx * delta),
       faker.date.past(),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     const merchant = getRandomValue(
       `merchant-${idx}`,
       faker.company.companyName(),
-      ioDevServerConfig.wallet.allowRandomValues
+      "wallet"
     );
     return validatePayload(Transaction, {
       // 1 === transaction confirmed!

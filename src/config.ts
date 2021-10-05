@@ -40,13 +40,16 @@ const paymentMethods: WalletMethodConfig = {
 };
 
 const defaultConfig: IoDevServerConfig = {
-  globalDelay: 0,
-  autoLogin: false,
-  allowRandomValues: true,
+  global: {
+    delay: 0,
+    autoLogin: false,
+    allowRandomValues: true
+  },
   profile: {
     attrs: defaultProfileAttrs,
     authenticationProvider: "spid",
-    firstOnboarding: false
+    firstOnboarding: false,
+    allowRandomValues: true
   },
   messages: {
     response: {
@@ -63,14 +66,15 @@ const defaultConfig: IoDevServerConfig = {
     withEUCovidCert: true,
     withValidDueDateCount: 1,
     withInValidDueDateCount: 1,
-    standardMessageCount: 1
+    standardMessageCount: 1,
+    allowRandomValues: true
   },
   wallet: {
-    allowRandomValues: true,
     methods: paymentMethods,
     shuffleAbi: false,
     verificaError: undefined,
-    attivaError: undefined
+    attivaError: undefined,
+    allowRandomValues: true
   },
   services: {
     response: {
@@ -81,7 +85,8 @@ const defaultConfig: IoDevServerConfig = {
     },
     national: 5,
     local: 5,
-    includeSiciliaVola: true
+    includeSiciliaVola: true,
+    allowRandomValues: true
   }
 };
 /**

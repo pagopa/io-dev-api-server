@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // set middlewares
 // if you want to add a delay in your server, use a global delayer (utils/delay_middleware)
-app.use(delayer(ioDevServerConfig.globalDelay as Millisecond));
+app.use(delayer(ioDevServerConfig.global.delay as Millisecond));
 // set middleware logger
 app.use(
   morgan(
