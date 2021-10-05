@@ -5,12 +5,11 @@ import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { WalletListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletListResponse";
-import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
-import { WalletV2Response } from "../../../generated/definitions/pagopa/WalletV2Response";
 import { sessionToken } from "../../payloads/wallet";
 import app from "../../server";
 import { PatchedWalletV2 } from "../../types/PatchedWalletV2";
 import { PatchedWalletV2ListResponse } from "../../types/PatchedWalletV2ListResponse";
+import { PatchedWalletV2Response } from "../../types/PatchedWalletV2Response";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../../utils/wallet";
 import {
   transactionPageSize,
@@ -18,7 +17,6 @@ import {
   transactionsTotal,
   walletCount
 } from "../wallet";
-import { PatchedWalletV2Response } from "../../types/PatchedWalletV2Response";
 
 const request = supertest(app);
 const testGetWallets = (response: Response) => {
