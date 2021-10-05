@@ -1,11 +1,11 @@
 import * as faker from "faker";
 import supertest from "supertest";
 import { CreatedMessageWithoutContent } from "../../../generated/definitions/backend/CreatedMessageWithoutContent";
+import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 import { messagesWithContent } from "../message";
-import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
 const request = supertest(app);
 
 it("messages should return a valid messages list", async done => {
