@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
-import { match } from "ts-pattern";
+import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
@@ -16,7 +16,6 @@ import {
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import { GetMessagesParameters } from "../types/parameters";
-import { isDefined } from "../utils/guards";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTABonusBpd,
@@ -216,53 +215,41 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   // order messages by creation date (desc)
   const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
 
+  const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
   const indexes: { startIndex: number; endIndex: number } | undefined = match(
-    params
+    toMatch
   )
-    .when(
-      p => [p.maximumId, p.minimumId].every(isDefined),
-      () => {
-        const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
-        const startIndex = orderedList.findIndex(
-          m => m.id === params.minimumId
-        );
-        // if indexes are defined and in the expected order
-        if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
-          return {
-            startIndex: startIndex + 1,
-            endIndex
-          };
-        }
+    .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
+      const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
+      const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
+      // if indexes are defined and in the expected order
+      if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
+        return {
+          startIndex: startIndex + 1,
+          endIndex
+        };
       }
-    )
-    .when(
-      p => p.maximumId !== undefined,
-      () => {
-        const startIndex = orderedList.findIndex(
-          m => m.id === params.maximumId
-        );
-        // index is defined and not at the end of the list
-        if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
-          return {
-            startIndex: startIndex + 1,
-            endIndex: startIndex + 1 + params.pageSize!
-          };
-        }
+    })
+    .with({ maximumId: not(__.nullish) }, () => {
+      const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
+      // index is defined and not at the end of the list
+      if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
+        return {
+          startIndex: startIndex + 1,
+          endIndex: startIndex + 1 + params.pageSize!
+        };
       }
-    )
-    .when(
-      p => p.minimumId !== undefined,
-      () => {
-        const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-        // index found and it isn't the first item (can't go back)
-        if (endIndex > 0) {
-          return {
-            startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
-            endIndex
-          };
-        }
+    })
+    .with({ minimumId: not(__.nullish) }, () => {
+      const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+      // index found and it isn't the first item (can't go back)
+      if (endIndex > 0) {
+        return {
+          startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
+          endIndex
+        };
       }
-    )
+    })
     .otherwise(() => ({
       startIndex: 0,
       endIndex: params.pageSize!
