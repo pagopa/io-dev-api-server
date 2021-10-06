@@ -263,11 +263,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   res.json({
     items: getItems(slice, params.enrichResultData!),
     prev: orderedList[indexes.startIndex]?.id,
-    next:
-      // if the current slice doesn't coincide with the end of the list, next is the last item id
-      slice.length < orderedList.length
-        ? slice[slice.length - 1]?.id
-        : undefined
+    next: slice[slice.length - 1]?.id
   });
 });
 
