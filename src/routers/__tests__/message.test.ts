@@ -33,7 +33,16 @@ it("messages should return a number of items according with the specified pageSi
   expect(messages.isRight()).toBeTruthy();
   if (messages.isRight()) {
     expect(messages.value.items.length).toBe(pageSize);
+    if (messages.value.items.length > 0) {
+      // next, if defined, should contain the id of the last element
+      expect(messages.value.next).toBe(
+        messages.value.items[messages.value.items.length - 1].id
+      );
+      // prev, if defined, should contain the id of the first element
+      expect(messages.value.prev).toBe(messages.value.items[0].id);
+    }
   }
+
   done();
 });
 
@@ -56,6 +65,14 @@ it("messages should return those items that are older than specified maximum_id"
         (listOlder.value.items ?? []).forEach(mo => {
           expect(mo.created_at.getTime()).toBeLessThan(m.created_at.getTime());
         });
+        if (listOlder.value.items.length > 0) {
+          // next, if defined, should contain the id of the last element
+          expect(listOlder.value.next).toBe(
+            listOlder.value.items[listOlder.value.items.length - 1].id
+          );
+          // prev, if defined, should contain the id of the first element
+          expect(listOlder.value.prev).toBe(listOlder.value.items[0].id);
+        }
       }
     }
   }
@@ -83,6 +100,14 @@ it("messages should return those items that are younger than specified minimum_i
             m.created_at.getTime()
           );
         });
+        if (listYounger.value.items.length > 0) {
+          // next, if defined, should contain the id of the last element
+          expect(listYounger.value.next).toBe(
+            listYounger.value.items[listYounger.value.items.length - 1].id
+          );
+          // prev, if defined, should contain the id of the first element
+          expect(listYounger.value.prev).toBe(listYounger.value.items[0].id);
+        }
       }
     }
   }
