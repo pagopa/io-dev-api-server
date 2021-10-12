@@ -8,15 +8,13 @@ import {
 } from "../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
-import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
-import { getProfile } from "../payloads/profile";
+import { currentProfile as profile } from "../payloads/profile";
 import { addHandler } from "../payloads/response";
 import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
-const profile = getProfile(ioDevServerConfig.profile.attrs.fiscalCode);
 // tslint:disable-next-line: no-let
 export let currentProfile = { ...profile };
 // define user UserDataProcessing (download / delete)

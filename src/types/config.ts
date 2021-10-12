@@ -5,16 +5,18 @@ import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
+import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 
 /* profile */
 export const ProfileAttrs = t.interface({
-  fiscalCode: FiscalCode,
+  fiscal_code: FiscalCode,
   name: t.string,
   family_name: t.string,
   mobile: NonEmptyString,
   spid_email: EmailAddress,
   email: EmailAddress,
-  accepted_tos_version: NonNegativeNumber
+  accepted_tos_version: NonNegativeNumber,
+  preferred_languages: PreferredLanguages
 });
 export type ProfileAttrs = t.TypeOf<typeof ProfileAttrs>;
 

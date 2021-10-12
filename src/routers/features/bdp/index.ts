@@ -16,7 +16,7 @@ export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
 
 const citizenV2: CitizenResourceV2 = {
   enabled: false,
-  fiscalCode: ioDevServerConfig.profile.attrs.fiscalCode,
+  fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
   payoffInstr: "",
   payoffInstrType: "IBAN",
   timestampTC: new Date()
@@ -169,7 +169,7 @@ addHandler(
     const status = activeHashPan.get(hpan);
     const result: PaymentInstrumentResource = {
       hpan,
-      fiscalCode: ioDevServerConfig.profile.attrs.fiscalCode,
+      fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
       activationDate: new Date().toISOString(),
       deactivationDate: new Date().toISOString(),
       Status: status!
@@ -187,7 +187,7 @@ addHandler(
     const hpan = req.params.hashPan;
     activeHashPan.set(hpan, StatusEnum.ACTIVE);
     const result: PaymentInstrumentDTO = {
-      fiscalCode: ioDevServerConfig.profile.attrs.fiscalCode,
+      fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
       activationDate: new Date()
     };
     res.json(result);

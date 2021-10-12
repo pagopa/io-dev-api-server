@@ -1,8 +1,6 @@
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
 import { ioDevServerConfig } from "../config";
-import { validatePayload } from "../utils/validator";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
 const spidProfile: InitializedProfile = {
@@ -22,7 +20,7 @@ const spidProfile: InitializedProfile = {
   spid_mobile_phone: profileAttrConfig.mobile,
   version: 1,
   date_of_birth: new Date(1991, 0, 6),
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: profileAttrConfig.fiscal_code
 };
 
 // mock a SPID profile on first onboarding
@@ -42,7 +40,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   spid_mobile_phone: profileAttrConfig.mobile,
   version: 0,
   date_of_birth: new Date(1991, 0, 6),
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: profileAttrConfig.fiscal_code
 };
 
 const cieProfile: InitializedProfile = {
@@ -60,7 +58,8 @@ const cieProfile: InitializedProfile = {
   name: profileAttrConfig.name,
   version: 1,
   date_of_birth: new Date(1991, 0, 6),
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: profileAttrConfig.fiscal_code,
+  preferred_languages: profileAttrConfig.preferred_languages
 };
 
 // mock a cie profile on first onboarding
@@ -77,7 +76,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   name: profileAttrConfig.name,
   version: 0,
   date_of_birth: new Date(1991, 0, 6),
-  fiscal_code: "" as FiscalCode // injected in getProfile
+  fiscal_code: profileAttrConfig.fiscal_code
 };
 const spidCie = {
   spid: {
@@ -89,11 +88,6 @@ const spidCie = {
     existing: cieProfile
   }
 };
-const currentProfile = ioDevServerConfig.profile.firstOnboarding
+export const currentProfile = ioDevServerConfig.profile.firstOnboarding
   ? spidCie[ioDevServerConfig.profile.authenticationProvider].first
   : spidCie[ioDevServerConfig.profile.authenticationProvider].existing;
-export const getProfile = (fiscalCode: string): InitializedProfile =>
-  validatePayload(InitializedProfile, {
-    ...currentProfile,
-    fiscal_code: fiscalCode
-  });

@@ -49,7 +49,7 @@ const getNewMessage = (
 ): CreatedMessageWithContent =>
   withContent(
     createMessage(
-      ioDevServerConfig.profile.attrs.fiscalCode,
+      ioDevServerConfig.profile.attrs.fiscal_code,
       getRandomServiceId()
     ),
     subject,
@@ -65,7 +65,7 @@ const createMessages = () => {
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
     iup: "0000X0NFM",
-    prescriber_fiscal_code: ioDevServerConfig.profile.attrs.fiscalCode
+    prescriber_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code
   };
   const now = new Date();
 
@@ -234,7 +234,7 @@ createMessages();
 export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollection => ({
   items: messagesWithContent.map(m => ({
     id: m.id,
-    fiscal_code: ioDevServerConfig.profile.attrs.fiscalCode,
+    fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
     created_at: m.created_at,
     sender_service_id: m.sender_service_id,
     time_to_live: m.time_to_live
