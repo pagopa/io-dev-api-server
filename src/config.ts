@@ -60,7 +60,7 @@ const defaultConfig: IoDevServerConfig = {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200
     },
-    paymentsCount: 2,
+    paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 1,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 1,
     paymentWithValidDueDateCount: 1,

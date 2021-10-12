@@ -20,7 +20,8 @@ const spidProfile: InitializedProfile = {
   spid_mobile_phone: profileAttrConfig.mobile,
   version: 1,
   date_of_birth: new Date(1991, 0, 6),
-  fiscal_code: profileAttrConfig.fiscal_code
+  fiscal_code: profileAttrConfig.fiscal_code,
+  preferred_languages: profileAttrConfig.preferred_languages
 };
 
 // mock a SPID profile on first onboarding
