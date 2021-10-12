@@ -106,11 +106,11 @@ addHandler(
  */
 addHandler(
   securedSvRouter,
-  "get",
+  "post",
   addPrefix("/beneficiario/annullaVoucher"),
   (req, res) => {
-    const { voucherId } = req.body;
-    const maybeVoucherId = t.Integer.decode(voucherId);
+    const { codiceVoucher } = req.body;
+    const maybeVoucherId = t.Integer.decode(codiceVoucher);
     if (maybeVoucherId.isLeft()) {
       // validate the body value
       res.sendStatus(500);
@@ -122,7 +122,7 @@ addHandler(
         v => v.idVoucher !== maybeVoucherId.value
       );
     }
-    res.sendStatus(200);
+    res.status(200).json({});
     return;
   }
 );
