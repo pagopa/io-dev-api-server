@@ -16,6 +16,9 @@ export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
 
+/**
+ * @deprecated the app should not use this API. It should consume metadata contained in the service detail
+ */
 addHandler(
   servicesMetadataRouter,
   "get",
