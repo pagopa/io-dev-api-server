@@ -84,6 +84,7 @@ export const getServices = (count: number): readonly ServicePublic[] => {
         organization_name: `${faker.company.companyName()} [${organizationCount +
           1}]` as OrganizationName,
         service_metadata: {
+          ...getServiceMetadata(scope),
           scope,
           cta: frontMatter2CTA2 as NonEmptyString
         }
@@ -112,24 +113,12 @@ export const getServicesTuple = (
   return { payload, isJson: true };
 };
 
-export const getServiceMetadata = (
-  serviceId: string,
-  services: PaginatedServiceTupleCollection
-): IOResponse<ServicePublicService_metadata> => {
-  const serviceIndex = services.items.findIndex(
-    s => s.service_id === serviceId
-  );
-  // tslint:disable-next-line: no-let
-  let serviceScope: ServiceScopeEnum = ServiceScopeEnum.NATIONAL;
-  // first half -> LOCAL
-  // second half -> NATIONAL
-  if (serviceIndex + 1 <= services.items.length * 0.5) {
-    serviceScope = ServiceScopeEnum.LOCAL;
-  }
-
-  const metaData: ServicePublicService_metadata = {
+const getServiceMetadata = (
+  scope: ServiceScopeEnum
+): ServicePublicService_metadata => {
+  return {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
-    scope: serviceScope,
+    scope,
     address: faker.address.streetAddress() as NonEmptyString,
     email: faker.internet.email() as NonEmptyString,
     pec: faker.internet.email() as NonEmptyString,
@@ -139,10 +128,6 @@ export const getServiceMetadata = (
     app_ios: faker.internet.url() as NonEmptyString,
     tos_url: faker.internet.url() as NonEmptyString,
     privacy_url: faker.internet.url() as NonEmptyString
-  };
-  return {
-    payload: validatePayload(ServicePublicService_metadata, metaData),
-    isJson: true
   };
 };
 
