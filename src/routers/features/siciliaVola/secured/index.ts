@@ -116,7 +116,7 @@ addHandler(
         v => v.idVoucher !== maybeVoucherId.value
       );
     }
-    res.status(200).json({});
+    res.json({});
     return;
   }
 );
