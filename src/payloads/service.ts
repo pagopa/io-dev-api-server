@@ -17,7 +17,10 @@ import {
 } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
-import { frontMatter2CTA2 } from "../utils/variables";
+import {
+  frontMatter1CTASiciliaVola,
+  frontMatter2CTA2
+} from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -36,31 +39,6 @@ export const getService = (serviceId: string): ServicePublic => {
   return validatePayload(ServicePublic, service);
 };
 
-export const siciliaVolaServiceId = "serviceSv";
-const siciliaVolaService: ServicePublic = {
-  ...getService(siciliaVolaServiceId),
-  organization_name: "Sicilia Vola" as OrganizationName,
-  service_name: "Sicilia Vola" as ServiceName,
-  service_metadata: {
-    scope: ServiceScopeEnum.NATIONAL
-  }
-};
-
-export const withSiciliaVolaService = (
-  services: readonly ServicePublic[]
-): readonly ServicePublic[] => {
-  const organizationsCount = new Set(
-    services.map(s => s.organization_fiscal_code)
-  ).size;
-  return services.concat({
-    ...siciliaVolaService,
-    organization_fiscal_code: `${organizationsCount + 1}`.padStart(
-      11,
-      "0"
-    ) as OrganizationFiscalCode
-  });
-};
-
 const getServiceMetadata = (
   scope: ServiceScopeEnum
 ): ServicePublicService_metadata => {
@@ -77,6 +55,32 @@ const getServiceMetadata = (
     tos_url: faker.internet.url() as NonEmptyString,
     privacy_url: faker.internet.url() as NonEmptyString
   };
+};
+
+export const siciliaVolaServiceId = "serviceSv";
+const siciliaVolaService: ServicePublic = {
+  ...getService(siciliaVolaServiceId),
+  organization_name: "Sicilia Vola" as OrganizationName,
+  service_name: "Sicilia Vola" as ServiceName,
+  service_metadata: {
+    ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
+    cta: frontMatter1CTASiciliaVola as NonEmptyString
+  }
+};
+
+export const withSiciliaVolaService = (
+  services: readonly ServicePublic[]
+): readonly ServicePublic[] => {
+  const organizationsCount = new Set(
+    services.map(s => s.organization_fiscal_code)
+  ).size;
+  return services.concat({
+    ...siciliaVolaService,
+    organization_fiscal_code: `${organizationsCount + 1}`.padStart(
+      11,
+      "0"
+    ) as OrganizationFiscalCode
+  });
 };
 
 export const getServices = (count: number): readonly ServicePublic[] => {
