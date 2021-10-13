@@ -66,30 +66,33 @@ export const getServices = (count: number): readonly ServicePublic[] => {
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
-  return range(0, count - 1).map(idx => {
-    organizationCount =
-      idx !== 0 && idx % aggregation === 0
-        ? organizationCount + 1
-        : organizationCount;
-    // first half have organization_fiscal_code === organizationFiscalCodes[0]
-    // second half have organization_fiscal_code === organizationFiscalCodes[1]
-    return {
-      ...getService(`service${idx}`),
-      organization_fiscal_code: `${organizationCount + 1}`.padStart(
-        11,
-        "0"
-      ) as OrganizationFiscalCode,
-      organization_name: `${faker.company.companyName()} [${organizationCount +
-        1}]` as OrganizationName,
-      service_metadata: {
-        scope:
-          idx + 1 <= count * 0.5
-            ? ServiceScopeEnum.LOCAL
-            : ServiceScopeEnum.NATIONAL,
-        cta: frontMatter2CTA2 as NonEmptyString
-      }
-    };
-  });
+  // tslint:disable-next-line: no-let
+  let serviceIndex = 0;
+  const createService = (scope: ServiceScopeEnum, serviceCount: number) =>
+    range(0, serviceCount - 1).map(_ => {
+      organizationCount =
+        serviceIndex !== 0 && serviceIndex % aggregation === 0
+          ? organizationCount + 1
+          : organizationCount;
+      serviceIndex++;
+      return {
+        ...getService(`service${serviceIndex}`),
+        organization_fiscal_code: `${organizationCount + 1}`.padStart(
+          11,
+          "0"
+        ) as OrganizationFiscalCode,
+        organization_name: `${faker.company.companyName()} [${organizationCount +
+          1}]` as OrganizationName,
+        service_metadata: {
+          scope,
+          cta: frontMatter2CTA2 as NonEmptyString
+        }
+      };
+    });
+  return [
+    ...createService(ServiceScopeEnum.LOCAL, count / 2),
+    ...createService(ServiceScopeEnum.NATIONAL, count / 2)
+  ];
 };
 
 export const getServicesTuple = (
