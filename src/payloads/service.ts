@@ -61,6 +61,24 @@ export const withSiciliaVolaService = (
   });
 };
 
+const getServiceMetadata = (
+  scope: ServiceScopeEnum
+): ServicePublicService_metadata => {
+  return {
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
+    scope,
+    address: faker.address.streetAddress() as NonEmptyString,
+    email: faker.internet.email() as NonEmptyString,
+    pec: faker.internet.email() as NonEmptyString,
+    phone: faker.phone.phoneNumber() as NonEmptyString,
+    web_url: faker.internet.url() as NonEmptyString,
+    app_android: faker.internet.url() as NonEmptyString,
+    app_ios: faker.internet.url() as NonEmptyString,
+    tos_url: faker.internet.url() as NonEmptyString,
+    privacy_url: faker.internet.url() as NonEmptyString
+  };
+};
+
 export const getServices = (count: number): readonly ServicePublic[] => {
   const aggregation = 3;
   // services belong to the same organization for blocks of `aggregation` size
@@ -111,24 +129,6 @@ export const getServicesTuple = (
     page_size: items.length
   });
   return { payload, isJson: true };
-};
-
-const getServiceMetadata = (
-  scope: ServiceScopeEnum
-): ServicePublicService_metadata => {
-  return {
-    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
-    scope,
-    address: faker.address.streetAddress() as NonEmptyString,
-    email: faker.internet.email() as NonEmptyString,
-    pec: faker.internet.email() as NonEmptyString,
-    phone: faker.phone.phoneNumber() as NonEmptyString,
-    web_url: faker.internet.url() as NonEmptyString,
-    app_android: faker.internet.url() as NonEmptyString,
-    app_ios: faker.internet.url() as NonEmptyString,
-    tos_url: faker.internet.url() as NonEmptyString,
-    privacy_url: faker.internet.url() as NonEmptyString
-  };
 };
 
 export const getServicesPreferences = (
