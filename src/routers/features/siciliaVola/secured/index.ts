@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as t from "io-ts";
+import { AeroportiAmmessiInputBean } from "../../../../../generated/definitions/siciliaVola/AeroportiAmmessiInputBean";
 import { VoucherBeneficiarioInputBean } from "../../../../../generated/definitions/siciliaVola/VoucherBeneficiarioInputBean";
 import { VoucherBeneficiarioOutputBean } from "../../../../../generated/definitions/siciliaVola/VoucherBeneficiarioOutputBean";
 import {
@@ -89,7 +90,15 @@ addHandler(
   "post",
   addPrefix("/beneficiario/aeroportiAmmessi"),
   (req, res) => {
-    const { aeroportiAmmessiInputBean } = req.body;
+    const aeroportiAmmessiInputBean = req.body;
+    const maybeAeroportiAmmessiInputBean = AeroportiAmmessiInputBean.decode(
+      aeroportiAmmessiInputBean
+    );
+    if (maybeAeroportiAmmessiInputBean.isLeft()) {
+      // validate the body value
+      res.sendStatus(500);
+      return;
+    }
 
     res.json(getAereoportiSede(5));
   }
