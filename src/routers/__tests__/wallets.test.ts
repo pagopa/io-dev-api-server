@@ -5,10 +5,11 @@ import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { WalletListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletListResponse";
-import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
-import { WalletV2Response } from "../../../generated/definitions/pagopa/WalletV2Response";
 import { sessionToken } from "../../payloads/wallet";
 import app from "../../server";
+import { PatchedWalletV2 } from "../../types/PatchedWalletV2";
+import { PatchedWalletV2ListResponse } from "../../types/PatchedWalletV2ListResponse";
+import { PatchedWalletV2Response } from "../../types/PatchedWalletV2Response";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../../utils/wallet";
 import {
   transactionPageSize,
@@ -28,14 +29,17 @@ const testGetWallets = (response: Response) => {
   return wallets.value;
 };
 
-const testGetWalletsV2 = (response: Response) => {
+const testGetWalletsV2 = (
+  response: Response
+): ReadonlyArray<PatchedWalletV2> => {
   expect(response.status).toBe(200);
-  const wallets = WalletV2ListResponse.decode(response.body);
+  const wallets = PatchedWalletV2ListResponse.decode(response.body);
   expect(wallets.isRight()).toBeTruthy();
   if (wallets.isRight() && wallets.value.data) {
     expect(wallets.value.data.length ?? 0).toBe(walletCount);
+    return wallets.value.data;
   }
-  return wallets.value;
+  return [];
 };
 
 it("/wallet should return a list of wallets (payments method instances)", async done => {
@@ -59,8 +63,8 @@ it("should start a valid session", async done => {
 
 it("should set a wallet as favourite", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
-  const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
-  const firstWallet = (wallets.data ?? [])[0];
+  const wallets = testGetWalletsV2(responseWallets);
+  const firstWallet = wallets[0];
   const response = await request.post(
     appendWalletV1Prefix(`/wallet/${firstWallet.idWallet}/actions/favourite`)
   );
@@ -70,13 +74,13 @@ it("should set a wallet as favourite", async done => {
 
 it("should change pagoPa flag false->true", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
-  const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
-  const firstWallet = (wallets.data ?? [])[0];
+  const wallets = testGetWalletsV2(responseWallets);
+  const firstWallet = wallets[0];
   const response = await request
     .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ data: { pagoPA: false } });
   expect(response.status).toBe(200);
-  const responsePayload = WalletV2Response.decode(response.body);
+  const responsePayload = PatchedWalletV2Response.decode(response.body);
   expect(responsePayload.isRight()).toBeTruthy();
   if (responsePayload.isRight()) {
     expect(responsePayload.value).toEqual({
@@ -88,7 +92,9 @@ it("should change pagoPa flag false->true", async done => {
     .put(appendWalletV2Prefix(`/wallet/${firstWallet.idWallet}/payment-status`))
     .send({ data: { pagoPA: true } });
   expect(responseInvert.status).toBe(200);
-  const responsePayloadInvert = WalletV2Response.decode(responseInvert.body);
+  const responsePayloadInvert = PatchedWalletV2Response.decode(
+    responseInvert.body
+  );
   expect(responsePayloadInvert.isRight()).toBeTruthy();
   if (responsePayloadInvert.isRight()) {
     expect(responsePayloadInvert.value).toEqual({
@@ -100,14 +106,14 @@ it("should change pagoPa flag false->true", async done => {
 
 it("should remove in bulk all these methods that have a specific function enabled", async done => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
-  const wallets: WalletV2ListResponse = testGetWalletsV2(responseWallets);
-  const pagopaWallets = (wallets.data ?? []).filter(w =>
+  const wallets = testGetWalletsV2(responseWallets);
+  const pagopaWallets = wallets.filter(w =>
     (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.pagoPA)
   );
-  const bpdWallets = (wallets.data ?? []).filter(w =>
+  const bpdWallets = wallets.filter(w =>
     (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.BPD)
   );
-  const faWallets = (wallets.data ?? []).filter(w =>
+  const faWallets = wallets.filter(w =>
     (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.FA)
   );
   const response = await request.delete(

@@ -1,9 +1,10 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
+import _ from "lodash";
+import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { CreatedMessageWithoutContentCollection } from "../../generated/definitions/backend/CreatedMessageWithoutContentCollection";
-import { MessageContentEu_covid_cert } from "../../generated/definitions/backend/MessageContent";
+import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { fiscalCode } from "../global";
 import { getProblemJson } from "../payloads/error";
@@ -14,6 +15,7 @@ import {
   withPaymentData
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
+import { GetMessagesParameters } from "../types/parameters";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTABonusBpd,
@@ -44,7 +46,7 @@ const getNewMessage = (
   subject: string,
   markdown: string,
   prescriptionData?: PrescriptionData,
-  euCovidCert?: MessageContentEu_covid_cert
+  euCovidCert?: EUCovidCert
 ): CreatedMessageWithContent =>
   withContent(
     createMessage(fiscalCode, getRandomServiceId()),
@@ -166,17 +168,103 @@ const createMessages = () => {
 };
 
 createMessages();
-export const getMessageWithoutContent = (): CreatedMessageWithoutContentCollection => ({
-  items: messagesWithContent.map(m => ({
-    id: m.id,
-    fiscal_code: fiscalCode as FiscalCode,
-    created_at: m.created_at,
-    sender_service_id: m.sender_service_id,
-    time_to_live: m.time_to_live
-  }))
-});
+
+/* helper function to build messages response */
+const getItems = (
+  items: ReadonlyArray<CreatedMessageWithContent>,
+  enrichData: boolean
+) => {
+  return items.map(m => {
+    const senderService = services.find(
+      s => s.service_id === m.sender_service_id
+    );
+    const extraData = enrichData
+      ? {
+          service_name: senderService!.service_name,
+          organization_name: senderService!.organization_name,
+          message_title: m.content.subject
+        }
+      : {};
+    return {
+      id: m.id,
+      fiscal_code: fiscalCode as FiscalCode,
+      created_at: m.created_at,
+      sender_service_id: m.sender_service_id,
+      time_to_live: m.time_to_live,
+      ...extraData
+    };
+  });
+};
+
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
-  res.json(getMessageWithoutContent());
+  const paginatedQuery = GetMessagesParameters.decode({
+    // default pageSize = 100
+    pageSize: req.query.page_size ?? "100",
+    // default enrichResultData = false
+    enrichResultData: (req.query.enrich_result_data ?? false) === "true",
+    maximumId: req.query.maximum_id,
+    minimumId: req.query.minimum_id
+  });
+  if (paginatedQuery.isLeft()) {
+    // bad request
+    res.sendStatus(400);
+    return;
+  }
+
+  const params = paginatedQuery.value;
+  // order messages by creation date (desc)
+  const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
+
+  const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
+  const indexes: { startIndex: number; endIndex: number } | undefined = match(
+    toMatch
+  )
+    .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
+      const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
+      const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
+      // if indexes are defined and in the expected order
+      if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
+        return {
+          startIndex: startIndex + 1,
+          endIndex
+        };
+      }
+    })
+    .with({ maximumId: not(__.nullish) }, () => {
+      const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
+      // index is defined and not at the end of the list
+      if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
+        return {
+          startIndex: startIndex + 1,
+          endIndex: startIndex + 1 + params.pageSize!
+        };
+      }
+    })
+    .with({ minimumId: not(__.nullish) }, () => {
+      const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+      // index found and it isn't the first item (can't go back)
+      if (endIndex > 0) {
+        return {
+          startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
+          endIndex
+        };
+      }
+    })
+    .otherwise(() => ({
+      startIndex: 0,
+      endIndex: params.pageSize!
+    }));
+  // not a valid request with params
+  if (indexes === undefined) {
+    res.json({ items: [] });
+    return;
+  }
+  const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
+  res.json({
+    items: getItems(slice, params.enrichResultData!),
+    prev: orderedList[indexes.startIndex]?.id,
+    next: slice[slice.length - 1]?.id
+  });
 });
 
 addHandler(
@@ -185,12 +273,10 @@ addHandler(
   addApiV1Prefix("/messages/:id"),
   (req, res) => {
     // retrieve the messageIndex from id
-    const msgIndex = messagesWithContent.findIndex(
-      item => item.id === req.params.id
-    );
-    if (msgIndex === -1) {
+    const message = messagesWithContent.find(item => item.id === req.params.id);
+    if (message === undefined) {
       res.json(getProblemJson(404, "message not found"));
     }
-    res.json(messagesWithContent[msgIndex]);
+    res.json(message);
   }
 );

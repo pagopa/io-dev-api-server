@@ -1,4 +1,4 @@
-import { FiscalCode, NonEmptyString } from "italia-ts-commons/lib/strings";
+import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
@@ -20,9 +20,8 @@ const spidProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: profile.name,
   spid_email: profile.spid_email as EmailAddress,
-  spid_mobile_phone: profile.mobile as NonEmptyString,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -40,9 +39,8 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   is_email_validated: true,
   name: profile.name,
   spid_email: profile.spid_email as EmailAddress,
-  spid_mobile_phone: profile.mobile as NonEmptyString,
   version: 0,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -60,7 +58,7 @@ const cieProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: profile.name,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 
@@ -77,7 +75,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   is_webhook_enabled: false,
   name: profile.name,
   version: 0,
-  date_of_birth: new Date(1991, 0, 6).toISOString(),
+  date_of_birth: new Date(1991, 0, 6),
   fiscal_code: "" as FiscalCode // injected in getProfile
 };
 

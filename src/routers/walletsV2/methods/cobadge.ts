@@ -37,7 +37,7 @@ const fromCardInfoToCardBadge = (
     parseInt(card.expireYear!, 10),
     parseInt(card.expireMonth!, 10) - 1,
     1
-  ).toISOString(),
+  ),
   hpan: card.hashPan,
   panCode: "123",
   panPartialNumber: card.blurredNumber,
