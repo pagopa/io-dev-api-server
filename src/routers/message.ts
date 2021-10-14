@@ -1,7 +1,6 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
@@ -252,7 +251,7 @@ const getItems = (
       : {};
     return {
       id: m.id,
-      fiscal_code: fiscalCode as FiscalCode,
+      fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
       created_at: m.created_at,
       sender_service_id: m.sender_service_id,
       time_to_live: m.time_to_live,
@@ -262,7 +261,7 @@ const getItems = (
 };
 
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
-if (configResponse.getMessagesResponseCode !== 200) {
+  if (configResponse.getMessagesResponseCode !== 200) {
     res.sendStatus(configResponse.getMessagesResponseCode);
     return;
   }

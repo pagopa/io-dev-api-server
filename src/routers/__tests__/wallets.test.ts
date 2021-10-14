@@ -82,7 +82,6 @@ it("should set pagoPa flag to false (if credit card > 1)", async done => {
   );
   // wallet should include at least 1 credit card (check global/config)
   expect(firstWallet).toBeDefined();
-  const firstWallet = wallets[0];
   const response = await request
     .put(
       appendWalletV2Prefix(`/wallet/${firstWallet!.idWallet}/payment-status`)
