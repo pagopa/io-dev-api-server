@@ -23,7 +23,6 @@ const defaultProfileAttrs: ProfileAttrs = {
   family_name: "Rossi",
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
-  spid_email: "maria.giovanna.rossi@spid-email.it" as EmailAddress,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
   accepted_tos_version: 2.4 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT]

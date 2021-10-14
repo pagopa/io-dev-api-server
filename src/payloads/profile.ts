@@ -16,8 +16,6 @@ const spidProfile: InitializedProfile = {
   is_email_validated: true,
   is_webhook_enabled: true,
   name: profileAttrConfig.name,
-  spid_email: profileAttrConfig.spid_email,
-  spid_mobile_phone: profileAttrConfig.mobile,
   version: 1,
   date_of_birth: new Date(1991, 0, 6),
   fiscal_code: profileAttrConfig.fiscal_code,
@@ -37,8 +35,6 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   is_email_enabled: true,
   is_email_validated: true,
   name: profileAttrConfig.name,
-  spid_email: profileAttrConfig.spid_email,
-  spid_mobile_phone: profileAttrConfig.mobile,
   version: 0,
   date_of_birth: new Date(1991, 0, 6),
   fiscal_code: profileAttrConfig.fiscal_code

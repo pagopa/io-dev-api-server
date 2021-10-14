@@ -13,7 +13,6 @@ export const ProfileAttrs = t.interface({
   name: t.string,
   family_name: t.string,
   mobile: NonEmptyString,
-  spid_email: EmailAddress,
   email: EmailAddress,
   accepted_tos_version: NonNegativeNumber,
   preferred_languages: PreferredLanguages
