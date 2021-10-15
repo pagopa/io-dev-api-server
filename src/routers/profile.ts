@@ -40,7 +40,7 @@ addHandler(
   profileRouter,
   "put",
   addApiV1Prefix("/installations/:installationID"),
-  (_, res) => res.sendStatus(200)
+  (_, res) => res.json({ message: "OK" })
 );
 
 // get profile

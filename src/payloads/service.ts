@@ -17,7 +17,10 @@ import {
 } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { validatePayload } from "../utils/validator";
-import { frontMatter2CTA2 } from "../utils/variables";
+import {
+  frontMatter1CTASiciliaVola,
+  frontMatter2CTA2
+} from "../utils/variables";
 import { IOResponse } from "./response";
 
 export const getService = (serviceId: string): ServicePublic => {
@@ -36,13 +39,32 @@ export const getService = (serviceId: string): ServicePublic => {
   return validatePayload(ServicePublic, service);
 };
 
+const getServiceMetadata = (
+  scope: ServiceScopeEnum
+): ServicePublicService_metadata => {
+  return {
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
+    scope,
+    address: faker.address.streetAddress() as NonEmptyString,
+    email: faker.internet.email() as NonEmptyString,
+    pec: faker.internet.email() as NonEmptyString,
+    phone: faker.phone.phoneNumber() as NonEmptyString,
+    web_url: faker.internet.url() as NonEmptyString,
+    app_android: faker.internet.url() as NonEmptyString,
+    app_ios: faker.internet.url() as NonEmptyString,
+    tos_url: faker.internet.url() as NonEmptyString,
+    privacy_url: faker.internet.url() as NonEmptyString
+  };
+};
+
 export const siciliaVolaServiceId = "serviceSv";
 const siciliaVolaService: ServicePublic = {
   ...getService(siciliaVolaServiceId),
   organization_name: "Sicilia Vola" as OrganizationName,
   service_name: "Sicilia Vola" as ServiceName,
   service_metadata: {
-    scope: ServiceScopeEnum.NATIONAL
+    ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
+    cta: frontMatter1CTASiciliaVola as NonEmptyString
   }
 };
 
@@ -66,30 +88,34 @@ export const getServices = (count: number): readonly ServicePublic[] => {
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
-  return range(0, count - 1).map(idx => {
-    organizationCount =
-      idx !== 0 && idx % aggregation === 0
-        ? organizationCount + 1
-        : organizationCount;
-    // first half have organization_fiscal_code === organizationFiscalCodes[0]
-    // second half have organization_fiscal_code === organizationFiscalCodes[1]
-    return {
-      ...getService(`service${idx}`),
-      organization_fiscal_code: `${organizationCount + 1}`.padStart(
-        11,
-        "0"
-      ) as OrganizationFiscalCode,
-      organization_name: `${faker.company.companyName()} [${organizationCount +
-        1}]` as OrganizationName,
-      service_metadata: {
-        scope:
-          idx + 1 <= count * 0.5
-            ? ServiceScopeEnum.LOCAL
-            : ServiceScopeEnum.NATIONAL,
-        cta: frontMatter2CTA2 as NonEmptyString
-      }
-    };
-  });
+  // tslint:disable-next-line: no-let
+  let serviceIndex = 0;
+  const createService = (scope: ServiceScopeEnum, serviceCount: number) =>
+    range(0, serviceCount - 1).map(_ => {
+      organizationCount =
+        serviceIndex !== 0 && serviceIndex % aggregation === 0
+          ? organizationCount + 1
+          : organizationCount;
+      serviceIndex++;
+      return {
+        ...getService(`service${serviceIndex}`),
+        organization_fiscal_code: `${organizationCount + 1}`.padStart(
+          11,
+          "0"
+        ) as OrganizationFiscalCode,
+        organization_name: `${faker.company.companyName()} [${organizationCount +
+          1}]` as OrganizationName,
+        service_metadata: {
+          ...getServiceMetadata(scope),
+          scope,
+          cta: frontMatter2CTA2 as NonEmptyString
+        }
+      };
+    });
+  return [
+    ...createService(ServiceScopeEnum.LOCAL, count / 2),
+    ...createService(ServiceScopeEnum.NATIONAL, count / 2)
+  ];
 };
 
 export const getServicesTuple = (
@@ -107,40 +133,6 @@ export const getServicesTuple = (
     page_size: items.length
   });
   return { payload, isJson: true };
-};
-
-export const getServiceMetadata = (
-  serviceId: string,
-  services: PaginatedServiceTupleCollection
-): IOResponse<ServicePublicService_metadata> => {
-  const serviceIndex = services.items.findIndex(
-    s => s.service_id === serviceId
-  );
-  // tslint:disable-next-line: no-let
-  let serviceScope: ServiceScopeEnum = ServiceScopeEnum.NATIONAL;
-  // first half -> LOCAL
-  // second half -> NATIONAL
-  if (serviceIndex + 1 <= services.items.length * 0.5) {
-    serviceScope = ServiceScopeEnum.LOCAL;
-  }
-
-  const metaData: ServicePublicService_metadata = {
-    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
-    scope: serviceScope,
-    address: faker.address.streetAddress() as NonEmptyString,
-    email: faker.internet.email() as NonEmptyString,
-    pec: faker.internet.email() as NonEmptyString,
-    phone: faker.phone.phoneNumber() as NonEmptyString,
-    web_url: faker.internet.url() as NonEmptyString,
-    app_android: faker.internet.url() as NonEmptyString,
-    app_ios: faker.internet.url() as NonEmptyString,
-    tos_url: faker.internet.url() as NonEmptyString,
-    privacy_url: faker.internet.url() as NonEmptyString
-  };
-  return {
-    payload: validatePayload(ServicePublicService_metadata, metaData),
-    isJson: true
-  };
 };
 
 export const getServicesPreferences = (

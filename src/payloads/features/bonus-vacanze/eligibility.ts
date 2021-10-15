@@ -19,45 +19,45 @@ import {
 } from "../../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessIneligible";
 import { FamilyMembers } from "../../../../generated/definitions/bonus_vacanze/FamilyMembers";
 
-const familyMembers: FamilyMembers = [
+export const familyMembers: FamilyMembers = [
   {
     name: "Mario" as NonEmptyString,
     surname: "Rossi" as NonEmptyString,
-    fiscal_code: "EFCMZZ80A12L720R" as FiscalCode
+    fiscal_code: "EFCMZZ80A12L720A" as FiscalCode
   },
   {
     name: "Giulia" as NonEmptyString,
     surname: "Rossi" as NonEmptyString,
-    fiscal_code: "CDCMQQ81A12L721R" as FiscalCode
+    fiscal_code: "CDCMQQ81A12L721B" as FiscalCode
   },
   {
     name: "Piero" as NonEmptyString,
     surname: "Rossi" as NonEmptyString,
-    fiscal_code: "ABCMYY82A12L722R" as FiscalCode
+    fiscal_code: "ABCMYY82A12L722C" as FiscalCode
   },
   // Overflow name
   {
     name: "Maria Giovanni" as NonEmptyString,
     surname: "D'Anassimandro Curtis" as NonEmptyString,
-    fiscal_code: "ABCMWW82A12L722R" as FiscalCode
+    fiscal_code: "ABCMWW82A12L722D" as FiscalCode
   },
   // Overflow Fiscal Code
   {
     name: "Luigi Mario" as NonEmptyString,
     surname: "Rossi" as NonEmptyString,
-    fiscal_code: "ABCMKK82A12L722R" as FiscalCode
+    fiscal_code: "ABCMKK82A12L722E" as FiscalCode
   },
   // Overflow name + Fiscal Code
   {
     name: "Vittorio Emanuele" as NonEmptyString,
     surname: "Del Priore Primo" as NonEmptyString,
-    fiscal_code: "ABCMZZ82A12L722R" as FiscalCode
+    fiscal_code: "ABCMZZ82A12L722F" as FiscalCode
   },
   // Overflow name + very short fiscal code
   {
     name: "Maria Antonietta Assunta" as NonEmptyString,
     surname: "Blu" as NonEmptyString,
-    fiscal_code: "MMMMYY82A12L722R" as FiscalCode
+    fiscal_code: "MMMMYY82A12L722G" as FiscalCode
   }
 ];
 
@@ -65,8 +65,8 @@ export const dsuData: Dsu = {
   request_id: 1,
   isee_type: "isee_id",
   dsu_protocol_id: "dsu_protocol_id" as NonEmptyString,
-  dsu_created_at: new Date("2020-05-25T00:00:00.000Z").toISOString(),
-  has_discrepancies: true,
+  dsu_created_at: new Date("2020-05-25T00:00:00.000Z"),
+  has_discrepancies: false,
   family_members: familyMembers,
   max_amount: 500,
   max_tax_benefit: 100

@@ -5,7 +5,10 @@ import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
-import { DetailEnum } from "../../generated/definitions/backend/PaymentProblemJson";
+import {
+  Detail_v2Enum,
+  DetailEnum
+} from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { fiscalCode } from "../global";
@@ -17,11 +20,17 @@ import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
+
 export const paymentRouter = Router();
 
-const responseWithError = (detail: DetailEnum, res: Response) =>
+const responseWithError = (
+  detail: DetailEnum,
+  detailV2: Detail_v2Enum,
+  res: Response
+) =>
   res.status(500).json({
-    detail
+    detail,
+    detail_v2: detailV2
   });
 
 // tslint:disable-next-line: no-let

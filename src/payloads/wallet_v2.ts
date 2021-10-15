@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import * as t from "io-ts";
 import sha256 from "sha256";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
 import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
@@ -27,6 +28,7 @@ import {
 import { assetsFolder, shouldShuffle } from "../global";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
+import { isDefined } from "../utils/guards";
 import { CreditCardBrandEnum, getCreditCardLogo } from "../utils/payment";
 
 type CardConfig = {
@@ -151,8 +153,15 @@ export const generateCards = (
   });
 };
 
-const abiList = readFileAsJSON(assetsFolder + "/data/abi.json").data;
-const abiCodes = (abiList ?? []).map((a: any) => a.abi);
+const maybeAbiList = t
+  .readonlyArray(Abi)
+  .decode(readFileAsJSON(assetsFolder + "/data/abi.json").data);
+if (maybeAbiList.isLeft()) {
+  throw Error("invalid abi list");
+}
+const abiCodes = (maybeAbiList.value ?? [])
+  .map((a: Abi) => a.abi)
+  .filter(isDefined);
 // tslint:disable-next-line: no-let
 let millis = new Date().getTime();
 export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
