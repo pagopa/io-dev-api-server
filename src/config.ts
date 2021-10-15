@@ -12,6 +12,7 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
+import chalk from "chalk";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
@@ -59,24 +60,25 @@ const defaultConfig: IoDevServerConfig = {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200
     },
-    paymentsCount: 0,
-    paymentInvalidAfterDueDateWithValidDueDateCount: 0,
-    paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
-    paymentWithValidDueDateCount: 0,
-    paymentWithExpiredDueDateCount: 0,
-    medicalCount: 0,
-    withCTA: false,
-    withEUCovidCert: false,
-    withValidDueDateCount: 0,
-    withInValidDueDateCount: 0,
-    standardMessageCount: 0,
-    allowRandomValues: false
+    paymentsCount: 1,
+    paymentInvalidAfterDueDateWithValidDueDateCount: 1,
+    paymentInvalidAfterDueDateWithExpiredDueDateCount: 1,
+    paymentWithValidDueDateCount: 1,
+    paymentWithExpiredDueDateCount: 1,
+    medicalCount: 1,
+    withCTA: true,
+    withEUCovidCert: true,
+    withValidDueDateCount: 1,
+    withInValidDueDateCount: 1,
+    standardMessageCount: 1,
+    allowRandomValues: true
   },
   wallet: {
     methods: paymentMethods,
-    shuffleAbi: false,
+    shuffleAbi: true,
     verificaError: undefined,
     attivaError: undefined,
+    // it has no effect (pr welcome)
     allowRandomValues: true
   },
   services: {
@@ -86,9 +88,10 @@ const defaultConfig: IoDevServerConfig = {
       postServicesPreference: 200,
       getServiceResponseCode: 200
     },
-    national: 0,
-    local: 0,
+    national: 5,
+    local: 5,
     includeSiciliaVola: true,
+    // it has partially effect (pr welcome)
     allowRandomValues: true
   }
 };
@@ -98,7 +101,14 @@ const defaultConfig: IoDevServerConfig = {
  */
 const customConfigFile = "config.json";
 const customConfig =
-  readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? {};
+  readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? undefined;
+if (customConfig !== undefined) {
+  console.log(
+    chalk.bgGreenBright(
+      `successfully loaded custom config file: ${customConfigFile}`
+    )
+  );
+}
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
   defaultConfig,
   customConfig
