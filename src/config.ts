@@ -59,18 +59,18 @@ const defaultConfig: IoDevServerConfig = {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200
     },
-    paymentsCount: 1,
-    paymentInvalidAfterDueDateWithValidDueDateCount: 1,
-    paymentInvalidAfterDueDateWithExpiredDueDateCount: 1,
-    paymentWithValidDueDateCount: 1,
-    paymentWithExpiredDueDateCount: 1,
-    medicalCount: 1,
-    withCTA: true,
-    withEUCovidCert: true,
-    withValidDueDateCount: 1,
-    withInValidDueDateCount: 1,
-    standardMessageCount: 1,
-    allowRandomValues: true
+    paymentsCount: 0,
+    paymentInvalidAfterDueDateWithValidDueDateCount: 0,
+    paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
+    paymentWithValidDueDateCount: 0,
+    paymentWithExpiredDueDateCount: 0,
+    medicalCount: 0,
+    withCTA: false,
+    withEUCovidCert: false,
+    withValidDueDateCount: 0,
+    withInValidDueDateCount: 0,
+    standardMessageCount: 0,
+    allowRandomValues: false
   },
   wallet: {
     methods: paymentMethods,
@@ -86,8 +86,8 @@ const defaultConfig: IoDevServerConfig = {
       postServicesPreference: 200,
       getServiceResponseCode: 200
     },
-    national: 5,
-    local: 5,
+    national: 0,
+    local: 0,
     includeSiciliaVola: true,
     allowRandomValues: true
   }
