@@ -30,16 +30,16 @@ const defaultProfileAttrs: ProfileAttrs = {
 };
 
 const paymentMethods: WalletMethodConfig = {
-  walletBancomatCount: 1,
-  walletCreditCardCount: 2,
+  walletBancomatCount: 0,
+  walletCreditCardCount: 1,
   walletCreditCardCoBadgeCount: 0,
   privativeCount: 0,
   satispayCount: 0,
   bPayCount: 0,
   citizenSatispay: true,
-  citizenBancomatCount: 3,
-  citizenBPayCount: 3,
-  citizenCreditCardCoBadgeCount: 3,
+  citizenBancomatCount: 1,
+  citizenBPayCount: 1,
+  citizenCreditCardCoBadgeCount: 1,
   citizenPrivative: true
 };
 
@@ -64,17 +64,18 @@ const defaultConfig: IoDevServerConfig = {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200
     },
-    paymentsCount: 1,
-    paymentInvalidAfterDueDateWithValidDueDateCount: 1,
-    paymentInvalidAfterDueDateWithExpiredDueDateCount: 1,
-    paymentWithValidDueDateCount: 1,
-    paymentWithExpiredDueDateCount: 1,
-    medicalCount: 1,
-    withCTA: true,
-    withEUCovidCert: true,
-    withValidDueDateCount: 1,
-    withInValidDueDateCount: 1,
+    paymentsCount: 0,
+    paymentInvalidAfterDueDateWithValidDueDateCount: 0,
+    paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
+    paymentWithValidDueDateCount: 0,
+    paymentWithExpiredDueDateCount: 0,
+    medicalCount: 0,
+    withCTA: false,
+    withEUCovidCert: false,
+    withValidDueDateCount: 0,
+    withInValidDueDateCount: 0,
     standardMessageCount: 1,
+    // it has no effect (pr welcome)
     allowRandomValues: true
   },
   wallet: {
