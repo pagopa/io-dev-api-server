@@ -94,7 +94,7 @@
     "@types/jest": "^24.0.25",
     "@types/morgan": "^1.9.3",
     "@types/node": "^12.12.18",
-    "@types/prettier": "^1.19.0",
+    "@types/prettier": "^1.19.1",
     "@types/sha256": "^0.2.0",
     "@types/supertest": "^2.0.8",
     "@types/swagger-parser": "^7.0.1",
