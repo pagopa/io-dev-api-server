@@ -8,6 +8,7 @@ import {
   WalletV2
 } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
+import { ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
 import {
   abiData,
@@ -19,39 +20,12 @@ import {
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
 } from "../../payloads/wallet_v2";
+import { WalletMethodConfig } from "../../types/config";
 import { appendWalletV2Prefix } from "../../utils/wallet";
-
-type WalletV2Config = {
-  walletBancomat: number;
-  walletCreditCard: number;
-  walletCreditCardCoBadge: number;
-  privative: number;
-  satispay: number;
-  bPay: number;
-  citizenBancomat: number;
-  citizenBPay: number;
-  citizenCreditCardCoBadge: number;
-  citizenSatispay: boolean;
-  citizenPrivative: boolean;
-};
 
 export const wallet2Router = Router();
 export const abiResponse: AbiListResponse = {
   data: abiData
-};
-
-export const defaultWalletV2Config: WalletV2Config = {
-  walletBancomat: 1,
-  walletCreditCard: 1,
-  walletCreditCardCoBadge: 1,
-  privative: 2,
-  satispay: 1,
-  bPay: 1,
-  citizenSatispay: true,
-  citizenBancomat: 3,
-  citizenBPay: 3,
-  citizenCreditCardCoBadge: 3,
-  citizenPrivative: true
 };
 
 // tslint:disable-next-line: no-let
@@ -110,9 +84,10 @@ let walletSatispay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
-export let walletV2Config: WalletV2Config = defaultWalletV2Config;
+export let walletV2Config: WalletMethodConfig =
+  ioDevServerConfig.wallet.methods;
 
-export const updateWalletV2Config = (config: WalletV2Config) => {
+export const updateWalletV2Config = (config: WalletMethodConfig) => {
   walletV2Config = config;
 };
 
@@ -120,7 +95,7 @@ export const updateWalletV2Config = (config: WalletV2Config) => {
 const citizenBancomat = () =>
   generateCards(
     abiResponse.data ?? [],
-    walletV2Config.citizenBancomat,
+    walletV2Config.citizenBancomatCount,
     WalletTypeEnum.Bancomat
   );
 
@@ -147,14 +122,14 @@ export const generateWalletV2Data = () => {
   bPayResponse = {
     data: generateBancomatPay(
       abiResponse.data ?? [],
-      walletV2Config.citizenBPay
+      walletV2Config.citizenBPayCount
     )
   };
 
   // add bancomat
   walletBancomat = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.walletBancomat,
+    walletV2Config.walletBancomatCount,
     WalletTypeEnum.Bancomat
   ).map(c =>
     generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false, ["FA", "BPD"])
@@ -162,13 +137,13 @@ export const generateWalletV2Data = () => {
   // add credit cards
   walletCreditCards = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.walletCreditCard,
+    walletV2Config.walletCreditCardCount,
     WalletTypeEnum.Card
   ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, true));
   // add credit cards co-badge
   walletCreditCardsCoBadges = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.walletCreditCardCoBadge,
+    walletV2Config.walletCreditCardCoBadgeCount,
     WalletTypeEnum.Card
   ).map(c =>
     generateWalletV2FromCard(c, WalletTypeEnum.Card, false, ["FA", "BPD"])
@@ -176,7 +151,7 @@ export const generateWalletV2Data = () => {
   // cobadge owned by the citizen
   citizenCreditCardCoBadge = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.citizenCreditCardCoBadge,
+    walletV2Config.citizenCreditCardCoBadgeCount,
     WalletTypeEnum.Card
   ).map(c =>
     generateWalletV2FromCard(c, WalletTypeEnum.Card, false, ["FA", "BPD"])
@@ -184,7 +159,7 @@ export const generateWalletV2Data = () => {
   // add privative cards
   privativeCards = generateCards(
     abiResponse.data ?? [],
-    walletV2Config.privative,
+    walletV2Config.privativeCount,
     WalletTypeEnum.Card
   ).map((c, idx) =>
     generatePrivativeFromWalletV2(
@@ -214,7 +189,7 @@ export const generateWalletV2Data = () => {
     ];
   }
   // add satispay
-  walletSatispay = generateSatispayInfo(walletV2Config.satispay).map(c =>
+  walletSatispay = generateSatispayInfo(walletV2Config.satispayCount).map(c =>
     generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.Satispay, [
       "FA",
       "BPD"
@@ -223,7 +198,7 @@ export const generateWalletV2Data = () => {
   // add bancomatPay
   walletBancomatPay = generateBancomatPay(
     abiResponse.data ?? [],
-    walletV2Config.bPay
+    walletV2Config.bPayCount
   ).map(c =>
     generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay, [
       "FA",

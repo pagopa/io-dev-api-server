@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
-import { staticContentRootPath } from "../../global";
+import { staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 import { services, visibleServices } from "../service";
@@ -11,6 +11,7 @@ it("services should return a valid services list", async done => {
   const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
+
   expect(list.isRight()).toBeTruthy();
   if (list.isRight()) {
     expect(list.value).toEqual(visibleServices.payload);

@@ -1,3 +1,4 @@
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
@@ -20,7 +21,7 @@ let messageIdIndex = 0;
  * @param timeToLive
  */
 export const createMessage = (
-  fiscalCode: string,
+  fiscalCode: FiscalCode,
   senderServiceId: string,
   timeToLive: number = 3600
 ): CreatedMessageWithoutContent => {

@@ -83,15 +83,18 @@ export const withSiciliaVolaService = (
   });
 };
 
-export const getServices = (count: number): readonly ServicePublic[] => {
+export const getServices = (
+  national: number,
+  local: number
+): readonly ServicePublic[] => {
   const aggregation = 3;
   // services belong to the same organization for blocks of `aggregation` size
   // tslint:disable-next-line: no-let
   let organizationCount = 0;
   // tslint:disable-next-line: no-let
   let serviceIndex = 0;
-  const createService = (scope: ServiceScopeEnum, serviceCount: number) =>
-    range(0, serviceCount - 1).map(_ => {
+  const createService = (scope: ServiceScopeEnum, count: number) =>
+    range(0, count - 1).map(_ => {
       organizationCount =
         serviceIndex !== 0 && serviceIndex % aggregation === 0
           ? organizationCount + 1
@@ -113,8 +116,8 @@ export const getServices = (count: number): readonly ServicePublic[] => {
       };
     });
   return [
-    ...createService(ServiceScopeEnum.LOCAL, count / 2),
-    ...createService(ServiceScopeEnum.NATIONAL, count / 2)
+    ...createService(ServiceScopeEnum.LOCAL, local),
+    ...createService(ServiceScopeEnum.NATIONAL, national)
   ];
 };
 

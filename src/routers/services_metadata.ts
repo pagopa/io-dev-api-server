@@ -5,7 +5,7 @@ import { Router } from "express";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
-import { assetsFolder, staticContentRootPath } from "../global";
+import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";

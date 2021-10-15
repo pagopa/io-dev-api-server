@@ -5,6 +5,7 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
 import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
@@ -41,12 +42,12 @@ import {
   walletV2Config
 } from "./walletsV2";
 export const walletCount =
-  walletV2Config.satispay +
-  walletV2Config.privative +
-  walletV2Config.walletBancomat +
-  walletV2Config.walletCreditCard +
-  walletV2Config.walletCreditCardCoBadge +
-  walletV2Config.bPay;
+  walletV2Config.satispayCount +
+  walletV2Config.privativeCount +
+  walletV2Config.walletBancomatCount +
+  walletV2Config.walletCreditCardCount +
+  walletV2Config.walletCreditCardCoBadgeCount +
+  walletV2Config.bPayCount;
 export const walletRouter = Router();
 // wallets and transactions
 export const wallets = getWallets(walletCount);
@@ -54,7 +55,6 @@ export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export const transactions: ReadonlyArray<Transaction> = getTransactions(
   transactionsTotal,
-  true,
   true,
   wallets.data
 );
@@ -333,6 +333,15 @@ addHandler(
     // wallet not found
     if (wallet === undefined) {
       res.sendStatus(404);
+      return;
+    }
+    // wallet has not pagoPa flag
+    if (
+      !(wallet.enableableFunctions ?? []).some(
+        ef => ef === EnableableFunctionsEnum.pagoPA
+      )
+    ) {
+      res.sendStatus(400);
       return;
     }
     const updatedWallet: WalletV2 = {

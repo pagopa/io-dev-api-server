@@ -3,7 +3,7 @@ import { Router } from "express";
 import { fromNullable } from "fp-ts/lib/Option";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
-import { assetsFolder } from "../../../../global";
+import { assetsFolder } from "../../../../config";
 import { addHandler } from "../../../../payloads/response";
 import { PatchedBpdWinningTransactions } from "../../../../types/PatchedBpdWinningTransactions";
 import { listDir, readFileAsJSON } from "../../../../utils/file";

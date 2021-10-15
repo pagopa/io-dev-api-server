@@ -4,7 +4,7 @@ import { InitializedProfile } from "../../../generated/definitions/backend/Initi
 import { Profile } from "../../../generated/definitions/backend/Profile";
 import { UserMetadata } from "../../../generated/definitions/backend/UserMetadata";
 import { Municipality } from "../../../generated/definitions/content/Municipality";
-import { fiscalCode } from "../../global";
+import { ioDevServerConfig } from "../../config";
 import { basePath } from "../../payloads/response";
 import { mockUserMetadata } from "../../payloads/userMetadata";
 import app from "../../server";
@@ -17,7 +17,9 @@ it("profile should return a valid profile", async done => {
   const profile = InitializedProfile.decode(response.body);
   expect(profile.isRight()).toBeTruthy();
   if (profile.isRight()) {
-    expect(profile.value.fiscal_code).toBe(fiscalCode);
+    expect(profile.value.fiscal_code).toBe(
+      ioDevServerConfig.profile.attrs.fiscal_code
+    );
   }
   done();
 });

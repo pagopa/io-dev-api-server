@@ -25,7 +25,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/walletv2/WalletV2";
-import { assetsFolder, shouldShuffle } from "../global";
+import { assetsFolder, ioDevServerConfig } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";
@@ -128,7 +128,9 @@ export const generateCards = (
   count: number = 10,
   cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
 ): ReadonlyArray<CardInfo> => {
-  const listAbi = shouldShuffle ? faker.helpers.shuffle([...abis]) : abis;
+  const listAbi = ioDevServerConfig.wallet.shuffleAbi
+    ? faker.helpers.shuffle([...abis])
+    : abis;
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
       defaultCardConfig

@@ -5,7 +5,7 @@ import { readableReport } from "italia-ts-commons/lib/reporters";
 import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { TrxCountByDayResourceArray } from "../../../../../generated/definitions/bpd/winning_transactions/v2/TrxCountByDayResourceArray";
 import { WinningTransactionPageResource } from "../../../../../generated/definitions/bpd/winning_transactions/v2/WinningTransactionPageResource";
-import { assetsFolder } from "../../../../global";
+import { assetsFolder } from "../../../../config";
 import { addHandler } from "../../../../payloads/response";
 import { listDir, readFileAsJSON } from "../../../../utils/file";
 import { bpdAward } from "../award";
