@@ -43,6 +43,10 @@ const paymentMethods: WalletMethodConfig = {
   citizenPrivative: true
 };
 
+/**
+ * default config to setup dev-server
+ * warning: you should not edit this file (neither commit). Instead you should add or edit the json config file (see 'config' folder)
+ */
 const defaultConfig: IoDevServerConfig = {
   global: {
     delay: 0,
