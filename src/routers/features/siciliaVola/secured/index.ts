@@ -1,4 +1,5 @@
 import { Router } from "express";
+import fs from "fs";
 import * as t from "io-ts";
 import { AeroportiAmmessiInputBean } from "../../../../../generated/definitions/siciliaVola/AeroportiAmmessiInputBean";
 import { VoucherBeneficiarioInputBean } from "../../../../../generated/definitions/siciliaVola/VoucherBeneficiarioInputBean";
@@ -127,5 +128,21 @@ addHandler(
     }
     res.json({});
     return;
+  }
+);
+
+/**
+ * Get the voucher in pdf (base64) format
+ */
+addHandler(
+  securedSvRouter,
+  "get",
+  addPrefix("/beneficiario/stampaVoucher"),
+  (_, res) => {
+    const voucherPdf = fs
+      .readFileSync("assets/siciliaVola/bonus_sicilia.pdf")
+      .toString("base64");
+
+    res.send({ data: voucherPdf });
   }
 );
