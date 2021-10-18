@@ -137,9 +137,16 @@ addHandler(
  */
 addHandler(
   securedSvRouter,
-  "get",
+  "post",
   addPrefix("/beneficiario/stampaVoucher"),
-  (_, res) => {
+  (req, res) => {
+    const { codiceVoucher } = req.body;
+    const maybeVoucherId = t.Integer.decode(codiceVoucher);
+    if (maybeVoucherId.isLeft()) {
+      // validate the body value
+      res.sendStatus(500);
+      return;
+    }
     const voucherPdf = fs
       .readFileSync("assets/siciliaVola/bonus_sicilia.pdf")
       .toString("base64");
