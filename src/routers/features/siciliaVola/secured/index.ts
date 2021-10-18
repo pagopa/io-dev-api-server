@@ -128,7 +128,8 @@ addHandler(
     }
     res.json({});
     return;
-  }
+  },
+  2000
 );
 
 /**

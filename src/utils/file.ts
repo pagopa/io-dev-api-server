@@ -7,7 +7,9 @@ export const sendFile = (filePath: string, res: Response) => {
 };
 
 export const readFileAsJSON = (fileName: string): any =>
-  JSON.parse(fs.readFileSync(fileName).toString());
+  fs.existsSync(fileName)
+    ? JSON.parse(fs.readFileSync(fileName).toString())
+    : null;
 
 export const listDir = (filePath: string): ReadonlyArray<string> => {
   try {

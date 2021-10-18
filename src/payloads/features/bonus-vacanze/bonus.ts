@@ -1,10 +1,9 @@
 import { randomBytes } from "crypto";
 import * as fs from "fs";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { BonusActivationWithQrCode } from "../../../../generated/definitions/bonus_vacanze/BonusActivationWithQrCode";
 import { BonusCode } from "../../../../generated/definitions/bonus_vacanze/BonusCode";
-import { fiscalCode } from "../../../global";
+import { ioDevServerConfig } from "../../../config";
 import { dsuData } from "./eligibility";
 
 const qrCodeBonusVacanzeSvg =
@@ -35,7 +34,7 @@ export function genRandomBonusCode(
 
 export const activeBonus: BonusActivationWithQrCode = {
   id: genRandomBonusCode(),
-  applicant_fiscal_code: fiscalCode as FiscalCode,
+  applicant_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
   qr_code: [
     {
       mime_type: "image/png",
@@ -54,7 +53,7 @@ export const activeBonus: BonusActivationWithQrCode = {
 
 export const redeemedBonus: BonusActivationWithQrCode = {
   id: "ACEFGHLMN346" as BonusCode,
-  applicant_fiscal_code: fiscalCode as FiscalCode,
+  applicant_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
   qr_code: [
     {
       mime_type: "image/png",

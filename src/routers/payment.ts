@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import faker from "faker/locale/it";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
+import { fromNullable } from "fp-ts/lib/Option";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -11,7 +11,7 @@ import {
 } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
-import { fiscalCode } from "../global";
+import { ioDevServerConfig } from "../config";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
 import { interfaces, serverPort } from "../utils/server";
@@ -23,13 +23,10 @@ import { walletRouter } from "./wallet";
 
 export const paymentRouter = Router();
 
-const responseWithError = (
-  detail: DetailEnum,
-  detailV2: Detail_v2Enum,
-  res: Response
-) =>
+const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
   res.status(500).json({
-    detail,
+    // deprecated, it is just a placeholder
+    detail: DetailEnum.PAYMENT_UNKNOWN,
     detail_v2: detailV2
   });
 
@@ -54,10 +51,15 @@ addHandler(
   // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
   (_, res) => {
-    paymentRequest = getPaymentRequestsGetResponse(
-      faker.random.arrayElement(services)
+    fromNullable(ioDevServerConfig.wallet.verificaError).foldL(
+      () => {
+        paymentRequest = getPaymentRequestsGetResponse(
+          faker.random.arrayElement(services)
+        );
+        res.json(paymentRequest);
+      },
+      error => responseWithError(error, res)
     );
-    res.json(paymentRequest);
   }
 );
 
@@ -91,7 +93,6 @@ addHandler(
 );
 
 /**
- * the user wants to lock this payment (ATTIVA)
  * the app stats a polling using codiceContestoPagamento as input
  * when the payment is finally locked this API returns the idPagamento
  * STEP 3
@@ -103,7 +104,7 @@ addHandler(
   (_, res) => {
     idPagamento = faker.random.alphaNumeric(30);
     const response: PaymentActivationsGetResponse = {
-      idPagamento: faker.random.alphaNumeric(30)
+      idPagamento
     };
     res.json(response);
   }
@@ -138,7 +139,7 @@ addHandler(
           "https://solutionpa-coll.intesasanpaolo.com/IntermediarioPAPortal/noauth/contribuente/pagamentoEsito?idSession=ad095398-2863-4951-b2b6-400ff8d8e95b&idDominio=80005570561",
         isCancelled: false,
         bolloDigitale: false,
-        fiscalCode: fiscalCode as FiscalCode,
+        fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
         origin: "IO",
         iban: paymentRequest.ibanAccredito
       }
@@ -179,5 +180,24 @@ addHandler(
   "/wallet/v3/webview/transactions/pay",
   handlePaymentPostAndRedirect
 );
+
+/**
+ * delete payment
+ * user wants to stop the current payment
+ */
+addHandler(
+  walletRouter,
+  "delete",
+  appendWalletV1Prefix("/payments/:idPagamento/actions/delete"),
+  (req, res) => {
+    if (idPagamento !== req.params.idPagamento) {
+      res.sendStatus(404);
+      return;
+    }
+    idPagamento = undefined;
+    res.sendStatus(200);
+  }
+);
+
 // only for stats displaying purposes
 addNewRoute("post", "/wallet/v3/webview/transactions/pay");

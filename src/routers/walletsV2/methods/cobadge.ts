@@ -12,7 +12,7 @@ import {
 } from "../../../../generated/definitions/pagopa/walletv2/PaymentInstrument";
 import { RestCobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/RestCobadgeResponse";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { assetsFolder } from "../../../global";
+import { assetsFolder } from "../../../config";
 import { addHandler } from "../../../payloads/response";
 import { readFileAsJSON } from "../../../utils/file";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
@@ -37,7 +37,7 @@ const fromCardInfoToCardBadge = (
     parseInt(card.expireYear!, 10),
     parseInt(card.expireMonth!, 10) - 1,
     1
-  ).toISOString(),
+  ),
   hpan: card.hashPan,
   panCode: "123",
   panPartialNumber: card.blurredNumber,

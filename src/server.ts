@@ -1,7 +1,8 @@
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import bodyParser from "body-parser";
 import express, { Application } from "express";
 import morgan from "morgan";
-import { globalDelay } from "./global";
+import { ioDevServerConfig } from "./config";
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
 import { bpdRanking } from "./routers/features/bdp/ranking/v1";
@@ -37,7 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // set middlewares
 // if you want to add a delay in your server, use a global delayer (utils/delay_middleware)
-app.use(delayer(globalDelay));
+app.use(delayer(ioDevServerConfig.global.delay as Millisecond));
 // set middleware logger
 app.use(
   morgan(

@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { BackendStatus } from "../../../generated/definitions/content/BackendStatus";
-import { staticContentRootPath } from "../../global";
+import { staticContentRootPath } from "../../config";
 import app from "../../server";
 
 const request = supertest(app);
