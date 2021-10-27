@@ -327,11 +327,15 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     res.json({ items: [] });
     return;
   }
+
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
+
   res.json({
     items: getItems(slice, params.enrichResultData!),
     prev: orderedList[indexes.startIndex]?.id,
-    next: slice[slice.length - 1]?.id
+    next: orderedList[indexes.endIndex]
+      ? slice[slice.length - 1]?.id
+      : undefined
   });
 });
 
