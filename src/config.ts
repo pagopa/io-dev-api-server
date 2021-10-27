@@ -74,7 +74,8 @@ const defaultConfig: IoDevServerConfig = {
     withEUCovidCert: false,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
-    standardMessageCount: 1,
+    // sending 2 messages at minimum to allow for basic pagination
+    standardMessageCount: 2,
     // it has no effect (pr welcome)
     allowRandomValues: true
   },

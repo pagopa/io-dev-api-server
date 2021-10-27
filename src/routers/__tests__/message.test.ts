@@ -8,75 +8,90 @@ import app from "../../server";
 import { messagesWithContent } from "../message";
 const request = supertest(app);
 
-it("messages should return a valid messages list", async done => {
-  const response = await request.get(`${basePath}/messages`);
-  expect(response.status).toBe(200);
-  const list = PaginatedPublicMessagesCollection.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  done();
-});
-
-it("messages should return a number of items according with the specified pageSize", async done => {
-  const responseList = await request.get(`${basePath}/messages`);
-  expect(responseList.status).toBe(200);
-  const list = PaginatedPublicMessagesCollection.decode(responseList.body);
-  expect(list.isRight()).toBeTruthy();
-  const pageSize = faker.datatype.number({
-    min: 0,
-    max: (list.value as PaginatedPublicMessagesCollection).items.length
+describe("when a valid request is sent", () => {
+  it("a 200 response with the array of items is returned", async () => {
+    const response = await request.get(`${basePath}/messages`);
+    expect(response.status).toBe(200);
+    const list = PaginatedPublicMessagesCollection.decode(response.body);
+    expect(list.isRight()).toBeTruthy();
+    expect(
+      (list.value as PaginatedPublicMessagesCollection).items
+    ).toBeDefined();
+    expect(
+      typeof (list.value as PaginatedPublicMessagesCollection).items.length
+    ).toBeDefined();
   });
-  const response = await request.get(
-    `${basePath}/messages?page_size=${pageSize}`
-  );
-  expect(response.status).toBe(200);
-  const messages = PaginatedPublicMessagesCollection.decode(response.body);
-  expect(messages.isRight()).toBeTruthy();
-  if (messages.isRight()) {
-    expect(messages.value.items.length).toBe(pageSize);
-    if (messages.value.items.length > 0) {
-      // next, if defined, should contain the id of the last element
-      expect(messages.value.next).toBe(
-        messages.value.items[messages.value.items.length - 1].id
-      );
-      // prev, if defined, should contain the id of the first element
-      expect(messages.value.prev).toBe(messages.value.items[0].id);
-    }
-  }
-
-  done();
 });
 
-it("messages should return those items that are older than specified maximum_id", async done => {
-  const response = await request.get(`${basePath}/messages`);
-  expect(response.status).toBe(200);
-  const list = PaginatedPublicMessagesCollection.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight()) {
-    for (const m of list.value.items) {
-      // ask for those messages older than this
-      const responseOlder = await request.get(
-        `${basePath}/messages?maximum_id=${m.id}`
-      );
-      const listOlder = PaginatedPublicMessagesCollection.decode(
-        responseOlder.body
-      );
-
-      if (listOlder.isRight()) {
-        (listOlder.value.items ?? []).forEach(mo => {
-          expect(mo.created_at.getTime()).toBeLessThan(m.created_at.getTime());
-        });
-        if (listOlder.value.items.length > 0) {
-          // next, if defined, should contain the id of the last element
-          expect(listOlder.value.next).toBe(
-            listOlder.value.items[listOlder.value.items.length - 1].id
-          );
-          // prev, if defined, should contain the id of the first element
-          expect(listOlder.value.prev).toBe(listOlder.value.items[0].id);
-        }
-      }
-    }
+// Dummy helper to improve readability in the individual test
+function assertResponseIsRight(body: any): PaginatedPublicMessagesCollection {
+  const { items, next, prev } = PaginatedPublicMessagesCollection.decode(body)
+    .value as any;
+  if (Array.isArray(items)) {
+    return { items, next, prev };
   }
-  done();
+  throw new TypeError("invalid body found for messages");
+}
+
+describe("when the page size is lower than the total number of available items", () => {
+  const pageSize = 1;
+  it("should return exactly the page size", async () => {
+    const response = await request.get(
+      `${basePath}/messages?page_size=${pageSize}`
+    );
+    const { items } = assertResponseIsRight(response.body);
+    expect(items.length).toBe(pageSize);
+  });
+
+  it("the `next` parameter should be defined ", async () => {
+    const response = await request.get(
+      `${basePath}/messages?page_size=${pageSize}`
+    );
+    const { next } = assertResponseIsRight(response.body);
+    expect(next).toBeDefined();
+  });
+
+  it("the `prev` parameter should be equal to the first message's ID ", async () => {
+    const response = await request.get(
+      `${basePath}/messages?page_size=${pageSize}`
+    );
+    const { prev, items } = assertResponseIsRight(response.body);
+    expect(prev).toMatch(items[0].id);
+  });
+});
+
+describe("when the page size is greater than the total number of available items", () => {
+  const pageSize = 100;
+  it("should return fewer items", async () => {
+    const response = await request.get(
+      `${basePath}/messages?page_size=${pageSize}`
+    );
+    const { items } = assertResponseIsRight(response.body);
+    expect(items.length).toBeLessThan(pageSize);
+  });
+
+  it("the `next` parameter should not be defined ", async () => {
+    const response = await request.get(
+      `${basePath}/messages?page_size=${pageSize}`
+    );
+    const { next } = assertResponseIsRight(response.body);
+    expect(next).not.toBeDefined();
+  });
+});
+
+describe("when `maximum_id` is used", () => {
+  it("all the items in the second page must older than the items in the first one", async () => {
+    const firstResponse = await request.get(`${basePath}/messages?page_size=1`);
+    const { items, next } = assertResponseIsRight(firstResponse.body);
+    const secondResponse = await request.get(
+      `${basePath}/messages?maximum_id=${next}`
+    );
+
+    const { items: olderItems } = assertResponseIsRight(secondResponse.body);
+    expect(
+      olderItems.some(({ created_at }) => created_at > items[0].created_at)
+    ).toBe(false);
+  });
 });
 
 it("messages should return those items that are younger than specified minimum_id", async done => {
