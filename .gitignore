@@ -11,6 +11,9 @@ npm-debug.log
 # Exclude Jest coverage reports.
 /coverage
 
+# Exclude config
+/config
+
 # Exclude typescript generated javascript files.
 *.js
 *.js.map

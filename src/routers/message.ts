@@ -27,6 +27,11 @@ import {
 } from "../utils/variables";
 import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
+import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
+import * as t from "io-ts";
+import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
+import { Timestamp } from "../../generated/definitions/backend/Timestamp";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -234,10 +239,10 @@ const createMessages = () => {
 createMessages();
 
 /* helper function to build messages response */
-const getItems = (
+const getPublicMessages = (
   items: ReadonlyArray<CreatedMessageWithContent>,
   enrichData: boolean
-) => {
+): ReadonlyArray<PublicMessage> => {
   return items.map(m => {
     const senderService = services.find(
       s => s.service_id === m.sender_service_id
@@ -331,7 +336,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
 
   res.json({
-    items: getItems(slice, params.enrichResultData!),
+    items: getPublicMessages(slice, params.enrichResultData!),
     prev: orderedList[indexes.startIndex]?.id,
     next: orderedList[indexes.endIndex]
       ? slice[slice.length - 1]?.id
