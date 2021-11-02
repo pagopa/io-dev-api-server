@@ -6,6 +6,7 @@ import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import {
@@ -27,11 +28,6 @@ import {
 } from "../utils/variables";
 import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
-import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
-import * as t from "io-ts";
-import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
-import { Timestamp } from "../../generated/definitions/backend/Timestamp";
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
