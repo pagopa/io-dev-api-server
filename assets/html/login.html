@@ -73,14 +73,6 @@
             const select = `<select id="spidSelect" style="width: 400px;height: 40px;font-size: 20px">${options}</select>`;
             const container = document.getElementById("select_container");
             container.innerHTML = `<div>${select}</div>`;
-
-          if (window.__ENV_E2E_LOGIN_HAPPY_PATH__) {
-            setTimeout(() => {
-              // we want to simulate user's interaction as much as possible
-              const link = document.getElementById("login-link")
-              link.click()
-            }, 250)
-          }
         }
 
     </script>
