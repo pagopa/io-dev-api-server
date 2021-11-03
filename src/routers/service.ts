@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { match } from "ts-pattern";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ioDevServerConfig } from "../config";
@@ -7,6 +8,7 @@ import {
   getServices,
   getServicesPreferences,
   getServicesTuple,
+  withCgnService,
   withSiciliaVolaService
 } from "../payloads/service";
 import { sendFile } from "../utils/file";
@@ -15,13 +17,11 @@ import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
 const configResponse = ioDevServerConfig.services.response;
-const nationalLocalServices = getServices(
+export const services = getServices(
   ioDevServerConfig.services.national,
   ioDevServerConfig.services.local
 );
-export const services = ioDevServerConfig.services.includeSiciliaVola
-  ? withSiciliaVolaService(nationalLocalServices)
-  : nationalLocalServices;
+
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 

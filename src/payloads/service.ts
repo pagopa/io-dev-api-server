@@ -8,14 +8,18 @@ import { DepartmentName } from "../../generated/definitions/backend/DepartmentNa
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServiceCategory } from "../../generated/definitions/backend/ServiceCategory";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
+import { ServiceMetadata } from "../../generated/definitions/backend/ServiceMetadata";
 import { ServiceName } from "../../generated/definitions/backend/ServiceName";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import {
-  ServicePublic,
-  ServicePublicService_metadata
-} from "../../generated/definitions/backend/ServicePublic";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
+import { SpecialServiceCategoryEnum } from "../../generated/definitions/backend/SpecialServiceCategory";
+import { SpecialServiceMetadata } from "../../generated/definitions/backend/SpecialServiceMetadata";
+import { StandardServiceCategoryEnum } from "../../generated/definitions/backend/StandardServiceCategory";
+import { StandardServiceMetadata } from "../../generated/definitions/backend/StandardServiceMetadata";
+import { ioDevServerConfig } from "../config";
 import { validatePayload } from "../utils/validator";
 import {
   frontMatter1CTASiciliaVola,
@@ -39,9 +43,7 @@ export const getService = (serviceId: string): ServicePublic => {
   return validatePayload(ServicePublic, service);
 };
 
-const getServiceMetadata = (
-  scope: ServiceScopeEnum
-): ServicePublicService_metadata => {
+const getServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => {
   return {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope,
@@ -53,7 +55,8 @@ const getServiceMetadata = (
     app_android: faker.internet.url() as NonEmptyString,
     app_ios: faker.internet.url() as NonEmptyString,
     tos_url: faker.internet.url() as NonEmptyString,
-    privacy_url: faker.internet.url() as NonEmptyString
+    privacy_url: faker.internet.url() as NonEmptyString,
+    category: StandardServiceCategoryEnum.STANDARD
   };
 };
 
@@ -69,19 +72,34 @@ const siciliaVolaService: ServicePublic = {
 };
 
 export const withSiciliaVolaService = (
-  services: readonly ServicePublic[]
-): readonly ServicePublic[] => {
-  const organizationsCount = new Set(
-    services.map(s => s.organization_fiscal_code)
-  ).size;
-  return services.concat({
-    ...siciliaVolaService,
-    organization_fiscal_code: `${organizationsCount + 1}`.padStart(
-      11,
-      "0"
-    ) as OrganizationFiscalCode
-  });
+  organizationsCount: number
+): ServicePublic => ({
+  ...siciliaVolaService,
+  organization_fiscal_code: `${organizationsCount}`.padStart(
+    11,
+    "0"
+  ) as OrganizationFiscalCode
+});
+
+export const cgnServiceId = "serviceCgn";
+const cgnService: ServicePublic = {
+  ...getService(cgnServiceId),
+  organization_name: "Carta Giovani Nazionale" as OrganizationName,
+  service_name: "Carta Giovani Nazionale" as ServiceName,
+  service_metadata: {
+    ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
+    category: SpecialServiceCategoryEnum.SPECIAL,
+    custom_special_flow: "cgn" as SpecialServiceMetadata["custom_special_flow"]
+  }
 };
+
+export const withCgnService = (organizationsCount: number): ServicePublic => ({
+  ...cgnService,
+  organization_fiscal_code: `${organizationsCount}`.padStart(
+    11,
+    "0"
+  ) as OrganizationFiscalCode
+});
 
 export const getServices = (
   national: number,
@@ -115,10 +133,24 @@ export const getServices = (
         }
       };
     });
-  return [
+
+  const nationalLocalServices: ReadonlyArray<ServicePublic> = [
     ...createService(ServiceScopeEnum.LOCAL, local),
     ...createService(ServiceScopeEnum.NATIONAL, national)
   ];
+
+  const organizationsCount = new Set(
+    nationalLocalServices.map(s => s.organization_fiscal_code)
+  ).size;
+
+  return nationalLocalServices.concat(
+    ioDevServerConfig.services.includeSiciliaVola
+      ? [withSiciliaVolaService(organizationsCount + 1)]
+      : [],
+    ioDevServerConfig.services.includeCgn
+      ? [withCgnService(organizationsCount + 2)]
+      : []
+  );
 };
 
 export const getServicesTuple = (

@@ -132,7 +132,8 @@ export const IoDevServerConfig = t.interface({
       national: t.number,
       // number of services local
       local: t.number,
-      includeSiciliaVola: t.boolean
+      includeSiciliaVola: t.boolean,
+      includeCgn: t.boolean
     }),
     AllowRandomValue
   ]),
