@@ -1,0 +1,11 @@
+{
+  "data": [{
+    "avgFee": 1.2,
+    "codiceAbi":  "123",
+    "idPsp":  "1",
+    "maxFee":  150,
+    "onboard":  true,
+    "privacyUrl":  "https://io.italia.it/privacy-policy/",
+    "ragioneSociale": "PayPal - psp - test 1"
+  }]
+}
