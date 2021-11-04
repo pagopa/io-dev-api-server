@@ -8,7 +8,7 @@ import { appendWalletV3Prefix } from "../../../utils/wallet";
 
 export const payPalRouter = Router();
 /**
- * return the list of the paypal psp list
+ * return the list of the paypal psp
  */
 addHandler(
   payPalRouter,
