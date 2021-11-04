@@ -6,6 +6,7 @@ import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import {
@@ -234,10 +235,10 @@ const createMessages = () => {
 createMessages();
 
 /* helper function to build messages response */
-const getItems = (
+const getPublicMessages = (
   items: ReadonlyArray<CreatedMessageWithContent>,
   enrichData: boolean
-) => {
+): ReadonlyArray<PublicMessage> => {
   return items.map(m => {
     const senderService = services.find(
       s => s.service_id === m.sender_service_id
@@ -331,7 +332,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
 
   res.json({
-    items: getItems(slice, params.enrichResultData!),
+    items: getPublicMessages(slice, params.enrichResultData!),
     prev: orderedList[indexes.startIndex]?.id,
     next: orderedList[indexes.endIndex]
       ? slice[slice.length - 1]?.id
