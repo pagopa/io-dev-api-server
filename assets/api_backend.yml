@@ -728,7 +728,7 @@ paths:
     x-swagger-router-controller: UserDataProcessingController
     get:
       operationId: getUserDataProcessing
-      summary: Get User's data processing 
+      summary: Get User's data processing
       description: Get the user's request to delete or download his stored data by providing a kind of choice.
       parameters:
         - $ref: "#/parameters/UserDataProcessingChoiceParam"
@@ -895,7 +895,7 @@ definitions:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v21.7.3/openapi/definitions.yaml#/PublicMessagesCollection"
   PaginatedPublicMessagesCollection:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v21.7.3/openapi/definitions.yaml#/PaginatedPublicMessagesCollection"
-  
+
   # Definitions from pagopa-proxy
   PaymentProblemJson:
     $ref: "https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/v0.14.1/api_pagopa.yaml#/definitions/PaymentProblemJson"
@@ -1040,11 +1040,14 @@ definitions:
         type: string
       bpdToken:
         type: string
+      zendeskToken:
+        type: string
     required:
       - spidLevel
       - walletToken
       - myPortalToken
       - bpdToken
+      - zendeskToken
   SessionInfo:
     type: object
     title: Session info of a user
