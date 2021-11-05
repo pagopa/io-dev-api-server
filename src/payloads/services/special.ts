@@ -10,11 +10,11 @@ import { ServiceScopeEnum } from "../../../generated/definitions/backend/Service
 import { SpecialServiceCategoryEnum } from "../../../generated/definitions/backend/SpecialServiceCategory";
 import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
 import { ioDevServerConfig } from "../../config";
+import { getService, getServiceMetadata } from "../../utils/service";
 import {
   frontMatter1CTASiciliaVola,
   frontMatter2CTA2
 } from "../../utils/variables";
-import { getService, getServiceMetadata } from "./index";
 
 export const siciliaVolaServiceId = "serviceSv";
 const siciliaVolaService: ServicePublic = {
@@ -27,9 +27,7 @@ const siciliaVolaService: ServicePublic = {
   }
 };
 
-export const withSiciliaVolaService = (
-  organizationsCount: number
-): ServicePublic => ({
+const withSiciliaVolaService = (organizationsCount: number): ServicePublic => ({
   ...siciliaVolaService,
   organization_fiscal_code: `${organizationsCount}`.padStart(
     11,
@@ -50,7 +48,7 @@ const cgnService: ServicePublic = {
   }
 };
 
-export const withCgnService = (organizationsCount: number): ServicePublic => ({
+const withCgnService = (organizationsCount: number): ServicePublic => ({
   ...cgnService,
   organization_fiscal_code: `${organizationsCount}`.padStart(
     11,
