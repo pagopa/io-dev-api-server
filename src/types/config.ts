@@ -46,6 +46,13 @@ export const WalletMethodConfig = t.interface({
 });
 export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
 
+export const PaymentConfig = t.partial({
+  // integer including decimals - ie: 22.22 = 2222
+  amount: t.number,
+  fee: t.number
+});
+export type PaymentConfig = t.TypeOf<typeof PaymentConfig>;
+
 /* general http response codes */
 const HttpResponseCode = t.union([
   t.literal(200),
@@ -141,7 +148,9 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean,
       methods: WalletMethodConfig,
-      shuffleAbi: t.boolean
+      shuffleAbi: t.boolean,
+      // configure the dummy payment
+      payment: PaymentConfig
     }),
     t.partial({
       // if defined attiva will serve the given error
@@ -149,6 +158,7 @@ export const IoDevServerConfig = t.interface({
       // if verifica attiva will serve the given error
       verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2")
     }),
+
     AllowRandomValue
   ])
 });

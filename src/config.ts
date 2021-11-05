@@ -85,7 +85,8 @@ const defaultConfig: IoDevServerConfig = {
     verificaError: undefined,
     attivaError: undefined,
     // it has no effect (pr welcome)
-    allowRandomValues: true
+    allowRandomValues: true,
+    payment: {}
   },
   services: {
     response: {

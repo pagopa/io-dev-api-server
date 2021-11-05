@@ -14,7 +14,9 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
+import { ioDevServerConfig } from "../config";
 import { validatePayload } from "../utils/validator";
+
 import { validPsp } from "./wallet";
 
 type settings = {
@@ -248,10 +250,13 @@ export const transactionIdResponseSecond = {
 export const getPaymentRequestsGetResponse = (
   senderService: ServicePublic
 ): PaymentRequestsGetResponse => ({
-  importoSingoloVersamento: faker.datatype.number({
-    min: 1,
-    max: 9999
-  }) as PaymentRequestsGetResponse["importoSingoloVersamento"],
+  importoSingoloVersamento:
+    (ioDevServerConfig.wallet.payment
+      .amount as PaymentRequestsGetResponse["importoSingoloVersamento"]) ??
+    (faker.datatype.number({
+      min: 1,
+      max: 9999
+    }) as PaymentRequestsGetResponse["importoSingoloVersamento"]),
   codiceContestoPagamento: faker.random.alphaNumeric(
     32
   ) as PaymentRequestsGetResponse["codiceContestoPagamento"],

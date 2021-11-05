@@ -15,6 +15,7 @@ import {
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";
+import { ioDevServerConfig } from "../config";
 import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
@@ -23,7 +24,9 @@ export const sessionToken: SessionResponse = {
   }
 };
 const getAmount = () =>
+  ioDevServerConfig.wallet.payment.fee ??
   getRandomValue(1000, faker.datatype.number({ min: 1, max: 150 }), "wallet");
+
 export const validPsp: Psp = {
   id: 40000,
   idPsp: "idPsp1",
