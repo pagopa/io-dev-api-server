@@ -30,9 +30,11 @@ const siciliaVolaService: ServicePublic = {
 const getOrganizationFiscalCode = (organizationsCount: number) =>
   `${organizationsCount}`.padStart(11, "0") as OrganizationFiscalCode;
 
-const withSiciliaVolaService = (organizationsCount: number): ServicePublic => ({
+const withSiciliaVolaService = (
+  organizationFiscalCode: OrganizationFiscalCode
+): ServicePublic => ({
   ...siciliaVolaService,
-  organization_fiscal_code: getOrganizationFiscalCode(organizationsCount)
+  organization_fiscal_code: organizationFiscalCode
 });
 
 const cgnServiceId = "serviceCgn";
@@ -48,16 +50,18 @@ const cgnService: ServicePublic = {
   }
 };
 
-const withCgnService = (organizationsCount: number): ServicePublic => ({
+const withCgnService = (
+  organizationFiscalCode: OrganizationFiscalCode
+): ServicePublic => ({
   ...cgnService,
-  organization_fiscal_code: getOrganizationFiscalCode(organizationsCount)
+  organization_fiscal_code: organizationFiscalCode
 });
 
 // list of tuple where the first element is a flag indicating if the relative service should be included
 // the second element is the service factory
 const specialServicesFactory: ReadonlyArray<readonly [
   boolean,
-  (orgCount: number) => ServicePublic
+  (organizationFiscalCode: OrganizationFiscalCode) => ServicePublic
 ]> = [
   [ioDevServerConfig.services.includeSiciliaVola, withSiciliaVolaService],
   [ioDevServerConfig.services.includeCgn, withCgnService]
@@ -68,10 +72,16 @@ export const withSpecialServices = (
   services: ReadonlyArray<ServicePublic>
 ): ReadonlyArray<ServicePublic> =>
   specialServicesFactory.reduce((acc, curr) => {
-    const organizationsCount = new Set(acc.map(s => s.organization_fiscal_code))
-      .size;
     if (curr[0]) {
-      return [...acc, curr[1](organizationsCount)];
+      const organizationIds = new Set(acc.map(s => s.organization_fiscal_code));
+      // tslint:disable-next-line: no-let
+      let startId = organizationIds.size;
+      // to avoid organizations fiscal code clash
+      while (organizationIds.has(getOrganizationFiscalCode(startId))) {
+        startId++;
+      }
+      const newOrganizationId = getOrganizationFiscalCode(startId);
+      return [...acc, curr[1](newOrganizationId)];
     }
     return acc;
   }, services);
