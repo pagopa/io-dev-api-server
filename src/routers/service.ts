@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { match } from "ts-pattern";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ioDevServerConfig } from "../config";
@@ -7,10 +6,8 @@ import { addHandler } from "../payloads/response";
 import {
   getServices,
   getServicesPreferences,
-  getServicesTuple,
-  withCgnService,
-  withSiciliaVolaService
-} from "../payloads/service";
+  getServicesTuple
+} from "../payloads/services";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";

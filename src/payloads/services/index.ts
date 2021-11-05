@@ -4,28 +4,27 @@ import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "italia-ts-commons/lib/strings";
-import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
-import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
-import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
-import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
-import { ServiceCategory } from "../../generated/definitions/backend/ServiceCategory";
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
-import { ServiceMetadata } from "../../generated/definitions/backend/ServiceMetadata";
-import { ServiceName } from "../../generated/definitions/backend/ServiceName";
-import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
-import { SpecialServiceCategoryEnum } from "../../generated/definitions/backend/SpecialServiceCategory";
-import { SpecialServiceMetadata } from "../../generated/definitions/backend/SpecialServiceMetadata";
-import { StandardServiceCategoryEnum } from "../../generated/definitions/backend/StandardServiceCategory";
-import { StandardServiceMetadata } from "../../generated/definitions/backend/StandardServiceMetadata";
-import { ioDevServerConfig } from "../config";
-import { validatePayload } from "../utils/validator";
+import { DepartmentName } from "../../../generated/definitions/backend/DepartmentName";
+import { NotificationChannelEnum } from "../../../generated/definitions/backend/NotificationChannel";
+import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
+import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { ServiceId } from "../../../generated/definitions/backend/ServiceId";
+import { ServiceMetadata } from "../../../generated/definitions/backend/ServiceMetadata";
+import { ServiceName } from "../../../generated/definitions/backend/ServiceName";
+import { ServicePreference } from "../../../generated/definitions/backend/ServicePreference";
+import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
+import { SpecialServiceCategoryEnum } from "../../../generated/definitions/backend/SpecialServiceCategory";
+import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
+import { StandardServiceCategoryEnum } from "../../../generated/definitions/backend/StandardServiceCategory";
+import { ioDevServerConfig } from "../../config";
+import { validatePayload } from "../../utils/validator";
 import {
   frontMatter1CTASiciliaVola,
   frontMatter2CTA2
-} from "../utils/variables";
-import { IOResponse } from "./response";
+} from "../../utils/variables";
+import { IOResponse } from "../response";
+import { specialServices } from "./special";
 
 export const getService = (serviceId: string): ServicePublic => {
   const service = {
@@ -43,7 +42,9 @@ export const getService = (serviceId: string): ServicePublic => {
   return validatePayload(ServicePublic, service);
 };
 
-const getServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => {
+export const getServiceMetadata = (
+  scope: ServiceScopeEnum
+): ServiceMetadata => {
   return {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope,
@@ -59,47 +60,6 @@ const getServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => {
     category: StandardServiceCategoryEnum.STANDARD
   };
 };
-
-export const siciliaVolaServiceId = "serviceSv";
-const siciliaVolaService: ServicePublic = {
-  ...getService(siciliaVolaServiceId),
-  organization_name: "Sicilia Vola" as OrganizationName,
-  service_name: "Sicilia Vola" as ServiceName,
-  service_metadata: {
-    ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
-    cta: frontMatter1CTASiciliaVola as NonEmptyString
-  }
-};
-
-export const withSiciliaVolaService = (
-  organizationsCount: number
-): ServicePublic => ({
-  ...siciliaVolaService,
-  organization_fiscal_code: `${organizationsCount}`.padStart(
-    11,
-    "0"
-  ) as OrganizationFiscalCode
-});
-
-export const cgnServiceId = "serviceCgn";
-const cgnService: ServicePublic = {
-  ...getService(cgnServiceId),
-  organization_name: "Carta Giovani Nazionale" as OrganizationName,
-  service_name: "Carta Giovani Nazionale" as ServiceName,
-  service_metadata: {
-    ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
-    category: SpecialServiceCategoryEnum.SPECIAL,
-    custom_special_flow: "cgn" as SpecialServiceMetadata["custom_special_flow"]
-  }
-};
-
-export const withCgnService = (organizationsCount: number): ServicePublic => ({
-  ...cgnService,
-  organization_fiscal_code: `${organizationsCount}`.padStart(
-    11,
-    "0"
-  ) as OrganizationFiscalCode
-});
 
 export const getServices = (
   national: number,
@@ -139,18 +99,13 @@ export const getServices = (
     ...createService(ServiceScopeEnum.NATIONAL, national)
   ];
 
-  const organizationsCount = new Set(
-    nationalLocalServices.map(s => s.organization_fiscal_code)
-  ).size;
-
-  return nationalLocalServices.concat(
-    ioDevServerConfig.services.includeSiciliaVola
-      ? [withSiciliaVolaService(organizationsCount + 1)]
-      : [],
-    ioDevServerConfig.services.includeCgn
-      ? [withCgnService(organizationsCount + 2)]
-      : []
-  );
+  // eventually add the special services based on config flag
+  return specialServices.reduce((acc, curr) => {
+    if (curr[0]) {
+      return [...acc, curr[1](acc.length)];
+    }
+    return acc;
+  }, nationalLocalServices);
 };
 
 export const getServicesTuple = (
