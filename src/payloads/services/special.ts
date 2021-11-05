@@ -16,7 +16,7 @@ import {
   frontMatter2CTA2
 } from "../../utils/variables";
 
-export const siciliaVolaServiceId = "serviceSv";
+const siciliaVolaServiceId = "serviceSv";
 const siciliaVolaService: ServicePublic = {
   ...getService(siciliaVolaServiceId),
   organization_name: "Sicilia Vola" as OrganizationName,
@@ -27,15 +27,15 @@ const siciliaVolaService: ServicePublic = {
   }
 };
 
+const getOrganizationFiscalCode = (organizationsCount: number) =>
+  `${organizationsCount}`.padStart(11, "0") as OrganizationFiscalCode;
+
 const withSiciliaVolaService = (organizationsCount: number): ServicePublic => ({
   ...siciliaVolaService,
-  organization_fiscal_code: `${organizationsCount}`.padStart(
-    11,
-    "0"
-  ) as OrganizationFiscalCode
+  organization_fiscal_code: getOrganizationFiscalCode(organizationsCount)
 });
 
-export const cgnServiceId = "serviceCgn";
+const cgnServiceId = "serviceCgn";
 const cgnService: ServicePublic = {
   ...getService(cgnServiceId),
   organization_name: "Carta Giovani Nazionale" as OrganizationName,
@@ -50,16 +50,28 @@ const cgnService: ServicePublic = {
 
 const withCgnService = (organizationsCount: number): ServicePublic => ({
   ...cgnService,
-  organization_fiscal_code: `${organizationsCount}`.padStart(
-    11,
-    "0"
-  ) as OrganizationFiscalCode
+  organization_fiscal_code: getOrganizationFiscalCode(organizationsCount)
 });
 
-export const specialServices: ReadonlyArray<readonly [
+// list of tuple where the first element is a flag indicating if the relative service should be included
+// the second element is the service factory
+const specialServicesFactory: ReadonlyArray<readonly [
   boolean,
   (orgCount: number) => ServicePublic
 ]> = [
   [ioDevServerConfig.services.includeSiciliaVola, withSiciliaVolaService],
   [ioDevServerConfig.services.includeCgn, withCgnService]
 ];
+
+// eventually add the special services based on config flags
+export const withSpecialServices = (
+  services: ReadonlyArray<ServicePublic>
+): ReadonlyArray<ServicePublic> =>
+  specialServicesFactory.reduce((acc, curr) => {
+    const organizationsCount = new Set(acc.map(s => s.organization_fiscal_code))
+      .size;
+    if (curr[0]) {
+      return [...acc, curr[1](organizationsCount)];
+    }
+    return acc;
+  }, services);

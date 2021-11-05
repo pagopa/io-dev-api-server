@@ -14,7 +14,7 @@ import { getService, getServiceMetadata } from "../../utils/service";
 import { validatePayload } from "../../utils/validator";
 import { frontMatter2CTA2 } from "../../utils/variables";
 import { IOResponse } from "../response";
-import { specialServices } from "./special";
+import { withSpecialServices } from "./special";
 
 export const getServices = (
   national: number,
@@ -53,14 +53,8 @@ export const getServices = (
     ...createService(ServiceScopeEnum.LOCAL, local),
     ...createService(ServiceScopeEnum.NATIONAL, national)
   ];
-
-  // eventually add the special services based on config flag
-  return specialServices.reduce((acc, curr) => {
-    if (curr[0]) {
-      return [...acc, curr[1](acc.length)];
-    }
-    return acc;
-  }, nationalLocalServices);
+  // special service must be added at the end of services creation
+  return withSpecialServices(nationalLocalServices);
 };
 
 export const getServicesTuple = (
