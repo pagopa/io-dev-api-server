@@ -1,5 +1,6 @@
 import faker from "faker/locale/it";
 import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
+
 import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
@@ -14,7 +15,9 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
+
 import { ioDevServerConfig } from "../config";
+import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 
 import { validPsp } from "./wallet";
@@ -250,13 +253,15 @@ export const transactionIdResponseSecond = {
 export const getPaymentRequestsGetResponse = (
   senderService: ServicePublic
 ): PaymentRequestsGetResponse => ({
-  importoSingoloVersamento:
-    (ioDevServerConfig.wallet.payment
-      .amount as PaymentRequestsGetResponse["importoSingoloVersamento"]) ??
-    (faker.datatype.number({
+  importoSingoloVersamento: getRandomValue(
+    ioDevServerConfig.wallet.payment
+      ?.amount as PaymentRequestsGetResponse["importoSingoloVersamento"],
+    faker.datatype.number({
       min: 1,
       max: 9999
-    }) as PaymentRequestsGetResponse["importoSingoloVersamento"]),
+    }) as PaymentRequestsGetResponse["importoSingoloVersamento"],
+    "wallet"
+  ),
   codiceContestoPagamento: faker.random.alphaNumeric(
     32
   ) as PaymentRequestsGetResponse["codiceContestoPagamento"],
