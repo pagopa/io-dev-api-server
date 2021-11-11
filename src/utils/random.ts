@@ -15,7 +15,8 @@ const getValueGlobalRandomOn: RandomValueFunc = <T>(
   randomValue: T,
   configSectionKey: AllorRandomValueKeys
 ) =>
-  ioDevServerConfig[configSectionKey].allowRandomValues
+  ioDevServerConfig[configSectionKey].allowRandomValues ||
+  defaultValue === undefined
     ? randomValue
     : defaultValue;
 

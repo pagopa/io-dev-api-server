@@ -3,7 +3,9 @@ import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
+
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
+import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 
@@ -45,6 +47,13 @@ export const WalletMethodConfig = t.interface({
   citizenPrivative: t.boolean
 });
 export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
+
+export const PaymentConfig = t.interface({
+  // integer including decimals - ie: 22.22 = 2222
+  amount: ImportoEuroCents,
+  pspFeeAmount: t.number
+});
+export type PaymentConfig = t.TypeOf<typeof PaymentConfig>;
 
 /* general http response codes */
 const HttpResponseCode = t.union([
@@ -148,8 +157,11 @@ export const IoDevServerConfig = t.interface({
       // if defined attiva will serve the given error
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // if verifica attiva will serve the given error
-      verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2")
+      verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      // configure the dummy payment
+      payment: PaymentConfig
     }),
+
     AllowRandomValue
   ])
 });

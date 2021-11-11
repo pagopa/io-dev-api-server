@@ -1,6 +1,7 @@
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
 import {
   LinguaEnum,
@@ -13,6 +14,8 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
+
+import { ioDevServerConfig } from "../config";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
@@ -23,7 +26,12 @@ export const sessionToken: SessionResponse = {
   }
 };
 const getAmount = () =>
-  getRandomValue(1000, faker.datatype.number({ min: 1, max: 150 }), "wallet");
+  getRandomValue(
+    ioDevServerConfig.wallet.payment?.pspFeeAmount,
+    faker.datatype.number({ min: 1, max: 150 }),
+    "wallet"
+  );
+
 export const validPsp: Psp = {
   id: 40000,
   idPsp: "idPsp1",
