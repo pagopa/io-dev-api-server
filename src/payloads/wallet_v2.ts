@@ -8,6 +8,10 @@ import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/Enab
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { PaypalPspListResponse } from "../../generated/definitions/pagopa/PaypalPspListResponse";
 import {
+  TypeEnum as WalletV1TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/Wallet";
+import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
@@ -24,10 +28,6 @@ import {
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import {
-  TypeEnum as WalletV1TypeEnum,
-  Wallet
-} from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
@@ -321,13 +321,29 @@ export const generateWalletV1FromCardInfo = (
     id: idWallet,
     holder: info.holder,
     pan: "*".repeat(12) + (info.blurredNumber ?? ""),
-    expireMonth: info.expireMonth!.padStart(2, "0"),
-    expireYear: info.expireYear!.slice(-2),
+    expireMonth: info.expireMonth
+      ? info.expireMonth.padStart(2, "0")
+      : undefined,
+    expireYear: info.expireYear ? info.expireYear!.slice(-2) : undefined,
     brandLogo: info.brandLogo,
     flag3dsVerified: false,
     brand: info.brand,
     onUs: false
   },
+  pspEditable: true,
+  isPspToIgnore: false,
+  saved: false,
+  registeredNexi: false
+});
+
+export const generateWalletV1FromPayPal = (
+  idWallet: number,
+  info: PayPalInfo
+): Wallet => ({
+  idWallet,
+  type: WalletV1TypeEnum.EXTERNAL_PS,
+  favourite: false,
+  payPals: [info],
   pspEditable: true,
   isPspToIgnore: false,
   saved: false,
