@@ -15,9 +15,11 @@ import {
   abiData,
   generateBancomatPay,
   generateCards,
+  generatePaypalInfo,
   generatePrivativeFromWalletV2,
   generateSatispayInfo,
   generateWalletV2FromCard,
+  generateWalletV2FromPaypal,
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
 } from "../../payloads/wallet_v2";
@@ -82,6 +84,8 @@ export let citizenPrivativeCard: ReadonlyArray<WalletV2> = [];
 let privativeCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
+// tslint:disable-next-line: no-let
+let walletPaypal: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
@@ -205,12 +209,8 @@ export const generateWalletV2Data = () => {
   );
 
   // add paypal
-  walletSatispay = generateSatispayInfo(walletV2Config.satispayCount).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(
-      c,
-      WalletTypeEnum.Satispay,
-      FA_BPD
-    )
+  walletPaypal = generatePaypalInfo(walletV2Config.paypalCount).map(c =>
+    generateWalletV2FromPaypal(c, [...FA_BPD, EnableableFunctionsEnum.pagoPA])
   );
 
   // add bancomatPay
@@ -228,6 +228,7 @@ export const generateWalletV2Data = () => {
       ...walletCreditCards,
       ...walletCreditCardsCoBadges,
       ...walletSatispay,
+      ...walletPaypal,
       ...walletBancomatPay
     ],
     false

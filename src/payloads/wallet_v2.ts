@@ -287,6 +287,29 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
   };
 };
 
+export const generateWalletV2FromPaypal = (
+  info: PayPalInfo,
+  enableableFunctions: ReadonlyArray<EnableableFunctionsEnum> = [
+    EnableableFunctionsEnum.FA,
+    EnableableFunctionsEnum.pagoPA,
+    EnableableFunctionsEnum.BPD
+  ]
+): WalletV2 => {
+  const ed = faker.date.future();
+  return {
+    walletType: WalletTypeEnum.PayPal,
+    // force createDate to be a string because we need to force a specific date format
+    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
+    enableableFunctions,
+    favourite: false,
+    idWallet: getNextIdWallet(),
+    info,
+    onboardingChannel: "IO",
+    pagoPA: enableableFunctions.includes(EnableableFunctionsEnum.pagoPA),
+    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
+  };
+};
+
 export const generateWalletV1FromCardInfo = (
   idWallet: number,
   info: CardInfo
