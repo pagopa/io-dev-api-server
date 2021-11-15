@@ -4,6 +4,7 @@ import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import * as t from "io-ts";
 import sha256 from "sha256";
+import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { PaypalPspListResponse } from "../../generated/definitions/pagopa/PaypalPspListResponse";
 import {
@@ -33,7 +34,6 @@ import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";
 import { CreditCardBrandEnum, getCreditCardLogo } from "../utils/payment";
 import { validatePayload } from "../utils/validator";
-import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 
 type CardConfig = {
   prefix: string;

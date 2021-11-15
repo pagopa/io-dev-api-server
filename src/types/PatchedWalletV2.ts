@@ -1,9 +1,9 @@
 import { enumType } from "@pagopa/ts-commons/lib/types";
 import * as t from "io-ts";
 import { BPayInfo } from "../../generated/definitions/pagopa/BPayInfo";
+import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctions } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { SatispayInfo } from "../../generated/definitions/pagopa/SatispayInfo";
-import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletTypeEnum } from "../../generated/definitions/pagopa/WalletV2";
 // required attributes
 const PatchedPaymentMethodInfo = t.union([CardInfo, SatispayInfo, BPayInfo]);
