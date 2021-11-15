@@ -12,7 +12,7 @@
   "api_cgn_geo": "https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml",
   "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/definitions.yml",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/pm/walletv2.json",
-  "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-app/IA-445-add-paypal-payment-method-type/assets/paymentManager/spec.json",
+  "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/paymentManager/spec.json",
   "pagopa_cobadge_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/cobadge/abi_definitions.yml",
   "pagopa_privative_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/pagopa/privative/definitions.yml",
   "api_bpd_citizen": "https://raw.githubusercontent.com/pagopa/io-services-metadata/master/bonus/specs/bpd/citizen.json",
