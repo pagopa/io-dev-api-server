@@ -33,6 +33,8 @@ export const WalletMethodConfig = t.interface({
   privativeCount: t.number,
   // satispay enrolled
   satispayCount: t.number,
+  // paypal enrolled
+  paypalCount: t.number,
   // bancomat pay enrolled
   bPayCount: t.number,
   // bancomat owned by the citizen (shown when he/she search about them)
@@ -44,7 +46,9 @@ export const WalletMethodConfig = t.interface({
   // if true -> citizen has satispay (when he/she search about it)
   citizenSatispay: t.boolean,
   // if true -> citizen has privative cards (when he/she search about it)
-  citizenPrivative: t.boolean
+  citizenPrivative: t.boolean,
+  // if true -> citizen has paypal (when he/she search about it)
+  citizenPaypal: t.boolean
 });
 export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
 
