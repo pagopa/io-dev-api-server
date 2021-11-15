@@ -210,7 +210,7 @@ export const generateWalletV2Data = () => {
 
   // add paypal
   walletPaypal = generatePaypalInfo(walletV2Config.paypalCount).map(c =>
-    generateWalletV2FromPaypal(c, [...FA_BPD, EnableableFunctionsEnum.pagoPA])
+    generateWalletV2FromPaypal(c, [EnableableFunctionsEnum.pagoPA])
   );
 
   // add bancomatPay
