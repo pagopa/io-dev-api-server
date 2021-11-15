@@ -7,6 +7,7 @@ import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
+import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
 import { TypeEnum } from "../../generated/definitions/pagopa/Wallet";
@@ -29,6 +30,7 @@ import {
   abiData,
   generateCards,
   generateWalletV1FromCardInfo,
+  generateWalletV1FromPayPal,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
@@ -293,21 +295,29 @@ addHandler(
   (req, res) => {
     const walletData = getWalletV2();
     const idWallet = parseInt(req.params.idWallet, 10);
-    const creditCard = walletData.find(w => w.idWallet === idWallet);
-    if (creditCard) {
-      const favoriteCreditCard = { ...creditCard, favourite: true };
+    const paymentMethod = walletData.find(w => w.idWallet === idWallet);
+    if (paymentMethod) {
+      const favoriteCreditCard = { ...paymentMethod, favourite: true };
       // all wallets different from the favorite and then append it
       const newWalletsData: ReadonlyArray<WalletV2> = [
         ...walletData.filter(w => w.idWallet !== idWallet),
         favoriteCreditCard
       ];
       addWalletV2(newWalletsData, false);
+      // a favourite method can be only a CreditCard or a PayPal
+      const paymentInfo =
+        favoriteCreditCard.walletType === WalletTypeEnum.Card
+          ? generateWalletV1FromCardInfo(
+              favoriteCreditCard.idWallet!,
+              favoriteCreditCard.info as CardInfo
+            )
+          : generateWalletV1FromPayPal(
+              favoriteCreditCard.idWallet!,
+              favoriteCreditCard.info as PayPalInfo
+            );
       // this API requires to return a walletV1
       const walletV1 = {
-        ...generateWalletV1FromCardInfo(
-          favoriteCreditCard.idWallet!,
-          favoriteCreditCard.info as CardInfo
-        ),
+        ...paymentInfo,
         favourite: true
       };
       res.json({ data: walletV1 });

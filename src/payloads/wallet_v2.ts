@@ -8,6 +8,10 @@ import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/Enab
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { PaypalPspListResponse } from "../../generated/definitions/pagopa/PaypalPspListResponse";
 import {
+  TypeEnum as WalletV1TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/Wallet";
+import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
@@ -24,10 +28,6 @@ import {
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import {
-  TypeEnum as WalletV1TypeEnum,
-  Wallet
-} from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
@@ -309,6 +309,20 @@ export const generateWalletV2FromPaypal = (
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
+
+export const generateWalletV1FromPayPal = (
+  idWallet: number,
+  info: PayPalInfo
+): Wallet => ({
+  idWallet,
+  type: WalletV1TypeEnum.EXTERNAL_PS,
+  favourite: false,
+  payPals: [info],
+  pspEditable: true,
+  isPspToIgnore: false,
+  saved: false,
+  registeredNexi: false
+});
 
 export const generateWalletV1FromCardInfo = (
   idWallet: number,
