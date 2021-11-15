@@ -304,7 +304,7 @@ addHandler(
         favoriteCreditCard
       ];
       addWalletV2(newWalletsData, false);
-      // a favourite method can be only a CreditCard or a PayPal
+      // a favourite method can be only a CreditCard or PayPal
       const paymentInfo =
         favoriteCreditCard.walletType === WalletTypeEnum.Card
           ? generateWalletV1FromCardInfo(
