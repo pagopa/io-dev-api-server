@@ -57,7 +57,7 @@ const cardConfigMap: Map<WalletTypeEnum, CardConfig> = new Map<
   [WalletTypeEnum.Bancomat, { prefix: "123400005678", index: 0 }],
   [WalletTypeEnum.BPay, { prefix: "123456780000", index: 0 }],
   [WalletTypeEnum.Satispay, { prefix: "125678000034", index: 0 }],
-  [WalletTypeEnum.PayPal, { prefix: "paypal", index: 0 }]
+  [WalletTypeEnum.PayPal, { prefix: "email", index: 0 }]
 ]);
 
 export const resetCardConfig = () => {
@@ -91,7 +91,7 @@ export const generatePaypalInfo = (
     const config = fromNullable(
       cardConfigMap.get(WalletTypeEnum.PayPal)
     ).getOrElse(defaultCardConfig);
-    const emailPp = `${config.prefix + config.index.toString()}@paypal.it`;
+    const emailPp = `${config.prefix}.${config.index.toString()}@paypal.it`;
     cardConfigMap.set(WalletTypeEnum.PayPal, {
       ...config,
       index: config.index + 1
