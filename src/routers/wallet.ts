@@ -5,6 +5,7 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { match } from "ts-pattern";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
@@ -305,16 +306,25 @@ addHandler(
       ];
       addWalletV2(newWalletsData, false);
       // a favourite method can be only a CreditCard or PayPal
-      const paymentInfo =
-        favoriteCreditCard.walletType === WalletTypeEnum.Card
-          ? generateWalletV1FromCardInfo(
-              favoriteCreditCard.idWallet!,
-              favoriteCreditCard.info as CardInfo
-            )
-          : generateWalletV1FromPayPal(
-              favoriteCreditCard.idWallet!,
-              favoriteCreditCard.info as PayPalInfo
-            );
+      const paymentInfo = match(favoriteCreditCard.walletType)
+        .with(WalletTypeEnum.Card, () =>
+          generateWalletV1FromCardInfo(
+            favoriteCreditCard.idWallet!,
+            favoriteCreditCard.info as CardInfo
+          )
+        )
+        .with(WalletTypeEnum.PayPal, () =>
+          generateWalletV1FromPayPal(
+            favoriteCreditCard.idWallet!,
+            favoriteCreditCard.info as PayPalInfo
+          )
+        )
+        .otherwise(() => undefined);
+      // bad request
+      if (paymentInfo === undefined) {
+        res.sendStatus(400);
+        return;
+      }
       // this API requires to return a walletV1
       const walletV1 = {
         ...paymentInfo,
