@@ -62,6 +62,19 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
   true,
   wallets.data
 );
+
+const convertWalletV2toWalletV1 = (wallet: WalletV2): Wallet | undefined => {
+  // a favourite method can be only a CreditCard or PayPal
+  return match(wallet.walletType)
+    .with(WalletTypeEnum.Card, () =>
+      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
+    )
+    .with(WalletTypeEnum.PayPal, () =>
+      generateWalletV1FromPayPal(wallet.idWallet!, wallet.info as PayPalInfo)
+    )
+    .otherwise(() => undefined);
+};
+
 addHandler(
   walletRouter,
   "get",
@@ -288,18 +301,6 @@ addHandler(
     res.sendStatus(200);
   }
 );
-
-const convertWalletV2toWalletV1 = (wallet: WalletV2): Wallet | undefined => {
-  // a favourite method can be only a CreditCard or PayPal
-  return match(wallet.walletType)
-    .with(WalletTypeEnum.Card, () =>
-      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
-    )
-    .with(WalletTypeEnum.PayPal, () =>
-      generateWalletV1FromPayPal(wallet.idWallet!, wallet.info as PayPalInfo)
-    )
-    .otherwise(() => undefined);
-};
 
 // set a credit card as favourite
 addHandler(
