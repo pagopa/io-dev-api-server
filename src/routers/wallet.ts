@@ -5,17 +5,17 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
+import { Transaction } from "../../generated/definitions/pagopa/Transaction";
+import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
+import { TypeEnum } from "../../generated/definitions/pagopa/Wallet";
 import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
-import { CardInfo } from "../../generated/definitions/pagopa/walletv2/CardInfo";
-import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
-import { TransactionListResponse } from "../../generated/definitions/pagopa/walletv2/TransactionListResponse";
-import { TypeEnum } from "../../generated/definitions/pagopa/walletv2/Wallet";
-import { WalletResponse } from "../../generated/definitions/pagopa/walletv2/WalletResponse";
+import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 import {
   WalletTypeEnum,
   WalletV2
-} from "../../generated/definitions/pagopa/walletv2/WalletV2";
+} from "../../generated/definitions/pagopa/WalletV2";
 import { addHandler } from "../payloads/response";
 import {
   getPspFromId,
@@ -42,6 +42,7 @@ import {
   walletV2Config
 } from "./walletsV2";
 export const walletCount =
+  walletV2Config.paypalCount +
   walletV2Config.satispayCount +
   walletV2Config.privativeCount +
   walletV2Config.walletBancomatCount +

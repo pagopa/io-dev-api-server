@@ -35,12 +35,14 @@ const paymentMethods: WalletMethodConfig = {
   walletCreditCardCoBadgeCount: 0,
   privativeCount: 0,
   satispayCount: 0,
+  paypalCount: 0,
   bPayCount: 0,
   citizenSatispay: true,
   citizenBancomatCount: 1,
   citizenBPayCount: 1,
   citizenCreditCardCoBadgeCount: 1,
-  citizenPrivative: true
+  citizenPrivative: true,
+  citizenPaypal: true
 };
 
 /**
@@ -85,7 +87,8 @@ const defaultConfig: IoDevServerConfig = {
     verificaError: undefined,
     attivaError: undefined,
     // it has no effect (pr welcome)
-    allowRandomValues: true
+    allowRandomValues: true,
+    payment: undefined
   },
   services: {
     response: {
