@@ -11,7 +11,7 @@ import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/Enab
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
-import { TypeEnum } from "../../generated/definitions/pagopa/Wallet";
+import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 import {
@@ -178,10 +178,11 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const updatedWalletV1 = generateWalletV1FromCardInfo(
-      walletV2.idWallet!,
-      walletV2.info as CardInfo
-    );
+    const updatedWalletV1 = convertWalletV2toWalletV1(walletV2);
+    if (updatedWalletV1 === undefined) {
+      res.sendStatus(400);
+      return;
+    }
     res.json({
       data: { ...updatedWalletV1, psp }
     });
@@ -288,6 +289,18 @@ addHandler(
   }
 );
 
+const convertWalletV2toWalletV1 = (wallet: WalletV2): Wallet | undefined => {
+  // a favourite method can be only a CreditCard or PayPal
+  return match(wallet.walletType)
+    .with(WalletTypeEnum.Card, () =>
+      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
+    )
+    .with(WalletTypeEnum.PayPal, () =>
+      generateWalletV1FromPayPal(wallet.idWallet!, wallet.info as PayPalInfo)
+    )
+    .otherwise(() => undefined);
+};
+
 // set a credit card as favourite
 addHandler(
   walletRouter,
@@ -305,29 +318,17 @@ addHandler(
         favoriteCreditCard
       ];
       addWalletV2(newWalletsData, false);
-      // a favourite method can be only a CreditCard or PayPal
-      const paymentInfo = match(favoriteCreditCard.walletType)
-        .with(WalletTypeEnum.Card, () =>
-          generateWalletV1FromCardInfo(
-            favoriteCreditCard.idWallet!,
-            favoriteCreditCard.info as CardInfo
-          )
-        )
-        .with(WalletTypeEnum.PayPal, () =>
-          generateWalletV1FromPayPal(
-            favoriteCreditCard.idWallet!,
-            favoriteCreditCard.info as PayPalInfo
-          )
-        )
-        .otherwise(() => undefined);
+      const favoriteCreditCardV1 = convertWalletV2toWalletV1(
+        favoriteCreditCard
+      );
       // bad request
-      if (paymentInfo === undefined) {
+      if (favoriteCreditCardV1 === undefined) {
         res.sendStatus(400);
         return;
       }
       // this API requires to return a walletV1
       const walletV1 = {
-        ...paymentInfo,
+        ...favoriteCreditCardV1,
         favourite: true
       };
       res.json({ data: walletV1 });
