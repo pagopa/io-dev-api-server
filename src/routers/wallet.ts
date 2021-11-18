@@ -63,7 +63,9 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
   wallets.data
 );
 
-const convertWalletV2toWalletV1 = (wallet: WalletV2): Wallet | undefined => {
+const convertFavouriteWalletfromV2V1 = (
+  wallet: WalletV2
+): Wallet | undefined => {
   // a favourite method can be only a CreditCard or PayPal
   return match(wallet.walletType)
     .with(WalletTypeEnum.Card, () =>
@@ -191,7 +193,7 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const updatedWalletV1 = convertWalletV2toWalletV1(walletV2);
+    const updatedWalletV1 = convertFavouriteWalletfromV2V1(walletV2);
     if (updatedWalletV1 === undefined) {
       res.sendStatus(400);
       return;
@@ -319,7 +321,7 @@ addHandler(
         favoriteCreditCard
       ];
       addWalletV2(newWalletsData, false);
-      const favoriteCreditCardV1 = convertWalletV2toWalletV1(
+      const favoriteCreditCardV1 = convertFavouriteWalletfromV2V1(
         favoriteCreditCard
       );
       // bad request
