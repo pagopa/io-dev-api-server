@@ -240,7 +240,7 @@ addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
 );
 
-// despite the endpoint is v3, the wallets returned by this API are of type V2
+// PM compliance: despite the endpoint is v3, the payment methods list returned by this API includes methods of type v2
 // v3 is the same of v2 but in addition it includes paypal ¯\_(ツ)_/¯
 addHandler(wallet2Router, "get", appendWalletV3Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
