@@ -24,7 +24,7 @@ import {
   privativeIssuers
 } from "../../payloads/wallet_v2";
 import { WalletMethodConfig } from "../../types/config";
-import { appendWalletV2Prefix } from "../../utils/wallet";
+import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
 
 export const wallet2Router = Router();
 export const abiResponse: AbiListResponse = {
@@ -237,6 +237,12 @@ export const generateWalletV2Data = () => {
 
 // return the list of wallets
 addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
+  res.json(walletV2Response)
+);
+
+// despite the endpoint is v3, the wallets returned by this API are of type V2
+// v3 is the same of v2 but in addition it includes paypal ¯\_(ツ)_/¯
+addHandler(wallet2Router, "get", appendWalletV3Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
 );
 
