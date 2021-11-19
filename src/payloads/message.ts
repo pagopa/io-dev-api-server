@@ -14,8 +14,9 @@ import { validatePayload } from "../utils/validator";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
+
 /**
- * generate a list containg count messages with the given fiscal_code
+ * Generate basic message data based on fiscal code, sender ID, and time to live
  * @param fiscalCode
  * @param senderServiceId
  * @param timeToLive

@@ -70,6 +70,12 @@ const HttpResponseCode = t.union([
 ]);
 
 const AllowRandomValue = t.interface({ allowRandomValues: t.boolean });
+const LiveModeMessages = t.interface({
+  // interval between updates in millis
+  interval: t.number,
+  // number of new messages
+  count: t.number
+});
 
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
@@ -114,6 +120,7 @@ export const IoDevServerConfig = t.interface({
       paymentWithValidDueDateCount: t.number,
       // number of message containing a payment and a not valid (expired) due date
       paymentWithExpiredDueDateCount: t.number,
+      // whether we dynamically create new messages or not
       // number of medical messages
       medicalCount: t.number,
       // if true, messages (all available) with nested CTA will be included
@@ -126,7 +133,15 @@ export const IoDevServerConfig = t.interface({
       withInValidDueDateCount: t.number,
       standardMessageCount: t.number
     }),
-    AllowRandomValue
+    AllowRandomValue,
+    t.partial({
+      liveMode: t.interface({
+        // interval between updates in millis
+        interval: t.number,
+        // number of new messages
+        count: t.number
+      })
+    })
   ]),
   services: t.intersection([
     t.interface({

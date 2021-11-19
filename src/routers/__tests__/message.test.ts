@@ -116,12 +116,10 @@ it("messages should return those items that are younger than specified minimum_i
           );
         });
         if (listYounger.value.items.length > 0) {
-          // next, if defined, should contain the id of the last element
-          expect(listYounger.value.next).toBe(
-            listYounger.value.items[listYounger.value.items.length - 1].id
-          );
+          // next is never defined for backward navigation
+          expect(listYounger.value.next).not.toBeDefined();
           // prev, if defined, should contain the id of the first element
-          expect(listYounger.value.prev).toBe(listYounger.value.items[0].id);
+          expect(listYounger.value.prev).toMatch(listYounger.value.items[0].id);
         }
       }
     }
