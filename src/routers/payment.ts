@@ -181,6 +181,19 @@ addHandler(
     )
 );
 
+// paypal onboarding checkout
+addHandler(
+  walletRouter,
+  "post",
+  "/wallet/v3/webview/paypal/onboarding/psp",
+  (req, res) =>
+    handlePaymentPostAndRedirect(
+      req,
+      res,
+      ioDevServerConfig.wallet.onboardingCreditCardOutCode
+    )
+);
+
 // payment
 addHandler(
   walletRouter,
