@@ -148,14 +148,17 @@ addHandler(
   }
 );
 
-const handlePaymentPostAndRedirect = (req: Request, res: Response) => {
+const handlePaymentPostAndRedirect = (
+  req: Request,
+  res: Response,
+  outcomeValue: number = 0
+) => {
   const formData = Object.keys(req.body)
     .map(k => `<b>${k}</b>: ${req.body[k]}`)
     .join("<br/>");
   // set a timeout to redirect to the exit url
   const exitPathName = "/wallet/v3/webview/logout/bye";
   const outcomeParamname = "outcome";
-  const outcomeValue = 0;
   const secondsToRedirect = 2;
   const redirectUrl = `"http://${interfaces.name}:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
   const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
@@ -170,7 +173,12 @@ addHandler(
   walletRouter,
   "post",
   "/wallet/v3/webview/transactions/cc/verify",
-  handlePaymentPostAndRedirect
+  (req, res) =>
+    handlePaymentPostAndRedirect(
+      req,
+      res,
+      ioDevServerConfig.wallet.onboardingCreditCardOutCode
+    )
 );
 
 // payment
