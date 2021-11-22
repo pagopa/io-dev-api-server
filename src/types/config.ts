@@ -138,7 +138,7 @@ export const IoDevServerConfig = t.interface({
     }),
     AllowRandomValue,
     t.partial({
-      liveMode: LiveModeMessages,
+      liveMode: LiveModeMessages
     })
   ]),
   services: t.intersection([
