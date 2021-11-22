@@ -49,9 +49,17 @@ addHandler(
     if (!isPaypalAlreadyPresent && outcomeCode === 0) {
       const newPaypal = generatePaypalInfo(1).map(c =>
         generateWalletV2FromPaypal(c, [EnableableFunctionsEnum.pagoPA])
+      )[0];
+      // set favourite off to the other payment methods
+      const otherPaymentMethods = getWalletV2().map(w => ({
+        ...w,
+        favourite: false
+      }));
+      // add new wallet to the existing ones and set is as favourite (mimic PM logic)
+      addWalletV2(
+        [...otherPaymentMethods, { ...newPaypal, favourite: true }],
+        false
       );
-      // add new wallet to the existing ones
-      addWalletV2(newPaypal);
     }
     handlePaymentPostAndRedirect(req, res, outcomeCode);
   }
