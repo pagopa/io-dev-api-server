@@ -5,11 +5,13 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
+import { match } from "ts-pattern";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
+import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
-import { TypeEnum } from "../../generated/definitions/pagopa/Wallet";
+import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
 import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 import {
@@ -29,6 +31,7 @@ import {
   abiData,
   generateCards,
   generateWalletV1FromCardInfo,
+  generateWalletV1FromPayPal,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { interfaces, serverPort } from "../utils/server";
@@ -59,6 +62,21 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
   true,
   wallets.data
 );
+
+const convertFavouriteWalletfromV2V1 = (
+  wallet: WalletV2
+): Wallet | undefined => {
+  // a favourite method can be only a CreditCard or PayPal
+  return match(wallet.walletType)
+    .with(WalletTypeEnum.Card, () =>
+      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
+    )
+    .with(WalletTypeEnum.PayPal, () =>
+      generateWalletV1FromPayPal(wallet.idWallet!, wallet.info as PayPalInfo)
+    )
+    .otherwise(() => undefined);
+};
+
 addHandler(
   walletRouter,
   "get",
@@ -175,10 +193,11 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const updatedWalletV1 = generateWalletV1FromCardInfo(
-      walletV2.idWallet!,
-      walletV2.info as CardInfo
-    );
+    const updatedWalletV1 = convertFavouriteWalletfromV2V1(walletV2);
+    if (updatedWalletV1 === undefined) {
+      res.sendStatus(400);
+      return;
+    }
     res.json({
       data: { ...updatedWalletV1, psp }
     });
@@ -293,21 +312,32 @@ addHandler(
   (req, res) => {
     const walletData = getWalletV2();
     const idWallet = parseInt(req.params.idWallet, 10);
-    const creditCard = walletData.find(w => w.idWallet === idWallet);
-    if (creditCard) {
-      const favoriteCreditCard = { ...creditCard, favourite: true };
-      // all wallets different from the favorite and then append it
-      const newWalletsData: ReadonlyArray<WalletV2> = [
-        ...walletData.filter(w => w.idWallet !== idWallet),
-        favoriteCreditCard
-      ];
-      addWalletV2(newWalletsData, false);
+    const paymentMethod = walletData.find(w => w.idWallet === idWallet);
+    if (paymentMethod) {
+      const favoritePaymentMethod = { ...paymentMethod, favourite: true };
+      // all wallets different from the new favorite
+      const newWalletsData: ReadonlyArray<WalletV2> = walletData.filter(
+        w => w.idWallet !== idWallet
+      );
+      // set favorite off to all wallets different from the new one
+      addWalletV2(
+        [
+          ...newWalletsData.map(w => ({ ...w, favourite: false })),
+          favoritePaymentMethod
+        ],
+        false
+      );
+      const favoriteCreditCardV1 = convertFavouriteWalletfromV2V1(
+        favoritePaymentMethod
+      );
+      // bad request
+      if (favoriteCreditCardV1 === undefined) {
+        res.sendStatus(400);
+        return;
+      }
       // this API requires to return a walletV1
       const walletV1 = {
-        ...generateWalletV1FromCardInfo(
-          favoriteCreditCard.idWallet!,
-          favoriteCreditCard.info as CardInfo
-        ),
+        ...favoriteCreditCardV1,
         favourite: true
       };
       res.json({ data: walletV1 });

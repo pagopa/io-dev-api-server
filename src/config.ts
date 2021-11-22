@@ -78,7 +78,7 @@ const defaultConfig: IoDevServerConfig = {
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
     standardMessageCount: 2,
-    // it has no effect (pr welcome)
+    // atm it has no effect (pr welcome)
     allowRandomValues: true
   },
   wallet: {
@@ -86,9 +86,10 @@ const defaultConfig: IoDevServerConfig = {
     shuffleAbi: true,
     verificaError: undefined,
     attivaError: undefined,
-    // it has no effect (pr welcome)
+    // atm it has no effect (pr welcome)
     allowRandomValues: true,
-    payment: undefined
+    payment: undefined,
+    onboardingCreditCardOutCode: undefined
   },
   services: {
     response: {
