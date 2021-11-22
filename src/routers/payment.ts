@@ -20,6 +20,15 @@ import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
+import {
+  generatePaypalInfo,
+  generateWalletV2FromCard,
+  generateWalletV2FromPaypal
+} from "../payloads/wallet_v2";
+import { WalletTypeEnum } from "../../generated/definitions/pagopa/WalletV2";
+import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
+import { addWalletV2, walletV2Config } from "./walletsV2";
+import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 
 export const paymentRouter = Router();
 
@@ -186,12 +195,19 @@ addHandler(
   walletRouter,
   "post",
   "/wallet/v3/webview/paypal/onboarding/psp",
-  (req, res) =>
-    handlePaymentPostAndRedirect(
-      req,
-      res,
-      ioDevServerConfig.wallet.onboardingCreditCardOutCode
-    )
+  (req, res) => {
+    const outcomeCode =
+      ioDevServerConfig.wallet.onboardingCreditCardOutCode ?? 0;
+    // 0 -> success ->
+    if (outcomeCode === 0) {
+      const newPaypal = generatePaypalInfo(1).map(c =>
+        generateWalletV2FromPaypal(c, [EnableableFunctionsEnum.pagoPA])
+      );
+      // add new wallet to the existing ones
+      addWalletV2(newPaypal);
+    }
+    handlePaymentPostAndRedirect(req, res, outcomeCode);
+  }
 );
 
 // payment

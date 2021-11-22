@@ -294,7 +294,10 @@ addHandler(
   }
 );
 
-// this API is not official is the way out to exit the credit card checkout
+/** @deprecated this API is not longer used by the app
+ * this API is not official is the way out to exit the credit card checkout
+ */
+
 addHandler(
   walletRouter,
   "get",
@@ -327,17 +330,17 @@ addHandler(
         ],
         false
       );
-      const favoriteCreditCardV1 = convertFavouriteWalletfromV2V1(
+      const favoritePaymentMethodV1 = convertFavouriteWalletfromV2V1(
         favoritePaymentMethod
       );
       // bad request
-      if (favoriteCreditCardV1 === undefined) {
+      if (favoritePaymentMethodV1 === undefined) {
         res.sendStatus(400);
         return;
       }
       // this API requires to return a walletV1
       const walletV1 = {
-        ...favoriteCreditCardV1,
+        ...favoritePaymentMethodV1,
         favourite: true
       };
       res.json({ data: walletV1 });
