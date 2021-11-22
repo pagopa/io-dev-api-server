@@ -31,8 +31,6 @@ import { services } from "./service";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
-// tslint:disable-next-line: readonly-array
-export const messagesWithContent: CreatedMessageWithContent[] = [];
 
 const getRandomServiceId = (): string => {
   if (services.length === 0) {
@@ -60,10 +58,11 @@ const getNewMessage = (
     euCovidCert
   );
 
-const addMessage = (message: CreatedMessageWithContent) =>
-  messagesWithContent.push(message);
+// tslint:disable-next-line: readonly-array
+const createMessages = (): CreatedMessageWithContent[] => {
+  // tslint:disable-next-line: readonly-array
+  const output: CreatedMessageWithContent[] = [];
 
-const createMessages = () => {
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
     iup: "0000X0NFM",
@@ -73,28 +72,28 @@ const createMessages = () => {
 
   /* with CTAs */
   if (ioDevServerConfig.messages.withCTA) {
-    addMessage(
+    output.push(
       getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown)
     );
-    addMessage(
+    output.push(
       getNewMessage(
         `2 CTA bonus vacanze`,
         frontMatterBonusVacanze + messageMarkdown
       )
     );
-    addMessage(
+    output.push(
       getNewMessage(
         `1 CTA start BPD`,
         frontMatter1CTABonusBpd + messageMarkdown
       )
     );
-    addMessage(
+    output.push(
       getNewMessage(
         `1 CTA IBAN BPD`,
         frontMatter1CTABonusBpdIban + messageMarkdown
       )
     );
-    addMessage(
+    output.push(
       getNewMessage(
         `1 CTA start CGN`,
         frontMatter1CTABonusCgn + messageMarkdown
@@ -106,7 +105,8 @@ const createMessages = () => {
   if (ioDevServerConfig.messages.withEUCovidCert) {
     eucovidCertAuthResponses.forEach(config => {
       const [authCode, description] = config;
-      addMessage(
+
+      output.push(
         getNewMessage(
           `🏥 EUCovidCert - ${description}`,
           messageMarkdown,
@@ -121,7 +121,7 @@ const createMessages = () => {
 
   /* medical */
   range(1, ioDevServerConfig.messages.medicalCount).forEach(count =>
-    addMessage(
+    output.push(
       getNewMessage(
         `💊 medical prescription - ${count}`,
         messageMarkdown,
@@ -132,12 +132,12 @@ const createMessages = () => {
 
   /* standard message */
   range(1, ioDevServerConfig.messages.standardMessageCount).forEach(count =>
-    addMessage(getNewMessage(`standard message - ${count}`, messageMarkdown))
+    output.push(getNewMessage(`standard message - ${count}`, messageMarkdown))
   );
 
   /* due date */
   range(1, ioDevServerConfig.messages.withValidDueDateCount).forEach(count =>
-    addMessage(
+    output.push(
       withDueDate(
         getNewMessage(`🕙✅ due date valid - ${count}`, messageMarkdown),
         new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
@@ -146,7 +146,7 @@ const createMessages = () => {
   );
 
   range(1, ioDevServerConfig.messages.withInValidDueDateCount).forEach(count =>
-    addMessage(
+    output.push(
       withDueDate(
         getNewMessage(`🕙❌ due date invalid - ${count}`, messageMarkdown),
         new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
@@ -155,12 +155,11 @@ const createMessages = () => {
   );
 
   /* payments */
-
   range(
     1,
     ioDevServerConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
   ).forEach(count =>
-    addMessage(
+    output.push(
       withDueDate(
         withPaymentData(
           getNewMessage(
@@ -178,7 +177,7 @@ const createMessages = () => {
     1,
     ioDevServerConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
   ).forEach(count =>
-    addMessage(
+    output.push(
       withDueDate(
         withPaymentData(
           getNewMessage(
@@ -196,7 +195,7 @@ const createMessages = () => {
     1,
     ioDevServerConfig.messages.paymentWithExpiredDueDateCount
   ).forEach(count =>
-    addMessage(
+    output.push(
       withDueDate(
         withPaymentData(
           getNewMessage(`💰🕙 payment - expired - ${count}`, messageMarkdown),
@@ -211,7 +210,7 @@ const createMessages = () => {
     1,
     ioDevServerConfig.messages.paymentWithValidDueDateCount
   ).forEach(count =>
-    addMessage(
+    output.push(
       withDueDate(
         withPaymentData(
           getNewMessage(`💰🕙✅ payment message - ${count}`, messageMarkdown),
@@ -223,16 +222,35 @@ const createMessages = () => {
   );
 
   range(1, ioDevServerConfig.messages.paymentsCount).forEach(count =>
-    addMessage(
+    output.push(
       withPaymentData(
         getNewMessage(`💰✅ payment - ${count} `, messageMarkdown),
         true
       )
     )
   );
+
+  return output;
 };
 
-createMessages();
+// tslint:disable-next-line: readonly-array
+export const messagesWithContent: CreatedMessageWithContent[] = createMessages();
+
+if (ioDevServerConfig.messages.liveMode) {
+  // if live updates is on, we prepend new messages to the collection
+  const count = ioDevServerConfig.messages.liveMode.count || 2;
+  const interval = ioDevServerConfig.messages.liveMode.interval || 2000;
+  setInterval(() => {
+    const nextMessages = createMessages();
+
+    messagesWithContent.unshift(
+      ..._.shuffle(nextMessages).slice(
+        0,
+        Math.min(count, nextMessages.length - 1)
+      )
+    );
+  }, interval);
+}
 
 /* helper function to build messages response */
 const getPublicMessages = (
@@ -285,9 +303,9 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
 
   const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
-  const indexes: { startIndex: number; endIndex: number } | undefined = match(
-    toMatch
-  )
+  const indexes:
+    | { startIndex: number; endIndex: number; backward: boolean }
+    | undefined = match(toMatch)
     .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
       const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
       const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
@@ -295,7 +313,8 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
       if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
         return {
           startIndex: startIndex + 1,
-          endIndex
+          endIndex,
+          backward: false
         };
       }
     })
@@ -305,7 +324,8 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
       if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
         return {
           startIndex: startIndex + 1,
-          endIndex: startIndex + 1 + params.pageSize!
+          endIndex: startIndex + 1 + params.pageSize!,
+          backward: false
         };
       }
     })
@@ -315,24 +335,35 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
       if (endIndex > 0) {
         return {
           startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
-          endIndex
+          endIndex,
+          backward: true
         };
       }
     })
     .otherwise(() => ({
       startIndex: 0,
-      endIndex: params.pageSize!
+      endIndex: params.pageSize as number,
+      backward: false
     }));
-  // not a valid request with params
+
+  // either not enough parameters or out-of-bound
   if (indexes === undefined) {
-    res.json({ items: [] });
-    return;
+    return res.json({ items: [] });
   }
 
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
+  const items = getPublicMessages(slice, params.enrichResultData!);
 
-  res.json({
-    items: getPublicMessages(slice, params.enrichResultData!),
+  // the API doesn't return 'next' for previous page
+  if (indexes.backward) {
+    return res.json({
+      items,
+      prev: orderedList[indexes.startIndex]?.id
+    });
+  }
+
+  return res.json({
+    items,
     prev: orderedList[indexes.startIndex]?.id,
     next: orderedList[indexes.endIndex]
       ? slice[slice.length - 1]?.id
