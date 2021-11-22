@@ -157,7 +157,7 @@ addHandler(
   }
 );
 
-const handlePaymentPostAndRedirect = (
+export const handlePaymentPostAndRedirect = (
   req: Request,
   res: Response,
   outcomeValue: number = 0
@@ -188,26 +188,6 @@ addHandler(
       res,
       ioDevServerConfig.wallet.onboardingCreditCardOutCode
     )
-);
-
-// paypal onboarding checkout
-addHandler(
-  walletRouter,
-  "post",
-  "/wallet/v3/webview/paypal/onboarding/psp",
-  (req, res) => {
-    const outcomeCode =
-      ioDevServerConfig.wallet.onboardingCreditCardOutCode ?? 0;
-    // 0 -> success ->
-    if (outcomeCode === 0) {
-      const newPaypal = generatePaypalInfo(1).map(c =>
-        generateWalletV2FromPaypal(c, [EnableableFunctionsEnum.pagoPA])
-      );
-      // add new wallet to the existing ones
-      addWalletV2(newPaypal);
-    }
-    handlePaymentPostAndRedirect(req, res, outcomeCode);
-  }
 );
 
 // payment
