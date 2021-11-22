@@ -1,5 +1,6 @@
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
@@ -71,6 +72,14 @@ const HttpResponseCode = t.union([
 
 const AllowRandomValue = t.interface({ allowRandomValues: t.boolean });
 
+const LiveModeMessages = t.interface({
+  // interval between updates in millis
+  interval: t.number,
+  // number of new messages
+  count: t.number
+});
+export type LiveModeMessages = t.Type<typeof LiveModeMessages>;
+
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
     t.interface({
@@ -114,6 +123,7 @@ export const IoDevServerConfig = t.interface({
       paymentWithValidDueDateCount: t.number,
       // number of message containing a payment and a not valid (expired) due date
       paymentWithExpiredDueDateCount: t.number,
+      // whether we dynamically create new messages or not
       // number of medical messages
       medicalCount: t.number,
       // if true, messages (all available) with nested CTA will be included
@@ -126,7 +136,10 @@ export const IoDevServerConfig = t.interface({
       withInValidDueDateCount: t.number,
       standardMessageCount: t.number
     }),
-    AllowRandomValue
+    AllowRandomValue,
+    t.partial({
+      liveMode: LiveModeMessages
+    })
   ]),
   services: t.intersection([
     t.interface({
@@ -157,6 +170,8 @@ export const IoDevServerConfig = t.interface({
       shuffleAbi: t.boolean
     }),
     t.partial({
+      // the outcode returned at the end of credit card onboarding
+      onboardingCreditCardOutCode: t.number,
       // if defined attiva will serve the given error
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // if verifica attiva will serve the given error

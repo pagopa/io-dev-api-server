@@ -314,15 +314,21 @@ addHandler(
     const idWallet = parseInt(req.params.idWallet, 10);
     const paymentMethod = walletData.find(w => w.idWallet === idWallet);
     if (paymentMethod) {
-      const favoriteCreditCard = { ...paymentMethod, favourite: true };
-      // all wallets different from the favorite and then append it
-      const newWalletsData: ReadonlyArray<WalletV2> = [
-        ...walletData.filter(w => w.idWallet !== idWallet),
-        favoriteCreditCard
-      ];
-      addWalletV2(newWalletsData, false);
+      const favoritePaymentMethod = { ...paymentMethod, favourite: true };
+      // all wallets different from the new favorite
+      const newWalletsData: ReadonlyArray<WalletV2> = walletData.filter(
+        w => w.idWallet !== idWallet
+      );
+      // set favorite off to all wallets different from the new one
+      addWalletV2(
+        [
+          ...newWalletsData.map(w => ({ ...w, favourite: false })),
+          favoritePaymentMethod
+        ],
+        false
+      );
       const favoriteCreditCardV1 = convertFavouriteWalletfromV2V1(
-        favoriteCreditCard
+        favoritePaymentMethod
       );
       // bad request
       if (favoriteCreditCardV1 === undefined) {

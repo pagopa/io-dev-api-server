@@ -16,7 +16,8 @@ export const customSession: PublicSession = {
   spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
   walletToken: getToken("AAAAAAAAAAAAA1"),
   myPortalToken: getToken("AAAAAAAAAAAAA2"),
-  bpdToken: getToken("AAAAAAAAAAAAA3")
+  bpdToken: getToken("AAAAAAAAAAAAA3"),
+  zendeskToken: getToken("AAAAAAAAAAAAA4")
 };
 export const session: IOResponse<PublicSession> = {
   payload: validatePayload(PublicSession, customSession),
