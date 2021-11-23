@@ -1,19 +1,19 @@
 import { Router } from "express";
+import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
 import { PaypalPspListResponse } from "../../../../generated/definitions/pagopa/PaypalPspListResponse";
+import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/WalletV2";
 import { assetsFolder, ioDevServerConfig } from "../../../config";
 import { addHandler } from "../../../payloads/response";
-import { readFileAsJSON } from "../../../utils/file";
-import { validatePayload } from "../../../utils/validator";
-import { appendWalletV3Prefix } from "../../../utils/wallet";
-import { walletRouter } from "../../wallet";
 import {
   generatePaypalInfo,
   generateWalletV2FromPaypal
 } from "../../../payloads/wallet_v2";
-import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
-import { addWalletV2, getWalletV2 } from "../../walletsV2";
+import { readFileAsJSON } from "../../../utils/file";
+import { validatePayload } from "../../../utils/validator";
+import { appendWalletV3Prefix } from "../../../utils/wallet";
 import { handlePaymentPostAndRedirect } from "../../payment";
-import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/WalletV2";
+import { walletRouter } from "../../wallet";
+import { addWalletV2, getWalletV2 } from "../../walletsV2";
 
 export const payPalRouter = Router();
 /**

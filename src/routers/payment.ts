@@ -20,15 +20,6 @@ import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
 import { services } from "./service";
 import { walletRouter } from "./wallet";
-import {
-  generatePaypalInfo,
-  generateWalletV2FromCard,
-  generateWalletV2FromPaypal
-} from "../payloads/wallet_v2";
-import { WalletTypeEnum } from "../../generated/definitions/pagopa/WalletV2";
-import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
-import { addWalletV2, walletV2Config } from "./walletsV2";
-import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 
 export const paymentRouter = Router();
 
