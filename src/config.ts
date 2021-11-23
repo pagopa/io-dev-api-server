@@ -90,7 +90,7 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true,
     payment: undefined,
     onboardingCreditCardOutCode: undefined,
-    onboardingPaypalOutCode: 2
+    onboardingPaypalOutCode: undefined
   },
   services: {
     response: {
