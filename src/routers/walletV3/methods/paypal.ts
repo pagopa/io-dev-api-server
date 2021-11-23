@@ -61,6 +61,6 @@ addHandler(
         false
       );
     }
-    handlePaymentPostAndRedirect(req, res, outcomeCode);
+    handlePaymentPostAndRedirect(req, res, outcomeCode, "PayPal checkout");
   }
 );
