@@ -55,7 +55,7 @@ addHandler(
         ...w,
         favourite: false
       }));
-      // add new wallet to the existing ones and set is as favourite (mimic PM logic)
+      // add paypal to the existing payment methods and set it as favourite (mimic PM logic)
       addWalletV2(
         [...otherPaymentMethods, { ...newPaypal, favourite: true }],
         false
