@@ -41,8 +41,7 @@ addHandler(
     const isPaypalAlreadyPresent =
       getWalletV2().find(w => w.walletType === WalletTypeEnum.PayPal) !==
       undefined;
-    const outcomeCode =
-      ioDevServerConfig.wallet.onboardingCreditCardOutCode ?? 0;
+    const outcomeCode = ioDevServerConfig.wallet.onboardingPaypalOutCode ?? 0;
     // oucomeCode -> 0 -> success
     // only 1 paypal payment method can exists in the user wallet
     // add it to the wallet only if the outComeCode is success and it doesn't already exist in the wallet
