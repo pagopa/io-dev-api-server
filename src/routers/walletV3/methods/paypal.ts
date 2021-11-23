@@ -44,13 +44,13 @@ addHandler(
     const outcomeCode =
       ioDevServerConfig.wallet.onboardingCreditCardOutCode ?? 0;
     // oucomeCode -> 0 -> success
-    // only 1 paypal payment method can exists
-    // add to the wallet only if the outComeCode is success and it doesn't exist in the wallet
+    // only 1 paypal payment method can exists in the user wallet
+    // add it to the wallet only if the outComeCode is success and it doesn't already exist in the wallet
     if (!isPaypalAlreadyPresent && outcomeCode === 0) {
       const newPaypal = generatePaypalInfo(1).map(c =>
         generateWalletV2FromPaypal(c, [EnableableFunctionsEnum.pagoPA])
       )[0];
-      // set favourite off to the other payment methods
+      // set favourite off all other payment methods
       const otherPaymentMethods = getWalletV2().map(w => ({
         ...w,
         favourite: false
