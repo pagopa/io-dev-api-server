@@ -41,7 +41,10 @@ addHandler(
     const isPaypalAlreadyPresent =
       getWalletV2().find(w => w.walletType === WalletTypeEnum.PayPal) !==
       undefined;
-    const outcomeCode = ioDevServerConfig.wallet.onboardingPaypalOutCode ?? 0;
+    // if the citizen has no paypal account return an error code see https://pagopa.atlassian.net/wiki/spaces/TKM/pages/419759812/Paga+con+Paypal+-+Design+Review#Outcome
+    const outcomeCode = ioDevServerConfig.wallet.methods.citizenPaypal
+      ? ioDevServerConfig.wallet.onboardingPaypalOutCode ?? 0
+      : 18;
     // oucomeCode -> 0 -> success
     // only 1 paypal payment method can exists in the user wallet
     // add it to the wallet only if the outComeCode is success and it doesn't already exist in the wallet

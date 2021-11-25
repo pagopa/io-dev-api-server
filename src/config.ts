@@ -35,7 +35,7 @@ const paymentMethods: WalletMethodConfig = {
   walletCreditCardCoBadgeCount: 0,
   privativeCount: 0,
   satispayCount: 0,
-  paypalCount: 0,
+  paypalCount: 1,
   bPayCount: 0,
   citizenSatispay: true,
   citizenBancomatCount: 1,
