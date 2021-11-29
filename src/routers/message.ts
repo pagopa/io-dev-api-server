@@ -4,6 +4,7 @@ import { range } from "fp-ts/lib/Array";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
@@ -119,16 +120,38 @@ const createMessages = (): CreatedMessageWithContent[] => {
     });
   }
 
+  const medicalMessage = (count: number) =>
+    getNewMessage(
+      `💊 medical prescription - ${count}`,
+      messageMarkdown,
+      medicalPrescription
+    );
+
   /* medical */
-  range(1, ioDevServerConfig.messages.medicalCount).forEach(count =>
-    output.push(
-      getNewMessage(
-        `💊 medical prescription - ${count}`,
-        messageMarkdown,
-        medicalPrescription
-      )
-    )
-  );
+  range(1, ioDevServerConfig.messages.medicalCount).forEach(count => {
+    output.push(medicalMessage(count));
+    const baseMessage = medicalMessage(count);
+    output.push({
+      ...baseMessage,
+      content: {
+        ...baseMessage.content,
+        subject: `💊 medical prescription with attachments - ${count}`,
+        attachments: [
+          {
+            name: "prescription A",
+            content: "up, down, strange, charm, bottom, top",
+            mime_type: "text/plain"
+          },
+          {
+            name: "prescription B",
+            content:
+              "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSIxMDQiIHZlcnNpb249IjEuMSI+DQogIDxsaW5lIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlPSIjMDAwIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMTA0Ii8+DQogIDxsaW5lIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlPSIjMDAwIiB4MT0iMTIiIHkxPSIwIiB4Mj0iMTIiIHkyPSIxMDQiLz4NCiAgPGxpbmUgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiMwMDAiIHgxPSIyMCIgeTE9IjAiIHgyPSIyMCIgeTI9IjEwNCIvPg0KICA8bGluZSBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZT0iIzAwMCIgeDE9IjI0IiB5MT0iMCIgeDI9IjI0IiB5Mj0iMTA0Ii8+DQogIDxsaW5lIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlPSIjMDAwIiB4MT0iMjgiIHkxPSIwIiB4Mj0iMjgiIHkyPSIxMDQiLz4NCiAgPGxpbmUgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2U9IiMwMDAiIHgxPSIzNiIgeTE9IjAiIHgyPSIzNiIgeTI9IjEwNCIvPg0KICA8bGluZSBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZT0iIzAwMCIgeDE9IjM4IiB5MT0iMCIgeDI9IjM4IiB5Mj0iMTA0Ii8+DQogIDxsaW5lIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlPSIjMDAwIiB4MT0iNDYiIHkxPSIwIiB4Mj0iNDYiIHkyPSIxMDQiLz4NCiAgPGxpbmUgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiMwMDAiIHgxPSI1MCIgeTE9IjAiIHgyPSI1MCIgeTI9IjEwNCIvPg0KPC9zdmc+",
+            mime_type: "image/svg+xml"
+          }
+        ]
+      }
+    } as any);
+  });
 
   /* standard message */
   range(1, ioDevServerConfig.messages.standardMessageCount).forEach(count =>
