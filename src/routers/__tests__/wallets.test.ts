@@ -1,6 +1,7 @@
 import supertest, { Response } from "supertest";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
+import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
@@ -17,7 +18,6 @@ import {
   transactionsTotal,
   walletCount
 } from "../wallet";
-import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 
 const request = supertest(app);
 const testGetWallets = (response: Response) => {
