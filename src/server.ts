@@ -30,7 +30,7 @@ import { bancomatRouter } from "./routers/walletsV2/methods/bancomat";
 import { bpayRouter } from "./routers/walletsV2/methods/bpay";
 import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
-import { payPalRouter } from "./routers/walletV3/methods/paypal";
+import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 // create express server
 const app: Application = express();
