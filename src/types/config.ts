@@ -172,6 +172,8 @@ export const IoDevServerConfig = t.interface({
     t.partial({
       // the outcode returned at the end of credit card onboarding
       onboardingCreditCardOutCode: t.number,
+      // the outcode returned at the end of paypal onboarding
+      onboardingPaypalOutCode: t.number,
       // if defined attiva will serve the given error
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // if verifica attiva will serve the given error
