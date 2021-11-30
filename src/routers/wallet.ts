@@ -294,10 +294,9 @@ addHandler(
   }
 );
 
-/** @deprecated this API is not longer used by the app
- * this API is not official is the way out to exit the credit card checkout
+/**
+ *  @deprecated this API is not longer used by the app from when 3DS2 has been introduced
  */
-
 addHandler(
   walletRouter,
   "get",

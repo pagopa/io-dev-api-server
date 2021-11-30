@@ -35,7 +35,7 @@ const paymentMethods: WalletMethodConfig = {
   walletCreditCardCoBadgeCount: 0,
   privativeCount: 0,
   satispayCount: 0,
-  paypalCount: 1,
+  paypalCount: 0,
   bPayCount: 0,
   citizenSatispay: true,
   citizenBancomatCount: 1,
@@ -89,7 +89,9 @@ const defaultConfig: IoDevServerConfig = {
     // atm it has no effect (pr welcome)
     allowRandomValues: true,
     payment: undefined,
+    // undefined -> success (0 outcome code)
     onboardingCreditCardOutCode: undefined,
+    // undefined -> success (0 outcome code)
     onboardingPaypalOutCode: undefined
   },
   services: {
