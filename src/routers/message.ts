@@ -1,10 +1,14 @@
 import { Router } from "express";
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
+import fs from "fs";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
+import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
+import { MessageSubject } from "../../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ioDevServerConfig } from "../config";
@@ -59,9 +63,13 @@ const getNewMessage = (
   );
 
 // tslint:disable-next-line: readonly-array
-const createMessages = (): CreatedMessageWithContent[] => {
+const createMessages = (): Array<
+  CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
+> => {
   // tslint:disable-next-line: readonly-array
-  const output: CreatedMessageWithContent[] = [];
+  const output: Array<
+    CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
+  > = [];
 
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
@@ -119,16 +127,42 @@ const createMessages = (): CreatedMessageWithContent[] => {
     });
   }
 
+  const medicalMessage = (count: number) =>
+    getNewMessage(
+      `💊 medical prescription - ${count}`,
+      messageMarkdown,
+      medicalPrescription
+    );
+
+  const barcodeReceipt = fs
+    .readFileSync("assets/messages/barcodeReceipt.svg")
+    .toString("base64");
+
   /* medical */
-  range(1, ioDevServerConfig.messages.medicalCount).forEach(count =>
-    output.push(
-      getNewMessage(
-        `💊 medical prescription - ${count}`,
-        messageMarkdown,
-        medicalPrescription
-      )
-    )
-  );
+  range(1, ioDevServerConfig.messages.medicalCount).forEach(count => {
+    output.push(medicalMessage(count));
+    const baseMessage = medicalMessage(count);
+    const attachments: ReadonlyArray<MessageAttachment> = [
+      {
+        name: "prescription A",
+        content: "up, down, strange, charm, bottom, top",
+        mime_type: "text/plain"
+      },
+      {
+        name: "prescription B",
+        content: barcodeReceipt,
+        mime_type: "image/svg+xml"
+      }
+    ];
+    output.push({
+      ...baseMessage,
+      content: {
+        ...baseMessage.content,
+        subject: `💊 medical prescription with attachments - ${count}` as MessageSubject,
+        attachments
+      }
+    });
+  });
 
   /* standard message */
   range(1, ioDevServerConfig.messages.standardMessageCount).forEach(count =>
