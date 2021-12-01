@@ -22,7 +22,7 @@ export const payPalRouter = Router();
 addHandler(
   payPalRouter,
   "get",
-  appendWalletV3Prefix("/paypal/searchPSP"),
+  appendWalletV3Prefix("/paypal/psps"),
   (_, res) => {
     const maybePspResponse = validatePayload(
       PaypalPspListResponse,
