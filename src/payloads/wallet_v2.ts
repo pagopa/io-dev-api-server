@@ -5,8 +5,8 @@ import { fromNullable } from "fp-ts/lib/Option";
 import * as t from "io-ts";
 import sha256 from "sha256";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
+import { PayPalAccountPspInfo } from "../../generated/definitions/pagopa/PayPalAccountPspInfo";
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
-import { PaypalPspListResponse } from "../../generated/definitions/pagopa/PaypalPspListResponse";
 import {
   TypeEnum as WalletV1TypeEnum,
   Wallet
@@ -97,12 +97,12 @@ export const generatePaypalInfo = (
       index: config.index + 1
     });
     const maybePspResponse = validatePayload(
-      PaypalPspListResponse,
-      readFileAsJSON(assetsFolder + "/pm/paypal/psp.json")
+      t.readonlyArray(PayPalAccountPspInfo),
+      readFileAsJSON(assetsFolder + "/pm/paypal/psp_account.json")
     );
     return {
-      emailPp,
-      psp: maybePspResponse.data[0]
+      // inject the email
+      pspInfo: maybePspResponse.map(p => ({ ...p, email: emailPp }))
     };
   });
 };
