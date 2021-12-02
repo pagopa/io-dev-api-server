@@ -8,6 +8,7 @@ import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { services } from "../routers/service";
 import { getRandomIntInRange } from "../utils/id";
 import { validatePayload } from "../utils/validator";
@@ -83,4 +84,31 @@ export const withContent = (
     eu_covid_cert: euCovidCert
   });
   return { ...message, content };
+};
+
+// TODO: use type from API definitions once they are available
+type Category =
+  | { tag: "EU_COVID_CERT" }
+  | { tag: "PAYMENT"; rptId: string }
+  | { tag: "GENERIC" };
+
+export const getCategory = (message: CreatedMessageWithContent): Category => {
+  const { eu_covid_cert, payment_data } = message.content;
+  const senderService = services.find(
+    s => s.service_id === message.sender_service_id
+  )!;
+  if (eu_covid_cert?.auth_code) {
+    return {
+      tag: "EU_COVID_CERT"
+    };
+  }
+  if (payment_data) {
+    return {
+      tag: "PAYMENT",
+      rptId: `${senderService.organization_fiscal_code}${payment_data.notice_number}`
+    };
+  }
+  return {
+    tag: "GENERIC"
+  };
 };

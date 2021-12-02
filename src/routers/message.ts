@@ -15,6 +15,7 @@ import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import {
   createMessage,
+  getCategory,
   withContent,
   withDueDate,
   withPaymentData
@@ -299,7 +300,8 @@ const getPublicMessages = (
       ? {
           service_name: senderService!.service_name,
           organization_name: senderService!.organization_name,
-          message_title: m.content.subject
+          message_title: m.content.subject,
+          category: getCategory(m)
         }
       : {};
     return {
