@@ -1,27 +1,30 @@
 import { Router } from "express";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
-import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/AbiListResponse";
-import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
-import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
+import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
 import {
   WalletTypeEnum,
   WalletV2
-} from "../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletV2ListResponse";
+} from "../../../generated/definitions/pagopa/WalletV2";
+import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/AbiListResponse";
+import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
+import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
+import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
 import { ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
 import {
   abiData,
   generateBancomatPay,
   generateCards,
+  generatePaypalInfo,
   generatePrivativeFromWalletV2,
   generateSatispayInfo,
   generateWalletV2FromCard,
+  generateWalletV2FromPaypal,
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
 } from "../../payloads/wallet_v2";
 import { WalletMethodConfig } from "../../types/config";
-import { appendWalletV2Prefix } from "../../utils/wallet";
+import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
 
 export const wallet2Router = Router();
 export const abiResponse: AbiListResponse = {
@@ -82,6 +85,8 @@ let privativeCards: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
+let walletPaypal: ReadonlyArray<WalletV2> = [];
+// tslint:disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 export let walletV2Config: WalletMethodConfig =
@@ -126,13 +131,18 @@ export const generateWalletV2Data = () => {
     )
   };
 
+  const FA_BPD: ReadonlyArray<EnableableFunctionsEnum> = [
+    EnableableFunctionsEnum.FA,
+    EnableableFunctionsEnum.BPD
+  ];
+
   // add bancomat
   walletBancomat = generateCards(
     abiResponse.data ?? [],
     walletV2Config.walletBancomatCount,
     WalletTypeEnum.Bancomat
   ).map(c =>
-    generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false, ["FA", "BPD"])
+    generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false, FA_BPD)
   );
   // add credit cards
   walletCreditCards = generateCards(
@@ -145,16 +155,17 @@ export const generateWalletV2Data = () => {
     abiResponse.data ?? [],
     walletV2Config.walletCreditCardCoBadgeCount,
     WalletTypeEnum.Card
-  ).map(c =>
-    generateWalletV2FromCard(c, WalletTypeEnum.Card, false, ["FA", "BPD"])
-  );
+  ).map(c => generateWalletV2FromCard(c, WalletTypeEnum.Card, false, FA_BPD));
   // cobadge owned by the citizen
   citizenCreditCardCoBadge = generateCards(
     abiResponse.data ?? [],
     walletV2Config.citizenCreditCardCoBadgeCount,
     WalletTypeEnum.Card
   ).map(c =>
-    generateWalletV2FromCard(c, WalletTypeEnum.Card, false, ["FA", "BPD"])
+    generateWalletV2FromCard(c, WalletTypeEnum.Card, false, [
+      EnableableFunctionsEnum.FA,
+      EnableableFunctionsEnum.BPD
+    ])
   );
   // add privative cards
   privativeCards = generateCards(
@@ -163,7 +174,7 @@ export const generateWalletV2Data = () => {
     WalletTypeEnum.Card
   ).map((c, idx) =>
     generatePrivativeFromWalletV2(
-      generateWalletV2FromCard(c, WalletTypeEnum.Card, false, ["FA", "BPD"]),
+      generateWalletV2FromCard(c, WalletTypeEnum.Card, false, FA_BPD),
       idx
     )
   );
@@ -175,7 +186,7 @@ export const generateWalletV2Data = () => {
     WalletTypeEnum.Card
   ).map((c, idx) =>
     generatePrivativeFromWalletV2(
-      generateWalletV2FromCard(c, WalletTypeEnum.Card, false, ["FA", "BPD"]),
+      generateWalletV2FromCard(c, WalletTypeEnum.Card, false, FA_BPD),
       idx
     )
   );
@@ -190,20 +201,24 @@ export const generateWalletV2Data = () => {
   }
   // add satispay
   walletSatispay = generateSatispayInfo(walletV2Config.satispayCount).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.Satispay, [
-      "FA",
-      "BPD"
-    ])
+    generateWalletV2FromSatispayOrBancomatPay(
+      c,
+      WalletTypeEnum.Satispay,
+      FA_BPD
+    )
   );
+
+  // add paypal
+  walletPaypal = generatePaypalInfo(walletV2Config.paypalCount).map(c =>
+    generateWalletV2FromPaypal(c, [EnableableFunctionsEnum.pagoPA])
+  );
+
   // add bancomatPay
   walletBancomatPay = generateBancomatPay(
     abiResponse.data ?? [],
     walletV2Config.bPayCount
   ).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay, [
-      "FA",
-      "BPD"
-    ])
+    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay, FA_BPD)
   );
 
   addWalletV2(
@@ -213,6 +228,7 @@ export const generateWalletV2Data = () => {
       ...walletCreditCards,
       ...walletCreditCardsCoBadges,
       ...walletSatispay,
+      ...walletPaypal,
       ...walletBancomatPay
     ],
     false
@@ -221,6 +237,12 @@ export const generateWalletV2Data = () => {
 
 // return the list of wallets
 addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
+  res.json(walletV2Response)
+);
+
+// PM compliance: despite the endpoint is v3, the payment methods list returned by this API includes methods of type v2
+// v3 is the same of v2 but in addition it includes paypal ¯\_(ツ)_/¯
+addHandler(wallet2Router, "get", appendWalletV3Prefix("/wallet"), (_, res) =>
   res.json(walletV2Response)
 );
 

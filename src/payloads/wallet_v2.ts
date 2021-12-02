@@ -4,6 +4,17 @@ import { range } from "fp-ts/lib/Array";
 import { fromNullable } from "fp-ts/lib/Option";
 import * as t from "io-ts";
 import sha256 from "sha256";
+import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
+import { PayPalAccountPspInfo } from "../../generated/definitions/pagopa/PayPalAccountPspInfo";
+import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
+import {
+  TypeEnum as WalletV1TypeEnum,
+  Wallet
+} from "../../generated/definitions/pagopa/Wallet";
+import {
+  WalletTypeEnum,
+  WalletV2
+} from "../../generated/definitions/pagopa/WalletV2";
 import { Abi } from "../../generated/definitions/pagopa/walletv2/Abi";
 import { BPay } from "../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../generated/definitions/pagopa/walletv2/BPayInfo";
@@ -17,19 +28,12 @@ import {
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import {
-  TypeEnum as WalletV1TypeEnum,
-  Wallet
-} from "../../generated/definitions/pagopa/walletv2/Wallet";
-import {
-  WalletTypeEnum,
-  WalletV2
-} from "../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";
 import { CreditCardBrandEnum, getCreditCardLogo } from "../utils/payment";
+import { validatePayload } from "../utils/validator";
 
 type CardConfig = {
   prefix: string;
@@ -52,7 +56,8 @@ const cardConfigMap: Map<WalletTypeEnum, CardConfig> = new Map<
   [WalletTypeEnum.Card, { prefix: "000012345678", index: 0 }],
   [WalletTypeEnum.Bancomat, { prefix: "123400005678", index: 0 }],
   [WalletTypeEnum.BPay, { prefix: "123456780000", index: 0 }],
-  [WalletTypeEnum.Satispay, { prefix: "125678000034", index: 0 }]
+  [WalletTypeEnum.Satispay, { prefix: "125678000034", index: 0 }],
+  [WalletTypeEnum.PayPal, { prefix: "email", index: 0 }]
 ]);
 
 export const resetCardConfig = () => {
@@ -75,6 +80,29 @@ export const generateSatispayInfo = (
     });
     return {
       uuid
+    };
+  });
+};
+
+export const generatePaypalInfo = (
+  count: number
+): ReadonlyArray<PayPalInfo> => {
+  return range(1, count).map(_ => {
+    const config = fromNullable(
+      cardConfigMap.get(WalletTypeEnum.PayPal)
+    ).getOrElse(defaultCardConfig);
+    const emailPp = `${config.prefix}.${config.index.toString()}@paypal.it`;
+    cardConfigMap.set(WalletTypeEnum.PayPal, {
+      ...config,
+      index: config.index + 1
+    });
+    const maybePspResponse = validatePayload(
+      t.readonlyArray(PayPalAccountPspInfo),
+      readFileAsJSON(assetsFolder + "/pm/paypal/psp_account.json")
+    );
+    return {
+      // inject the email
+      pspInfo: maybePspResponse.map(p => ({ ...p, email: emailPp }))
     };
   });
 };
@@ -180,7 +208,11 @@ export const generateWalletV2FromCard = (
   card: Card,
   walletType: WalletTypeEnum,
   canMethodPay: boolean,
-  enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
+  enableableFunctions: ReadonlyArray<EnableableFunctionsEnum> = [
+    EnableableFunctionsEnum.FA,
+    EnableableFunctionsEnum.pagoPA,
+    EnableableFunctionsEnum.BPD
+  ]
 ): WalletV2 => {
   const ed = card.expiringDate
     ? new Date(card.expiringDate)
@@ -234,7 +266,11 @@ export const generatePrivativeFromWalletV2 = (
 export const generateWalletV2FromSatispayOrBancomatPay = (
   info: SatispayInfo | BPayInfo,
   walletType: WalletTypeEnum.Satispay | WalletTypeEnum.BPay,
-  enableableFunctions: ReadonlyArray<string> = ["FA", "pagoPA", "BPD"]
+  enableableFunctions: ReadonlyArray<EnableableFunctionsEnum> = [
+    EnableableFunctionsEnum.FA,
+    EnableableFunctionsEnum.pagoPA,
+    EnableableFunctionsEnum.BPD
+  ]
 ): WalletV2 => {
   const ed = faker.date.future();
   return {
@@ -250,6 +286,43 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
+
+export const generateWalletV2FromPaypal = (
+  info: PayPalInfo,
+  enableableFunctions: ReadonlyArray<EnableableFunctionsEnum> = [
+    EnableableFunctionsEnum.FA,
+    EnableableFunctionsEnum.pagoPA,
+    EnableableFunctionsEnum.BPD
+  ]
+): WalletV2 => {
+  const ed = faker.date.future();
+  return {
+    walletType: WalletTypeEnum.PayPal,
+    // force createDate to be a string because we need to force a specific date format
+    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
+    enableableFunctions,
+    favourite: false,
+    idWallet: getNextIdWallet(),
+    info,
+    onboardingChannel: "IO",
+    pagoPA: enableableFunctions.includes(EnableableFunctionsEnum.pagoPA),
+    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
+  };
+};
+
+export const generateWalletV1FromPayPal = (
+  idWallet: number,
+  info: PayPalInfo
+): Wallet => ({
+  idWallet,
+  type: WalletV1TypeEnum.EXTERNAL_PS,
+  favourite: false,
+  payPals: [info],
+  pspEditable: true,
+  isPspToIgnore: false,
+  saved: false,
+  registeredNexi: false
+});
 
 export const generateWalletV1FromCardInfo = (
   idWallet: number,
