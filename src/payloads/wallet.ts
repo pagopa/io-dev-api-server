@@ -177,6 +177,9 @@ export const getTransactions = (
   confirmed: boolean = true,
   wallets?: ReadonlyArray<Wallet>
 ): ReadonlyArray<Transaction> => {
+  if (wallets?.length === 0) {
+    return [];
+  }
   return range(1, count).map(idx => {
     const amount = getRandomValue(
       20000 + idx * 10,
