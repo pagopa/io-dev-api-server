@@ -1,3 +1,4 @@
+import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 
@@ -192,6 +193,9 @@ export const backendStatus: BackendStatus = {
     },
     bpd_ranking: true,
     bpd_ranking_v2: true,
-    cgn_merchants_v2: false
+    cgn_merchants_v2: false,
+    assistanceTool: {
+      tool: ToolEnum.none
+    }
   }
 };
