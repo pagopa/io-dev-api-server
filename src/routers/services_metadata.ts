@@ -9,6 +9,7 @@ import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
+import { zendeskConfig } from "../payloads/zendesk";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { services } from "./service";
 
@@ -207,4 +208,10 @@ addHandler(
   (req, res) => {
     sendFile(`assets/imgs/logos/spid/${req.params.spid_logo}`, res);
   }
+);
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/assistanceTools/zendesk.json"),
+  (req, res) => res.json(zendeskConfig)
 );
