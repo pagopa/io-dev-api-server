@@ -3,12 +3,14 @@ import * as faker from "faker";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
+import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
+import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
+import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
 import { NewMessageContent } from "../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { services } from "../routers/service";
 import { getRandomIntInRange } from "../utils/id";
 import { validatePayload } from "../utils/validator";
@@ -86,29 +88,25 @@ export const withContent = (
   return { ...message, content };
 };
 
-// TODO: use type from API definitions once they are available
-type Category =
-  | { tag: "EU_COVID_CERT" }
-  | { tag: "PAYMENT"; rptId: string }
-  | { tag: "GENERIC" };
-
-export const getCategory = (message: CreatedMessageWithContent): Category => {
+export const getCategory = (
+  message: CreatedMessageWithContent
+): MessageCategory => {
   const { eu_covid_cert, payment_data } = message.content;
   const senderService = services.find(
     s => s.service_id === message.sender_service_id
   )!;
   if (eu_covid_cert?.auth_code) {
     return {
-      tag: "EU_COVID_CERT"
+      tag: TagEnumBase.EU_COVID_CERT
     };
   }
   if (payment_data) {
     return {
-      tag: "PAYMENT",
+      tag: TagEnumPayment.PAYMENT,
       rptId: `${senderService.organization_fiscal_code}${payment_data.notice_number}`
     };
   }
   return {
-    tag: "GENERIC"
+    tag: TagEnumBase.GENERIC
   };
 };
