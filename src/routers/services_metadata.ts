@@ -3,6 +3,7 @@
  */
 import { Router } from "express";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../config";
@@ -10,6 +11,7 @@ import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
+import { validatePayload } from "../utils/validator";
 import { services } from "./service";
 
 export const servicesMetadataRouter = Router();
@@ -206,5 +208,17 @@ addHandler(
   addRoutePrefix("/logos/spid/idps/:spid_logo"),
   (req, res) => {
     sendFile(`assets/imgs/logos/spid/${req.params.spid_logo}`, res);
+  }
+);
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/assistanceTools/zendesk.json"),
+  (req, res) => {
+    const content = readFileAsJSON(
+      assetsFolder + "/assistanceTools/zendesk.json"
+    );
+    const zendeskPayload = validatePayload(Zendesk, content);
+    res.json(zendeskPayload);
   }
 );
