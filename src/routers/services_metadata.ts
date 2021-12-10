@@ -215,8 +215,8 @@ addHandler(
   "get",
   addRoutePrefix("/assistanceTools/zendesk.json"),
   (req, res) => {
-    const content = res.json(
-      readFileAsJSON(assetsFolder + "/assistanceTools/zendesk.json")
+    const content = readFileAsJSON(
+      assetsFolder + "/assistanceTools/zendesk.json"
     );
     const zendeskPayload = validatePayload(Zendesk, content);
     res.json(zendeskPayload);
