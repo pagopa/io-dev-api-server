@@ -1,6 +1,7 @@
 import supertest, { Response } from "supertest";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
+import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/SessionResponse";
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
@@ -210,6 +211,16 @@ it("should return a valid psp", async done => {
   const response = await request.get(appendWalletV1Prefix(`/psps/43188`));
   expect(response.status).toBe(200);
   const psp = Psp.decode(response.body);
+  expect(psp.isRight()).toBeTruthy();
+  done();
+});
+
+it("should return a valid psp list (v2)", async done => {
+  const response = await request.get(
+    appendWalletV2Prefix(`/payments/1234/psps?idWallet=1`)
+  );
+  expect(response.status).toBe(200);
+  const psp = PspDataListResponse.decode(response.body);
   expect(psp.isRight()).toBeTruthy();
   done();
 });

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
+import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 import {
   WalletTypeEnum,
   WalletV2
@@ -9,7 +10,7 @@ import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
-import { ioDevServerConfig } from "../../config";
+import { assetsFolder, ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
 import {
   abiData,
@@ -24,6 +25,8 @@ import {
   privativeIssuers
 } from "../../payloads/wallet_v2";
 import { WalletMethodConfig } from "../../types/config";
+import { readFileAsJSON } from "../../utils/file";
+import { validatePayload } from "../../utils/validator";
 import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
 
 export const wallet2Router = Router();
@@ -271,6 +274,22 @@ addHandler(
       }
     };
     res.json(response);
+  }
+);
+
+/**
+ * return the list of psp from a given payment id and wallet id
+ */
+addHandler(
+  wallet2Router,
+  "get",
+  appendWalletV2Prefix("/payments/:idPayment/psps"),
+  (_, res) => {
+    const psp = validatePayload(
+      PspDataListResponse,
+      readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
+    );
+    res.json(psp);
   }
 );
 

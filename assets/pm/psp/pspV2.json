@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "codiceAbi": "01010",
+      "defaultPsp": true,
+      "fee": 123,
+      "idPsp": "1",
+      "onboard": true,
+      "privacyUrl": "https://io.italia.it",
+      "ragioneSociale": "First PSP"
+    },
+    {
+      "codiceAbi": "01015",
+      "defaultPsp": true,
+      "fee": 456,
+      "idPsp": "2",
+      "onboard": true,
+      "privacyUrl": "https://io.italia.it",
+      "ragioneSociale": "Second PSP"
+    }
+  ]
+}
