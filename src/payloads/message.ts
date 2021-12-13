@@ -13,6 +13,7 @@ import { PaymentNoticeNumber } from "../../generated/definitions/backend/Payment
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { services } from "../routers/service";
 import { getRandomIntInRange } from "../utils/id";
+import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
 
 // tslint:disable-next-line: no-let
@@ -103,7 +104,7 @@ export const getCategory = (
   if (payment_data) {
     return {
       tag: TagEnumPayment.PAYMENT,
-      rptId: `${senderService.organization_fiscal_code}${payment_data.notice_number}`
+      rptId: getRptID(senderService, payment_data)
     };
   }
   return {
