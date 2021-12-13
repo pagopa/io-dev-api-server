@@ -104,6 +104,7 @@ const defaultConfig: IoDevServerConfig = {
     national: 5,
     local: 5,
     includeSiciliaVola: true,
+    includeCgn: true,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   }

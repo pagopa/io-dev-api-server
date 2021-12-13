@@ -6,22 +6,19 @@ import { addHandler } from "../payloads/response";
 import {
   getServices,
   getServicesPreferences,
-  getServicesTuple,
-  withSiciliaVolaService
-} from "../payloads/service";
+  getServicesTuple
+} from "../payloads/services";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 export const serviceRouter = Router();
 
 const configResponse = ioDevServerConfig.services.response;
-const nationalLocalServices = getServices(
+export const services = getServices(
   ioDevServerConfig.services.national,
   ioDevServerConfig.services.local
 );
-export const services = ioDevServerConfig.services.includeSiciliaVola
-  ? withSiciliaVolaService(nationalLocalServices)
-  : nationalLocalServices;
+
 export const visibleServices = getServicesTuple(services);
 const servicesPreferences = getServicesPreferences(services);
 
