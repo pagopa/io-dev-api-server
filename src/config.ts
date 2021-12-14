@@ -97,7 +97,9 @@ const defaultConfig: IoDevServerConfig = {
     // undefined -> success (0 outcome code)
     onboardingCreditCardOutCode: undefined,
     // undefined -> success (0 outcome code)
-    onboardingPaypalOutCode: undefined
+    onboardingPaypalOutCode: undefined,
+    // undefined -> success (0 outcome code)
+    paymentOutCode: undefined
   },
   services: {
     response: {

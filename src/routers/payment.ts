@@ -178,7 +178,8 @@ addHandler(
     handlePaymentPostAndRedirect(
       req,
       res,
-      ioDevServerConfig.wallet.onboardingCreditCardOutCode
+      ioDevServerConfig.wallet.onboardingCreditCardOutCode,
+      "Credit Card onboarding"
     )
 );
 
@@ -187,7 +188,12 @@ addHandler(
   walletRouter,
   "post",
   "/wallet/v3/webview/transactions/pay",
-  handlePaymentPostAndRedirect
+  (req, res) =>
+    handlePaymentPostAndRedirect(
+      req,
+      res,
+      ioDevServerConfig.wallet.paymentOutCode
+    )
 );
 
 /**
