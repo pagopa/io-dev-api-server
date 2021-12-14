@@ -169,7 +169,7 @@ export const handlePaymentPostAndRedirect = (
   );
 };
 
-// credit card - payment
+// credit card - onboarding payment
 addHandler(
   walletRouter,
   "post",

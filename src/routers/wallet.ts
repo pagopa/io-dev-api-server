@@ -44,6 +44,8 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
+import { ioDevServerConfig } from "../config";
+import { isOutcomeCodeSuccessfully } from "../utils/payment";
 export const walletCount =
   walletV2Config.paypalCount +
   walletV2Config.satispayCount +
@@ -218,8 +220,14 @@ addHandler(
       true
     );
     const info = walletV2.info as CardInfo;
-    // add new wallet to the existing ones
-    addWalletV2([walletV2]);
+    if (
+      isOutcomeCodeSuccessfully(
+        ioDevServerConfig.wallet.onboardingCreditCardOutCode
+      )
+    ) {
+      // add new wallet to the existing ones only when the outcome code is successfully
+      addWalletV2([walletV2]);
+    }
     const response: WalletResponse = {
       data: {
         idWallet: walletV2.idWallet,
