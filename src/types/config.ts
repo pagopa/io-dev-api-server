@@ -9,6 +9,10 @@ import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
+import {
+  AssistanceToolConfig,
+  ToolEnum
+} from "../../generated/definitions/content/AssistanceToolConfig";
 
 /* profile */
 export const ProfileAttrs = t.interface({
@@ -90,6 +94,11 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean
     }),
+    AllowRandomValue
+  ]),
+  assistanceTools: t.intersection([
+    // the assistance tool used by the app
+    AssistanceToolConfig,
     AllowRandomValue
   ]),
   // some attributes of the profile used as citizen
@@ -175,6 +184,8 @@ export const IoDevServerConfig = t.interface({
       onboardingCreditCardOutCode: t.number,
       // the outcode returned at the end of paypal onboarding
       onboardingPaypalOutCode: t.number,
+      // the outcode returned at the end of a payment
+      paymentOutCode: t.number,
       // if defined attiva will serve the given error
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // if verifica attiva will serve the given error

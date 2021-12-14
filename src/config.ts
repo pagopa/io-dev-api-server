@@ -7,6 +7,7 @@ import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
+import { ToolEnum } from "../generated/definitions/content/AssistanceToolConfig";
 import {
   IoDevServerConfig,
   ProfileAttrs,
@@ -55,6 +56,10 @@ const defaultConfig: IoDevServerConfig = {
     autoLogin: false,
     allowRandomValues: true
   },
+  assistanceTools: {
+    tool: ToolEnum.instabug,
+    allowRandomValues: false
+  },
   profile: {
     attrs: defaultProfileAttrs,
     authenticationProvider: "spid",
@@ -89,10 +94,12 @@ const defaultConfig: IoDevServerConfig = {
     // atm it has no effect (pr welcome)
     allowRandomValues: true,
     payment: undefined,
-    // undefined -> success (0 outcome code)
-    onboardingCreditCardOutCode: undefined,
-    // undefined -> success (0 outcome code)
-    onboardingPaypalOutCode: undefined
+    // success (0 outcome code)
+    onboardingCreditCardOutCode: 0,
+    // success (0 outcome code)
+    onboardingPaypalOutCode: 0,
+    // success (0 outcome code)
+    paymentOutCode: 0
   },
   services: {
     response: {

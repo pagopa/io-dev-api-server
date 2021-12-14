@@ -18,6 +18,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
+import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
   getPspFromId,
@@ -34,6 +35,7 @@ import {
   generateWalletV1FromPayPal,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
+import { isOutcomeCodeSuccessfully } from "../utils/payment";
 import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
@@ -218,8 +220,14 @@ addHandler(
       true
     );
     const info = walletV2.info as CardInfo;
-    // add new wallet to the existing ones
-    addWalletV2([walletV2]);
+    if (
+      isOutcomeCodeSuccessfully(
+        ioDevServerConfig.wallet.onboardingCreditCardOutCode
+      )
+    ) {
+      // add new wallet to the existing ones only when the outcome code is successfully
+      addWalletV2([walletV2]);
+    }
     const response: WalletResponse = {
       data: {
         idWallet: walletV2.idWallet,

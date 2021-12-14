@@ -1,6 +1,6 @@
-import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
+import { ioDevServerConfig } from "../config";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -195,7 +195,7 @@ export const backendStatus: BackendStatus = {
     bpd_ranking_v2: true,
     cgn_merchants_v2: false,
     assistanceTool: {
-      tool: ToolEnum.instabug
+      tool: ioDevServerConfig.assistanceTools.tool
     }
   }
 };
