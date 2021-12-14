@@ -13,6 +13,7 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
+import { ToolEnum } from "../generated/definitions/content/AssistanceToolConfig";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
@@ -54,6 +55,10 @@ const defaultConfig: IoDevServerConfig = {
     delay: 0,
     autoLogin: false,
     allowRandomValues: true
+  },
+  assistanceTools: {
+    tool: ToolEnum.instabug,
+    allowRandomValues: false
   },
   profile: {
     attrs: defaultProfileAttrs,
