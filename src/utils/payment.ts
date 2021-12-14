@@ -46,5 +46,6 @@ export const getCreditCardLogo = (cc: CreditCardBrandEnum) =>
     : undefined;
 
 // undefined -> 0 -> success
-export const isOutcomeCodeSuccessfully = (outcome: number | undefined) =>
-  (outcome ?? 0) === 0;
+export const isOutcomeCodeSuccessfully = (
+  outcome: number | undefined
+): boolean => (outcome ?? 0) === 0;
