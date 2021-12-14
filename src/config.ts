@@ -94,12 +94,12 @@ const defaultConfig: IoDevServerConfig = {
     // atm it has no effect (pr welcome)
     allowRandomValues: true,
     payment: undefined,
-    // undefined -> success (0 outcome code)
-    onboardingCreditCardOutCode: undefined,
-    // undefined -> success (0 outcome code)
-    onboardingPaypalOutCode: undefined,
-    // undefined -> success (0 outcome code)
-    paymentOutCode: undefined
+    // success (0 outcome code)
+    onboardingCreditCardOutCode: 0,
+    // success (0 outcome code)
+    onboardingPaypalOutCode: 0,
+    // success (0 outcome code)
+    paymentOutCode: 0
   },
   services: {
     response: {
