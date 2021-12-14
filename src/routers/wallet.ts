@@ -18,6 +18,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
+import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
   getPspFromId,
@@ -34,6 +35,7 @@ import {
   generateWalletV1FromPayPal,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
+import { isOutcomeCodeSuccessfully } from "../utils/payment";
 import { interfaces, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
@@ -44,8 +46,6 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
-import { ioDevServerConfig } from "../config";
-import { isOutcomeCodeSuccessfully } from "../utils/payment";
 export const walletCount =
   walletV2Config.paypalCount +
   walletV2Config.satispayCount +

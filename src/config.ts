@@ -7,13 +7,13 @@ import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
+import { ToolEnum } from "../generated/definitions/content/AssistanceToolConfig";
 import {
   IoDevServerConfig,
   ProfileAttrs,
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
-import { ToolEnum } from "../generated/definitions/content/AssistanceToolConfig";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
