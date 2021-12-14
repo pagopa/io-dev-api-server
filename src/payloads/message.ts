@@ -3,6 +3,9 @@ import * as faker from "faker";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
+import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
+import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
+import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
 import { NewMessageContent } from "../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
@@ -10,6 +13,7 @@ import { PaymentNoticeNumber } from "../../generated/definitions/backend/Payment
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { services } from "../routers/service";
 import { getRandomIntInRange } from "../utils/id";
+import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
 
 // tslint:disable-next-line: no-let
@@ -83,4 +87,27 @@ export const withContent = (
     eu_covid_cert: euCovidCert
   });
   return { ...message, content };
+};
+
+export const getCategory = (
+  message: CreatedMessageWithContent
+): MessageCategory => {
+  const { eu_covid_cert, payment_data } = message.content;
+  const senderService = services.find(
+    s => s.service_id === message.sender_service_id
+  )!;
+  if (eu_covid_cert?.auth_code) {
+    return {
+      tag: TagEnumBase.EU_COVID_CERT
+    };
+  }
+  if (payment_data) {
+    return {
+      tag: TagEnumPayment.PAYMENT,
+      rptId: getRptID(senderService, payment_data)
+    };
+  }
+  return {
+    tag: TagEnumBase.GENERIC
+  };
 };
