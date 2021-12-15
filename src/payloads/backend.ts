@@ -117,12 +117,12 @@ export const backendStatus: BackendStatus = {
       is_visible: false,
       level: LevelEnum.warning,
       badge: {
-        "it-IT": "paypal ita badge",
-        "en-EN": "paypal eng badge"
+        "it-IT": "",
+        "en-EN": ""
       },
       message: {
-        "it-IT": "paypal ita message",
-        "en-EN": "paypal eng message"
+        "it-IT": "",
+        "en-EN": ""
       }
     },
     satispay: {
