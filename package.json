@@ -2,7 +2,7 @@
   "name": "io-dev-api-server",
   "pretty_name": "IO App - dev server",
   "description": "A mock server to help io-app development https://io.italia.it/",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "app.js",
   "api_backend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.26.0-RELEASE/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.26.0-RELEASE/api_public.yaml",
