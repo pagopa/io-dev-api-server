@@ -310,14 +310,10 @@ export const generateWalletV2FromPaypal = (
   };
 };
 
-export const generateWalletV1FromPayPal = (
-  idWallet: number,
-  info: PayPalInfo
-): Wallet => ({
+export const generateWalletV1FromPayPal = (idWallet: number): Wallet => ({
   idWallet,
   type: WalletV1TypeEnum.EXTERNAL_PS,
   favourite: false,
-  payPals: [info],
   pspEditable: true,
   isPspToIgnore: false,
   saved: false,
