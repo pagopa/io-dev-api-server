@@ -74,7 +74,7 @@ const convertFavouriteWalletfromV2V1 = (
       generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
     )
     .with(WalletTypeEnum.PayPal, () =>
-      generateWalletV1FromPayPal(wallet.idWallet!, wallet.info as PayPalInfo)
+      generateWalletV1FromPayPal(wallet.idWallet!)
     )
     .otherwise(() => undefined);
 };
