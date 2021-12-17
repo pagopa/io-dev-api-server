@@ -18,6 +18,7 @@ import {
   getCategory,
   withContent,
   withDueDate,
+  withLegalContent,
   withPaymentData
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
@@ -66,6 +67,7 @@ const getNewMessage = (
 // tslint:disable-next-line: readonly-array
 const createMessages = (): Array<
   CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
+  // tslint:disable-next-line:no-big-function
 > => {
   // tslint:disable-next-line: readonly-array
   const output: Array<
@@ -265,6 +267,19 @@ const createMessages = (): Array<
     )
   );
 
+  range(1, ioDevServerConfig.messages.legalCount).forEach(count =>
+    output.push(
+      withLegalContent(getNewMessage(`⚖️ Legal - ${count} `, messageMarkdown), [
+        {
+          id: "7faefa60fff0a2984fd56bba80bbf6de",
+          name: "a hefty fine",
+          content_type: "text/plain",
+          url: "buonefeste.a.tutti"
+        }
+      ])
+    )
+  );
+
   return output;
 };
 
@@ -416,6 +431,26 @@ addHandler(
       res.sendStatus(configResponse.getMessagesResponseCode);
       return;
     }
+    // retrieve the messageIndex from id
+    const message = messagesWithContent.find(item => item.id === req.params.id);
+    if (message === undefined) {
+      res.json(getProblemJson(404, "message not found"));
+    }
+    res.json(message);
+  }
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/legal-messages/:id"),
+  (req, res) => {
+    // tslint:disable-next-line:no-commented-code
+    // if (configResponse.getLegalMessageResponseCode !== 200) {
+    //   res.sendStatus(configResponse.getLegalMessageResponseCode);
+    //   return;
+    // }
+
     // retrieve the messageIndex from id
     const message = messagesWithContent.find(item => item.id === req.params.id);
     if (message === undefined) {

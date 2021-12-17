@@ -124,6 +124,7 @@ export const IoDevServerConfig = t.interface({
         // number of messages containing payment (valid with no due date and invalid after due date)
       }),
       paymentsCount: t.number,
+      legalCount: t.number,
       // number of message - invalid after due date - containing a payment and a valid (not expired) due date
       paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
       // number of message - invalid after due date -  containing a payment and a not valid (expired) due date

@@ -1,8 +1,12 @@
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { UTCISODateFromString } from "@pagopa/ts-commons/lib/dates";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
+import { Attachment } from "../../generated/definitions/backend/Attachment";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
+import { LegalMessage } from "../../generated/definitions/backend/LegalMessage";
+import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
 import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
 import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
@@ -46,6 +50,39 @@ export const withDueDate = (
   dueDate: Date
 ): CreatedMessageWithContent => {
   return { ...message, content: { ...message.content, due_date: dueDate } };
+};
+
+export const withLegalContent = (
+  message: CreatedMessageWithContent,
+  attachments: ReadonlyArray<Attachment> = []
+): LegalMessageWithContent => {
+  const legalMessage: LegalMessage = {
+    eml: {
+      subject: "You're fired",
+      plain_text_content: "lol I'm joking!",
+      html_content: "<p>or <b>am I?</b></p>",
+      attachments
+    },
+    cert_data: {
+      header: {
+        sender: "dear.leader@yourworld.hell" as NonEmptyString,
+        recipients: "slave@yourworld.hell" as NonEmptyString,
+        replies: "down.the.john@theshitIgive.hell" as NonEmptyString,
+        object: "I told you already: you're fired" as NonEmptyString
+      },
+      data: {
+        sender_provider: "apocalypse knights" as NonEmptyString,
+        timestamp: (new Date().toISOString() as unknown) as UTCISODateFromString,
+        envelope_id: "abcde" as NonEmptyString,
+        msg_id: "fghi" as NonEmptyString,
+        receipt_type: "what's that?"
+      }
+    }
+  };
+  return {
+    ...message,
+    legal_message: legalMessage
+  };
 };
 
 export const withPaymentData = (
@@ -96,6 +133,11 @@ export const getCategory = (
   const senderService = services.find(
     s => s.service_id === message.sender_service_id
   )!;
+  if ((message as LegalMessageWithContent).legal_message) {
+    return {
+      tag: TagEnumBase.LEGAL_MESSAGE
+    };
+  }
   if (eu_covid_cert?.auth_code) {
     return {
       tag: TagEnumBase.EU_COVID_CERT
