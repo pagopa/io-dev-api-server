@@ -1,6 +1,8 @@
 import { UTCISODateFromString } from "@pagopa/ts-commons/lib/dates";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
+import * as path from "path";
+import sha256 from "sha256";
 import { Attachment } from "../../generated/definitions/backend/Attachment";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
@@ -15,15 +17,14 @@ import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { assetsFolder } from "../config";
 import { services } from "../routers/service";
+import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
-import { validatePayload } from "../utils/validator";
-import { listDir } from "../utils/file";
-import { assetsFolder } from "../config";
-import * as path from "path";
 import { interfaces, serverPort } from "../utils/server";
-import sha256 from "sha256";
+import { addApiV1Prefix } from "../utils/strings";
+import { validatePayload } from "../utils/validator";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -59,8 +60,10 @@ export const withDueDate = (
 
 export const withLegalContent = (
   message: CreatedMessageWithContent,
+  mvlMsgId: string,
   attachments: ReadonlyArray<Attachment> = []
 ): LegalMessageWithContent => {
+  const sender = "dear.leader@yourworld.hell" as NonEmptyString;
   const legalMessage: LegalMessage = {
     eml: {
       subject: "You're fired",
@@ -70,7 +73,7 @@ export const withLegalContent = (
     },
     cert_data: {
       header: {
-        sender: "dear.leader@yourworld.hell" as NonEmptyString,
+        sender,
         recipients: "slave@yourworld.hell" as NonEmptyString,
         replies: "down.the.john@theshitIgive.hell" as NonEmptyString,
         object: "I told you already: you're fired" as NonEmptyString
@@ -79,13 +82,21 @@ export const withLegalContent = (
         sender_provider: "apocalypse knights" as NonEmptyString,
         timestamp: (new Date().toISOString() as unknown) as UTCISODateFromString,
         envelope_id: "abcde" as NonEmptyString,
-        msg_id: `mvl_${message.id}` as NonEmptyString,
+        msg_id: mvlMsgId as NonEmptyString,
         receipt_type: "what's that?"
       }
     }
   };
   return {
     ...message,
+    content: {
+      ...message.content,
+      legal_data: {
+        sender_mail_from: sender,
+        has_attachment: attachments.length > 0,
+        message_unique_id: mvlMsgId as NonEmptyString
+      }
+    },
     legal_message: legalMessage
   };
 };
@@ -159,13 +170,6 @@ export const getCategory = (
   };
 };
 
-const contentTypeMapping: Record<string, string> = {
-  pdf: "application/pdf",
-  jpeg: "image/jpeg",
-  jpg: "image/jpg",
-  png: "image/png",
-  zip: "application/zip"
-};
 const defaultContentType = "application/octet-stream";
 const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
 export const getMvlAttachments = (
@@ -173,15 +177,23 @@ export const getMvlAttachments = (
   offSet: number,
   count: number
 ): ReadonlyArray<Attachment> =>
-  mvlAttachmentsFiles.slice(offSet, offSet + count).map(filename => {
-    const parsedFile = path.parse(filename);
-    const attachmentId = sha256(parsedFile.name);
-    const attachmentUrl = `http://${interfaces.name}:${serverPort}/legal-messages/${mvlMessageId}/attachments/${attachmentId}`;
-    return {
-      id: attachmentId,
-      name: parsedFile.name,
-      content_type:
-        contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
-      url: attachmentUrl
-    };
-  });
+  mvlAttachmentsFiles
+    .slice(
+      offSet % mvlAttachmentsFiles.length,
+      (offSet % mvlAttachmentsFiles.length) + count
+    )
+    .map(filename => {
+      const parsedFile = path.parse(filename);
+      const attachmentId = sha256(parsedFile.name);
+      const resource = addApiV1Prefix(
+        `/legal-messages/${mvlMessageId}/attachments/${attachmentId}`
+      );
+      const attachmentUrl = `http://${interfaces.name}:${serverPort}${resource}`;
+      return {
+        id: attachmentId,
+        name: parsedFile.base,
+        content_type:
+          contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
+        url: attachmentUrl
+      };
+    });

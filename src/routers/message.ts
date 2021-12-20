@@ -7,6 +7,7 @@ import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
+import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
 import { MessageSubject } from "../../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
@@ -24,6 +25,7 @@ import {
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import { GetMessagesParameters } from "../types/parameters";
+import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTABonusBpd,
@@ -35,9 +37,6 @@ import {
 } from "../utils/variables";
 import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
-import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
-import { listDir } from "../utils/file";
-
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
 
@@ -273,23 +272,16 @@ const createMessages = (): Array<
   range(1, ioDevServerConfig.messages.legalCount).forEach((count, idx) => {
     const message = getNewMessage(`⚖️ Legal - ${count} `, messageMarkdown);
     const attachmentsCount = 2;
-    console.log(
-      idx * attachmentsCount,
-      idx * attachmentsCount + attachmentsCount
-    );
-    const attachments = getMvlAttachments(
-      message.id,
-      idx * attachmentsCount,
-      2
-    );
-    output.push(withLegalContent(message, attachments));
+    const mvlMsgId = `mvl_${message.id}`;
+    const attachments = getMvlAttachments(mvlMsgId, idx * attachmentsCount, 2);
+    output.push(withLegalContent(message, mvlMsgId, attachments));
   });
 
   return output;
 };
 
 // tslint:disable-next-line: readonly-array
-export const messagesWithContent: CreatedMessageWithContent[] = createMessages();
+export const messagesWithContent: ReturnType<typeof createMessages> = createMessages();
 
 if (ioDevServerConfig.messages.liveMode) {
   // if live updates is on, we prepend new messages to the collection
@@ -474,15 +466,23 @@ addHandler(
       res.sendStatus(configResponse.getMessagesResponseCode);
       return;
     }
-    const message = messagesWithContent
-      .filter(LegalMessageWithContent.is)
-      .find(
-        mvl =>
-          mvl.legal_message.cert_data.data.msg_id === req.params.legalMessageId
-      );
-    if (message === undefined) {
+    const message = messagesWithContent.find(
+      ld =>
+        ld.content.legal_data?.message_unique_id === req.params.legalMessageId
+    );
+    const legalMessage = LegalMessageWithContent.decode(message);
+    if (message === undefined || legalMessage.isLeft()) {
       res.json(getProblemJson(404, "message not found"));
       return;
     }
+    const attachment = legalMessage.value.legal_message.eml.attachments.find(
+      a => a.id === req.params.attachmentId
+    );
+    if (attachment === undefined) {
+      res.json(getProblemJson(404, "attachment not found"));
+      return;
+    }
+    res.setHeader("Content-Type", attachment.content_type);
+    sendFile(`assets/messages/mvl/attachments/${attachment.name}`, res);
   }
 );
