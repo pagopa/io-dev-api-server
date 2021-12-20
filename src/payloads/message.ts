@@ -19,6 +19,11 @@ import { services } from "../routers/service";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
+import { listDir } from "../utils/file";
+import { assetsFolder } from "../config";
+import * as path from "path";
+import { interfaces, serverPort } from "../utils/server";
+import sha256 from "sha256";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -74,7 +79,7 @@ export const withLegalContent = (
         sender_provider: "apocalypse knights" as NonEmptyString,
         timestamp: (new Date().toISOString() as unknown) as UTCISODateFromString,
         envelope_id: "abcde" as NonEmptyString,
-        msg_id: "fghi" as NonEmptyString,
+        msg_id: `mvl_${message.id}` as NonEmptyString,
         receipt_type: "what's that?"
       }
     }
@@ -153,3 +158,30 @@ export const getCategory = (
     tag: TagEnumBase.GENERIC
   };
 };
+
+const contentTypeMapping: Record<string, string> = {
+  pdf: "application/pdf",
+  jpeg: "image/jpeg",
+  jpg: "image/jpg",
+  png: "image/png",
+  zip: "application/zip"
+};
+const defaultContentType = "application/octet-stream";
+const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
+export const getMvlAttachments = (
+  mvlMessageId: string,
+  offSet: number,
+  count: number
+): ReadonlyArray<Attachment> =>
+  mvlAttachmentsFiles.slice(offSet, offSet + count).map(filename => {
+    const parsedFile = path.parse(filename);
+    const attachmentId = sha256(parsedFile.name);
+    const attachmentUrl = `http://${interfaces.name}:${serverPort}/legal-messages/${mvlMessageId}/attachments/${attachmentId}`;
+    return {
+      id: attachmentId,
+      name: parsedFile.name,
+      content_type:
+        contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
+      url: attachmentUrl
+    };
+  });

@@ -11,11 +11,12 @@ import { MessageAttachment } from "../../generated/definitions/backend/MessageAt
 import { MessageSubject } from "../../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
-import { ioDevServerConfig } from "../config";
+import { assetsFolder, ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import {
   createMessage,
   getCategory,
+  getMvlAttachments,
   withContent,
   withDueDate,
   withLegalContent,
@@ -34,6 +35,8 @@ import {
 } from "../utils/variables";
 import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
+import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
+import { listDir } from "../utils/file";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -267,18 +270,11 @@ const createMessages = (): Array<
     )
   );
 
-  range(1, ioDevServerConfig.messages.legalCount).forEach(count =>
-    output.push(
-      withLegalContent(getNewMessage(`⚖️ Legal - ${count} `, messageMarkdown), [
-        {
-          id: "7faefa60fff0a2984fd56bba80bbf6de",
-          name: "a hefty fine",
-          content_type: "text/plain",
-          url: "buonefeste.a.tutti"
-        }
-      ])
-    )
-  );
+  range(1, ioDevServerConfig.messages.legalCount).forEach((count, idx) => {
+    const message = getNewMessage(`⚖️ Legal - ${count} `, messageMarkdown);
+    const attachments = getMvlAttachments(message.id, idx * count, count);
+    output.push(withLegalContent(message, attachments));
+  });
 
   return output;
 };
@@ -457,5 +453,27 @@ addHandler(
       res.json(getProblemJson(404, "message not found"));
     }
     res.json(message);
+  }
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
+  (req, res) => {
+    if (configResponse.getMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getMessagesResponseCode);
+      return;
+    }
+    const message = messagesWithContent
+      .filter(LegalMessageWithContent.is)
+      .find(
+        mvl =>
+          mvl.legal_message.cert_data.data.msg_id === req.params.legalMessageId
+      );
+    if (message === undefined) {
+      res.json(getProblemJson(404, "message not found"));
+      return;
+    }
   }
 );
