@@ -74,7 +74,7 @@ export const withLegalContent = (
         sender_provider: "apocalypse knights" as NonEmptyString,
         timestamp: new Date(),
         envelope_id: "abcde" as NonEmptyString,
-        msg_id: "fghi" as NonEmptyString,
+        msg_id: `mvl_${message.id}` as NonEmptyString,
         receipt_type: "what's that?"
       }
     }
