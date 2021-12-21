@@ -434,7 +434,7 @@ addHandler(
     // retrieve the messageIndex from id
     const message = messagesWithContent.find(item => item.id === req.params.id);
     if (message === undefined) {
-      res.json(getProblemJson(404, "message not found"));
+      return res.json(getProblemJson(404, "message not found"));
     }
     res.json(message);
   }
@@ -445,16 +445,15 @@ addHandler(
   "get",
   addApiV1Prefix("/legal-messages/:id"),
   (req, res) => {
-    // tslint:disable-next-line:no-commented-code
-    // if (configResponse.getLegalMessageResponseCode !== 200) {
-    //   res.sendStatus(configResponse.getLegalMessageResponseCode);
-    //   return;
-    // }
+    if (configResponse.getLegalMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getLegalMessageResponseCode);
+      return;
+    }
 
     // retrieve the messageIndex from id
     const message = messagesWithContent.find(item => item.id === req.params.id);
     if (message === undefined) {
-      res.json(getProblemJson(404, "message not found"));
+      return res.json(getProblemJson(404, "message not found"));
     }
     res.json(message);
   }
