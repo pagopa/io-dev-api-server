@@ -72,7 +72,7 @@ export const withLegalContent = (
       },
       data: {
         sender_provider: "apocalypse knights" as NonEmptyString,
-        timestamp: (new Date().toISOString() as unknown) as UTCISODateFromString,
+        timestamp: new Date(),
         envelope_id: "abcde" as NonEmptyString,
         msg_id: "fghi" as NonEmptyString,
         receipt_type: "what's that?"
