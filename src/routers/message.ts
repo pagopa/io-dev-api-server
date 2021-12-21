@@ -462,19 +462,22 @@ addHandler(
   "get",
   addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
   (req, res) => {
-    if (configResponse.getMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getMessagesResponseCode);
+    if (configResponse.getMVLMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getMVLMessageResponseCode);
       return;
     }
+    // find the message by the given legalID
     const message = messagesWithContent.find(
       ld =>
         ld.content.legal_data?.message_unique_id === req.params.legalMessageId
     );
     const legalMessage = LegalMessageWithContent.decode(message);
+    // ensure message exists and it has a legal content
     if (message === undefined || legalMessage.isLeft()) {
       res.json(getProblemJson(404, "message not found"));
       return;
     }
+    // find the attachment by the given attachmentId
     const attachment = legalMessage.value.legal_message.eml.attachments.find(
       a => a.id === req.params.attachmentId
     );

@@ -171,17 +171,16 @@ export const getCategory = (
 };
 
 const defaultContentType = "application/octet-stream";
+// list all files available as mvl attachments
 const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
 export const getMvlAttachments = (
   mvlMessageId: string,
-  offSet: number,
-  count: number
-): ReadonlyArray<Attachment> =>
-  mvlAttachmentsFiles
-    .slice(
-      offSet % mvlAttachmentsFiles.length,
-      (offSet % mvlAttachmentsFiles.length) + count
-    )
+  startAttachmentIndex: number,
+  attachmentsCount: number
+): ReadonlyArray<Attachment> => {
+  const startIndex = startAttachmentIndex % mvlAttachmentsFiles.length;
+  return mvlAttachmentsFiles
+    .slice(startIndex, startIndex + attachmentsCount)
     .map(filename => {
       const parsedFile = path.parse(filename);
       const attachmentId = sha256(parsedFile.name);
@@ -197,3 +196,4 @@ export const getMvlAttachments = (
         url: attachmentUrl
       };
     });
+};

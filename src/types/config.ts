@@ -120,8 +120,9 @@ export const IoDevServerConfig = t.interface({
         // 200 success with payload
         getMessagesResponseCode: HttpResponseCode,
         // 200 success with payload
-        getMessageResponseCode: HttpResponseCode
-        // number of messages containing payment (valid with no due date and invalid after due date)
+        getMessageResponseCode: HttpResponseCode,
+        // 200 success with payload
+        getMVLMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
       legalCount: t.number,
