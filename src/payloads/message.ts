@@ -173,6 +173,12 @@ export const getCategory = (
 const defaultContentType = "application/octet-stream";
 // list all files available as mvl attachments
 const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
+/**
+ * create an array of attachments following the given types {@param attachmentsTypes}
+ * i.e: getMvlAttachments("aMessageID",["png","zip"]) -> return 2 attachments: png + zip
+ * @param mvlMessageId
+ * @param attachmentsTypes
+ */
 export const getMvlAttachments = (
   mvlMessageId: string,
   attachmentsTypes: ReadonlyArray<keyof typeof contentTypeMapping>
