@@ -12,7 +12,7 @@ import { MessageAttachment } from "../../generated/definitions/backend/MessageAt
 import { MessageSubject } from "../../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
-import { assetsFolder, ioDevServerConfig } from "../config";
+import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import {
   createMessage,
@@ -432,6 +432,7 @@ addHandler(
     const message = messagesWithContent.find(item => item.id === req.params.id);
     if (message === undefined) {
       res.json(getProblemJson(404, "message not found"));
+      return;
     }
     res.json(message);
   }
@@ -442,16 +443,19 @@ addHandler(
   "get",
   addApiV1Prefix("/legal-messages/:id"),
   (req, res) => {
-    // tslint:disable-next-line:no-commented-code
-    // if (configResponse.getLegalMessageResponseCode !== 200) {
-    //   res.sendStatus(configResponse.getLegalMessageResponseCode);
-    //   return;
-    // }
-
+    if (configResponse.getMVLMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getMVLMessageResponseCode);
+      return;
+    }
     // retrieve the messageIndex from id
     const message = messagesWithContent.find(item => item.id === req.params.id);
     if (message === undefined) {
       res.json(getProblemJson(404, "message not found"));
+      return;
+    }
+    if (LegalMessageWithContent.decode(message).isLeft()) {
+      res.json(getProblemJson(400, "requested message is not of legal type"));
+      return;
     }
     res.json(message);
   }
@@ -462,10 +466,6 @@ addHandler(
   "get",
   addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
   (req, res) => {
-    if (configResponse.getMVLMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getMVLMessageResponseCode);
-      return;
-    }
     // find the message by the given legalID
     const message = messagesWithContent.find(
       ld =>
