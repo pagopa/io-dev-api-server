@@ -5,6 +5,7 @@ import fs from "fs";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
 import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
@@ -454,6 +455,10 @@ addHandler(
     const message = messagesWithContent.find(item => item.id === req.params.id);
     if (message === undefined) {
       return res.json(getProblemJson(404, "message not found"));
+    }
+    if (LegalMessageWithContent.decode(message).isLeft()) {
+      res.json(getProblemJson(400, "the requested ID is not a legal message"));
+      return;
     }
     res.json(message);
   }
