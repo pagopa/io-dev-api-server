@@ -175,13 +175,12 @@ const defaultContentType = "application/octet-stream";
 const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
 export const getMvlAttachments = (
   mvlMessageId: string,
-  startAttachmentIndex: number,
-  attachmentsCount: number
+  attachmentsTypes: ReadonlyArray<keyof typeof contentTypeMapping>
 ): ReadonlyArray<Attachment> => {
-  const startIndex = startAttachmentIndex % mvlAttachmentsFiles.length;
-  return mvlAttachmentsFiles
-    .slice(startIndex, startIndex + attachmentsCount)
-    .map(filename => {
+  return attachmentsTypes.map((type, idx) => {
+    {
+      const filename =
+        mvlAttachmentsFiles.find(f => f.endsWith(type)) ?? "pdf_1.pdf";
       const parsedFile = path.parse(filename);
       const attachmentId = sha256(parsedFile.name);
       const resource = addApiV1Prefix(
@@ -195,5 +194,6 @@ export const getMvlAttachments = (
           contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
         url: attachmentUrl
       };
-    });
+    }
+  });
 };
