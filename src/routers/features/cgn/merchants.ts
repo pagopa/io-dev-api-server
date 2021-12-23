@@ -6,6 +6,7 @@ import { NonNegativeInteger } from "italia-ts-commons/lib/numbers";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
+import { DiscountCodeTypeEnum } from "../../../../generated/definitions/cgn/merchants/DiscountCodeType";
 import { Merchant } from "../../../../generated/definitions/cgn/merchants/Merchant";
 import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
 import { OfflineMerchants } from "../../../../generated/definitions/cgn/merchants/OfflineMerchants";
@@ -53,6 +54,7 @@ export const onlineMerchants: OnlineMerchants = {
   items: range(1, 10).map<OnlineMerchant>(_ => {
     faker.seed(millis++);
     return {
+      discountCodeType: DiscountCodeTypeEnum.api,
       id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 3).map<ProductCategory>(
@@ -204,10 +206,8 @@ addHandler(
                 };
               case "landing":
                 return {
-                  landingPageReferrer: faker.datatype.string(
-                    6
-                  ) as Discount["landingPageReferrer"],
-                  landingPageUrl: "http://localhost:3000/merchant_landing" as Discount["landingPageUrl"]
+                  landingPageReferrer: faker.datatype.string(6),
+                  landingPageUrl: "http://localhost:3000/merchant_landing"
                 };
               case "api":
               case "bucket":
