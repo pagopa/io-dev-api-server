@@ -57,7 +57,7 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   assistanceTools: {
-    tool: ToolEnum.instabug,
+    tool: ToolEnum.zendesk,
     allowRandomValues: false
   },
   profile: {

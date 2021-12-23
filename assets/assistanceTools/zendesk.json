@@ -1,39 +1,89 @@
 {
   "panicMode": false,
   "zendeskCategories": {
-    "id": "1900002821093",
+    "id": "1900004702053",
     "categories": [
       {
-        "value": "Certificazione Verde COVID-19",
+        "value": "certificazione_verde_covid-19",
         "description": {
           "it-IT": "Certificazione Verde COVID-19",
           "en-EN": "COVID-19 Green Certification"
         },
         "zendeskSubCategories": {
-          "id": "360027411097",
+          "id": "360029178738",
           "subCategories": [
             {
-              "value": "Informazioni generali",
+              "value": "informazioni_generali",
               "description": {
                 "it-IT": "Informazioni generali",
                 "en-EN": "General informations"
               }
             },
             {
-              "value": "Non ho ricevuto nulla",
+              "value": "non_ho_ricevuto_nulla",
               "description": {
                 "it-IT": "Non ho ricevuto nulla",
                 "en-EN": "I have not received anything"
               }
             },
             {
-              "value": "Problemi tecnici su IO",
+              "value": "problemi_tecnici_su_io",
               "description": {
                 "it-IT": "Problemi tecnici su IO",
                 "en-EN": "Technical problems on IO"
               }
             }
           ]
+
+        }
+      },
+      {
+        "value": "accesso_cie",
+        "description": {
+          "it-IT": "Accesso tramite CIE",
+          "en-EN": "Access via CIE"
+        }
+      },
+      {
+        "value": "pagamenti_pagopa",
+        "description": {
+          "it-IT": "Pagamento pagoPA",
+          "en-EN": "PagoPA payment"
+        }
+      },
+      {
+        "value": "metodo_di_pagamento",
+        "description": {
+          "it-IT": "Metodo di pagamento",
+          "en-EN": "Payment method"
+        }
+      },
+      {
+        "value": "cashback",
+        "description": {
+          "it-IT": "Cashback",
+          "en-EN": "Cashback"
+        }
+      },
+      {
+        "value": "bonus_vacanze",
+        "description": {
+          "it-IT": "Bonus Vacanze",
+          "en-EN": "Bonus Vacanze"
+        }
+      },
+      {
+        "value": "accessibilità_/_usabilità",
+        "description": {
+          "it-IT": "Accessibilità / Usabilità",
+          "en-EN": "Accessibility / Usability"
+        }
+      },
+      {
+        "value": "privacy",
+        "description": {
+          "it-IT": "Privacy",
+          "en-EN": "Privacy"
         }
       }
     ]
