@@ -72,7 +72,7 @@ const defaultConfig: IoDevServerConfig = {
       getMessageResponseCode: 200,
       getMVLMessageResponseCode: 200
     },
-    legalCount: 2,
+    legalCount: 0,
     paymentsCount: 0,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -84,7 +84,7 @@ const defaultConfig: IoDevServerConfig = {
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
-    standardMessageCount: 0,
+    standardMessageCount: 2,
     // atm it has effect only on legal message flow (pr welcome)
     allowRandomValues: true
   },
