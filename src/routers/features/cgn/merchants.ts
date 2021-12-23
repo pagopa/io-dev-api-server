@@ -56,8 +56,12 @@ let millis = new Date().getTime();
 export const onlineMerchants: OnlineMerchants = {
   items: range(1, 10).map<OnlineMerchant>(_ => {
     faker.seed(millis++);
+    const discountType =
+      discountTypes[
+        faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
+      ];
     return {
-      discountCodeType: DiscountCodeTypeEnum.api,
+      discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 3).map<ProductCategory>(
@@ -168,18 +172,13 @@ addHandler(
     const foundMerchant = merchants[merchIndex];
 
     if (OnlineMerchant.is(foundMerchant)) {
-      const discountType =
-        discountTypes[
-          faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
-        ];
-
       const onlineMerchant: Merchant = {
         id: foundMerchant.id,
         name: foundMerchant.name,
         websiteUrl: foundMerchant.websiteUrl,
         imageUrl: faker.image.imageUrl() as NonEmptyString,
         description: faker.lorem.paragraphs(2) as NonEmptyString,
-        discountCodeType: discountType,
+        discountCodeType: foundMerchant.discountCodeType,
         discounts: range(1, 3).map<Discount>(_ => {
           const discount: Discount = {
             name: faker.commerce.productName() as NonEmptyString,
@@ -201,7 +200,7 @@ addHandler(
           };
 
           const discountOption = () => {
-            switch (discountType) {
+            switch (foundMerchant.discountCodeType) {
               case "static":
                 return {
                   staticCode: faker.datatype
