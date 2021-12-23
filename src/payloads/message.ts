@@ -1,4 +1,3 @@
-import { UTCISODateFromString } from "@pagopa/ts-commons/lib/dates";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
 import * as path from "path";
