@@ -452,7 +452,7 @@ addHandler(
       res.json(getProblemJson(404, "message not found"));
       return;
     }
-    if (LegalMessageWithContent.decode(message).isLeft()) {
+    if (!LegalMessageWithContent.is(message)) {
       // act as the IO backend
       res.json(getProblemJson(500, "requested message is not of legal type"));
       return;

@@ -160,7 +160,7 @@ export const getCategory = (
   const senderService = services.find(
     s => s.service_id === message.sender_service_id
   )!;
-  if ((message as LegalMessageWithContent).legal_message) {
+  if (LegalMessageWithContent.is(message)) {
     return {
       tag: TagEnumBase.LEGAL_MESSAGE
     };
