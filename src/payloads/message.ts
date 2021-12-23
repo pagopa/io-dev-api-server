@@ -16,7 +16,7 @@ import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { assetsFolder, ioDevServerConfig } from "../config";
+import { assetsFolder } from "../config";
 import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
@@ -197,7 +197,8 @@ export const getMvlAttachments = (
   return attachmentsTypes.map((type, idx) => {
     {
       const filename =
-        mvlAttachmentsFiles.find(f => f.endsWith(type)) ?? "pdf_1.pdf";
+        mvlAttachmentsFiles.find(f => f.endsWith(type)) ??
+        mvlAttachmentsFiles[0];
       const parsedFile = path.parse(filename);
       const attachmentId = sha256(parsedFile.name);
       const resource = addApiV1Prefix(
