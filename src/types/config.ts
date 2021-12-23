@@ -1,6 +1,6 @@
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
+
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
@@ -83,6 +83,8 @@ const LiveModeMessages = t.interface({
   count: t.number
 });
 export type LiveModeMessages = t.Type<typeof LiveModeMessages>;
+
+
 
 export const IoDevServerConfig = t.interface({
   global: t.intersection([

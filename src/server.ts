@@ -1,8 +1,8 @@
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import bodyParser from "body-parser";
-import express, { Application } from "express";
+import express from "express";
 import morgan from "morgan";
-import { ioDevServerConfig } from "./config";
+
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
 import { bpdRanking } from "./routers/features/bdp/ranking/v1";
@@ -32,7 +32,10 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
-// create express server
+
+import * as O from "fp-ts/lib/Option";
+
+/*// create express server
 const app: Application = express();
 // parse body request as json
 app.use(bodyParser.json());
@@ -45,9 +48,9 @@ app.use(
   morgan(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
-);
+);*/
 
-[
+const routers = [
   publicRouter,
   profileRouter,
   sessionRouter,
@@ -76,6 +79,27 @@ app.use(
   cgnGeoRouter,
   euCovidCertRouter,
   svRouter
-].forEach(r => app.use(r));
+];
 
-export default app;
+type CreateMockServerOptions = {
+  delay: O.Option<Millisecond>;
+  logger: boolean;
+}
+
+export const defaultMockServerOptions: CreateMockServerOptions = {
+  delay: O.none,
+  logger: false
+}
+
+export const createMockServer = (options = defaultMockServerOptions) => {
+  const app = express();
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  const delay = options.delay.fold(0 as Millisecond, ms => ms)
+  app.use(delayer(delay));
+  if (options.logger) {
+    app.use(morgan(":date[iso] :method :url :status :res[content-length] - :response-time ms"));
+  }
+  routers.forEach(r => app.use)
+  return app;
+};

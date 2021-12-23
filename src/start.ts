@@ -3,12 +3,20 @@ import child_process from "child_process";
 import { cli } from "cli-ux";
 import figlet from "figlet";
 import { fromNullable } from "fp-ts/lib/Option";
+import { ioDevServerConfig } from "./config";
 import { routes } from "./payloads/response";
-import app from "./server";
+import { createMockServer } from "./server";
 import { readFileAsJSON } from "./utils/file";
 import { interfaces, serverHostname, serverPort } from "./utils/server";
+import * as O from "fp-ts/lib/Option";
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 // read package.json to print some info
 const packageJson = readFileAsJSON("./package.json");
+
+const app = createMockServer({
+  delay: O.some(ioDevServerConfig.global.delay as Millisecond),
+  logger: true,
+});
 
 app.listen(serverPort, serverHostname, async () => {
   child_process.exec("git branch --show-current", (err, stdout) => {
