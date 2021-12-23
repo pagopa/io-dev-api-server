@@ -209,8 +209,10 @@ addHandler(
                 };
               case "landingpage":
                 return {
-                  landingPageReferrer: faker.datatype.string(6),
-                  landingPageUrl: "http://localhost:3000/merchant_landing"
+                  landingPageReferrer: faker.datatype.string(
+                    6
+                  ) as Discount["landingPageReferrer"],
+                  landingPageUrl: "http://localhost:3000/merchant_landing" as Discount["landingPageUrl"]
                 };
               case "api":
               case "bucket":
