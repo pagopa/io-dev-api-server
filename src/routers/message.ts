@@ -271,9 +271,9 @@ const createMessages = (): Array<
 
   range(1, ioDevServerConfig.messages.legalCount).forEach((count, idx) => {
     const message = getNewMessage(`⚖️ Legal - ${count} `, messageMarkdown);
-    const mvlMsgId = `mvl_${message.id}`;
+    const mvlMsgId = message.id;
     const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png"]);
-    output.push(withLegalContent(message, mvlMsgId, attachments));
+    output.push(withLegalContent(message, message.id, attachments));
   });
 
   return output;
@@ -453,7 +453,8 @@ addHandler(
       return;
     }
     if (LegalMessageWithContent.decode(message).isLeft()) {
-      res.json(getProblemJson(400, "requested message is not of legal type"));
+      // act as the IO backend
+      res.json(getProblemJson(500, "requested message is not of legal type"));
       return;
     }
     res.json(message);
@@ -467,8 +468,7 @@ addHandler(
   (req, res) => {
     // find the message by the given legalID
     const message = messagesWithContent.find(
-      ld =>
-        ld.content.legal_data?.message_unique_id === req.params.legalMessageId
+      ld => ld.id === req.params.legalMessageId
     );
     const legalMessage = LegalMessageWithContent.decode(message);
     // ensure message exists and it has a legal content

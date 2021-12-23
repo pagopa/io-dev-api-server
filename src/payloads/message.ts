@@ -17,11 +17,12 @@ import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { assetsFolder } from "../config";
+import { assetsFolder, ioDevServerConfig } from "../config";
 import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
+import { getRandomValue } from "../utils/random";
 import { interfaces, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
@@ -63,27 +64,38 @@ export const withLegalContent = (
   mvlMsgId: string,
   attachments: ReadonlyArray<Attachment> = []
 ): LegalMessageWithContent => {
-  const sender = "dear.leader@yourworld.hell" as NonEmptyString;
+  // helper functions
+  const getEmail = (hardCodedEmail: string) =>
+    getRandomValue(hardCodedEmail, faker.internet.email(), "messages");
+  const getWords = (hardCodedWords: string) =>
+    getRandomValue(hardCodedWords, faker.random.words(), "messages");
+  const getWord = (hardCodedWord: string) =>
+    getRandomValue(hardCodedWord, faker.random.word(), "messages");
+  const sender = getEmail("dear.leader@yourworld.hell") as NonEmptyString;
   const legalMessage: LegalMessage = {
     eml: {
-      subject: "You're fired",
-      plain_text_content: "lol I'm joking!",
-      html_content: "<p>or <b>am I?</b></p>",
+      subject: getWords("You're fired"),
+      plain_text_content: getWords("lol I'm joking!"),
+      html_content: getWords("<p>or <b>am I?</b></p>"),
       attachments
     },
     cert_data: {
       header: {
         sender,
-        recipients: "slave@yourworld.hell" as NonEmptyString,
-        replies: "down.the.john@theshitIgive.hell" as NonEmptyString,
-        object: "I told you already: you're fired" as NonEmptyString
+        recipients: getEmail("slave@yourworld.hell") as NonEmptyString,
+        replies: getEmail("down.the.john@theshitIgive.hell") as NonEmptyString,
+        object: getWords("I told you already: you're fired") as NonEmptyString
       },
       data: {
-        sender_provider: "apocalypse knights" as NonEmptyString,
-        timestamp: (new Date().toISOString() as unknown) as UTCISODateFromString,
-        envelope_id: "abcde" as NonEmptyString,
+        sender_provider: getWord("apocalypse knights") as NonEmptyString,
+        timestamp: getRandomValue(
+          new Date(),
+          faker.datatype.datetime(),
+          "messages"
+        ),
+        envelope_id: getWord("abcde") as NonEmptyString,
         msg_id: mvlMsgId as NonEmptyString,
-        receipt_type: "what's that?"
+        receipt_type: getWord("what's that?")
       }
     }
   };
