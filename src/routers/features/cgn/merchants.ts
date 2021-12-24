@@ -6,7 +6,10 @@ import { NonNegativeInteger } from "italia-ts-commons/lib/numbers";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
-import { DiscountCodeTypeEnum } from "../../../../generated/definitions/cgn/merchants/DiscountCodeType";
+import {
+  DiscountCodeType,
+  DiscountCodeTypeEnum
+} from "../../../../generated/definitions/cgn/merchants/DiscountCodeType";
 import { Merchant } from "../../../../generated/definitions/cgn/merchants/Merchant";
 import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
 import { OfflineMerchants } from "../../../../generated/definitions/cgn/merchants/OfflineMerchants";
@@ -21,6 +24,7 @@ import {
 import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
+import { interfaces, serverPort } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
 
@@ -41,11 +45,11 @@ const productCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.travelling
 ];
 
-const discountTypes: ReadonlyArray<string> = [
-  "static",
-  "landing",
-  "api",
-  "bucket"
+const discountTypes: ReadonlyArray<DiscountCodeType> = [
+  DiscountCodeTypeEnum.api,
+  DiscountCodeTypeEnum.bucket,
+  DiscountCodeTypeEnum.static,
+  DiscountCodeTypeEnum.landingpage
 ];
 
 // tslint:disable-next-line: no-let
@@ -53,8 +57,12 @@ let millis = new Date().getTime();
 export const onlineMerchants: OnlineMerchants = {
   items: range(1, 10).map<OnlineMerchant>(_ => {
     faker.seed(millis++);
+    const discountType =
+      discountTypes[
+        faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
+      ];
     return {
-      discountCodeType: DiscountCodeTypeEnum.api,
+      discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 3).map<ProductCategory>(
@@ -164,11 +172,6 @@ addHandler(
 
     const foundMerchant = merchants[merchIndex];
 
-    const discountType =
-      discountTypes[
-        faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
-      ];
-
     if (OnlineMerchant.is(foundMerchant)) {
       const onlineMerchant: Merchant = {
         id: foundMerchant.id,
@@ -176,6 +179,7 @@ addHandler(
         websiteUrl: foundMerchant.websiteUrl,
         imageUrl: faker.image.imageUrl() as NonEmptyString,
         description: faker.lorem.paragraphs(2) as NonEmptyString,
+        discountCodeType: foundMerchant.discountCodeType,
         discounts: range(1, 3).map<Discount>(_ => {
           const discount: Discount = {
             name: faker.commerce.productName() as NonEmptyString,
@@ -197,17 +201,19 @@ addHandler(
           };
 
           const discountOption = () => {
-            switch (discountType) {
+            switch (foundMerchant.discountCodeType) {
               case "static":
                 return {
                   staticCode: faker.datatype
                     .string()
                     .toString() as NonEmptyString
                 };
-              case "landing":
+              case "landingpage":
                 return {
-                  landingPageReferrer: faker.datatype.string(6),
-                  landingPageUrl: "http://localhost:3000/merchant_landing"
+                  landingPageReferrer: faker.datatype.string(
+                    6
+                  ) as Discount["landingPageReferrer"],
+                  landingPageUrl: `http://${interfaces.name}:${serverPort}/merchant_landing` as Discount["landingPageUrl"]
                 };
               case "api":
               case "bucket":
