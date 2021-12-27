@@ -23,7 +23,8 @@ addHandler(
   "get",
   appendWalletV1Prefix("/bancomat/abi"),
   (req, res) => {
-    const abiQuery = typeof req.query.abiQuery === "string" ? req.query.abiQuery : null;
+    const abiQuery =
+      typeof req.query.abiQuery === "string" ? req.query.abiQuery : null;
     if (abiQuery) {
       const s = abiQuery.toLowerCase().trim();
       return {

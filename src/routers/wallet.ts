@@ -143,7 +143,8 @@ addHandler(
   appendWalletV1Prefix("/psps/selected"),
   (req, res) => {
     const randomPsp = faker.random.arrayElement(pspList);
-    const language = typeof req.query.language === "string" ? req.query.language : "IT";
+    const language =
+      typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
       data: [{ ...randomPsp, lingua: language.toUpperCase() }]
     });
@@ -155,7 +156,8 @@ addHandler(
   "get",
   appendWalletV1Prefix("/psps/all"),
   (req, res) => {
-    const language = typeof req.query.language === "string" ? req.query.language : "IT";
+    const language =
+      typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
       data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
     });
