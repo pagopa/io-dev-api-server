@@ -36,7 +36,7 @@ import {
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
-import { interfaces, serverPort } from "../utils/server";
+import { serverIpv4Address, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
 import {
@@ -291,7 +291,7 @@ addHandler(
           amount: 1,
           decimalDigits: 2
         },
-        urlCheckout3ds: `http://${interfaces.name}:${serverPort}${checkOutSuffix}`,
+        urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`,
         paymentModel: 0,
         token: "MTg5MDIxNzQ=",
         idWallet: 12345678,

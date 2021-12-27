@@ -44,11 +44,11 @@ app.listen(serverPort, serverHostname, async () => {
     console.log(
       chalk.bgBlack(
         chalk.green(
-          `\n${packageJson.pretty_name} is running on\n${Object.keys(interfaces)
+          `\n${packageJson.pretty_name} is running on\n${interfaces
             .map(
-              ni =>
+              ({ address }) =>
                 // tslint:disable-next-line:no-nested-template-literals
-                `- ${chalk.underline(`http://${interfaces[ni]}:${serverPort}`)}`
+                `- ${chalk.underline(`http://${address}:${serverPort}`)}`
             )
             .join("\n")}`
         )
