@@ -23,8 +23,8 @@ addHandler(
   "get",
   appendWalletV1Prefix("/bancomat/abi"),
   (req, res) => {
-    const abiQuery = req.query.abiQuery;
-    if (abiQuery !== undefined) {
+    const abiQuery = typeof req.query.abiQuery === "string" ? req.query.abiQuery : null;
+    if (abiQuery) {
       const s = abiQuery.toLowerCase().trim();
       return {
         payload: {
@@ -50,7 +50,7 @@ addHandler(
   "get",
   appendWalletV1Prefix("/bancomat/pans"),
   (req, res) => {
-    const abi = req.query.abi;
+    const abi = typeof req.query.abi === "string" ? req.query.abi : null;
     const msg = fs
       .readFileSync(assetsFolder + "/pm/pans/messages.json")
       .toString();
@@ -61,7 +61,7 @@ addHandler(
         messages: t.readonlyArray(Message).decode(JSON.parse(msg)).value
       }
     };
-    if (abi === undefined) {
+    if (!abi) {
       res.json(response);
       return;
     }

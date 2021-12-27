@@ -57,7 +57,7 @@ const handleCobadge = (req: Request, res: Response) => {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
-  const queryAbi: string | undefined = req.query.abiCode;
+  const queryAbi: string | undefined = typeof req.query.abiCode === "string" ? req.query.abiCode : undefined;
   const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge
     .filter(cb =>
       // filter only the card that match the query abi if it is defined
@@ -87,7 +87,7 @@ const handlePrivative = (req: Request, res: Response) => {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
-  const queryAbi: string | undefined = req.query.abiCode;
+  const queryAbi: string | undefined = typeof req.query.abiCode === "string" ? req.query.abiCode : undefined;
   const foundPrivative = citizenPrivativeCard.filter(cb =>
     // filter only the card that match the query abi if it is defined
     queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
