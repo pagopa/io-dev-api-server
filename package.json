@@ -76,7 +76,7 @@
     "rimraf": "^3.0.2",
     "sha256": "^0.2.0",
     "swagger-parser": "^8.0.4",
-    "ts-pattern": "^3.3.3"
+    "ts-pattern": "^3.3.4"
   },
   "resolutions": {
     "fp-ts": "1.17.4",
