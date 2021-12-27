@@ -18,3 +18,11 @@ export const listDir = (filePath: string): ReadonlyArray<string> => {
     return [];
   }
 };
+
+export const contentTypeMapping: Record<string, string> = {
+  pdf: "application/pdf",
+  jpeg: "image/jpeg",
+  jpg: "image/jpg",
+  png: "image/png",
+  zip: "application/zip"
+};
