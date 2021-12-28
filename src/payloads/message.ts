@@ -87,11 +87,7 @@ export const withLegalContent = (
       },
       data: {
         sender_provider: getWord("apocalypse knights") as NonEmptyString,
-        timestamp: getRandomValue(
-          new Date(),
-          faker.datatype.datetime(),
-          "messages"
-        ),
+        timestamp: getRandomValue(new Date(), faker.date.past(), "messages"),
         envelope_id: getWord("abcde") as NonEmptyString,
         msg_id: mvlMsgId as NonEmptyString,
         receipt_type: getWord("what's that?")
