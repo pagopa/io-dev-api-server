@@ -18,6 +18,9 @@ jobs:
           paths:
             - node_modules
       - run:
+          name: Generate models
+          command: yarn generate:all
+      - run:
           name: Run linter
           command: yarn tslint --config tslint.json -p tsconfig.json
       - run:
