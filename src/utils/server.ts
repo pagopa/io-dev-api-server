@@ -12,12 +12,12 @@ const getIpv4Addresses = (nets: ReadonlyArray<os.NetworkInterfaceInfo>) =>
 export const interfaces = Object.entries(os.networkInterfaces())
   .filter(([name]) => interestingNetworkInterfaces.has(name))
   .reduce(
-    (netInteraces, [name, nets]) => {
+    (netInterfaces, [name, nets]) => {
       const addresses = O.fromNullable(nets)
         .map(getIpv4Addresses)
         .getOrElseL(() => [])
         .map(({ address }) => ({ name, address }));
-      return [...netInteraces, ...addresses];
+      return [...netInterfaces, ...addresses];
     },
     [
       {
