@@ -25,7 +25,7 @@ const addresses = range(0, 10000).map<AutocompleteResultItem>(_ => ({
 
 addHandler(cgnGeoRouter, "get", addPrefix("/autocomplete"), (req, res) => {
   const address = req.query.queryAddress as string;
-  const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 5;
 
   const resultArray: ReadonlyArray<AutocompleteResultItem> = addresses
     .filter(ari => ari.title.includes(address))
