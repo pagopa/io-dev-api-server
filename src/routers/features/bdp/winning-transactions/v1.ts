@@ -42,14 +42,14 @@ addHandler(
   "get",
   addBPDPrefix("/io/winning-transactions/total-cashback"),
   (req, res) => {
-    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
     fromNullable(totalCashback.get(awardPeriodId)).foldL(
       () => {
         res.sendStatus(404);
       },
       p => {
         const maybeTotalCashBack = TotalCashbackResource.decode(
-          readTotalCashbackJson(req.query.awardPeriodId, p)
+          readTotalCashbackJson(req.query.awardPeriodId as string, p)
         );
 
         if (maybeTotalCashBack.isLeft()) {
@@ -83,7 +83,7 @@ addHandler(
   "get",
   addBPDPrefix("/io/winning-transactions"),
   (req, res) => {
-    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
     if (!winningTransactions.has(awardPeriodId)) {
       res.sendStatus(404);
       return;
