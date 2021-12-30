@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
@@ -11,10 +12,6 @@ import {
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
-import {
-  ServiceScope,
-  ServiceScopeEnum
-} from "../../generated/definitions/backend/ServiceScope";
 export const serviceRouter = Router();
 
 const configResponse = ioDevServerConfig.services.response;
