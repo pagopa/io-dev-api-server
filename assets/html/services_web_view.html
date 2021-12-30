@@ -23,9 +23,9 @@
           groupByOrganizationName[s.organization_name] = [...groupByOrganizationName[s.organization_name],s];
         });
         Object.keys(groupByOrganizationName).forEach(orgKey => {
-          container.append(`<div><h1 style="font-size: 40px;color: black;">${orgKey}</h1></div>`);
+          container.append(`<div><h1 style="font-size: 22px;color: black;">${orgKey}</h1></div>`);
           groupByOrganizationName[orgKey].forEach(s => {
-            container.append(`<div><h2 style="font-size: 30px;color: blue; cursor: pointer;" onclick="sendMessagesToRN('${s.service_id}')">${s.service_name}</h2></div>`);
+            container.append(`<div><h2 style="font-size: 18px;color: blue; cursor: pointer;" onclick="sendMessagesToRN('${s.service_id}')">${s.service_name}</h2></div>`);
           });
         });
         }
@@ -41,7 +41,7 @@
   </script>
 </head>
 <body style="padding:10px;">
-<div style="font-size: 60px;">DEV-SERVER local services</div>
+<div style="font-size: 30px;">DEV-SERVER local services</div>
 <div id="container"></div>
 
 </body>
