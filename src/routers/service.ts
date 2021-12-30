@@ -11,6 +11,10 @@ import {
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
+import {
+  ServiceScope,
+  ServiceScopeEnum
+} from "../../generated/definitions/backend/ServiceScope";
 export const serviceRouter = Router();
 
 const configResponse = ioDevServerConfig.services.response;
@@ -116,10 +120,24 @@ addHandler(
 );
 
 /**
- * just for test purposes
- * an html test page to trigger the services webview
- * see https://www.pivotaltracker.com/story/show/177226606
+ * html page that shows all local services, embedded in an app webview
  */
 addHandler(publicRouter, "get", "/services_web_view", (req, res) => {
   sendFile("assets/html/services_web_view.html", res);
 });
+
+/**
+ * unofficial API!
+ * dedicated API to get the local services from the web page
+ */
+addHandler(
+  publicRouter,
+  "get",
+  "/services_web_view/local_services",
+  (_, res) => {
+    const localServices = services.filter(
+      s => s.service_metadata?.scope === ServiceScopeEnum.LOCAL
+    );
+    res.json(localServices);
+  }
+);
