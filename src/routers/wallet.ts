@@ -36,7 +36,7 @@ import {
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
-import { interfaces, serverPort } from "../utils/server";
+import { serverIpv4Address, serverPort } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
 import {
@@ -94,7 +94,7 @@ addHandler(
   "get",
   appendWalletV1Prefix("/transactions"),
   (req, res) => {
-    const start = fromNullable(req.query.start)
+    const start = fromNullable(req.query.start as string | undefined)
       .map(s => Math.max(parseInt(s, 10), 0))
       .getOrElse(0);
     const transactionsSlice = takeEnd(
@@ -143,7 +143,8 @@ addHandler(
   appendWalletV1Prefix("/psps/selected"),
   (req, res) => {
     const randomPsp = faker.random.arrayElement(pspList);
-    const language = req.query.language ?? "IT";
+    const language =
+      typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
       data: [{ ...randomPsp, lingua: language.toUpperCase() }]
     });
@@ -155,7 +156,8 @@ addHandler(
   "get",
   appendWalletV1Prefix("/psps/all"),
   (req, res) => {
-    const language = req.query.language ?? "IT";
+    const language =
+      typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
       data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
     });
@@ -289,7 +291,7 @@ addHandler(
           amount: 1,
           decimalDigits: 2
         },
-        urlCheckout3ds: `http://${interfaces.name}:${serverPort}${checkOutSuffix}`,
+        urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`,
         paymentModel: 0,
         token: "MTg5MDIxNzQ=",
         idWallet: 12345678,

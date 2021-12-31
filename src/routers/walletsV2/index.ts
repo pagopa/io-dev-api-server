@@ -255,7 +255,7 @@ addHandler(
   "delete",
   appendWalletV2Prefix("/wallet/delete-wallets"),
   (req, res) => {
-    const service = req.query.service;
+    const service = req.query.service as EnableableFunctionsEnum;
     // tslint:disable-next-line: readonly-array
     const deletedWallets: number[] = [];
     const walletsToDelete = getWalletV2().filter(w =>

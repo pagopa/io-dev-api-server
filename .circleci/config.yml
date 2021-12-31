@@ -1,9 +1,9 @@
 ---
 version: 2
 jobs:
-  node-12: &test
+  node-16: &test
     docker:
-      - image: node:12
+      - image: node:16
     working_directory: ~/src
     steps:
       - checkout
@@ -17,6 +17,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
+      - run:
+          name: Generate models
+          command: yarn generate:all
       - run:
           name: Run linter
           command: yarn tslint --config tslint.json -p tsconfig.json
@@ -32,4 +35,4 @@ workflows:
   version: 2
   "io-dev-api-server":
     jobs:
-      - node-12
+      - node-16

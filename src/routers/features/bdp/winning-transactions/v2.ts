@@ -48,14 +48,14 @@ addHandler(
   "get",
   addBPDPrefix("/io/winning-transactions/v2/total-cashback"),
   (req, res) => {
-    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
     fromNullable(totalCashback.get(awardPeriodId)).foldL(
       () => {
         res.sendStatus(404);
       },
       p => {
         const maybeTotalCashBack = TotalCashbackResource.decode(
-          readTotalCashbackJson(req.query.awardPeriodId, p)
+          readTotalCashbackJson(req.query.awardPeriodId as string, p)
         );
 
         if (maybeTotalCashBack.isLeft()) {
@@ -89,14 +89,14 @@ addHandler(
   "get",
   addBPDPrefix("/io/winning-transactions/v2"),
   (req, res) => {
-    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
 
     if (!winningTransactions.has(awardPeriodId)) {
       res.sendStatus(404);
       return;
     }
     const cursor = req.query.nextCursor
-      ? parseInt(req.query.nextCursor, 10)
+      ? parseInt(req.query.nextCursor as string, 10)
       : 0;
 
     const response = (period: number, file: string) => {
@@ -158,14 +158,14 @@ addHandler(
   "get",
   addBPDPrefix("/io/winning-transactions/v2/countbyday"),
   (req, res) => {
-    const awardPeriodId = parseInt(req.query.awardPeriodId, 10);
+    const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
     fromNullable(countByDay.get(awardPeriodId)).foldL(
       () => {
         res.sendStatus(404);
       },
       p => {
         const maybeCountByDay = TrxCountByDayResourceArray.decode(
-          readCountByDayJson(req.query.awardPeriodId, p)
+          readCountByDayJson(req.query.awardPeriodId as string, p)
         );
 
         if (maybeCountByDay.isLeft()) {
