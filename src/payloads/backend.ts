@@ -208,6 +208,9 @@ export const backendStatus: BackendStatus = {
     cgn_merchants_v2: false,
     assistanceTool: {
       tool: ioDevServerConfig.assistanceTools.tool
+    },
+    paypal: {
+      enabled: ioDevServerConfig.wallet.paypalEnabled
     }
   }
 };

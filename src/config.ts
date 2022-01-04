@@ -89,6 +89,7 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   wallet: {
+    paypalEnabled: true,
     methods: paymentMethods,
     shuffleAbi: true,
     verificaError: undefined,
