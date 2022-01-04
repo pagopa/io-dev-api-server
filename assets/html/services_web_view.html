@@ -22,12 +22,14 @@
           }
           groupByOrganizationName[s.organization_name] = [...groupByOrganizationName[s.organization_name],s];
         });
+        let html = "";
         Object.keys(groupByOrganizationName).forEach(orgKey => {
-          container.append(`<div><h1 style="font-size: 22px;color: black;">${orgKey}</h1></div>`);
+          html += `<div><h1 style="font-size: 22px;color: black;">${orgKey}</h1></div>`;
           groupByOrganizationName[orgKey].forEach(s => {
-            container.append(`<div><h2 style="font-size: 18px;color: blue; cursor: pointer;" onclick="sendMessagesToRN('${s.service_id}')">${s.service_name}</h2></div>`);
+            html += `<div><h2 style="font-size: 18px;color: blue; cursor: pointer;" onclick="sendMessagesToRN('${s.service_id}')">${s.service_name}</h2></div>`;
           });
         });
+        container.append(html)
         }
       );
     }
