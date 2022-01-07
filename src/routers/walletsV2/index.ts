@@ -194,14 +194,6 @@ export const generateWalletV2Data = () => {
     )
   );
 
-  // set a credit card as favorite
-  if (walletCreditCards.length > 0) {
-    const firstCard = walletCreditCards[0];
-    walletCreditCards = [
-      ...walletCreditCards.filter(w => w.idWallet !== firstCard.idWallet),
-      { ...firstCard, favourite: true }
-    ];
-  }
   // add satispay
   walletSatispay = generateSatispayInfo(walletV2Config.satispayCount).map(c =>
     generateWalletV2FromSatispayOrBancomatPay(
@@ -223,6 +215,15 @@ export const generateWalletV2Data = () => {
   ).map(c =>
     generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay, FA_BPD)
   );
+
+  // set a credit card as favorite
+  if (walletCreditCards.length > 0) {
+    const firstCard = walletCreditCards[0];
+    walletCreditCards = [
+      ...walletCreditCards.filter(w => w.idWallet !== firstCard.idWallet),
+      { ...firstCard, favourite: true }
+    ];
+  }
 
   addWalletV2(
     [
