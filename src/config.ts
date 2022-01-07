@@ -7,7 +7,6 @@ import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
-import { ToolEnum } from "../generated/definitions/content/AssistanceToolConfig";
 import {
   IoDevServerConfig,
   ProfileAttrs,
@@ -55,10 +54,6 @@ const defaultConfig: IoDevServerConfig = {
     delay: 0,
     autoLogin: false,
     allowRandomValues: true
-  },
-  assistanceTools: {
-    tool: ToolEnum.zendesk,
-    allowRandomValues: false
   },
   profile: {
     attrs: defaultProfileAttrs,
