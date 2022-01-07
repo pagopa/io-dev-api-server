@@ -3,6 +3,8 @@ import * as faker from "faker/locale/it";
 import { fromNullable } from "fp-ts/lib/Option";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { Millisecond } from "italia-ts-commons/lib/units";
+import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -19,8 +21,10 @@ import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
+import { cgnServiceId } from "../../../payloads/services/special";
 import { getRandomStringId } from "../../../utils/id";
 import { addApiV1Prefix } from "../../../utils/strings";
+import { servicesPreferences } from "../../service";
 
 export const cgnRouter = Router();
 
@@ -51,6 +55,9 @@ let eycaActivationStatus: EycaActivationDetail = {
 
 const eycaCardNumber = "W413-K096-O814-Z223";
 const activationTime = 16000 as Millisecond;
+
+export const isCgnActivated = () => firstCgnActivationRequestTime > 0;
+
 // Start bonus activation request procedure
 // 201 -> Request created.
 // 202 -> Processing request.
@@ -91,6 +98,22 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
         instance_id: { id },
         status: StatusEnum.COMPLETED
       };
+
+      const currentPreference = servicesPreferences.get(
+        cgnServiceId as ServiceId
+      );
+
+      const increasedSettingsVersion = currentPreference
+        ? (((currentPreference.settings_version as number) +
+            1) as ServicePreference["settings_version"])
+        : (0 as ServicePreference["settings_version"]);
+      servicesPreferences.set(cgnServiceId as ServiceId, {
+        is_inbox_enabled: true,
+        is_email_enabled: faker.datatype.boolean(),
+        is_webhook_enabled: faker.datatype.boolean(),
+        settings_version: increasedSettingsVersion
+      });
+
       return res.status(200).json(response);
     }
   )
@@ -100,7 +123,7 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
 // 200 -> CGN current Status
 // 404 -> no CGN found
 addHandler(cgnRouter, "get", addPrefix("/status"), (_, res) => {
-  if (firstCgnActivationRequestTime > 0) {
+  if (isCgnActivated()) {
     currentCGN = {
       status: ActivatedStatusEnum.ACTIVATED,
       activation_date: new Date(firstCgnActivationRequestTime),

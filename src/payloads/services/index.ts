@@ -1,5 +1,6 @@
 import * as faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
+import { fromNullable } from "fp-ts/lib/Option";
 import {
   NonEmptyString,
   OrganizationFiscalCode
@@ -10,6 +11,9 @@ import { ServiceId } from "../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../generated/definitions/backend/ServicePreference";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
+import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
+import { ioDevServerConfig } from "../../config";
+import { isCgnActivated } from "../../routers/features/cgn";
 import { getService, getServiceMetadata } from "../../utils/service";
 import { validatePayload } from "../../utils/validator";
 import { frontMatter2CTA2 } from "../../utils/variables";
@@ -74,11 +78,39 @@ export const getServicesTuple = (
   return { payload, isJson: true };
 };
 
+const specialServicesPreferenceFactory: Map<string, () => boolean> = new Map<
+  string,
+  () => boolean
+>([["cgn", isCgnActivated]]);
+
 export const getServicesPreferences = (
   services: ReadonlyArray<ServicePublic>
 ) =>
   new Map<ServiceId, ServicePreference>(
     services.map(s => {
+      const metadata = s.service_metadata;
+      if (metadata && SpecialServiceMetadata.is(metadata)) {
+        const specialServiceInbox = fromNullable(metadata.custom_special_flow)
+          .chain(csf =>
+            fromNullable(specialServicesPreferenceFactory.get(csf)).map(h =>
+              h()
+            )
+          )
+          .getOrElse(false);
+        return [
+          s.service_id,
+          {
+            is_inbox_enabled: specialServiceInbox,
+            is_email_enabled: specialServiceInbox
+              ? faker.datatype.boolean()
+              : false,
+            is_webhook_enabled: specialServiceInbox
+              ? faker.datatype.boolean()
+              : false,
+            settings_version: 0 as ServicePreference["settings_version"]
+          }
+        ];
+      }
       const isInboxEnabled = faker.datatype.boolean();
       return [
         s.service_id,
