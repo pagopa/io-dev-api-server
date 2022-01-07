@@ -82,7 +82,6 @@ const LiveModeMessages = t.interface({
   // number of new messages
   count: t.number
 });
-export type LiveModeMessages = t.Type<typeof LiveModeMessages>;
 
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
@@ -94,11 +93,6 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean
     }),
-    AllowRandomValue
-  ]),
-  assistanceTools: t.intersection([
-    // the assistance tool used by the app
-    AssistanceToolConfig,
     AllowRandomValue
   ]),
   // some attributes of the profile used as citizen
@@ -179,8 +173,7 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean,
       methods: WalletMethodConfig,
-      shuffleAbi: t.boolean,
-      paypalEnabled: t.boolean
+      shuffleAbi: t.boolean
     }),
     t.partial({
       // the outcode returned at the end of credit card onboarding

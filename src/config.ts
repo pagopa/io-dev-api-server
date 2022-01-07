@@ -7,7 +7,6 @@ import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
-import { ToolEnum } from "../generated/definitions/content/AssistanceToolConfig";
 import {
   IoDevServerConfig,
   ProfileAttrs,
@@ -56,10 +55,6 @@ const defaultConfig: IoDevServerConfig = {
     autoLogin: false,
     allowRandomValues: true
   },
-  assistanceTools: {
-    tool: ToolEnum.zendesk,
-    allowRandomValues: false
-  },
   profile: {
     attrs: defaultProfileAttrs,
     authenticationProvider: "spid",
@@ -89,7 +84,6 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   wallet: {
-    paypalEnabled: true,
     methods: paymentMethods,
     shuffleAbi: true,
     verificaError: undefined,
