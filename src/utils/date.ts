@@ -1,4 +1,7 @@
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import * as t from "io-ts";
+
 /*
  * this code is a copy from gcanti repository https://github.com/gcanti/io-ts-types/blob/06b29a2e74c64b21ee2f2477cabf98616a7af35f/src/Date/DateFromISOString.ts
  * this because to avoid node modules conflicts given from using io-ts-types
@@ -11,7 +14,7 @@ export class DateFromISOStringType extends t.Type<Date, string, unknown> {
       (u): u is Date => u instanceof Date,
       (u, c) => {
         const validation = t.string.validate(u, c);
-        if (validation.isLeft()) {
+        if (E.isLeft(validation)) {
           return validation as any;
         } else {
           const s = validation.value;

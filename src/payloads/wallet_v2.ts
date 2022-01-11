@@ -1,7 +1,9 @@
 import { format } from "date-fns";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import * as t from "io-ts";
 import sha256 from "sha256";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
@@ -68,9 +70,10 @@ export const generateSatispayInfo = (
   count: number
 ): ReadonlyArray<SatispayInfo> => {
   return range(1, count).map(_ => {
-    const config = fromNullable(
-      cardConfigMap.get(WalletTypeEnum.Satispay)
-    ).getOrElse(defaultCardConfig);
+    const config = pipe(
+      O.fromNullable(cardConfigMap.get(WalletTypeEnum.Satispay)),
+      O.getOrElse(() => defaultCardConfig)
+    );
     const uuid = sha256(
       config.prefix + config.index.toString().padStart(4, "0")
     );
@@ -88,9 +91,10 @@ export const generatePaypalInfo = (
   count: number
 ): ReadonlyArray<PayPalInfo> => {
   return range(1, count).map(_ => {
-    const config = fromNullable(
-      cardConfigMap.get(WalletTypeEnum.PayPal)
-    ).getOrElse(defaultCardConfig);
+    const config = pipe(
+      O.fromNullable(cardConfigMap.get(WalletTypeEnum.PayPal)),
+      O.getOrElse(() => defaultCardConfig)
+    );
     const emailPp = `${config.prefix}.${config.index.toString()}@paypal.it`;
     cardConfigMap.set(WalletTypeEnum.PayPal, {
       ...config,
@@ -120,9 +124,10 @@ export const generateBancomatPay = (
 ): ReadonlyArray<BPay> => {
   const shuffledAbis = faker.helpers.shuffle([...abis]);
   return range(1, count).map((_, idx) => {
-    const config = fromNullable(
-      cardConfigMap.get(WalletTypeEnum.BPay)
-    ).getOrElse(defaultCardConfig);
+    const config = pipe(
+      O.fromNullable(cardConfigMap.get(WalletTypeEnum.BPay)),
+      O.getOrElse(() => defaultCardConfig)
+    );
     const suffix = config.index.toString().padStart(4, "0");
     const cn = config.prefix + suffix;
     const uidHash = sha256(cn);
@@ -160,8 +165,9 @@ export const generateCards = (
     ? faker.helpers.shuffle([...abis])
     : abis;
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
-    const config = fromNullable(cardConfigMap.get(cardType)).getOrElse(
-      defaultCardConfig
+    const config = pipe(
+      O.fromNullable(cardConfigMap.get(cardType)),
+      O.getOrElse(() => defaultCardConfig)
     );
     const cn = config.prefix + config.index.toString().padStart(4, "0");
     if (cardConfigMap.get(cardType)) {
@@ -186,7 +192,7 @@ export const generateCards = (
 const maybeAbiList = t
   .readonlyArray(Abi)
   .decode(readFileAsJSON(assetsFolder + "/data/abi.json").data);
-if (maybeAbiList.isLeft()) {
+if (E.isLeft(maybeAbiList)) {
   throw Error("invalid abi list");
 }
 const abiCodes = (maybeAbiList.value ?? [])

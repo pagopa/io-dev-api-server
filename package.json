@@ -68,6 +68,8 @@
     "express": "^4.17.2",
     "faker": "^5.5.3",
     "figlet": "^1.5.2",
+    "fp-ts": "1.19.5",
+    "io-ts": "1.8.5",
     "italia-ts-commons": "8.6.0",
     "italia-utils": "^4.1.1",
     "lodash": "^4.17.21",
@@ -78,8 +80,7 @@
     "ts-pattern": "^3.3.4"
   },
   "resolutions": {
-    "fp-ts": "1.17.4",
-    "io-ts": "1.8.5"
+    "fp-ts": "1.19.5"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",

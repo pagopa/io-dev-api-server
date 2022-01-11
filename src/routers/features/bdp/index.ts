@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { CitizenResource as CitizenResourceV2 } from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
@@ -95,7 +96,7 @@ addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
     return;
   }
   const { payoffInstr, payoffInstrType } = req.body;
-  if (Iban.decode(payoffInstr).isLeft()) {
+  if (E.isLeft(Iban.decode(payoffInstr))) {
     // should invalidate citizen current iban ?
     res.sendStatus(400);
     return;

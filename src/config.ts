@@ -2,6 +2,7 @@ import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import chalk from "chalk";
+import * as E from "fp-ts/lib/Either";
 import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
 import * as path from "path";
@@ -137,7 +138,7 @@ export const ioDevServerConfig: typeof defaultConfig = _.merge(
   customConfig
 );
 const checkData = IoDevServerConfig.decode(ioDevServerConfig);
-if (checkData.isLeft()) {
+if (E.isLeft(checkData)) {
   throw new Error(
     `your custom config file ${customConfig} contains some invalid data:\n${readableReport(
       checkData.value

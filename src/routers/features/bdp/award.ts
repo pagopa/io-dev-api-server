@@ -1,6 +1,7 @@
 // return the T&C as a HTML string
 import chalk from "chalk";
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import { BpdAwardPeriods } from "../../../../generated/definitions/bpd/award/BpdAwardPeriods";
 import { assetsFolder } from "../../../config";
 import { addHandler } from "../../../payloads/response";
@@ -37,7 +38,7 @@ addHandler(
       const maybeAwardPeriods = BpdAwardPeriods.decode(
         readPeriodPresetJson(file)
       );
-      if (maybeAwardPeriods.isLeft()) {
+      if (E.isLeft(maybeAwardPeriods)) {
         console.log(chalk.red(`${file} is not a valid BpdAwardPeriods`));
         res.sendStatus(500);
       } else {

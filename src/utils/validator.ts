@@ -1,6 +1,6 @@
+import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
-import { IResponse } from "italia-ts-commons/lib/responses";
 import { IOResponse } from "../payloads/response";
 
 /**
@@ -13,7 +13,7 @@ export const validatePayload = <T, O, I>(
   payload: any
 ) => {
   const maybeValidPayload = codec.decode(payload);
-  if (maybeValidPayload.isLeft()) {
+  if (E.isLeft(maybeValidPayload)) {
     throw Error(PathReporter.report(maybeValidPayload).toString());
   }
   return maybeValidPayload.value;
@@ -25,7 +25,7 @@ export const validateAndCreatePayload = <T, O, I>(
   statusCode: number = 200
 ): IOResponse<T> => {
   const maybeValidPayload = codec.decode(payload);
-  if (maybeValidPayload.isLeft()) {
+  if (E.isLeft(maybeValidPayload)) {
     throw Error(PathReporter.report(maybeValidPayload).toString());
   }
   return { payload: maybeValidPayload.value, isJson: true, status: statusCode };

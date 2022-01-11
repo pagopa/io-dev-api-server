@@ -1,7 +1,8 @@
 import { Router } from "express";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Second } from "italia-ts-commons/lib/units";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import {
@@ -14,6 +15,7 @@ import {
 } from "../../../payloads/features/bonus-vacanze/eligibility";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix, uuidv4 } from "../../../utils/strings";
+
 export const bonusVacanze = Router();
 
 // tslint:disable-next-line: no-let
@@ -102,14 +104,17 @@ addHandler(
 // and retry to activate the bonus within 24h since her got the result.
 addHandler(bonusVacanze, "post", addPrefix("/activations"), (_, res) => {
   // if there is no previous activation -> Request created -> send back the created id
-  fromNullable(idActivationBonus).foldL(
-    () => {
-      idActivationBonus = activeBonus.id;
-      firstBonusActivationRequestTime = new Date().getTime();
-      res.status(201).json({ id: idActivationBonus });
-    },
-    // Cannot activate a new bonus because another bonus related to this user was found.
-    () => res.sendStatus(409)
+  pipe(
+    O.fromNullable(idActivationBonus),
+    O.fold(
+      () => {
+        idActivationBonus = activeBonus.id;
+        firstBonusActivationRequestTime = new Date().getTime();
+        res.status(201).json({ id: idActivationBonus });
+      },
+      // Cannot activate a new bonus because another bonus related to this user was found.
+      () => res.sendStatus(409)
+    )
   );
 });
 

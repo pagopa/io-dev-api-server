@@ -1,4 +1,4 @@
-import * as faker from "faker";
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { CreatedMessageWithoutContent } from "../../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
@@ -6,6 +6,7 @@ import { PaginatedPublicMessagesCollection } from "../../../generated/definition
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 import { messagesWithContent } from "../message";
+
 const request = supertest(app);
 
 describe("when a valid request is sent", () => {
@@ -13,7 +14,7 @@ describe("when a valid request is sent", () => {
     const response = await request.get(`${basePath}/messages`);
     expect(response.status).toBe(200);
     const list = PaginatedPublicMessagesCollection.decode(response.body);
-    expect(list.isRight()).toBeTruthy();
+    expect(E.isRight(list)).toBeTruthy();
     expect(
       (list.value as PaginatedPublicMessagesCollection).items
     ).toBeDefined();
@@ -98,8 +99,8 @@ it("messages should return those items that are younger than specified minimum_i
   const response = await request.get(`${basePath}/messages`);
   expect(response.status).toBe(200);
   const list = PaginatedPublicMessagesCollection.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight()) {
+  expect(E.isRight(list)).toBeTruthy();
+  if (E.isRight(list)) {
     for (const m of list.value.items) {
       // ask for those messages younger than this
       const responseYounger = await request.get(
@@ -108,8 +109,8 @@ it("messages should return those items that are younger than specified minimum_i
       const listYounger = PaginatedPublicMessagesCollection.decode(
         responseYounger.body
       );
-      expect(listYounger.isRight()).toBeTruthy();
-      if (listYounger.isRight()) {
+      expect(E.isRight(listYounger)).toBeTruthy();
+      if (E.isRight(listYounger)) {
         (listYounger.value.items ?? []).forEach(mo => {
           expect(mo.created_at.getTime()).toBeGreaterThan(
             m.created_at.getTime()
@@ -133,8 +134,8 @@ it("messages should return a valid message with content with enriched data", asy
   );
   expect(response.status).toBe(200);
   const list = PaginatedPublicMessagesCollection.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight()) {
+  expect(E.isRight(list)).toBeTruthy();
+  if (E.isRight(list)) {
     expect(list.value.items.every(EnrichedMessage.is)).toBeTruthy();
   }
 
@@ -145,8 +146,8 @@ it("messages should return a valid message with content with enriched data", asy
   const listDefault = PaginatedPublicMessagesCollection.decode(
     responseDefault.body
   );
-  expect(listDefault.isRight()).toBeTruthy();
-  if (listDefault.isRight()) {
+  expect(E.isRight(listDefault)).toBeTruthy();
+  if (E.isRight(listDefault)) {
     expect(listDefault.value.items.every(EnrichedMessage.is)).toBeFalsy();
   }
   done();
@@ -157,8 +158,8 @@ it("messages should return a valid message with content", async done => {
   const response = await request.get(`${basePath}/messages/${messageId}`);
   expect(response.status).toBe(200);
   const message = CreatedMessageWithoutContent.decode(response.body);
-  expect(message.isRight()).toBeTruthy();
-  if (message.isRight()) {
+  expect(E.isRight(message)).toBeTruthy();
+  if (E.isRight(message)) {
     expect(message.value.id).toBe(messageId);
   }
   done();

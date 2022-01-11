@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Profile } from "../../generated/definitions/backend/Profile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
@@ -49,7 +51,7 @@ addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) =>
 // update profile
 addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
   const maybeProfileToUpdate = Profile.decode(req.body);
-  if (maybeProfileToUpdate.isLeft()) {
+  if (E.isLeft(maybeProfileToUpdate)) {
     res.sendStatus(400);
     return;
   }
@@ -130,7 +132,7 @@ addHandler(
 
     const maybeChoice = UserDataProcessingChoice.decode(req.params.choice);
 
-    if (maybeChoice.isLeft()) {
+    if (E.isLeft(maybeChoice)) {
       // the given param is not a valid UserDataProcessingChoice
       // send invalid request
       res.sendStatus(400);
@@ -144,9 +146,12 @@ addHandler(
       return;
     }
 
-    const acceptedOrConflictStatus = fromNullable(userChoices[choice]).fold(
-      409,
-      c => (c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202)
+    const acceptedOrConflictStatus = pipe(
+      O.fromNullable(userChoices[choice]),
+      O.fold(
+        () => 409,
+        c => (c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202)
+      )
     );
     res.sendStatus(acceptedOrConflictStatus);
 

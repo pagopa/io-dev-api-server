@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { CategoriaBeneficiarioBean } from "../../../../../generated/definitions/siciliaVola/CategoriaBeneficiarioBean";
 import { ComuneBean } from "../../../../../generated/definitions/siciliaVola/ComuneBean";
@@ -37,7 +38,7 @@ addHandler(
   (req, res) => {
     const maybeRegionId = t.number.decode(Number(req.params.region_id));
 
-    if (maybeRegionId.isLeft()) {
+    if (E.isLeft(maybeRegionId)) {
       res.sendStatus(500);
       return;
     }
@@ -46,7 +47,7 @@ addHandler(
       .readonlyArray(ProvinciaBean)
       .decode(readFileAsJSON(assetsFolder + "/siciliaVola/regions.json"));
 
-    if (maybeRegions.isLeft()) {
+    if (E.isLeft(maybeRegions)) {
       res.sendStatus(500);
       return;
     }
@@ -59,7 +60,7 @@ addHandler(
         .readonlyArray(ProvinciaBean)
         .decode(readFileAsJSON(assetsFolder + "/siciliaVola/provinces.json"));
 
-      if (maybeProvinces.isLeft()) {
+      if (E.isLeft(maybeProvinces)) {
         res.sendStatus(500);
         return;
       }
@@ -86,7 +87,7 @@ addHandler(
         readFileAsJSON(assetsFolder + "/siciliaVola/municipalities.json")
       );
 
-    if (maybeMunicipalities.isLeft() || maybeSiglaProvincia.isLeft()) {
+    if (E.isLeft(maybeMunicipalities) || E.isLeft(maybeSiglaProvincia)) {
       res.sendStatus(500);
       return;
     }
@@ -108,7 +109,7 @@ addHandler(
       .decode(
         readFileAsJSON(assetsFolder + "/siciliaVola/beneficiaryCategories.json")
       );
-    if (maybeCategorieBeneficiario.isLeft()) {
+    if (E.isLeft(maybeCategorieBeneficiario)) {
       res.sendStatus(500);
       return;
     }
