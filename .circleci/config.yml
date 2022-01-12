@@ -27,7 +27,7 @@ jobs:
           name: Testing
           command: |
             TEST=$(circleci tests glob **/__test*__/*.ts* | circleci tests split)
-            yarn test:ci $TEST --reporters=default --reporters=jest-junit
+            yarn test $TEST
       - run: ./scripts/codecov.sh
     parallelism: 8
 
