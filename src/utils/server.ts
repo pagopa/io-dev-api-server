@@ -1,3 +1,4 @@
+import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import os from "os";
@@ -31,6 +32,10 @@ export const interfaces = Object.entries(os.networkInterfaces())
     ]
   );
 
-export const serverIpv4Address = interfaces.filter(
-  i => i.name !== "loopback"
-)[0].address;
+export const serverIpv4Address = pipe(
+  interfaces,
+  A.filter(_ => _.name !== "loopback"),
+  A.head,
+  O.mapNullable(_ => _.address),
+  O.getOrElse(() => "localhost")
+);
