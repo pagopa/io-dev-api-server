@@ -210,7 +210,7 @@ export const backendStatus: BackendStatus = {
       tool: ToolEnum.instabug
     },
     paypal: {
-      enabled: false
+      enabled: true
     }
   }
 };
