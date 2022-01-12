@@ -211,6 +211,10 @@ export const backendStatus: BackendStatus = {
     },
     paypal: {
       enabled: false
+    },
+    cgn: {
+      enabled: true,
+      cgn_merchants_v2: false
     }
   }
 };
