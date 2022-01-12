@@ -26,7 +26,6 @@ jobs:
       - run:
           name: Testing
           command: |
-            TEST=$(circleci tests glob **/__test*__/*.ts* | circleci tests split)
             yarn test $TEST
       - run: ./scripts/codecov.sh
     parallelism: 8
