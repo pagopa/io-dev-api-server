@@ -25,6 +25,15 @@ export const backendStatus: BackendStatus = {
           "Cashback is under maintenance, it will be operational again soon"
       }
     },
+    cgn: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
+        "en-EN":
+          "Cashback is under maintenance, it will be operational again soon"
+      }
+    },
     email_validation: {
       is_visible: false,
       level: LevelEnum.warning,
@@ -211,6 +220,10 @@ export const backendStatus: BackendStatus = {
     },
     paypal: {
       enabled: true
+    },
+    cgn: {
+      enabled: true,
+      merchants_v2: false
     }
   }
 };
