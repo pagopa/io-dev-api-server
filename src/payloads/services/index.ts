@@ -90,7 +90,9 @@ export const getServicesPreferences = (
     services.map(s => {
       const metadata = s.service_metadata;
       if (metadata && SpecialServiceMetadata.is(metadata)) {
-        const specialServiceInbox = fromNullable(metadata.custom_special_flow)
+        const hasSpecialServiceInbox = fromNullable(
+          metadata.custom_special_flow
+        )
           .chain(csf =>
             fromNullable(specialServicesPreferenceFactory.get(csf)).map(h =>
               h()
@@ -100,11 +102,11 @@ export const getServicesPreferences = (
         return [
           s.service_id,
           {
-            is_inbox_enabled: specialServiceInbox,
-            is_email_enabled: specialServiceInbox
+            is_inbox_enabled: hasSpecialServiceInbox,
+            is_email_enabled: hasSpecialServiceInbox
               ? faker.datatype.boolean()
               : false,
-            is_webhook_enabled: specialServiceInbox
+            is_webhook_enabled: hasSpecialServiceInbox
               ? faker.datatype.boolean()
               : false,
             settings_version: 0 as ServicePreference["settings_version"]
