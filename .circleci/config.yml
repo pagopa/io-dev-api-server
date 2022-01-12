@@ -26,7 +26,7 @@ jobs:
       - run:
           name: Testing
           command: |
-            yarn test $TEST
+            yarn test
       - run: ./scripts/codecov.sh
     parallelism: 8
 
