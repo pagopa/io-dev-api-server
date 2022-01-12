@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as faker from "faker/locale/it";
+import faker from "faker/locale/it";
 import { addHandler } from "../payloads/response";
 import { session } from "../payloads/session";
 import { getRandomValue } from "../utils/random";

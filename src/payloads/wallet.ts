@@ -1,4 +1,4 @@
-import * as faker from "faker/locale/it";
+import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";

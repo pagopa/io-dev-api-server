@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as faker from "faker/locale/it";
+import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import fs from "fs";
