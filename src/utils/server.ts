@@ -11,7 +11,7 @@ const interestingNetworkInterfaces = new Set(["en0", "eth0"]);
 const getIpv4Addresses = (
   nets: ReadonlyArray<os.NetworkInterfaceInfo>
 ): ReadonlyArray<os.NetworkInterfaceInfo> =>
-  nets.filter(net => net.family !== "IPv4" && !net.internal);
+  nets.filter(net => net.family === "IPv4" && !net.internal);
 
 export const interfaces = Object.entries(os.networkInterfaces())
   .filter(([name]) => interestingNetworkInterfaces.has(name))
