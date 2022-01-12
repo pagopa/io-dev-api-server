@@ -214,7 +214,7 @@ export const backendStatus: BackendStatus = {
     },
     cgn: {
       enabled: true,
-      cgn_merchants_v2: false
+      merchants_v2: false
     }
   }
 };
