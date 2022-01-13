@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { BPay } from "../../../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { BPayRequest } from "../../../../generated/definitions/pagopa/walletv2/BPayRequest";
@@ -16,35 +18,46 @@ addHandler(
   "post",
   appendWalletV1Prefix("/bpay/add-wallets"),
   (req, res) => {
-    const maybeBPayList = BPayRequest.decode(req.body);
-    maybeBPayList.fold(
-      () => {
-        res.sendStatus(400);
-      },
-      bpay => {
-        fromNullable(bpay.data).foldL(
-          () => {
-            res.sendStatus(400);
-          },
-          (bPayList: ReadonlyArray<BPay>) => {
-            const walletData = getWalletV2();
-            // all method different from the adding ones
-            const walletsBPay = walletData.filter(
-              w =>
-                w.walletType !== WalletTypeEnum.BPay ||
-                (w.walletType === WalletTypeEnum.BPay &&
-                  !bPayList.some(
-                    (bp: BPay) => bp.uidHash === (w.info as BPayInfo).uidHash
-                  ))
-            );
-            const w2BpayList = bPayList.map(bp =>
-              generateWalletV2FromSatispayOrBancomatPay(bp, WalletTypeEnum.BPay)
-            );
-            addWalletV2([...walletsBPay, ...w2BpayList], false);
-            res.json({ data: w2BpayList });
-          }
-        );
-      }
+    pipe(
+      req.body,
+      BPayRequest.decode,
+      E.fold(
+        () => {
+          res.sendStatus(400);
+        },
+        bpay => {
+          pipe(
+            bpay.data,
+            O.fromNullable,
+            O.fold(
+              () => {
+                res.sendStatus(400);
+              },
+              (bPayList: ReadonlyArray<BPay>) => {
+                const walletData = getWalletV2();
+                // all method different from the adding ones
+                const walletsBPay = walletData.filter(
+                  w =>
+                    w.walletType !== WalletTypeEnum.BPay ||
+                    (w.walletType === WalletTypeEnum.BPay &&
+                      !bPayList.some(
+                        (bp: BPay) =>
+                          bp.uidHash === (w.info as BPayInfo).uidHash
+                      ))
+                );
+                const w2BpayList = bPayList.map(bp =>
+                  generateWalletV2FromSatispayOrBancomatPay(
+                    bp,
+                    WalletTypeEnum.BPay
+                  )
+                );
+                addWalletV2([...walletsBPay, ...w2BpayList], false);
+                res.json({ data: w2BpayList });
+              }
+            )
+          );
+        }
+      )
     );
   }
 );

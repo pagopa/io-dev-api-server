@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { Certificate } from "../../../../generated/definitions/eu_covid_cert/Certificate";
 import { assetsFolder } from "../../../config";
@@ -60,7 +61,10 @@ addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
   const config = eucovidCertAuthResponses.find(
     i => i[0] === accessData?.auth_code
   );
-  if (t.string.decode(accessData?.auth_code).isLeft() || config === undefined) {
+  if (
+    E.isLeft(t.string.decode(accessData?.auth_code)) ||
+    config === undefined
+  ) {
     // Payload has bad format
     res.sendStatus(400);
     return;

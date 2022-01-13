@@ -4,11 +4,13 @@
 import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
 import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { match } from "ts-pattern";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
-import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
 import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
@@ -46,6 +48,7 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
+
 export const walletCount =
   walletV2Config.paypalCount +
   walletV2Config.satispayCount +
@@ -94,9 +97,11 @@ addHandler(
   "get",
   appendWalletV1Prefix("/transactions"),
   (req, res) => {
-    const start = fromNullable(req.query.start as string | undefined)
-      .map(s => Math.max(parseInt(s, 10), 0))
-      .getOrElse(0);
+    const start = pipe(
+      O.fromNullable(req.query.start as string | undefined),
+      O.map(s => Math.max(parseInt(s, 10), 0)),
+      O.getOrElse(() => 0)
+    );
     const transactionsSlice = takeEnd(
       transactions.length - Math.min(start, transactions.length),
       [...transactions]
@@ -367,7 +372,7 @@ addHandler(
   (req, res) => {
     const payload = WalletPaymentStatusRequest.decode(req.body);
     // bad request
-    if (payload.isLeft()) {
+    if (E.isLeft(payload)) {
       res.sendStatus(400);
       return;
     }

@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { BackendStatus } from "../../../generated/definitions/content/BackendStatus";
 import { Zendesk } from "../../../generated/definitions/content/Zendesk";
@@ -12,7 +13,7 @@ it("info should return a valid backendStatus object", async done => {
   );
   expect(response.status).toBe(200);
   const bs = BackendStatus.decode(response.body);
-  expect(bs.isRight()).toBeTruthy();
+  expect(E.isRight(bs)).toBeTruthy();
   done();
 });
 
@@ -22,6 +23,6 @@ it("info should return a valid zendesk config object", async done => {
   );
   expect(response.status).toBe(200);
   const bs = Zendesk.decode(response.body);
-  expect(bs.isRight()).toBeTruthy();
+  expect(E.isRight(bs)).toBeTruthy();
   done();
 });

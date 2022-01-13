@@ -1,6 +1,7 @@
 import { Router } from "express";
-import * as faker from "faker/locale/it";
+import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
@@ -37,6 +38,7 @@ import {
 } from "../utils/variables";
 import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
+
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
 
@@ -339,7 +341,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     maximumId: req.query.maximum_id,
     minimumId: req.query.minimum_id
   });
-  if (paginatedQuery.isLeft()) {
+  if (E.isLeft(paginatedQuery)) {
     // bad request
     res.sendStatus(400);
     return;
@@ -474,7 +476,7 @@ addHandler(
     );
     const legalMessage = LegalMessageWithContent.decode(message);
     // ensure message exists and it has a legal content
-    if (message === undefined || legalMessage.isLeft()) {
+    if (message === undefined || E.isLeft(legalMessage)) {
       res.json(getProblemJson(404, "message not found"));
       return;
     }

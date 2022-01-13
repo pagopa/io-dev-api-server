@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
@@ -12,6 +13,7 @@ import {
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
+
 export const serviceRouter = Router();
 
 const configResponse = ioDevServerConfig.services.response;
@@ -81,7 +83,7 @@ addHandler(
       return;
     }
     const maybeUpdatePreference = ServicePreference.decode(req.body);
-    if (maybeUpdatePreference.isLeft()) {
+    if (E.isLeft(maybeUpdatePreference)) {
       res.sendStatus(400);
       return;
     }

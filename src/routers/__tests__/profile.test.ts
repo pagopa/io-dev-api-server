@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
 import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
@@ -15,8 +16,8 @@ it("profile should return a valid profile", async done => {
   const response = await request.get(`${basePath}/profile`);
   expect(response.status).toBe(200);
   const profile = InitializedProfile.decode(response.body);
-  expect(profile.isRight()).toBeTruthy();
-  if (profile.isRight()) {
+  expect(E.isRight(profile)).toBeTruthy();
+  if (E.isRight(profile)) {
     expect(profile.value.fiscal_code).toBe(
       ioDevServerConfig.profile.attrs.fiscal_code
     );
@@ -39,8 +40,7 @@ it("profile should return a valid updated profile (version increased)", async do
 
   expect(response.status).toBe(200);
   const updatedProfile = InitializedProfile.decode(response.body);
-  expect(updatedProfile.isRight()).toBeTruthy();
-  if (updatedProfile.isRight()) {
+  if (E.isRight(updatedProfile)) {
     expect(updatedProfile.value.version).toBe(profile.version + 1);
   }
   done();
@@ -50,7 +50,7 @@ it("get user-metadata should return a valid user-metadata", async done => {
   const response = await request.get(`${basePath}/user-metadata`);
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
-  expect(usermetadata.isRight()).toBeTruthy();
+  expect(E.isRight(usermetadata)).toBeTruthy();
   done();
 });
 
@@ -60,7 +60,7 @@ it("get municipality should return a valid municipality", async done => {
   );
   expect(response.status).toBe(200);
   const municipality = Municipality.decode(response.body);
-  expect(municipality.isRight()).toBeTruthy();
+  expect(E.isRight(municipality)).toBeTruthy();
   done();
 });
 
@@ -71,8 +71,8 @@ it("post user-metadata should return the updated user-metadata", async done => {
     .set("Content-Type", "application/json");
   expect(response.status).toBe(200);
   const updatedUsermetadata = UserMetadata.decode(response.body);
-  expect(updatedUsermetadata.isRight()).toBeTruthy();
-  if (updatedUsermetadata.isRight()) {
+  expect(E.isRight(updatedUsermetadata)).toBeTruthy();
+  if (E.isRight(updatedUsermetadata)) {
     expect(updatedUsermetadata.value).toEqual(mockUserMetadata);
   }
   done();

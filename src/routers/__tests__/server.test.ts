@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
 import { loginSessionToken } from "../../payloads/login";
@@ -38,7 +39,7 @@ it("session should return a valid session", async done => {
   const response = await request.get(`${basePath}/session`);
   expect(response.status).toBe(200);
   const session = PublicSession.decode(response.body);
-  expect(session.isRight()).toBeTruthy();
+  expect(E.isRight(session)).toBeTruthy();
   done();
 });
 

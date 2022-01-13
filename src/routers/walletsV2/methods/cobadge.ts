@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
@@ -53,7 +54,7 @@ const handleCobadge = (req: Request, res: Response) => {
     .readFileSync(assetsFolder + "/pm/cobadge/pans.json")
     .toString();
   const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
-  if (maybeResponse.isLeft()) {
+  if (E.isLeft(maybeResponse)) {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
@@ -73,7 +74,7 @@ const handleCobadge = (req: Request, res: Response) => {
     payload: { ...cobadgeResponse.payload, paymentInstruments }
   };
   const validResponse = RestCobadgeResponse.decode({ data: response });
-  if (validResponse.isLeft()) {
+  if (E.isLeft(validResponse)) {
     res.status(500).send(readableReport(validResponse.value));
     return;
   }
@@ -84,7 +85,7 @@ const handlePrivative = (req: Request, res: Response) => {
   const maybeResponse = CobadgeResponse.decode(
     readFileAsJSON(assetsFolder + "/pm/cobadge/pans.json")
   );
-  if (maybeResponse.isLeft()) {
+  if (E.isLeft(maybeResponse)) {
     res.status(400).send(readableReport(maybeResponse.value));
     return;
   }
@@ -109,7 +110,7 @@ const handlePrivative = (req: Request, res: Response) => {
     }
   };
   const validResponse = RestCobadgeResponse.decode({ data: response });
-  if (validResponse.isLeft()) {
+  if (E.isLeft(validResponse)) {
     res.status(500).send(readableReport(validResponse.value));
     return;
   }
@@ -150,7 +151,7 @@ addHandler(
       .readFileSync(assetsFolder + "/pm/cobadge/search.json")
       .toString();
     const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
-    if (maybeResponse.isLeft()) {
+    if (E.isLeft(maybeResponse)) {
       res.status(400).send(readableReport(maybeResponse.value));
       return;
     }
@@ -163,7 +164,7 @@ addHandler(
       payload: { ...cobadgeResponse.payload, paymentInstruments }
     };
     const validResponse = RestCobadgeResponse.decode({ data: response });
-    if (validResponse.isLeft()) {
+    if (E.isLeft(validResponse)) {
       res.status(500).send(readableReport(validResponse.value));
       return;
     }
@@ -183,7 +184,7 @@ addHandler(
     const data = req.body;
     const maybeData = CobadegPaymentInstrumentsRequest.decode(data);
     // cant decode the body
-    if (maybeData.isLeft()) {
+    if (E.isLeft(maybeData)) {
       res.status(400).send(readableReport(maybeData.value));
       return;
     }

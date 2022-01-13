@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
@@ -5,6 +6,7 @@ import { staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 import { services, visibleServices } from "../service";
+
 const request = supertest(app);
 
 it("services should return a valid services list", async done => {
@@ -12,8 +14,8 @@ it("services should return a valid services list", async done => {
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
 
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight()) {
+  expect(E.isRight(list)).toBeTruthy();
+  if (E.isRight(list)) {
     expect(list.value).toEqual(visibleServices.payload);
   }
   done();
@@ -24,8 +26,8 @@ it("services should return a valid service with content", async done => {
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
   const service = ServicePublic.decode(response.body);
-  expect(service.isRight()).toBeTruthy();
-  if (service.isRight()) {
+  expect(E.isRight(service)).toBeTruthy();
+  if (E.isRight(service)) {
     expect(service.value.service_id).toBe(serviceId);
   }
   done();

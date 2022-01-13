@@ -1,7 +1,7 @@
-import * as faker from "faker/locale/it";
+import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
-
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
 import {
   LinguaEnum,
@@ -14,7 +14,6 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
-
 import { ioDevServerConfig } from "../config";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";
@@ -226,13 +225,17 @@ export const getTransactions = (
       grandTotal: { amount: amount + fee },
       id: idx,
       idPayment: 1,
-      idPsp: fromNullable(wallets)
-        .map(ws => ws[idx % ws.length].idPsp)
-        .getOrElse(faker.datatype.number(10000)),
+      idPsp: pipe(
+        O.fromNullable(wallets),
+        O.map(ws => Number(ws[idx % ws.length].idPsp)),
+        O.getOrElse(() => faker.datatype.number(10000))
+      ),
       idStatus: 3,
-      idWallet: fromNullable(wallets)
-        .map(ws => ws[idx % ws.length].idWallet)
-        .toUndefined(),
+      idWallet: pipe(
+        O.fromNullable(wallets),
+        O.map(ws => ws[idx % ws.length].idWallet),
+        O.toUndefined
+      ),
       merchant,
       nodoIdPayment: "nodoIdPayment",
       paymentModel: 5,
