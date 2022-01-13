@@ -115,7 +115,7 @@ export const getServicesPreferences = (
               ? getRandomValue(false, faker.datatype.boolean(), "services")
               : false,
             is_webhook_enabled: hasSpecialServiceInbox
-              ? faker.datatype.boolean()
+              ? getRandomValue(false, faker.datatype.boolean(), "services")
               : false,
             settings_version: 0 as ServicePreference["settings_version"]
           }
