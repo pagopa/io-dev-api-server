@@ -103,13 +103,12 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
         cgnServiceId as ServiceId
       );
 
-      const increasedSettingsVersion = currentPreference
-        ? (((currentPreference.settings_version as number) +
-            1) as ServicePreference["settings_version"])
-        : (0 as ServicePreference["settings_version"]);
+      const increasedSettingsVersion = ((currentPreference?.settings_version ??
+        -1) + 1) as NonNegativeInteger;
       servicesPreferences.set(cgnServiceId as ServiceId, {
         is_inbox_enabled: true,
-        is_email_enabled: faker.datatype.boolean(),
+        is_email_enabled:currentPreference?.is_email_enabled ??
+          getRandomValue(false, faker.datatype.boolean(), "services"),
         is_webhook_enabled: faker.datatype.boolean(),
         settings_version: increasedSettingsVersion
       });
