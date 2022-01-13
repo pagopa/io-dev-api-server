@@ -7,6 +7,7 @@ import { NonNegativeInteger } from "italia-ts-commons/lib/numbers";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
+import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
 import {
   DiscountCodeType,
   DiscountCodeTypeEnum
@@ -285,6 +286,18 @@ addHandler(
       };
       res.json(offlineMerchant);
     }
+  }
+);
+
+addHandler(
+  cgnMerchantsRouter,
+  "get",
+  addPrefix("/discount-bucket-code/:discountId"),
+  (req, res) => {
+    const discountBucketCode: DiscountBucketCode = {
+      code: faker.datatype.string().toString() as NonEmptyString
+    };
+    res.json(discountBucketCode);
   }
 );
 
