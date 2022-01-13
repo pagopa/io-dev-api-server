@@ -208,6 +208,7 @@ addHandler(
         discountCodeType: foundMerchant.discountCodeType,
         discounts: range(1, 3).map<Discount>(_ => {
           const discount: Discount = {
+            id: faker.datatype.number().toString() as NonEmptyString,
             name: faker.commerce.productName() as NonEmptyString,
             startDate: faker.date.past(),
             endDate: faker.date.future(),
@@ -265,6 +266,7 @@ addHandler(
         imageUrl: faker.image.imageUrl() as NonEmptyString,
         description: faker.lorem.paragraphs(2) as NonEmptyString,
         discounts: range(1, 3).map<Discount>(_ => ({
+          id: faker.datatype.number().toString() as NonEmptyString,
           name: faker.commerce.productName() as NonEmptyString,
           startDate: faker.date.past(),
           endDate: faker.date.future(),
