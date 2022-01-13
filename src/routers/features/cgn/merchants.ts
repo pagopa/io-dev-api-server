@@ -1,7 +1,8 @@
 import { Router } from "express";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { NonNegativeInteger } from "italia-ts-commons/lib/numbers";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
@@ -111,13 +112,25 @@ addHandler(
       // tslint:disable-next-line:no-shadowed-variable
       const { productCategories, merchantName } = req.body;
       const merchantsFilteredByName = onlineMerchants.items.filter(om =>
-        fromNullable(merchantName).fold(true, mn => om.name.includes(mn))
+        pipe(
+          O.fromNullable(merchantName),
+          O.fold(
+            () => true,
+            mn => om.name.includes(mn)
+          )
+        )
       );
 
       const filteredMerchants = merchantsFilteredByName.filter(m =>
-        fromNullable(productCategories).fold(true, pc => {
-          return m.productCategories.some(cat => pc.includes(cat));
-        })
+        pipe(
+          O.fromNullable(productCategories),
+          O.fold(
+            () => true,
+            pc => {
+              return m.productCategories.some(cat => pc.includes(cat));
+            }
+          )
+        )
       );
       return res.status(200).json({ items: filteredMerchants });
     }
@@ -138,13 +151,25 @@ addHandler(
       } = req.body;
 
       const merchantsFilteredByName = offlineMerchants.items.filter(m =>
-        fromNullable(merchantName).fold(true, mn => m.name.includes(mn))
+        pipe(
+          O.fromNullable(merchantName),
+          O.fold(
+            () => true,
+            mn => m.name.includes(mn)
+          )
+        )
       );
 
       const filteredMerchants = merchantsFilteredByName.filter(m =>
-        fromNullable(productCategories).fold(true, pc => {
-          return m.productCategories.some(cat => pc.includes(cat));
-        })
+        pipe(
+          O.fromNullable(productCategories),
+          O.fold(
+            () => true,
+            pc => {
+              return m.productCategories.some(cat => pc.includes(cat));
+            }
+          )
+        )
       );
 
       return res.status(200).json({ items: filteredMerchants });

@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
 import faker from "faker/locale/it";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -51,14 +53,17 @@ addHandler(
   // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
   (_, res) => {
-    fromNullable(ioDevServerConfig.wallet.verificaError).foldL(
-      () => {
-        paymentRequest = getPaymentRequestsGetResponse(
-          faker.random.arrayElement(services)
-        );
-        res.json(paymentRequest);
-      },
-      error => responseWithError(error, res)
+    pipe(
+      O.fromNullable(ioDevServerConfig.wallet.verificaError),
+      O.fold(
+        () => {
+          paymentRequest = getPaymentRequestsGetResponse(
+            faker.random.arrayElement(services)
+          );
+          res.json(paymentRequest);
+        },
+        error => responseWithError(error, res)
+      )
     );
   }
 );
@@ -78,7 +83,7 @@ addHandler(
       return;
     }
     const payload = PaymentActivationsPostRequest.decode(req.body);
-    if (payload.isRight()) {
+    if (E.isRight(payload)) {
       const response: PaymentActivationsPostResponse = {
         importoSingoloVersamento: paymentRequest.importoSingoloVersamento,
         causaleVersamento: paymentRequest.causaleVersamento,

@@ -1,6 +1,8 @@
 import chalk from "chalk";
 import { Router } from "express";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { TrxCountByDayResourceArray } from "../../../../../generated/definitions/bpd/winning_transactions/v2/TrxCountByDayResourceArray";
@@ -49,22 +51,25 @@ addHandler(
   addBPDPrefix("/io/winning-transactions/v2/total-cashback"),
   (req, res) => {
     const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
-    fromNullable(totalCashback.get(awardPeriodId)).foldL(
-      () => {
-        res.sendStatus(404);
-      },
-      p => {
-        const maybeTotalCashBack = TotalCashbackResource.decode(
-          readTotalCashbackJson(req.query.awardPeriodId as string, p)
-        );
+    pipe(
+      O.fromNullable(totalCashback.get(awardPeriodId)),
+      O.fold(
+        () => {
+          res.sendStatus(404);
+        },
+        p => {
+          const maybeTotalCashBack = TotalCashbackResource.decode(
+            readTotalCashbackJson(req.query.awardPeriodId as string, p)
+          );
 
-        if (maybeTotalCashBack.isLeft()) {
-          console.log(chalk.red(`${p} is not a valid TotalCashbackResource`));
-          res.sendStatus(500);
-        } else {
-          res.json(maybeTotalCashBack.value);
+          if (E.isLeft(maybeTotalCashBack)) {
+            console.log(chalk.red(`${p} is not a valid TotalCashbackResource`));
+            res.sendStatus(500);
+          } else {
+            res.json(maybeTotalCashBack.value);
+          }
         }
-      }
+      )
     );
   }
 );
@@ -104,7 +109,7 @@ addHandler(
         const maybeTransactions = WinningTransactionPageResource.decode(
           readWinningTransactions(period.toString(), file)
         );
-        if (maybeTransactions.isLeft()) {
+        if (E.isLeft(maybeTransactions)) {
           console.log(
             chalk.red(
               `${period.toString()}/${file} is not a valid WinningTransactionPageResource\n${readableReport(
@@ -159,24 +164,27 @@ addHandler(
   addBPDPrefix("/io/winning-transactions/v2/countbyday"),
   (req, res) => {
     const awardPeriodId = parseInt(req.query.awardPeriodId as string, 10);
-    fromNullable(countByDay.get(awardPeriodId)).foldL(
-      () => {
-        res.sendStatus(404);
-      },
-      p => {
-        const maybeCountByDay = TrxCountByDayResourceArray.decode(
-          readCountByDayJson(req.query.awardPeriodId as string, p)
-        );
-
-        if (maybeCountByDay.isLeft()) {
-          console.log(
-            chalk.red(`${p} is not a valid TrxCountByDayResourceArray`)
+    pipe(
+      O.fromNullable(countByDay.get(awardPeriodId)),
+      O.fold(
+        () => {
+          res.sendStatus(404);
+        },
+        p => {
+          const maybeCountByDay = TrxCountByDayResourceArray.decode(
+            readCountByDayJson(req.query.awardPeriodId as string, p)
           );
-          res.sendStatus(500);
-        } else {
-          res.json(maybeCountByDay.value);
+
+          if (E.isLeft(maybeCountByDay)) {
+            console.log(
+              chalk.red(`${p} is not a valid TrxCountByDayResourceArray`)
+            );
+            res.sendStatus(500);
+          } else {
+            res.json(maybeCountByDay.value);
+          }
         }
-      }
+      )
     );
   }
 );
@@ -192,7 +200,7 @@ addHandler(
     const maybeTransactions = WinningTransactionPageResource.decode(
       readWinningTransactions(payload.period, payload.file)
     );
-    if (maybeTransactions.isLeft()) {
+    if (E.isLeft(maybeTransactions)) {
       console.log(
         chalk.red(
           `${payload.file} is not a valid WinningTransactionPageResource`
@@ -257,7 +265,7 @@ addHandler(
     const maybeTotalCashBack = TotalCashbackResource.decode(
       readTotalCashbackJson(payload.directory, payload.file)
     );
-    if (maybeTotalCashBack.isLeft()) {
+    if (E.isLeft(maybeTotalCashBack)) {
       console.log(
         chalk.red(`${payload.file} is not a valid TotalCashbackResource`)
       );

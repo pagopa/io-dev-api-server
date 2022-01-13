@@ -2,7 +2,8 @@ import chalk from "chalk";
 import child_process from "child_process";
 import { cli } from "cli-ux";
 import figlet from "figlet";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { routes } from "./payloads/response";
 import app from "./server";
 import { readFileAsJSON } from "./utils/file";
@@ -29,11 +30,11 @@ app.listen(serverPort, serverHostname, async () => {
       description: {
         header: "description",
         get(row): any {
-          return (
-            fromNullable(row.description)
-              // tslint:disable-next-line:no-nested-template-literals
-              .map(d => `(${d})`)
-              .getOrElse("")
+          return pipe(
+            O.fromNullable(row.description),
+            // tslint:disable-next-line:no-nested-template-literals
+            O.map(d => `(${d})`),
+            O.getOrElse(() => "")
           );
         }
       }

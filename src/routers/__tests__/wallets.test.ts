@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest, { Response } from "supertest";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
@@ -23,8 +24,8 @@ const request = supertest(app);
 const testGetWallets = (response: Response) => {
   expect(response.status).toBe(200);
   const wallets = WalletListResponse.decode(response.body);
-  expect(wallets.isRight()).toBeTruthy();
-  if (wallets.isRight() && wallets.value.data) {
+  expect(E.isRight(wallets)).toBeTruthy();
+  if (E.isRight(wallets) && wallets.value.data) {
     expect(wallets.value.data.length).toBe(walletCount);
   }
   return wallets.value;
@@ -35,8 +36,8 @@ const testGetWalletsV2 = (
 ): ReadonlyArray<PatchedWalletV2> => {
   expect(response.status).toBe(200);
   const wallets = PatchedWalletV2ListResponse.decode(response.body);
-  expect(wallets.isRight()).toBeTruthy();
-  if (wallets.isRight() && wallets.value.data) {
+  expect(E.isRight(wallets)).toBeTruthy();
+  if (E.isRight(wallets) && wallets.value.data) {
     expect(wallets.value.data.length ?? 0).toBe(walletCount);
     return wallets.value.data;
   }
@@ -55,8 +56,8 @@ it("should start a valid session", async done => {
   );
   expect(response.status).toBe(200);
   const session = SessionResponse.decode(response.body);
-  expect(session.isRight()).toBeTruthy();
-  if (session.isRight()) {
+  expect(E.isRight(session)).toBeTruthy();
+  if (E.isRight(session)) {
     expect(session.value).toEqual(sessionToken);
   }
   done();
@@ -90,8 +91,8 @@ it("should set pagoPa flag to false (if credit card > 1)", async done => {
     .send({ data: { pagoPA: false } });
   expect(response.status).toBe(200);
   const responsePayload = PatchedWalletV2Response.decode(response.body);
-  expect(responsePayload.isRight()).toBeTruthy();
-  if (responsePayload.isRight()) {
+  expect(E.isRight(responsePayload)).toBeTruthy();
+  if (E.isRight(responsePayload)) {
     expect(responsePayload.value).toEqual({
       data: { ...firstWallet, favourite: false, pagoPA: false }
     });
@@ -106,8 +107,8 @@ it("should set pagoPa flag to false (if credit card > 1)", async done => {
   const responsePayloadInvert = PatchedWalletV2Response.decode(
     responseInvert.body
   );
-  expect(responsePayloadInvert.isRight()).toBeTruthy();
-  if (responsePayloadInvert.isRight()) {
+  expect(E.isRight(responsePayloadInvert)).toBeTruthy();
+  if (E.isRight(responsePayloadInvert)) {
     expect(responsePayloadInvert.value).toEqual({
       data: { ...firstWallet, favourite: false, pagoPA: true }
     });
@@ -145,8 +146,8 @@ it("should remove in bulk all these methods that have a specific function enable
   const testResponse = (toBeDeleted: number, res: typeof response) => {
     expect(res.status).toBe(200);
     const deleteResponse = DeletedWalletsResponse.decode(res.body);
-    expect(deleteResponse.isRight()).toBeTruthy();
-    if (deleteResponse.isRight() && deleteResponse.value.data) {
+    expect(E.isRight(deleteResponse)).toBeTruthy();
+    if (E.isRight(deleteResponse) && deleteResponse.value.data) {
       expect(deleteResponse.value.data.deletedWallets).toBe(toBeDeleted);
       expect(deleteResponse.value.data.notDeletedWallets).toBe(0);
     }
@@ -169,8 +170,8 @@ it("services should return a valid transactions list", async done => {
   const response = await request.get(appendWalletV1Prefix("/transactions"));
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight()) {
+  expect(E.isRight(list)).toBeTruthy();
+  if (E.isRight(list)) {
     expect(list.value.data).toEqual(transactions.slice(0, transactionPageSize));
     if (list.value.data) {
       expect(list.value.data.length).toEqual(
@@ -187,8 +188,8 @@ it("services should return a valid transactions list slice", async done => {
   );
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight() && list.value.data) {
+  expect(E.isRight(list)).toBeTruthy();
+  if (E.isRight(list) && list.value.data) {
     expect(list.value.data.length).toEqual(1);
   }
   done();
@@ -200,8 +201,8 @@ it("services should return an empty data transactions", async done => {
   );
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
-  expect(list.isRight()).toBeTruthy();
-  if (list.isRight() && list.value.data) {
+  expect(E.isRight(list)).toBeTruthy();
+  if (E.isRight(list) && list.value.data) {
     expect(list.value.data.length).toEqual(0);
   }
   done();
@@ -211,7 +212,7 @@ it("should return a valid psp", async done => {
   const response = await request.get(appendWalletV1Prefix(`/psps/43188`));
   expect(response.status).toBe(200);
   const psp = Psp.decode(response.body);
-  expect(psp.isRight()).toBeTruthy();
+  expect(E.isRight(psp)).toBeTruthy();
   done();
 });
 
@@ -221,6 +222,6 @@ it("should return a valid psp list (v2)", async done => {
   );
   expect(response.status).toBe(200);
   const psp = PspDataListResponse.decode(response.body);
-  expect(psp.isRight()).toBeTruthy();
+  expect(E.isRight(psp)).toBeTruthy();
   done();
 });

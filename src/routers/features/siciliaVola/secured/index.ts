@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import * as t from "io-ts";
 import { AeroportiAmmessiInputBean } from "../../../../../generated/definitions/siciliaVola/AeroportiAmmessiInputBean";
@@ -44,7 +45,7 @@ addHandler(
       req.body.voucherBeneficiarioInputBean
     );
 
-    if (maybeParams.isLeft()) {
+    if (E.isLeft(maybeParams)) {
       res.sendStatus(500);
       return;
     }
@@ -95,7 +96,7 @@ addHandler(
     const maybeAeroportiAmmessiInputBean = AeroportiAmmessiInputBean.decode(
       aeroportiAmmessiInputBean
     );
-    if (maybeAeroportiAmmessiInputBean.isLeft()) {
+    if (E.isLeft(maybeAeroportiAmmessiInputBean)) {
       // validate the body value
       res.sendStatus(500);
       return;
@@ -115,7 +116,7 @@ addHandler(
   (req, res) => {
     const { codiceVoucher } = req.body;
     const maybeVoucherId = t.Integer.decode(codiceVoucher);
-    if (maybeVoucherId.isLeft()) {
+    if (E.isLeft(maybeVoucherId)) {
       // validate the body value
       res.sendStatus(500);
       return;
@@ -142,7 +143,7 @@ addHandler(
   (req, res) => {
     const { codiceVoucher } = req.body;
     const maybeVoucherId = t.Integer.decode(codiceVoucher);
-    if (maybeVoucherId.isLeft()) {
+    if (E.isLeft(maybeVoucherId)) {
       // validate the body value
       res.sendStatus(500);
       return;

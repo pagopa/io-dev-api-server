@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import app from "../../../../server";
@@ -16,15 +17,15 @@ describe("citizen V2 API", () => {
     const response = await request.get(addBPDPrefix(`/io/citizen/v2`));
     expect(response.status).toBe(200);
     const cr = CitizenResource.decode(response.body);
-    expect(cr.isRight()).toBeTruthy();
+    expect(E.isRight(cr)).toBeTruthy();
     done();
   });
   it("Should return a 200, CitizenResource (V2) with enabled = true if is a PUT", async done => {
     const response = await request.put(addBPDPrefix(`/io/citizen/v2`));
     expect(response.status).toBe(200);
     const cr = CitizenResource.decode(response.body);
-    expect(cr.isRight()).toBeTruthy();
-    if (cr.isRight()) {
+    expect(E.isRight(cr)).toBeTruthy();
+    if (E.isRight(cr)) {
       expect(cr.value.enabled === true).toBeTruthy();
     }
     done();

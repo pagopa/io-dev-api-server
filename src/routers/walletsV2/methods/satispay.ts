@@ -1,4 +1,6 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Satispay } from "../../../../generated/definitions/pagopa/walletv2/Satispay";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../../../payloads/response";
@@ -31,21 +33,24 @@ addHandler(
   "post",
   appendWalletV1Prefix("/satispay/add-wallet"),
   (req, res) => {
-    const maybeSatispayInfo = Satispay.decode(req.body.data);
-    maybeSatispayInfo.fold(
-      () => res.sendStatus(400),
-      si => {
-        const walletData = getWalletV2();
-        const walletsWithoutSatispay = walletData.filter(
-          w => w.walletType !== WalletTypeEnum.Satispay
-        );
-        const w2Satispay = generateWalletV2FromSatispayOrBancomatPay(
-          { uuid: si.uidSatispayHash },
-          WalletTypeEnum.Satispay
-        );
-        addWalletV2([...walletsWithoutSatispay, w2Satispay], false);
-        return res.json({ data: w2Satispay });
-      }
+    return pipe(
+      req.body.data,
+      Satispay.decode,
+      E.fold(
+        () => res.sendStatus(400),
+        si => {
+          const walletData = getWalletV2();
+          const walletsWithoutSatispay = walletData.filter(
+            w => w.walletType !== WalletTypeEnum.Satispay
+          );
+          const w2Satispay = generateWalletV2FromSatispayOrBancomatPay(
+            { uuid: si.uidSatispayHash },
+            WalletTypeEnum.Satispay
+          );
+          addWalletV2([...walletsWithoutSatispay, w2Satispay], false);
+          return res.json({ data: w2Satispay });
+        }
+      )
     );
   }
 );

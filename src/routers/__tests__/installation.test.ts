@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { SuccessResponse } from "../../../generated/definitions/backend/SuccessResponse";
 import { basePath } from "../../payloads/response";
@@ -11,6 +12,6 @@ it("should return 200", async done => {
   );
   expect(response.status).toBe(200);
   const sr = SuccessResponse.decode(response.body);
-  expect(sr.isRight()).toBeTruthy();
+  expect(E.isRight(sr)).toBeTruthy();
   done();
 });

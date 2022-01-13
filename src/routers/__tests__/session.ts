@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
 import { basePath } from "../../payloads/response";
@@ -10,8 +11,8 @@ it("services should return a valid public session", async done => {
   expect(response.status).toBe(200);
   const publicSession = PublicSession.decode(response.body);
 
-  expect(publicSession.isRight()).toBeTruthy();
-  if (publicSession.isRight()) {
+  expect(E.isRight(publicSession)).toBeTruthy();
+  if (E.isRight(publicSession)) {
     expect(publicSession.value).toEqual(session.payload);
   }
   done();

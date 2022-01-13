@@ -2,6 +2,7 @@
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
@@ -169,7 +170,7 @@ addHandler(
     const decoded = CoBadgeServices.decode(
       readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")
     );
-    if (decoded.isLeft()) {
+    if (E.isLeft(decoded)) {
       res.status(500).send(readableReport(decoded.value));
       return;
     }
@@ -186,7 +187,7 @@ addHandler(
     const decoded = PrivativeServices.decode(
       readFileAsJSON(assetsFolder + "/data/privativeServices.json")
     );
-    if (decoded.isLeft()) {
+    if (E.isLeft(decoded)) {
       res.status(500).send(readableReport(decoded.value));
       return;
     }
