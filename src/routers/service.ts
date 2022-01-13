@@ -23,7 +23,7 @@ export const services = getServices(
 );
 
 export const visibleServices = getServicesTuple(services);
-const servicesPreferences = getServicesPreferences(services);
+export const servicesPreferences = getServicesPreferences(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
   if (configResponse.getServicesResponseCode !== 200) {

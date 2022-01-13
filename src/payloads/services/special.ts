@@ -37,7 +37,7 @@ const withSiciliaVolaService = (
   organization_fiscal_code: organizationFiscalCode
 });
 
-const cgnServiceId = "serviceCgn";
+export const cgnServiceId = "serviceCgn";
 const cgnService: ServicePublic = {
   ...getService(cgnServiceId),
   organization_name: "Carta Giovani Nazionale" as OrganizationName,
@@ -45,8 +45,7 @@ const cgnService: ServicePublic = {
   service_metadata: {
     ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
     category: SpecialServiceCategoryEnum.SPECIAL,
-    custom_special_flow: "cgn" as SpecialServiceMetadata["custom_special_flow"],
-    cta: frontMatter2CTA2 as NonEmptyString
+    custom_special_flow: "cgn" as SpecialServiceMetadata["custom_special_flow"]
   }
 };
 
