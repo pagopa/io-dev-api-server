@@ -1,3 +1,4 @@
+import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { Router } from "express";
 import faker from "faker/locale/it";
 import * as E from "fp-ts/lib/Either";
@@ -25,6 +26,7 @@ import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bon
 import { addHandler } from "../../../payloads/response";
 import { cgnServiceId } from "../../../payloads/services/special";
 import { getRandomStringId } from "../../../utils/id";
+import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { servicesPreferences } from "../../service";
 
@@ -105,15 +107,16 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
           instance_id: { id },
           status: StatusEnum.COMPLETED
         };
-              const currentPreference = servicesPreferences.get(
-        cgnServiceId as ServiceId
-      );
+        const currentPreference = servicesPreferences.get(
+          cgnServiceId as ServiceId
+        );
 
-        const increasedSettingsVersion = ((currentPreference?.settings_version ??
+        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
         servicesPreferences.set(cgnServiceId as ServiceId, {
           is_inbox_enabled: true,
-          is_email_enabled:currentPreference?.is_email_enabled ??
+          is_email_enabled:
+            currentPreference?.is_email_enabled ??
             getRandomValue(false, faker.datatype.boolean(), "services"),
           is_webhook_enabled: faker.datatype.boolean(),
           settings_version: increasedSettingsVersion

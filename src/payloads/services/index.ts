@@ -1,6 +1,7 @@
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
-import { fromNullable } from "fp-ts/lib/Option";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import {
   NonEmptyString,
   OrganizationFiscalCode
@@ -14,6 +15,7 @@ import { ServiceScopeEnum } from "../../../generated/definitions/backend/Service
 import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
 import { ioDevServerConfig } from "../../config";
 import { isCgnActivated } from "../../routers/features/cgn";
+import { getRandomValue } from "../../utils/random";
 import { getService, getServiceMetadata } from "../../utils/service";
 import { validatePayload } from "../../utils/validator";
 import { frontMatter2CTA2 } from "../../utils/variables";
@@ -90,15 +92,21 @@ export const getServicesPreferences = (
     services.map(s => {
       const metadata = s.service_metadata;
       if (metadata && SpecialServiceMetadata.is(metadata)) {
-        const hasSpecialServiceInbox = fromNullable(
-          metadata.custom_special_flow
-        )
-          .chain(csf =>
-            fromNullable(specialServicesPreferenceFactory.get(csf)).map(h =>
-              h()
-            )
+        const hasSpecialServiceInbox = pipe(
+          O.fromNullable(metadata.custom_special_flow),
+          O.fold(
+            () => false,
+            csf =>
+              pipe(
+                O.fromNullable(specialServicesPreferenceFactory.get(csf)),
+                O.fold(
+                  () => false,
+                  h => h()
+                )
+              )
           )
-          .getOrElse(false);
+        );
+
         return [
           s.service_id,
           {
