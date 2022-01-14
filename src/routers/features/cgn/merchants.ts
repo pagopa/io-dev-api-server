@@ -7,6 +7,7 @@ import { NonNegativeInteger } from "italia-ts-commons/lib/numbers";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
+import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
 import {
   DiscountCodeType,
   DiscountCodeTypeEnum
@@ -207,6 +208,7 @@ addHandler(
         discountCodeType: foundMerchant.discountCodeType,
         discounts: range(1, 3).map<Discount>(_ => {
           const discount: Discount = {
+            id: faker.datatype.number().toString() as NonEmptyString,
             name: faker.commerce.productName() as NonEmptyString,
             startDate: faker.date.past(),
             endDate: faker.date.future(),
@@ -264,6 +266,7 @@ addHandler(
         imageUrl: faker.image.imageUrl() as NonEmptyString,
         description: faker.lorem.paragraphs(2) as NonEmptyString,
         discounts: range(1, 3).map<Discount>(_ => ({
+          id: faker.datatype.number().toString() as NonEmptyString,
           name: faker.commerce.productName() as NonEmptyString,
           startDate: faker.date.past(),
           endDate: faker.date.future(),
@@ -285,6 +288,18 @@ addHandler(
       };
       res.json(offlineMerchant);
     }
+  }
+);
+
+addHandler(
+  cgnMerchantsRouter,
+  "get",
+  addPrefix("/discount-bucket-code/:discountId"),
+  (req, res) => {
+    const discountBucketCode: DiscountBucketCode = {
+      code: faker.datatype.string().toString() as NonEmptyString
+    };
+    res.json(discountBucketCode);
   }
 );
 
