@@ -18,7 +18,7 @@ const spidProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: profileAttrConfig.name,
   version: 1,
-  date_of_birth: new Date(1991, 0, 6),
+  date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages
 };
