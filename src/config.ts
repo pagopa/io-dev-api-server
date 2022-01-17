@@ -76,11 +76,11 @@ const defaultConfig: IoDevServerConfig = {
     paymentWithExpiredDueDateCount: 0,
     medicalCount: 0,
     withCTA: false,
-    withEUCovidCert: false,
+    withEUCovidCert: true,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
-    standardMessageCount: 2,
+    standardMessageCount: 0,
     // atm it has effect only on legal message flow (pr welcome)
     allowRandomValues: true
   },
