@@ -2,9 +2,9 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { Certificate } from "../../../../generated/definitions/eu_covid_cert/Certificate";
-import { assetsFolder } from "../../../config";
+import { assetsFolder, staticContentRootPath } from "../../../config";
 import { addHandler } from "../../../payloads/response";
-import { readFileAsJSON } from "../../../utils/file";
+import { readFileAsJSON, sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { validatePayload } from "../../../utils/validator";
 
@@ -75,3 +75,15 @@ addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
   }
   res.sendStatus(config[2]);
 });
+
+/**
+ * CDN API - return the logo associated with the logoID
+ */
+addHandler(
+  euCovidCertRouter,
+  "get",
+  `${staticContentRootPath}/logos/eucovidcert/:logoId`,
+  (req, res) => {
+    sendFile(`assets/eu_covid_cert/logo/${req.params.logoId}`, res);
+  }
+);
