@@ -9,7 +9,7 @@ import { services, visibleServices } from "../service";
 
 const request = supertest(app);
 
-it("services should return a valid services list", async done => {
+it("services should return a valid services list", async () => {
   const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
@@ -18,10 +18,9 @@ it("services should return a valid services list", async done => {
   if (E.isRight(list)) {
     expect(list.value).toEqual(visibleServices.payload);
   }
-  done();
 });
 
-it("services should return a valid service with content", async done => {
+it("services should return a valid service with content", async () => {
   const serviceId = services[0].service_id;
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
@@ -30,21 +29,18 @@ it("services should return a valid service with content", async done => {
   if (E.isRight(service)) {
     expect(service.value.service_id).toBe(serviceId);
   }
-  done();
 });
 
-it("static_contents should return a valid service logo", async done => {
+it("static_contents should return a valid service logo", async () => {
   const response = await request.get(
     `${staticContentRootPath}/logos/services/service_id`
   );
   expect(response.status).toBe(200);
-  done();
 });
 
-it("static_contents should return a valid organization logo", async done => {
+it("static_contents should return a valid organization logo", async () => {
   const response = await request.get(
     `${staticContentRootPath}/logos/organizations/organization_id`
   );
   expect(response.status).toBe(200);
-  done();
 });

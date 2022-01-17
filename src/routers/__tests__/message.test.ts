@@ -95,7 +95,7 @@ describe("when `maximum_id` is used", () => {
   });
 });
 
-it("messages should return those items that are younger than specified minimum_id", async done => {
+it("messages should return those items that are younger than specified minimum_id", async () => {
   const response = await request.get(`${basePath}/messages`);
   expect(response.status).toBe(200);
   const list = PaginatedPublicMessagesCollection.decode(response.body);
@@ -125,10 +125,9 @@ it("messages should return those items that are younger than specified minimum_i
       }
     }
   }
-  done();
 });
 
-it("messages should return a valid message with content with enriched data", async done => {
+it("messages should return a valid message with content with enriched data", async () => {
   const response = await request.get(
     `${basePath}/messages?enrich_result_data=true`
   );
@@ -150,10 +149,9 @@ it("messages should return a valid message with content with enriched data", asy
   if (E.isRight(listDefault)) {
     expect(listDefault.value.items.every(EnrichedMessage.is)).toBeFalsy();
   }
-  done();
 });
 
-it("messages should return a valid message with content", async done => {
+it("messages should return a valid message with content", async () => {
   const messageId = messagesWithContent[0].id;
   const response = await request.get(`${basePath}/messages/${messageId}`);
   expect(response.status).toBe(200);
@@ -162,5 +160,4 @@ it("messages should return a valid message with content", async done => {
   if (E.isRight(message)) {
     expect(message.value.id).toBe(messageId);
   }
-  done();
 });

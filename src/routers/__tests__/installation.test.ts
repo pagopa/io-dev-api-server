@@ -6,12 +6,11 @@ import app from "../../server";
 
 const request = supertest(app);
 
-it("should return 200", async done => {
+it("should return 200", async () => {
   const response = await request.put(
     `${basePath}/installations/MY_FANCY_TOKEN`
   );
   expect(response.status).toBe(200);
   const sr = SuccessResponse.decode(response.body);
   expect(E.isRight(sr)).toBeTruthy();
-  done();
 });

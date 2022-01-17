@@ -44,13 +44,12 @@ const testGetWalletsV2 = (
   return [];
 };
 
-it("/wallet should return a list of wallets (payments method instances)", async done => {
+it("/wallet should return a list of wallets (payments method instances)", async () => {
   const response = await request.get(appendWalletV1Prefix("/wallet"));
   testGetWallets(response);
-  done();
 });
 
-it("should start a valid session", async done => {
+it("should start a valid session", async () => {
   const response = await request.get(
     appendWalletV1Prefix("/users/actions/start-session")
   );
@@ -60,10 +59,9 @@ it("should start a valid session", async done => {
   if (E.isRight(session)) {
     expect(session.value).toEqual(sessionToken);
   }
-  done();
 });
 
-it("should set a wallet as favourite", async done => {
+it("should set a wallet as favourite", async () => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets = testGetWalletsV2(responseWallets);
   const firstWallet = wallets[0];
@@ -71,10 +69,9 @@ it("should set a wallet as favourite", async done => {
     appendWalletV1Prefix(`/wallet/${firstWallet.idWallet}/actions/favourite`)
   );
   expect(response.status).toBe(200);
-  done();
 });
 
-it("should set pagoPa flag to false (if credit card > 1)", async done => {
+it("should set pagoPa flag to false (if credit card > 1)", async () => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets = testGetWalletsV2(responseWallets);
   const firstWallet = wallets.find(w =>
@@ -113,10 +110,9 @@ it("should set pagoPa flag to false (if credit card > 1)", async done => {
       data: { ...firstWallet, favourite: false, pagoPA: true }
     });
   }
-  done();
 });
 
-it("should remove in bulk all these methods that have a specific function enabled", async done => {
+it("should remove in bulk all these methods that have a specific function enabled", async () => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets = testGetWalletsV2(responseWallets);
   const pagopaWallets = wallets.filter(w =>
@@ -155,18 +151,16 @@ it("should remove in bulk all these methods that have a specific function enable
     testResponse(bpdWallets.length, responseBpd);
     testResponse(faWallets.length, responseFa);
   };
-  done();
 });
 
-it("should fails to set a non existing wallet as favourite", async done => {
+it("should fails to set a non existing wallet as favourite", async () => {
   const response = await request.post(
     appendWalletV1Prefix(`/wallet/-1234/actions/favourite`)
   );
   expect(response.status).toBe(404);
-  done();
 });
 
-it("services should return a valid transactions list", async done => {
+it("services should return a valid transactions list", async () => {
   const response = await request.get(appendWalletV1Prefix("/transactions"));
   expect(response.status).toBe(200);
   const list = TransactionListResponse.decode(response.body);
@@ -179,10 +173,9 @@ it("services should return a valid transactions list", async done => {
       );
     }
   }
-  done();
 });
 
-it("services should return a valid transactions list slice", async done => {
+it("services should return a valid transactions list slice", async () => {
   const response = await request.get(
     appendWalletV1Prefix(`/transactions?start=${transactionsTotal - 1}`)
   );
@@ -192,10 +185,9 @@ it("services should return a valid transactions list slice", async done => {
   if (E.isRight(list) && list.value.data) {
     expect(list.value.data.length).toEqual(1);
   }
-  done();
 });
 
-it("services should return an empty data transactions", async done => {
+it("services should return an empty data transactions", async () => {
   const response = await request.get(
     appendWalletV1Prefix(`/transactions?start=${transactionsTotal + 1}`)
   );
@@ -205,23 +197,20 @@ it("services should return an empty data transactions", async done => {
   if (E.isRight(list) && list.value.data) {
     expect(list.value.data.length).toEqual(0);
   }
-  done();
 });
 
-it("should return a valid psp", async done => {
+it("should return a valid psp", async () => {
   const response = await request.get(appendWalletV1Prefix(`/psps/43188`));
   expect(response.status).toBe(200);
   const psp = Psp.decode(response.body);
   expect(E.isRight(psp)).toBeTruthy();
-  done();
 });
 
-it("should return a valid psp list (v2)", async done => {
+it("should return a valid psp list (v2)", async () => {
   const response = await request.get(
     appendWalletV2Prefix(`/payments/1234/psps?idWallet=1`)
   );
   expect(response.status).toBe(200);
   const psp = PspDataListResponse.decode(response.body);
   expect(E.isRight(psp)).toBeTruthy();
-  done();
 });
