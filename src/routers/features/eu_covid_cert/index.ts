@@ -77,7 +77,7 @@ addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
 });
 
 /**
- * CDN API - return the logo associated with the logoID
+ * CDN API - return the logo associated with the given logoID
  */
 addHandler(
   euCovidCertRouter,
