@@ -1,5 +1,10 @@
 {
   "uvci": "expiredCertificateId",
   "status": "expired",
-  "info": "### Expired info"
+  "info": "### Expired info",
+  "header_info": {
+    "title": "Expired Certificate title",
+    "subtitle": "Expired Certificate sub title",
+    "logo_id": "expired"
+  }
 }
