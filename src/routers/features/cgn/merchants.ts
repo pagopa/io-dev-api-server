@@ -33,7 +33,7 @@ import { publicRouter } from "../../public";
 export const cgnMerchantsRouter = Router();
 
 const addPrefix = (path: string) =>
-  addApiV1Prefix(`/cgn-operator-search${path}`);
+  addApiV1Prefix(`/cgn/operator-search${path}`);
 
 const productCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.health,

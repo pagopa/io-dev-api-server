@@ -58,10 +58,14 @@ export const withDueDate = (
   return { ...message, content: { ...message.content, due_date: dueDate } };
 };
 
+/**
+ * Add the MVL payload to a generic message.
+ */
 export const withLegalContent = (
   message: CreatedMessageWithContent,
   mvlMsgId: string,
-  attachments: ReadonlyArray<Attachment> = []
+  attachments: ReadonlyArray<Attachment> = [],
+  hasHtml: boolean = true
 ): LegalMessageWithContent => {
   // helper functions
   const getEmail = (hardCodedEmail: string) =>
@@ -75,7 +79,7 @@ export const withLegalContent = (
     eml: {
       subject: getWords("You're fired"),
       plain_text_content: getWords("lol I'm joking!"),
-      html_content: getWords("<p>or <b>am I?</b></p>"),
+      html_content: hasHtml ? getWords("<p>or <b>am I?</b></p>") : "",
       attachments
     },
     cert_data: {

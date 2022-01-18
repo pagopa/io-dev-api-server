@@ -6,7 +6,7 @@ import { session } from "../../payloads/session";
 import app from "../../server";
 
 const request = supertest(app);
-it("services should return a valid public session", async done => {
+it("services should return a valid public session", async () => {
   const response = await request.get(`${basePath}/session`);
   expect(response.status).toBe(200);
   const publicSession = PublicSession.decode(response.body);
@@ -15,5 +15,4 @@ it("services should return a valid public session", async done => {
   if (E.isRight(publicSession)) {
     expect(publicSession.value).toEqual(session.payload);
   }
-  done();
 });

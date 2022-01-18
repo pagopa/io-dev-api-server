@@ -272,10 +272,14 @@ const createMessages = (): Array<
   );
 
   range(1, ioDevServerConfig.messages.legalCount).forEach((count, idx) => {
-    const message = getNewMessage(`⚖️ Legal - ${count} `, messageMarkdown);
+    const isOdd = count % 2 > 0;
+    const message = getNewMessage(
+      `⚖️ Legal -${isOdd ? "" : "without HTML"} ${count}`,
+      messageMarkdown
+    );
     const mvlMsgId = message.id;
     const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png"]);
-    output.push(withLegalContent(message, message.id, attachments));
+    output.push(withLegalContent(message, message.id, attachments, isOdd));
   });
 
   return output;

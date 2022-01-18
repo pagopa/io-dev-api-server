@@ -12,7 +12,7 @@ import app from "../../server";
 
 const request = supertest(app);
 
-it("profile should return a valid profile", async done => {
+it("profile should return a valid profile", async () => {
   const response = await request.get(`${basePath}/profile`);
   expect(response.status).toBe(200);
   const profile = InitializedProfile.decode(response.body);
@@ -22,10 +22,9 @@ it("profile should return a valid profile", async done => {
       ioDevServerConfig.profile.attrs.fiscal_code
     );
   }
-  done();
 });
 
-it("profile should return a valid updated profile (version increased)", async done => {
+it("profile should return a valid updated profile (version increased)", async () => {
   const profile: Profile = {
     is_inbox_enabled: true,
     is_email_enabled: true,
@@ -43,28 +42,25 @@ it("profile should return a valid updated profile (version increased)", async do
   if (E.isRight(updatedProfile)) {
     expect(updatedProfile.value.version).toBe(profile.version + 1);
   }
-  done();
 });
 
-it("get user-metadata should return a valid user-metadata", async done => {
+it("get user-metadata should return a valid user-metadata", async () => {
   const response = await request.get(`${basePath}/user-metadata`);
   expect(response.status).toBe(200);
   const usermetadata = UserMetadata.decode(response.body);
   expect(E.isRight(usermetadata)).toBeTruthy();
-  done();
 });
 
-it("get municipality should return a valid municipality", async done => {
+it("get municipality should return a valid municipality", async () => {
   const response = await request.get(
     `/static_contents/municipalities/A/B/CODE`
   );
   expect(response.status).toBe(200);
   const municipality = Municipality.decode(response.body);
   expect(E.isRight(municipality)).toBeTruthy();
-  done();
 });
 
-it("post user-metadata should return the updated user-metadata", async done => {
+it("post user-metadata should return the updated user-metadata", async () => {
   const response = await request
     .post(`${basePath}/user-metadata`)
     .send(mockUserMetadata)
@@ -75,5 +71,4 @@ it("post user-metadata should return the updated user-metadata", async done => {
   if (E.isRight(updatedUsermetadata)) {
     expect(updatedUsermetadata.value).toEqual(mockUserMetadata);
   }
-  done();
 });
