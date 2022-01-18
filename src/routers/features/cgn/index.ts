@@ -242,7 +242,9 @@ addHandler(cgnRouter, "post", addPrefix("/otp"), (_, res) => {
 });
 
 addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
-  // if there is no previous activation -> Request created -> send back the created id
+  // if there is no previous activation return http status 403
+  // if card is yet in a pending state returns 409
+  // any case other case return a 201 or 202 http status
   pipe(
     O.fromNullable(idActivationCgn),
     O.fold(
