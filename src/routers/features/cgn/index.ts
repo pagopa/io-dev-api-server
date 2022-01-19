@@ -7,7 +7,6 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -238,6 +237,40 @@ addHandler(cgnRouter, "post", addPrefix("/otp"), (_, res) => {
     E.fold(
       e => res.status(500).send(readableReport(e)),
       v => res.json(v)
+    )
+  );
+});
+
+addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
+  // if there is no previous activation return http status 403
+  // if card is yet in a pending state returns 409
+  // any case other case return a 201 or 202 http status
+  pipe(
+    O.fromNullable(idActivationCgn),
+    O.fold(
+      () => {
+        res.sendStatus(403);
+      },
+      () => {
+        if (CardPending.is(currentCGN)) {
+          res.sendStatus(409);
+          return;
+        }
+        resetCgn();
+        const currentPreference = servicesPreferences.get(
+          cgnServiceId as ServiceId
+        );
+
+        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
+          -1) + 1) as NonNegativeInteger;
+        servicesPreferences.set(cgnServiceId as ServiceId, {
+          is_inbox_enabled: false,
+          is_email_enabled: false,
+          is_webhook_enabled: false,
+          settings_version: increasedSettingsVersion
+        });
+        res.status(201).json({ id: getRandomStringId() });
+      }
     )
   );
 });
