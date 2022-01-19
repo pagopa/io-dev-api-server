@@ -257,6 +257,18 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
           return;
         }
         resetCgn();
+        const currentPreference = servicesPreferences.get(
+          cgnServiceId as ServiceId
+        );
+
+        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
+          -1) + 1) as NonNegativeInteger;
+        servicesPreferences.set(cgnServiceId as ServiceId, {
+          is_inbox_enabled: false,
+          is_email_enabled: false,
+          is_webhook_enabled: false,
+          settings_version: increasedSettingsVersion
+        });
         res.status(201).json({ id: getRandomStringId() });
       }
     )
