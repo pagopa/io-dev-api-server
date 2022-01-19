@@ -13,12 +13,6 @@ const packageJson = readFileAsJSON("./package.json");
 
 app.listen(serverPort, serverHostname, async () => {
   child_process.exec("git branch --show-current", (err, stdout) => {
-    console.log(
-      chalk.blue(
-        `running on git branch "${chalk.bgRedBright(stdout.replace("\n", ""))}"`
-      )
-    );
-
     cli.table([...routes], {
       method: {
         minWidth: 6,
@@ -29,7 +23,7 @@ app.listen(serverPort, serverHostname, async () => {
       },
       description: {
         header: "description",
-        get(row): any {
+        get(row): string {
           return pipe(
             O.fromNullable(row.description),
             // tslint:disable-next-line:no-nested-template-literals
@@ -45,7 +39,11 @@ app.listen(serverPort, serverHostname, async () => {
     console.log(
       chalk.bgBlack(
         chalk.green(
-          `\n${packageJson.pretty_name} is running on\n${interfaces
+          `\n${
+            packageJson.pretty_name
+          } is running on\n- branch "${chalk.bgWhite(
+            stdout.replace("\n", "")
+          )}"\n${interfaces
             .map(
               ({ address }) =>
                 // tslint:disable-next-line:no-nested-template-literals
