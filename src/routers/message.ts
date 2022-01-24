@@ -278,7 +278,7 @@ const createMessages = (): Array<
       messageMarkdown
     );
     const mvlMsgId = message.id;
-    const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png"]);
+    const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
     output.push(withLegalContent(message, message.id, attachments, isOdd));
   });
 
