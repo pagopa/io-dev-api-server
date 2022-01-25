@@ -472,11 +472,9 @@ addHandler(
   "get",
   addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
   (req, res) => {
-    // find the message by the given legalID
+    // find the message by the given legalMessageID
     const message = messagesWithContent.find(
-      ld =>
-        (ld as LegalMessageWithContent).legal_message?.cert_data.data
-          .envelope_id === req.params.legalMessageId
+      ld => ld.id === req.params.legalMessageId
     );
     const legalMessage = LegalMessageWithContent.decode(message);
     // ensure message exists and it has a legal content
