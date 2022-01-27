@@ -211,7 +211,7 @@ addHandler(
           res.status(500).send(readableReport(e));
         },
         idps => {
-          // set the logo url as server instance resource
+          // set the logo url as server local resource
           const idpsWithLogo = idps.items.map(idp => ({
             ...idp,
             logo: `${serverUrl}${staticContentRootPath}/logos/spid/idps/spid-idp-${idp.id}.png`
