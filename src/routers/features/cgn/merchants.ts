@@ -36,15 +36,16 @@ const addPrefix = (path: string) =>
   addApiV1Prefix(`/cgn/operator-search${path}`);
 
 const productCategories: ReadonlyArray<ProductCategory> = [
+  ProductCategoryEnum.cultureAndEntertainment,
   ProductCategoryEnum.health,
-  ProductCategoryEnum.foodDrink,
-  ProductCategoryEnum.hotels,
   ProductCategoryEnum.learning,
-  ProductCategoryEnum.services,
-  ProductCategoryEnum.entertainment,
-  ProductCategoryEnum.shopping,
   ProductCategoryEnum.sports,
-  ProductCategoryEnum.travelling
+  ProductCategoryEnum.home,
+  ProductCategoryEnum.telephonyAndInternet,
+  ProductCategoryEnum.bankingServices,
+  ProductCategoryEnum.travelling,
+  ProductCategoryEnum.sustainableMobility,
+  ProductCategoryEnum.jobOffers
 ];
 
 const discountTypes: ReadonlyArray<DiscountCodeType> = [
