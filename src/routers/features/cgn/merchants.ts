@@ -26,7 +26,7 @@ import {
 import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
-import { serverIpv4Address, serverPort } from "../../../utils/server";
+import { serverUrl } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
 
@@ -241,7 +241,7 @@ addHandler(
                   landingPageReferrer: faker.datatype.string(
                     6
                   ) as Discount["landingPageReferrer"],
-                  landingPageUrl: `http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["landingPageUrl"]
+                  landingPageUrl: `${serverUrl}/merchant_landing` as Discount["landingPageUrl"]
                 };
               case "api":
               case "bucket":

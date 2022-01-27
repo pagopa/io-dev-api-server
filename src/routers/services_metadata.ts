@@ -3,7 +3,9 @@
  */
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
@@ -12,6 +14,7 @@ import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
+import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
 
@@ -200,7 +203,24 @@ addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/spid/idps/list.json"),
-  (_, res) => res.json(readFileAsJSON(assetsFolder + "/spid/idps/list.json"))
+  (_, res) => {
+    pipe(
+      SpidIdps.decode(readFileAsJSON(assetsFolder + "/spid/idps/list.json")),
+      E.fold(
+        e => {
+          res.status(500).send(readableReport(e));
+        },
+        idps => {
+          // set the logo url as server instance resource
+          const idpsWithLogo = idps.items.map(idp => ({
+            ...idp,
+            logo: `${serverUrl}${staticContentRootPath}/logos/spid/idps/spid-idp-${idp.id}.png`
+          }));
+          res.json({ ...idps, items: idpsWithLogo });
+        }
+      )
+    );
+  }
 );
 
 addHandler(
