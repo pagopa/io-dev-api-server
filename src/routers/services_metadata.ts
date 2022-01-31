@@ -45,6 +45,14 @@ addHandler(
   (_, res) => res.json(backendStatus)
 );
 
+// Metadata related to the app version
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/status/versionInfo.json"),
+  (_, res) => sendFile("assets/status/versionInfo.json", res)
+);
+
 addHandler(
   servicesMetadataRouter,
   "get",
