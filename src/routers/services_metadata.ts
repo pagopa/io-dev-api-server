@@ -14,9 +14,13 @@ import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
-import { readFileAsJSON, sendFile } from "../utils/file";
+import {
+  fileExists,
+  readFileAndDecode,
+  readFileAsJSON,
+  sendFile
+} from "../utils/file";
 import { serverUrl } from "../utils/server";
-import { readFileAndDecode, readFileAsJSON, sendFile } from "../utils/file";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
 
@@ -239,7 +243,12 @@ addHandler(
   "get",
   addRoutePrefix("/logos/spid/idps/:spid_logo"),
   (req, res) => {
-    sendFile(`assets/imgs/logos/spid/${req.params.spid_logo}`, res);
+    const logoPath = `assets/imgs/logos/spid/${req.params.spid_logo}`;
+    if (fileExists(logoPath)) {
+      sendFile(logoPath, res);
+      return;
+    }
+    res.sendStatus(404);
   }
 );
 addHandler(
