@@ -6,6 +6,7 @@ import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
+import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
@@ -15,6 +16,7 @@ import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { serverUrl } from "../utils/server";
+import { readFileAndDecode, readFileAsJSON, sendFile } from "../utils/file";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
 
@@ -46,6 +48,15 @@ addHandler(
   "get",
   addRoutePrefix("/status/backend.json"),
   (_, res) => res.json(backendStatus)
+);
+
+// Metadata related to the app version
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/status/versionInfo.json"),
+  (_, res) =>
+    readFileAndDecode("assets/status/versionInfo.json", VersionInfo.decode, res)
 );
 
 addHandler(
