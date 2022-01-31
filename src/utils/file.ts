@@ -25,7 +25,7 @@ export const listDir = (filePath: string): ReadonlyArray<string> => {
 };
 
 /**
- * Read a file, try to decode and transform the operation in a response
+ * Read a file, try to decode and transform the result in a response
  * @param filename
  * @param decode
  * @param res
