@@ -1,4 +1,3 @@
-import { Router } from "express";
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
@@ -24,13 +23,10 @@ import {
   ProductCategoryEnum
 } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { getProblemJson } from "../../../payloads/error";
-import { addHandler } from "../../../payloads/response";
-import { sendFile } from "../../../utils/file";
 import { serverIpv4Address, serverPort } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { publicRouter } from "../../public";
 
-export const cgnMerchantsRouter = Router();
+import { Plugin } from "../../../core/server";
 
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/cgn/operator-search${path}`);
@@ -104,11 +100,8 @@ export const offlineMerchants: OfflineMerchants = {
   })
 };
 
-addHandler(
-  cgnMerchantsRouter,
-  "post",
-  addPrefix("/online-merchants"),
-  (req, res) => {
+export const CGNMerchantsPlugin: Plugin = async ({ handleRoute, sendFile }) => {
+  handleRoute("post", addPrefix("/online-merchants"), (req, res) => {
     if (OnlineMerchantSearchRequest.is(req.body)) {
       // tslint:disable-next-line:no-shadowed-variable
       const { productCategories, merchantName } = req.body;
@@ -136,14 +129,9 @@ addHandler(
       return res.status(200).json({ items: filteredMerchants });
     }
     return res.status(500);
-  }
-);
+  });
 
-addHandler(
-  cgnMerchantsRouter,
-  "post",
-  addPrefix("/offline-merchants"),
-  (req, res) => {
+  handleRoute("post", addPrefix("/offline-merchants"), (req, res) => {
     if (OfflineMerchantSearchRequest.is(req.body)) {
       const {
         // tslint:disable-next-line:no-shadowed-variable
@@ -176,14 +164,9 @@ addHandler(
       return res.status(200).json({ items: filteredMerchants });
     }
     return res.status(500);
-  }
-);
+  });
 
-addHandler(
-  cgnMerchantsRouter,
-  "get",
-  addPrefix("/merchants/:merchantId"),
-  (req, res) => {
+  handleRoute("get", addPrefix("/merchants/:merchantId"), (req, res) => {
     const merchants: ReadonlyArray<OnlineMerchant | OfflineMerchant> = [
       ...offlineMerchants.items,
       ...onlineMerchants.items
@@ -288,26 +271,25 @@ addHandler(
       };
       res.json(offlineMerchant);
     }
-  }
-);
+  });
 
-addHandler(
-  cgnMerchantsRouter,
-  "get",
-  addPrefix("/discount-bucket-code/:discountId"),
-  (req, res) => {
-    const discountBucketCode: DiscountBucketCode = {
-      code: faker.datatype.string().toString() as NonEmptyString
-    };
-    res.json(discountBucketCode);
-  }
-);
+  handleRoute(
+    "get",
+    addPrefix("/discount-bucket-code/:discountId"),
+    (req, res) => {
+      const discountBucketCode: DiscountBucketCode = {
+        code: faker.datatype.string().toString() as NonEmptyString
+      };
+      res.json(discountBucketCode);
+    }
+  );
 
-/**
- * just for test purposes an html page that works as
- * the landing Page of a discount for merchant reading the referrer header
- */
-addHandler(publicRouter, "get", "/merchant_landing", (req, res) => {
-  console.log("Referer header", req.header("referer"));
-  sendFile("assets/html/merchants_landing_page.html", res);
-});
+  /**
+   * just for test purposes an html page that works as
+   * the landing Page of a discount for merchant reading the referrer header
+   */
+  handleRoute("get", "/merchant_landing", (req, res) => {
+    console.log("Referer header", req.header("referer"));
+    sendFile("assets/html/merchants_landing_page.html", res);
+  });
+};

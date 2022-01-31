@@ -4,7 +4,9 @@ import { CreatedMessageWithoutContent } from "../../../generated/definitions/bac
 import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
 import { basePath } from "../../payloads/response";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 import { messagesWithContent } from "../message";
 
 const request = supertest(app);

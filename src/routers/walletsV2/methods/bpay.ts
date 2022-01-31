@@ -1,4 +1,3 @@
-import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -6,18 +5,14 @@ import { BPay } from "../../../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { BPayRequest } from "../../../../generated/definitions/pagopa/walletv2/BPayRequest";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { addHandler } from "../../../payloads/response";
+import { Plugin } from "../../../core/server";
 import { generateWalletV2FromSatispayOrBancomatPay } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
 import { addWalletV2, bPayResponse, getWalletV2 } from "../index";
 
-export const bpayRouter = Router();
-// add the given list of bpay to the wallet
-addHandler(
-  bpayRouter,
-  "post",
-  appendWalletV1Prefix("/bpay/add-wallets"),
-  (req, res) => {
+export const BANCOMATPayPlugin: Plugin = async ({ handleRoute }) => {
+  // add the given list of bpay to the wallet
+  handleRoute("post", appendWalletV1Prefix("/bpay/add-wallets"), (req, res) => {
     pipe(
       req.body,
       BPayRequest.decode,
@@ -59,10 +54,10 @@ addHandler(
         }
       )
     );
-  }
-);
+  });
 
-// return the bpay owned by the citizen
-addHandler(bpayRouter, "get", appendWalletV1Prefix("/bpay/list"), (req, res) =>
-  res.json(bPayResponse)
-);
+  // return the bpay owned by the citizen
+  handleRoute("get", appendWalletV1Prefix("/bpay/list"), (req, res) =>
+    res.json(bPayResponse)
+  );
+};

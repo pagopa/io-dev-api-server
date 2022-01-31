@@ -1,5 +1,6 @@
 import { Response } from "express";
 import fs from "fs";
+
 export const sendFile = (filePath: string, res: Response) => {
   res.sendFile(filePath, {
     root: "."

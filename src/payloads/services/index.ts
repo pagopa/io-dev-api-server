@@ -13,7 +13,7 @@ import { ServicePreference } from "../../../generated/definitions/backend/Servic
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
 import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
-import { ioDevServerConfig } from "../../config";
+
 import { isCgnActivated } from "../../routers/features/cgn";
 import { getRandomValue } from "../../utils/random";
 import { getService, getServiceMetadata } from "../../utils/service";

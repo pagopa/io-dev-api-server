@@ -1,11 +1,11 @@
 /**
  * this router handles all requests about wallets
  */
-import { Router } from "express";
+
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
-import { fromNullable } from "fp-ts/lib/Option";
+import { Plugin } from "../core/server";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { match } from "ts-pattern";
@@ -20,15 +20,14 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
-import { ioDevServerConfig } from "../config";
-import { addHandler } from "../payloads/response";
+
 import {
   getPspFromId,
   getTransactions,
   getWallets,
-  pspList,
+  createPspList,
   sessionToken,
-  validPsp
+  createValidPsp
 } from "../payloads/wallet";
 import {
   abiData,
@@ -48,6 +47,7 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
+import { PaymentConfig } from "../types/config";
 
 export const walletCount =
   walletV2Config.paypalCount +
@@ -57,8 +57,9 @@ export const walletCount =
   walletV2Config.walletCreditCardCount +
   walletV2Config.walletCreditCardCoBadgeCount +
   walletV2Config.bPayCount;
-export const walletRouter = Router();
+
 // wallets and transactions
+// TODO: find a better way to export wallets
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
@@ -82,21 +83,29 @@ const convertFavouriteWalletfromV2V1 = (
     .otherwise(() => undefined);
 };
 
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/users/actions/start-session"),
-  (_, res) => res.send(sessionToken)
-);
-addHandler(walletRouter, "get", appendWalletV1Prefix("/wallet"), (_, res) =>
-  res.json(wallets)
-);
+export type WalletPluginOptions = {
+  wallet: {
+    onboardingCreditCardOutCode?: number;
+    shuffleAbi: boolean;
+    payment?: PaymentConfig;
+  };
+};
 
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/transactions"),
-  (req, res) => {
+export const WalletPlugin: Plugin<WalletPluginOptions> = async (
+  { handleRoute },
+  options
+) => {
+  handleRoute(
+    "get",
+    appendWalletV1Prefix("/users/actions/start-session"),
+    (_, res) => res.send(sessionToken)
+  );
+
+  handleRoute("get", appendWalletV1Prefix("/wallet"), (_, res) =>
+    res.json(wallets)
+  );
+
+  handleRoute("get", appendWalletV1Prefix("/transactions"), (req, res) => {
     const start = pipe(
       O.fromNullable(req.query.start as string | undefined),
       O.map(s => Math.max(parseInt(s, 10), 0)),
@@ -112,88 +121,70 @@ addHandler(
       total: transactions.length
     });
     res.json(response);
-  }
-);
+  });
 
-/**
- * invoked by the client when want to know if a payment ends successfully
- * see https://docs.google.com/presentation/d/11rEttb7lJYlRqgFpl4QopyjFmjt2Q0K8uis6JhAQaCw/edit#slide=id.g854399c4e5_0_137
- */
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/transactions/:idTransaction"),
-  (req, res) => {
-    if (transactions.length === 0) {
-      res.sendStatus(404);
-      return;
+  /**
+   * invoked by the client when want to know if a payment ends successfully
+   * see https://docs.google.com/presentation/d/11rEttb7lJYlRqgFpl4QopyjFmjt2Q0K8uis6JhAQaCw/edit#slide=id.g854399c4e5_0_137
+   */
+  handleRoute(
+    "get",
+    appendWalletV1Prefix("/transactions/:idTransaction"),
+    (req, res) => {
+      if (transactions.length === 0) {
+        res.sendStatus(404);
+        return;
+      }
+      const idTransactions = parseInt(req.params.idTransaction, 10);
+      const transaction = transactions.find(t => t.id === idTransactions);
+      if (transaction === undefined) {
+        res.sendStatus(404);
+        return;
+      }
+      res.json({ data: transaction });
     }
-    const idTransactions = parseInt(req.params.idTransaction, 10);
-    const transaction = transactions.find(t => t.id === idTransactions);
-    if (transaction === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    res.json({ data: transaction });
-  }
-);
+  );
 
-addHandler(walletRouter, "get", appendWalletV1Prefix("/psps"), (_, res) =>
-  res.json({ data: [validPsp] })
-);
+  handleRoute("get", appendWalletV1Prefix("/psps"), (_, res) => {
+    const validPsp = createValidPsp(options.wallet.payment);
+    res.json({ data: [validPsp] });
+  });
 
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/psps/selected"),
-  (req, res) => {
+  handleRoute("get", appendWalletV1Prefix("/psps/selected"), (req, res) => {
+    const pspList = createPspList(options.wallet.payment);
     const randomPsp = faker.random.arrayElement(pspList);
     const language =
       typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
       data: [{ ...randomPsp, lingua: language.toUpperCase() }]
     });
-  }
-);
+  });
 
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/psps/all"),
-  (req, res) => {
+  handleRoute("get", appendWalletV1Prefix("/psps/all"), (req, res) => {
+    const pspList = createPspList(options.wallet.payment);
     const language =
       typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
       data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
     });
-  }
-);
+  });
 
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/psps/:psp_id"),
-  (req, res) => {
+  handleRoute("get", appendWalletV1Prefix("/psps/:psp_id"), (req, res) => {
+    const validPsp = createValidPsp(options.wallet.payment);
     res.json({ data: validPsp });
-  }
-);
+  });
 
-addHandler(
-  walletRouter,
-  "delete",
-  appendWalletV1Prefix("/wallet/:idWallet"),
-  (req, res) => {
-    const idWallet = parseInt(req.params.idWallet, 10);
-    const hasBeenDelete = removeWalletV2(idWallet);
-    res.sendStatus(hasBeenDelete ? 200 : 404);
-  }
-);
+  handleRoute(
+    "delete",
+    appendWalletV1Prefix("/wallet/:idWallet"),
+    (req, res) => {
+      const idWallet = parseInt(req.params.idWallet, 10);
+      const hasBeenDelete = removeWalletV2(idWallet);
+      res.sendStatus(hasBeenDelete ? 200 : 404);
+    }
+  );
 
-addHandler(
-  walletRouter,
-  "put",
-  appendWalletV1Prefix("/wallet/:idWallet"),
-  (req, res) => {
+  handleRoute("put", appendWalletV1Prefix("/wallet/:idWallet"), (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
     const idPsp = req.body.data.idPsp;
     const psp = getPspFromId(idPsp);
@@ -210,28 +201,24 @@ addHandler(
     res.json({
       data: { ...updatedWalletV1, psp }
     });
-  }
-);
+  });
 
-// step 1/3 - credit card
-// adding a temporary wallet
-addHandler(
-  walletRouter,
-  "post",
-  appendWalletV1Prefix("/wallet/cc"),
-  (_, res) => {
-    const cards = generateCards(abiData, 1, WalletTypeEnum.Card);
+  // step 1/3 - credit card
+  // adding a temporary wallet
+  handleRoute("post", appendWalletV1Prefix("/wallet/cc"), (_, res) => {
+    const cards = generateCards(
+      abiData,
+      1,
+      WalletTypeEnum.Card,
+      options.wallet.shuffleAbi
+    );
     const walletV2 = generateWalletV2FromCard(
       cards[0],
       WalletTypeEnum.Card,
       true
     );
     const info = walletV2.info as CardInfo;
-    if (
-      isOutcomeCodeSuccessfully(
-        ioDevServerConfig.wallet.onboardingCreditCardOutCode
-      )
-    ) {
+    if (isOutcomeCodeSuccessfully(options.wallet.onboardingCreditCardOutCode)) {
       // add new wallet to the existing ones only when the outcome code is successfully
       addWalletV2([walletV2]);
     }
@@ -259,147 +246,140 @@ addHandler(
       }
     };
     res.json(response);
-  }
-);
+  });
 
-const checkOutSuffix = "/wallet/loginMethod";
-// step 2/3 - credit card
-// verification
-addHandler(
-  walletRouter,
-  "post",
-  appendWalletV1Prefix("/payments/cc/actions/pay"),
-  (_, res) => {
-    res.json({
-      data: {
-        id: faker.datatype.number({ min: 20000, max: 30000 }),
-        created: "2020-10-26T08:31:49Z",
-        updated: "2020-10-26T08:31:49Z",
-        amount: {
-          currency: "EUR",
-          amount: 1,
-          decimalDigits: 2
-        },
-        grandTotal: {
-          currency: "EUR",
-          amount: 2,
-          decimalDigits: 2
-        },
-        description: "SET_SUBJECT",
-        merchant: "",
-        idStatus: 0,
-        statusMessage: "Da autorizzare",
-        error: false,
-        success: false,
-        fee: {
-          currency: "EUR",
-          amount: 1,
-          decimalDigits: 2
-        },
-        urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`,
-        paymentModel: 0,
-        token: "MTg5MDIxNzQ=",
-        idWallet: 12345678,
-        idPayment: 27297685,
-        nodoIdPayment: "571e211e-776d-4ae6-8066-fb3aaf8333c5",
-        orderNumber: 18902174,
-        directAcquirer: false
-      }
-    });
-  }
-);
+  const checkOutSuffix = "/wallet/loginMethod";
 
-/**
- *  @deprecated this API is not longer used by the app from when 3DS2 has been introduced
- */
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix(checkOutSuffix),
-  (req, res) => {
+  // step 2/3 - credit card
+  // verification
+  handleRoute(
+    "post",
+    appendWalletV1Prefix("/payments/cc/actions/pay"),
+    (_, res) => {
+      res.json({
+        data: {
+          id: faker.datatype.number({ min: 20000, max: 30000 }),
+          created: "2020-10-26T08:31:49Z",
+          updated: "2020-10-26T08:31:49Z",
+          amount: {
+            currency: "EUR",
+            amount: 1,
+            decimalDigits: 2
+          },
+          grandTotal: {
+            currency: "EUR",
+            amount: 2,
+            decimalDigits: 2
+          },
+          description: "SET_SUBJECT",
+          merchant: "",
+          idStatus: 0,
+          statusMessage: "Da autorizzare",
+          error: false,
+          success: false,
+          fee: {
+            currency: "EUR",
+            amount: 1,
+            decimalDigits: 2
+          },
+          urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`, // TODO: trovare modo per fornire queste informazioni a runtime
+          paymentModel: 0,
+          token: "MTg5MDIxNzQ=",
+          idWallet: 12345678,
+          idPayment: 27297685,
+          nodoIdPayment: "571e211e-776d-4ae6-8066-fb3aaf8333c5",
+          orderNumber: 18902174,
+          directAcquirer: false
+        }
+      });
+    }
+  );
+
+  /**
+   *  @deprecated this API is not longer used by the app from when 3DS2 has been introduced
+   */
+  handleRoute("get", appendWalletV1Prefix(checkOutSuffix), (req, res) => {
     res.sendStatus(200);
-  }
-);
+  });
 
-// set a credit card as favourite
-addHandler(
-  walletRouter,
-  "post",
-  appendWalletV1Prefix("/wallet/:idWallet/actions/favourite"),
-  (req, res) => {
-    const walletData = getWalletV2();
-    const idWallet = parseInt(req.params.idWallet, 10);
-    const paymentMethod = walletData.find(w => w.idWallet === idWallet);
-    if (paymentMethod) {
-      const favoritePaymentMethod = { ...paymentMethod, favourite: true };
-      // all wallets different from the new favorite
-      const newWalletsData: ReadonlyArray<WalletV2> = walletData.filter(
-        w => w.idWallet !== idWallet
-      );
-      // set favorite off to all wallets different from the new one
-      addWalletV2(
-        [
-          ...newWalletsData.map(w => ({ ...w, favourite: false })),
+  // set a credit card as favourite
+  handleRoute(
+    "post",
+    appendWalletV1Prefix("/wallet/:idWallet/actions/favourite"),
+    (req, res) => {
+      const walletData = getWalletV2();
+      const idWallet = parseInt(req.params.idWallet, 10);
+      const paymentMethod = walletData.find(w => w.idWallet === idWallet);
+      if (paymentMethod) {
+        const favoritePaymentMethod = { ...paymentMethod, favourite: true };
+        // all wallets different from the new favorite
+        const newWalletsData: ReadonlyArray<WalletV2> = walletData.filter(
+          w => w.idWallet !== idWallet
+        );
+        // set favorite off to all wallets different from the new one
+        addWalletV2(
+          [
+            ...newWalletsData.map(w => ({ ...w, favourite: false })),
+            favoritePaymentMethod
+          ],
+          false
+        );
+        const favoritePaymentMethodV1 = convertFavouriteWalletfromV2V1(
           favoritePaymentMethod
-        ],
-        false
-      );
-      const favoritePaymentMethodV1 = convertFavouriteWalletfromV2V1(
-        favoritePaymentMethod
-      );
+        );
+        // bad request
+        if (favoritePaymentMethodV1 === undefined) {
+          res.sendStatus(400);
+          return;
+        }
+        // this API requires to return a walletV1
+        const walletV1 = {
+          ...favoritePaymentMethodV1,
+          favourite: true
+        };
+        res.json({ data: walletV1 });
+        return;
+      }
+      res.sendStatus(404);
+    }
+  );
+
+  // update the payment status (enable/disable pay with pagoPA)
+  handleRoute(
+    "put",
+    appendWalletV2Prefix("/wallet/:idWallet/payment-status"),
+    (req, res) => {
+      const payload = WalletPaymentStatusRequest.decode(req.body);
       // bad request
-      if (favoritePaymentMethodV1 === undefined) {
+      if (E.isLeft(payload)) {
         res.sendStatus(400);
         return;
       }
-      // this API requires to return a walletV1
-      const walletV1 = {
-        ...favoritePaymentMethodV1,
-        favourite: true
+      const idWallet = parseInt(req.params.idWallet, 10);
+      const wallet: WalletV2 | undefined = findWalletById(idWallet);
+      // wallet not found
+      if (wallet === undefined) {
+        res.sendStatus(404);
+        return;
+      }
+      // wallet has not pagoPa flag
+      if (
+        !(wallet.enableableFunctions ?? []).some(
+          ef => ef === EnableableFunctionsEnum.pagoPA
+        )
+      ) {
+        res.sendStatus(400);
+        return;
+      }
+      const updatedWallet: WalletV2 = {
+        ...wallet,
+        pagoPA: payload.value.data.pagoPA,
+        // remove favourite if pagoPA===false
+        favourite: !payload.value.data.pagoPA ? false : wallet.favourite
       };
-      res.json({ data: walletV1 });
-      return;
+      removeWalletV2(updatedWallet.idWallet!);
+      addWalletV2([updatedWallet], true);
+      res.json({ data: updatedWallet });
     }
-    res.sendStatus(404);
-  }
-);
-
-// update the payment status (enable/disable pay with pagoPA)
-addHandler(
-  walletRouter,
-  "put",
-  appendWalletV2Prefix("/wallet/:idWallet/payment-status"),
-  (req, res) => {
-    const payload = WalletPaymentStatusRequest.decode(req.body);
-    // bad request
-    if (E.isLeft(payload)) {
-      res.sendStatus(400);
-      return;
-    }
-    const idWallet = parseInt(req.params.idWallet, 10);
-    const wallet: WalletV2 | undefined = findWalletById(idWallet);
-    // wallet not found
-    if (wallet === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    // wallet has not pagoPa flag
-    if (
-      !(wallet.enableableFunctions ?? []).some(
-        ef => ef === EnableableFunctionsEnum.pagoPA
-      )
-    ) {
-      res.sendStatus(400);
-      return;
-    }
-    const updatedWallet: WalletV2 = {
-      ...wallet,
-      pagoPA: payload.value.data.pagoPA,
-      // remove favourite if pagoPA===false
-      favourite: !payload.value.data.pagoPA ? false : wallet.favourite
-    };
-    removeWalletV2(updatedWallet.idWallet!);
-    addWalletV2([updatedWallet], true);
-    res.json({ data: updatedWallet });
-  }
-);
+  );
+};

@@ -3,7 +3,9 @@ import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
 import { basePath } from "../../payloads/response";
 import { session } from "../../payloads/session";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 
 const request = supertest(app);
 it("services should return a valid public session", async () => {

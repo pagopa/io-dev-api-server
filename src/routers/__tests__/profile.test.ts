@@ -8,7 +8,9 @@ import { Municipality } from "../../../generated/definitions/content/Municipalit
 import { ioDevServerConfig } from "../../config";
 import { basePath } from "../../payloads/response";
 import { mockUserMetadata } from "../../payloads/userMetadata";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 
 const request = supertest(app);
 

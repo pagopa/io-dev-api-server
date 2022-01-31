@@ -1,4 +1,5 @@
-import { Router } from "express";
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
@@ -13,7 +14,8 @@ import { MessageAttachment } from "../../generated/definitions/backend/MessageAt
 import { MessageSubject } from "../../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
-import { ioDevServerConfig } from "../config";
+
+import { Plugin } from "../core/server";
 import { getProblemJson } from "../payloads/error";
 import {
   createMessage,
@@ -24,9 +26,9 @@ import {
   withLegalContent,
   withPaymentData
 } from "../payloads/message";
-import { addHandler } from "../payloads/response";
+import { ProfileAttrs } from "../types/config";
+
 import { GetMessagesParameters } from "../types/parameters";
-import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import {
   frontMatter1CTABonusBpd,
@@ -39,9 +41,6 @@ import {
 import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
 import { services } from "./service";
 
-export const messageRouter = Router();
-const configResponse = ioDevServerConfig.messages.response;
-
 const getRandomServiceId = (): string => {
   if (services.length === 0) {
     throw new Error(
@@ -51,17 +50,29 @@ const getRandomServiceId = (): string => {
   return faker.random.arrayElement(services).service_id;
 };
 
-const getNewMessage = (
+type NewMessagesOptions = {
+  legalCount: number;
+  paymentsCount: number;
+  paymentWithValidDueDateCount: number;
+  paymentWithExpiredDueDateCount: number;
+  paymentInvalidAfterDueDateWithValidDueDateCount: number;
+  paymentInvalidAfterDueDateWithExpiredDueDateCount: number;
+  withInValidDueDateCount: number;
+  withValidDueDateCount: number;
+  standardMessageCount: number;
+  medicalCount: number;
+  withEUCovidCert: boolean;
+  withCTA: boolean;
+};
+
+const makeGetNewMessage = (fiscalCode: FiscalCode) => (
   subject: string,
   markdown: string,
   prescriptionData?: PrescriptionData,
   euCovidCert?: EUCovidCert
 ): CreatedMessageWithContent =>
   withContent(
-    createMessage(
-      ioDevServerConfig.profile.attrs.fiscal_code,
-      getRandomServiceId()
-    ),
+    createMessage(fiscalCode, getRandomServiceId()),
     subject,
     markdown,
     prescriptionData,
@@ -69,10 +80,15 @@ const getNewMessage = (
   );
 
 // tslint:disable-next-line: readonly-array
-const createMessages = (): Array<
+const createMessages = (
+  fiscalCode: FiscalCode,
+  options: NewMessagesOptions
+): Array<
   CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
   // tslint:disable-next-line:no-big-function
 > => {
+  const getNewMessage = makeGetNewMessage(fiscalCode);
+
   // tslint:disable-next-line: readonly-array
   const output: Array<
     CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
@@ -81,12 +97,13 @@ const createMessages = (): Array<
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
     iup: "0000X0NFM",
-    prescriber_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code
+    prescriber_fiscal_code: fiscalCode
   };
+
   const now = new Date();
 
   /* with CTAs */
-  if (ioDevServerConfig.messages.withCTA) {
+  if (options.withCTA) {
     output.push(
       getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown)
     );
@@ -117,7 +134,7 @@ const createMessages = (): Array<
   }
 
   /* with EUCovidCert */
-  if (ioDevServerConfig.messages.withEUCovidCert) {
+  if (options.withEUCovidCert) {
     eucovidCertAuthResponses.forEach(config => {
       const [authCode, description] = config;
 
@@ -146,7 +163,7 @@ const createMessages = (): Array<
     .toString("base64");
 
   /* medical */
-  range(1, ioDevServerConfig.messages.medicalCount).forEach(count => {
+  range(1, options.medicalCount).forEach(count => {
     output.push(medicalMessage(count));
     const baseMessage = medicalMessage(count);
     const attachments: ReadonlyArray<MessageAttachment> = [
@@ -172,12 +189,12 @@ const createMessages = (): Array<
   });
 
   /* standard message */
-  range(1, ioDevServerConfig.messages.standardMessageCount).forEach(count =>
+  range(1, options.standardMessageCount).forEach(count =>
     output.push(getNewMessage(`standard message - ${count}`, messageMarkdown))
   );
 
   /* due date */
-  range(1, ioDevServerConfig.messages.withValidDueDateCount).forEach(count =>
+  range(1, options.withValidDueDateCount).forEach(count =>
     output.push(
       withDueDate(
         getNewMessage(`🕙✅ due date valid - ${count}`, messageMarkdown),
@@ -186,7 +203,7 @@ const createMessages = (): Array<
     )
   );
 
-  range(1, ioDevServerConfig.messages.withInValidDueDateCount).forEach(count =>
+  range(1, options.withInValidDueDateCount).forEach(count =>
     output.push(
       withDueDate(
         getNewMessage(`🕙❌ due date invalid - ${count}`, messageMarkdown),
@@ -198,7 +215,7 @@ const createMessages = (): Array<
   /* payments */
   range(
     1,
-    ioDevServerConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
+    options.paymentInvalidAfterDueDateWithExpiredDueDateCount
   ).forEach(count =>
     output.push(
       withDueDate(
@@ -216,7 +233,7 @@ const createMessages = (): Array<
 
   range(
     1,
-    ioDevServerConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
+    options.paymentInvalidAfterDueDateWithValidDueDateCount
   ).forEach(count =>
     output.push(
       withDueDate(
@@ -232,10 +249,7 @@ const createMessages = (): Array<
     )
   );
 
-  range(
-    1,
-    ioDevServerConfig.messages.paymentWithExpiredDueDateCount
-  ).forEach(count =>
+  range(1, options.paymentWithExpiredDueDateCount).forEach(count =>
     output.push(
       withDueDate(
         withPaymentData(
@@ -247,10 +261,7 @@ const createMessages = (): Array<
     )
   );
 
-  range(
-    1,
-    ioDevServerConfig.messages.paymentWithValidDueDateCount
-  ).forEach(count =>
+  range(1, options.paymentWithValidDueDateCount).forEach(count =>
     output.push(
       withDueDate(
         withPaymentData(
@@ -262,7 +273,7 @@ const createMessages = (): Array<
     )
   );
 
-  range(1, ioDevServerConfig.messages.paymentsCount).forEach(count =>
+  range(1, options.paymentsCount).forEach(count =>
     output.push(
       withPaymentData(
         getNewMessage(`💰✅ payment - ${count} `, messageMarkdown),
@@ -271,7 +282,7 @@ const createMessages = (): Array<
     )
   );
 
-  range(1, ioDevServerConfig.messages.legalCount).forEach((count, idx) => {
+  range(1, options.legalCount).forEach(count => {
     const isOdd = count % 2 > 0;
     const message = getNewMessage(
       `⚖️ Legal -${isOdd ? "" : "without HTML"} ${count}`,
@@ -285,27 +296,13 @@ const createMessages = (): Array<
   return output;
 };
 
+// TODO: creare delle API per gestire messagesWithContent
 // tslint:disable-next-line: readonly-array
-export const messagesWithContent: ReturnType<typeof createMessages> = createMessages();
-
-if (ioDevServerConfig.messages.liveMode) {
-  // if live updates is on, we prepend new messages to the collection
-  const count = ioDevServerConfig.messages.liveMode.count || 2;
-  const interval = ioDevServerConfig.messages.liveMode.interval || 2000;
-  setInterval(() => {
-    const nextMessages = createMessages();
-
-    messagesWithContent.unshift(
-      ..._.shuffle(nextMessages).slice(
-        0,
-        Math.min(count, nextMessages.length - 1)
-      )
-    );
-  }, interval);
-}
+export let messagesWithContent: ReturnType<typeof createMessages>;
 
 /* helper function to build messages response */
 const getPublicMessages = (
+  fiscalCode: FiscalCode,
   items: ReadonlyArray<CreatedMessageWithContent>,
   enrichData: boolean
 ): ReadonlyArray<PublicMessage> => {
@@ -323,7 +320,7 @@ const getPublicMessages = (
       : {};
     return {
       id: m.id,
-      fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
+      fiscal_code: fiscalCode,
       created_at: m.created_at,
       sender_service_id: m.sender_service_id,
       time_to_live: m.time_to_live,
@@ -332,103 +329,183 @@ const getPublicMessages = (
   });
 };
 
-addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
-  if (configResponse.getMessagesResponseCode !== 200) {
-    res.sendStatus(configResponse.getMessagesResponseCode);
-    return;
-  }
-  const paginatedQuery = GetMessagesParameters.decode({
-    // default pageSize = 100
-    pageSize: req.query.page_size ?? "100",
-    // default enrichResultData = false
-    enrichResultData: (req.query.enrich_result_data ?? false) === "true",
-    maximumId: req.query.maximum_id,
-    minimumId: req.query.minimum_id
-  });
-  if (E.isLeft(paginatedQuery)) {
-    // bad request
-    res.sendStatus(400);
-    return;
-  }
+// TODO: renderlo tipo globale (in core/server?)
+export type HttpResponseCode = 200 | 400 | 401 | 404 | 429 | 500;
 
-  const params = paginatedQuery.value;
-  // order messages by creation date (desc)
-  const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
+type MessagesConfig = {
+  liveMode?: {
+    count: number;
+    interval: number;
+  };
+  response: {
+    // 200 success with payload
+    getMessagesResponseCode: HttpResponseCode;
+    // 200 success with payload
+    getMessageResponseCode: HttpResponseCode;
+    // 200 success with payload
+    getMVLMessageResponseCode: HttpResponseCode;
+  };
+} & NewMessagesOptions;
 
-  const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
-  const indexes:
-    | { startIndex: number; endIndex: number; backward: boolean }
-    | undefined = match(toMatch)
-    .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
-      const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
-      const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
-      // if indexes are defined and in the expected order
-      if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
-        return {
-          startIndex: startIndex + 1,
-          endIndex,
-          backward: false
-        };
-      }
-    })
-    .with({ maximumId: not(__.nullish) }, () => {
-      const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
-      // index is defined and not at the end of the list
-      if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
-        return {
-          startIndex: startIndex + 1,
-          endIndex: startIndex + 1 + params.pageSize!,
-          backward: false
-        };
-      }
-    })
-    .with({ minimumId: not(__.nullish) }, () => {
-      const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-      // index found and it isn't the first item (can't go back)
-      if (endIndex > 0) {
-        return {
-          startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
-          endIndex,
-          backward: true
-        };
-      }
-    })
-    .otherwise(() => ({
-      startIndex: 0,
-      endIndex: params.pageSize as number,
-      backward: false
-    }));
+type MessagePluginOptions = {
+  profile: {
+    attrs: ProfileAttrs;
+  };
+  messages: MessagesConfig;
+};
 
-  // either not enough parameters or out-of-bound
-  if (indexes === undefined) {
-    return res.json({ items: [] });
+export const MessagePlugin: Plugin<MessagePluginOptions> = async (
+  { handleRoute, sendFile },
+  options
+) => {
+  // TODO: trovare una soluzione migliore
+  const newMessagesOptions: NewMessagesOptions = {
+    legalCount: options.messages.legalCount,
+    paymentsCount: options.messages.paymentsCount,
+    paymentWithValidDueDateCount: options.messages.paymentWithValidDueDateCount,
+    paymentWithExpiredDueDateCount:
+      options.messages.paymentWithExpiredDueDateCount,
+    paymentInvalidAfterDueDateWithValidDueDateCount:
+      options.messages.paymentInvalidAfterDueDateWithValidDueDateCount,
+    paymentInvalidAfterDueDateWithExpiredDueDateCount:
+      options.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount,
+    withInValidDueDateCount: options.messages.withInValidDueDateCount,
+    withValidDueDateCount: options.messages.withValidDueDateCount,
+    standardMessageCount: options.messages.standardMessageCount,
+    medicalCount: options.messages.medicalCount,
+    withEUCovidCert: options.messages.withEUCovidCert,
+    withCTA: options.messages.withCTA
+  };
+
+  messagesWithContent = createMessages(
+    options.profile.attrs.fiscal_code,
+    newMessagesOptions
+  );
+
+  if (options.messages.liveMode) {
+    /* TODO: testare liveMode */
+    const count = options.messages.liveMode.count;
+    setInterval(() => {
+      const nextMessages = createMessages(
+        options.profile.attrs.fiscal_code,
+        newMessagesOptions
+      );
+      messagesWithContent.unshift(
+        ..._.shuffle(nextMessages).slice(
+          0,
+          Math.min(count, nextMessages.length - 1)
+        )
+      );
+    }, options.messages.liveMode.interval);
   }
 
-  const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
-  const items = getPublicMessages(slice, params.enrichResultData!);
+  const configResponse = options.messages.response;
 
-  // the API doesn't return 'next' for previous page
-  if (indexes.backward) {
+  handleRoute("get", addApiV1Prefix("/messages"), (req, res) => {
+    if (configResponse.getMessagesResponseCode !== 200) {
+      res.sendStatus(configResponse.getMessagesResponseCode);
+      return;
+    }
+    const paginatedQuery = GetMessagesParameters.decode({
+      // default pageSize = 100
+      pageSize: req.query.page_size ?? "100",
+      // default enrichResultData = false
+      enrichResultData: (req.query.enrich_result_data ?? false) === "true",
+      maximumId: req.query.maximum_id,
+      minimumId: req.query.minimum_id
+    });
+
+    if (E.isLeft(paginatedQuery)) {
+      // bad request
+      res.sendStatus(400);
+      return;
+    }
+
+    const params = paginatedQuery.value;
+    // order messages by creation date (desc)
+    const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
+
+    const toMatch = {
+      maximumId: params.maximumId,
+      minimumId: params.minimumId
+    };
+    const indexes:
+      | { startIndex: number; endIndex: number; backward: boolean }
+      | undefined = match(toMatch)
+      .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
+        const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
+        const startIndex = orderedList.findIndex(
+          m => m.id === params.minimumId
+        );
+        // if indexes are defined and in the expected order
+        if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
+          return {
+            startIndex: startIndex + 1,
+            endIndex,
+            backward: false
+          };
+        }
+      })
+      .with({ maximumId: not(__.nullish) }, () => {
+        const startIndex = orderedList.findIndex(
+          m => m.id === params.maximumId
+        );
+        // index is defined and not at the end of the list
+        if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
+          return {
+            startIndex: startIndex + 1,
+            endIndex: startIndex + 1 + params.pageSize!,
+            backward: false
+          };
+        }
+      })
+      .with({ minimumId: not(__.nullish) }, () => {
+        const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+        // index found and it isn't the first item (can't go back)
+        if (endIndex > 0) {
+          return {
+            startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
+            endIndex,
+            backward: true
+          };
+        }
+      })
+      .otherwise(() => ({
+        startIndex: 0,
+        endIndex: params.pageSize as number,
+        backward: false
+      }));
+
+    // either not enough parameters or out-of-bound
+    if (indexes === undefined) {
+      return res.json({ items: [] });
+    }
+
+    const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
+    const items = getPublicMessages(
+      options.profile.attrs.fiscal_code,
+      slice,
+      params.enrichResultData!
+    );
+
+    // the API doesn't return 'next' for previous page
+    if (indexes.backward) {
+      return res.json({
+        items,
+        prev: orderedList[indexes.startIndex]?.id
+      });
+    }
+
     return res.json({
       items,
-      prev: orderedList[indexes.startIndex]?.id
+      prev: orderedList[indexes.startIndex]?.id,
+      next: orderedList[indexes.endIndex]
+        ? slice[slice.length - 1]?.id
+        : undefined
     });
-  }
-
-  return res.json({
-    items,
-    prev: orderedList[indexes.startIndex]?.id,
-    next: orderedList[indexes.endIndex]
-      ? slice[slice.length - 1]?.id
-      : undefined
   });
-});
 
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/messages/:id"),
-  (req, res) => {
+  handleRoute("get", addApiV1Prefix("/messages/:id"), (req, res) => {
     if (configResponse.getMessageResponseCode !== 200) {
       res.sendStatus(configResponse.getMessagesResponseCode);
       return;
@@ -440,14 +517,9 @@ addHandler(
       return;
     }
     res.json(message);
-  }
-);
+  });
 
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/legal-messages/:id"),
-  (req, res) => {
+  handleRoute("get", addApiV1Prefix("/legal-messages/:id"), (req, res) => {
     if (configResponse.getMVLMessageResponseCode !== 200) {
       res.sendStatus(configResponse.getMVLMessageResponseCode);
       return;
@@ -464,33 +536,32 @@ addHandler(
       return;
     }
     res.json(message);
-  }
-);
+  });
 
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
-  (req, res) => {
-    // find the message by the given legalMessageID
-    const message = messagesWithContent.find(
-      ld => ld.id === req.params.legalMessageId
-    );
-    const legalMessage = LegalMessageWithContent.decode(message);
-    // ensure message exists and it has a legal content
-    if (message === undefined || E.isLeft(legalMessage)) {
-      res.json(getProblemJson(404, "message not found"));
-      return;
+  handleRoute(
+    "get",
+    addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
+    (req, res) => {
+      // find the message by the given legalMessageID
+      const message = messagesWithContent.find(
+        ld => ld.id === req.params.legalMessageId
+      );
+      const legalMessage = LegalMessageWithContent.decode(message);
+      // ensure message exists and it has a legal content
+      if (message === undefined || E.isLeft(legalMessage)) {
+        res.json(getProblemJson(404, "message not found"));
+        return;
+      }
+      // find the attachment by the given attachmentId
+      const attachment = legalMessage.value.legal_message.eml.attachments.find(
+        a => a.id === req.params.attachmentId
+      );
+      if (attachment === undefined) {
+        res.json(getProblemJson(404, "attachment not found"));
+        return;
+      }
+      res.setHeader("Content-Type", attachment.content_type);
+      sendFile(`assets/messages/mvl/attachments/${attachment.name}`, res);
     }
-    // find the attachment by the given attachmentId
-    const attachment = legalMessage.value.legal_message.eml.attachments.find(
-      a => a.id === req.params.attachmentId
-    );
-    if (attachment === undefined) {
-      res.json(getProblemJson(404, "attachment not found"));
-      return;
-    }
-    res.setHeader("Content-Type", attachment.content_type);
-    sendFile(`assets/messages/mvl/attachments/${attachment.name}`, res);
-  }
-);
+  );
+};

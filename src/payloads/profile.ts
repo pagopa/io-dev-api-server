@@ -1,91 +1,97 @@
 import { DateFromString } from "@pagopa/ts-commons/lib/dates";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
-import { ioDevServerConfig } from "../config";
+import { IoDevServerConfig, ProfileAttrs } from "../types/config";
 
-const profileAttrConfig = ioDevServerConfig.profile.attrs;
-const spidProfile: InitializedProfile = {
+const spidProfile = (profileAttrs: ProfileAttrs): InitializedProfile => ({
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.AUTO
   },
-  accepted_tos_version: profileAttrConfig.accepted_tos_version,
-  email: profileAttrConfig.email,
-  family_name: profileAttrConfig.family_name,
+  accepted_tos_version: profileAttrs.accepted_tos_version,
+  email: profileAttrs.email,
+  family_name: profileAttrs.family_name,
   has_profile: true,
   is_inbox_enabled: true,
   is_email_enabled: true,
   is_email_validated: true,
   is_webhook_enabled: true,
-  name: profileAttrConfig.name,
+  name: profileAttrs.name,
   version: 1,
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
-  fiscal_code: profileAttrConfig.fiscal_code,
-  preferred_languages: profileAttrConfig.preferred_languages
-};
+  fiscal_code: profileAttrs.fiscal_code,
+  preferred_languages: profileAttrs.preferred_languages
+});
 
 // mock a SPID profile on first onboarding
-const spidProfileFirstOnboarding: InitializedProfile = {
+const spidProfileFirstOnboarding = (
+  profileAttrs: ProfileAttrs
+): InitializedProfile => ({
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.LEGACY
   },
-  email: profileAttrConfig.email,
-  family_name: profileAttrConfig.family_name,
+  email: profileAttrs.email,
+  family_name: profileAttrs.family_name,
   has_profile: true,
   is_inbox_enabled: false,
   is_webhook_enabled: false,
   is_email_enabled: true,
   is_email_validated: true,
-  name: profileAttrConfig.name,
+  name: profileAttrs.name,
   version: 0,
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
-  fiscal_code: profileAttrConfig.fiscal_code
-};
+  fiscal_code: profileAttrs.fiscal_code
+});
 
-const cieProfile: InitializedProfile = {
+const cieProfile = (profileAttrs: ProfileAttrs): InitializedProfile => ({
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.AUTO
   },
-  email: profileAttrConfig.email,
-  accepted_tos_version: profileAttrConfig.accepted_tos_version,
-  family_name: profileAttrConfig.family_name,
+  email: profileAttrs.email,
+  accepted_tos_version: profileAttrs.accepted_tos_version,
+  family_name: profileAttrs.family_name,
   has_profile: true,
   is_inbox_enabled: true,
   is_email_enabled: true,
   is_email_validated: true,
   is_webhook_enabled: true,
-  name: profileAttrConfig.name,
+  name: profileAttrs.name,
   version: 1,
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
-  fiscal_code: profileAttrConfig.fiscal_code,
-  preferred_languages: profileAttrConfig.preferred_languages
-};
+  fiscal_code: profileAttrs.fiscal_code,
+  preferred_languages: profileAttrs.preferred_languages
+});
 
 // mock a cie profile on first onboarding
-const cieProfileFirstOnboarding: InitializedProfile = {
+const cieProfileFirstOnboarding = (
+  profileAttrs: ProfileAttrs
+): InitializedProfile => ({
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.LEGACY
   },
-  family_name: profileAttrConfig.family_name,
+  family_name: profileAttrs.family_name,
   has_profile: true,
   is_email_enabled: true,
   is_email_validated: false,
   is_inbox_enabled: false,
   is_webhook_enabled: false,
-  name: profileAttrConfig.name,
+  name: profileAttrs.name,
   version: 0,
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
-  fiscal_code: profileAttrConfig.fiscal_code
-};
-const spidCie = {
+  fiscal_code: profileAttrs.fiscal_code
+});
+
+const spidCie = (profile: IoDevServerConfig["profile"]) => ({
   spid: {
-    first: spidProfileFirstOnboarding,
-    existing: spidProfile
+    first: spidProfileFirstOnboarding(profile.attrs),
+    existing: spidProfile(profile.attrs)
   },
   cie: {
-    first: cieProfileFirstOnboarding,
-    existing: cieProfile
+    first: cieProfileFirstOnboarding(profile.attrs),
+    existing: cieProfile(profile.attrs)
   }
-};
-export const currentProfile = ioDevServerConfig.profile.firstOnboarding
-  ? spidCie[ioDevServerConfig.profile.authenticationProvider].first
-  : spidCie[ioDevServerConfig.profile.authenticationProvider].existing;
+});
+
+export const currentProfile = (profile: IoDevServerConfig["profile"]) =>
+  profile.firstOnboarding
+    ? spidCie(profile)[profile.authenticationProvider].first
+    : spidCie(profile)[profile.authenticationProvider].existing;

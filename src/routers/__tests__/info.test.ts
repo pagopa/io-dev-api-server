@@ -1,8 +1,9 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
 
+const app = createIoDevServer();
 const request = supertest(app);
 
 it("info should return a valid ServerInfo object", async () => {

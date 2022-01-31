@@ -14,7 +14,8 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
-import { ioDevServerConfig } from "../config";
+import { PaymentConfig } from "../types/config";
+
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
@@ -24,95 +25,114 @@ export const sessionToken: SessionResponse = {
     sessionToken: faker.random.alphaNumeric(128)
   }
 };
-const getAmount = () =>
+
+const getAmount = (payment?: PaymentConfig) =>
   getRandomValue(
-    ioDevServerConfig.wallet.payment?.pspFeeAmount,
+    payment?.pspFeeAmount,
     faker.datatype.number({ min: 1, max: 150 }),
     "wallet"
   );
 
-export const validPsp: Psp = {
-  id: 40000,
-  idPsp: "idPsp1",
-  businessName: "WHITE bank",
-  paymentType: "CP",
-  idIntermediary: "idIntermediario1",
-  idChannel: "idCanale14",
-  logoPSP:
-    "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
-  serviceLogo:
-    "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
-  serviceName: "nomeServizio 10 white",
-  fixedCost: {
-    currency: "EUR",
-    amount: getAmount(),
-    decimalDigits: 2
-  },
-  appChannel: false,
-  tags: ["MAESTRO", "VISA"],
-  serviceDescription: "DESCRIZIONE servizio: CP mod1",
-  serviceAvailability: "DISPONIBILITA servizio 24/7",
-  paymentModel: 1,
-  flagStamp: true,
-  idCard: 91,
-  lingua: "IT" as LinguaEnum
+export const createValidPsp = (
+  payment?: PaymentConfig,
+  variant: 1 | 2 | 3 = 1
+): Psp => {
+  switch (variant) {
+    case 1:
+      return {
+        id: 40000,
+        idPsp: "idPsp1",
+        businessName: "WHITE bank",
+        paymentType: "CP",
+        idIntermediary: "idIntermediario1",
+        idChannel: "idCanale14",
+        logoPSP:
+          "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
+        serviceLogo:
+          "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/bank-icon.png",
+        serviceName: "nomeServizio 10 white",
+        fixedCost: {
+          currency: "EUR",
+          amount: getAmount(payment),
+          decimalDigits: 2
+        },
+        appChannel: false,
+        tags: ["MAESTRO", "VISA"],
+        serviceDescription: "DESCRIZIONE servizio: CP mod1",
+        serviceAvailability: "DISPONIBILITA servizio 24/7",
+        paymentModel: 1,
+        flagStamp: true,
+        idCard: 91,
+        lingua: "IT" as LinguaEnum
+      };
+    case 2:
+      return {
+        id: 40001,
+        idPsp: "idPsp1",
+        businessName: "Red bank",
+        paymentType: "CP",
+        idIntermediary: "idIntermediario1",
+        idChannel: "idCanale14",
+        logoPSP: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
+        serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
+        serviceName: "nomeServizio 10 red",
+        fixedCost: {
+          currency: "EUR",
+          amount: getAmount(),
+          decimalDigits: 2
+        },
+        appChannel: false,
+        tags: ["AMEX"],
+        serviceDescription: "DESCRIZIONE servizio: CP mod1",
+        serviceAvailability: "DISPONIBILITA servizio 24/7",
+        paymentModel: 1,
+        flagStamp: true,
+        idCard: 91,
+        lingua: "IT" as LinguaEnum
+      };
+    case 3:
+      return {
+        id: 40002,
+        idPsp: "idPsp1",
+        businessName: "Blu bank",
+        paymentType: "CP",
+        idIntermediary: "idIntermediario1",
+        idChannel: "idCanale14",
+        logoPSP: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
+        serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
+        serviceName: "nomeServizio 10 Blu",
+        fixedCost: {
+          currency: "EUR",
+          amount: getAmount(),
+          decimalDigits: 2
+        },
+        appChannel: false,
+        tags: ["MASTERCARD", "POSTE"],
+        serviceDescription: "DESCRIZIONE servizio: CP mod1",
+        serviceAvailability: "DISPONIBILITA servizio 24/7",
+        paymentModel: 1,
+        flagStamp: true,
+        idCard: 91,
+        lingua: "IT" as LinguaEnum
+      };
+  }
 };
 
-const validPsp2: Psp = {
-  id: 40001,
-  idPsp: "idPsp1",
-  businessName: "Red bank",
-  paymentType: "CP",
-  idIntermediary: "idIntermediario1",
-  idChannel: "idCanale14",
-  logoPSP: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
-  serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
-  serviceName: "nomeServizio 10 red",
-  fixedCost: {
-    currency: "EUR",
-    amount: getAmount(),
-    decimalDigits: 2
-  },
-  appChannel: false,
-  tags: ["AMEX"],
-  serviceDescription: "DESCRIZIONE servizio: CP mod1",
-  serviceAvailability: "DISPONIBILITA servizio 24/7",
-  paymentModel: 1,
-  flagStamp: true,
-  idCard: 91,
-  lingua: "IT" as LinguaEnum
-};
+export const createPspList = (payment?: PaymentConfig): ReadonlyArray<Psp> => [
+  createValidPsp(payment, 1),
+  createValidPsp(payment, 2),
+  createValidPsp(payment, 3)
+];
 
-const validPsp3: Psp = {
-  id: 40002,
-  idPsp: "idPsp1",
-  businessName: "Blu bank",
-  paymentType: "CP",
-  idIntermediary: "idIntermediario1",
-  idChannel: "idCanale14",
-  logoPSP: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
-  serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
-  serviceName: "nomeServizio 10 Blu",
-  fixedCost: {
-    currency: "EUR",
-    amount: getAmount(),
-    decimalDigits: 2
-  },
-  appChannel: false,
-  tags: ["MASTERCARD", "POSTE"],
-  serviceDescription: "DESCRIZIONE servizio: CP mod1",
-  serviceAvailability: "DISPONIBILITA servizio 24/7",
-  paymentModel: 1,
-  flagStamp: true,
-  idCard: 91,
-  lingua: "IT" as LinguaEnum
-};
-
-export const pspList: ReadonlyArray<Psp> = [validPsp, validPsp2, validPsp3];
-export const getPspFromId = (idPsp: number) =>
+export const getPspFromId = (idPsp: number, payment?: PaymentConfig) => {
+  const pspList = createPspList(payment);
   pspList.find(p => p.id === idPsp);
+};
 
-export const getWallets = (count: number = 4): WalletListResponse => {
+export const getWallets = (
+  count: number = 4,
+  payment?: PaymentConfig
+): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let walletId = 0;
   // tslint:disable-next-line: no-let
@@ -151,6 +171,8 @@ export const getWallets = (count: number = 4): WalletListResponse => {
 
   const generateWallet = (): Wallet => {
     walletId++;
+
+    const validPsp = createValidPsp(payment);
 
     return {
       idWallet: walletId,

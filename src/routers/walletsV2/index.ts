@@ -1,4 +1,3 @@
-import { Router } from "express";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
 import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
@@ -10,8 +9,8 @@ import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
-import { assetsFolder, ioDevServerConfig } from "../../config";
-import { addHandler } from "../../payloads/response";
+import { assetsFolder } from "../../config";
+import { Plugin } from "../../core/server";
 import {
   abiData,
   generateBancomatPay,
@@ -29,7 +28,8 @@ import { readFileAsJSON } from "../../utils/file";
 import { validatePayload } from "../../utils/validator";
 import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
 
-export const wallet2Router = Router();
+// TODO: support for shuffle ABI
+
 export const abiResponse: AbiListResponse = {
   data: abiData
 };
@@ -91,9 +91,25 @@ let walletSatispay: ReadonlyArray<WalletV2> = [];
 let walletPaypal: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
+
+const defaultWalletV2Config: WalletMethodConfig = {
+  walletBancomatCount: 0,
+  walletCreditCardCount: 1,
+  walletCreditCardCoBadgeCount: 0,
+  privativeCount: 0,
+  satispayCount: 0,
+  paypalCount: 0,
+  bPayCount: 0,
+  citizenSatispay: true,
+  citizenBancomatCount: 1,
+  citizenBPayCount: 1,
+  citizenCreditCardCoBadgeCount: 1,
+  citizenPrivative: true,
+  citizenPaypal: true
+};
+
 // tslint:disable-next-line: no-let
-export let walletV2Config: WalletMethodConfig =
-  ioDevServerConfig.wallet.methods;
+export let walletV2Config: WalletMethodConfig = defaultWalletV2Config;
 
 export const updateWalletV2Config = (config: WalletMethodConfig) => {
   walletV2Config = config;
@@ -239,61 +255,6 @@ export const generateWalletV2Data = () => {
   );
 };
 
-// return the list of wallets
-addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
-  res.json(walletV2Response)
-);
-
-// PM compliance: despite the endpoint is v3, the payment methods list returned by this API includes methods of type v2
-// v3 is the same of v2 but in addition it includes paypal ¯\_(ツ)_/¯
-addHandler(wallet2Router, "get", appendWalletV3Prefix("/wallet"), (_, res) =>
-  res.json(walletV2Response)
-);
-
-// remove from wallet all these methods that have a specific function enabled (BPD, PagoPA, etc..)
-addHandler(
-  wallet2Router,
-  "delete",
-  appendWalletV2Prefix("/wallet/delete-wallets"),
-  (req, res) => {
-    const service = req.query.service as EnableableFunctionsEnum;
-    // tslint:disable-next-line: readonly-array
-    const deletedWallets: number[] = [];
-    const walletsToDelete = getWalletV2().filter(w =>
-      (w.enableableFunctions ?? []).includes(service)
-    );
-    walletsToDelete.forEach(w => {
-      const idWallet = w.idWallet ?? -1;
-      if (removeWalletV2(idWallet)) {
-        deletedWallets.push(idWallet);
-      }
-    });
-    const response: DeletedWalletsResponse = {
-      data: {
-        deletedWallets: deletedWallets.length,
-        notDeletedWallets: walletsToDelete.length - deletedWallets.length
-      }
-    };
-    res.json(response);
-  }
-);
-
-/**
- * return the list of psp from a given payment id and wallet id
- */
-addHandler(
-  wallet2Router,
-  "get",
-  appendWalletV2Prefix("/payments/:idPayment/psps"),
-  (_, res) => {
-    const psp = validatePayload(
-      PspDataListResponse,
-      readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
-    );
-    res.json(psp);
-  }
-);
-
 // reset function
 export const resetWalletV2 = () => {
   generateWalletV2Data();
@@ -301,3 +262,69 @@ export const resetWalletV2 = () => {
 
 // at the server startup
 generateWalletV2Data();
+
+export type WalletV2PluginOptions = {
+  wallet: {
+    methods: WalletMethodConfig;
+  };
+};
+
+export const WalletV2Plugin: Plugin<WalletV2PluginOptions> = async (
+  { handleRoute },
+  options
+) => {
+  updateWalletV2Config(options.wallet.methods);
+
+  // return the list of wallets
+  handleRoute("get", appendWalletV2Prefix("/wallet"), (_, res) =>
+    res.json(walletV2Response)
+  );
+
+  // PM compliance: despite the endpoint is v3, the payment methods list returned by this API includes methods of type v2
+  // v3 is the same of v2 but in addition it includes paypal ¯\_(ツ)_/¯
+  handleRoute("get", appendWalletV3Prefix("/wallet"), (_, res) =>
+    res.json(walletV2Response)
+  );
+
+  // remove from wallet all these methods that have a specific function enabled (BPD, PagoPA, etc..)
+  handleRoute(
+    "delete",
+    appendWalletV2Prefix("/wallet/delete-wallets"),
+    (req, res) => {
+      const service = req.query.service as EnableableFunctionsEnum;
+      // tslint:disable-next-line: readonly-array
+      const deletedWallets: number[] = [];
+      const walletsToDelete = getWalletV2().filter(w =>
+        (w.enableableFunctions ?? []).includes(service)
+      );
+      walletsToDelete.forEach(w => {
+        const idWallet = w.idWallet ?? -1;
+        if (removeWalletV2(idWallet)) {
+          deletedWallets.push(idWallet);
+        }
+      });
+      const response: DeletedWalletsResponse = {
+        data: {
+          deletedWallets: deletedWallets.length,
+          notDeletedWallets: walletsToDelete.length - deletedWallets.length
+        }
+      };
+      res.json(response);
+    }
+  );
+
+  /**
+   * return the list of psp from a given payment id and wallet id
+   */
+  handleRoute(
+    "get",
+    appendWalletV2Prefix("/payments/:idPayment/psps"),
+    (_, res) => {
+      const psp = validatePayload(
+        PspDataListResponse,
+        readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
+      );
+      res.json(psp);
+    }
+  );
+};

@@ -1,18 +1,23 @@
-import { Router } from "express";
-import { ioDevServerConfig } from "../config";
-import { addHandler } from "../payloads/response";
-import { sendFile } from "../utils/file";
+import { Plugin } from "../core/server";
+import { IoDevServerConfig } from "../types/config";
 
-export const miscRouter = Router();
+export type MiscPluginOptions = {
+  IODevServerConfig: IoDevServerConfig;
+};
 
-addHandler(miscRouter, "get", "/myportal_playground.html", (_, res) => {
-  sendFile("assets/html/myportal_playground.html", res);
-});
+export const MiscPlugin: Plugin<MiscPluginOptions> = async (
+  { handleRoute, sendFile },
+  options
+) => {
+  handleRoute("get", "/myportal_playground.html", (_, res) => {
+    sendFile("assets/html/myportal_playground.html", res);
+  });
 
-/**
- * API dedicated to dev- server
- * return the current dev-server configuration
- */
-addHandler(miscRouter, "get", "/config", (_, res) => {
-  res.json(ioDevServerConfig);
-});
+  /**
+   * API dedicated to dev- server
+   * return the current dev-server configuration
+   */
+  handleRoute("get", "/config", (_, res) => {
+    res.json(options.IODevServerConfig);
+  });
+};

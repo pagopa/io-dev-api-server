@@ -4,7 +4,9 @@ import { UserDataProcessing } from "../../../generated/definitions/backend/UserD
 import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingStatusEnum } from "../../../generated/definitions/backend/UserDataProcessingStatus";
 import { basePath } from "../../payloads/response";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 
 const request = supertest(app);
 /* tslint:disable */

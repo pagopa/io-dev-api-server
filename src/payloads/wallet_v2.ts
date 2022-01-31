@@ -30,7 +30,7 @@ import {
   TypeEnum
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
-import { assetsFolder, ioDevServerConfig } from "../config";
+import { assetsFolder } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";
@@ -159,11 +159,10 @@ export const isPrivative = (wallet: WalletV2, card: CardInfo) =>
 export const generateCards = (
   abis: ReadonlyArray<Abi>,
   count: number = 10,
-  cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat
+  cardType: WalletTypeEnum.Card | WalletTypeEnum.Bancomat,
+  shuffleAbi: boolean = false
 ): ReadonlyArray<CardInfo> => {
-  const listAbi = ioDevServerConfig.wallet.shuffleAbi
-    ? faker.helpers.shuffle([...abis])
-    : abis;
+  const listAbi = shuffleAbi ? faker.helpers.shuffle([...abis]) : abis;
   return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
     const config = pipe(
       O.fromNullable(cardConfigMap.get(cardType)),
@@ -232,7 +231,7 @@ export const generateWalletV2FromCard = (
     expireMonth: (ed.getMonth() + 1).toString().padStart(2, "0"),
     expireYear: ed.getFullYear().toString(),
     hashPan: card.hpan,
-    holder: `${currentProfile.name} ${currentProfile.family_name}`,
+    holder: "John Doe", //`${currentProfile.name} ${currentProfile.family_name}`, // TODO: dependency in currentProfile
     htokenList: card.tokens,
     issuerAbiCode: canMethodPay ? undefined : card.abi,
     type: TypeEnum.PP

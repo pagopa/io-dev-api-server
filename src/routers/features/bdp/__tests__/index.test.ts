@@ -1,7 +1,9 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
-import app from "../../../../server";
+import { createIoDevServer } from "../../../../server";
+
+const app = createIoDevServer();
 import { addBPDPrefix } from "../index";
 
 const request = supertest(app);

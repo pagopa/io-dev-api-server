@@ -3,7 +3,9 @@ import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
 import { loginSessionToken } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 
 const request = supertest(app);
 

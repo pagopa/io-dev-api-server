@@ -1,46 +1,22 @@
-import { Router } from "express";
 import { BPayInfo } from "../../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import { WalletTypeEnum } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
-import { ioDevServerConfig } from "../../config";
-import { addHandler } from "../../payloads/response";
+
+import { WalletMethodConfig } from "../../types/config";
+
+import { Plugin } from "../../core/server";
 import {
   isCobadge,
   isPrivative,
   resetCardConfig
 } from "../../payloads/wallet_v2";
-import { sendFile } from "../../utils/file";
 import {
   generateWalletV2Data,
   getWalletV2,
   updateWalletV2Config,
   walletV2Config
 } from "./index";
-
-export const dashboardWalletV2Router = Router();
-
-addHandler(
-  dashboardWalletV2Router,
-  "get",
-  "/",
-  (_, res) => sendFile("assets/html/wallet2_config.html", res),
-  0,
-  { description: "WalletV2 config dashboard" }
-);
-
-// get walletv2-bpd config (dashboard web)
-addHandler(dashboardWalletV2Router, "get", "/walletv2/config", (_, res) =>
-  res.json(walletV2Config)
-);
-
-// update walletv2-bpd config (dashboard web)
-addHandler(dashboardWalletV2Router, "post", "/walletv2/config", (req, res) => {
-  updateWalletV2Config(req.body);
-  resetCardConfig();
-  generateWalletV2Data();
-  res.json(walletV2Config);
-});
 
 // get all payment methods compliant with BPD (dashboard web)
 export const getBPDPaymentMethod = () =>
@@ -86,19 +62,44 @@ export const getBPDPaymentMethod = () =>
     };
   });
 
-// get the hpans of walletv2 that support BPD (dashboard web)
-addHandler(
-  dashboardWalletV2Router,
-  "get",
-  "/walletv2/table-details",
-  (req, res) => {
-    res.json(getBPDPaymentMethod());
-  }
-);
+export type WalletV2DashboardPluginOptions = {
+  wallet: {
+    methods: WalletMethodConfig;
+  };
+};
 
-// reset walletv2-bpd config (dashboard web)
-addHandler(dashboardWalletV2Router, "get", "/walletv2/reset", (_, res) => {
-  updateWalletV2Config(ioDevServerConfig.wallet.methods);
-  generateWalletV2Data();
-  res.json(walletV2Config);
-});
+export const WalletV2DashboardPlugin: Plugin<WalletV2DashboardPluginOptions> = async (
+  { handleRoute, sendFile },
+  options
+) => {
+  handleRoute(
+    "get",
+    "/",
+    (_, res) => sendFile("assets/html/wallet2_config.html", res),
+    0,
+    "Wallet2 Dashboard"
+  );
+
+  // get walletv2-bpd config (dashboard web)
+  handleRoute("get", "/walletv2/config", (_, res) => res.json(walletV2Config));
+
+  // update walletv2-bpd config (dashboard web)
+  handleRoute("post", "/walletv2/config", (req, res) => {
+    updateWalletV2Config(req.body);
+    resetCardConfig();
+    generateWalletV2Data();
+    res.json(walletV2Config);
+  });
+
+  // get the hpans of walletv2 that support BPD (dashboard web)
+  handleRoute("get", "/walletv2/table-details", (req, res) => {
+    res.json(getBPDPaymentMethod());
+  });
+
+  // reset walletv2-bpd config (dashboard web)
+  handleRoute("get", "/walletv2/reset", (_, res) => {
+    updateWalletV2Config(options.wallet.methods);
+    generateWalletV2Data();
+    res.json(walletV2Config);
+  });
+};

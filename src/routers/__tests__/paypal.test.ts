@@ -1,7 +1,9 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PaypalPspListResponse } from "../../../generated/definitions/pagopa/PaypalPspListResponse";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 import { appendWalletV3Prefix } from "../../utils/wallet";
 
 const request = supertest(app);

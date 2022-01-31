@@ -16,11 +16,11 @@ import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
 
-import { ioDevServerConfig } from "../config";
+import { PaymentConfig } from "../types/config";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 
-import { validPsp } from "./wallet";
+import { createValidPsp } from "./wallet";
 
 type settings = {
   user: string;
@@ -65,6 +65,7 @@ export const getRandomNoticeNumber = (): string => {
   return newStr + messageNumber;
 };
 
+// TODO: find a better way to generate valid PSPs for payment data
 export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,
@@ -85,9 +86,9 @@ export const paymentData = {
   urlRedirectEc:
     "http://mespaprod.soluzionipa.it/pagamenti?idSession=118a22f4-86d4-42d8-992c-7aead5ac8ed3&idDominio=01199250158", // link su piattaforma ente,
   psps: [
-    { ...validPsp, lingua: LinguaEnum.IT },
-    { ...validPsp, lingua: LinguaEnum.IT },
-    { ...validPsp, lingua: LinguaEnum.IT }
+    { ...createValidPsp(), lingua: LinguaEnum.IT },
+    { ...createValidPsp(), lingua: LinguaEnum.IT },
+    { ...createValidPsp(), lingua: LinguaEnum.IT }
   ],
   amount: {
     amount: 1 as ImportoEuroCents, // = 1 eurocent,
@@ -251,11 +252,11 @@ export const transactionIdResponseSecond = {
 };
 
 export const getPaymentRequestsGetResponse = (
-  senderService: ServicePublic
+  senderService: ServicePublic,
+  payment?: PaymentConfig
 ): PaymentRequestsGetResponse => ({
   importoSingoloVersamento: getRandomValue(
-    ioDevServerConfig.wallet.payment
-      ?.amount as PaymentRequestsGetResponse["importoSingoloVersamento"],
+    payment?.amount as PaymentRequestsGetResponse["importoSingoloVersamento"],
     faker.datatype.number({
       min: 1,
       max: 9999

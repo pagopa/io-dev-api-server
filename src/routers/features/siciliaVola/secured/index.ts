@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Plugin } from "../../../../core/server";
 import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import * as t from "io-ts";
@@ -10,10 +10,7 @@ import {
   getPossibleVoucherStates,
   getVouchersBeneficiary
 } from "../../../../payloads/features/siciliaVola";
-import { addHandler } from "../../../../payloads/response";
 import { addApiV1Prefix } from "../../../../utils/strings";
-
-export const securedSvRouter = Router();
 
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/mitvoucher/data/rest/secured${path}`);
@@ -23,24 +20,18 @@ let vouchersBeneficiary: ReadonlyArray<VoucherBeneficiarioOutputBean>;
 // tslint:disable-next-line: no-let prefer-const
 let lastId = 0;
 
-/**
- * Get the possible voucher states
- */
-addHandler(
-  securedSvRouter,
-  "get",
-  addPrefix("/beneficiario/statiVoucher"),
-  (_, res) => res.json(getPossibleVoucherStates)
-);
+export const SiciliaVolaSecuredPlugin: Plugin = async ({ handleRoute }) => {
+  /**
+   * Get the possible voucher states
+   */
+  handleRoute("get", addPrefix("/beneficiario/statiVoucher"), (_, res) =>
+    res.json(getPossibleVoucherStates)
+  );
 
-/**
- * Get the voucher list
- */
-addHandler(
-  securedSvRouter,
-  "post",
-  addPrefix("/beneficiario/ricercaVoucher"),
-  (req, res) => {
+  /**
+   * Get the voucher list
+   */
+  handleRoute("post", addPrefix("/beneficiario/ricercaVoucher"), (req, res) => {
     const maybeParams = VoucherBeneficiarioInputBean.decode(
       req.body.voucherBeneficiarioInputBean
     );
@@ -81,66 +72,59 @@ addHandler(
     lastId += vouchersParams.elementsXPage;
 
     res.json(newVouchers);
-  }
-);
+  });
 
-/**
- * Get the airport destination list given a state
- */
-addHandler(
-  securedSvRouter,
-  "post",
-  addPrefix("/beneficiario/aeroportiAmmessi"),
-  (req, res) => {
-    const aeroportiAmmessiInputBean = req.body;
-    const maybeAeroportiAmmessiInputBean = AeroportiAmmessiInputBean.decode(
-      aeroportiAmmessiInputBean
-    );
-    if (E.isLeft(maybeAeroportiAmmessiInputBean)) {
-      // validate the body value
-      res.sendStatus(500);
-      return;
-    }
-
-    res.json(getAereoportiSede(5));
-  }
-);
-
-/**
- * Delete a voucher
- */
-addHandler(
-  securedSvRouter,
-  "post",
-  addPrefix("/beneficiario/annullaVoucher"),
-  (req, res) => {
-    const { codiceVoucher } = req.body;
-    const maybeVoucherId = t.Integer.decode(codiceVoucher);
-    if (E.isLeft(maybeVoucherId)) {
-      // validate the body value
-      res.sendStatus(500);
-      return;
-    }
-
-    if (vouchersBeneficiary) {
-      vouchersBeneficiary = vouchersBeneficiary.filter(
-        v => v.idVoucher !== maybeVoucherId.value
+  /**
+   * Get the airport destination list given a state
+   */
+  handleRoute(
+    "post",
+    addPrefix("/beneficiario/aeroportiAmmessi"),
+    (req, res) => {
+      const aeroportiAmmessiInputBean = req.body;
+      const maybeAeroportiAmmessiInputBean = AeroportiAmmessiInputBean.decode(
+        aeroportiAmmessiInputBean
       );
-    }
-    res.json({});
-    return;
-  },
-  2000
-);
+      if (E.isLeft(maybeAeroportiAmmessiInputBean)) {
+        // validate the body value
+        res.sendStatus(500);
+        return;
+      }
 
-/**
- * Get the voucher in pdf (base64) format
- */
-addHandler(
-  securedSvRouter,
-  "post",
-  addPrefix("/beneficiario/stampaVoucher"),
-  (req, res) => {
+      res.json(getAereoportiSede(5));
+    }
+  );
+
+  /**
+   * Delete a voucher
+   */
+  handleRoute(
+    "post",
+    addPrefix("/beneficiario/annullaVoucher"),
+    (req, res) => {
+      const { codiceVoucher } = req.body;
+      const maybeVoucherId = t.Integer.decode(codiceVoucher);
+      if (E.isLeft(maybeVoucherId)) {
+        // validate the body value
+        res.sendStatus(500);
+        return;
+      }
+
+      if (vouchersBeneficiary) {
+        vouchersBeneficiary = vouchersBeneficiary.filter(
+          v => v.idVoucher !== maybeVoucherId.value
+        );
+      }
+      res.json({});
+      return;
+    },
+    2000
+  );
+
+  /**
+   * Get the voucher in pdf (base64) format
+   */
+  handleRoute("post", addPrefix("/beneficiario/stampaVoucher"), (req, res) => {
     const { codiceVoucher } = req.body;
     const maybeVoucherId = t.Integer.decode(codiceVoucher);
     if (E.isLeft(maybeVoucherId)) {
@@ -153,5 +137,5 @@ addHandler(
       .toString("base64");
 
     res.send({ data: voucherPdf });
-  }
-);
+  });
+};

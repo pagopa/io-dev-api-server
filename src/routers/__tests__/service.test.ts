@@ -4,7 +4,9 @@ import { PaginatedServiceTupleCollection } from "../../../generated/definitions/
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 import { services, visibleServices } from "../service";
 
 const request = supertest(app);

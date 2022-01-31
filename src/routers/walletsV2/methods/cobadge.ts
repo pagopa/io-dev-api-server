@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import { readableReport } from "italia-ts-commons/lib/reporters";
@@ -14,7 +14,7 @@ import {
 import { RestCobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/RestCobadgeResponse";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../../../config";
-import { addHandler } from "../../../payloads/response";
+import { Plugin } from "../../../core/server";
 import { readFileAsJSON } from "../../../utils/file";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
 import {
@@ -23,11 +23,9 @@ import {
   citizenPrivativeCard,
   getWalletV2
 } from "../index";
-import { bancomatRouter } from "./bancomat";
 
 const productTypes = Object.values(ProductTypeEnum);
 const paymentNetworks = Object.values(PaymentNetworkEnum);
-export const cobadgeRouter = Router();
 
 const fromCardInfoToCardBadge = (
   idWallet: number,
@@ -117,101 +115,96 @@ const handlePrivative = (req: Request, res: Response) => {
   res.status(200).json(validResponse.value);
 };
 
-/**
- * return the cobadge list owned by the citizen
- */
-addHandler(
-  bancomatRouter,
-  "get",
-  appendWalletV1Prefix("/cobadge/pans"),
-  (req, res) => {
+export const CobadgePlugin: Plugin = async ({ handleRoute }) => {
+  /**
+   * return the cobadge list owned by the citizen
+   */
+  handleRoute("get", appendWalletV1Prefix("/cobadge/pans"), (req, res) => {
     if (req.headers.pancode !== undefined) {
       handlePrivative(req, res);
     } else {
       handleCobadge(req, res);
     }
-  },
-  0
-);
+  });
 
-/**
- * return the cobadge list owned by the citizen (when pans can't return a response)
- */
-addHandler(
-  bancomatRouter,
-  "get",
-  appendWalletV1Prefix("/cobadge/search/:searchRequestId"),
-  (req, res) => {
-    if (req.params.searchRequestId === undefined) {
-      res.sendStatus(400);
-      return;
+  /**
+   * return the cobadge list owned by the citizen (when pans can't return a response)
+   */
+  handleRoute(
+    "get",
+    appendWalletV1Prefix("/cobadge/search/:searchRequestId"),
+    (req, res) => {
+      if (req.params.searchRequestId === undefined) {
+        res.sendStatus(400);
+        return;
+      }
+      // load the stub and fill it with cobadge cards
+      const pansStubData = fs
+        .readFileSync(assetsFolder + "/pm/cobadge/search.json")
+        .toString();
+      const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
+      if (E.isLeft(maybeResponse)) {
+        res.status(400).send(readableReport(maybeResponse.value));
+        return;
+      }
+      const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge.map<
+        PaymentInstrument
+      >(cb => fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo));
+      const cobadgeResponse = maybeResponse.value;
+      const response = {
+        ...cobadgeResponse,
+        payload: { ...cobadgeResponse.payload, paymentInstruments }
+      };
+      const validResponse = RestCobadgeResponse.decode({ data: response });
+      if (E.isLeft(validResponse)) {
+        res.status(500).send(readableReport(validResponse.value));
+        return;
+      }
+      res.status(200).json(validResponse.value);
     }
-    // load the stub and fill it with cobadge cards
-    const pansStubData = fs
-      .readFileSync(assetsFolder + "/pm/cobadge/search.json")
-      .toString();
-    const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
-    if (E.isLeft(maybeResponse)) {
-      res.status(400).send(readableReport(maybeResponse.value));
-      return;
-    }
-    const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge.map<
-      PaymentInstrument
-    >(cb => fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo));
-    const cobadgeResponse = maybeResponse.value;
-    const response = {
-      ...cobadgeResponse,
-      payload: { ...cobadgeResponse.payload, paymentInstruments }
-    };
-    const validResponse = RestCobadgeResponse.decode({ data: response });
-    if (E.isLeft(validResponse)) {
-      res.status(500).send(readableReport(validResponse.value));
-      return;
-    }
-    res.status(200).json(validResponse.value);
-  },
-  0
-);
+  );
 
-/**
- * return the cobadge list owned by the citizen (when pans can't return a response)
- */
-addHandler(
-  bancomatRouter,
-  "post",
-  appendWalletV1Prefix("/cobadge/add-wallets"),
-  (req, res) => {
-    const data = req.body;
-    const maybeData = CobadegPaymentInstrumentsRequest.decode(data);
-    // cant decode the body
-    if (E.isLeft(maybeData)) {
-      res.status(400).send(readableReport(maybeData.value));
-      return;
+  /**
+   * return the cobadge list owned by the citizen (when pans can't return a response)
+   */
+  handleRoute(
+    "post",
+    appendWalletV1Prefix("/cobadge/add-wallets"),
+    (req, res) => {
+      const data = req.body;
+      const maybeData = CobadegPaymentInstrumentsRequest.decode(data);
+      // cant decode the body
+      if (E.isLeft(maybeData)) {
+        res.status(400).send(readableReport(maybeData.value));
+        return;
+      }
+      // assume the request includes only ONE card
+      const paymentInstrument = maybeData.value.data!.payload!
+        .paymentInstruments![0];
+      const cobadge = [
+        ...citizenCreditCardCoBadge,
+        ...citizenPrivativeCard
+      ].find(
+        cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
+      );
+      if (cobadge === undefined) {
+        res.sendStatus(400);
+        return;
+      }
+      const walletData = getWalletV2();
+      const walletV2 = walletData.find(
+        w =>
+          w.info &&
+          w.walletType === WalletTypeEnum.Card &&
+          (w.info as CardInfo).hashPan === paymentInstrument.hpan
+      );
+      // already present
+      if (walletV2) {
+        res.json({ data: [walletV2] });
+        return;
+      }
+      addWalletV2([cobadge], true);
+      res.json({ data: [cobadge] });
     }
-    // assume the request includes only ONE card
-    const paymentInstrument = maybeData.value.data!.payload!
-      .paymentInstruments![0];
-    const cobadge = [...citizenCreditCardCoBadge, ...citizenPrivativeCard].find(
-      cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
-    );
-    if (cobadge === undefined) {
-      res.sendStatus(400);
-      return;
-    }
-    const walletData = getWalletV2();
-    const walletV2 = walletData.find(
-      w =>
-        w.info &&
-        w.walletType === WalletTypeEnum.Card &&
-        (w.info as CardInfo).hashPan === paymentInstrument.hpan
-    );
-    // already present
-    if (walletV2) {
-      res.json({ data: [walletV2] });
-      return;
-    }
-    addWalletV2([cobadge], true);
-    res.json({ data: [cobadge] });
-  },
-  0
-);
+  );
+};

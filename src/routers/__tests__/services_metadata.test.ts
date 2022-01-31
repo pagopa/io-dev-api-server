@@ -3,7 +3,9 @@ import supertest from "supertest";
 import { BackendStatus } from "../../../generated/definitions/content/BackendStatus";
 import { Zendesk } from "../../../generated/definitions/content/Zendesk";
 import { staticContentRootPath } from "../../config";
-import app from "../../server";
+import { createIoDevServer } from "../../server";
+
+const app = createIoDevServer();
 
 const request = supertest(app);
 

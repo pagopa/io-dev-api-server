@@ -1,8 +1,10 @@
-import { Router } from "express";
-import { authSvRouter } from "./auth";
-import { securedSvRouter } from "./secured";
-import { unsecuredSvRouter } from "./unsecured";
+import { Plugin } from "../../../core/server";
+import { SiciliaVolaAuthPlugin } from "./auth";
+import { SiciliaVolaSecuredPlugin } from "./secured";
+import { SiciliaVolaUnsecuredPlugin } from "./unsecured";
 
-export const svRouter = Router();
-
-svRouter.use(securedSvRouter, authSvRouter, unsecuredSvRouter);
+export const SiciliaVolaPlugin: Plugin = async ({ use }) => {
+  use(SiciliaVolaAuthPlugin);
+  use(SiciliaVolaSecuredPlugin);
+  use(SiciliaVolaUnsecuredPlugin);
+};

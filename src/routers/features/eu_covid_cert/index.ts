@@ -1,14 +1,12 @@
-import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { Certificate } from "../../../../generated/definitions/eu_covid_cert/Certificate";
 import { assetsFolder, staticContentRootPath } from "../../../config";
-import { addHandler } from "../../../payloads/response";
-import { readFileAsJSON, sendFile } from "../../../utils/file";
+import { Plugin } from "../../../core/server";
+import { readFileAsJSON } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { validatePayload } from "../../../utils/validator";
 
-export const euCovidCertRouter = Router();
 const addPrefix = (path: string) => addApiV1Prefix(`/eucovidcert${path}`);
 
 const validCertificate = readFileAsJSON(
@@ -47,43 +45,45 @@ export const eucovidCertAuthResponses: ReadonlyArray<readonly [
   ["auth2", "revoked", 200, revokedCertificate],
   ["auth1", "valid", 200, validCertificate]
 ];
-/**
- * '200': A Certificate exists and it's found for the given access data. It is retrieved regardless of it's expired or its current status
- * '400': Payload has bad format
- * '401': Bearer token null or expired
- * '403': Access data provided are invalid or no Certificate has been emitted for the given Citizen
- * '410': Endpoint no longer available
- * '500': Generic server error
- * '504': Gateway Timeout
- */
-addHandler(euCovidCertRouter, "post", addPrefix("/certificate"), (req, res) => {
-  const { accessData } = req.body;
-  const config = eucovidCertAuthResponses.find(
-    i => i[0] === accessData?.auth_code
-  );
-  if (
-    E.isLeft(t.string.decode(accessData?.auth_code)) ||
-    config === undefined
-  ) {
-    // Payload has bad format
-    res.sendStatus(400);
-    return;
-  }
-  if (config[3]) {
-    res.json(config[3]);
-    return;
-  }
-  res.sendStatus(config[2]);
-});
 
-/**
- * CDN API - return the logo associated with the given logoID
- */
-addHandler(
-  euCovidCertRouter,
-  "get",
-  `${staticContentRootPath}/logos/eucovidcert/:logoId`,
-  (req, res) => {
-    sendFile(`assets/eu_covid_cert/logo/${req.params.logoId}`, res);
-  }
-);
+export const EUCovidCertPlugin: Plugin = async ({ handleRoute, sendFile }) => {
+  /**
+   * '200': A Certificate exists and it's found for the given access data. It is retrieved regardless of it's expired or its current status
+   * '400': Payload has bad format
+   * '401': Bearer token null or expired
+   * '403': Access data provided are invalid or no Certificate has been emitted for the given Citizen
+   * '410': Endpoint no longer available
+   * '500': Generic server error
+   * '504': Gateway Timeout
+   */
+  handleRoute("post", addPrefix("/certificate"), (req, res) => {
+    const { accessData } = req.body;
+    const config = eucovidCertAuthResponses.find(
+      i => i[0] === accessData?.auth_code
+    );
+    if (
+      E.isLeft(t.string.decode(accessData?.auth_code)) ||
+      config === undefined
+    ) {
+      // Payload has bad format
+      res.sendStatus(400);
+      return;
+    }
+    if (config[3]) {
+      res.json(config[3]);
+      return;
+    }
+    res.sendStatus(config[2]);
+  });
+
+  /**
+   * CDN API - return the logo associated with the given logoID
+   */
+  handleRoute(
+    "get",
+    `${staticContentRootPath}/logos/eucovidcert/:logoId`,
+    (req, res) => {
+      sendFile(`assets/eu_covid_cert/logo/${req.params.logoId}`, res);
+    }
+  );
+};
