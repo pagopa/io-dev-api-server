@@ -34,7 +34,7 @@ export const readFileAndDecode = <I, T>(
   filename: string,
   decode: (i: T) => Validation<T>,
   res: Response
-) =>
+): Response =>
   pipe(
     readFileAsJSON(filename),
     decode,
