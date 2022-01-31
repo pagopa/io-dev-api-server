@@ -11,9 +11,10 @@ import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
-import { readFileAsJSON, sendFile } from "../utils/file";
+import { readFileAndDecode, readFileAsJSON, sendFile } from "../utils/file";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
+import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 
 export const servicesMetadataRouter = Router();
 
@@ -50,7 +51,8 @@ addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/status/versionInfo.json"),
-  (_, res) => sendFile("assets/status/versionInfo.json", res)
+  (_, res) =>
+    readFileAndDecode("assets/status/versionInfo.json", VersionInfo.decode, res)
 );
 
 addHandler(
