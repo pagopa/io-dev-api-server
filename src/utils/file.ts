@@ -1,9 +1,9 @@
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Response } from "express";
-import fs from "fs";
 import { pipe } from "fp-ts/es6/pipeable";
 import * as E from "fp-ts/lib/Either";
+import fs from "fs";
 import { Validation } from "io-ts";
-import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 
 export const sendFile = (filePath: string, res: Response) => {
   res.sendFile(filePath, {

@@ -4,6 +4,7 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
@@ -14,7 +15,6 @@ import { addHandler } from "../payloads/response";
 import { readFileAndDecode, readFileAsJSON, sendFile } from "../utils/file";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
-import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 
 export const servicesMetadataRouter = Router();
 
