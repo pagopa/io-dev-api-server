@@ -7,7 +7,7 @@
       "idPsp": "1",
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
-      "ragioneSociale": "First PSP"
+      "ragioneSociale": "Another psp 1"
     },
     {
       "codiceAbi": "01015",
@@ -16,7 +16,16 @@
       "idPsp": "2",
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
-      "ragioneSociale": "Second PSP"
+      "ragioneSociale": "Another psp 2"
+    },
+    {
+      "codiceAbi": "03015",
+      "defaultPsp": true,
+      "fee": 789,
+      "idPsp": "3",
+      "onboard": true,
+      "privacyUrl": "https://io.italia.it",
+      "ragioneSociale": "Another psp 3"
     }
   ]
 }
