@@ -210,7 +210,8 @@ export const getMvlAttachments = (
         name: parsedFile.base,
         content_type:
           contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
-        url: attachmentUrl
+        url: attachmentUrl,
+        size: idx > 0 ? idx * 100000 : undefined
       };
     }
   });
