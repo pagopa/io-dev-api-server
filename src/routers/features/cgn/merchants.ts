@@ -26,6 +26,7 @@ import {
 import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
+import { getRandomValue } from "../../../utils/random";
 import { serverIpv4Address, serverPort } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
@@ -213,9 +214,19 @@ addHandler(
             name: faker.commerce.productName() as NonEmptyString,
             startDate: faker.date.past(),
             endDate: faker.date.future(),
-            discount: faker.datatype.number({ min: 10, max: 30 }),
-            description: faker.lorem.lines(1) as NonEmptyString,
-            condition: faker.lorem.lines(1) as NonEmptyString,
+            discount: getRandomValue(false, faker.datatype.boolean(), "global")
+              ? faker.datatype.number({ min: 10, max: 30 })
+              : undefined,
+            description: getRandomValue(
+              false,
+              faker.datatype.boolean(),
+              "global"
+            )
+              ? (faker.lorem.lines(1) as NonEmptyString)
+              : undefined,
+            condition: getRandomValue(false, faker.datatype.boolean(), "global")
+              ? (faker.lorem.lines(1) as NonEmptyString)
+              : undefined,
             productCategories: range(1, 3).map<ProductCategory>(
               // tslint:disable-next-line:no-shadowed-variable
               _ =>
