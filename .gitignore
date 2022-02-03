@@ -26,3 +26,5 @@ npm-debug.log
 
 # Exclude local files
 local.*
+
+lib

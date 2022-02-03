@@ -3,7 +3,8 @@
   "pretty_name": "IO App - dev server",
   "description": "A mock server to help io-app development https://io.italia.it/",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "./lib/src/server.js",
+  "types": "./lib/src/server.d.ts",
   "api_backend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.31.0-RELEASE/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v7.31.0-RELEASE/api_public.yaml",
   "api_bonus_vacanze": "https://raw.githubusercontent.com/pagopa/io-backend/v7.31.0-RELEASE/api_bonus.yaml",
@@ -29,6 +30,7 @@
   "scripts": {
     "dev": "nodemon",
     "test": "jest",
+    "prepublish": "tsc",
     "test-watch": "jest --watch",
     "lint": "tslint -p . -t verbose",
     "lint-autofix": "tslint -p . -t verbose --fix",
