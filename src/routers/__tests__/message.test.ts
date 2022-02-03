@@ -1,15 +1,23 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
+
 import { CreatedMessageWithoutContent } from "../../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
 import { basePath } from "../../payloads/response";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
 import { messagesWithContent } from "../message";
 
-const request = supertest(app);
+import supertest, { SuperTest, Test } from "supertest";
+
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
 
 describe("when a valid request is sent", () => {
   it("a 200 response with the array of items is returned", async () => {

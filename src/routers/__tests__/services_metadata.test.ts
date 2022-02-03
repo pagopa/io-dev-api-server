@@ -1,13 +1,20 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
+
 import { BackendStatus } from "../../../generated/definitions/content/BackendStatus";
 import { Zendesk } from "../../../generated/definitions/content/Zendesk";
 import { staticContentRootPath } from "../../config";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
+import supertest, { SuperTest, Test } from "supertest";
 
-const request = supertest(app);
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
 
 it("info should return a valid backendStatus object", async () => {
   const response = await request.get(

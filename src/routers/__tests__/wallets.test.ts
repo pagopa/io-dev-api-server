@@ -1,5 +1,5 @@
 import * as E from "fp-ts/lib/Either";
-import supertest, { Response } from "supertest";
+
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
 import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
@@ -8,9 +8,7 @@ import { SessionResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { TransactionListResponse } from "../../../generated/definitions/pagopa/walletv2/TransactionListResponse";
 import { WalletListResponse } from "../../../generated/definitions/pagopa/walletv2/WalletListResponse";
 import { sessionToken } from "../../payloads/wallet";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
 import { PatchedWalletV2 } from "../../types/PatchedWalletV2";
 import { PatchedWalletV2ListResponse } from "../../types/PatchedWalletV2ListResponse";
 import { PatchedWalletV2Response } from "../../types/PatchedWalletV2Response";
@@ -22,7 +20,18 @@ import {
   walletCount
 } from "../wallet";
 
-const request = supertest(app);
+import supertest, { SuperTest, Test, Response } from "supertest";
+
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
+
 const testGetWallets = (response: Response) => {
   expect(response.status).toBe(200);
   const wallets = WalletListResponse.decode(response.body);

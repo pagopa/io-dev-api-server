@@ -1,10 +1,15 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
 import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
-import { createIoDevServer } from "../../server";
+import supertest, { SuperTest, Test } from "supertest";
+import { createIODevelopmentServer } from "../../server";
 
-const app = createIoDevServer();
-const request = supertest(app);
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
 
 it("info should return a valid ServerInfo object", async () => {
   const response = await request.get(`/info`);

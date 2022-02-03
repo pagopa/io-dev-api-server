@@ -1,13 +1,20 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
+
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
 import { loginSessionToken } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
+import supertest, { SuperTest, Test } from "supertest";
 
-const request = supertest(app);
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
 
 const testForPng = async (url: string) => {
   const response = await request.get(url);

@@ -1,12 +1,20 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
-import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
-import { createIoDevServer } from "../../../../server";
 
-const app = createIoDevServer();
+import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
+
 import { addBPDPrefix } from "../index";
 
-const request = supertest(app);
+import supertest, { SuperTest, Test } from "supertest";
+import { createIODevelopmentServer } from "../../../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
+
 
 describe("citizen V2 API", () => {
   it("Should return 404, if is a GET request and currentCitizenV2 is undefined", async () => {

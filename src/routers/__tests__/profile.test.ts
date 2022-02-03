@@ -1,18 +1,28 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
+
 import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
 import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
 import { Profile } from "../../../generated/definitions/backend/Profile";
 import { UserMetadata } from "../../../generated/definitions/backend/UserMetadata";
 import { Municipality } from "../../../generated/definitions/content/Municipality";
-import { ioDevServerConfig } from "../../config";
+
 import { basePath } from "../../payloads/response";
 import { mockUserMetadata } from "../../payloads/userMetadata";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
+import supertest, { SuperTest, Test } from "supertest";
 
-const request = supertest(app);
+import { createIODevelopmentServer } from "../../server";
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+
+let request: SuperTest<Test>;
+let fiscalCode: FiscalCode;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+  fiscalCode = ioDevelopmentServer.loadedConfig.profile.attrs.fiscal_code;
+});
 
 it("profile should return a valid profile", async () => {
   const response = await request.get(`${basePath}/profile`);
@@ -20,9 +30,7 @@ it("profile should return a valid profile", async () => {
   const profile = InitializedProfile.decode(response.body);
   expect(E.isRight(profile)).toBeTruthy();
   if (E.isRight(profile)) {
-    expect(profile.value.fiscal_code).toBe(
-      ioDevServerConfig.profile.attrs.fiscal_code
-    );
+    expect(profile.value.fiscal_code).toBe(fiscalCode);
   }
 });
 

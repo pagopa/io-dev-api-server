@@ -1,10 +1,16 @@
-import supertest from "supertest";
 import { basePath } from "../../payloads/response";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
+import supertest, { SuperTest, Test } from "supertest";
 
-const request = supertest(app);
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
 
 it("email-validation-process should return status 202", async () => {
   const response = await request.post(`${basePath}/email-validation-process`);

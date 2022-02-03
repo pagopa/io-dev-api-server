@@ -1,14 +1,21 @@
-import supertest from "supertest";
 import { ProblemJson } from "../../../generated/definitions/backend/ProblemJson";
 import { UserDataProcessing } from "../../../generated/definitions/backend/UserDataProcessing";
 import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/backend/UserDataProcessingChoice";
 import { UserDataProcessingStatusEnum } from "../../../generated/definitions/backend/UserDataProcessingStatus";
 import { basePath } from "../../payloads/response";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
+import supertest, { SuperTest, Test } from "supertest";
 
-const request = supertest(app);
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
+
 /* tslint:disable */
 it("info should return ProblemJson with not found", async () => {
   const response = await request.get(

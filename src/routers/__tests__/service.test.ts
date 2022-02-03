@@ -1,15 +1,23 @@
 import * as E from "fp-ts/lib/Either";
-import supertest from "supertest";
+
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
-import { createIoDevServer } from "../../server";
 
-const app = createIoDevServer();
 import { services, visibleServices } from "../service";
 
-const request = supertest(app);
+import supertest, { SuperTest, Test } from "supertest";
+
+import { createIODevelopmentServer } from "../../server";
+
+let request: SuperTest<Test>;
+
+beforeAll(async () => {
+  const ioDevelopmentServer = createIODevelopmentServer();
+  const app = await ioDevelopmentServer.toExpressApplication();
+  request = supertest(app);
+});
 
 it("services should return a valid services list", async () => {
   const response = await request.get(`${basePath}/services`);
