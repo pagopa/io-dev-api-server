@@ -8,7 +8,20 @@ import { sendFile } from "../utils/file";
 
 import chalk from "chalk";
 
+import * as t from "io-ts";
+
 type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+
+export const HttpResponseCode = t.union([
+  t.literal(200),
+  t.literal(400),
+  t.literal(401),
+  t.literal(404),
+  t.literal(429),
+  t.literal(500)
+]);
+
+export type HttpResponseCode = t.TypeOf<typeof HttpResponseCode>;
 
 type Route = {
   method: HttpMethod;
@@ -22,8 +35,6 @@ type ServerInfo = {
   routes: Array<Route>;
 };
 
-type ListenCallback = (info: ServerInfo) => void;
-
 export type Server = {
   handleRoute: (
     method: HttpMethod,
@@ -32,9 +43,10 @@ export type Server = {
     delay?: number,
     description?: string
   ) => void;
-  listen: (port: number, hostname: string, cb: ListenCallback) => void;
+  listen: (port: number, hostname: string) => Promise<ServerInfo>;
   routes: () => Array<Route>;
   sendFile: typeof sendFile;
+  toExpressApplication: () => Promise<express.Application>;
 };
 
 type WithAvvio<T> = T & Avvio.Server<T>;
@@ -88,34 +100,41 @@ export const createServer = (options = defaultOptions): WithAvvio<Server> => {
     handleRoute: makeHandleRoute(routes),
     sendFile,
     routes: () => routes,
-    listen
+    listen,
+    toExpressApplication
   };
 
   const avvio = Avvio(s, {
     autostart: false
   });
 
-  function listen(port: number, hostname: string, cb: ListenCallback) {
-    avvio.ready().then(ctx => {
-      const app = express();
-      app.use(bodyParser.json());
-      app.use(bodyParser.urlencoded({ extended: true }));
-      if (options.logger) {
-        app.use(
-          morgan(
-            ":date[iso] :method :url :status :res[content-length] - :response-time ms"
-          )
-        );
-      }
-      ctx.routes().forEach(route => {
-        app[route.method](route.path, route.handler);
-      });
+  async function listen(port: number, hostname: string) {
+    const app = await toExpressApplication();
+    return new Promise<ServerInfo>(resolve => {
       app.listen(port, hostname, () => {
-        cb({
-          routes: [...ctx.routes()]
+        resolve({
+          routes: s.routes()
         });
       });
     });
+  }
+
+  async function toExpressApplication() {
+    const ctx = await avvio.ready();
+    const app = express();
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+    if (options.logger) {
+      app.use(
+        morgan(
+          ":date[iso] :method :url :status :res[content-length] - :response-time ms"
+        )
+      );
+    }
+    ctx.routes().forEach(route => {
+      app[route.method](route.path, route.handler);
+    });
+    return app;
   }
 
   return s as WithAvvio<Server>;
