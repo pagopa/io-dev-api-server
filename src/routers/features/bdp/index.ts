@@ -1,7 +1,11 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
-import { CitizenResource as CitizenResourceV2 } from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
+import {
+  CitizenResource as CitizenResourceV2,
+  OptInStatusEnum
+} from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 import {
   PaymentInstrumentResource,
@@ -20,7 +24,8 @@ const citizenV2: CitizenResourceV2 = {
   fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
   payoffInstr: "",
   payoffInstrType: "IBAN",
-  timestampTC: new Date()
+  timestampTC: new Date(),
+  optInStatus: OptInStatusEnum.NOREQ
 };
 
 // tslint:disable-next-line: no-let
@@ -71,12 +76,22 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
   res.json(currentCitizenV2);
 });
 // tslint:disable-next-line:no-identical-functions
-addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (_, res) => {
-  currentCitizenV2 = {
-    ...citizenV2,
-    enabled: true
-  };
-  res.json(currentCitizenV2);
+addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
+  pipe(
+    CitizenResourceV2.decode(req.body),
+    E.fold(
+      () => {
+        res.sendStatus(400);
+      },
+      updatedCitizen => {
+        currentCitizenV2 = {
+          ...citizenV2,
+          ...updatedCitizen
+        };
+        res.json(currentCitizenV2);
+      }
+    )
+  );
 });
 
 /**
