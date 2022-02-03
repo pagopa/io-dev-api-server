@@ -19,7 +19,7 @@ export const bpd = Router();
 
 export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
 
-const citizenV2: CitizenResourceV2 = {
+export const citizenV2: CitizenResourceV2 = {
   enabled: false,
   fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
   payoffInstr: "",
@@ -75,7 +75,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
   };
   res.json(currentCitizenV2);
 });
-// tslint:disable-next-line:no-identical-functions
+
 addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
   pipe(
     CitizenResourceV2.decode(req.body),
@@ -86,7 +86,8 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
       updatedCitizen => {
         currentCitizenV2 = {
           ...citizenV2,
-          ...updatedCitizen
+          ...updatedCitizen,
+          enabled: true
         };
         res.json(currentCitizenV2);
       }

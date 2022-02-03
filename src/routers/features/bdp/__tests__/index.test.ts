@@ -2,7 +2,7 @@ import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import app from "../../../../server";
-import { addBPDPrefix } from "../index";
+import { addBPDPrefix, citizenV2 } from "../index";
 
 const request = supertest(app);
 
@@ -12,14 +12,20 @@ describe("citizen V2 API", () => {
     expect(response.status).toBe(404);
   });
   it("Should return a 200, CitizenResource (V2) if is a GET and currentCitizenV2 is not undefined", async () => {
-    await request.put(addBPDPrefix(`/io/citizen/v2`));
+    await request
+      .put(addBPDPrefix(`/io/citizen/v2`))
+      .set("Content-type", "application/json")
+      .send(citizenV2);
     const response = await request.get(addBPDPrefix(`/io/citizen/v2`));
     expect(response.status).toBe(200);
     const cr = CitizenResource.decode(response.body);
     expect(E.isRight(cr)).toBeTruthy();
   });
   it("Should return a 200, CitizenResource (V2) with enabled = true if is a PUT", async () => {
-    const response = await request.put(addBPDPrefix(`/io/citizen/v2`));
+    const response = await request
+      .put(addBPDPrefix(`/io/citizen/v2`))
+      .set("Content-type", "application/json")
+      .send(citizenV2);
     expect(response.status).toBe(200);
     const cr = CitizenResource.decode(response.body);
     expect(E.isRight(cr)).toBeTruthy();
