@@ -1,9 +1,10 @@
 import { randomBytes } from "crypto";
 import * as fs from "fs";
+import { FiscalCode } from "italia-ts-commons/lib/strings";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { BonusActivationWithQrCode } from "../../../../generated/definitions/bonus_vacanze/BonusActivationWithQrCode";
 import { BonusCode } from "../../../../generated/definitions/bonus_vacanze/BonusCode";
-import { ioDevServerConfig } from "../../../config";
+
 import { dsuData } from "./eligibility";
 
 const qrCodeBonusVacanzeSvg =
@@ -32,9 +33,11 @@ export function genRandomBonusCode(
   return code as BonusCode;
 }
 
-export const activeBonus: BonusActivationWithQrCode = {
+export const getActiveBonus = (
+  applicantFiscalCode: FiscalCode
+): BonusActivationWithQrCode => ({
   id: genRandomBonusCode(),
-  applicant_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
+  applicant_fiscal_code: applicantFiscalCode,
   qr_code: [
     {
       mime_type: "image/png",
@@ -49,23 +52,4 @@ export const activeBonus: BonusActivationWithQrCode = {
   created_at: new Date(),
   redeemed_at: new Date(),
   status: BonusActivationStatusEnum.ACTIVE
-};
-
-export const redeemedBonus: BonusActivationWithQrCode = {
-  id: "ACEFGHLMN346" as BonusCode,
-  applicant_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
-  qr_code: [
-    {
-      mime_type: "image/png",
-      content: qrCodeBonusVacanzePng
-    },
-    {
-      mime_type: "svg+xml",
-      content: qrCodeBonusVacanzeSvg
-    }
-  ],
-  dsu_request: dsuData,
-  created_at: new Date(),
-  status: BonusActivationStatusEnum.REDEEMED,
-  redeemed_at: new Date()
-};
+});

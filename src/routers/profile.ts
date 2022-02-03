@@ -16,9 +16,14 @@ import { getProblemJson } from "../payloads/error";
 import { currentProfile as profile } from "../payloads/profile";
 
 import { mockUserMetadata } from "../payloads/userMetadata";
-import { IoDevServerConfig } from "../types/config";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+
+import * as t from "io-ts";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 
 // tslint:disable-next-line: no-let
 export let currentProfile: InitializedProfile;
@@ -40,9 +45,36 @@ let userChoices = initialUserChoice;
 // TODO: find a better way to export this function
 export let resetProfile: Lazy<void>;
 
-export type ProfilePluginOptions = {
-  profile: IoDevServerConfig["profile"];
-};
+export const ProfileFiscalCodeAttr = t.interface({
+  profile: t.interface({
+    attrs: t.interface({
+      fiscal_code: FiscalCode
+    })
+  })
+});
+
+export type ProfileFiscalCodeAttr = t.TypeOf<typeof ProfileFiscalCodeAttr>;
+
+export const ProfilePluginOptions = t.intersection([
+  ProfileFiscalCodeAttr,
+  t.interface({
+    profile: t.interface({
+      attrs: t.interface({
+        name: t.string,
+        fiscal_code: FiscalCode,
+        family_name: t.string,
+        mobile: NonEmptyString,
+        email: EmailAddress,
+        accepted_tos_version: NonNegativeNumber,
+        preferred_languages: PreferredLanguages
+      }),
+      authenticationProvider: t.union([t.literal("spid"), t.literal("cie")]),
+      firstOnboarding: t.boolean
+    })
+  })
+]);
+
+export type ProfilePluginOptions = t.TypeOf<typeof ProfilePluginOptions>;
 
 export const ProfilePlugin: Plugin<ProfilePluginOptions> = async (
   { handleRoute },

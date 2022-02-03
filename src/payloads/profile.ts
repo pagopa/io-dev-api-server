@@ -1,7 +1,9 @@
 import { DateFromString } from "@pagopa/ts-commons/lib/dates";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
-import { IoDevServerConfig, ProfileAttrs } from "../types/config";
+import { ProfilePluginOptions } from "../routers/profile";
+
+type ProfileAttrs = ProfilePluginOptions["profile"]["attrs"];
 
 const spidProfile = (profileAttrs: ProfileAttrs): InitializedProfile => ({
   service_preferences_settings: {
@@ -80,7 +82,7 @@ const cieProfileFirstOnboarding = (
   fiscal_code: profileAttrs.fiscal_code
 });
 
-const spidCie = (profile: IoDevServerConfig["profile"]) => ({
+const spidCie = (profile: ProfilePluginOptions["profile"]) => ({
   spid: {
     first: spidProfileFirstOnboarding(profile.attrs),
     existing: spidProfile(profile.attrs)
@@ -91,7 +93,7 @@ const spidCie = (profile: IoDevServerConfig["profile"]) => ({
   }
 });
 
-export const currentProfile = (profile: IoDevServerConfig["profile"]) =>
+export const currentProfile = (profile: ProfilePluginOptions["profile"]) =>
   profile.firstOnboarding
     ? spidCie(profile)[profile.authenticationProvider].first
     : spidCie(profile)[profile.authenticationProvider].existing;

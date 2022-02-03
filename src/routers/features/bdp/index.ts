@@ -8,8 +8,10 @@ import {
 } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentResource";
 import { assetsFolder } from "../../../config";
 import { Plugin } from "../../../core/server";
-import { ProfileAttrs } from "../../../types/config";
 import { readFileAsJSON } from "../../../utils/file";
+
+import * as t from "io-ts";
+import { ProfileFiscalCodeAttr } from "../../profile";
 
 export const addBPDPrefix = (path: string) => `/bonus/bpd${path}`;
 
@@ -23,11 +25,9 @@ export const resetBpd = () => {
   activeHashPan.clear();
 };
 
-export type BPDPluginOptions = {
-  profile: {
-    attrs: ProfileAttrs;
-  };
-};
+export const BPDPluginOptions = ProfileFiscalCodeAttr;
+
+export type BPDPluginOptions = t.TypeOf<typeof BPDPluginOptions>;
 
 export const BPDPlugin: Plugin<BPDPluginOptions> = async (
   { handleRoute },

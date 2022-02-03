@@ -23,10 +23,18 @@ import {
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
 } from "../../payloads/wallet_v2";
-import { WalletMethodConfig } from "../../types/config";
+
 import { readFileAsJSON } from "../../utils/file";
 import { validatePayload } from "../../utils/validator";
 import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
+import { PayPalPlugin, PayPalPluginOptions } from "../walletsV3/methods/paypal";
+import { WalletV2DashboardPlugin } from "./configDashboard";
+import { BANCOMATPlugin } from "./methods/bancomat";
+import { BANCOMATPayPlugin } from "./methods/bpay";
+import { CobadgePlugin } from "./methods/cobadge";
+import { SatispayPlugin } from "./methods/satispay";
+
+import * as t from "io-ts";
 
 // TODO: support for shuffle ABI
 
@@ -91,6 +99,37 @@ let walletSatispay: ReadonlyArray<WalletV2> = [];
 let walletPaypal: ReadonlyArray<WalletV2> = [];
 // tslint:disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
+
+export const WalletMethodConfig = t.interface({
+  // bancomats enrolled
+  walletBancomatCount: t.number,
+  // creditcards enrolled
+  walletCreditCardCount: t.number,
+  // creditcards-cobadge enrolled
+  walletCreditCardCoBadgeCount: t.number,
+  // privative enrolled
+  privativeCount: t.number,
+  // satispay enrolled
+  satispayCount: t.number,
+  // paypal enrolled
+  paypalCount: t.number,
+  // bancomat pay enrolled
+  bPayCount: t.number,
+  // bancomat owned by the citizen (shown when he/she search about them)
+  citizenBancomatCount: t.number,
+  // bancomat pay owned by the citizen (shown when he/she search about them)
+  citizenBPayCount: t.number,
+  // creditcards-cobadge pay owned by the citizen (shown when he/she search about them)
+  citizenCreditCardCoBadgeCount: t.number,
+  // if true -> citizen has satispay (when he/she search about it)
+  citizenSatispay: t.boolean,
+  // if true -> citizen has privative cards (when he/she search about it)
+  citizenPrivative: t.boolean,
+  // if true -> citizen has paypal (when he/she search about it)
+  citizenPaypal: t.boolean
+});
+
+export type WalletMethodConfig = t.TypeOf<typeof WalletMethodConfig>;
 
 const defaultWalletV2Config: WalletMethodConfig = {
   walletBancomatCount: 0,
@@ -263,14 +302,16 @@ export const resetWalletV2 = () => {
 // at the server startup
 generateWalletV2Data();
 
-export type WalletV2PluginOptions = {
-  wallet: {
-    methods: WalletMethodConfig;
-  };
-};
+export const WalletV2PluginOptions = t.interface({
+  wallet: t.interface({
+    methods: WalletMethodConfig
+  })
+});
+
+export type WalletV2PluginOptions = t.TypeOf<typeof WalletV2PluginOptions>;
 
 export const WalletV2Plugin: Plugin<WalletV2PluginOptions> = async (
-  { handleRoute },
+  { handleRoute, use },
   options
 ) => {
   updateWalletV2Config(options.wallet.methods);
@@ -327,4 +368,10 @@ export const WalletV2Plugin: Plugin<WalletV2PluginOptions> = async (
       res.json(psp);
     }
   );
+
+  use(WalletV2DashboardPlugin, options);
+  use(SatispayPlugin);
+  use(BANCOMATPlugin);
+  use(BANCOMATPayPlugin);
+  use(CobadgePlugin);
 };

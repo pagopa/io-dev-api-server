@@ -47,7 +47,10 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
-import { PaymentConfig } from "../types/config";
+
+import { PaymentConfig } from "./payment";
+
+import * as t from "io-ts";
 
 export const walletCount =
   walletV2Config.paypalCount +
@@ -83,13 +86,19 @@ const convertFavouriteWalletfromV2V1 = (
     .otherwise(() => undefined);
 };
 
-export type WalletPluginOptions = {
-  wallet: {
-    onboardingCreditCardOutCode?: number;
-    shuffleAbi: boolean;
-    payment?: PaymentConfig;
-  };
-};
+export const WalletPluginOptions = t.interface({
+  wallet: t.intersection([
+    t.interface({
+      shuffleAbi: t.boolean
+    }),
+    t.partial({
+      onboardingCreditCardOutCode: t.number,
+      payment: PaymentConfig
+    })
+  ])
+});
+
+export type WalletPluginOptions = t.TypeOf<typeof WalletPluginOptions>;
 
 export const WalletPlugin: Plugin<WalletPluginOptions> = async (
   { handleRoute },

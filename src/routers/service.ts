@@ -4,8 +4,11 @@ import { ServicePreference } from "../../generated/definitions/backend/ServicePr
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 
 import { Plugin } from "../core/server";
-import { HttpResponseCode } from "./message";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+
+import { HttpResponseCode } from "../core/server";
+
+import * as t from "io-ts";
 
 import {
   getServices,
@@ -15,18 +18,29 @@ import {
 
 import { addApiV1Prefix } from "../utils/strings";
 
-type ServicePluginOptions = {
-  services: {
-    response: {
-      getServicesPreference: HttpResponseCode;
-      getServicesResponseCode: HttpResponseCode;
-      postServicesPreference: HttpResponseCode;
-      getServiceResponseCode: HttpResponseCode;
-    };
-    national: number;
-    local: number;
-  };
-};
+export const ServicePluginOptions = t.interface({
+  services: t.interface({
+    // configure some API response error code
+    response: t.interface({
+      // 200 success with payload
+      getServicesResponseCode: HttpResponseCode,
+      // 200 success with payload
+      getServiceResponseCode: HttpResponseCode,
+      // 200 success
+      postServicesPreference: HttpResponseCode,
+      // 200 success with payload
+      getServicesPreference: HttpResponseCode
+    }),
+    // number of services national
+    national: t.number,
+    // number of services local
+    local: t.number,
+    includeSiciliaVola: t.boolean,
+    includeCgn: t.boolean
+  })
+});
+
+export type ServicePluginOptions = t.TypeOf<typeof ServicePluginOptions>;
 
 export let services: ReadonlyArray<ServicePublic> = [];
 export let visibleServices = getServicesTuple(services);
@@ -36,7 +50,12 @@ export const ServicePlugin: Plugin<ServicePluginOptions> = async (
   { handleRoute, sendFile },
   options
 ) => {
-  services = getServices(options.services.national, options.services.local);
+  services = getServices(
+    options.services.national,
+    options.services.local,
+    options.services.includeSiciliaVola,
+    options.services.includeCgn
+  );
 
   visibleServices = getServicesTuple(services);
   servicesPreferences = getServicesPreferences(services);

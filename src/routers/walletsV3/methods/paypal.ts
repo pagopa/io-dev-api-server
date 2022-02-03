@@ -12,18 +12,26 @@ import { validatePayload } from "../../../utils/validator";
 import { appendWalletV3Prefix } from "../../../utils/wallet";
 import { handlePaymentPostAndRedirect } from "../../payment";
 
-import { addWalletV2, getWalletV2 } from "../../walletsV2";
-
-import { WalletMethodConfig } from "../../../types/config";
+import {
+  addWalletV2,
+  getWalletV2,
+  WalletV2PluginOptions
+} from "../../walletsV2";
 
 import { Plugin } from "../../../core/server";
 
-export type PayPalPluginOptions = {
-  wallet: {
-    methods: WalletMethodConfig;
-    onboardingPaypalOutCode?: number;
-  };
-};
+import * as t from "io-ts";
+
+export const PayPalPluginOptions = t.intersection([
+  WalletV2PluginOptions,
+  t.interface({
+    wallet: t.partial({
+      onboardingPaypalOutCode: t.number
+    })
+  })
+]);
+
+export type PayPalPluginOptions = t.TypeOf<typeof PayPalPluginOptions>;
 
 export const PayPalPlugin: Plugin<PayPalPluginOptions> = async (
   { handleRoute },

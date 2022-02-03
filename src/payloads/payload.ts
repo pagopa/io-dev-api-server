@@ -16,7 +16,7 @@ import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
 
-import { PaymentConfig } from "../types/config";
+import { PaymentConfig } from "../routers/payment";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 

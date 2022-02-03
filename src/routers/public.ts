@@ -18,11 +18,15 @@ import { resetWalletV2 } from "./walletsV2";
 
 import { Plugin } from "../core/server";
 
-export type PublicPluginOptions = {
-  global: {
-    autoLogin: boolean;
-  };
-};
+import * as t from "io-ts";
+
+export const PublicPluginOptions = t.interface({
+  global: t.interface({
+    autoLogin: t.boolean
+  })
+});
+
+export type PublicPluginOptions = t.TypeOf<typeof PublicPluginOptions>;
 
 export const PublicPlugin: Plugin<PublicPluginOptions> = async (
   { handleRoute, sendFile },

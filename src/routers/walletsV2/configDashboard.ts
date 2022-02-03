@@ -3,8 +3,6 @@ import { CardInfo } from "../../../generated/definitions/pagopa/walletv2/CardInf
 import { SatispayInfo } from "../../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import { WalletTypeEnum } from "../../../generated/definitions/pagopa/walletv2/WalletV2";
 
-import { WalletMethodConfig } from "../../types/config";
-
 import { Plugin } from "../../core/server";
 import {
   isCobadge,
@@ -15,7 +13,8 @@ import {
   generateWalletV2Data,
   getWalletV2,
   updateWalletV2Config,
-  walletV2Config
+  walletV2Config,
+  WalletV2PluginOptions
 } from "./index";
 
 // get all payment methods compliant with BPD (dashboard web)
@@ -62,13 +61,7 @@ export const getBPDPaymentMethod = () =>
     };
   });
 
-export type WalletV2DashboardPluginOptions = {
-  wallet: {
-    methods: WalletMethodConfig;
-  };
-};
-
-export const WalletV2DashboardPlugin: Plugin<WalletV2DashboardPluginOptions> = async (
+export const WalletV2DashboardPlugin: Plugin<WalletV2PluginOptions> = async (
   { handleRoute, sendFile },
   options
 ) => {

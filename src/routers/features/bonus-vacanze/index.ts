@@ -6,7 +6,7 @@ import { Second } from "italia-ts-commons/lib/units";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { Plugin } from "../../../core/server";
 import {
-  activeBonus,
+  getActiveBonus,
   genRandomBonusCode
 } from "../../../payloads/features/bonus-vacanze/bonus";
 import {
@@ -14,6 +14,9 @@ import {
   familyMembers
 } from "../../../payloads/features/bonus-vacanze/eligibility";
 import { addApiV1Prefix, uuidv4 } from "../../../utils/strings";
+
+import * as t from "io-ts";
+import { ProfileFiscalCodeAttr } from "../../profile";
 
 // tslint:disable-next-line: no-let
 let firstBonusActivationRequestTime = 0;
@@ -28,30 +31,6 @@ const responseIseeAfter = 0 as Second;
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // tslint:disable-next-line: no-let
-const aLotOfBonus = range(1, faker.datatype.number({ min: 1, max: 3 })).map(
-  idx => {
-    faker.seed(new Date().getTime());
-    const familyMembersCount = faker.datatype.number({ min: 1, max: 3 });
-    const amounts: ReadonlyArray<number> = [150, 300, 500];
-    return {
-      ...activeBonus,
-      dsu_request: {
-        ...activeBonus.dsu_request,
-        request_id: idx,
-        family_members: faker.random.arrayElements(
-          familyMembers,
-          familyMembersCount
-        ),
-        max_amount: amounts[familyMembersCount - 1]
-      },
-      id: genRandomBonusCode(),
-      status:
-        idx % 2 === 0
-          ? BonusActivationStatusEnum.REDEEMED
-          : BonusActivationStatusEnum.ACTIVE
-    };
-  }
-);
 
 // since all these apis implements a specific flow, if you want re-run it
 // some vars must be cleaned
@@ -64,7 +43,43 @@ export const resetBonusVacanze = () => {
 
 const addPrefix = (path: string) => addApiV1Prefix(`/bonus/vacanze${path}`);
 
-export const BonusVacanzePlugin: Plugin = async ({ handleRoute }) => {
+export const BonusVacanzePluginOptions = ProfileFiscalCodeAttr;
+
+export type BonusVacanzePluginOptions = t.TypeOf<
+  typeof BonusVacanzePluginOptions
+>;
+
+export const BonusVacanzePlugin: Plugin<BonusVacanzePluginOptions> = async (
+  { handleRoute },
+  options
+) => {
+  const activeBonus = getActiveBonus(options.profile.attrs.fiscal_code);
+
+  const aLotOfBonus = range(1, faker.datatype.number({ min: 1, max: 3 })).map(
+    idx => {
+      faker.seed(new Date().getTime());
+      const familyMembersCount = faker.datatype.number({ min: 1, max: 3 });
+      const amounts: ReadonlyArray<number> = [150, 300, 500];
+      return {
+        ...activeBonus,
+        dsu_request: {
+          ...activeBonus.dsu_request,
+          request_id: idx,
+          family_members: faker.random.arrayElements(
+            familyMembers,
+            familyMembersCount
+          ),
+          max_amount: amounts[familyMembersCount - 1]
+        },
+        id: genRandomBonusCode(),
+        status:
+          idx % 2 === 0
+            ? BonusActivationStatusEnum.REDEEMED
+            : BonusActivationStatusEnum.ACTIVE
+      };
+    }
+  );
+
   // Get all IDs of the bonus activations requested by
   // the authenticated user or by any between his family member
   handleRoute("get", addPrefix(`/activations`), (_, res) => {

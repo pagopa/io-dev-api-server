@@ -14,7 +14,7 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
-import { PaymentConfig } from "../types/config";
+import { PaymentConfig } from "../routers/payment";
 
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";

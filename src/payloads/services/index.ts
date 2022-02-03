@@ -24,7 +24,9 @@ import { withSpecialServices } from "./special";
 
 export const getServices = (
   national: number,
-  local: number
+  local: number,
+  includeSiciliaVola: boolean,
+  includeCgn: boolean
 ): readonly ServicePublic[] => {
   const aggregation = 3;
   // services belong to the same organization for blocks of `aggregation` size
@@ -60,7 +62,11 @@ export const getServices = (
     ...createService(ServiceScopeEnum.NATIONAL, national)
   ];
   // special service must be added at the end of services creation
-  return withSpecialServices(nationalLocalServices);
+  return withSpecialServices(
+    nationalLocalServices,
+    includeSiciliaVola,
+    includeCgn
+  );
 };
 
 export const getServicesTuple = (

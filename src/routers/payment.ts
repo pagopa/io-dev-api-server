@@ -16,11 +16,17 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { Plugin } from "../core/server";
 
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
-import { PaymentConfig, ProfileAttrs } from "../types/config";
+
 import { serverIpv4Address, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
 import { services } from "./service";
+
+import { enumType } from "@pagopa/ts-commons/lib/types";
+
+import * as t from "io-ts";
+import { ProfileFiscalCodeAttr } from "./profile";
+import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 
 // tslint:disable-next-line: no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
@@ -55,17 +61,28 @@ const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
     detail_v2: detailV2
   });
 
-export type PaymentPluginOptions = {
-  profile: {
-    attrs: ProfileAttrs;
-  };
-  wallet: {
-    paymentOutCode?: number;
-    onboardingCreditCardOutCode?: number;
-    verificaError?: Detail_v2Enum;
-    payment?: PaymentConfig;
-  };
-};
+export const PaymentConfig = t.interface({
+  // integer including decimals - ie: 22.22 = 2222
+  amount: ImportoEuroCents,
+  pspFeeAmount: t.number
+});
+
+export type PaymentConfig = t.TypeOf<typeof PaymentConfig>;
+
+export const PaymentPluginOptions = t.intersection([
+  ProfileFiscalCodeAttr,
+  t.interface({
+    wallet: t.partial({
+      paymentOutCode: t.number,
+      onboardingCreditCardOutCode: t.number,
+      // if verifica attiva will serve the given error
+      verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      payment: PaymentConfig
+    })
+  })
+]);
+
+export type PaymentPluginOptions = t.TypeOf<typeof PaymentPluginOptions>;
 
 export const PaymentPlugin: Plugin<PaymentPluginOptions> = async (
   { handleRoute },

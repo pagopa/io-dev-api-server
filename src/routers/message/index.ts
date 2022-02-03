@@ -1,4 +1,4 @@
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
@@ -6,17 +6,17 @@ import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
-import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
-import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
-import { MessageAttachment } from "../../generated/definitions/backend/MessageAttachment";
-import { MessageSubject } from "../../generated/definitions/backend/MessageSubject";
-import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
+import { CreatedMessageWithContent } from "../../../generated/definitions/backend/CreatedMessageWithContent";
+import { CreatedMessageWithContentAndAttachments } from "../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { EUCovidCert } from "../../../generated/definitions/backend/EUCovidCert";
+import { LegalMessageWithContent } from "../../../generated/definitions/backend/LegalMessageWithContent";
+import { MessageAttachment } from "../../../generated/definitions/backend/MessageAttachment";
+import { MessageSubject } from "../../../generated/definitions/backend/MessageSubject";
+import { PrescriptionData } from "../../../generated/definitions/backend/PrescriptionData";
+import { PublicMessage } from "../../../generated/definitions/backend/PublicMessage";
 
-import { Plugin } from "../core/server";
-import { getProblemJson } from "../payloads/error";
+import { Plugin } from "../../core/server";
+import { getProblemJson } from "../../payloads/error";
 import {
   createMessage,
   getCategory,
@@ -25,11 +25,10 @@ import {
   withDueDate,
   withLegalContent,
   withPaymentData
-} from "../payloads/message";
-import { ProfileAttrs } from "../types/config";
+} from "../../payloads/message";
 
-import { GetMessagesParameters } from "../types/parameters";
-import { addApiV1Prefix } from "../utils/strings";
+import { GetMessagesParameters } from "../../types/parameters";
+import { addApiV1Prefix } from "../../utils/strings";
 import {
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
@@ -37,9 +36,14 @@ import {
   frontMatter2CTA2,
   frontMatterBonusVacanze,
   messageMarkdown
-} from "../utils/variables";
-import { eucovidCertAuthResponses } from "./features/eu_covid_cert";
-import { services } from "./service";
+} from "../../utils/variables";
+import { eucovidCertAuthResponses } from "../features/eu_covid_cert";
+import { services } from "../service";
+import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+
+import { PreferredLanguages } from "../../../generated/definitions/backend/PreferredLanguages";
+import { MessagePluginOptions } from "./config";
 
 const getRandomServiceId = (): string => {
   if (services.length === 0) {
@@ -329,31 +333,6 @@ const getPublicMessages = (
   });
 };
 
-// TODO: renderlo tipo globale (in core/server?)
-export type HttpResponseCode = 200 | 400 | 401 | 404 | 429 | 500;
-
-type MessagesConfig = {
-  liveMode?: {
-    count: number;
-    interval: number;
-  };
-  response: {
-    // 200 success with payload
-    getMessagesResponseCode: HttpResponseCode;
-    // 200 success with payload
-    getMessageResponseCode: HttpResponseCode;
-    // 200 success with payload
-    getMVLMessageResponseCode: HttpResponseCode;
-  };
-} & NewMessagesOptions;
-
-type MessagePluginOptions = {
-  profile: {
-    attrs: ProfileAttrs;
-  };
-  messages: MessagesConfig;
-};
-
 export const MessagePlugin: Plugin<MessagePluginOptions> = async (
   { handleRoute, sendFile },
   options
@@ -565,3 +544,5 @@ export const MessagePlugin: Plugin<MessagePluginOptions> = async (
     }
   );
 };
+
+export { MessagePluginOptions };
