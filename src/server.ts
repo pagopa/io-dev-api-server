@@ -1,142 +1,109 @@
 import { createServer } from "./core/server";
+import { IODevelopmentPlugin, IODevelopmentPluginOptions } from "./io-dev";
 
-import { PublicPlugin } from "./routers/public";
-import { ProfilePlugin } from "./routers/profile";
-import { SessionPlugin } from "./routers/session";
-import { ServicePlugin } from "./routers/service";
-import { ServiceMetadataPlugin } from "./routers/services_metadata";
-import { MiscPlugin } from "./routers/misc";
-import { MessagePlugin } from "./routers/message";
-import { PaymentPlugin } from "./routers/payment";
+import { ProfilePluginOptions } from "./routers/profile";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
+import { WalletMethodConfig } from "./routers/walletsV2";
 
-import { WalletPlugin } from "./routers/wallet";
-import { WalletV2Plugin } from "./routers/walletsV2";
-import { WalletV2DashboardPlugin } from "./routers/walletsV2/configDashboard";
-import { SatispayPlugin } from "./routers/walletsV2/methods/satispay";
-import { PayPalPlugin } from "./routers/walletsV3/methods/paypal";
-import { BANCOMATPlugin } from "./routers/walletsV2/methods/bancomat";
-import { BANCOMATPayPlugin } from "./routers/walletsV2/methods/bpay";
-import { CobadgePlugin } from "./routers/walletsV2/methods/cobadge";
+export type IODevelopmentServerOptions = {
+  logger: boolean;
+} & IODevelopmentPluginOptions;
 
-import { BonusVacanzePlugin } from "./routers/features/bonus-vacanze";
-
-import { EUCovidCertPlugin } from "./routers/features/eu_covid_cert";
-
-import { CGNPlugin } from "./routers/features/cgn";
-import { CGNMerchantsPlugin } from "./routers/features/cgn/merchants";
-import { CGNGeocodingPlugin } from "./routers/features/cgn/geocoding";
-
-import { SiciliaVolaPlugin } from "./routers/features/siciliaVola";
-
-import { BPDPlugin } from "./routers/features/bdp";
-import { BPDAwardPlugin } from "./routers/features/bdp/award";
-import { BPDRankingV1Plugin } from "./routers/features/bdp/ranking/v1";
-import { BPDRankingV2Plugin } from "./routers/features/bdp/ranking/v2";
-import { BPDWinningTransactionsV1Plugin } from "./routers/features/bdp/winning-transactions/v1";
-import { BPDWinningTransactionsV2Plugin } from "./routers/features/bdp/winning-transactions/v2";
-
-import { IoDevServerConfig } from "./types/config";
-
-export const createIODevServer = (config: IoDevServerConfig) => {
-  const server = createServer({
-    logger: true
-  });
-
-  server
-    .use(ServicePlugin, {
-      services: {
-        response: config.services.response,
-        national: config.services.national,
-        local: config.services.local
-      }
-    })
-    .after(() => {
-      server.use(ServiceMetadataPlugin);
-      server.use(MessagePlugin, {
-        profile: {
-          attrs: config.profile.attrs
-        },
-        messages: config.messages
-      });
-    });
-
-  server.use(PublicPlugin, {
-    global: {
-      autoLogin: config.global.autoLogin
-    }
-  });
-
-  server
-    .use(ProfilePlugin, {
-      profile: config.profile
-    })
-    .after(() => {
-      server.use(WalletPlugin, {
-        wallet: {
-          onboardingCreditCardOutCode:
-            config.wallet.onboardingCreditCardOutCode,
-          shuffleAbi: config.wallet.shuffleAbi,
-          payment: config.wallet.payment
-        }
-      });
-
-      server
-        .use(WalletV2Plugin, {
-          wallet: {
-            methods: config.wallet.methods
-          }
-        })
-        .after(() => {
-          server.use(WalletV2DashboardPlugin, {
-            wallet: {
-              methods: config.wallet.methods
-            }
-          });
-
-          server.use(SatispayPlugin);
-          server.use(PayPalPlugin);
-          server.use(BANCOMATPlugin);
-          server.use(BANCOMATPayPlugin);
-          server.use(CobadgePlugin);
-        });
-    });
-
-  server.use(SessionPlugin);
-
-  server.use(MiscPlugin, {
-    IODevServerConfig: config
-  });
-
-  server.use(PaymentPlugin, {
-    profile: {
-      attrs: config.profile.attrs
-    },
-    wallet: {
-      paymentOutCode: config.wallet.paymentOutCode,
-      onboardingCreditCardOutCode: config.wallet.onboardingCreditCardOutCode,
-      verificaError: config.wallet.verificaError
-    }
-  });
-
-  server.use(BonusVacanzePlugin);
-  server.use(EUCovidCertPlugin);
-
-  server.use(CGNPlugin);
-  server.use(CGNMerchantsPlugin);
-  server.use(CGNGeocodingPlugin);
-
-  server.use(SiciliaVolaPlugin);
-
-  server.use(BPDPlugin, {
-    profile: {
-      attrs: config.profile.attrs
-    }
-  });
-  server.use(BPDAwardPlugin);
-  server.use(BPDRankingV1Plugin);
-  server.use(BPDRankingV2Plugin);
-  server.use(BPDWinningTransactionsV1Plugin);
-  server.use(BPDWinningTransactionsV2Plugin);
-
-  return server;
+export const defaultProfileAttrs: ProfilePluginOptions["profile"]["attrs"] = {
+  name: "Maria Giovanna",
+  family_name: "Rossi",
+  mobile: "5555555555" as NonEmptyString,
+  fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
+  email: "maria.giovanna.rossi@email.it" as EmailAddress,
+  accepted_tos_version: 2.4 as NonNegativeNumber,
+  preferred_languages: [PreferredLanguageEnum.it_IT]
 };
+
+export const paymentMethods: WalletMethodConfig = {
+  walletBancomatCount: 0,
+  walletCreditCardCount: 1,
+  walletCreditCardCoBadgeCount: 0,
+  privativeCount: 0,
+  satispayCount: 0,
+  paypalCount: 0,
+  bPayCount: 0,
+  citizenSatispay: true,
+  citizenBancomatCount: 1,
+  citizenBPayCount: 1,
+  citizenCreditCardCoBadgeCount: 1,
+  citizenPrivative: true,
+  citizenPaypal: true
+};
+
+export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
+  logger: false,
+  global: {
+    autoLogin: false
+  },
+  profile: {
+    attrs: defaultProfileAttrs,
+    authenticationProvider: "spid",
+    firstOnboarding: false
+  },
+  messages: {
+    response: {
+      getMessagesResponseCode: 200,
+      getMessageResponseCode: 200,
+      getMVLMessageResponseCode: 200
+    },
+    legalCount: 0,
+    paymentsCount: 0,
+    paymentInvalidAfterDueDateWithValidDueDateCount: 0,
+    paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
+    paymentWithValidDueDateCount: 0,
+    paymentWithExpiredDueDateCount: 0,
+    medicalCount: 0,
+    withCTA: false,
+    withEUCovidCert: false,
+    withValidDueDateCount: 0,
+    withInValidDueDateCount: 0,
+    standardMessageCount: 2
+  },
+  wallet: {
+    methods: paymentMethods,
+    shuffleAbi: true,
+    verificaError: undefined,
+    // atm it has no effect (pr welcome)
+    payment: undefined,
+    // success (0 outcome code)
+    onboardingCreditCardOutCode: 0,
+    // success (0 outcome code)
+    onboardingPaypalOutCode: 0,
+    // success (0 outcome code)
+    paymentOutCode: 0
+  },
+  services: {
+    response: {
+      getServicesPreference: 200,
+      getServicesResponseCode: 200,
+      postServicesPreference: 200,
+      getServiceResponseCode: 200
+    },
+    national: 5,
+    local: 5,
+    includeSiciliaVola: false,
+    includeCgn: false
+  }
+};
+
+export type IODevelomentServer = ReturnType<typeof createServer> & {
+  loadedConfig: Readonly<IODevelopmentServerOptions>;
+};
+
+export function createIODevelopmentServer(
+  options = defaultIODevelopmentOptions
+): IODevelomentServer {
+  const server = createServer({
+    logger: options.logger
+  });
+  server.use(IODevelopmentPlugin, options);
+  return { ...server, loadedConfig: options };
+}
