@@ -89,12 +89,12 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
         },
         optIn => {
           // if the citizen is not enrolled, the updating of optInStatus is a bad request
-          if (!(currentCitizenV2?.enabled ?? false)) {
+          if (currentCitizenV2 === undefined || !currentCitizenV2.enabled) {
             res.sendStatus(400);
             return;
           }
           currentCitizenV2 = {
-            ...citizenV2,
+            ...currentCitizenV2,
             optInStatus: optIn
           };
           res.json(currentCitizenV2);

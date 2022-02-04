@@ -1,6 +1,9 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
+import {
+  CitizenResource,
+  OptInStatusEnum
+} from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import app from "../../../../server";
 import { addBPDPrefix, citizenV2 } from "../index";
 
@@ -25,6 +28,22 @@ describe("citizen V2 API", () => {
     expect(E.isRight(cr)).toBeTruthy();
     if (E.isRight(cr)) {
       expect(cr.value.enabled === true).toBeTruthy();
+    }
+  });
+
+  it("Should return a 200, CitizenResource (V2) with optInStatus update", async () => {
+    // enroll the citizen
+    await request.put(addBPDPrefix(`/io/citizen/v2`));
+    const response = await request
+      .put(addBPDPrefix(`/io/citizen/v2`))
+      .set("Content-type", "application/json")
+      .send({ optInStatus: OptInStatusEnum.ACCEPTED });
+    expect(response.status).toBe(200);
+    const cr = CitizenResource.decode(response.body);
+    expect(E.isRight(cr)).toBeTruthy();
+    if (E.isRight(cr)) {
+      expect(cr.value.enabled === true).toBeTruthy();
+      expect(cr.value.optInStatus === OptInStatusEnum.ACCEPTED).toBeTruthy();
     }
   });
 });
