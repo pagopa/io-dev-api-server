@@ -210,7 +210,7 @@ export const backendStatus: BackendStatus = {
   config: {
     bpd: {
       enroll_bpd_after_add_payment_method: false,
-      program_active: false,
+      program_active: true,
       opt_in_payment_methods: false
     },
     bpd_ranking: true,

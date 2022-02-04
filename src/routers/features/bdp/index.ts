@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
+import { enumType } from "italia-ts-commons/lib/types";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import {
   CitizenResource as CitizenResourceV2,
@@ -77,22 +78,34 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
 });
 
 addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
-  pipe(
-    CitizenResourceV2.decode(req.body),
-    E.fold(
-      () => {
-        res.sendStatus(400);
-      },
-      updatedCitizen => {
-        currentCitizenV2 = {
-          ...citizenV2,
-          ...updatedCitizen,
-          enabled: true
-        };
-        res.json(currentCitizenV2);
-      }
-    )
-  );
+  if (req.body.optInStatus) {
+    pipe(
+      enumType<OptInStatusEnum>(OptInStatusEnum, "optInStatus").decode(
+        req.body.optInStatus
+      ),
+      E.fold(
+        () => {
+          res.sendStatus(400);
+        },
+        optIn => {
+          // if the citizen is not enrolled, the updating of optInStatus is a bad request
+          if (!(currentCitizenV2?.enabled ?? false)) {
+            res.sendStatus(400);
+            return;
+          }
+          res.json({
+            ...citizenV2,
+            optInStatus: optIn
+          });
+        }
+      )
+    );
+    return;
+  }
+  res.json({
+    ...citizenV2,
+    enabled: true
+  });
 });
 
 /**
