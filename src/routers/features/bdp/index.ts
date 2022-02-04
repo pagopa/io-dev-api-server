@@ -93,19 +93,21 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
             res.sendStatus(400);
             return;
           }
-          res.json({
+          currentCitizenV2 = {
             ...citizenV2,
             optInStatus: optIn
-          });
+          };
+          res.json(currentCitizenV2);
         }
       )
     );
     return;
   }
-  res.json({
+  currentCitizenV2 = {
     ...citizenV2,
     enabled: true
-  });
+  };
+  res.json(currentCitizenV2);
 });
 
 /**
