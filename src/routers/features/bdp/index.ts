@@ -1,12 +1,12 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
-import { enumType } from "italia-ts-commons/lib/types";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import {
-  CitizenResource as CitizenResourceV2,
-  OptInStatusEnum
-} from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
+  CitizenOptInStatus,
+  CitizenOptInStatusEnum
+} from "../../../../generated/definitions/bpd/citizen-v2/CitizenOptInStatus";
+import { CitizenResource as CitizenResourceV2 } from "../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import { PaymentInstrumentDTO } from "../../../../generated/definitions/bpd/payment/PaymentInstrumentDTO";
 import {
   PaymentInstrumentResource,
@@ -26,7 +26,7 @@ export const citizenV2: CitizenResourceV2 = {
   payoffInstr: "",
   payoffInstrType: "IBAN",
   timestampTC: new Date(),
-  optInStatus: OptInStatusEnum.NOREQ
+  optInStatus: CitizenOptInStatusEnum.NOREQ
 };
 
 // tslint:disable-next-line: no-let
@@ -80,9 +80,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
 addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
   if (req.body.optInStatus) {
     pipe(
-      enumType<OptInStatusEnum>(OptInStatusEnum, "optInStatus").decode(
-        req.body.optInStatus
-      ),
+      CitizenOptInStatus.decode(req.body.optInStatus),
       E.fold(
         () => {
           res.sendStatus(400);

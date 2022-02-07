@@ -1,11 +1,9 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import {
-  CitizenResource,
-  OptInStatusEnum
-} from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
+import { CitizenOptInStatusEnum } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenOptInStatus";
+import { CitizenResource } from "../../../../../generated/definitions/bpd/citizen-v2/CitizenResource";
 import app from "../../../../server";
-import { addBPDPrefix, citizenV2 } from "../index";
+import { addBPDPrefix } from "../index";
 
 const request = supertest(app);
 
@@ -37,13 +35,15 @@ describe("citizen V2 API", () => {
     const response = await request
       .put(addBPDPrefix(`/io/citizen/v2`))
       .set("Content-type", "application/json")
-      .send({ optInStatus: OptInStatusEnum.ACCEPTED });
+      .send({ optInStatus: CitizenOptInStatusEnum.ACCEPTED });
     expect(response.status).toBe(200);
     const cr = CitizenResource.decode(response.body);
     expect(E.isRight(cr)).toBeTruthy();
     if (E.isRight(cr)) {
       expect(cr.value.enabled === true).toBeTruthy();
-      expect(cr.value.optInStatus === OptInStatusEnum.ACCEPTED).toBeTruthy();
+      expect(
+        cr.value.optInStatus === CitizenOptInStatusEnum.ACCEPTED
+      ).toBeTruthy();
     }
   });
 });
