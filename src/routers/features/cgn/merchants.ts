@@ -36,7 +36,7 @@ export const cgnMerchantsRouter = Router();
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/cgn/operator-search${path}`);
 
-const productCategories: ReadonlyArray<ProductCategory> = [
+const availableCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.cultureAndEntertainment,
   ProductCategoryEnum.health,
   ProductCategoryEnum.learning,
@@ -71,8 +71,11 @@ export const onlineMerchants: OnlineMerchants = {
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 3).map<ProductCategory>(
         __ =>
-          productCategories[
-            faker.datatype.number({ min: 0, max: productCategories.length - 1 })
+          availableCategories[
+            faker.datatype.number({
+              min: 0,
+              max: availableCategories.length - 1
+            })
           ]
       ),
       websiteUrl: faker.internet.url() as NonEmptyString
@@ -87,10 +90,12 @@ export const offlineMerchants: OfflineMerchants = {
       id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
       productCategories: range(1, 4).map<ProductCategory>(
-        // tslint:disable-next-line:no-shadowed-variable
-        _ =>
-          productCategories[
-            faker.datatype.number({ min: 0, max: productCategories.length - 1 })
+        __ =>
+          availableCategories[
+            faker.datatype.number({
+              min: 0,
+              max: availableCategories.length - 1
+            })
           ]
       ),
       address: {
@@ -112,7 +117,6 @@ addHandler(
   addPrefix("/online-merchants"),
   (req, res) => {
     if (OnlineMerchantSearchRequest.is(req.body)) {
-      // tslint:disable-next-line:no-shadowed-variable
       const { productCategories, merchantName } = req.body;
       const merchantsFilteredByName = onlineMerchants.items.filter(om =>
         pipe(
@@ -147,11 +151,7 @@ addHandler(
   addPrefix("/offline-merchants"),
   (req, res) => {
     if (OfflineMerchantSearchRequest.is(req.body)) {
-      const {
-        // tslint:disable-next-line:no-shadowed-variable
-        productCategories,
-        merchantName
-      } = req.body;
+      const { productCategories, merchantName } = req.body;
 
       const merchantsFilteredByName = offlineMerchants.items.filter(m =>
         pipe(
@@ -228,12 +228,11 @@ addHandler(
               ? (faker.lorem.lines(1) as NonEmptyString)
               : undefined,
             productCategories: range(1, 3).map<ProductCategory>(
-              // tslint:disable-next-line:no-shadowed-variable
-              _ =>
-                productCategories[
+              __ =>
+                availableCategories[
                   faker.datatype.number({
                     min: 0,
-                    max: productCategories.length - 1
+                    max: availableCategories.length - 1
                   })
                 ]
             )
@@ -287,12 +286,11 @@ addHandler(
             : undefined,
           description: faker.lorem.lines(1) as NonEmptyString,
           productCategories: range(1, 3).map<ProductCategory>(
-            // tslint:disable-next-line:no-shadowed-variable
-            _ =>
-              productCategories[
+            __ =>
+              availableCategories[
                 faker.datatype.number({
                   min: 0,
-                  max: productCategories.length - 1
+                  max: availableCategories.length - 1
                 })
               ]
           )
