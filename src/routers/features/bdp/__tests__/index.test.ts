@@ -12,6 +12,15 @@ describe("citizen V2 API", () => {
     const response = await request.get(addBPDPrefix(`/io/citizen/v2`));
     expect(response.status).toBe(404);
   });
+
+  it("Should return a 400, update optInStatus on not enrolled user", async () => {
+    const response = await request
+      .put(addBPDPrefix(`/io/citizen/v2`))
+      .set("Content-type", "application/json")
+      .send({ optInStatus: CitizenOptInStatusEnum.ACCEPTED });
+    expect(response.status).toBe(400);
+  });
+
   it("Should return a 200, CitizenResource (V2) if is a GET and currentCitizenV2 is not undefined", async () => {
     await request.put(addBPDPrefix(`/io/citizen/v2`));
     const response = await request.get(addBPDPrefix(`/io/citizen/v2`));
@@ -30,8 +39,6 @@ describe("citizen V2 API", () => {
   });
 
   it("Should return a 200, CitizenResource (V2) with optInStatus update", async () => {
-    // enroll the citizen
-    await request.put(addBPDPrefix(`/io/citizen/v2`));
     const response = await request
       .put(addBPDPrefix(`/io/citizen/v2`))
       .set("Content-type", "application/json")
