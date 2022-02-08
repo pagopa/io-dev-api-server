@@ -78,34 +78,31 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
 });
 
 addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
-  if (req.body.optInStatus) {
-    pipe(
-      CitizenOptInStatus.decode(req.body.optInStatus),
-      E.fold(
-        () => {
+  pipe(
+    CitizenOptInStatus.decode(req.body.optInStatus),
+    E.fold(
+      // tslint:disable-next-line:no-identical-functions
+      () => {
+        currentCitizenV2 = {
+          ...citizenV2,
+          enabled: true
+        };
+        res.json(currentCitizenV2);
+      },
+      optIn => {
+        // if the citizen is not enrolled, the updating of optInStatus is a bad request
+        if (currentCitizenV2 === undefined || !currentCitizenV2.enabled) {
           res.sendStatus(400);
-        },
-        optIn => {
-          // if the citizen is not enrolled, the updating of optInStatus is a bad request
-          if (currentCitizenV2 === undefined || !currentCitizenV2.enabled) {
-            res.sendStatus(400);
-            return;
-          }
-          currentCitizenV2 = {
-            ...currentCitizenV2,
-            optInStatus: optIn
-          };
-          res.json(currentCitizenV2);
+          return;
         }
-      )
-    );
-    return;
-  }
-  currentCitizenV2 = {
-    ...citizenV2,
-    enabled: true
-  };
-  res.json(currentCitizenV2);
+        currentCitizenV2 = {
+          ...currentCitizenV2,
+          optInStatus: optIn
+        };
+        res.json(currentCitizenV2);
+      }
+    )
+  );
 });
 
 /**
