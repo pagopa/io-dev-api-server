@@ -34,7 +34,12 @@ import { assetsFolder, ioDevServerConfig } from "../config";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";
-import { CreditCardBrandEnum, getCreditCardLogo } from "../utils/payment";
+import {
+  CreditCardBrandEnum,
+  creditCardBrands,
+  getCreditCardLogo
+} from "../utils/payment";
+import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 
 type CardConfig = {
@@ -223,7 +228,11 @@ export const generateWalletV2FromCard = (
   const ed = card.expiringDate
     ? new Date(card.expiringDate)
     : faker.date.future();
-  const ccBrand = CreditCardBrandEnum.MAESTRO;
+  const ccBrand = getRandomValue(
+    CreditCardBrandEnum.MAESTRO,
+    faker.random.arrayElement(creditCardBrands),
+    "wallet"
+  );
 
   const info = {
     blurredNumber: card.cardPartialNumber,
