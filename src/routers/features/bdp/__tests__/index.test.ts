@@ -10,7 +10,7 @@ const request = supertest(app);
 describe("citizen V2 API", () => {
   describe("GET", () => {
     describe("when the citizen is not enrolled", () => {
-      it("Should return 404, if is a GET request and currentCitizenV2 is undefined", async () => {
+      it("Should return 404", async () => {
         const response = await request.get(addBPDPrefix(`/io/citizen/v2`));
         expect(response.status).toBe(404);
       });
@@ -19,7 +19,7 @@ describe("citizen V2 API", () => {
 
   describe("PUT", () => {
     describe("when the citizen is not enrolled", () => {
-      it("Should return a 400, update optInStatus on not enrolled user", async () => {
+      it("Should return a 400, on update optInStatus", async () => {
         const response = await request
           .put(addBPDPrefix(`/io/citizen/v2`))
           .set("Content-type", "application/json")
@@ -47,7 +47,7 @@ describe("citizen V2 API", () => {
         expect(cr.value.enabled === true).toBeTruthy();
       }
     });
-    it("PUT Should return a 200with optInStatus update", async () => {
+    it("PUT Should return a 200 with optInStatus update", async () => {
       const response = await request
         .put(addBPDPrefix(`/io/citizen/v2`))
         .set("Content-type", "application/json")
