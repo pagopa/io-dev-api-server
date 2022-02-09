@@ -7,7 +7,7 @@
       "idPsp": "1",
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
-      "ragioneSociale": "Another psp 1"
+      "ragioneSociale": "BANCO di NAPOLI"
     },
     {
       "codiceAbi": "01015",
@@ -16,7 +16,7 @@
       "idPsp": "2",
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
-      "ragioneSociale": "Another psp 2"
+      "ragioneSociale": "Banco di Sardegna"
     },
     {
       "codiceAbi": "03015",
@@ -25,7 +25,7 @@
       "idPsp": "3",
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
-      "ragioneSociale": "Another psp 3"
+      "ragioneSociale": "FINECO"
     }
   ]
 }
