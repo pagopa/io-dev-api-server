@@ -271,7 +271,8 @@ addHandler(
     const response: DeletedWalletsResponse = {
       data: {
         deletedWallets: deletedWallets.length,
-        notDeletedWallets: walletsToDelete.length - deletedWallets.length
+        notDeletedWallets: walletsToDelete.length - deletedWallets.length,
+        remainingWallets: getWalletV2()
       }
     };
     res.json(response);
