@@ -4,7 +4,9 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
+import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
 import { OfflineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OfflineMerchantSearchRequest";
+import { OnlineMerchant } from "../../../../generated/definitions/cgn/merchants/OnlineMerchant";
 import { OnlineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OnlineMerchantSearchRequest";
 import { ProductCategoryEnum } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { getProblemJson } from "../../../payloads/error";
@@ -25,35 +27,47 @@ const addPrefix = (path: string) =>
 
 const merchantsAll = generateMerchantsAll();
 
+const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
+  merchants: ReadonlyArray<T>,
+  productCategories?: ReadonlyArray<ProductCategoryEnum>,
+  merchantName?: string
+): ReadonlyArray<T> => {
+  const merchantsFilteredByName = merchants.filter(om =>
+    pipe(
+      O.fromNullable(merchantName),
+      O.fold(
+        () => true,
+        mn => om.name.includes(mn)
+      )
+    )
+  );
+
+  return merchantsFilteredByName.filter(m =>
+    pipe(
+      O.fromNullable(productCategories),
+      O.fold(
+        () => true,
+        pc => {
+          return m.productCategories.some(cat => pc.includes(cat));
+        }
+      )
+    )
+  );
+};
+
 addHandler(
   cgnMerchantsRouter,
   "post",
   addPrefix("/online-merchants"),
   (req, res) => {
     if (OnlineMerchantSearchRequest.is(req.body)) {
-      const { productCategories, merchantName } = req.body;
-      const merchantsFilteredByName = onlineMerchants.items.filter(om =>
-        pipe(
-          O.fromNullable(merchantName),
-          O.fold(
-            () => true,
-            mn => om.name.includes(mn)
-          )
+      return res.status(200).json({
+        items: filterMerchants<OnlineMerchant>(
+          onlineMerchants.items,
+          req.body.productCategories,
+          req.body.merchantName
         )
-      );
-
-      const filteredMerchants = merchantsFilteredByName.filter(m =>
-        pipe(
-          O.fromNullable(productCategories),
-          O.fold(
-            () => true,
-            pc => {
-              return m.productCategories.some(cat => pc.includes(cat));
-            }
-          )
-        )
-      );
-      return res.status(200).json({ items: filteredMerchants });
+      });
     }
     return res.status(500);
   }
@@ -65,31 +79,13 @@ addHandler(
   addPrefix("/offline-merchants"),
   (req, res) => {
     if (OfflineMerchantSearchRequest.is(req.body)) {
-      const { productCategories, merchantName } = req.body;
-
-      const merchantsFilteredByName = offlineMerchants.items.filter(m =>
-        pipe(
-          O.fromNullable(merchantName),
-          O.fold(
-            () => true,
-            mn => m.name.includes(mn)
-          )
+      return res.status(200).json({
+        items: filterMerchants<OfflineMerchant>(
+          offlineMerchants.items,
+          req.body.productCategories,
+          req.body.merchantName
         )
-      );
-
-      const filteredMerchants = merchantsFilteredByName.filter(m =>
-        pipe(
-          O.fromNullable(productCategories),
-          O.fold(
-            () => true,
-            pc => {
-              return m.productCategories.some(cat => pc.includes(cat));
-            }
-          )
-        )
-      );
-
-      return res.status(200).json({ items: filteredMerchants });
+      });
     }
     return res.status(500);
   }
