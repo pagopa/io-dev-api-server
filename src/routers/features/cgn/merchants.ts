@@ -137,7 +137,7 @@ addHandler(
     );
     const categoriesSet = new Set([...onlineCategories, ...offlineCategories]);
 
-    res.json(Array.from(categoriesSet));
+    res.json({ items: Array.from(categoriesSet) });
   }
 );
 /**
