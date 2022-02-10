@@ -203,6 +203,7 @@ addHandler(
     );
     if (merchIndex === -1) {
       res.json(getProblemJson(404, "message not found"));
+      return;
     }
 
     const foundMerchant = merchants[merchIndex];
