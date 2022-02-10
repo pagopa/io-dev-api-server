@@ -60,7 +60,10 @@ const discountTypes: ReadonlyArray<DiscountCodeType> = [
 let millis = new Date().getTime();
 
 const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
-  const categoriesArray = range(1, 3).map<ProductCategory>(
+  const categoriesArray = range(
+    0,
+    faker.datatype.number({ min: 1, max: 3 })
+  ).map<ProductCategory>(
     __ =>
       availableCategories[
         faker.datatype.number({
@@ -75,7 +78,9 @@ const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
 };
 
 export const onlineMerchants: OnlineMerchants = {
-  items: range(1, 10).map<OnlineMerchant>(_ => {
+  items: range(0, faker.datatype.number({ min: 1, max: 15 })).map<
+    OnlineMerchant
+  >(_ => {
     faker.seed(millis++);
     const discountType =
       discountTypes[
@@ -92,7 +97,9 @@ export const onlineMerchants: OnlineMerchants = {
 };
 
 export const offlineMerchants: OfflineMerchants = {
-  items: range(1, 10).map<OfflineMerchant>(_ => {
+  items: range(0, faker.datatype.number({ min: 1, max: 15 })).map<
+    OfflineMerchant
+  >(_ => {
     faker.seed(millis++);
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
@@ -208,10 +215,14 @@ addHandler(
         imageUrl: faker.image.imageUrl() as NonEmptyString,
         description: faker.lorem.paragraphs(2) as NonEmptyString,
         discountCodeType: foundMerchant.discountCodeType,
-        discounts: range(1, 3).map<Discount>(_ => {
+        discounts: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
+          Discount
+        >(_ => {
           const discountCategories = Array.from(
             new Set(
-              range(1, 3).map<ProductCategory>(
+              range(0, faker.datatype.number({ min: 1, max: 4 })).map<
+                ProductCategory
+              >(
                 __ =>
                   foundMerchant.productCategories[
                     faker.datatype.number({
@@ -292,12 +303,16 @@ addHandler(
       const offlineMerchant: Merchant = {
         id: foundMerchant.id,
         name: foundMerchant.name,
-        addresses: range(1, 4).map<Address>(_ => ({
+        addresses: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
+          Address
+        >(_ => ({
           full_address: faker.address.streetAddress(true) as NonEmptyString
         })),
         imageUrl: faker.image.imageUrl() as NonEmptyString,
         description: faker.lorem.paragraphs(2) as NonEmptyString,
-        discounts: range(1, 3).map<Discount>(_ => ({
+        discounts: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
+          Discount
+        >(_ => ({
           id: faker.datatype.number().toString() as NonEmptyString,
           name: faker.commerce.productName() as NonEmptyString,
           startDate: faker.date.past(),
@@ -308,7 +323,9 @@ addHandler(
           description: faker.lorem.lines(1) as NonEmptyString,
           productCategories: Array.from(
             new Set(
-              range(1, 3).map<ProductCategory>(
+              range(0, faker.datatype.number({ min: 1, max: 3 })).map<
+                ProductCategory
+              >(
                 __ =>
                   foundMerchant.productCategories[
                     faker.datatype.number({
