@@ -58,6 +58,22 @@ const discountTypes: ReadonlyArray<DiscountCodeType> = [
 
 // tslint:disable-next-line: no-let
 let millis = new Date().getTime();
+
+const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
+  const categoriesArray = range(1, 3).map<ProductCategory>(
+    __ =>
+      availableCategories[
+        faker.datatype.number({
+          min: 0,
+          max: availableCategories.length - 1
+        })
+      ]
+  );
+  const categoriesSet = new Set(categoriesArray);
+
+  return [...Array.from(categoriesSet)];
+};
+
 export const onlineMerchants: OnlineMerchants = {
   items: range(1, 10).map<OnlineMerchant>(_ => {
     faker.seed(millis++);
@@ -69,15 +85,7 @@ export const onlineMerchants: OnlineMerchants = {
       discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
-      productCategories: range(1, 3).map<ProductCategory>(
-        __ =>
-          availableCategories[
-            faker.datatype.number({
-              min: 0,
-              max: availableCategories.length - 1
-            })
-          ]
-      ),
+      productCategories: generateRandomCategoriesList(),
       websiteUrl: faker.internet.url() as NonEmptyString
     };
   })
@@ -89,15 +97,7 @@ export const offlineMerchants: OfflineMerchants = {
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
       name: faker.company.companyName() as NonEmptyString,
-      productCategories: range(1, 4).map<ProductCategory>(
-        __ =>
-          availableCategories[
-            faker.datatype.number({
-              min: 0,
-              max: availableCategories.length - 1
-            })
-          ]
-      ),
+      productCategories: generateRandomCategoriesList(),
       address: {
         full_address: faker.address.streetAddress(true) as NonEmptyString,
         latitude: parseFloat(faker.address.latitude()),
@@ -209,6 +209,19 @@ addHandler(
         description: faker.lorem.paragraphs(2) as NonEmptyString,
         discountCodeType: foundMerchant.discountCodeType,
         discounts: range(1, 3).map<Discount>(_ => {
+          const discountCategories = Array.from(
+            new Set(
+              range(1, 3).map<ProductCategory>(
+                __ =>
+                  foundMerchant.productCategories[
+                    faker.datatype.number({
+                      min: 0,
+                      max: foundMerchant.productCategories.length - 1
+                    })
+                  ]
+              )
+            )
+          );
           const discount: Discount = {
             id: faker.datatype.number().toString() as NonEmptyString,
             name: faker.commerce.productName() as NonEmptyString,
@@ -227,15 +240,7 @@ addHandler(
             condition: getRandomValue(false, faker.datatype.boolean(), "global")
               ? (faker.lorem.lines(1) as NonEmptyString)
               : undefined,
-            productCategories: range(1, 3).map<ProductCategory>(
-              __ =>
-                availableCategories[
-                  faker.datatype.number({
-                    min: 0,
-                    max: availableCategories.length - 1
-                  })
-                ]
-            )
+            productCategories: discountCategories
           };
 
           const discountOption = () => {
@@ -301,14 +306,18 @@ addHandler(
             ? faker.datatype.number({ min: 10, max: 30 })
             : undefined,
           description: faker.lorem.lines(1) as NonEmptyString,
-          productCategories: range(1, 3).map<ProductCategory>(
-            __ =>
-              availableCategories[
-                faker.datatype.number({
-                  min: 0,
-                  max: availableCategories.length - 1
-                })
-              ]
+          productCategories: Array.from(
+            new Set(
+              range(1, 3).map<ProductCategory>(
+                __ =>
+                  foundMerchant.productCategories[
+                    faker.datatype.number({
+                      min: 0,
+                      max: foundMerchant.productCategories.length - 1
+                    })
+                  ]
+              )
+            )
           )
         }))
       };
@@ -329,6 +338,27 @@ addHandler(
   }
 );
 
+addHandler(
+  cgnMerchantsRouter,
+  "get",
+  addPrefix("/published-product-categories"),
+  (req, res) => {
+    const givenCategories: ReadonlyArray<ProductCategoryEnum> = [];
+
+    const onlineCategories = onlineMerchants.items.reduce(
+      (acc, curr) => [...acc, ...curr.productCategories],
+      givenCategories
+    );
+
+    const offlineCategories = offlineMerchants.items.reduce(
+      (acc, curr) => [...acc, ...curr.productCategories],
+      givenCategories
+    );
+    const categoriesSet = new Set([...onlineCategories, ...offlineCategories]);
+
+    res.json(Array.from(categoriesSet));
+  }
+);
 /**
  * just for test purposes an html page that works as
  * the landing Page of a discount for merchant reading the referrer header
