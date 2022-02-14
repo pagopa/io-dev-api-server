@@ -12,13 +12,11 @@ export const errorMiddleware = (
     return;
   }
   const random = faker.datatype.number({ min: 0, max: 1, precision: 0.01 });
-  console.log("random", random);
   const { chance, codes } = ioDevServerConfig.global.responseError;
   if (random > chance) {
     next();
     return;
   }
   const errorCode = faker.random.arrayElement(codes);
-  console.log("errorCode", errorCode);
   res.sendStatus(errorCode);
 };
