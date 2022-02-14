@@ -21,7 +21,7 @@ export const errorMiddleware = (
   }
   const random = faker.datatype.number({ min: 0, max: 1, precision: 0.01 });
   const { chance, codes } = ioDevServerConfig.global.responseError;
-  // out of the change, do nothing
+  // out of the chance, do nothing
   if (random > chance) {
     next();
     return;
