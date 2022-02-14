@@ -1,4 +1,8 @@
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import {
+  NonNegativeNumber,
+  WithinRangeInteger,
+  WithinRangeNumber
+} from "@pagopa/ts-commons/lib/numbers";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import * as t from "io-ts";
@@ -83,6 +87,15 @@ const LiveModeMessages = t.interface({
   count: t.number
 });
 
+const ErrorCodes = WithinRangeInteger(400, 600);
+export type ErrorCodes = t.TypeOf<typeof ErrorCodes>;
+const responseError = t.interface({
+  // the probability that server will response with an error
+  chance: WithinRangeNumber(0, 1),
+  // a bucket of error codes. If the server will response with an error, a random one will be picked
+  codes: t.readonlyArray(ErrorCodes)
+});
+
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
     t.interface({
@@ -93,7 +106,12 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean
     }),
-    AllowRandomValue
+    AllowRandomValue,
+    t.partial({
+      // the server will response with an error code on every request
+      // with a change and code as defined
+      responseError
+    })
   ]),
   // some attributes of the profile used as citizen
   profile: t.intersection([

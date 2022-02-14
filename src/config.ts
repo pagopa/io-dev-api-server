@@ -9,6 +9,7 @@ import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import {
+  ErrorCodes,
   IoDevServerConfig,
   ProfileAttrs,
   WalletMethodConfig
@@ -54,7 +55,11 @@ const defaultConfig: IoDevServerConfig = {
   global: {
     delay: 0,
     autoLogin: false,
-    allowRandomValues: true
+    allowRandomValues: true,
+    responseError: {
+      codes: [400 as ErrorCodes, 500 as ErrorCodes],
+      chance: 0.5
+    }
   },
   profile: {
     attrs: defaultProfileAttrs,
