@@ -17,11 +17,8 @@ import {
   ProductCategory,
   ProductCategoryEnum
 } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
-import { cgnMerchantsRouter } from "../../../routers/features/cgn/merchants";
 import { getRandomValue } from "../../../utils/random";
 import { serverIpv4Address, serverPort } from "../../../utils/server";
-import { getProblemJson } from "../../error";
-import { addHandler } from "../../response";
 
 const availableCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.cultureAndEntertainment,
@@ -105,13 +102,15 @@ export const offlineMerchants: OfflineMerchants = {
   })
 };
 
+const discountUrl = `http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"];
+
 const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
   switch (discountCodeType) {
     case "static":
       return {
         staticCode: faker.datatype.string().toString() as NonEmptyString,
         discountUrl: getRandomValue(false, faker.datatype.boolean(), "global")
-          ? (`http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"])
+          ? discountUrl
           : undefined
       };
     case "landingpage":
@@ -119,13 +118,13 @@ const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
         landingPageReferrer: faker.datatype.string(
           6
         ) as Discount["landingPageReferrer"],
-        landingPageUrl: `http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["landingPageUrl"]
+        landingPageUrl: discountUrl
       };
     case "api":
     case "bucket":
       return {
         discountUrl: getRandomValue(false, faker.datatype.boolean(), "global")
-          ? (`http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"])
+          ? discountUrl
           : undefined
       };
     default:

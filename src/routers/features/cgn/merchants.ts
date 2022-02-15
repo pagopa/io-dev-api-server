@@ -32,27 +32,23 @@ const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
   productCategories?: ReadonlyArray<ProductCategoryEnum>,
   merchantName?: string
 ): ReadonlyArray<T> => {
-  const merchantsFilteredByName = merchants.filter(om =>
+  const filters = (merchant: T): boolean =>
     pipe(
       O.fromNullable(merchantName),
       O.fold(
         () => true,
-        mn => om.name.includes(mn)
+        mn => merchant.name.includes(mn)
       )
-    )
-  );
-
-  return merchantsFilteredByName.filter(m =>
+    ) &&
     pipe(
       O.fromNullable(productCategories),
       O.fold(
         () => true,
-        pc => {
-          return m.productCategories.some(cat => pc.includes(cat));
-        }
+        pc => merchant.productCategories.some(cat => pc.includes(cat))
       )
-    )
-  );
+    );
+
+  return merchants.filter(filters);
 };
 
 addHandler(
@@ -127,15 +123,11 @@ addHandler(
   "get",
   addPrefix("/published-product-categories"),
   (req, res) => {
-    const onlineCategories = onlineMerchants.items.reduce(
-      (acc, curr) => [...acc, ...curr.productCategories],
-      [] as ReadonlyArray<ProductCategoryEnum>
-    );
-    const offlineCategories = offlineMerchants.items.reduce(
-      (acc, curr) => [...acc, ...curr.productCategories],
-      [] as ReadonlyArray<ProductCategoryEnum>
-    );
-    const categoriesSet = new Set([...onlineCategories, ...offlineCategories]);
+    const categories: ReadonlyArray<ProductCategoryEnum> = [
+      ...onlineMerchants.items,
+      ...offlineMerchants.items
+    ].flatMap(item => item.productCategories);
+    const categoriesSet = new Set(categories);
 
     res.json({ items: Array.from(categoriesSet) });
   }
