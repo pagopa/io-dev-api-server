@@ -244,7 +244,14 @@ addHandler(
                 return {
                   staticCode: faker.datatype
                     .string()
-                    .toString() as NonEmptyString
+                    .toString() as NonEmptyString,
+                  discountUrl: getRandomValue(
+                    false,
+                    faker.datatype.boolean(),
+                    "global"
+                  )
+                    ? (`http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"])
+                    : undefined
                 };
               case "landingpage":
                 return {
@@ -255,6 +262,15 @@ addHandler(
                 };
               case "api":
               case "bucket":
+                return {
+                  discountUrl: getRandomValue(
+                    false,
+                    faker.datatype.boolean(),
+                    "global"
+                  )
+                    ? (`http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"])
+                    : undefined
+                };
               default:
                 return {};
             }
