@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import express, { Application } from "express";
 import morgan from "morgan";
 import { ioDevServerConfig } from "./config";
+import { errorMiddleware } from "./middleware/errorMiddleware";
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
 import { bpdRanking } from "./routers/features/bdp/ranking/v1";
@@ -46,6 +47,7 @@ app.use(
     ":date[iso] :method :url :status :res[content-length] - :response-time ms"
   )
 );
+app.use(errorMiddleware);
 
 [
   publicRouter,
