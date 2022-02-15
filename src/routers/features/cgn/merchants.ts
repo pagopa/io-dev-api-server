@@ -250,7 +250,7 @@ addHandler(
                     faker.datatype.boolean(),
                     "global"
                   )
-                    ? (`http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"])
+                    ? (`http://${serverUrl}/merchant_landing` as Discount["discountUrl"])
                     : undefined
                 };
               case "landingpage":
@@ -268,7 +268,7 @@ addHandler(
                     faker.datatype.boolean(),
                     "global"
                   )
-                    ? (`http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"])
+                    ? (`http://${serverUrl}/merchant_landing` as Discount["discountUrl"])
                     : undefined
                 };
               default:
