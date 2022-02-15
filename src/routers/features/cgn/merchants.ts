@@ -1,33 +1,22 @@
 import { Router } from "express";
 import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { NonNegativeInteger } from "italia-ts-commons/lib/numbers";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
-import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
-import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
 import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
-import {
-  DiscountCodeType,
-  DiscountCodeTypeEnum
-} from "../../../../generated/definitions/cgn/merchants/DiscountCodeType";
-import { Merchant } from "../../../../generated/definitions/cgn/merchants/Merchant";
 import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
-import { OfflineMerchants } from "../../../../generated/definitions/cgn/merchants/OfflineMerchants";
 import { OfflineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OfflineMerchantSearchRequest";
 import { OnlineMerchant } from "../../../../generated/definitions/cgn/merchants/OnlineMerchant";
-import { OnlineMerchants } from "../../../../generated/definitions/cgn/merchants/OnlineMerchants";
 import { OnlineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OnlineMerchantSearchRequest";
-import {
-  ProductCategory,
-  ProductCategoryEnum
-} from "../../../../generated/definitions/cgn/merchants/ProductCategory";
+import { ProductCategoryEnum } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { getProblemJson } from "../../../payloads/error";
+import {
+  generateMerchantsAll,
+  offlineMerchants,
+  onlineMerchants
+} from "../../../payloads/features/cgn/merchants";
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
-import { getRandomValue } from "../../../utils/random";
-import { serverUrl } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
 
@@ -36,79 +25,30 @@ export const cgnMerchantsRouter = Router();
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/cgn/operator-search${path}`);
 
-const availableCategories: ReadonlyArray<ProductCategory> = [
-  ProductCategoryEnum.cultureAndEntertainment,
-  ProductCategoryEnum.health,
-  ProductCategoryEnum.learning,
-  ProductCategoryEnum.sports,
-  ProductCategoryEnum.home,
-  ProductCategoryEnum.telephonyAndInternet,
-  ProductCategoryEnum.bankingServices,
-  ProductCategoryEnum.travelling,
-  ProductCategoryEnum.sustainableMobility,
-  ProductCategoryEnum.jobOffers
-];
+const merchantsAll = generateMerchantsAll();
 
-const discountTypes: ReadonlyArray<DiscountCodeType> = [
-  DiscountCodeTypeEnum.api,
-  DiscountCodeTypeEnum.bucket,
-  DiscountCodeTypeEnum.static,
-  DiscountCodeTypeEnum.landingpage
-];
+const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
+  merchants: ReadonlyArray<T>,
+  productCategories?: ReadonlyArray<ProductCategoryEnum>,
+  merchantName?: string
+): ReadonlyArray<T> => {
+  const filters = (merchant: T): boolean =>
+    pipe(
+      O.fromNullable(merchantName),
+      O.fold(
+        () => true,
+        mn => merchant.name.includes(mn)
+      )
+    ) &&
+    pipe(
+      O.fromNullable(productCategories),
+      O.fold(
+        () => true,
+        pc => merchant.productCategories.some(cat => pc.includes(cat))
+      )
+    );
 
-// tslint:disable-next-line: no-let
-let millis = new Date().getTime();
-export const onlineMerchants: OnlineMerchants = {
-  items: range(1, 10).map<OnlineMerchant>(_ => {
-    faker.seed(millis++);
-    const discountType =
-      discountTypes[
-        faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
-      ];
-    return {
-      discountCodeType: discountType,
-      id: faker.datatype.number().toString() as NonEmptyString,
-      name: faker.company.companyName() as NonEmptyString,
-      productCategories: range(1, 3).map<ProductCategory>(
-        __ =>
-          availableCategories[
-            faker.datatype.number({
-              min: 0,
-              max: availableCategories.length - 1
-            })
-          ]
-      ),
-      websiteUrl: faker.internet.url() as NonEmptyString
-    };
-  })
-};
-
-export const offlineMerchants: OfflineMerchants = {
-  items: range(1, 10).map<OfflineMerchant>(_ => {
-    faker.seed(millis++);
-    return {
-      id: faker.datatype.number().toString() as NonEmptyString,
-      name: faker.company.companyName() as NonEmptyString,
-      productCategories: range(1, 4).map<ProductCategory>(
-        __ =>
-          availableCategories[
-            faker.datatype.number({
-              min: 0,
-              max: availableCategories.length - 1
-            })
-          ]
-      ),
-      address: {
-        full_address: faker.address.streetAddress(true) as NonEmptyString,
-        latitude: parseFloat(faker.address.latitude()),
-        longitude: parseFloat(faker.address.longitude())
-      },
-      distance: faker.datatype.number({
-        min: 0,
-        max: 50000
-      }) as NonNegativeInteger
-    };
-  })
+  return merchants.filter(filters);
 };
 
 addHandler(
@@ -117,29 +57,13 @@ addHandler(
   addPrefix("/online-merchants"),
   (req, res) => {
     if (OnlineMerchantSearchRequest.is(req.body)) {
-      const { productCategories, merchantName } = req.body;
-      const merchantsFilteredByName = onlineMerchants.items.filter(om =>
-        pipe(
-          O.fromNullable(merchantName),
-          O.fold(
-            () => true,
-            mn => om.name.includes(mn)
-          )
+      return res.status(200).json({
+        items: filterMerchants<OnlineMerchant>(
+          onlineMerchants.items,
+          req.body.productCategories,
+          req.body.merchantName
         )
-      );
-
-      const filteredMerchants = merchantsFilteredByName.filter(m =>
-        pipe(
-          O.fromNullable(productCategories),
-          O.fold(
-            () => true,
-            pc => {
-              return m.productCategories.some(cat => pc.includes(cat));
-            }
-          )
-        )
-      );
-      return res.status(200).json({ items: filteredMerchants });
+      });
     }
     return res.status(500);
   }
@@ -151,31 +75,13 @@ addHandler(
   addPrefix("/offline-merchants"),
   (req, res) => {
     if (OfflineMerchantSearchRequest.is(req.body)) {
-      const { productCategories, merchantName } = req.body;
-
-      const merchantsFilteredByName = offlineMerchants.items.filter(m =>
-        pipe(
-          O.fromNullable(merchantName),
-          O.fold(
-            () => true,
-            mn => m.name.includes(mn)
-          )
+      return res.status(200).json({
+        items: filterMerchants<OfflineMerchant>(
+          offlineMerchants.items,
+          req.body.productCategories,
+          req.body.merchantName
         )
-      );
-
-      const filteredMerchants = merchantsFilteredByName.filter(m =>
-        pipe(
-          O.fromNullable(productCategories),
-          O.fold(
-            () => true,
-            pc => {
-              return m.productCategories.some(cat => pc.includes(cat));
-            }
-          )
-        )
-      );
-
-      return res.status(200).json({ items: filteredMerchants });
+      });
     }
     return res.status(500);
   }
@@ -186,134 +92,17 @@ addHandler(
   "get",
   addPrefix("/merchants/:merchantId"),
   (req, res) => {
-    const merchants: ReadonlyArray<OnlineMerchant | OfflineMerchant> = [
-      ...offlineMerchants.items,
-      ...onlineMerchants.items
-    ];
-
-    const merchIndex = merchants.findIndex(
+    const merchIndex = merchantsAll.findIndex(
       item => item.id === req.params.merchantId
     );
     if (merchIndex === -1) {
       res.json(getProblemJson(404, "message not found"));
+      return;
     }
 
-    const foundMerchant = merchants[merchIndex];
+    const foundMerchant = merchantsAll[merchIndex];
 
-    if (OnlineMerchant.is(foundMerchant)) {
-      const onlineMerchant: Merchant = {
-        id: foundMerchant.id,
-        name: foundMerchant.name,
-        websiteUrl: foundMerchant.websiteUrl,
-        imageUrl: faker.image.imageUrl() as NonEmptyString,
-        description: faker.lorem.paragraphs(2) as NonEmptyString,
-        discountCodeType: foundMerchant.discountCodeType,
-        discounts: range(1, 3).map<Discount>(_ => {
-          const discount: Discount = {
-            id: faker.datatype.number().toString() as NonEmptyString,
-            name: faker.commerce.productName() as NonEmptyString,
-            startDate: faker.date.past(),
-            endDate: faker.date.future(),
-            discount: getRandomValue(false, faker.datatype.boolean(), "global")
-              ? faker.datatype.number({ min: 10, max: 30 })
-              : undefined,
-            description: getRandomValue(
-              false,
-              faker.datatype.boolean(),
-              "global"
-            )
-              ? (faker.lorem.lines(1) as NonEmptyString)
-              : undefined,
-            condition: getRandomValue(false, faker.datatype.boolean(), "global")
-              ? (faker.lorem.lines(1) as NonEmptyString)
-              : undefined,
-            productCategories: range(1, 3).map<ProductCategory>(
-              __ =>
-                availableCategories[
-                  faker.datatype.number({
-                    min: 0,
-                    max: availableCategories.length - 1
-                  })
-                ]
-            )
-          };
-
-          const discountOption = () => {
-            switch (foundMerchant.discountCodeType) {
-              case "static":
-                return {
-                  staticCode: faker.datatype
-                    .string()
-                    .toString() as NonEmptyString,
-                  discountUrl: getRandomValue(
-                    false,
-                    faker.datatype.boolean(),
-                    "global"
-                  )
-                    ? (`http://${serverUrl}/merchant_landing` as Discount["discountUrl"])
-                    : undefined
-                };
-              case "landingpage":
-                return {
-                  landingPageReferrer: faker.datatype.string(
-                    6
-                  ) as Discount["landingPageReferrer"],
-                  landingPageUrl: `${serverUrl}/merchant_landing` as Discount["landingPageUrl"]
-                };
-              case "api":
-              case "bucket":
-                return {
-                  discountUrl: getRandomValue(
-                    false,
-                    faker.datatype.boolean(),
-                    "global"
-                  )
-                    ? (`http://${serverUrl}/merchant_landing` as Discount["discountUrl"])
-                    : undefined
-                };
-              default:
-                return {};
-            }
-          };
-
-          return {
-            ...discount,
-            ...discountOption()
-          };
-        })
-      };
-      res.json(onlineMerchant);
-    } else {
-      const offlineMerchant: Merchant = {
-        id: foundMerchant.id,
-        name: foundMerchant.name,
-        addresses: range(1, 4).map<Address>(_ => ({
-          full_address: faker.address.streetAddress(true) as NonEmptyString
-        })),
-        imageUrl: faker.image.imageUrl() as NonEmptyString,
-        description: faker.lorem.paragraphs(2) as NonEmptyString,
-        discounts: range(1, 3).map<Discount>(_ => ({
-          id: faker.datatype.number().toString() as NonEmptyString,
-          name: faker.commerce.productName() as NonEmptyString,
-          startDate: faker.date.past(),
-          endDate: faker.date.future(),
-          discount: faker.datatype.boolean()
-            ? faker.datatype.number({ min: 10, max: 30 })
-            : undefined,
-          description: faker.lorem.lines(1) as NonEmptyString,
-          productCategories: range(1, 3).map<ProductCategory>(
-            __ =>
-              availableCategories[
-                faker.datatype.number({
-                  min: 0,
-                  max: availableCategories.length - 1
-                })
-              ]
-          )
-        }))
-      };
-      res.json(offlineMerchant);
-    }
+    res.json(foundMerchant);
   }
 );
 
@@ -329,6 +118,20 @@ addHandler(
   }
 );
 
+addHandler(
+  cgnMerchantsRouter,
+  "get",
+  addPrefix("/published-product-categories"),
+  (req, res) => {
+    const categories: ReadonlyArray<ProductCategoryEnum> = [
+      ...onlineMerchants.items,
+      ...offlineMerchants.items
+    ].flatMap(item => item.productCategories);
+    const categoriesSet = new Set(categories);
+
+    res.json({ items: Array.from(categoriesSet) });
+  }
+);
 /**
  * just for test purposes an html page that works as
  * the landing Page of a discount for merchant reading the referrer header
