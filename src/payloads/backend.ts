@@ -210,13 +210,14 @@ export const backendStatus: BackendStatus = {
   config: {
     bpd: {
       enroll_bpd_after_add_payment_method: false,
-      program_active: false
+      program_active: false,
+      opt_in_payment_methods: false
     },
     bpd_ranking: true,
     bpd_ranking_v2: true,
     cgn_merchants_v2: false,
     assistanceTool: {
-      tool: ToolEnum.instabug
+      tool: ToolEnum.zendesk
     },
     paypal: {
       enabled: true

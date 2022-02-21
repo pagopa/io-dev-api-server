@@ -4,6 +4,7 @@
 
 import * as E from "fp-ts/lib/Either";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
@@ -11,7 +12,7 @@ import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 
-import { readFileAsJSON } from "../utils/file";
+import { readFileAsJSON, readFileAndDecode } from "../utils/file";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
 
@@ -39,6 +40,11 @@ export const ServiceMetadataPlugin: Plugin = async ({
   // backend service status
   handleRoute("get", addRoutePrefix("/status/backend.json"), (_, res) =>
     res.json(backendStatus)
+  );
+
+  // Metadata related to the app version
+  handleRoute("get", addRoutePrefix("/status/versionInfo.json"), (_, res) =>
+    readFileAndDecode("assets/status/versionInfo.json", VersionInfo.decode, res)
   );
 
   handleRoute(
