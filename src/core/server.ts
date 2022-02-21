@@ -48,7 +48,7 @@ export type Server = {
   listen: (port: number, hostname: string) => Promise<ServerInfo>;
   routes: () => Array<Route>;
   sendFile: typeof sendFile;
-  toExpressApplication: () => Promise<express.Application>;
+  toExpressApplication: () => Promise<express.Express>;
 };
 
 type WithAvvio<T> = T & Avvio.Server<T>;
