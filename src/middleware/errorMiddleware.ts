@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import * as faker from "faker";
-import { ioDevServerConfig } from "../config";
+import { ResponseError } from "../core/server";
 
 /**
  * if the response error is defined as a global config
@@ -10,17 +10,17 @@ import { ioDevServerConfig } from "../config";
  * @param res
  * @param next
  */
-export const errorMiddleware = (
+export const errorMiddleware = (responseError: ResponseError) => (
   _: Request,
   res: Response,
   next: NextFunction
 ) => {
-  if (ioDevServerConfig.global.responseError === undefined) {
+  if (responseError === undefined) {
     next();
     return;
   }
   const random = faker.datatype.number({ min: 0, max: 1, precision: 0.01 });
-  const { chance, codes } = ioDevServerConfig.global.responseError;
+  const { chance, codes } = responseError;
   // out of the chance, do nothing
   if (random > chance) {
     next();

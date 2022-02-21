@@ -9,6 +9,8 @@ import { sendFile } from "../utils/file";
 import chalk from "chalk";
 
 import * as t from "io-ts";
+import { WithinRangeNumber } from "italia-ts-commons/lib/numbers";
+import { errorMiddleware } from "../middleware/errorMiddleware";
 
 type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
@@ -53,12 +55,27 @@ type WithAvvio<T> = T & Avvio.Server<T>;
 
 export type Plugin<O = {}> = Avvio.Plugin<O, Server>;
 
+
+
+const ErrorCodes = WithinRangeNumber(400, 600);
+type ErrorCodes = t.TypeOf<typeof ErrorCodes>;
+
+const responseError = t.interface({
+  // the probability that server will response with an error
+  chance: WithinRangeNumber(0, 1),
+  // a bucket of error codes. If the server will response with an error, a random one will be picked
+  codes: t.readonlyArray(ErrorCodes)
+});
+
+export type ResponseError = t.TypeOf<typeof responseError>;
+
 type ServerOptions = {
   logger: boolean;
+  responseError?: ResponseError
 };
 
 const defaultOptions: ServerOptions = {
-  logger: false
+  logger: false,
 };
 
 const makeHandleRoute = (routes: Array<Route>) => (
@@ -130,6 +147,9 @@ export const createServer = (options = defaultOptions): WithAvvio<Server> => {
           ":date[iso] :method :url :status :res[content-length] - :response-time ms"
         )
       );
+    }
+    if (options.responseError) {
+      app.use(errorMiddleware(options.responseError))
     }
     ctx.routes().forEach(route => {
       app[route.method](route.path, route.handler);
