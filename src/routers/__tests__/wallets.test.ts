@@ -157,6 +157,7 @@ it("should remove in bulk all these methods that have a specific function enable
     if (E.isRight(deleteResponse) && deleteResponse.value.data) {
       expect(deleteResponse.value.data.deletedWallets).toBe(toBeDeleted);
       expect(deleteResponse.value.data.notDeletedWallets).toBe(0);
+      expect(deleteResponse.value.data.remainingWallets).toBe([]);
     }
     testResponse(pagopaWallets.length, response);
     testResponse(bpdWallets.length, responseBpd);
