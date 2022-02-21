@@ -118,7 +118,7 @@ export const BPDPlugin: Plugin<BPDPluginOptions> = async (
         res.json(currentCitizenV2);
       }
     )
-  ););
+  ));
 
   /**
    * patch the citizen
