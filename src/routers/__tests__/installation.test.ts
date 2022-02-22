@@ -11,7 +11,7 @@ let request: SuperTest<Test>;
 
 beforeAll(async () => {
   const ioDevelopmentServer = createIODevelopmentServer();
-  const app = await ioDevelopmentServer.toExpressApplication();
+  const app = await ioDevelopmentServer.toExpressInstance();
   request = supertest(app);
 });
 

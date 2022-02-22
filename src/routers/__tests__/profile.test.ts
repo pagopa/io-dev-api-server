@@ -19,7 +19,7 @@ let fiscalCode: FiscalCode;
 
 beforeAll(async () => {
   const ioDevelopmentServer = createIODevelopmentServer();
-  const app = await ioDevelopmentServer.toExpressApplication();
+  const app = await ioDevelopmentServer.toExpressInstance();
   request = supertest(app);
   fiscalCode = ioDevelopmentServer.loadedConfig.profile.attrs.fiscal_code;
 });
