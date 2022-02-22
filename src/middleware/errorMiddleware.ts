@@ -1,6 +1,18 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import * as faker from "faker";
-import { ResponseError } from "../core/server";
+import * as t from "io-ts";
+import { WithinRangeNumber } from "italia-ts-commons/lib/numbers";
+
+const ErrorCodes = WithinRangeNumber(400, 600);
+
+export const ResponseError = t.interface({
+  // the probability that server will response with an error
+  chance: WithinRangeNumber(0, 1),
+  // a bucket of error codes. If the server will response with an error, a random one will be picked
+  codes: t.readonlyArray(ErrorCodes)
+});
+
+export type ResponseError = t.TypeOf<typeof ResponseError>;
 
 /**
  * if the response error is defined as a global config

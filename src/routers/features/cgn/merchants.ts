@@ -96,8 +96,7 @@ export const CGNMerchantsPlugin: Plugin = async ({ handleRoute, sendFile }) => {
     const foundMerchant = merchantsAll[merchIndex];
 
     res.json(foundMerchant);
-  }
-);
+  });
 
   handleRoute(
     "get",
@@ -110,10 +109,7 @@ export const CGNMerchantsPlugin: Plugin = async ({ handleRoute, sendFile }) => {
     }
   );
 
-handleRoute(
-  "get",
-  addPrefix("/published-product-categories"),
-  (_, res) => {
+  handleRoute("get", addPrefix("/published-product-categories"), (_, res) => {
     const categories: ReadonlyArray<ProductCategoryEnum> = [
       ...onlineMerchants.items,
       ...offlineMerchants.items
@@ -121,8 +117,7 @@ handleRoute(
     const categoriesSet = new Set(categories);
 
     res.json({ items: Array.from(categoriesSet) });
-  }
-);
+  });
 
   /**
    * just for test purposes an html page that works as

@@ -16,7 +16,6 @@ beforeAll(async () => {
   request = supertest(app);
 });
 
-
 describe("citizen V2 API", () => {
   describe("GET", () => {
     describe("when the citizen is not enrolled", () => {

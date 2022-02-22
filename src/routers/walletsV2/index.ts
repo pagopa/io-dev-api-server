@@ -328,32 +328,32 @@ export const WalletV2Plugin: Plugin<WalletV2PluginOptions> = async (
   );
 
   // remove from wallet all these methods that have a specific function enabled (BPD, PagoPA, etc..)
-handleRoute(
-  "delete",
-  appendWalletV2Prefix("/wallet/delete-wallets"),
-  (req, res) => {
-    const service = req.query.service as EnableableFunctionsEnum;
-    // tslint:disable-next-line: readonly-array
-    const deletedWallets: number[] = [];
-    const walletsToDelete = getWalletV2().filter(w =>
-      (w.enableableFunctions ?? []).includes(service)
-    );
-    walletsToDelete.forEach(w => {
-      const idWallet = w.idWallet ?? -1;
-      if (removeWalletV2(idWallet)) {
-        deletedWallets.push(idWallet);
-      }
-    });
-    const response: DeletedWalletsResponse = {
-      data: {
-        deletedWallets: deletedWallets.length,
-        notDeletedWallets: walletsToDelete.length - deletedWallets.length,
-        remainingWallets: getWalletV2()
-      }
-    };
-    res.json(response);
-  }
-);
+  handleRoute(
+    "delete",
+    appendWalletV2Prefix("/wallet/delete-wallets"),
+    (req, res) => {
+      const service = req.query.service as EnableableFunctionsEnum;
+      // tslint:disable-next-line: readonly-array
+      const deletedWallets: number[] = [];
+      const walletsToDelete = getWalletV2().filter(w =>
+        (w.enableableFunctions ?? []).includes(service)
+      );
+      walletsToDelete.forEach(w => {
+        const idWallet = w.idWallet ?? -1;
+        if (removeWalletV2(idWallet)) {
+          deletedWallets.push(idWallet);
+        }
+      });
+      const response: DeletedWalletsResponse = {
+        data: {
+          deletedWallets: deletedWallets.length,
+          notDeletedWallets: walletsToDelete.length - deletedWallets.length,
+          remainingWallets: getWalletV2()
+        }
+      };
+      res.json(response);
+    }
+  );
 
   /**
    * return the list of psp from a given payment id and wallet id

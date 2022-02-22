@@ -44,7 +44,7 @@ export const BPDPlugin: Plugin<BPDPluginOptions> = async (
     payoffInstr: "",
     payoffInstrType: "IBAN",
     timestampTC: new Date(),
-    optInStatus: CitizenOptInStatusEnum.NOREQ,
+    optInStatus: CitizenOptInStatusEnum.NOREQ
   };
 
   /**
@@ -94,31 +94,33 @@ export const BPDPlugin: Plugin<BPDPluginOptions> = async (
   });
 
   // tslint:disable-next-line:no-identical-functions
-  handleRoute("put", addBPDPrefix("/io/citizen/v2"), (req, res) => pipe(
-    CitizenOptInStatus.decode(req.body.optInStatus),
-    E.fold(
-      // tslint:disable-next-line:no-identical-functions
-      () => {
-        currentCitizenV2 = {
-          ...citizenV2,
-          enabled: true
-        };
-        res.json(currentCitizenV2);
-      },
-      optIn => {
-        // if the citizen is not enrolled, the updating of optInStatus is a bad request
-        if (currentCitizenV2 === undefined || !currentCitizenV2.enabled) {
-          res.sendStatus(400);
-          return;
+  handleRoute("put", addBPDPrefix("/io/citizen/v2"), (req, res) =>
+    pipe(
+      CitizenOptInStatus.decode(req.body.optInStatus),
+      E.fold(
+        // tslint:disable-next-line:no-identical-functions
+        () => {
+          currentCitizenV2 = {
+            ...citizenV2,
+            enabled: true
+          };
+          res.json(currentCitizenV2);
+        },
+        optIn => {
+          // if the citizen is not enrolled, the updating of optInStatus is a bad request
+          if (currentCitizenV2 === undefined || !currentCitizenV2.enabled) {
+            res.sendStatus(400);
+            return;
+          }
+          currentCitizenV2 = {
+            ...currentCitizenV2,
+            optInStatus: optIn
+          };
+          res.json(currentCitizenV2);
         }
-        currentCitizenV2 = {
-          ...currentCitizenV2,
-          optInStatus: optIn
-        };
-        res.json(currentCitizenV2);
-      }
+      )
     )
-  ));
+  );
 
   /**
    * patch the citizen

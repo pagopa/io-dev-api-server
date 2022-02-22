@@ -20,8 +20,7 @@ const start = async () => {
   const customConfig = await loadConfig();
   const config = _.merge(customConfig, defaultIODevelopmentOptions);
   const server = createIODevelopmentServer(config);
-  const { routes } = await server.listen(3000, "localhost");
-  console.log(routes.length);
+  await server.listen(3000, "localhost");
   console.log("listening to 3000...");
 };
 

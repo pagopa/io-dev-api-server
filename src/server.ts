@@ -1,4 +1,5 @@
-import { createServer } from "./core/server";
+import { createServer, Server } from "./core/server";
+
 import { IODevelopmentPlugin, IODevelopmentPluginOptions } from "./io-dev";
 
 import { ProfilePluginOptions } from "./routers/profile";
@@ -8,8 +9,13 @@ import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import { WalletMethodConfig } from "./routers/walletsV2";
 
+import bodyParser from "body-parser";
+import morgan from "morgan";
+import { errorMiddleware, ResponseError } from "./middleware/errorMiddleware";
+
 export type IODevelopmentServerOptions = {
   logger: boolean;
+  responseError?: ResponseError;
 } & IODevelopmentPluginOptions;
 
 export const defaultProfileAttrs: ProfilePluginOptions["profile"]["attrs"] = {
@@ -94,16 +100,30 @@ export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
   }
 };
 
-export type IODevelomentServer = ReturnType<typeof createServer> & {
+export type IODevelomentServer = Server & {
   loadedConfig: Readonly<IODevelopmentServerOptions>;
 };
 
 export function createIODevelopmentServer(
   options = defaultIODevelopmentOptions
 ): IODevelomentServer {
-  const server = createServer({
-    logger: options.logger
+  const server = createServer();
+
+  server.useExpressInstance(async app => {
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+    if (options.logger) {
+      app.use(
+        morgan(
+          ":date[iso] :method :url :status :res[content-length] - :response-time ms"
+        )
+      );
+    }
+    if (options.responseError) {
+      app.use(errorMiddleware(options.responseError));
+    }
   });
+
   server.use(IODevelopmentPlugin, options);
   return { ...server, loadedConfig: options };
 }
