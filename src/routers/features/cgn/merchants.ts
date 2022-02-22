@@ -10,10 +10,8 @@ import { OnlineMerchantSearchRequest } from "../../../../generated/definitions/c
 import { ProductCategoryEnum } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { getProblemJson } from "../../../payloads/error";
 
-import { getRandomValue } from "../../../utils/random";
-
 import {
-  generateMerchantsAll,
+  makeGenerateMerchantsAll,
   offlineMerchants,
   onlineMerchants
 } from "../../../payloads/features/cgn/merchants";
@@ -25,8 +23,6 @@ import { Plugin } from "../../../core/server";
 
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/cgn/operator-search${path}`);
-
-const merchantsAll = generateMerchantsAll();
 
 const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
   merchants: ReadonlyArray<T>,
@@ -52,7 +48,13 @@ const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
   return merchants.filter(filters);
 };
 
-export const CGNMerchantsPlugin: Plugin = async ({ handleRoute, sendFile }) => {
+export const CGNMerchantsPlugin: Plugin = async ({
+  handleRoute,
+  sendFile,
+  getRandomValue
+}) => {
+  const merchantsAll = makeGenerateMerchantsAll(getRandomValue)();
+
   handleRoute("post", addPrefix("/online-merchants"), (req, res) => {
     if (OnlineMerchantSearchRequest.is(req.body)) {
       return res.status(200).json({

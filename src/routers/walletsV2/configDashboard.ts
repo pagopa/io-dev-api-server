@@ -10,7 +10,7 @@ import {
   resetCardConfig
 } from "../../payloads/wallet_v2";
 import {
-  generateWalletV2Data,
+  makeGenerateWalletV2Data,
   getWalletV2,
   updateWalletV2Config,
   walletV2Config,
@@ -62,9 +62,14 @@ export const getBPDPaymentMethod = () =>
   });
 
 export const WalletV2DashboardPlugin: Plugin<WalletV2PluginOptions> = async (
-  { handleRoute, sendFile },
+  { handleRoute, sendFile, getRandomValue },
   options
 ) => {
+  const walletGetRandomValues = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(defaultValue, randomValue, options.wallet.allowRandomValues);
+
+  const generateWalletV2Data = makeGenerateWalletV2Data(walletGetRandomValues);
+
   handleRoute(
     "get",
     "/",

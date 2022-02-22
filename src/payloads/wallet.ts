@@ -14,10 +14,10 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
+import { Server } from "../core/server";
 import { PaymentConfig } from "../routers/payment";
 
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
-import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
@@ -26,17 +26,18 @@ export const sessionToken: SessionResponse = {
   }
 };
 
-const getAmount = (payment?: PaymentConfig) =>
+const makeGetAmount = (
+  getRandomValue: <T>(defaultValue: T, randomValue: T) => T
+) => (payment?: PaymentConfig) =>
   getRandomValue(
     payment?.pspFeeAmount,
-    faker.datatype.number({ min: 1, max: 150 }),
-    "wallet"
+    faker.datatype.number({ min: 1, max: 150 })
   );
 
-export const createValidPsp = (
-  payment?: PaymentConfig,
-  variant: 1 | 2 | 3 = 1
-): Psp => {
+export const makeCreateValidPsp = (
+  getRandomValue: Server["getRandomValue"]
+) => (payment?: PaymentConfig, variant: 1 | 2 | 3 = 1): Psp => {
+  const getAmount = makeGetAmount(getRandomValue);
   switch (variant) {
     case 1:
       return {
@@ -118,18 +119,27 @@ export const createValidPsp = (
   }
 };
 
-export const createPspList = (payment?: PaymentConfig): ReadonlyArray<Psp> => [
-  createValidPsp(payment, 1),
-  createValidPsp(payment, 2),
-  createValidPsp(payment, 3)
-];
+export const makeCreatePspList = (getRandomValue: Server["getRandomValue"]) => (
+  payment?: PaymentConfig
+): ReadonlyArray<Psp> => {
+  const createValidPsp = makeCreateValidPsp(getRandomValue);
+  return [
+    createValidPsp(payment, 1),
+    createValidPsp(payment, 2),
+    createValidPsp(payment, 3)
+  ];
+};
 
-export const getPspFromId = (idPsp: number, payment?: PaymentConfig) => {
+export const makeGetPspFromId = (getRandomValue: Server["getRandomValue"]) => (
+  idPsp: number,
+  payment?: PaymentConfig
+) => {
+  const createPspList = makeCreatePspList(getRandomValue);
   const pspList = createPspList(payment);
   pspList.find(p => p.id === idPsp);
 };
 
-export const getWallets = (
+export const makeGetWallets = (getRandomValue: Server["getRandomValue"]) => (
   count: number = 4,
   payment?: PaymentConfig
 ): WalletListResponse => {
@@ -140,8 +150,7 @@ export const getWallets = (
   const generateCreditCard = (): CreditCard => {
     const ccBrand = getRandomValue(
       creditCardBrands[0],
-      faker.random.arrayElement(creditCardBrands),
-      "wallet"
+      faker.random.arrayElement(creditCardBrands)
     );
     creditCardId++;
     const expDate = faker.date.future();
@@ -156,8 +165,7 @@ export const getWallets = (
             .number(9999)
             .toString()
             .padStart(4, "0"),
-          creditCardId.toString().padStart(4, "0"),
-          "wallet"
+          creditCardId.toString().padStart(4, "0")
         ),
       expireMonth: (expDate.getMonth() + 1).toString().padStart(2, "0"),
       expireYear: expDate
@@ -172,6 +180,7 @@ export const getWallets = (
   const generateWallet = (): Wallet => {
     walletId++;
 
+    const createValidPsp = makeCreateValidPsp(getRandomValue);
     const validPsp = createValidPsp(payment);
 
     return {
@@ -179,7 +188,7 @@ export const getWallets = (
       type: TypeEnum.CREDIT_CARD,
       favourite: false,
       creditCard: generateCreditCard(),
-      // psp: validPsp,
+      psp: validPsp,
       idPsp: validPsp.id,
       pspEditable: true,
       lastUsage: new Date()
@@ -193,7 +202,9 @@ export const getWallets = (
   return validatePayload(WalletListResponse, data);
 };
 
-export const getTransactions = (
+export const makeGetTransactions = (
+  getRandomValue: Server["getRandomValue"]
+) => (
   count: number,
   confirmed: boolean = true,
   wallets?: ReadonlyArray<Wallet>
@@ -204,23 +215,16 @@ export const getTransactions = (
   return range(1, count).map(idx => {
     const amount = getRandomValue(
       20000 + idx * 10,
-      faker.datatype.number({ min: 100, max: 20000 }),
-      "wallet"
+      faker.datatype.number({ min: 100, max: 20000 })
     );
     const fee = getRandomValue(
       100,
-      faker.datatype.number({ min: 1, max: 150 }),
-      "wallet"
+      faker.datatype.number({ min: 1, max: 150 })
     );
-    const transactionId = getRandomValue(
-      idx,
-      faker.datatype.number(1000000),
-      "wallet"
-    );
+    const transactionId = getRandomValue(idx, faker.datatype.number(1000000));
     const transactionDescription = getRandomValue(
       `transaction - ${idx}`,
-      faker.finance.transactionDescription(),
-      "wallet"
+      faker.finance.transactionDescription()
     );
     const description = `/RFB/${transactionId}/${amount /
       100}/TXT/${transactionDescription}`;
@@ -228,13 +232,11 @@ export const getTransactions = (
     const now = new Date();
     const created = getRandomValue(
       new Date(now.getTime() + idx * delta),
-      faker.date.past(),
-      "wallet"
+      faker.date.past()
     );
     const merchant = getRandomValue(
       `merchant-${idx}`,
-      faker.company.companyName(),
-      "wallet"
+      faker.company.companyName()
     );
     return validatePayload(Transaction, {
       // 1 === transaction confirmed!

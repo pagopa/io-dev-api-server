@@ -1,25 +1,26 @@
 import * as faker from "faker";
-import { PublicSession } from "../../generated/definitions/backend/PublicSession";
 import { SpidLevel } from "../../generated/definitions/backend/SpidLevel";
-import { getRandomValue } from "../utils/random";
+import { Server } from "../core/server";
 import { validatePayload } from "../utils/validator";
+import { PublicSession } from "../../generated/definitions/backend/PublicSession";
 import { IOResponse } from "./response";
 
-const getToken = (defaultValue: string) =>
-  getRandomValue(
-    defaultValue,
-    faker.random.alphaNumeric(15).toUpperCase(),
-    "global"
-  );
+export const makeSession = (
+  getRandomValue: Server["getRandomValue"]
+): IOResponse<PublicSession> => {
+  const getToken = (defaultValue: string) =>
+    getRandomValue(defaultValue, faker.random.alphaNumeric(15).toUpperCase());
 
-export const customSession: PublicSession = {
-  spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
-  walletToken: getToken("AAAAAAAAAAAAA1"),
-  myPortalToken: getToken("AAAAAAAAAAAAA2"),
-  bpdToken: getToken("AAAAAAAAAAAAA3"),
-  zendeskToken: getToken("AAAAAAAAAAAAA4")
-};
-export const session: IOResponse<PublicSession> = {
-  payload: validatePayload(PublicSession, customSession),
-  isJson: true
+  const customSession: PublicSession = {
+    spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
+    walletToken: getToken("AAAAAAAAAAAAA1"),
+    myPortalToken: getToken("AAAAAAAAAAAAA2"),
+    bpdToken: getToken("AAAAAAAAAAAAA3"),
+    zendeskToken: getToken("AAAAAAAAAAAAA4")
+  };
+
+  return {
+    payload: validatePayload(PublicSession, customSession),
+    isJson: true
+  };
 };

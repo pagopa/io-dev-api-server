@@ -8,12 +8,30 @@ import { Card } from "../../../../generated/definitions/pagopa/walletv2/Card";
 import { Message } from "../../../../generated/definitions/pagopa/walletv2/Message";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../../../config";
-import { generateWalletV2FromCard } from "../../../payloads/wallet_v2";
+import { makeGenerateWalletV2FromCard } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
 import { abiResponse, addWalletV2, getWalletV2, pansResponse } from "../index";
 import { Plugin } from "../../../core/server";
 
-export const BANCOMATPlugin: Plugin = async ({ handleRoute }) => {
+export const BANCOMATPluginOptions = t.interface({
+  wallet: t.interface({
+    allowRandomValues: t.boolean
+  })
+});
+
+export type BANCOMATPluginOptions = t.TypeOf<typeof BANCOMATPluginOptions>;
+
+export const BANCOMATPlugin: Plugin<BANCOMATPluginOptions> = async (
+  { handleRoute, getRandomValue },
+  options
+) => {
+  const walletGetRandomValues = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(defaultValue, randomValue, options.wallet.allowRandomValues);
+
+  const generateWalletV2FromCard = makeGenerateWalletV2FromCard(
+    walletGetRandomValues
+  );
+
   /**
    * return the banks list
    * if 'abiQuery' is defined in query string a filter on name and abi will be applied

@@ -23,10 +23,10 @@ import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { cgnServiceId } from "../../../payloads/services/special";
 import { getRandomStringId } from "../../../utils/id";
-import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { servicesPreferences } from "../../service";
 import { Plugin } from "../../../core/server";
+import * as t from "io-ts";
 
 const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
 
@@ -72,7 +72,18 @@ export const resetCgn = () => {
   };
 };
 
-export const CGNPlugin: Plugin = async ({ handleRoute }) => {
+export const CGNPluginOptions = t.interface({
+  services: t.interface({
+    allowRandomValues: t.boolean
+  })
+});
+
+export type CGNPluginOptions = t.TypeOf<typeof CGNPluginOptions>;
+
+export const CGNPlugin: Plugin<CGNPluginOptions> = async (
+  { handleRoute, getRandomValue },
+  options
+) => {
   // Start bonus activation request procedure
   // 201 -> Request created.
   // 202 -> Processing request.
@@ -128,7 +139,11 @@ export const CGNPlugin: Plugin = async ({ handleRoute }) => {
             is_inbox_enabled: true,
             is_email_enabled:
               currentPreference?.is_email_enabled ??
-              getRandomValue(false, faker.datatype.boolean(), "services"),
+              getRandomValue(
+                false,
+                faker.datatype.boolean(),
+                options.services.allowRandomValues
+              ),
             is_webhook_enabled: faker.datatype.boolean(),
             settings_version: increasedSettingsVersion
           });

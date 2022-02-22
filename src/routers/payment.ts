@@ -15,7 +15,7 @@ import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { Plugin } from "../core/server";
 
-import { getPaymentRequestsGetResponse } from "../payloads/payload";
+import { makeGetPaymentRequestsGetResponse } from "../payloads/payload";
 
 import { serverIpv4Address, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
@@ -77,7 +77,8 @@ export const PaymentPluginOptions = t.intersection([
       onboardingCreditCardOutCode: t.number,
       // if verifica attiva will serve the given error
       verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
-      payment: PaymentConfig
+      payment: PaymentConfig,
+      allowRandomValues: t.boolean
     })
   })
 ]);
@@ -85,9 +86,16 @@ export const PaymentPluginOptions = t.intersection([
 export type PaymentPluginOptions = t.TypeOf<typeof PaymentPluginOptions>;
 
 export const PaymentPlugin: Plugin<PaymentPluginOptions> = async (
-  { handleRoute },
+  { handleRoute, getRandomValue },
   options
 ) => {
+  const walletGetRandomValue = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(defaultValue, randomValue, options.wallet.allowRandomValues);
+
+  const getPaymentRequestsGetResponse = makeGetPaymentRequestsGetResponse(
+    walletGetRandomValue
+  );
+
   /**
    * user wants to pay (VERIFICA)
    * this API return the current status of the payment

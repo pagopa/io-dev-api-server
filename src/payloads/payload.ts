@@ -15,12 +15,10 @@ import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/Pay
 import { LinguaEnum } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { PspListResponseCD as PspListResponse } from "../../generated/definitions/pagopa/walletv2/PspListResponseCD";
 import { PspResponse } from "../../generated/definitions/pagopa/walletv2/PspResponse";
+import { Server } from "../core/server";
 
 import { PaymentConfig } from "../routers/payment";
-import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
-
-import { createValidPsp } from "./wallet";
 
 type settings = {
   user: string;
@@ -65,7 +63,6 @@ export const getRandomNoticeNumber = (): string => {
   return newStr + messageNumber;
 };
 
-// TODO: find a better way to generate valid PSPs for payment data
 export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,
@@ -85,11 +82,6 @@ export const paymentData = {
   id: 12882164,
   urlRedirectEc:
     "http://mespaprod.soluzionipa.it/pagamenti?idSession=118a22f4-86d4-42d8-992c-7aead5ac8ed3&idDominio=01199250158", // link su piattaforma ente,
-  psps: [
-    { ...createValidPsp(), lingua: LinguaEnum.IT },
-    { ...createValidPsp(), lingua: LinguaEnum.IT },
-    { ...createValidPsp(), lingua: LinguaEnum.IT }
-  ],
   amount: {
     amount: 1 as ImportoEuroCents, // = 1 eurocent,
     currency: "EUR",
@@ -251,7 +243,9 @@ export const transactionIdResponseSecond = {
   }
 };
 
-export const getPaymentRequestsGetResponse = (
+export const makeGetPaymentRequestsGetResponse = (
+  getRandomValue: Server["getRandomValue"]
+) => (
   senderService: ServicePublic,
   payment?: PaymentConfig
 ): PaymentRequestsGetResponse => ({
@@ -260,8 +254,7 @@ export const getPaymentRequestsGetResponse = (
     faker.datatype.number({
       min: 1,
       max: 9999
-    }) as PaymentRequestsGetResponse["importoSingoloVersamento"],
-    "wallet"
+    }) as PaymentRequestsGetResponse["importoSingoloVersamento"]
   ),
   codiceContestoPagamento: faker.random.alphaNumeric(
     32
@@ -314,13 +307,6 @@ export const getPaymentResponse = (): PaymentResponse => {
     data: payment
   };
   return validatePayload(PaymentResponse, data);
-};
-
-export const getPspList = () => {
-  const data: PspListResponse = {
-    data: paymentData.psps
-  };
-  return validatePayload(PspListResponse, data);
 };
 
 // tslint:disable-next-line: readonly-array

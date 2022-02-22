@@ -42,7 +42,6 @@ const initialUserChoice: UserDeleteDownloadData = {
 let userChoices = initialUserChoice;
 
 // reset function
-// TODO: find a better way to export this function
 export let resetProfile: Lazy<void>;
 
 export const ProfileFiscalCodeAttr = t.interface({

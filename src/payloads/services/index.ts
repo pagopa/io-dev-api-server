@@ -13,9 +13,10 @@ import { ServicePreference } from "../../../generated/definitions/backend/Servic
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
 import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
+import { Server } from "../../core/server";
 
 import { isCgnActivated } from "../../routers/features/cgn";
-import { getRandomValue } from "../../utils/random";
+
 import { getService, getServiceMetadata } from "../../utils/service";
 import { validatePayload } from "../../utils/validator";
 import { frontMatter2CTA2 } from "../../utils/variables";
@@ -91,9 +92,9 @@ const specialServicesPreferenceFactory: Map<string, () => boolean> = new Map<
   () => boolean
 >([["cgn", isCgnActivated]]);
 
-export const getServicesPreferences = (
-  services: ReadonlyArray<ServicePublic>
-) =>
+export const makeGetServicesPreferences = (
+  getRandomValue: Server["getRandomValue"]
+) => (services: ReadonlyArray<ServicePublic>) =>
   new Map<ServiceId, ServicePreference>(
     services.map(s => {
       const metadata = s.service_metadata;
@@ -118,10 +119,10 @@ export const getServicesPreferences = (
           {
             is_inbox_enabled: hasSpecialServiceInbox,
             is_email_enabled: hasSpecialServiceInbox
-              ? getRandomValue(false, faker.datatype.boolean(), "services")
+              ? getRandomValue(false, faker.datatype.boolean())
               : false,
             is_webhook_enabled: hasSpecialServiceInbox
-              ? getRandomValue(false, faker.datatype.boolean(), "services")
+              ? getRandomValue(false, faker.datatype.boolean())
               : false,
             settings_version: 0 as ServicePreference["settings_version"]
           }

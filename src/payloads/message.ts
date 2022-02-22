@@ -17,11 +17,12 @@ import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backen
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { assetsFolder } from "../config";
+import { Server } from "../core/server";
 import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
-import { getRandomValue } from "../utils/random";
+
 import { serverIpv4Address, serverPort } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
@@ -61,7 +62,9 @@ export const withDueDate = (
 /**
  * Add the MVL payload to a generic message.
  */
-export const withLegalContent = (
+export const makeWithLegalContent = (
+  getRandomValue: Server["getRandomValue"]
+) => (
   message: CreatedMessageWithContent,
   mvlMsgId: string,
   attachments: ReadonlyArray<Attachment> = [],
@@ -69,11 +72,11 @@ export const withLegalContent = (
 ): LegalMessageWithContent => {
   // helper functions
   const getEmail = (hardCodedEmail: string) =>
-    getRandomValue(hardCodedEmail, faker.internet.email(), "messages");
+    getRandomValue(hardCodedEmail, faker.internet.email());
   const getWords = (hardCodedWords: string) =>
-    getRandomValue(hardCodedWords, faker.random.words(), "messages");
+    getRandomValue(hardCodedWords, faker.random.words());
   const getWord = (hardCodedWord: string) =>
-    getRandomValue(hardCodedWord, faker.random.word(), "messages");
+    getRandomValue(hardCodedWord, faker.random.word());
   const sender = getEmail("dear.leader@yourworld.hell") as NonEmptyString;
   const legalMessage: LegalMessage = {
     eml: {
@@ -91,7 +94,7 @@ export const withLegalContent = (
       },
       data: {
         sender_provider: getWord("apocalypse knights") as NonEmptyString,
-        timestamp: getRandomValue(new Date(), faker.date.past(), "messages"),
+        timestamp: getRandomValue(new Date(), faker.date.past()),
         envelope_id: getWord("abcde") as NonEmptyString,
         msg_id: mvlMsgId as NonEmptyString,
         receipt_type: getWord("what's that?")

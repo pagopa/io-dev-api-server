@@ -44,6 +44,7 @@ export const paymentMethods: WalletMethodConfig = {
   citizenPaypal: true
 };
 
+// todo: add server key
 export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
   logger: false,
   global: {
@@ -71,7 +72,8 @@ export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
     withEUCovidCert: false,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
-    standardMessageCount: 2
+    standardMessageCount: 2,
+    allowRandomValues: false
   },
   wallet: {
     methods: paymentMethods,
@@ -84,7 +86,8 @@ export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
     // success (0 outcome code)
     onboardingPaypalOutCode: 0,
     // success (0 outcome code)
-    paymentOutCode: 0
+    paymentOutCode: 0,
+    allowRandomValues: false
   },
   services: {
     response: {
@@ -96,7 +99,8 @@ export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
     national: 5,
     local: 5,
     includeSiciliaVola: false,
-    includeCgn: false
+    includeCgn: false,
+    allowRandomValues: false
   }
 };
 

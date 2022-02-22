@@ -15,7 +15,7 @@ import { MessageSubject } from "../../../generated/definitions/backend/MessageSu
 import { PrescriptionData } from "../../../generated/definitions/backend/PrescriptionData";
 import { PublicMessage } from "../../../generated/definitions/backend/PublicMessage";
 
-import { Plugin } from "../../core/server";
+import { Plugin, Server } from "../../core/server";
 import { getProblemJson } from "../../payloads/error";
 import {
   createMessage,
@@ -23,7 +23,7 @@ import {
   getMvlAttachments,
   withContent,
   withDueDate,
-  withLegalContent,
+  makeWithLegalContent,
   withPaymentData
 } from "../../payloads/message";
 
@@ -85,6 +85,7 @@ const makeGetNewMessage = (fiscalCode: FiscalCode) => (
 
 // tslint:disable-next-line: readonly-array
 const createMessages = (
+  getRandomValue: Server["getRandomValue"],
   fiscalCode: FiscalCode,
   options: NewMessagesOptions
 ): Array<
@@ -294,7 +295,14 @@ const createMessages = (
     );
     const mvlMsgId = message.id;
     const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
-    output.push(withLegalContent(message, message.id, attachments, isOdd));
+    output.push(
+      makeWithLegalContent(getRandomValue)(
+        message,
+        message.id,
+        attachments,
+        isOdd
+      )
+    );
   });
 
   return output;
@@ -334,10 +342,11 @@ const getPublicMessages = (
 };
 
 export const MessagePlugin: Plugin<MessagePluginOptions> = async (
-  { handleRoute, sendFile },
+  { handleRoute, sendFile, getRandomValue },
   options
 ) => {
-  // TODO: trovare una soluzione migliore
+  // TODO: forse sarebbe meglio creare un costruttore diverso, questo
+  // non è molto bello da vedere.
   const newMessagesOptions: NewMessagesOptions = {
     legalCount: options.messages.legalCount,
     paymentsCount: options.messages.paymentsCount,
@@ -356,16 +365,24 @@ export const MessagePlugin: Plugin<MessagePluginOptions> = async (
     withCTA: options.messages.withCTA
   };
 
+  const messageGetRandomValue = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(
+      defaultValue,
+      randomValue,
+      options.messages.allowRandomValues
+    );
+
   messagesWithContent = createMessages(
+    messageGetRandomValue,
     options.profile.attrs.fiscal_code,
     newMessagesOptions
   );
 
   if (options.messages.liveMode) {
-    /* TODO: testare liveMode */
     const count = options.messages.liveMode.count;
     setInterval(() => {
       const nextMessages = createMessages(
+        messageGetRandomValue,
         options.profile.attrs.fiscal_code,
         newMessagesOptions
       );

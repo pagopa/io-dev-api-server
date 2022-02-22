@@ -17,7 +17,8 @@ import {
   ProductCategory,
   ProductCategoryEnum
 } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
-import { getRandomValue } from "../../../utils/random";
+import { Server } from "../../../core/server";
+
 import { serverIpv4Address, serverPort } from "../../../utils/server";
 
 const availableCategories: ReadonlyArray<ProductCategory> = [
@@ -104,12 +105,14 @@ export const offlineMerchants: OfflineMerchants = {
 
 const discountUrl = `http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"];
 
-const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
+const makeGenerateDiscountMethod = (
+  getRandomValue: Server["getRandomValue"]
+) => (discountCodeType: DiscountCodeTypeEnum) => {
   switch (discountCodeType) {
     case "static":
       return {
         staticCode: faker.datatype.string().toString() as NonEmptyString,
-        discountUrl: getRandomValue(false, faker.datatype.boolean(), "global")
+        discountUrl: getRandomValue(false, faker.datatype.boolean())
           ? discountUrl
           : undefined
       };
@@ -123,7 +126,7 @@ const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
     case "api":
     case "bucket":
       return {
-        discountUrl: getRandomValue(false, faker.datatype.boolean(), "global")
+        discountUrl: getRandomValue(false, faker.datatype.boolean())
           ? discountUrl
           : undefined
       };
@@ -132,7 +135,7 @@ const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
   }
 };
 
-const generateDiscount = (
+const makeGenerateDiscount = (getRandomValue: Server["getRandomValue"]) => (
   productCategories: ReadonlyArray<ProductCategoryEnum>,
   discountCodeType?: DiscountCodeTypeEnum
 ) => {
@@ -154,17 +157,19 @@ const generateDiscount = (
     name: faker.commerce.productName() as NonEmptyString,
     startDate: faker.date.past(),
     endDate: faker.date.future(),
-    discount: getRandomValue(false, faker.datatype.boolean(), "global")
+    discount: getRandomValue(false, faker.datatype.boolean())
       ? faker.datatype.number({ min: 10, max: 30 })
       : undefined,
-    description: getRandomValue(false, faker.datatype.boolean(), "global")
+    description: getRandomValue(false, faker.datatype.boolean())
       ? (faker.lorem.lines(1) as NonEmptyString)
       : undefined,
-    condition: getRandomValue(false, faker.datatype.boolean(), "global")
+    condition: getRandomValue(false, faker.datatype.boolean())
       ? (faker.lorem.lines(1) as NonEmptyString)
       : undefined,
     productCategories: discountCategories
   };
+
+  const generateDiscountMethod = makeGenerateDiscountMethod(getRandomValue);
 
   return {
     ...discount,
@@ -172,9 +177,11 @@ const generateDiscount = (
   };
 };
 
-export const generateMerchantDetail = (
-  merchant: OnlineMerchant | OfflineMerchant
-): Merchant => {
+const makeGenerateMerchantDetail = (
+  getRandomValue: Server["getRandomValue"]
+) => (merchant: OnlineMerchant | OfflineMerchant): Merchant => {
+  const generateDiscount = makeGenerateDiscount(getRandomValue);
+
   if (OnlineMerchant.is(merchant)) {
     return {
       id: merchant.id,
@@ -207,11 +214,15 @@ export const generateMerchantDetail = (
   }
 };
 
-export const generateMerchantsAll = (): ReadonlyArray<Merchant> => {
+export const makeGenerateMerchantsAll = (
+  getRandomValue: Server["getRandomValue"]
+) => (): ReadonlyArray<Merchant> => {
   const merchants: ReadonlyArray<OnlineMerchant | OfflineMerchant> = [
     ...onlineMerchants.items,
     ...offlineMerchants.items
   ];
+
+  const generateMerchantDetail = makeGenerateMerchantDetail(getRandomValue);
 
   return merchants.map(m => generateMerchantDetail(m));
 };

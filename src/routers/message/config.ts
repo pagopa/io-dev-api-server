@@ -35,7 +35,8 @@ export const MessageConfig = t.intersection([
     withValidDueDateCount: t.number,
     // with invalid (expired) due date
     withInValidDueDateCount: t.number,
-    standardMessageCount: t.number
+    standardMessageCount: t.number,
+    allowRandomValues: t.boolean
   }),
   t.partial({
     liveMode: t.interface({

@@ -31,6 +31,7 @@ import {
 } from "../../generated/definitions/pagopa/walletv2/CardInfo";
 import { SatispayInfo } from "../../generated/definitions/pagopa/walletv2/SatispayInfo";
 import { assetsFolder } from "../config";
+import { Server } from "../core/server";
 import { currentProfile } from "../routers/profile";
 import { readFileAsJSON } from "../utils/file";
 import { isDefined } from "../utils/guards";
@@ -39,7 +40,6 @@ import {
   creditCardBrands,
   getCreditCardLogo
 } from "../utils/payment";
-import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 
 type CardConfig = {
@@ -214,7 +214,9 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   };
 });
 
-export const generateWalletV2FromCard = (
+export const makeGenerateWalletV2FromCard = (
+  getRandomValue: Server["getRandomValue"]
+) => (
   card: Card,
   walletType: WalletTypeEnum,
   canMethodPay: boolean,
@@ -229,8 +231,7 @@ export const generateWalletV2FromCard = (
     : faker.date.future();
   const ccBrand = getRandomValue(
     CreditCardBrandEnum.MAESTRO,
-    faker.random.arrayElement(creditCardBrands),
-    "wallet"
+    faker.random.arrayElement(creditCardBrands)
   );
 
   const info = {

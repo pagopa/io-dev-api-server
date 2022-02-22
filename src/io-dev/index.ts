@@ -73,19 +73,22 @@ export const IODevelopmentPlugin: Plugin<IODevelopmentPluginOptions> = async (
           onboardingCreditCardOutCode:
             options.wallet.onboardingCreditCardOutCode,
           shuffleAbi: options.wallet.shuffleAbi,
-          payment: options.wallet.payment
+          payment: options.wallet.payment,
+          allowRandomValues: options.wallet.allowRandomValues
         }
       });
       app
         .use(WalletV2Plugin, {
           wallet: {
-            methods: options.wallet.methods
+            methods: options.wallet.methods,
+            allowRandomValues: options.wallet.allowRandomValues
           }
         })
         .after(() => {
           app.use(PayPalPlugin, {
             wallet: {
-              methods: options.wallet.methods
+              methods: options.wallet.methods,
+              allowRandomValues: options.wallet.allowRandomValues
             }
           });
         });
@@ -112,7 +115,12 @@ export const IODevelopmentPlugin: Plugin<IODevelopmentPluginOptions> = async (
 
   app.use(EUCovidCertPlugin);
 
-  app.use(CGNPlugin);
+  app.use(CGNPlugin, {
+    services: {
+      allowRandomValues: options.services.allowRandomValues
+    }
+  });
+
   app.use(CGNMerchantsPlugin);
   app.use(CGNGeocodingPlugin);
 

@@ -10,7 +10,7 @@ import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
 import { assetsFolder } from "../../config";
-import { Plugin } from "../../core/server";
+import { Plugin, Server } from "../../core/server";
 import {
   abiData,
   generateBancomatPay,
@@ -18,7 +18,7 @@ import {
   generatePaypalInfo,
   generatePrivativeFromWalletV2,
   generateSatispayInfo,
-  generateWalletV2FromCard,
+  makeGenerateWalletV2FromCard,
   generateWalletV2FromPaypal,
   generateWalletV2FromSatispayOrBancomatPay,
   privativeIssuers
@@ -35,8 +35,7 @@ import { CobadgePlugin } from "./methods/cobadge";
 import { SatispayPlugin } from "./methods/satispay";
 
 import * as t from "io-ts";
-
-// TODO: support for shuffle ABI
+import { Lazy } from "fp-ts/lib/function";
 
 export const abiResponse: AbiListResponse = {
   data: abiData
@@ -176,7 +175,11 @@ export const addWalletV2 = (
   };
 };
 
-export const generateWalletV2Data = () => {
+export const makeGenerateWalletV2Data = (
+  getRandomValue: Server["getRandomValue"]
+) => () => {
+  const generateWalletV2FromCard = makeGenerateWalletV2FromCard(getRandomValue);
+
   // bancomat owned by the citizen but not added in his wallet
   pansResponse = {
     data: { data: citizenBancomat() }
@@ -295,26 +298,34 @@ export const generateWalletV2Data = () => {
 };
 
 // reset function
-export const resetWalletV2 = () => {
-  generateWalletV2Data();
-};
-
-// at the server startup
-generateWalletV2Data();
+export let resetWalletV2: Lazy<void>;
 
 export const WalletV2PluginOptions = t.interface({
   wallet: t.interface({
-    methods: WalletMethodConfig
+    methods: WalletMethodConfig,
+    allowRandomValues: t.boolean
   })
 });
 
 export type WalletV2PluginOptions = t.TypeOf<typeof WalletV2PluginOptions>;
 
 export const WalletV2Plugin: Plugin<WalletV2PluginOptions> = async (
-  { handleRoute, use },
+  { handleRoute, use, getRandomValue },
   options
 ) => {
   updateWalletV2Config(options.wallet.methods);
+
+  const walletGetRandomValues = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(defaultValue, randomValue, options.wallet.allowRandomValues);
+
+  const generateWalletV2Data = makeGenerateWalletV2Data(walletGetRandomValues);
+
+  // at the server startup
+  generateWalletV2Data();
+
+  resetWalletV2 = () => {
+    generateWalletV2Data();
+  };
 
   // return the list of wallets
   handleRoute("get", appendWalletV2Prefix("/wallet"), (_, res) =>

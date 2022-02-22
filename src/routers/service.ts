@@ -12,7 +12,7 @@ import * as t from "io-ts";
 
 import {
   getServices,
-  getServicesPreferences,
+  makeGetServicesPreferences,
   getServicesTuple
 } from "../payloads/services";
 
@@ -36,7 +36,8 @@ export const ServicePluginOptions = t.interface({
     // number of services local
     local: t.number,
     includeSiciliaVola: t.boolean,
-    includeCgn: t.boolean
+    includeCgn: t.boolean,
+    allowRandomValues: t.boolean
   })
 });
 
@@ -44,12 +45,23 @@ export type ServicePluginOptions = t.TypeOf<typeof ServicePluginOptions>;
 
 export let services: ReadonlyArray<ServicePublic> = [];
 export let visibleServices = getServicesTuple(services);
-export let servicesPreferences = getServicesPreferences(services);
+export let servicesPreferences: Map<ServiceId, ServicePreference>;
 
 export const ServicePlugin: Plugin<ServicePluginOptions> = async (
-  { handleRoute, sendFile },
+  { handleRoute, sendFile, getRandomValue },
   options
 ) => {
+  const servicesGetRandomValue = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(
+      defaultValue,
+      randomValue,
+      options.services.allowRandomValues
+    );
+
+  const getServicesPreferences = makeGetServicesPreferences(
+    servicesGetRandomValue
+  );
+
   services = getServices(
     options.services.national,
     options.services.local,

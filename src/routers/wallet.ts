@@ -21,20 +21,22 @@ import {
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
 
+import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
+
 import {
-  getPspFromId,
-  getTransactions,
-  getWallets,
-  createPspList,
+  makeGetPspFromId,
+  makeGetTransactions,
+  makeGetWallets,
+  makeCreatePspList,
   sessionToken,
-  createValidPsp
+  makeCreateValidPsp
 } from "../payloads/wallet";
 import {
   abiData,
   generateCards,
   generateWalletV1FromCardInfo,
   generateWalletV1FromPayPal,
-  generateWalletV2FromCard
+  makeGenerateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
 import { serverIpv4Address, serverPort } from "../utils/server";
@@ -63,14 +65,11 @@ export const walletCount =
 
 // wallets and transactions
 // TODO: find a better way to export wallets
-export const wallets = getWallets(walletCount);
+export let wallets: WalletListResponse;
+
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
-export const transactions: ReadonlyArray<Transaction> = getTransactions(
-  transactionsTotal,
-  true,
-  wallets.data
-);
+export let transactions: ReadonlyArray<Transaction>;
 
 const convertFavouriteWalletfromV2V1 = (
   wallet: WalletV2
@@ -89,7 +88,8 @@ const convertFavouriteWalletfromV2V1 = (
 export const WalletPluginOptions = t.interface({
   wallet: t.intersection([
     t.interface({
-      shuffleAbi: t.boolean
+      shuffleAbi: t.boolean,
+      allowRandomValues: t.boolean
     }),
     t.partial({
       onboardingCreditCardOutCode: t.number,
@@ -101,9 +101,26 @@ export const WalletPluginOptions = t.interface({
 export type WalletPluginOptions = t.TypeOf<typeof WalletPluginOptions>;
 
 export const WalletPlugin: Plugin<WalletPluginOptions> = async (
-  { handleRoute },
+  { handleRoute, getRandomValue },
   options
 ) => {
+  const walletGetRandomValue = <T>(defaultValue: T, randomValue: T) =>
+    getRandomValue(defaultValue, randomValue, options.wallet.allowRandomValues);
+
+  const createValidPsp = makeCreateValidPsp(walletGetRandomValue);
+  const createPspList = makeCreatePspList(walletGetRandomValue);
+  const getPspFromId = makeGetPspFromId(walletGetRandomValue);
+  const getTransactions = makeGetTransactions(walletGetRandomValue);
+  const generateWalletV2FromCard = makeGenerateWalletV2FromCard(
+    walletGetRandomValue
+  );
+
+  const getWallets = makeGetWallets(walletGetRandomValue);
+
+  wallets = getWallets();
+
+  transactions = getTransactions(transactionsTotal, true, wallets.data);
+
   handleRoute(
     "get",
     appendWalletV1Prefix("/users/actions/start-session"),
@@ -291,7 +308,7 @@ export const WalletPlugin: Plugin<WalletPluginOptions> = async (
             amount: 1,
             decimalDigits: 2
           },
-          urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`, // TODO: trovare modo per fornire queste informazioni a runtime
+          urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`, // TODO: queste informazioni, anche se statiche, sarebbe meglio fornirle a runtime
           paymentModel: 0,
           token: "MTg5MDIxNzQ=",
           idWallet: 12345678,

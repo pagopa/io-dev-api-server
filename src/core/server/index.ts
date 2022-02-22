@@ -20,31 +20,41 @@ type PluggableServerAPI = {
   handleRoute: ReturnType<typeof m.makeHandleRoute>;
   useExpressInstance: ReturnType<typeof m.makeUseExpressApplication>;
   sendFile: typeof sendFile;
+  getRandomValue: <T>(
+    defaultValue: T,
+    randomValue: T,
+    allowRandomValue?: boolean
+  ) => T;
 } & avvio.Server<PluggableServerAPI>;
-
-const setupPluggableServerAPI = (ms: m.Middleware[]) => {
-  const api = {
-    handleRoute: m.makeHandleRoute(ms),
-    useExpressInstance: m.makeUseExpressApplication(ms),
-    sendFile
-  };
-  avvio(api, {
-    autostart: false
-  });
-  return api as PluggableServerAPI;
-};
 
 export type Server = PluggableServerAPI & {
   listen: (port: number, hostname: string) => Promise<void>;
   toExpressInstance: () => Promise<express.Express>;
+  setAllowRandomValues: (b: boolean) => void;
 };
 
 export type Plugin<O = {}> = avvio.Plugin<O, PluggableServerAPI>;
 
 export const createServer = (): Server => {
   const ms: m.Middleware[] = [];
+  let allowRandomValues = false;
 
-  const server = setupPluggableServerAPI(ms);
+  const api = {
+    handleRoute: m.makeHandleRoute(ms),
+    useExpressInstance: m.makeUseExpressApplication(ms),
+    sendFile,
+    getRandomValue: <T>(
+      defaultValue: T,
+      randomValue: T = defaultValue,
+      allowRandomValue = allowRandomValues
+    ) => (allowRandomValue ? randomValue : defaultValue)
+  };
+
+  avvio(api, {
+    autostart: false
+  });
+
+  const server = api as PluggableServerAPI;
 
   const toExpressInstance = async () => {
     await server.ready();
@@ -60,9 +70,14 @@ export const createServer = (): Server => {
     });
   };
 
+  const setAllowRandomValues = (b: boolean) => {
+    allowRandomValues = b;
+  };
+
   return {
     ...server,
     toExpressInstance,
-    listen
+    listen,
+    setAllowRandomValues
   };
 };
