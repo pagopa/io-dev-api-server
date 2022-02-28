@@ -4,9 +4,10 @@ import { CreatedMessageWithoutContent } from "../../../generated/definitions/bac
 import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
 import { basePath } from "../../payloads/response";
+import MessagesDB from "../../persistence/messages";
 import app from "../../server";
-import { messagesWithContent } from "../message";
 
+const inboxMessages = MessagesDB;
 const request = supertest(app);
 
 describe("when a valid request is sent", () => {
@@ -152,7 +153,8 @@ it("messages should return a valid message with content with enriched data", asy
 });
 
 it("messages should return a valid message with content", async () => {
-  const messageId = messagesWithContent[0].id;
+  // @ts-ignore
+  const messageId = inboxMessages[0].id;
   const response = await request.get(`${basePath}/messages/${messageId}`);
   expect(response.status).toBe(200);
   const message = CreatedMessageWithoutContent.decode(response.body);

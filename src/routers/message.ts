@@ -25,6 +25,7 @@ import {
   withPaymentData
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
+import MessagesDB from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
@@ -285,8 +286,8 @@ const createMessages = (): Array<
   return output;
 };
 
-// tslint:disable-next-line: readonly-array
-export const messagesWithContent: ReturnType<typeof createMessages> = createMessages();
+// INIT messages storage
+MessagesDB.persist(createMessages());
 
 if (ioDevServerConfig.messages.liveMode) {
   // if live updates is on, we prepend new messages to the collection
@@ -295,11 +296,8 @@ if (ioDevServerConfig.messages.liveMode) {
   setInterval(() => {
     const nextMessages = createMessages();
 
-    messagesWithContent.unshift(
-      ..._.shuffle(nextMessages).slice(
-        0,
-        Math.min(count, nextMessages.length - 1)
-      )
+    MessagesDB.persist(
+      _.shuffle(nextMessages).slice(0, Math.min(count, nextMessages.length - 1))
     );
   }, interval);
 }
@@ -343,7 +341,8 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     // default enrichResultData = false
     enrichResultData: (req.query.enrich_result_data ?? false) === "true",
     maximumId: req.query.maximum_id,
-    minimumId: req.query.minimum_id
+    minimumId: req.query.minimum_id,
+    getArchived: req.query.get_archived ?? false
   });
   if (E.isLeft(paginatedQuery)) {
     // bad request
@@ -352,8 +351,10 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   }
 
   const params = paginatedQuery.value;
-  // order messages by creation date (desc)
-  const orderedList = _.orderBy(messagesWithContent, "created_at", ["desc"]);
+  const orderedList =
+    paginatedQuery.map(p => p.getArchived).value === true
+      ? MessagesDB.findAllArchived()
+      : MessagesDB.findAllInbox();
 
   const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
   const indexes:
@@ -434,7 +435,7 @@ addHandler(
       return;
     }
     // retrieve the messageIndex from id
-    const message = messagesWithContent.find(item => item.id === req.params.id);
+    const message = MessagesDB.findOneById(req.params.id);
     if (message === undefined) {
       res.json(getProblemJson(404, "message not found"));
       return;
@@ -453,7 +454,7 @@ addHandler(
       return;
     }
     // retrieve the messageIndex from id
-    const message = messagesWithContent.find(item => item.id === req.params.id);
+    const message = MessagesDB.findOneById(req.params.id);
     if (message === undefined) {
       res.json(getProblemJson(404, "message not found"));
       return;
@@ -473,9 +474,7 @@ addHandler(
   addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
   (req, res) => {
     // find the message by the given legalMessageID
-    const message = messagesWithContent.find(
-      ld => ld.id === req.params.legalMessageId
-    );
+    const message = MessagesDB.findOneById(req.params.legalMessageId);
     const legalMessage = LegalMessageWithContent.decode(message);
     // ensure message exists and it has a legal content
     if (message === undefined || E.isLeft(legalMessage)) {
