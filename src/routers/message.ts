@@ -289,6 +289,12 @@ const createMessages = (): Array<
 // INIT messages storage
 MessagesDB.persist(createMessages());
 
+if (ioDevServerConfig.messages.archivedMessageCount > 0) {
+  _.shuffle(MessagesDB.findAllInbox())
+    .slice(0, ioDevServerConfig.messages.archivedMessageCount)
+    .forEach(({ id }) => MessagesDB.archive(id));
+}
+
 if (ioDevServerConfig.messages.liveMode) {
   // if live updates is on, we prepend new messages to the collection
   const count = ioDevServerConfig.messages.liveMode.count || 2;
@@ -342,7 +348,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     enrichResultData: (req.query.enrich_result_data ?? false) === "true",
     maximumId: req.query.maximum_id,
     minimumId: req.query.minimum_id,
-    getArchived: req.query.get_archived ?? false
+    getArchived: Boolean(req.query.get_archived)
   });
   if (E.isLeft(paginatedQuery)) {
     // bad request
@@ -441,6 +447,41 @@ addHandler(
       return;
     }
     res.json(message);
+  }
+);
+
+addHandler(
+  messageRouter,
+  "put",
+  addApiV1Prefix("/messages/:id"),
+  (req, res) => {
+    if (configResponse.getMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getMessagesResponseCode);
+      return;
+    }
+    const { is_archived, is_read } = req.body;
+    if (is_archived === undefined && is_read === undefined) {
+      return res.json(getProblemJson(400, "Invalid payload"));
+    }
+
+    // tslint:disable-next-line: no-let
+    let result = false;
+    if (is_archived === true) {
+      result = MessagesDB.archive(req.params.id);
+    }
+    if (is_archived === false) {
+      result = MessagesDB.unarchive(req.params.id);
+    }
+
+    // note: is_read can only be set to true
+    if (is_read) {
+      result = MessagesDB.setReadMessage(req.params.id);
+    }
+
+    if (result) {
+      return res.status(200).json({ message: "ok" });
+    }
+    return res.status(404).json({ message: "ok" });
   }
 );
 

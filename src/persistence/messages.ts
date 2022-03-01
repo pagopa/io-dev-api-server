@@ -1,9 +1,17 @@
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 
-export type MessageOnDB =
+// TODO: remove once https://github.com/pagopa/io-functions-commons/pull/238 is merged
+type MessageStatusData = {
+  is_read: boolean;
+  is_archived: boolean;
+};
+
+type MessageFromBE =
   | CreatedMessageWithContentAndAttachments
   | CreatedMessageWithContent;
+
+export type MessageOnDB = MessageFromBE & MessageStatusData;
 
 // tslint:disable-next-line: readonly-array no-let
 let inboxMessages: MessageOnDB[] = [];
@@ -12,6 +20,7 @@ let archivedMessages: MessageOnDB[] = [];
 
 /**
  * Move the message with ID to the archived collection.
+ * Return false if message ID is not in the Inbox.
  */
 function archive(id: string): boolean {
   const index = inboxMessages.findIndex(message => message.id === id);
@@ -22,28 +31,35 @@ function archive(id: string): boolean {
   const destinationIndex = archivedMessages.findIndex(
     message => message.id < id
   );
+  toArchived.is_archived = true;
   archivedMessages.splice(destinationIndex, 0, toArchived);
   return true;
 }
 
 /**
  * Move the message with ID to the inbox collection.
+ * Return false if message ID is not in the Archive.
  */
 function unarchive(id: string): boolean {
   const index = archivedMessages.findIndex(message => message.id === id);
   if (index < 0) {
     return false;
   }
-  const [toArchived] = archivedMessages.splice(index, 1);
+  const [toInbox] = archivedMessages.splice(index, 1);
   const destinationIndex = inboxMessages.findIndex(message => message.id < id);
-  inboxMessages.splice(destinationIndex, 0, toArchived);
+  toInbox.is_archived = false;
+  inboxMessages.splice(destinationIndex, 0, toInbox);
   return true;
 }
 
+/**
+ * Persist a list of messages. The extra attributes is_read and is_archived will
+ * be added.
+ */
 // tslint:disable-next-line: readonly-array no-let
-function persist(messages: MessageOnDB[]): void {
+function persist(messages: MessageFromBE[]): void {
   inboxMessages = inboxMessages
-    .concat(messages)
+    .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
@@ -71,12 +87,26 @@ function dropAll(): void {
   archivedMessages = [];
 }
 
+/**
+ * Set the message `isRead` status to true. The operation cannot be undone.
+ * Return false is the message was not found.
+ */
+function setReadMessage(id: string): boolean {
+  const message = findOneById(id);
+  if (message) {
+    message.is_read = true;
+    return true;
+  }
+  return false;
+}
+
 export default {
   archive,
-  persist,
+  dropAll,
   findAllArchived,
   findAllInbox,
   findOneById,
-  unarchive,
-  dropAll
+  persist,
+  setReadMessage,
+  unarchive
 };
