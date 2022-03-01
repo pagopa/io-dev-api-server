@@ -243,7 +243,7 @@ addHandler(
   "get",
   addRoutePrefix("/logos/spid/idps/:spid_logo"),
   (req, res) => {
-    const logoPath = `assets/imgs/logos/spid/${req.params.spid_logo}`;
+    const logoPath = `assets/spid/idps/${req.params.spid_logo}`;
     if (fileExists(logoPath)) {
       sendFile(logoPath, res);
       return;
