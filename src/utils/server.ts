@@ -32,10 +32,12 @@ export const interfaces = Object.entries(os.networkInterfaces())
     ]
   );
 
-export const serverIpv4Address = pipe(
+const serverIpv4Address = pipe(
   interfaces,
   A.filter(_ => _.name !== "loopback"),
   A.head,
   O.mapNullable(_ => _.address),
   O.getOrElse(() => "localhost")
 );
+
+export const serverUrl = `http://${serverIpv4Address}:${serverPort}`;

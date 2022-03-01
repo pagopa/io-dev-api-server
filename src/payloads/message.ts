@@ -22,7 +22,7 @@ import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
 import { getRandomValue } from "../utils/random";
-import { serverIpv4Address, serverPort } from "../utils/server";
+import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
@@ -204,7 +204,7 @@ export const getMvlAttachments = (
       const resource = addApiV1Prefix(
         `/legal-messages/${mvlMessageId}/attachments/${attachmentId}`
       );
-      const attachmentUrl = `http://${serverIpv4Address}:${serverPort}${resource}`;
+      const attachmentUrl = `${serverUrl}${resource}`;
       return {
         id: attachmentId,
         name: parsedFile.base,
