@@ -137,6 +137,9 @@ addHandler(
  * the landing Page of a discount for merchant reading the referrer header
  */
 addHandler(publicRouter, "get", "/merchant_landing", (req, res) => {
-  console.log("Referer header", req.header("referer"));
+  console.log(
+    "X-PagoPa-CGN-Referer header",
+    req.header("X-PagoPa-CGN-Referer")
+  );
   sendFile("assets/html/merchants_landing_page.html", res);
 });
