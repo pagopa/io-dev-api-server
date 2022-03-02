@@ -14,10 +14,10 @@ import { PatchedWalletV2ListResponse } from "../../types/PatchedWalletV2ListResp
 import { PatchedWalletV2Response } from "../../types/PatchedWalletV2Response";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../../utils/wallet";
 import {
+  getWalletCount,
   transactionPageSize,
   transactions,
-  transactionsTotal,
-  walletCount
+  transactionsTotal
 } from "../wallet";
 
 import supertest, { SuperTest, Test, Response } from "supertest";
@@ -25,11 +25,13 @@ import supertest, { SuperTest, Test, Response } from "supertest";
 import { createIODevelopmentServer } from "../../server";
 
 let request: SuperTest<Test>;
+let walletCount: number;
 
 beforeAll(async () => {
   const ioDevelopmentServer = createIODevelopmentServer();
   const app = await ioDevelopmentServer.toExpressInstance();
   request = supertest(app);
+  walletCount = getWalletCount(ioDevelopmentServer.loadedConfig.wallet.methods);
 });
 
 const testGetWallets = (response: Response) => {

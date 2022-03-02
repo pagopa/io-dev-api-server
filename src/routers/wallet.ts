@@ -47,21 +47,12 @@ import {
   findWalletById,
   getWalletV2,
   removeWalletV2,
-  walletV2Config
+  WalletMethodConfig
 } from "./walletsV2";
 
 import { PaymentConfig } from "./payment";
 
 import * as t from "io-ts";
-
-export const walletCount =
-  walletV2Config.paypalCount +
-  walletV2Config.satispayCount +
-  walletV2Config.privativeCount +
-  walletV2Config.walletBancomatCount +
-  walletV2Config.walletCreditCardCount +
-  walletV2Config.walletCreditCardCoBadgeCount +
-  walletV2Config.bPayCount;
 
 // wallets and transactions
 // TODO: find a better way to export wallets
@@ -70,6 +61,15 @@ export let wallets: WalletListResponse;
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export let transactions: ReadonlyArray<Transaction>;
+
+export const getWalletCount = (walletMethods: WalletMethodConfig) =>
+  walletMethods.paypalCount +
+  walletMethods.satispayCount +
+  walletMethods.privativeCount +
+  walletMethods.walletBancomatCount +
+  walletMethods.walletCreditCardCount +
+  walletMethods.walletCreditCardCoBadgeCount +
+  walletMethods.bPayCount;
 
 const convertFavouriteWalletfromV2V1 = (
   wallet: WalletV2
@@ -89,7 +89,8 @@ export const WalletPluginOptions = t.interface({
   wallet: t.intersection([
     t.interface({
       shuffleAbi: t.boolean,
-      allowRandomValues: t.boolean
+      allowRandomValues: t.boolean,
+      methods: WalletMethodConfig
     }),
     t.partial({
       onboardingCreditCardOutCode: t.number,
@@ -117,7 +118,19 @@ export const WalletPlugin: Plugin<WalletPluginOptions> = async (
 
   const getWallets = makeGetWallets(walletGetRandomValue);
 
-  wallets = getWallets();
+  const walletCount =
+    options.wallet.methods.paypalCount +
+    options.wallet.methods.satispayCount +
+    options.wallet.methods.privativeCount +
+    options.wallet.methods.walletBancomatCount +
+    options.wallet.methods.walletCreditCardCount +
+    options.wallet.methods.walletCreditCardCoBadgeCount +
+    options.wallet.methods.bPayCount;
+
+  wallets = getWallets(
+    getWalletCount(options.wallet.methods),
+    options.wallet.payment
+  );
 
   transactions = getTransactions(transactionsTotal, true, wallets.data);
 
