@@ -30,7 +30,6 @@
   "scripts": {
     "dev": "nodemon",
     "test": "jest",
-    "prepublish": "tsc",
     "test-watch": "jest --watch",
     "lint": "tslint -p . -t verbose",
     "lint-autofix": "tslint -p . -t verbose --fix",
