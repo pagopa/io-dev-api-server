@@ -3,6 +3,7 @@ import faker from "faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as t from "io-ts";
 import { readableReport } from "italia-ts-commons/lib/reporters";
 import { Millisecond } from "italia-ts-commons/lib/units";
 import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
@@ -20,13 +21,12 @@ import {
 } from "../../../../generated/definitions/cgn/EycaActivationDetail";
 import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 import { Otp } from "../../../../generated/definitions/cgn/Otp";
+import { Plugin } from "../../../core/server";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { cgnServiceId } from "../../../payloads/services/special";
 import { getRandomStringId } from "../../../utils/id";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { servicesPreferences } from "../../service";
-import { Plugin } from "../../../core/server";
-import * as t from "io-ts";
 
 const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
 

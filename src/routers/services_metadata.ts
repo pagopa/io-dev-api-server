@@ -19,9 +19,9 @@ import {
   readFileAsJSON,
   sendFile
 } from "../utils/file";
+import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
-import { serverUrl } from "../utils/server";
 
 import { Plugin } from "../core/server";
 

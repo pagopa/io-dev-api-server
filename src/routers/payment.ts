@@ -25,8 +25,8 @@ import { services } from "./service";
 import { enumType } from "@pagopa/ts-commons/lib/types";
 
 import * as t from "io-ts";
-import { ProfileFiscalCodeAttr } from "./profile";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
+import { ProfileFiscalCodeAttr } from "./profile";
 
 // tslint:disable-next-line: no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;

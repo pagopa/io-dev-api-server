@@ -18,9 +18,9 @@ import {
   generatePaypalInfo,
   generatePrivativeFromWalletV2,
   generateSatispayInfo,
-  makeGenerateWalletV2FromCard,
   generateWalletV2FromPaypal,
   generateWalletV2FromSatispayOrBancomatPay,
+  makeGenerateWalletV2FromCard,
   privativeIssuers
 } from "../../payloads/wallet_v2";
 
@@ -34,8 +34,8 @@ import { BANCOMATPayPlugin } from "./methods/bpay";
 import { CobadgePlugin } from "./methods/cobadge";
 import { SatispayPlugin } from "./methods/satispay";
 
-import * as t from "io-ts";
 import { Lazy } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
 export const abiResponse: AbiListResponse = {
   data: abiData

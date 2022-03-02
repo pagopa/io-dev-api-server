@@ -10,8 +10,8 @@ import {
   resetCardConfig
 } from "../../payloads/wallet_v2";
 import {
-  makeGenerateWalletV2Data,
   getWalletV2,
+  makeGenerateWalletV2Data,
   updateWalletV2Config,
   walletV2Config,
   WalletV2PluginOptions

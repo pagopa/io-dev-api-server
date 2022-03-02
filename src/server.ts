@@ -2,11 +2,11 @@ import { createServer, Server } from "./core/server";
 
 import { IODevelopmentPlugin, IODevelopmentPluginOptions } from "./io-dev";
 
-import { ProfilePluginOptions } from "./routers/profile";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
+import { ProfilePluginOptions } from "./routers/profile";
 import { WalletMethodConfig } from "./routers/walletsV2";
 
 import bodyParser from "body-parser";

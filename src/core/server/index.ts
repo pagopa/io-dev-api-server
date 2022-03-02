@@ -1,5 +1,5 @@
-import express from "express";
 import avvio from "avvio";
+import express from "express";
 import * as t from "io-ts";
 
 import { sendFile } from "../../utils/file";
@@ -23,6 +23,7 @@ type PluggableServerAPI = {
   getRandomValue: <T>(
     defaultValue: T,
     randomValue: T,
+    // tslint:disable-next-line:bool-param-default
     allowRandomValue?: boolean
   ) => T;
 } & avvio.Server<PluggableServerAPI>;

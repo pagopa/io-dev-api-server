@@ -6,8 +6,8 @@ import { Second } from "italia-ts-commons/lib/units";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import { Plugin } from "../../../core/server";
 import {
-  getActiveBonus,
-  genRandomBonusCode
+  genRandomBonusCode,
+  getActiveBonus
 } from "../../../payloads/features/bonus-vacanze/bonus";
 import {
   eligibilityCheckSuccessEligible,

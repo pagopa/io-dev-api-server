@@ -1,8 +1,8 @@
 import * as faker from "faker";
+import { PublicSession } from "../../generated/definitions/backend/PublicSession";
 import { SpidLevel } from "../../generated/definitions/backend/SpidLevel";
 import { Server } from "../core/server";
 import { validatePayload } from "../utils/validator";
-import { PublicSession } from "../../generated/definitions/backend/PublicSession";
 import { IOResponse } from "./response";
 
 export const makeSession = (

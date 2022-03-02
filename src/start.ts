@@ -1,10 +1,10 @@
+import _ from "lodash";
+import fs from "node:fs/promises";
 import {
   createIODevelopmentServer,
   defaultIODevelopmentOptions,
   IODevelopmentServerOptions
 } from "./server";
-import fs from "node:fs/promises";
-import _ from "lodash";
 
 const loadConfig = async (path = "./config/config.json") => {
   let config: Partial<IODevelopmentServerOptions> = {};

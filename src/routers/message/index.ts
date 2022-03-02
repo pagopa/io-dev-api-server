@@ -21,12 +21,14 @@ import {
   createMessage,
   getCategory,
   getMvlAttachments,
+  makeWithLegalContent,
   withContent,
   withDueDate,
-  makeWithLegalContent,
   withPaymentData
 } from "../../payloads/message";
 
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
 import { GetMessagesParameters } from "../../types/parameters";
 import { addApiV1Prefix } from "../../utils/strings";
 import {
@@ -39,8 +41,6 @@ import {
 } from "../../utils/variables";
 import { eucovidCertAuthResponses } from "../features/eu_covid_cert";
 import { services } from "../service";
-import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 import { PreferredLanguages } from "../../../generated/definitions/backend/PreferredLanguages";
 import { MessagePluginOptions } from "./config";

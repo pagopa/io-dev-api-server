@@ -8,10 +8,10 @@ import { Card } from "../../../../generated/definitions/pagopa/walletv2/Card";
 import { Message } from "../../../../generated/definitions/pagopa/walletv2/Message";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { assetsFolder } from "../../../config";
+import { Plugin } from "../../../core/server";
 import { makeGenerateWalletV2FromCard } from "../../../payloads/wallet_v2";
 import { appendWalletV1Prefix } from "../../../utils/wallet";
 import { abiResponse, addWalletV2, getWalletV2, pansResponse } from "../index";
-import { Plugin } from "../../../core/server";
 
 export const BANCOMATPluginOptions = t.interface({
   wallet: t.interface({

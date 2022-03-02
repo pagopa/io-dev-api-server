@@ -6,23 +6,27 @@ import { ServicePlugin } from "../routers/service";
 import { ServiceMetadataPlugin } from "../routers/services_metadata";
 
 import { MessagePlugin } from "../routers/message";
+import { PaymentPlugin } from "../routers/payment";
 import { ProfilePlugin } from "../routers/profile";
 import { SessionPlugin } from "../routers/session";
-import { PaymentPlugin } from "../routers/payment";
 
 import { WalletPlugin } from "../routers/wallet";
 import { WalletV2Plugin } from "../routers/walletsV2";
 
 import { BPDPlugin } from "../routers/features/bdp";
-import { BonusVacanzePlugin } from "../routers/features/bonus-vacanze";
-import { EUCovidCertPlugin } from "../routers/features/eu_covid_cert";
-import { CGNPlugin } from "../routers/features/cgn";
-import { CGNMerchantsPlugin } from "../routers/features/cgn/merchants";
-import { CGNGeocodingPlugin } from "../routers/features/cgn/geocoding";
-import { SiciliaVolaPlugin } from "../routers/features/siciliaVola";
 import { BPDAwardPlugin } from "../routers/features/bdp/award";
+
+import { BonusVacanzePlugin } from "../routers/features/bonus-vacanze";
+
 import { BPDRankingV1Plugin } from "../routers/features/bdp/ranking/v1";
 import { BPDRankingV2Plugin } from "../routers/features/bdp/ranking/v2";
+
+import { CGNPlugin } from "../routers/features/cgn";
+import { CGNGeocodingPlugin } from "../routers/features/cgn/geocoding";
+import { CGNMerchantsPlugin } from "../routers/features/cgn/merchants";
+import { EUCovidCertPlugin } from "../routers/features/eu_covid_cert";
+import { SiciliaVolaPlugin } from "../routers/features/siciliaVola";
+
 import { BPDWinningTransactionsV1Plugin } from "../routers/features/bdp/winning-transactions/v1";
 import { BPDWinningTransactionsV2Plugin } from "../routers/features/bdp/winning-transactions/v2";
 

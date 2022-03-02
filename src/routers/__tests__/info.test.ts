@@ -1,6 +1,6 @@
 import * as E from "fp-ts/lib/Either";
-import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
 import supertest, { SuperTest, Test } from "supertest";
+import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
 import { createIODevelopmentServer } from "../../server";
 
 let request: SuperTest<Test>;

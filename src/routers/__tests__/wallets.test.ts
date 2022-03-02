@@ -20,7 +20,7 @@ import {
   transactionsTotal
 } from "../wallet";
 
-import supertest, { SuperTest, Test, Response } from "supertest";
+import supertest, { Response, SuperTest, Test } from "supertest";
 
 import { createIODevelopmentServer } from "../../server";
 

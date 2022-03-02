@@ -3,8 +3,8 @@ import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 
-import { Plugin } from "../core/server";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { Plugin } from "../core/server";
 
 import { HttpResponseCode } from "../core/server";
 
@@ -12,8 +12,8 @@ import * as t from "io-ts";
 
 import {
   getServices,
-  makeGetServicesPreferences,
-  getServicesTuple
+  getServicesTuple,
+  makeGetServicesPreferences
 } from "../payloads/services";
 
 import { addApiV1Prefix } from "../utils/strings";

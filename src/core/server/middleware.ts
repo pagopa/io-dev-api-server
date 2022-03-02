@@ -1,5 +1,5 @@
-import express from "express";
 import chalk from "chalk";
+import express from "express";
 
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 

@@ -5,7 +5,6 @@
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
-import { Plugin } from "../core/server";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { match } from "ts-pattern";
@@ -20,16 +19,17 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
+import { Plugin } from "../core/server";
 
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
 
 import {
+  makeCreatePspList,
+  makeCreateValidPsp,
   makeGetPspFromId,
   makeGetTransactions,
   makeGetWallets,
-  makeCreatePspList,
-  sessionToken,
-  makeCreateValidPsp
+  sessionToken
 } from "../payloads/wallet";
 import {
   abiData,

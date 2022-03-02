@@ -11,8 +11,8 @@ import { mockUserMetadata } from "../../payloads/userMetadata";
 
 import supertest, { SuperTest, Test } from "supertest";
 
-import { createIODevelopmentServer } from "../../server";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { createIODevelopmentServer } from "../../server";
 
 let request: SuperTest<Test>;
 let fiscalCode: FiscalCode;

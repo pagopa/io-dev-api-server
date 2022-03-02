@@ -1,10 +1,10 @@
-import { Plugin } from "../../../../core/server";
 import * as E from "fp-ts/lib/Either";
 import fs from "fs";
 import * as t from "io-ts";
 import { AeroportiAmmessiInputBean } from "../../../../../generated/definitions/siciliaVola/AeroportiAmmessiInputBean";
 import { VoucherBeneficiarioInputBean } from "../../../../../generated/definitions/siciliaVola/VoucherBeneficiarioInputBean";
 import { VoucherBeneficiarioOutputBean } from "../../../../../generated/definitions/siciliaVola/VoucherBeneficiarioOutputBean";
+import { Plugin } from "../../../../core/server";
 import {
   getAereoportiSede,
   getPossibleVoucherStates,

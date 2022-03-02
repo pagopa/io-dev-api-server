@@ -19,10 +19,10 @@ import { mockUserMetadata } from "../payloads/userMetadata";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
-import * as t from "io-ts";
-import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import * as t from "io-ts";
+import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 
 // tslint:disable-next-line: no-let
