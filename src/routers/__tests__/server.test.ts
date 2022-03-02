@@ -6,7 +6,7 @@ import { basePath } from "../../payloads/response";
 
 import supertest, { SuperTest, Test } from "supertest";
 
-import { createIODevelopmentServer } from "../../server";
+import { createIODevelopmentServer, defaultIODevelopmentOptions, IODevelomentServer } from "../../server";
 
 let request: SuperTest<Test>;
 
@@ -23,9 +23,41 @@ const testForPng = async (url: string) => {
   return;
 };
 
-it("login should response with a welcome page", async () => {
-  const response = await request.get("/login");
-  expect(response.status).toBe(200);
+describe("/login", () => {
+    
+  it("should response with a welcome page when \"auto login\" is not enabled", async () => {
+
+    const ioDevServerWithAutoLogin = createIODevelopmentServer({
+      ...defaultIODevelopmentOptions,
+      global: {
+        autoLogin: false,
+      }
+    });
+    const appWithAutoLogin = await ioDevServerWithAutoLogin.toExpressInstance();
+    const requestWithAutoLogin = supertest(appWithAutoLogin);
+
+    const response = await requestWithAutoLogin.get("/login");
+    expect(response.status).toBe(200);
+  });
+
+  it("should response with a redirect and the token as param when \"auto-login\" is enabled", async () => {
+
+    const ioDevServerWithoutAutoLogin = createIODevelopmentServer({
+      ...defaultIODevelopmentOptions,
+      global: {
+        autoLogin: true,
+      }
+    });
+
+    const appWithoutAutoLogin = await ioDevServerWithoutAutoLogin.toExpressInstance();
+    const requestWithoutAutoLogin = supertest(appWithoutAutoLogin);
+
+    const response = await requestWithoutAutoLogin.get("/login");
+    expect(response.status).toBe(302);
+    expect(response.text).toBe(
+      "Found. Redirecting to /profile.html?token=" + loginSessionToken
+    );
+  });
 });
 
 it("login with auth should response with a redirect and the token as param", async () => {

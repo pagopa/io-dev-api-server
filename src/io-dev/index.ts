@@ -43,7 +43,7 @@ export const IODevelopmentPlugin: Plugin<IODevelopmentPluginOptions> = async (
 
   app.use(PublicPlugin, {
     global: {
-      autoLogin: true
+      autoLogin: options.global.autoLogin,
     }
   });
 
