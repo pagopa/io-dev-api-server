@@ -39,7 +39,7 @@ import {
   makeGenerateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
-import { serverIpv4Address, serverPort } from "../utils/server";
+import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
 import {
@@ -321,7 +321,7 @@ export const WalletPlugin: Plugin<WalletPluginOptions> = async (
             amount: 1,
             decimalDigits: 2
           },
-          urlCheckout3ds: `http://${serverIpv4Address}:${serverPort}${checkOutSuffix}`, // TODO: queste informazioni, anche se statiche, sarebbe meglio fornirle a runtime
+          urlCheckout3ds: `${serverUrl}${checkOutSuffix}`,
           paymentModel: 0,
           token: "MTg5MDIxNzQ=",
           idWallet: 12345678,

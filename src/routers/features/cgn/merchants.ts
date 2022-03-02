@@ -16,7 +16,7 @@ import {
   onlineMerchants
 } from "../../../payloads/features/cgn/merchants";
 
-import { serverIpv4Address, serverPort } from "../../../utils/server";
+
 import { addApiV1Prefix } from "../../../utils/strings";
 
 import { Plugin } from "../../../core/server";
@@ -126,7 +126,10 @@ export const CGNMerchantsPlugin: Plugin = async ({
    * the landing Page of a discount for merchant reading the referrer header
    */
   handleRoute("get", "/merchant_landing", (req, res) => {
-    console.log("Referer header", req.header("referer"));
+    console.log(
+      "X-PagoPa-CGN-Referer header",
+      req.header("X-PagoPa-CGN-Referer")
+    );
     sendFile("assets/html/merchants_landing_page.html", res);
   });
 };

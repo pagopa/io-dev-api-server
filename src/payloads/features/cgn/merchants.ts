@@ -18,8 +18,7 @@ import {
   ProductCategoryEnum
 } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { Server } from "../../../core/server";
-
-import { serverIpv4Address, serverPort } from "../../../utils/server";
+import { serverUrl } from "../../../utils/server";
 
 const availableCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.cultureAndEntertainment,
@@ -103,7 +102,7 @@ export const offlineMerchants: OfflineMerchants = {
   })
 };
 
-const discountUrl = `http://${serverIpv4Address}:${serverPort}/merchant_landing` as Discount["discountUrl"];
+const discountUrl = `http://${serverUrl}/merchant_landing` as Discount["discountUrl"];
 
 const makeGenerateDiscountMethod = (
   getRandomValue: Server["getRandomValue"]

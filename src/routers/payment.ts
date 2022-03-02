@@ -17,7 +17,7 @@ import { Plugin } from "../core/server";
 
 import { makeGetPaymentRequestsGetResponse } from "../payloads/payload";
 
-import { serverIpv4Address, serverPort } from "../utils/server";
+import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
 import { services } from "./service";
@@ -46,7 +46,7 @@ export const handlePaymentPostAndRedirect = (
   const exitPathName = "/wallet/v3/webview/logout/bye";
   const outcomeParamname = "outcome";
   const secondsToRedirect = 2;
-  const redirectUrl = `"http://${serverIpv4Address}:${serverPort}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
+  const redirectUrl = `"${serverUrl}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
   const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
     1000});</script>`;
   res.send(

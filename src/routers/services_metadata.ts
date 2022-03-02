@@ -3,7 +3,9 @@
  */
 
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
 import { readableReport } from "italia-ts-commons/lib/reporters";
+import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
@@ -11,10 +13,15 @@ import { PrivativeServices } from "../../generated/definitions/pagopa/privative/
 import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
-
-import { readFileAsJSON, readFileAndDecode } from "../utils/file";
+import {
+  fileExists,
+  readFileAndDecode,
+  readFileAsJSON,
+  sendFile
+} from "../utils/file";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
+import { serverUrl } from "../utils/server";
 
 import { Plugin } from "../core/server";
 
@@ -175,15 +182,36 @@ export const ServiceMetadataPlugin: Plugin = async ({
     }
   );
 
-  handleRoute("get", addRoutePrefix("/spid/idps/list.json"), (_, res) =>
-    res.json(readFileAsJSON(assetsFolder + "/spid/idps/list.json"))
+  handleRoute("get", addRoutePrefix("/spid/idps/list.json"), (_, res) => {
+    pipe(
+      SpidIdps.decode(readFileAsJSON(assetsFolder + "/spid/idps/list.json")),
+      E.fold(
+        e => {
+          res.status(500).send(readableReport(e));
+        },
+        idps => {
+          // set the logo url as server local resource
+          const idpsWithLogo = idps.items.map(idp => ({
+            ...idp,
+            logo: `${serverUrl}${staticContentRootPath}/logos/spid/idps/spid-idp-${idp.id}.png`
+          }));
+          res.json({ ...idps, items: idpsWithLogo });
+        }
+      )
+    );
+  }
   );
 
   handleRoute(
     "get",
     addRoutePrefix("/logos/spid/idps/:spid_logo"),
     (req, res) => {
-      sendFile(`assets/imgs/logos/spid/${req.params.spid_logo}`, res);
+      const logoPath = `assets/spid/idps/${req.params.spid_logo}`;
+      if (fileExists(logoPath)) {
+        sendFile(logoPath, res);
+        return;
+      }
+      res.sendStatus(404);
     }
   );
 
