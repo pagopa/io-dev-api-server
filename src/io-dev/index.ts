@@ -43,7 +43,7 @@ export const IODevelopmentPlugin: Plugin<IODevelopmentPluginOptions> = async (
 
   app.use(PublicPlugin, {
     global: {
-      autoLogin: options.global.autoLogin,
+      autoLogin: options.global.autoLogin
     }
   });
 
@@ -74,7 +74,8 @@ export const IODevelopmentPlugin: Plugin<IODevelopmentPluginOptions> = async (
             options.wallet.onboardingCreditCardOutCode,
           shuffleAbi: options.wallet.shuffleAbi,
           payment: options.wallet.payment,
-          allowRandomValues: options.wallet.allowRandomValues
+          allowRandomValues: options.wallet.allowRandomValues,
+          methods: options.wallet.methods,
         }
       });
       app

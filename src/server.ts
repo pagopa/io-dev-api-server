@@ -48,7 +48,7 @@ export const paymentMethods: WalletMethodConfig = {
 export const defaultIODevelopmentOptions: IODevelopmentServerOptions = {
   logger: false,
   global: {
-    autoLogin: false,
+    autoLogin: false
   },
   profile: {
     attrs: defaultProfileAttrs,
