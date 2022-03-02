@@ -42,6 +42,7 @@ const initialUserChoice: UserDeleteDownloadData = {
 let userChoices = initialUserChoice;
 
 // reset function
+// tslint:disable-next-line:no-let
 export let resetProfile: Lazy<void>;
 
 export const ProfileFiscalCodeAttr = t.interface({

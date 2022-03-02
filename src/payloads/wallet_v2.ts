@@ -241,7 +241,7 @@ export const makeGenerateWalletV2FromCard = (
     expireMonth: (ed.getMonth() + 1).toString().padStart(2, "0"),
     expireYear: ed.getFullYear().toString(),
     hashPan: card.hpan,
-    holder: "John Doe", //`${currentProfile.name} ${currentProfile.family_name}`, // TODO: dependency in currentProfile
+    holder: "John Doe", // `${currentProfile.name} ${currentProfile.family_name}`, // TODO: dependency in currentProfile
     htokenList: card.tokens,
     issuerAbiCode: canMethodPay ? undefined : card.abi,
     type: TypeEnum.PP

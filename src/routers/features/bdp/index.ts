@@ -37,6 +37,7 @@ export type BPDPluginOptions = t.TypeOf<typeof BPDPluginOptions>;
 export const BPDPlugin: Plugin<BPDPluginOptions> = async (
   { handleRoute },
   options
+  // tslint:disable-next-line:no-big-function
 ) => {
   const citizenV2: CitizenResourceV2 = {
     enabled: false,

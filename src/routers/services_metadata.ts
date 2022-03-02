@@ -13,12 +13,7 @@ import { PrivativeServices } from "../../generated/definitions/pagopa/privative/
 import { assetsFolder, staticContentRootPath } from "../config";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
-import {
-  fileExists,
-  readFileAndDecode,
-  readFileAsJSON,
-  sendFile
-} from "../utils/file";
+import { fileExists, readFileAndDecode, readFileAsJSON } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { services } from "./service";
@@ -182,7 +177,7 @@ export const ServiceMetadataPlugin: Plugin = async ({
     }
   );
 
-  handleRoute("get", addRoutePrefix("/spid/idps/list.json"), (_, res) => {
+  handleRoute("get", addRoutePrefix("/spid/idps/list.json"), (_, res) =>
     pipe(
       SpidIdps.decode(readFileAsJSON(assetsFolder + "/spid/idps/list.json")),
       E.fold(
@@ -198,8 +193,7 @@ export const ServiceMetadataPlugin: Plugin = async ({
           res.json({ ...idps, items: idpsWithLogo });
         }
       )
-    );
-  }
+    )
   );
 
   handleRoute(

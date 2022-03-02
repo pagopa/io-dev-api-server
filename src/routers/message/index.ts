@@ -88,6 +88,7 @@ const createMessages = (
   getRandomValue: Server["getRandomValue"],
   fiscalCode: FiscalCode,
   options: NewMessagesOptions
+  // tslint:disable-next-line:readonly-array
 ): Array<
   CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
   // tslint:disable-next-line:no-big-function
@@ -310,6 +311,7 @@ const createMessages = (
 
 // TODO: creare delle API per gestire messagesWithContent
 // tslint:disable-next-line: readonly-array
+// tslint:disable-next-line:no-let
 export let messagesWithContent: ReturnType<typeof createMessages>;
 
 /* helper function to build messages response */
@@ -344,6 +346,7 @@ const getPublicMessages = (
 export const MessagePlugin: Plugin<MessagePluginOptions> = async (
   { handleRoute, sendFile, getRandomValue },
   options
+  // tslint:disable-next-line:no-big-function
 ) => {
   // TODO: forse sarebbe meglio creare un costruttore diverso, questo
   // non è molto bello da vedere.

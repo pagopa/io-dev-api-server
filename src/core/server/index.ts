@@ -37,7 +37,9 @@ export type Server = PluggableServerAPI & {
 export type Plugin<O = {}> = avvio.Plugin<O, PluggableServerAPI>;
 
 export const createServer = (): Server => {
+  // tslint:disable-next-line:readonly-array
   const ms: m.Middleware[] = [];
+  // tslint:disable-next-line:no-let
   let allowRandomValues = false;
 
   const api = {

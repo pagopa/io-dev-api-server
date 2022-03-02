@@ -14,7 +14,9 @@ import supertest, { SuperTest, Test } from "supertest";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { createIODevelopmentServer } from "../../server";
 
+// tslint:disable-next-line:no-let
 let request: SuperTest<Test>;
+// tslint:disable-next-line:no-let
 let fiscalCode: FiscalCode;
 
 beforeAll(async () => {

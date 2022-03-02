@@ -298,6 +298,7 @@ export const makeGenerateWalletV2Data = (
 };
 
 // reset function
+// tslint:disable-next-line:no-let
 export let resetWalletV2: Lazy<void>;
 
 export const WalletV2PluginOptions = t.interface({

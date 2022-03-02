@@ -3,6 +3,7 @@ import supertest, { SuperTest, Test } from "supertest";
 import { ServerInfo } from "../../../generated/definitions/backend/ServerInfo";
 import { createIODevelopmentServer } from "../../server";
 
+// tslint:disable-next-line:no-let
 let request: SuperTest<Test>;
 
 beforeAll(async () => {

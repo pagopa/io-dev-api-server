@@ -79,7 +79,7 @@ export const IODevelopmentPlugin: Plugin<IODevelopmentPluginOptions> = async (
           shuffleAbi: options.wallet.shuffleAbi,
           payment: options.wallet.payment,
           allowRandomValues: options.wallet.allowRandomValues,
-          methods: options.wallet.methods,
+          methods: options.wallet.methods
         }
       });
       app

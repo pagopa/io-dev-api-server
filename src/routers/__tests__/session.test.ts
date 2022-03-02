@@ -10,7 +10,9 @@ import { IOResponse } from "../../payloads/response";
 
 import { createIODevelopmentServer } from "../../server";
 
+// tslint:disable-next-line:no-let
 let request: SuperTest<Test>;
+// tslint:disable-next-line:no-let
 let session: IOResponse<PublicSession>;
 
 beforeAll(async () => {

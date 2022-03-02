@@ -71,6 +71,7 @@ initCountByDay();
 
 export const BPDWinningTransactionsV2Plugin: Plugin = async ({
   handleRoute
+  // tslint:disable-next-line:no-big-function
 }) => {
   // get the total cashback from a given awardPeriodId
   handleRoute(

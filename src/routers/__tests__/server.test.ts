@@ -12,6 +12,7 @@ import {
   IODevelomentServer
 } from "../../server";
 
+// tslint:disable-next-line:no-let
 let request: SuperTest<Test>;
 
 beforeAll(async () => {

@@ -17,6 +17,7 @@ export type Middleware =
   | (Route & { _tag: "Route" })
   | { hook: ExpressInstanceHook; _tag: "ExpressInstanceHook" };
 
+// tslint:disable-next-line:readonly-array
 export const makeHandleRoute = (ms: Middleware[]) => (
   method: HttpMethod,
   path: string,
@@ -24,6 +25,7 @@ export const makeHandleRoute = (ms: Middleware[]) => (
   delay: number = 0,
   description: string = ""
 ) => {
+  // tslint:disable-next-line:no-let
   let h = handler;
   if (delay > 0) {
     h = (req, res, next) => {
@@ -45,6 +47,7 @@ export const makeHandleRoute = (ms: Middleware[]) => (
   });
 };
 
+// tslint:disable-next-line:readonly-array
 export const makeUseExpressApplication = (ms: Middleware[]) => (
   hook: ExpressInstanceHook
 ) => {
@@ -54,6 +57,7 @@ export const makeUseExpressApplication = (ms: Middleware[]) => (
   });
 };
 
+// tslint:disable-next-line:readonly-array
 export const toExpressInstance = (ms: Middleware[]): express.Express => {
   const app = express();
   ms.forEach(async m => {

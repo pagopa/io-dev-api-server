@@ -43,8 +43,11 @@ export const ServicePluginOptions = t.interface({
 
 export type ServicePluginOptions = t.TypeOf<typeof ServicePluginOptions>;
 
+// tslint:disable-next-line:no-let
 export let services: ReadonlyArray<ServicePublic> = [];
+// tslint:disable-next-line:no-let
 export let visibleServices = getServicesTuple(services);
+// tslint:disable-next-line:no-let
 export let servicesPreferences: Map<ServiceId, ServicePreference>;
 
 export const ServicePlugin: Plugin<ServicePluginOptions> = async (

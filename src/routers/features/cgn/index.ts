@@ -83,6 +83,7 @@ export type CGNPluginOptions = t.TypeOf<typeof CGNPluginOptions>;
 export const CGNPlugin: Plugin<CGNPluginOptions> = async (
   { handleRoute, getRandomValue },
   options
+  // tslint:disable-next-line:no-big-function
 ) => {
   // Start bonus activation request procedure
   // 201 -> Request created.

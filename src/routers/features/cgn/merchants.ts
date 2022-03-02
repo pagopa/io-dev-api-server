@@ -16,7 +16,6 @@ import {
   onlineMerchants
 } from "../../../payloads/features/cgn/merchants";
 
-
 import { addApiV1Prefix } from "../../../utils/strings";
 
 import { Plugin } from "../../../core/server";

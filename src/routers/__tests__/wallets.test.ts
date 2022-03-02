@@ -24,7 +24,9 @@ import supertest, { Response, SuperTest, Test } from "supertest";
 
 import { createIODevelopmentServer } from "../../server";
 
+// tslint:disable-next-line:no-let
 let request: SuperTest<Test>;
+// tslint:disable-next-line:no-let
 let walletCount: number;
 
 beforeAll(async () => {

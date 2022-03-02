@@ -55,11 +55,13 @@ import { PaymentConfig } from "./payment";
 import * as t from "io-ts";
 
 // wallets and transactions
-// TODO: find a better way to export wallets
+// tslint:disable-next-line:no-let
 export let wallets: WalletListResponse;
 
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
+
+// tslint:disable-next-line:no-let
 export let transactions: ReadonlyArray<Transaction>;
 
 export const getWalletCount = (walletMethods: WalletMethodConfig) =>
@@ -101,6 +103,7 @@ export const WalletPluginOptions = t.interface({
 
 export type WalletPluginOptions = t.TypeOf<typeof WalletPluginOptions>;
 
+// tslint:disable:no-big-function
 export const WalletPlugin: Plugin<WalletPluginOptions> = async (
   { handleRoute, getRandomValue },
   options
@@ -117,15 +120,6 @@ export const WalletPlugin: Plugin<WalletPluginOptions> = async (
   );
 
   const getWallets = makeGetWallets(walletGetRandomValue);
-
-  const walletCount =
-    options.wallet.methods.paypalCount +
-    options.wallet.methods.satispayCount +
-    options.wallet.methods.privativeCount +
-    options.wallet.methods.walletBancomatCount +
-    options.wallet.methods.walletCreditCardCount +
-    options.wallet.methods.walletCreditCardCoBadgeCount +
-    options.wallet.methods.bPayCount;
 
   wallets = getWallets(
     getWalletCount(options.wallet.methods),
@@ -175,7 +169,7 @@ export const WalletPlugin: Plugin<WalletPluginOptions> = async (
         return;
       }
       const idTransactions = parseInt(req.params.idTransaction, 10);
-      const transaction = transactions.find(t => t.id === idTransactions);
+      const transaction = transactions.find(tx => tx.id === idTransactions);
       if (transaction === undefined) {
         res.sendStatus(404);
         return;
@@ -226,6 +220,7 @@ export const WalletPlugin: Plugin<WalletPluginOptions> = async (
   handleRoute("put", appendWalletV1Prefix("/wallet/:idWallet"), (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
     const idPsp = req.body.data.idPsp;
+    // tslint:disable-next-line:no-use-of-empty-return-value
     const psp = getPspFromId(idPsp);
     const walletV2 = findWalletById(idWallet);
     if (walletV2 === undefined || psp === undefined) {
