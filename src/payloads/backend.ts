@@ -225,6 +225,19 @@ export const backendStatus: BackendStatus = {
     cgn: {
       enabled: true,
       merchants_v2: false
+    },
+    uaDonations: {
+      enabled: false,
+      banner: {
+        visible: false,
+        description: {
+          "it-IT":
+            "Con IO puoi fare una donazione alle organizzazioni umanitarie che assistono le vittime del conflitto in Ucraina",
+          "en-EN":
+            "With IO you can make a donation to humanitarian organizations that assist the victims of the conflict in Ukraine"
+        },
+        url: "https://assets.cdn.io.italia.it/donazioni/index.html"
+      }
     }
   }
 };
