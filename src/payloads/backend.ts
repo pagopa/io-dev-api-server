@@ -226,7 +226,7 @@ export const backendStatus: BackendStatus = {
       enabled: true,
       merchants_v2: false
     },
-    donation: {
+    uaDonations: {
       enabled: false,
       banner: {
         visible: false,
