@@ -73,3 +73,7 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
         .join("<br/>")
   );
 });
+
+addHandler(publicRouter, "get", "/donate", (req, res) => {
+  sendFile("assets/html/ukraine.html", res);
+});

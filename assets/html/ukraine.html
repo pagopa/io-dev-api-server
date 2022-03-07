@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>нет войне</title>
+</head>
+<style>
+    :root {
+        --bluegrey-dark: #17324D;
+        --bluegrey-light: #CCD4DC;
+        --main-blue: #0073E6;
+        --main-bluegrey: #475A6D;
+        --disabled-text: #97A2AF;
+        --grey-light: #E6E9F2;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        box-sizing: border-box;
+        padding-top: 24px;
+    }
+
+    section {
+        margin: 0 24px;
+    }
+
+    h1, h2, p, a, span, label, button {
+        font-family: Work Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+        font-style: normal;
+        letter-spacing: 0px;
+        text-align: left;
+    }
+
+    h1, h2, p {
+        color: var(--bluegrey-dark);
+    }
+
+    h1 {
+        font-size: 20px;
+        font-weight: bold;
+        padding: 0;
+        margin: 0;
+    }
+
+    h2, p {
+        margin: 0;
+        padding: 0;
+    }
+
+
+    p {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    a {
+        color: var(--main-blue);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+    }
+
+    h2 {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 25px;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0px 24px 0px;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    ul.tiers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 24px;
+    }
+
+    li {
+        display: flex;
+        flex: 1 1 auto;
+    }
+
+    li.charity {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--bluegrey-light);
+        padding: 24px 0px;
+    }
+
+    li.charity.selected input {
+        /** Temporarily disabled. UI still being worked out */
+        /*opacity: 0;*/
+    }
+
+    li.charity:last-child {
+        border: none;
+    }
+
+    section.how-much {
+        margin-top: 24px;
+        border-top: 1px solid var(--bluegrey-light);
+    }
+
+    li.tier {
+        justify-self: center;
+        width: 100%;
+    }
+
+    li.tier > input {
+        display: none;
+    }
+
+    li.tier > label {
+        background-color: white;
+        color: var(--main-blue);
+        display: flex;
+        height: 40px;
+        border: 1px solid var(--main-blue);
+        box-sizing: border-box;
+        border-radius: 4px;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 18px;
+    }
+
+    li.tier > input:checked + label {
+        color: white;
+        background-color: var(--main-blue);
+    }
+
+    img.charity-logo {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        margin-right: 16px;
+    }
+
+    input.charity-selector {
+        color: var(--main-blue);
+        min-width: 32px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        min-height: 20px;
+        color: var(--bluegrey-dark);
+        font-weight: 700;
+        border-radius: 50%;
+        border: 2px var(--bluegrey-dark) solid;
+        margin-right: 14px;
+    }
+
+    .info-text {
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+        color: var(--main-bluegrey)
+    }
+
+    .info-box {
+        margin-top: 30px;
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        align-items: center;
+        height: 64px
+    }
+
+    .info-section {
+        display: flex;
+        flex: 1 1 auto;
+    }
+
+    .submit-section {
+        margin: 0;
+        padding: 0 24px;
+        box-shadow: 0px -5px 20px 0px #e0e0e0;
+    }
+
+    .submit-btn {
+        color: white;
+        background-color: var(--main-blue);
+        display: block;
+        height: 40px;
+        width: 100%;
+        border-radius: 4px;
+        border: none;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 18px;
+        text-align: center;
+        margin-bottom: 54px;
+        margin-top: 20px;
+    }
+
+    .submit-btn.disabled {
+        color: var(--bluegrey-light);
+        background-color: var(--grey-light);
+    }
+
+    #loader {
+        display: flex;
+        align-items: center;
+    }
+
+    #loader p {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    #instructions {
+        color: var(--disabled-text);
+    }
+
+    /* Utility classes */
+    .hidden {
+        display: none !important;
+    }
+
+    .disabled {
+        color: var(--disabled-text);
+    }
+
+    /* Spinned for loader */
+    .lds-ring {
+        display: inline-block;
+        position: relative;
+        width: 32px;
+        height: 32px;
+        margin-right: 16px;
+    }
+
+    .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        margin: 2px;
+        border: 2px solid var(--main-blue);
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: var(--main-blue) transparent transparent transparent;
+    }
+
+    .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+    }
+
+    .lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+    }
+
+    .lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+    }
+
+    @keyframes lds-ring {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<body onload="main()">
+<section>
+    <header>
+        <h1>A chi vuoi donare?</h1>
+        <a id="edit" class="hidden" href="#" onclick="resetSelection()">modifica</a>
+    </header>
+    <div id="entities-container"></div>
+    <div id="loader">
+        <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <p>Carico la lista delle possibili donazioni</p>
+    </div>
+</section>
+
+<section class="how-much">
+    <header>
+        <h1 id="how-much-title" class="disabled">Quanto vuoi donare?</h1>
+    </header>
+    <ul class="tiers" id="tiers-container" onchange="selectTier(event)"></ul>
+    <p id="instructions">Scegli a chi donare per sapere gli importi disponibili</p>
+</section>
+
+<section class="info-section">
+    <div id="info" class="info-box hidden">
+        <span class="info-icon">i</span>
+        <p class="info-text">Per donare importi superiori puoi ripetere la donazione più volte.</p>
+    </div>
+</section>
+
+<section class="submit-section">
+    <button id="submit-btn" class="submit-btn disabled" onclick="submit()">Continua</button>
+</section>
+</body>
+
+<script>
+    const sampleJson = [
+        {
+            "name": "Croce Rossa Italiana",
+            "reason": "Donazione Emergenza Ucraina",
+            "web_site": "https://cri.it/emergenzaucraina/",
+            "base64Logo": "/9j/4AAQSkZJRgABAQEAYABgAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtbnRyUkdCIFhZWiAAAAAAAAAAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAAHRyWFlaAAABZAAAABRnWFlaAAABeAAAABRiWFlaAAABjAAAABRyVFJDAAABoAAAAChnVFJDAAABoAAAAChiVFJDAAABoAAAACh3dHB0AAAByAAAABRjcHJ0AAAB3AAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAFgAAAAcAHMAUgBHAEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z3BhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABYWVogAAAAAAAA9tYAAQAAAADTLW1sdWMAAAAAAAAAAQAAAAxlblVTAAAAIAAAABwARwBvAG8AZwBsAGUAIABJAG4AYwAuACAAMgAwADEANv/bAEMADAgJCgkHDAoKCg0NDA4SHhMSEBASJBobFR4rJi0sKiYpKS81RDovMkAzKSk7UTxARklMTUwuOVRaU0pZREtMSf/bAEMBDQ0NEhASIxMTI0kxKTFJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSf/AABEIAEAAQAMBIgACEQEDEQH/xAAbAAADAQADAQAAAAAAAAAAAAAABAUGAQIDB//EACkQAAICAQMCBQQDAAAAAAAAAAECAAMEBRExEiETQVFhcSJSkrFikaH/xAAYAQADAQEAAAAAAAAAAAAAAAAABAUGAf/EACURAAEEAQMDBQEAAAAAAAAAAAEAAgMEEQUSQSEiMRNxgZGhsf/aAAwDAQACEQMRAD8A+qwhCCESbrOR4dIpU/U/c/EokgAknYDmZrLvORkvZ5E9viS9Ws+lDsHl385TNWPc/J4VXRsjxKDSx+pOPiUZmsO84+Slnlvs3xNICCNxwYaVZ9WHafLenxwi1HtfkcrmEISolku+di1khrl3Hp3/AFPB9Xxl4Dt8CIajgnGbrTc1E/jEZnLOqWonlhaAVQjrRuG4HKpZeq+NQ1SVlersWJ8pNhCSZ7Ek7t0hyUyyNrBhqJSxdV8GhanrLdPbqB8pNhCCxJA7dGcFD42vGHK6mrYzch1+RPevOxbCAty7n17fuZuPadgnIYWPuKgfylatqlqV4YGgpaStG0bicK6yq6lWAIPYgyDqGC2K/Wm5qPB9PaX4rqTdOBafUbf7Kmo1o5oS53kDOUtBI5jwBys7CEJj1VRCEIITun4JyX633FQ5/l7S8qhFCqAAOwAi+nMHwKiPIbf1GZsNPrRwwhzfJGcqVPI57iDwiTtbfbEVfNmlGSdbDu9KKpPPA5M7qTi2s7Ht9lcrjMgUmd6qrLX6K0LN6CUMXSXbZsg9I+0cyrTTXSnTWgUe0iVdJll7pO0fqcktNb0b1KzVtT1P0WKVb0M6TUXU13p02IGHv5SVlaS6btQesfaeYWtJli7o+4fqI7TXdHdCmdFfqwyv2sZQkrRA6tcrKRxyOD3lWXNOcXVmZ9vpJ2BiQr//2Q==",
+            "cf": "11111111111",
+            "slices": [
+                {
+                    "amount": 500,
+                    "nav": 300001646646954421
+                },
+                {
+                    "amount": 1000,
+                    "nav": 300011646646954421
+                },
+                {
+                    "amount": 2000,
+                    "nav": 300021646646954421
+                },
+                {
+                    "amount": 5000,
+                    "nav": 300031646646954421
+                },
+                {
+                    "amount": 10000,
+                    "nav": 300041646646954421
+                },
+                {
+                    "amount": 20000,
+                    "nav": 300051646646954421
+                }
+            ]
+        },
+        {
+            "name": "Basilica minore di Santa maria in Sofia",
+            "reason": "Donazione sostenio Ucraina",
+            "web_site": "https://bmsms.it/sostegnoucraina/",
+            "base64Logo": "/9j/4AAQSkZJRgABAQEAYABgAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtbnRyUkdCIFhZWiAAAAAAAAAAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAAHRyWFlaAAABZAAAABRnWFlaAAABeAAAABRiWFlaAAABjAAAABRyVFJDAAABoAAAAChnVFJDAAABoAAAAChiVFJDAAABoAAAACh3dHB0AAAByAAAABRjcHJ0AAAB3AAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAFgAAAAcAHMAUgBHAEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z3BhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABYWVogAAAAAAAA9tYAAQAAAADTLW1sdWMAAAAAAAAAAQAAAAxlblVTAAAAIAAAABwARwBvAG8AZwBsAGUAIABJAG4AYwAuACAAMgAwADEANv/bAEMADAgJCgkHDAoKCg0NDA4SHhMSEBASJBobFR4rJi0sKiYpKS81RDovMkAzKSk7UTxARklMTUwuOVRaU0pZREtMSf/bAEMBDQ0NEhASIxMTI0kxKTFJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSf/AABEIAEAAQAMBIgACEQEDEQH/xAAbAAADAQADAQAAAAAAAAAAAAAABAUGAQIDB//EACkQAAICAQMCBQQDAAAAAAAAAAECAAMEBRExEiETQVFhcSJSkrFikaH/xAAYAQADAQEAAAAAAAAAAAAAAAAABAUGAf/EACURAAEEAQMDBQEAAAAAAAAAAAEAAgMEEQUSQSEiMRNxgZGhsf/aAAwDAQACEQMRAD8A+qwhCCESbrOR4dIpU/U/c/EokgAknYDmZrLvORkvZ5E9viS9Ws+lDsHl385TNWPc/J4VXRsjxKDSx+pOPiUZmsO84+Slnlvs3xNICCNxwYaVZ9WHafLenxwi1HtfkcrmEISolku+di1khrl3Hp3/AFPB9Xxl4Dt8CIajgnGbrTc1E/jEZnLOqWonlhaAVQjrRuG4HKpZeq+NQ1SVlersWJ8pNhCSZ7Ek7t0hyUyyNrBhqJSxdV8GhanrLdPbqB8pNhCCxJA7dGcFD42vGHK6mrYzch1+RPevOxbCAty7n17fuZuPadgnIYWPuKgfylatqlqV4YGgpaStG0bicK6yq6lWAIPYgyDqGC2K/Wm5qPB9PaX4rqTdOBafUbf7Kmo1o5oS53kDOUtBI5jwBys7CEJj1VRCEIITun4JyX633FQ5/l7S8qhFCqAAOwAi+nMHwKiPIbf1GZsNPrRwwhzfJGcqVPI57iDwiTtbfbEVfNmlGSdbDu9KKpPPA5M7qTi2s7Ht9lcrjMgUmd6qrLX6K0LN6CUMXSXbZsg9I+0cyrTTXSnTWgUe0iVdJll7pO0fqcktNb0b1KzVtT1P0WKVb0M6TUXU13p02IGHv5SVlaS6btQesfaeYWtJli7o+4fqI7TXdHdCmdFfqwyv2sZQkrRA6tcrKRxyOD3lWXNOcXVmZ9vpJ2BiQr//2Q==",
+            "cf": "22222222222",
+            "slices": [
+                {
+                    "amount": 50,
+                    "nav": 300061646646954421
+                },
+                {
+                    "amount": 100,
+                    "nav": 300071646646954421
+                },
+                {
+                    "amount": 200,
+                    "nav": 300081646646954421
+                },
+                {
+                    "amount": 500,
+                    "nav": 300091646646954421
+                },
+                {
+                    "amount": 1000,
+                    "nav": 300101646646954421
+                },
+                {
+                    "amount": 2000,
+                    "nav": 300111646646954421
+                }
+            ]
+        }
+    ];
+
+    let allCharities = "";
+
+    function fetchData() {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(sampleJson), 1000);
+        })
+        // return fetch("https://api.dev.platform.pagopa.it/donations/availabledonations").then(res => res.json())
+    }
+
+    function setLoader(show) {
+        const loader = document.getElementById("loader");
+        loader.className = show ? "" : "hidden";
+    }
+
+    function printAmount(amount) {
+        const string = new Intl.NumberFormat('it-IT', {style: 'currency', currency: 'EUR'}).format(amount / 100);
+        return string;
+    }
+
+    function parseEntities(entities) {
+        return entities.map(entity => {
+            const tiers = entity.slices.map(tier => `<li class="tier"><input type="radio" name="tier" value="${tier.nav}" id="${tier.nav}" data-amount="${tier.amount}" /><label for="${tier.nav}">${printAmount(tier.amount)}</label></li>`).join("");
+            const charity = `<li class="charity" id="${entity.cf}">
+                    <img class="charity-logo"
+                         src="data:image/png;base64,${entity.base64Logo}"/>
+                    <div class="charity-details">
+                        <h2>${entity.name}</h2>
+                        <p>${entity.reason}</p>
+                        <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di piu'</a>
+                    </div>
+                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)"/>
+                </li>`
+            return {id: entity.cf, charity, tiers};
+        });
+    }
+
+    function selectCharity(event) {
+        const editBtn = document.getElementById("edit");
+        editBtn.classList.remove("hidden")
+        const tiersContainer = document.getElementById("tiers-container");
+        tiersContainer.innerHTML = decodeURI(event.target.getAttribute("data-tiers"));
+        const howMuchTitle = document.getElementById("how-much-title");
+        howMuchTitle.classList.remove("disabled")
+        const info = document.getElementById("info");
+        info.classList.remove("hidden")
+        const instructions = document.getElementById("instructions");
+        instructions.classList.add("hidden")
+        const btn = document.getElementById("submit-btn");
+        btn.classList.add("disabled")
+        const charityID = event.target.value;
+        const list = document.getElementById("entities-container").children[0];
+        const selectedCharity = document.getElementById(charityID);
+        list.replaceChildren(selectedCharity);
+        selectedCharity.classList.add("selected");
+    }
+
+    function resetSelection() {
+        const editBtn = document.getElementById("edit");
+        editBtn.classList.add("hidden")
+        const tiersContainer = document.getElementById("tiers-container");
+        tiersContainer.innerHTML = "";
+        const howMuchTitle = document.getElementById("how-much-title");
+        howMuchTitle.classList.add("disabled")
+        const info = document.getElementById("info");
+        info.classList.add("hidden")
+        const instructions = document.getElementById("instructions");
+        instructions.classList.remove("hidden")
+        const btn = document.getElementById("submit-btn");
+        btn.classList.add("disabled")
+        const list = document.getElementById("entities-container").children[0];
+        list.innerHTML = allCharities;
+    }
+
+    function selectTier(event) {
+        const btn = document.getElementById("submit-btn");
+        btn.classList.remove("disabled")
+    }
+
+    function submit() {
+        try {
+            const charityId = document.querySelectorAll("input.charity-selector:checked")[0].value;
+            const tierNode = document.querySelectorAll(".tier input:checked")[0];
+            const tierId = tierNode.getAttribute("id");
+            const tierAmount = parseInt(tierNode.getAttribute("data-amount"), 10);
+            const paymentPayload = {
+                kind: "payment",
+                payload: {
+                    nav: tierId,
+                    cf: charityId,
+                    amount: tierAmount
+                }
+            };
+            console.log("sending ", paymentPayload);
+            window.postMessage(paymentPayload);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function openUrl(event) {
+        const url = event.target.getAttribute("data-url");
+        const openWebUrlPayload = {
+            kind: "webUrl",
+            payload: url
+        };
+        console.log("sending ", openWebUrlPayload);
+        window.postMessage(openWebUrlPayload);
+    }
+
+    function main() {
+        const entitiesContainer = document.getElementById("entities-container");
+        fetchData().then(parseEntities).then(entities => {
+            const content = entities.map(e => e.charity).join("");
+            setLoader(false);
+            entitiesContainer.innerHTML = `<ul class="entities-container">${content}</ul>`;
+            allCharities = content;
+        }).catch(e => {
+            window.postMessage({
+                kind: "error",
+                payload: e.message || "UNKNOWN_ERROR"
+            })
+        })
+    }
+</script>
+</html>
