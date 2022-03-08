@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>нет войне</title>
+  <link rel="stylesheet" href="https://io.italia.it/assets/selfhostedfonts.css">
+</head>
+<style>
+    :root {
+        --bluegrey-dark: #17324D;
+        --bluegrey-light: #CCD4DC;
+        --main-blue: #0073E6;
+        --main-bluegrey: #475A6D;
+        --disabled-text: #97A2AF;
+        --grey-light: #E6E9F2;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        box-sizing: border-box;
+        padding-top: 24px;
+    }
+
+    section {
+        margin: 0 24px;
+    }
+
+    h1, h2, p, a, span, label, button {
+        font-family: "Titillium Web", sans-serif;
+        font-style: normal;
+        letter-spacing: 0px;
+        text-align: left;
+    }
+
+    h1, h2, p {
+        color: var(--bluegrey-dark);
+    }
+
+    h1 {
+        font-size: 20px;
+        font-weight: bold;
+        padding: 0;
+        margin: 0;
+    }
+
+    h2, p {
+        margin: 0;
+        padding: 0;
+    }
+
+
+    p {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    a {
+        color: var(--main-blue);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+    }
+
+    h2 {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 25px;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0px 24px 0px;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    ul.tiers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 24px;
+    }
+
+    .charity-details {
+        flex: 1;
+    }
+
+    li {
+        display: flex;
+        flex: 1 1 auto;
+    }
+
+    li.charity {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--bluegrey-light);
+        padding: 24px 0px;
+    }
+
+    li.charity.selected input {
+        /** Temporarily disabled. UI still being worked out */
+        /*opacity: 0;*/
+    }
+
+    li.charity:last-child {
+        border: none;
+    }
+
+    section.how-much {
+        margin-top: 24px;
+        border-top: 1px solid var(--bluegrey-light);
+    }
+
+    li.tier {
+        justify-self: center;
+        width: 100%;
+    }
+
+    li.tier > input {
+        display: none;
+    }
+
+    li.tier > label {
+        background-color: white;
+        color: var(--main-blue);
+        display: flex;
+        height: 40px;
+        border: 1px solid var(--main-blue);
+        box-sizing: border-box;
+        border-radius: 4px;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 18px;
+    }
+
+    li.tier > input:checked + label {
+        color: white;
+        background-color: var(--main-blue);
+    }
+
+    img.charity-logo {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        margin-right: 16px;
+    }
+
+    input.charity-selector {
+        color: var(--main-blue);
+        min-width: 32px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        min-height: 20px;
+        color: var(--bluegrey-dark);
+        font-weight: 700;
+        border-radius: 50%;
+        border: 2px var(--bluegrey-dark) solid;
+        margin-right: 14px;
+    }
+
+    .info-text {
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+        color: var(--main-bluegrey)
+    }
+
+    .info-box {
+        margin-top: 30px;
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        align-items: center;
+        height: 64px
+    }
+
+    .info-section {
+        display: flex;
+        flex: 1 1 auto;
+    }
+
+    .submit-section {
+        margin: 0;
+        padding: 0 24px;
+        box-shadow: 0px -5px 20px 0px #e0e0e0;
+    }
+
+    .submit-btn {
+        color: white;
+        background-color: var(--main-blue);
+        display: block;
+        height: 40px;
+        width: 100%;
+        border-radius: 4px;
+        border: none;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 18px;
+        text-align: center;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+
+    .submit-btn.disabled {
+        color: var(--bluegrey-light);
+        background-color: var(--grey-light);
+    }
+
+    #loader {
+        display: flex;
+        align-items: center;
+    }
+
+    #loader p {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    #instructions {
+        color: var(--disabled-text);
+    }
+
+    /* Utility classes */
+    .hidden {
+        display: none !important;
+    }
+
+    .disabled {
+        color: var(--disabled-text);
+    }
+
+    /* Spinned for loader */
+    .lds-ring {
+        display: inline-block;
+        position: relative;
+        width: 32px;
+        height: 32px;
+        margin-right: 16px;
+    }
+
+    .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        margin: 2px;
+        border: 2px solid var(--main-blue);
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: var(--main-blue) transparent transparent transparent;
+    }
+
+    .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+    }
+
+    .lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+    }
+
+    .lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+    }
+
+    @keyframes lds-ring {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<body onload="main()">
+<section>
+  <header>
+    <h1>A chi vuoi donare?</h1>
+    <a id="edit" class="hidden" href="#" onclick="resetSelection()">modifica</a>
+  </header>
+  <div id="entities-container"></div>
+  <div id="loader">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <p>Stiamo caricando la lista delle organizzazioni</p>
+  </div>
+</section>
+
+<section class="how-much">
+  <header>
+    <h1 id="how-much-title" class="disabled">Quanto vuoi donare?</h1>
+  </header>
+  <ul class="tiers" id="tiers-container" onchange="selectTier(event)"></ul>
+  <p id="instructions">Scegli a chi donare per conoscere gli importi disponibili</p>
+</section>
+
+<section class="info-section">
+  <div id="info" class="info-box hidden">
+    <span class="info-icon">i</span>
+    <p class="info-text">
+      Puoi donare con carta di credito, debito o prepagata, senza costi di commissione.
+      La donazione è parzialmente detraibile
+    </p>
+  </div>
+</section>
+
+<section class="submit-section">
+  <button id="submit-btn" class="submit-btn disabled" onclick="submit()">Continua</button>
+</section>
+</body>
+
+<script>
+  let allCharities = "";
+
+  function fetchData() {
+    // Use this URL to get actual data
+    // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
+    const url = "http://localhost:3000/donations/availabledonations";
+    return fetch(url).then(res => res.json());
+  }
+
+  function setLoader(show) {
+    const loader = document.getElementById("loader");
+    loader.className = show ? "" : "hidden";
+  }
+
+  function printAmount(amount) {
+    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(amount / 100);
+  }
+
+  function parseEntities(entities) {
+    return entities.map(entity => {
+      const tiers = entity.slices.map(tier => `<li class="tier"><input type="radio" name="tier" value="${tier.nav}" id="${tier.nav}" data-amount="${tier.amount}" /><label for="${tier.nav}">${printAmount(tier.amount)}</label></li>`).join("");
+      const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
+                    <img class="charity-logo"
+                         src="data:image/png;base64,${entity.base64Logo}"/>
+                    <div class="charity-details">
+                        <h2>${entity.name}</h2>
+                        <p>${entity.reason}</p>
+                        <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di piu'</a>
+                    </div>
+                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
+                </li>`;
+      return { id: entity.cf, charity, tiers };
+    });
+  }
+
+  function selectCharity(event) {
+    try {
+      const dataTiers = event.currentTarget.getAttribute("data-tiers");
+      const charityID = event.currentTarget.getAttribute("data-charity-id");
+      const input = document.getElementById(`input-${charityID}`);
+      input.setAttribute("checked", "true");
+      const editBtn = document.getElementById("edit");
+      editBtn.classList.remove("hidden");
+      const tiersContainer = document.getElementById("tiers-container");
+      tiersContainer.innerHTML = decodeURI(dataTiers);
+      const howMuchTitle = document.getElementById("how-much-title");
+      howMuchTitle.classList.remove("disabled");
+      const info = document.getElementById("info");
+      info.classList.remove("hidden");
+      const instructions = document.getElementById("instructions");
+      instructions.classList.add("hidden");
+      const btn = document.getElementById("submit-btn");
+      btn.classList.add("disabled");
+      const list = document.getElementById("entities-container").children[0];
+      const selectedCharity = document.getElementById(charityID);
+      list.replaceChildren(selectedCharity);
+      selectedCharity.classList.add("selected");
+    } catch (e) {
+      reportError(e);
+    }
+  }
+
+  function resetSelection() {
+    try {
+      const editBtn = document.getElementById("edit");
+      editBtn.classList.add("hidden");
+      const tiersContainer = document.getElementById("tiers-container");
+      tiersContainer.innerHTML = "";
+      const howMuchTitle = document.getElementById("how-much-title");
+      howMuchTitle.classList.add("disabled");
+      const info = document.getElementById("info");
+      info.classList.add("hidden");
+      const instructions = document.getElementById("instructions");
+      instructions.classList.remove("hidden");
+      const btn = document.getElementById("submit-btn");
+      btn.classList.add("disabled");
+      const list = document.getElementById("entities-container").children[0];
+      list.innerHTML = allCharities;
+    } catch (e) {
+      reportError(e);
+    }
+  }
+
+  function selectTier(event) {
+    const btn = document.getElementById("submit-btn");
+    btn.classList.remove("disabled");
+  }
+
+  function submit() {
+    try {
+      const charityId = document.querySelectorAll("input.charity-selector:checked")[0].value;
+      const tierNode = document.querySelectorAll(".tier input:checked")[0];
+      const tierId = tierNode.getAttribute("id");
+      const tierAmount = parseInt(tierNode.getAttribute("data-amount"), 10);
+      const paymentPayload = {
+        kind: "payment",
+        payload: {
+          nav: tierId,
+          cf: charityId,
+          amount: tierAmount
+        }
+      };
+      sendMessage(paymentPayload);
+    } catch (e) {
+      reportError(e);
+    }
+  }
+
+  function reportError(error) {
+    sendMessage({
+      kind: "error",
+      payload: error.message || "UNKNOWN_ERROR",
+      stack: error.stack
+    });
+  }
+
+  function openUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const url = event.target.getAttribute("data-url");
+    const openWebUrlPayload = {
+      kind: "webUrl",
+      payload: url
+    };
+    sendMessage(openWebUrlPayload);
+  }
+
+  function sendMessage(message) {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify(message));
+    }
+  }
+
+  function main() {
+    const entitiesContainer = document.getElementById("entities-container");
+    fetchData().then(parseEntities).then(entities => {
+      const content = entities.map(e => e.charity).join("");
+      setLoader(false);
+      entitiesContainer.innerHTML = `<ul class="entities-container">${content}</ul>`;
+      allCharities = content;
+    }).catch(e => {
+      reportError(e);
+    });
+  }
+</script>
+</html>

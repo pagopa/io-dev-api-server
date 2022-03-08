@@ -73,3 +73,97 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
         .join("<br/>")
   );
 });
+
+addHandler(publicRouter, "get", "/donate", (req, res) => {
+  sendFile("assets/html/donate.html", res);
+});
+
+addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.json([
+    {
+      name: "Croce Rossa Italiana",
+      reason: "Donazione Emergenza Ucraina",
+      web_site: "https://cri.it/emergenzaucraina/",
+      base64Logo: "/9j/4AAQSk",
+      cf: "11111111111",
+      paymentDescription: "desc11111111111",
+      companyName: "company Croce Rossa Italiana",
+      officeName: "office Croce Rossa Italiana ",
+      slices: [
+        {
+          idDonation: "00",
+          amount: 500,
+          nav: "300001646728922478"
+        },
+        {
+          idDonation: "01",
+          amount: 1000,
+          nav: "300011646728922494"
+        },
+        {
+          idDonation: "02",
+          amount: 2000,
+          nav: "300021646728922494"
+        },
+        {
+          idDonation: "03",
+          amount: 5000,
+          nav: "300031646728922494"
+        },
+        {
+          idDonation: "04",
+          amount: 10000,
+          nav: "300041646728922494"
+        },
+        {
+          idDonation: "05",
+          amount: 20000,
+          nav: "300051646728922494"
+        }
+      ]
+    },
+    {
+      name: "Basilica minore di Santa maria in Sofia",
+      reason: "Donazione sostenio Ucraina",
+      web_site: "https://bmsms.it/sostegnoucraina/",
+      base64Logo: "/9j/4AAQSkZJR",
+      cf: "22222222222",
+      paymentDescription: "desc222222",
+      companyName: "company Basilica minore di Santa maria in Sofia",
+      officeName: "office Basilica minore di Santa maria in Sofia ",
+      slices: [
+        {
+          idDonation: "06",
+          amount: 500,
+          nav: "300061646728922494"
+        },
+        {
+          idDonation: "07",
+          amount: 1000,
+          nav: "300071646728922494"
+        },
+        {
+          idDonation: "08",
+          amount: 2000,
+          nav: "300081646728922494"
+        },
+        {
+          idDonation: "09",
+          amount: 5000,
+          nav: "300091646728922494"
+        },
+        {
+          idDonation: "10",
+          amount: 10000,
+          nav: "300101646728922494"
+        },
+        {
+          idDonation: "11",
+          amount: 20000,
+          nav: "300111646728922494"
+        }
+      ]
+    }
+  ]);
+});
