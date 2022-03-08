@@ -452,7 +452,7 @@
 
   function sendMessage(message) {
     if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMesjage(JSON.stringify(message));
+      window.ReactNativeWebView.postMessage(JSON.stringify(message));
     }
   }
 
