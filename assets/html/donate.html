@@ -94,6 +94,10 @@
         grid-gap: 24px;
     }
 
+    .charity-details {
+        flex: 1;
+    }
+
     li {
         display: flex;
         flex: 1 1 auto;
@@ -224,7 +228,7 @@
         font-weight: 700;
         line-height: 18px;
         text-align: center;
-        margin-bottom: 54px;
+        margin-bottom: 20px;
         margin-top: 20px;
     }
 
@@ -314,7 +318,7 @@
       <div></div>
       <div></div>
     </div>
-    <p>Carico la lista delle possibili donazioni</p>
+    <p>Stiamo caricando la lista delle organizzazioni</p>
   </div>
 </section>
 
@@ -323,13 +327,16 @@
     <h1 id="how-much-title" class="disabled">Quanto vuoi donare?</h1>
   </header>
   <ul class="tiers" id="tiers-container" onchange="selectTier(event)"></ul>
-  <p id="instructions">Scegli a chi donare per sapere gli importi disponibili</p>
+  <p id="instructions">Scegli a chi donare per conoscere gli importi disponibili</p>
 </section>
 
 <section class="info-section">
   <div id="info" class="info-box hidden">
     <span class="info-icon">i</span>
-    <p class="info-text">Per donare importi superiori puoi ripetere la donazione più volte.</p>
+    <p class="info-text">
+      Puoi donare con carta di credito, debito o prepagata, senza costi di commissione.
+      La donazione è parzialmente detraibile
+    </p>
   </div>
 </section>
 
@@ -360,7 +367,7 @@
   function parseEntities(entities) {
     return entities.map(entity => {
       const tiers = entity.slices.map(tier => `<li class="tier"><input type="radio" name="tier" value="${tier.nav}" id="${tier.nav}" data-amount="${tier.amount}" /><label for="${tier.nav}">${printAmount(tier.amount)}</label></li>`).join("");
-      const charity = `<li class="charity" id="${entity.cf}">
+      const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
                     <img class="charity-logo"
                          src="data:image/png;base64,${entity.base64Logo}"/>
                     <div class="charity-details">
@@ -368,47 +375,56 @@
                         <p>${entity.reason}</p>
                         <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di piu'</a>
                     </div>
-                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)"/>
+                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}"  />
                 </li>`;
       return { id: entity.cf, charity, tiers };
     });
   }
 
   function selectCharity(event) {
-    const editBtn = document.getElementById("edit");
-    editBtn.classList.remove("hidden");
-    const tiersContainer = document.getElementById("tiers-container");
-    tiersContainer.innerHTML = decodeURI(event.target.getAttribute("data-tiers"));
-    const howMuchTitle = document.getElementById("how-much-title");
-    howMuchTitle.classList.remove("disabled");
-    const info = document.getElementById("info");
-    info.classList.remove("hidden");
-    const instructions = document.getElementById("instructions");
-    instructions.classList.add("hidden");
-    const btn = document.getElementById("submit-btn");
-    btn.classList.add("disabled");
-    const charityID = event.target.value;
-    const list = document.getElementById("entities-container").children[0];
-    const selectedCharity = document.getElementById(charityID);
-    list.replaceChildren(selectedCharity);
-    selectedCharity.classList.add("selected");
+    try {
+      const dataTiers = event.currentTarget.getAttribute("data-tiers");
+      const charityID = event.currentTarget.getAttribute("data-charity-id");
+      const editBtn = document.getElementById("edit");
+      editBtn.classList.remove("hidden");
+      const tiersContainer = document.getElementById("tiers-container");
+      tiersContainer.innerHTML = decodeURI(dataTiers);
+      const howMuchTitle = document.getElementById("how-much-title");
+      howMuchTitle.classList.remove("disabled");
+      const info = document.getElementById("info");
+      info.classList.remove("hidden");
+      const instructions = document.getElementById("instructions");
+      instructions.classList.add("hidden");
+      const btn = document.getElementById("submit-btn");
+      btn.classList.add("disabled");
+      const list = document.getElementById("entities-container").children[0];
+      const selectedCharity = document.getElementById(charityID);
+      list.replaceChildren(selectedCharity);
+      selectedCharity.classList.add("selected");
+    } catch (e) {
+      reportError(e)
+    }
   }
 
   function resetSelection() {
-    const editBtn = document.getElementById("edit");
-    editBtn.classList.add("hidden");
-    const tiersContainer = document.getElementById("tiers-container");
-    tiersContainer.innerHTML = "";
-    const howMuchTitle = document.getElementById("how-much-title");
-    howMuchTitle.classList.add("disabled");
-    const info = document.getElementById("info");
-    info.classList.add("hidden");
-    const instructions = document.getElementById("instructions");
-    instructions.classList.remove("hidden");
-    const btn = document.getElementById("submit-btn");
-    btn.classList.add("disabled");
-    const list = document.getElementById("entities-container").children[0];
-    list.innerHTML = allCharities;
+    try {
+      const editBtn = document.getElementById("edit");
+      editBtn.classList.add("hidden");
+      const tiersContainer = document.getElementById("tiers-container");
+      tiersContainer.innerHTML = "";
+      const howMuchTitle = document.getElementById("how-much-title");
+      howMuchTitle.classList.add("disabled");
+      const info = document.getElementById("info");
+      info.classList.add("hidden");
+      const instructions = document.getElementById("instructions");
+      instructions.classList.remove("hidden");
+      const btn = document.getElementById("submit-btn");
+      btn.classList.add("disabled");
+      const list = document.getElementById("entities-container").children[0];
+      list.innerHTML = allCharities;
+    } catch (e) {
+      reportError(e);
+    }
   }
 
   function selectTier(event) {
@@ -433,21 +449,27 @@
       console.log("sending ", paymentPayload);
       sendMessage(paymentPayload);
     } catch (e) {
-      sendMessage({
-        kind: "error",
-        payload: e.message || "UNKNOWN_ERROR"
-      });
+      reportError(e);
     }
   }
 
+  function reportError(error) {
+    sendMessage({
+      kind: "error",
+      payload: error.message || "UNKNOWN_ERROR",
+      stack: error.stack
+    });
+  }
+
   function openUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
     const url = event.target.getAttribute("data-url");
     const openWebUrlPayload = {
       kind: "webUrl",
       payload: url
     };
-    console.log("sending ", openWebUrlPayload);
-    window.postMessage(openWebUrlPayload);
+    sendMessage(openWebUrlPayload);
   }
 
   function sendMessage(message) {
@@ -464,10 +486,7 @@
       entitiesContainer.innerHTML = `<ul class="entities-container">${content}</ul>`;
       allCharities = content;
     }).catch(e => {
-      sendMessage({
-        kind: "error",
-        payload: e.message || "UNKNOWN_ERROR"
-      });
+      reportError(e)
     });
   }
 </script>
