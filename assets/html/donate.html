@@ -349,8 +349,9 @@
   let allCharities = "";
 
   function fetchData() {
-    const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
-    // Local env: http://localhost:3000/donations/availabledonations"
+    // Use this URL to get actual data
+    // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
+    const url = "http://localhost:3000/donations/availabledonations";
     return fetch(url).then(res => res.json());
   }
 
@@ -360,8 +361,7 @@
   }
 
   function printAmount(amount) {
-    const string = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(amount / 100);
-    return string;
+    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(amount / 100);
   }
 
   function parseEntities(entities) {
@@ -375,7 +375,7 @@
                         <p>${entity.reason}</p>
                         <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di piu'</a>
                     </div>
-                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}"  />
+                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
                 </li>`;
       return { id: entity.cf, charity, tiers };
     });
@@ -385,6 +385,8 @@
     try {
       const dataTiers = event.currentTarget.getAttribute("data-tiers");
       const charityID = event.currentTarget.getAttribute("data-charity-id");
+      const input = document.getElementById(`input-${charityID}`);
+      input.setAttribute("checked", "true");
       const editBtn = document.getElementById("edit");
       editBtn.classList.remove("hidden");
       const tiersContainer = document.getElementById("tiers-container");
@@ -402,7 +404,7 @@
       list.replaceChildren(selectedCharity);
       selectedCharity.classList.add("selected");
     } catch (e) {
-      reportError(e)
+      reportError(e);
     }
   }
 
@@ -446,7 +448,6 @@
           amount: tierAmount
         }
       };
-      console.log("sending ", paymentPayload);
       sendMessage(paymentPayload);
     } catch (e) {
       reportError(e);
@@ -486,7 +487,7 @@
       entitiesContainer.innerHTML = `<ul class="entities-container">${content}</ul>`;
       allCharities = content;
     }).catch(e => {
-      reportError(e)
+      reportError(e);
     });
   }
 </script>
