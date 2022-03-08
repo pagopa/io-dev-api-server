@@ -1,6 +1,7 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
+import { serverUrl } from "../utils/server";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -236,7 +237,7 @@ export const backendStatus: BackendStatus = {
           "en-EN":
             "With IO you can make a donation to humanitarian organizations that assist the victims of the conflict in Ukraine"
         },
-        url: "https://assets.cdn.io.italia.it/donazioni/index.html"
+        url: `${serverUrl}/donate`
       }
     }
   }
