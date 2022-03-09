@@ -5,8 +5,8 @@ import figlet from "figlet";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { routes } from "./payloads/response";
-import app from "./server";
 import populatePersistence from "./populate-persistence";
+import app from "./server";
 import { readFileAsJSON } from "./utils/file";
 import { interfaces, serverHostname, serverPort } from "./utils/server";
 // read package.json to print some info

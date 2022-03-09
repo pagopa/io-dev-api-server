@@ -31,6 +31,7 @@ function archive(id: string): boolean {
   const destinationIndex = archivedMessages.findIndex(
     message => message.id < id
   );
+  // tslint:disable-next-line: no-object-mutation
   toArchived.is_archived = true;
   archivedMessages.splice(destinationIndex, 0, toArchived);
   return true;
@@ -47,6 +48,7 @@ function unarchive(id: string): boolean {
   }
   const [toInbox] = archivedMessages.splice(index, 1);
   const destinationIndex = inboxMessages.findIndex(message => message.id < id);
+  // tslint:disable-next-line: no-object-mutation
   toInbox.is_archived = false;
   inboxMessages.splice(destinationIndex, 0, toInbox);
   return true;
@@ -94,6 +96,7 @@ function dropAll(): void {
 function setReadMessage(id: string): boolean {
   const message = findOneById(id);
   if (message) {
+    // tslint:disable-next-line: no-object-mutation
     message.is_read = true;
     return true;
   }
