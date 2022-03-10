@@ -386,6 +386,14 @@
 <script>
   let allCharities = "";
 
+  function replaceChildren(target, children) {
+    target.textContent = '';
+
+    children.forEach(child => {
+      target.appendChild(child);
+    });
+  }
+
   function fetchData() {
     // Use this URL to get actual data
     // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
@@ -443,7 +451,7 @@
       btn.classList.add("disabled");
       const list = document.getElementById("entities-container").children[0];
       const selectedCharity = document.getElementById(charityID);
-      list.replaceChildren(selectedCharity);
+      replaceChildren(list, [selectedCharity]);
       selectedCharity.classList.add("selected");
     } catch (e) {
       reportError(e);
