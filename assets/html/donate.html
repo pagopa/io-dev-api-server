@@ -361,7 +361,7 @@
   }
 
   function printAmount(amount) {
-    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(amount / 100);
+    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0 }).format(amount / 100);
   }
 
   function parseEntities(entities) {
