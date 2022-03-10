@@ -82,18 +82,32 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const payload = PaymentActivationsPostRequest.decode(req.body);
-    if (E.isRight(payload)) {
-      const response: PaymentActivationsPostResponse = {
-        importoSingoloVersamento: paymentRequest.importoSingoloVersamento,
-        causaleVersamento: paymentRequest.causaleVersamento,
-        ibanAccredito: faker.finance.iban() as Iban,
-        enteBeneficiario: paymentRequest.enteBeneficiario
-      };
-      res.json(response);
-    } else {
-      res.sendStatus(403);
-    }
+    const pr: PaymentRequestsGetResponse = paymentRequest;
+    pipe(
+      O.fromNullable(ioDevServerConfig.wallet.attivaError),
+      O.fold(
+        () => {
+          pipe(
+            PaymentActivationsPostRequest.decode(req.body),
+            E.fold(
+              () => {
+                res.sendStatus(403);
+              },
+              _ => {
+                const response: PaymentActivationsPostResponse = {
+                  importoSingoloVersamento: pr.importoSingoloVersamento,
+                  causaleVersamento: pr.causaleVersamento,
+                  ibanAccredito: faker.finance.iban() as Iban,
+                  enteBeneficiario: pr.enteBeneficiario
+                };
+                res.json(response);
+              }
+            )
+          );
+        },
+        error => responseWithError(error, res)
+      )
+    );
   }
 );
 
@@ -159,6 +173,7 @@ export const handlePaymentPostAndRedirect = (
   outcomeValue: number = 0,
   title: string = "Pay web page"
 ) => {
+  console.log(req.body);
   const formData = Object.keys(req.body)
     .map(k => `<b>${k}</b>: ${req.body[k]}`)
     .join("<br/>");
