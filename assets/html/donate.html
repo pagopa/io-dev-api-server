@@ -165,12 +165,31 @@
     }
 
     input.charity-selector {
-        color: var(--main-blue);
-        min-width: 32px;
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+      z-index: -1;
+    }
+
+    input.charity-selector + label.charity-selector-view {
+        border: 2px solid var(--main-blue);
+        border-radius: 100%;
         width: 32px;
         height: 32px;
-        padding: 0;
-        margin: 0;
+        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    input.charity-selector:checked + label.charity-selector-view:after {
+        content: "";
+        display: block;
+        width: 70%;
+        height: 70%;
+        background-color: var(--main-blue);
+        border-radius: 100%;
     }
 
     .info-icon {
@@ -375,7 +394,11 @@
                         <p>${entity.reason}</p>
                         <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di più</a>
                     </div>
-                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
+
+                    <div>
+                      <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
+                      <label for="input-${entity.cf}" class="charity-selector-view" tabindex="0" aria-role="radio"></label>
+                    </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
     });
