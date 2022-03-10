@@ -192,6 +192,10 @@
         border-radius: 100%;
     }
 
+    .charity-selector-container {
+      padding-left: 16px;
+    }
+
     .info-icon {
         display: flex;
         align-items: center;
@@ -395,7 +399,7 @@
                         <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di più</a>
                     </div>
 
-                    <div>
+                    <div class="charity-selector-container">
                       <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
                       <label for="input-${entity.cf}" class="charity-selector-view" tabindex="0" aria-role="radio"></label>
                     </div>
