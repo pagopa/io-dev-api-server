@@ -26,6 +26,13 @@
         margin: 0;
         box-sizing: border-box;
         padding-top: 24px;
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     section {
@@ -165,12 +172,35 @@
     }
 
     input.charity-selector {
-        color: var(--main-blue);
-        min-width: 32px;
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+      z-index: -1;
+    }
+
+    input.charity-selector + label.charity-selector-view {
+        border: 2px solid var(--main-blue);
+        border-radius: 100%;
         width: 32px;
         height: 32px;
-        padding: 0;
-        margin: 0;
+        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    input.charity-selector:checked + label.charity-selector-view:after {
+        content: "";
+        display: block;
+        width: 21px;
+        height: 21px;
+        background-color: var(--main-blue);
+        border-radius: 100%;
+    }
+
+    .charity-selector-container {
+      padding-left: 16px;
     }
 
     .info-icon {
@@ -208,12 +238,20 @@
     .info-section {
         display: flex;
         flex: 1 1 auto;
+
+        padding-bottom: 200px;
     }
 
     .submit-section {
         margin: 0;
         padding: 0 24px;
         box-shadow: 0px -5px 20px 0px #e0e0e0;
+        background-color: white;
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .submit-btn {
@@ -348,6 +386,14 @@
 <script>
   let allCharities = "";
 
+  function replaceChildren(target, children) {
+    target.textContent = '';
+
+    children.forEach(child => {
+      target.appendChild(child);
+    });
+  }
+
   function fetchData() {
     // Use this URL to get actual data
     // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
@@ -361,7 +407,7 @@
   }
 
   function printAmount(amount) {
-    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(amount / 100);
+    return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0 }).format(amount / 100);
   }
 
   function parseEntities(entities) {
@@ -373,9 +419,13 @@
                     <div class="charity-details">
                         <h2>${entity.name}</h2>
                         <p>${entity.reason}</p>
-                        <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di piu'</a>
+                        <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di più</a>
                     </div>
-                    <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
+
+                    <div class="charity-selector-container">
+                      <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
+                      <label for="input-${entity.cf}" class="charity-selector-view"></label>
+                    </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
     });
@@ -401,7 +451,7 @@
       btn.classList.add("disabled");
       const list = document.getElementById("entities-container").children[0];
       const selectedCharity = document.getElementById(charityID);
-      list.replaceChildren(selectedCharity);
+      replaceChildren(list, [selectedCharity]);
       selectedCharity.classList.add("selected");
     } catch (e) {
       reportError(e);
