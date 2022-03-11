@@ -173,7 +173,6 @@ export const handlePaymentPostAndRedirect = (
   outcomeValue: number = 0,
   title: string = "Pay web page"
 ) => {
-  console.log(req.body);
   const formData = Object.keys(req.body)
     .map(k => `<b>${k}</b>: ${req.body[k]}`)
     .join("<br/>");
