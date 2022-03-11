@@ -178,11 +178,11 @@
       z-index: -1;
     }
 
-    input.charity-selector + label.charity-selector-view {
+    .charity-selector-radio {
         border: 2px solid var(--main-blue);
         border-radius: 100%;
-        width: 32px;
-        height: 32px;
+        width: 31px;
+        height: 31px;
         display: inline-block;
         display: flex;
         align-items: center;
@@ -190,7 +190,7 @@
         cursor: pointer;
     }
 
-    input.charity-selector:checked + label.charity-selector-view:after {
+    .charity-selector-radio.active:after {
         content: "";
         display: block;
         width: 21px;
@@ -397,7 +397,7 @@
   function fetchData() {
     // Use this URL to get actual data
     // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
-    const url = "http://localhost:3000/donations/availabledonations";
+    const url = "http://192.168.1.54:3000/donations/availabledonations";
     return fetch(url).then(res => res.json());
   }
 
@@ -415,7 +415,7 @@
       const tiers = entity.slices.map(tier => `<li class="tier"><input type="radio" name="tier" value="${tier.nav}" id="${tier.nav}" data-amount="${tier.amount}" /><label for="${tier.nav}">${printAmount(tier.amount)}</label></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
                     <img class="charity-logo"
-                         src="data:image/png;base64,${entity.base64Logo}"/>
+                         src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo"/>
                     <div class="charity-details">
                         <h2>${entity.name}</h2>
                         <p>${entity.reason}</p>
@@ -423,8 +423,7 @@
                     </div>
 
                     <div class="charity-selector-container">
-                      <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
-                      <label for="input-${entity.cf}" class="charity-selector-view"></label>
+                      <div class="charity-selector-radio" id="input-${entity.cf}" tabindex="0" aria-label="Seleziona ${entity.name}" aria-checked="false" data-value="false" role="radio"></div>
                     </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
@@ -435,8 +434,13 @@
     try {
       const dataTiers = event.currentTarget.getAttribute("data-tiers");
       const charityID = event.currentTarget.getAttribute("data-charity-id");
+
+      // Select the "radio"
       const input = document.getElementById(`input-${charityID}`);
-      input.setAttribute("checked", "true");
+      input.setAttribute("aria-checked", "true");
+      input.setAttribute("data-value", "true");
+      input.classList.add('active');
+      
       const editBtn = document.getElementById("edit");
       editBtn.classList.remove("hidden");
       const tiersContainer = document.getElementById("tiers-container");
