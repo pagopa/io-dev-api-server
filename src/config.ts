@@ -130,6 +130,7 @@ if (customConfig !== undefined) {
     )
   );
 }
+
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
   defaultConfig,
   customConfig

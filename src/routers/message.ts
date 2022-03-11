@@ -3,6 +3,7 @@ import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
+import { EnrichedMessage } from "../../generated/definitions/backend/EnrichedMessage";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ioDevServerConfig } from "../config";
@@ -122,7 +123,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   }
 
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
-  const items = getPublicMessages(slice, params.enrichResultData!);
+  const items = getPublicMessages(slice as any, params.enrichResultData!);
 
   // the API doesn't return 'next' for previous page
   if (indexes.backward) {
@@ -163,29 +164,47 @@ addHandler(
 addHandler(
   messageRouter,
   "put",
-  addApiV1Prefix("/messages/:id"),
+  addApiV1Prefix("/messages/:id/message-status"),
   (req, res) => {
     if (configResponse.getMessageResponseCode !== 200) {
       res.sendStatus(configResponse.getMessagesResponseCode);
       return;
     }
-    const { is_archived, is_read } = req.body;
+    const { change_type, is_archived, is_read } = req.body;
     if (is_archived === undefined && is_read === undefined) {
       return res.json(getProblemJson(400, "Invalid payload"));
     }
-
     // tslint:disable-next-line: no-let
     let result = false;
-    if (is_archived === true) {
-      result = MessagesDB.archive(req.params.id);
-    }
-    if (is_archived === false) {
-      result = MessagesDB.unarchive(req.params.id);
-    }
 
-    // note: is_read can only be set to true
-    if (is_read) {
-      result = MessagesDB.setReadMessage(req.params.id);
+    switch (change_type) {
+      case "archiving":
+        if (is_archived === true) {
+          result = MessagesDB.archive(req.params.id);
+        }
+        if (is_archived === false) {
+          result = MessagesDB.unarchive(req.params.id);
+        }
+        break;
+      case "reading":
+        // note: is_read can only be set to true
+        if (is_read) {
+          result = MessagesDB.setReadMessage(req.params.id);
+        }
+        break;
+      case "bulk":
+        if (is_archived === true) {
+          result = MessagesDB.archive(req.params.id);
+        }
+        if (is_archived === false) {
+          result = MessagesDB.unarchive(req.params.id);
+        }
+        if (is_read) {
+          result = MessagesDB.setReadMessage(req.params.id);
+        }
+        break;
+      default:
+        return res.json(getProblemJson(400, "Invalid payload"));
     }
 
     if (result) {

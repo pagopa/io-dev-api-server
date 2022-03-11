@@ -7,14 +7,18 @@ describe("the Message persistence", () => {
     MessagesDB.dropAll();
   });
 
+  afterAll(() => {
+    MessagesDB.dropAll();
+  });
+
   describe("when a list of messages is persisted", () => {
     it("they should be stored inversely sorted by ID", () => {
       const unsortedMessages = ["A1", "C0", "A3"].map(buildMessage);
       MessagesDB.persist(unsortedMessages);
-      expect(MessagesDB.findAllInbox()).toEqual([
-        { id: "C0" },
-        { id: "A3" },
-        { id: "A1" }
+      expect(MessagesDB.findAllInbox().map(m => m.id)).toEqual([
+        "C0",
+        "A3",
+        "A1"
       ]);
     });
   });
@@ -24,11 +28,11 @@ describe("the Message persistence", () => {
       MessagesDB.persist(["C", "B", "A"].map(buildMessage));
       expect(MessagesDB.findAllArchived()).toEqual([]);
       MessagesDB.archive("B");
-      expect(MessagesDB.findAllInbox()).toEqual([{ id: "C" }, { id: "A" }]);
-      expect(MessagesDB.findAllArchived()).toEqual([{ id: "B" }]);
+      expect(MessagesDB.findAllInbox().map(m => m.id)).toEqual(["C", "A"]);
+      expect(MessagesDB.findAllArchived().map(m => m.id)).toEqual(["B"]);
       MessagesDB.archive("C");
-      expect(MessagesDB.findAllInbox()).toEqual([{ id: "A" }]);
-      expect(MessagesDB.findAllArchived()).toEqual([{ id: "C" }, { id: "B" }]);
+      expect(MessagesDB.findAllInbox().map(m => m.id)).toEqual(["A"]);
+      expect(MessagesDB.findAllArchived().map(m => m.id)).toEqual(["C", "B"]);
     });
   });
 
@@ -37,12 +41,8 @@ describe("the Message persistence", () => {
       MessagesDB.persist(["C", "B", "A"].map(buildMessage));
       MessagesDB.archive("B");
       MessagesDB.unarchive("B");
-      expect(MessagesDB.findAllArchived()).toEqual([]);
-      expect(MessagesDB.findAllInbox()).toEqual([
-        { id: "C" },
-        { id: "B" },
-        { id: "A" }
-      ]);
+      expect(MessagesDB.findAllArchived().map(m => m.id)).toEqual([]);
+      expect(MessagesDB.findAllInbox().map(m => m.id)).toEqual(["C", "B", "A"]);
     });
   });
 });

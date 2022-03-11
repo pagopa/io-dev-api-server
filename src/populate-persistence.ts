@@ -20,6 +20,7 @@ import {
 import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { services } from "./routers/service";
+import { IoDevServerConfig } from "./types/config";
 import {
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
@@ -39,24 +40,24 @@ const getRandomServiceId = (): string => {
 };
 
 const getNewMessage = (
+  customConfig: IoDevServerConfig,
   subject: string,
   markdown: string,
   prescriptionData?: PrescriptionData,
   euCovidCert?: EUCovidCert
 ): CreatedMessageWithContent =>
   withContent(
-    createMessage(
-      ioDevServerConfig.profile.attrs.fiscal_code,
-      getRandomServiceId()
-    ),
+    createMessage(customConfig.profile.attrs.fiscal_code, getRandomServiceId()),
     subject,
     markdown,
     prescriptionData,
     euCovidCert
   );
 
-// tslint:disable-next-line: readonly-array
-const createMessages = (): Array<
+const createMessages = (
+  customConfig: IoDevServerConfig
+  // tslint:disable-next-line: readonly-array
+): Array<
   CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
   // tslint:disable-next-line:no-big-function
 > => {
@@ -68,35 +69,43 @@ const createMessages = (): Array<
   const medicalPrescription: PrescriptionData = {
     nre: "050A00854698121",
     iup: "0000X0NFM",
-    prescriber_fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code
+    prescriber_fiscal_code: customConfig.profile.attrs.fiscal_code
   };
   const now = new Date();
 
   /* with CTAs */
-  if (ioDevServerConfig.messages.withCTA) {
+  if (customConfig.messages.withCTA) {
     output.push(
-      getNewMessage(`2 nested CTA`, frontMatter2CTA2 + messageMarkdown)
+      getNewMessage(
+        customConfig,
+        `2 nested CTA`,
+        frontMatter2CTA2 + messageMarkdown
+      )
     );
     output.push(
       getNewMessage(
+        customConfig,
         `2 CTA bonus vacanze`,
         frontMatterBonusVacanze + messageMarkdown
       )
     );
     output.push(
       getNewMessage(
+        customConfig,
         `1 CTA start BPD`,
         frontMatter1CTABonusBpd + messageMarkdown
       )
     );
     output.push(
       getNewMessage(
+        customConfig,
         `1 CTA IBAN BPD`,
         frontMatter1CTABonusBpdIban + messageMarkdown
       )
     );
     output.push(
       getNewMessage(
+        customConfig,
         `1 CTA start CGN`,
         frontMatter1CTABonusCgn + messageMarkdown
       )
@@ -104,12 +113,13 @@ const createMessages = (): Array<
   }
 
   /* with EUCovidCert */
-  if (ioDevServerConfig.messages.withEUCovidCert) {
+  if (customConfig.messages.withEUCovidCert) {
     eucovidCertAuthResponses.forEach(config => {
       const [authCode, description] = config;
 
       output.push(
         getNewMessage(
+          customConfig,
           `🏥 EUCovidCert - ${description}`,
           messageMarkdown,
           undefined,
@@ -123,6 +133,7 @@ const createMessages = (): Array<
 
   const medicalMessage = (count: number) =>
     getNewMessage(
+      customConfig,
       `💊 medical prescription - ${count}`,
       messageMarkdown,
       medicalPrescription
@@ -133,7 +144,7 @@ const createMessages = (): Array<
     .toString("base64");
 
   /* medical */
-  range(1, ioDevServerConfig.messages.medicalCount).forEach(count => {
+  range(1, customConfig.messages.medicalCount).forEach(count => {
     output.push(medicalMessage(count));
     const baseMessage = medicalMessage(count);
     const attachments: ReadonlyArray<MessageAttachment> = [
@@ -159,24 +170,38 @@ const createMessages = (): Array<
   });
 
   /* standard message */
-  range(1, ioDevServerConfig.messages.standardMessageCount).forEach(count =>
-    output.push(getNewMessage(`standard message - ${count}`, messageMarkdown))
+  range(1, customConfig.messages.standardMessageCount).forEach(count =>
+    output.push(
+      getNewMessage(
+        customConfig,
+        `standard message - ${count}`,
+        messageMarkdown
+      )
+    )
   );
 
   /* due date */
-  range(1, ioDevServerConfig.messages.withValidDueDateCount).forEach(count =>
+  range(1, customConfig.messages.withValidDueDateCount).forEach(count =>
     output.push(
       withDueDate(
-        getNewMessage(`🕙✅ due date valid - ${count}`, messageMarkdown),
+        getNewMessage(
+          customConfig,
+          `🕙✅ due date valid - ${count}`,
+          messageMarkdown
+        ),
         new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
       )
     )
   );
 
-  range(1, ioDevServerConfig.messages.withInValidDueDateCount).forEach(count =>
+  range(1, customConfig.messages.withInValidDueDateCount).forEach(count =>
     output.push(
       withDueDate(
-        getNewMessage(`🕙❌ due date invalid - ${count}`, messageMarkdown),
+        getNewMessage(
+          customConfig,
+          `🕙❌ due date invalid - ${count}`,
+          messageMarkdown
+        ),
         new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
       )
     )
@@ -185,12 +210,13 @@ const createMessages = (): Array<
   /* payments */
   range(
     1,
-    ioDevServerConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
+    customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
   ).forEach(count =>
     output.push(
       withDueDate(
         withPaymentData(
           getNewMessage(
+            customConfig,
             `💰🕙❌ payment - expired - invalid after due date - ${count}`,
             messageMarkdown
           ),
@@ -203,12 +229,13 @@ const createMessages = (): Array<
 
   range(
     1,
-    ioDevServerConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
+    customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
   ).forEach(count =>
     output.push(
       withDueDate(
         withPaymentData(
           getNewMessage(
+            customConfig,
             `💰🕙✅ payment - valid - invalid after due date - ${count}`,
             messageMarkdown
           ),
@@ -221,12 +248,16 @@ const createMessages = (): Array<
 
   range(
     1,
-    ioDevServerConfig.messages.paymentWithExpiredDueDateCount
+    customConfig.messages.paymentWithExpiredDueDateCount
   ).forEach(count =>
     output.push(
       withDueDate(
         withPaymentData(
-          getNewMessage(`💰🕙 payment - expired - ${count}`, messageMarkdown),
+          getNewMessage(
+            customConfig,
+            `💰🕙 payment - expired - ${count}`,
+            messageMarkdown
+          ),
           false
         ),
         new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
@@ -234,14 +265,15 @@ const createMessages = (): Array<
     )
   );
 
-  range(
-    1,
-    ioDevServerConfig.messages.paymentWithValidDueDateCount
-  ).forEach(count =>
+  range(1, customConfig.messages.paymentWithValidDueDateCount).forEach(count =>
     output.push(
       withDueDate(
         withPaymentData(
-          getNewMessage(`💰🕙✅ payment message - ${count}`, messageMarkdown),
+          getNewMessage(
+            customConfig,
+            `💰🕙✅ payment message - ${count}`,
+            messageMarkdown
+          ),
           true
         ),
         new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
@@ -249,18 +281,23 @@ const createMessages = (): Array<
     )
   );
 
-  range(1, ioDevServerConfig.messages.paymentsCount).forEach(count =>
+  range(1, customConfig.messages.paymentsCount).forEach(count =>
     output.push(
       withPaymentData(
-        getNewMessage(`💰✅ payment - ${count} `, messageMarkdown),
+        getNewMessage(
+          customConfig,
+          `💰✅ payment - ${count} `,
+          messageMarkdown
+        ),
         true
       )
     )
   );
 
-  range(1, ioDevServerConfig.messages.legalCount).forEach((count, idx) => {
+  range(1, customConfig.messages.legalCount).forEach((count, idx) => {
     const isOdd = count % 2 > 0;
     const message = getNewMessage(
+      customConfig,
       `⚖️ Legal -${isOdd ? "" : "without HTML"} ${count}`,
       messageMarkdown
     );
@@ -272,27 +309,33 @@ const createMessages = (): Array<
   return output;
 };
 
-export default function init() {
-  MessagesDB.persist(createMessages());
+/**
+ * Initialize the messages persistence layer.
+ * Default on config.json if custom config not defined.
+ *
+ * @param customConfig
+ */
+export default function init(customConfig = ioDevServerConfig) {
+  MessagesDB.persist(createMessages(customConfig) as any);
 
-  if (ioDevServerConfig.messages.archivedMessageCount > 0) {
+  if (customConfig.messages.archivedMessageCount > 0) {
     _.shuffle(MessagesDB.findAllInbox())
       .slice(0, ioDevServerConfig.messages.archivedMessageCount)
       .forEach(({ id }) => MessagesDB.archive(id));
   }
 
-  if (ioDevServerConfig.messages.liveMode) {
+  if (customConfig.messages.liveMode) {
     // if live updates is on, we prepend new messages to the collection
-    const count = ioDevServerConfig.messages.liveMode.count || 2;
-    const interval = ioDevServerConfig.messages.liveMode.interval || 2000;
+    const count = customConfig.messages.liveMode.count || 2;
+    const interval = customConfig.messages.liveMode.interval || 2000;
     setInterval(() => {
-      const nextMessages = createMessages();
+      const nextMessages = createMessages(customConfig);
 
       MessagesDB.persist(
         _.shuffle(nextMessages).slice(
           0,
           Math.min(count, nextMessages.length - 1)
-        )
+        ) as any
       );
     }, interval);
   }

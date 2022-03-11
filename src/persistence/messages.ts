@@ -1,17 +1,19 @@
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { EnrichedMessage } from "../../generated/definitions/backend/EnrichedMessage";
+import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 
 // TODO: remove once https://github.com/pagopa/io-functions-commons/pull/238 is merged
-type MessageStatusData = {
-  is_read: boolean;
-  is_archived: boolean;
-};
+// type MessageStatusData = {
+//   is_read: boolean;
+//   is_archived: boolean;
+// };
 
-type MessageFromBE =
-  | CreatedMessageWithContentAndAttachments
-  | CreatedMessageWithContent;
+type MessageFromBE = EnrichedMessage;
+// | CreatedMessageWithContentAndAttachments
+// | CreatedMessageWithContent;
 
-export type MessageOnDB = MessageFromBE & MessageStatusData;
+export type MessageOnDB = MessageFromBE; // & MessageStatusData;
 
 // tslint:disable-next-line: readonly-array no-let
 let inboxMessages: MessageOnDB[] = [];
