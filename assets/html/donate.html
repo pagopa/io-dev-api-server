@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -111,7 +111,7 @@
     }
 
     li.charity {
-        flex-direction: row;
+        flex-direction: row-reverse;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid var(--bluegrey-light);
@@ -360,15 +360,15 @@
   </div>
 </section>
 
-<section class="how-much">
+<section class="how-much" aria-hidden="true">
   <header>
-    <h1 id="how-much-title" class="disabled">Quanto vuoi donare?</h1>
+    <h1 id="how-much-title" class="disabled" tabindex="0">Quanto vuoi donare?</h1>
   </header>
   <ul class="tiers" id="tiers-container"></ul>
   <p id="instructions">Scegli a chi donare per conoscere gli importi disponibili</p>
 </section>
 
-<section class="info-section">
+<section class="info-section" aria-hidden="true">
   <div id="info" class="info-box hidden">
     <span class="info-icon">i</span>
     <p class="info-text">
@@ -379,7 +379,7 @@
 </section>
 
 <section class="submit-section">
-  <button id="submit-btn" class="submit-btn disabled" onclick="submit()">Continua</button>
+  <button id="submit-btn" class="submit-btn disabled" aria-disabled="true" onclick="submit()">Continua</button>
 </section>
 </body>
 
@@ -411,20 +411,21 @@
   }
 
   function parseEntities(entities) {
-    return entities.map(entity => {
-      const tiers = entity.slices.map(tier => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" data-value="false" role="radio" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
+    return entities.map((entity, index) => {
+      const tiers = entity.slices.map(tier => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" aria-value="false" role="radio" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
-                    <img class="charity-logo"
-                         src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo"/>
+                    <div class="charity-selector-container">
+                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="${entity.name}, ${entity.reason}, ${index + 1} di ${entities.length}" aria-checked="false" aria-value="false" role="radio"></div>
+                    </div>
+                    
                     <div class="charity-details">
-                        <h2>${entity.name}</h2>
-                        <p>${entity.reason}</p>
-                        <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di più</a>
+                        <h2 aria-hidden="true">${entity.name}</h2>
+                        <p aria-hidden="true">${entity.reason}</p>
+                        <a data-url="${entity.web_site}" aria-label="${entity.name}, per saperne di più" href="#" onclick="openUrl(event)">Per saperne di più</a>
                     </div>
 
-                    <div class="charity-selector-container">
-                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="Seleziona ${entity.name}" aria-checked="false" data-value="false" role="radio"></div>
-                    </div>
+                    <img class="charity-logo"
+                         src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo" aria-hidden="true"/>
                 </li>`;
       return { id: entity.cf, charity, tiers };
     });
@@ -438,19 +439,30 @@
       // Select the "radio"
       const input = document.getElementById(`input-${charityID}`);
       input.setAttribute("aria-checked", "true");
-      input.setAttribute("data-value", "true");
+      input.setAttribute("aria-value", "true");
       input.classList.add('active');
       
       const editBtn = document.getElementById("edit");
       editBtn.classList.remove("hidden");
+
       const tiersContainer = document.getElementById("tiers-container");
       tiersContainer.innerHTML = decodeURI(dataTiers);
+
+      const howMuch = document.querySelector(".how-much")
+      howMuch.setAttribute("aria-hidden", "false")
+
       const howMuchTitle = document.getElementById("how-much-title");
       howMuchTitle.classList.remove("disabled");
+
+      const infoSection = document.querySelector(".info-section")
+      infoSection.setAttribute("aria-hidden", "false")
+
       const info = document.getElementById("info");
       info.classList.remove("hidden");
+
       const instructions = document.getElementById("instructions");
       instructions.classList.add("hidden");
+
       const btn = document.getElementById("submit-btn");
       btn.classList.add("disabled");
       const list = document.getElementById("entities-container").children[0];
@@ -468,18 +480,33 @@
     try {
       const editBtn = document.getElementById("edit");
       editBtn.classList.add("hidden");
+
       const tiersContainer = document.getElementById("tiers-container");
       tiersContainer.innerHTML = "";
+
+      const howMuch = document.querySelector(".how-much")
+      howMuch.setAttribute("aria-hidden", "true")
+
       const howMuchTitle = document.getElementById("how-much-title");
       howMuchTitle.classList.add("disabled");
+
       const info = document.getElementById("info");
       info.classList.add("hidden");
+
+      const infoSection = document.querySelector(".info-section")
+      infoSection.setAttribute("aria-hidden", "true")
+
       const instructions = document.getElementById("instructions");
       instructions.classList.remove("hidden");
+
       const btn = document.getElementById("submit-btn");
       btn.classList.add("disabled");
+      btn.setAttribute("aria-disabled", true)
+
       const list = document.getElementById("entities-container").children[0];
       list.innerHTML = allCharities;
+
+      document.querySelector('.charity-selector-radio').focus()
     } catch (e) {
       reportError(e);
     }
@@ -490,17 +517,18 @@
 
     // Reset the selection
     event.currentTarget.parentNode.querySelectorAll(".tier-item").forEach(el => {
+      el.setAttribute("aria-value", "false");
       el.setAttribute("aria-checked", "false");
-      el.setAttribute("data-value", "false");
       el.classList.remove("active");
     });
 
+    tierItem.setAttribute("aria-value", "true");
     tierItem.setAttribute("aria-checked", "true");
-    tierItem.setAttribute("data-value", "true");
     tierItem.classList.add('active');
 
     const btn = document.getElementById("submit-btn");
     btn.classList.remove("disabled");
+    btn.setAttribute("aria-disabled", false)
   }
 
   function submit() {
