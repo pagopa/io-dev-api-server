@@ -374,7 +374,7 @@
   <header>
     <h1 id="how-much-title" class="disabled" tabindex="0">Quanto vuoi donare?</h1>
   </header>
-  <ul class="tiers" id="tiers-container"></ul>
+  <ul class="tiers" role="listbox" id="tiers-container"></ul>
   <p id="instructions">Scegli a chi donare per conoscere gli importi disponibili</p>
 </section>
 
@@ -606,7 +606,7 @@
     fetchData().then(parseEntities).then(entities => {
       const content = entities.map(e => e.charity).join("");
       setLoader(false);
-      entitiesContainer.innerHTML = `<ul class="entities-container">${content}</ul>`;
+      entitiesContainer.innerHTML = `<ul class="entities-container" role="listbox">${content}</ul>`;
       allCharities = content;
     }).catch(e => {
       reportError(e);
