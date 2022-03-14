@@ -423,7 +423,7 @@
                     </div>
 
                     <div class="charity-selector-container">
-                      <div class="charity-selector-radio" id="input-${entity.cf}" tabindex="0" aria-label="Seleziona ${entity.name}" aria-checked="false" data-value="false" role="radio"></div>
+                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="Seleziona ${entity.name}" aria-checked="false" data-value="false" role="radio"></div>
                     </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
@@ -490,7 +490,7 @@
 
   function submit() {
     try {
-      const charityId = document.querySelectorAll("input.charity-selector:checked")[0].value;
+      const charityId = document.querySelectorAll(".charity-selector-radio.active")[0].dataset.charity;
       const tierNode = document.querySelectorAll(".tier input:checked")[0];
       const tierId = tierNode.getAttribute("id");
       const tierAmount = parseInt(tierNode.getAttribute("data-amount"), 10);
