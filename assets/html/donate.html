@@ -412,7 +412,7 @@
 
   function parseEntities(entities) {
     return entities.map(entity => {
-      const tiers = entity.slices.map(tier => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" data-value="false" role="radio">${printAmount(tier.amount)}</div></li>`).join("");
+      const tiers = entity.slices.map(tier => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" data-value="false" role="radio" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
                     <img class="charity-logo"
                          src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo"/>
@@ -457,6 +457,8 @@
       const selectedCharity = document.getElementById(charityID);
       replaceChildren(list, [selectedCharity]);
       selectedCharity.classList.add("selected");
+
+      document.getElementById("tiers-container").querySelector("li.tier .tier-item").focus()
     } catch (e) {
       reportError(e);
     }
