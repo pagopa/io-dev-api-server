@@ -379,7 +379,7 @@
 </section>
 
 <section class="submit-section">
-  <button id="submit-btn" class="submit-btn disabled" aria-disabled="true" onclick="submit()">Continua</button>
+  <button id="submit-btn" class="submit-btn disabled" onclick="submit()" disabled>Continua</button>
 </section>
 </body>
 
@@ -501,7 +501,7 @@
 
       const btn = document.getElementById("submit-btn");
       btn.classList.add("disabled");
-      btn.setAttribute("aria-disabled", true)
+      btn.setAttribute("disabled", "true")
 
       const list = document.getElementById("entities-container").children[0];
       list.innerHTML = allCharities;
@@ -528,7 +528,7 @@
 
     const btn = document.getElementById("submit-btn");
     btn.classList.remove("disabled");
-    btn.setAttribute("aria-disabled", false)
+    btn.removeAttribute("disabled")
   }
 
   function submit() {
