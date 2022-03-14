@@ -488,6 +488,8 @@
 
     // Reset the selection
     event.currentTarget.parentNode.querySelectorAll(".tier-item").forEach(el => {
+      el.setAttribute("aria-checked", "false");
+      el.setAttribute("data-value", "false");
       el.classList.remove("active");
     });
 
