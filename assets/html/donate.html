@@ -411,19 +411,19 @@
   }
 
   function generateCharityLabel(name, reason, step, steps) {
-    return `${name}, ${reason}, ${step} di ${steps}`
+    return `${name}, ${reason}, pulsante di scelta, ${step} di ${steps}`
   }
 
   function generateTierLabel(value, step, steps) {
-    return `${value}, ${step} di ${steps}`
+    return `${value}, pulsante di scelta, ${step} di ${steps}`
   }
 
   function parseEntities(entities) {
     return entities.map((entity, index) => {
-      const tiers = entity.slices.map((tier, index) => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" aria-label="${generateTierLabel(printAmount(tier.amount), index + 1, entity.slices.length)}" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" aria-value="false" role="radio" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
+      const tiers = entity.slices.map((tier, index) => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" aria-label="${generateTierLabel(printAmount(tier.amount), index + 1, entity.slices.length)}" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-selected="false" role="option" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
                     <div class="charity-selector-container">
-                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="${generateCharityLabel(entity.name, entity.reason, index + 1, entities.length)}" aria-checked="false" aria-value="false" role="radio"></div>
+                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="${generateCharityLabel(entity.name, entity.reason, index + 1, entities.length)}" aria-selected="false" role="option"></div>
                     </div>
                     
                     <div class="charity-details">
@@ -446,8 +446,7 @@
 
       // Select the "radio"
       const input = document.getElementById(`input-${charityID}`);
-      input.setAttribute("aria-checked", "true");
-      input.setAttribute("aria-value", "true");
+      input.setAttribute("aria-selected", "true");
       input.classList.add('active');
       
       const editBtn = document.getElementById("edit");
@@ -525,13 +524,11 @@
 
     // Reset the selection
     event.currentTarget.parentNode.querySelectorAll(".tier-item").forEach(el => {
-      el.setAttribute("aria-value", "false");
-      el.setAttribute("aria-checked", "false");
+      el.setAttribute("aria-selected", "false");
       el.classList.remove("active");
     });
 
-    tierItem.setAttribute("aria-value", "true");
-    tierItem.setAttribute("aria-checked", "true");
+    tierItem.setAttribute("aria-selected", "true");
     tierItem.classList.add('active');
 
     const btn = document.getElementById("submit-btn");
