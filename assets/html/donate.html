@@ -141,7 +141,7 @@
         display: none;
     }
 
-    li.tier > label {
+    li.tier > .tier-item {
         background-color: white;
         color: var(--main-blue);
         display: flex;
@@ -158,7 +158,7 @@
         line-height: 18px;
     }
 
-    li.tier > input:checked + label {
+    li.tier > .tier-item.active {
         color: white;
         background-color: var(--main-blue);
     }
@@ -364,7 +364,7 @@
   <header>
     <h1 id="how-much-title" class="disabled">Quanto vuoi donare?</h1>
   </header>
-  <ul class="tiers" id="tiers-container" onchange="selectTier(event)"></ul>
+  <ul class="tiers" id="tiers-container"></ul>
   <p id="instructions">Scegli a chi donare per conoscere gli importi disponibili</p>
 </section>
 
@@ -412,7 +412,7 @@
 
   function parseEntities(entities) {
     return entities.map(entity => {
-      const tiers = entity.slices.map(tier => `<li class="tier"><input type="radio" name="tier" value="${tier.nav}" id="${tier.nav}" data-amount="${tier.amount}" /><label for="${tier.nav}">${printAmount(tier.amount)}</label></li>`).join("");
+      const tiers = entity.slices.map(tier => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" data-tier="${tier.nav}" aria-checked="false" data-value="false" role="radio">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
                     <img class="charity-logo"
                          src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo"/>
@@ -484,14 +484,25 @@
   }
 
   function selectTier(event) {
+    const tierItem = event.currentTarget.querySelector(".tier-item")
+
+    // Reset the selection
+    event.currentTarget.parentNode.querySelectorAll(".tier-item").forEach(el => {
+      el.classList.remove("active");
+    });
+
+    tierItem.setAttribute("aria-checked", "true");
+    tierItem.setAttribute("data-value", "true");
+    tierItem.classList.add('active');
+
     const btn = document.getElementById("submit-btn");
     btn.classList.remove("disabled");
   }
 
   function submit() {
     try {
-      const charityId = document.querySelectorAll(".charity-selector-radio.active")[0].dataset.charity;
-      const tierNode = document.querySelectorAll(".tier input:checked")[0];
+      const charityId = document.querySelectorAll(".charity-selector-radio.active")[0].getAttribute("data-charity");
+      const tierNode = document.querySelectorAll(".tier-item.active")[0].getAttribute("data-tier");
       const tierId = tierNode.getAttribute("id");
       const tierAmount = parseInt(tierNode.getAttribute("data-amount"), 10);
       const paymentPayload = {
