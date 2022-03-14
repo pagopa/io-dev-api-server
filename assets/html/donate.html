@@ -111,11 +111,21 @@
     }
 
     li.charity {
+      display: block;
+      border-bottom: 1px solid var(--bluegrey-light);
+      padding: 24px 0px;
+    }
+
+    li.charity .charity-main {
+        display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid var(--bluegrey-light);
-        padding: 24px 0px;
+    }
+
+    li.charity .charity-info {
+      margin-top: 3px;
+      padding-left: 64px;
     }
 
     li.charity.selected input {
@@ -164,10 +174,10 @@
     }
 
     img.charity-logo {
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-        min-height: 64px;
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
         margin-right: 16px;
     }
 
@@ -422,18 +432,23 @@
     return entities.map((entity, index) => {
       const tiers = entity.slices.map((tier, index) => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" aria-label="${generateTierLabel(printAmount(tier.amount), index + 1, entity.slices.length)}" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-selected="false" role="option" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
-                    <div class="charity-selector-container">
-                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="${generateCharityLabel(entity.name, entity.reason, index + 1, entities.length)}" aria-selected="false" role="option"></div>
-                    </div>
-                    
-                    <div class="charity-details">
-                        <h2 aria-hidden="true">${entity.name}</h2>
-                        <p aria-hidden="true">${entity.reason}</p>
-                        <a data-url="${entity.web_site}" aria-label="${entity.name}, per saperne di più" href="#" onclick="openUrl(event)">Per saperne di più</a>
+                    <div class="charity-main" tabindex="0" aria-label="${generateCharityLabel(entity.name, entity.reason, index + 1, entities.length)}" aria-selected="false" role="option">
+                      <div class="charity-selector-container">
+                        <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}"></div>
+                      </div>
+                      
+                      <div class="charity-details">
+                          <h2 aria-hidden="true">${entity.name}</h2>
+                          <p aria-hidden="true">${entity.reason}</p>
+                      </div>
+
+                      <img class="charity-logo"
+                          src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo" aria-hidden="true"/>
                     </div>
 
-                    <img class="charity-logo"
-                         src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo" aria-hidden="true"/>
+                    <div class="charity-info">
+                      <a data-url="${entity.web_site}" aria-label="${entity.name}, per saperne di più" href="#" onclick="openUrl(event)">Per saperne di più</a>
+                    </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
     });
@@ -444,10 +459,10 @@
       const dataTiers = event.currentTarget.getAttribute("data-tiers");
       const charityID = event.currentTarget.getAttribute("data-charity-id");
 
-      // Select the "radio"
       const input = document.getElementById(`input-${charityID}`);
-      input.setAttribute("aria-selected", "true");
       input.classList.add('active');
+
+      event.currentTarget.querySelector('.charity-main').setAttribute("aria-selected", "true")
       
       const editBtn = document.getElementById("edit");
       editBtn.classList.remove("hidden");
@@ -472,6 +487,7 @@
 
       const btn = document.getElementById("submit-btn");
       btn.classList.add("disabled");
+
       const list = document.getElementById("entities-container").children[0];
       const selectedCharity = document.getElementById(charityID);
       replaceChildren(list, [selectedCharity]);
