@@ -410,12 +410,20 @@
     return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0 }).format(amount / 100);
   }
 
+  function generateCharityLabel(name, reason, step, steps) {
+    return `${name}, ${reason}, ${step} di ${steps}`
+  }
+
+  function generateTierLabel(value, step, steps) {
+    return `${value}, ${step} di ${steps}`
+  }
+
   function parseEntities(entities) {
     return entities.map((entity, index) => {
-      const tiers = entity.slices.map(tier => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" aria-value="false" role="radio" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
+      const tiers = entity.slices.map((tier, index) => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" aria-label="${generateTierLabel(printAmount(tier.amount), index + 1, entity.slices.length)}" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-checked="false" aria-value="false" role="radio" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
                     <div class="charity-selector-container">
-                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="${entity.name}, ${entity.reason}, ${index + 1} di ${entities.length}" aria-checked="false" aria-value="false" role="radio"></div>
+                      <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}" tabindex="0" aria-label="${generateCharityLabel(entity.name, entity.reason, index + 1, entities.length)}" aria-checked="false" aria-value="false" role="radio"></div>
                     </div>
                     
                     <div class="charity-details">
