@@ -10,7 +10,7 @@ import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import { getCategory } from "../payloads/message";
 import { addHandler } from "../payloads/response";
-import MessagesDB from "../persistence/messages";
+import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
@@ -33,7 +33,9 @@ const getPublicMessages = (
           service_name: senderService!.service_name,
           organization_name: senderService!.organization_name,
           message_title: m.content.subject,
-          category: getCategory(m)
+          category: getCategory(m),
+          is_read: ((m as unknown) as MessageOnDB).is_read,
+          is_archived: ((m as unknown) as MessageOnDB).is_archived
         }
       : {};
     return {
