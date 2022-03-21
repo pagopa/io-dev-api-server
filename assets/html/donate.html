@@ -233,7 +233,8 @@
         margin-right: 14px;
     }
 
-    .info-text {
+    .info-text,
+    .privacy {
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
@@ -251,10 +252,15 @@
     }
 
     .info-section {
-        display: flex;
-        flex: 1 1 auto;
-
         padding-bottom: 200px;
+    }
+
+    .privacy {
+      margin-top: 20px;
+    }
+
+    .privacy a {
+      text-decoration: none;
     }
 
     .submit-section {
@@ -391,6 +397,10 @@
       La donazione è parzialmente detraibile
     </p>
   </div>
+
+  <div id="privacy" class="privacy hidden">
+    Proseguendo dichiari di aver letto e compreso i <a href="#" onclick="openPrivacyUrl(event)">Termini e condizioni d’uso e l’Informativa Privacy</a>
+  </div>
 </section>
 
 <section class="submit-section">
@@ -401,6 +411,12 @@
 <script>
   let allCharities = "";
 
+  const config = {
+    // apiUrl: "https://api.uat.platform.pagopa.it/donations/api/v1/availabledonations",
+    apiUrl: "http://localhost:3000/donations/availabledonations",
+    privacyUrl: "https://pagopa.gov.it/privacy-policy-donazioni-ucraina"
+  };
+
   function replaceChildren(target, children) {
     target.textContent = '';
 
@@ -410,9 +426,7 @@
   }
 
   function fetchData() {
-    // Use this URL to get actual data
-    // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
-    const url = "http://localhost:3000/donations/availabledonations";
+    const url = config.apiUrl;
     return fetch(url).then(res => res.json());
   }
 
@@ -487,6 +501,9 @@
       const info = document.getElementById("info");
       info.classList.remove("hidden");
 
+      const privacy = document.getElementById("privacy");
+      privacy.classList.remove("hidden");
+
       const instructions = document.getElementById("instructions");
       instructions.classList.add("hidden");
 
@@ -520,6 +537,9 @@
 
       const info = document.getElementById("info");
       info.classList.add("hidden");
+
+      const privacy = document.getElementById("privacy");
+      privacy.classList.add("hidden");
 
       const infoSection = document.querySelector(".info-section")
       infoSection.setAttribute("aria-hidden", "true")
@@ -589,15 +609,25 @@
     });
   }
 
-  function openUrl(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const url = event.target.getAttribute("data-url");
+  function sendUrlMessage(url) {
     const openWebUrlPayload = {
       kind: "webUrl",
       payload: url
     };
     sendMessage(openWebUrlPayload);
+  }
+
+  function openUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const url = event.target.getAttribute("data-url");
+    sendUrlMessage(url);
+  }
+
+  function openPrivacyUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    sendUrlMessage(config.privacyUrl);
   }
 
   function sendMessage(message) {
@@ -608,6 +638,7 @@
 
   function main() {
     const entitiesContainer = document.getElementById("entities-container");
+
     fetchData().then(parseEntities).then(entities => {
       const content = entities.map(e => e.charity).join("");
       setLoader(false);
@@ -616,6 +647,8 @@
     }).catch(e => {
       reportError(e);
     });
+
+
   }
 </script>
 </html>
