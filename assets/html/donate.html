@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,6 +21,8 @@
     }
 
     body {
+        font-family: "Titillium Web", sans-serif;
+
         display: flex;
         flex-direction: column;
         margin: 0;
@@ -40,7 +42,6 @@
     }
 
     h1, h2, p, a, span, label, button {
-        font-family: "Titillium Web", sans-serif;
         font-style: normal;
         letter-spacing: 0px;
         text-align: left;
@@ -111,11 +112,21 @@
     }
 
     li.charity {
-        flex-direction: row;
+      display: block;
+      border-bottom: 1px solid var(--bluegrey-light);
+      padding: 24px 0px;
+    }
+
+    li.charity .charity-main {
+        display: flex;
+        flex-direction: row-reverse;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid var(--bluegrey-light);
-        padding: 24px 0px;
+    }
+
+    li.charity .charity-info {
+      margin-top: 3px;
+      padding-left: 64px;
     }
 
     li.charity.selected input {
@@ -132,6 +143,10 @@
         border-top: 1px solid var(--bluegrey-light);
     }
 
+    #how-much-title {
+      outline: none;
+    }
+
     li.tier {
         justify-self: center;
         width: 100%;
@@ -141,7 +156,7 @@
         display: none;
     }
 
-    li.tier > label {
+    li.tier > .tier-item {
         background-color: white;
         color: var(--main-blue);
         display: flex;
@@ -158,16 +173,16 @@
         line-height: 18px;
     }
 
-    li.tier > input:checked + label {
+    li.tier > .tier-item.active {
         color: white;
         background-color: var(--main-blue);
     }
 
     img.charity-logo {
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-        min-height: 64px;
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
         margin-right: 16px;
     }
 
@@ -178,11 +193,11 @@
       z-index: -1;
     }
 
-    input.charity-selector + label.charity-selector-view {
+    .charity-selector-radio {
         border: 2px solid var(--main-blue);
         border-radius: 100%;
-        width: 32px;
-        height: 32px;
+        width: 31px;
+        height: 31px;
         display: inline-block;
         display: flex;
         align-items: center;
@@ -190,7 +205,7 @@
         cursor: pointer;
     }
 
-    input.charity-selector:checked + label.charity-selector-view:after {
+    .charity-selector-radio.active:after {
         content: "";
         display: block;
         width: 21px;
@@ -360,17 +375,17 @@
   </div>
 </section>
 
-<section class="how-much">
+<section class="how-much" aria-hidden="true">
   <header>
-    <h1 id="how-much-title" class="disabled">Quanto vuoi donare?</h1>
+    <h1 id="how-much-title" class="disabled" tabindex="0">Quanto vuoi donare?</h1>
   </header>
-  <ul class="tiers" id="tiers-container" onchange="selectTier(event)"></ul>
+  <ul class="tiers" role="listbox" id="tiers-container"></ul>
   <p id="instructions">Scegli a chi donare per conoscere gli importi disponibili</p>
 </section>
 
-<section class="info-section">
+<section class="info-section" aria-hidden="true">
   <div id="info" class="info-box hidden">
-    <span class="info-icon">i</span>
+    <span class="info-icon" aria-hidden="true">i</span>
     <p class="info-text">
       Puoi donare con carta di credito, debito o prepagata, senza costi di commissione.
       La donazione è parzialmente detraibile
@@ -379,7 +394,7 @@
 </section>
 
 <section class="submit-section">
-  <button id="submit-btn" class="submit-btn disabled" onclick="submit()">Continua</button>
+  <button id="submit-btn" class="submit-btn disabled" onclick="submit()" disabled>Continua</button>
 </section>
 </body>
 
@@ -410,21 +425,34 @@
     return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0 }).format(amount / 100);
   }
 
+  function generateCharityLabel(name, reason, step, steps) {
+    return `${name}, ${reason}, pulsante di scelta, ${step} di ${steps}`
+  }
+
+  function generateTierLabel(value, step, steps) {
+    return `${value}, pulsante di scelta, ${step} di ${steps}`
+  }
+
   function parseEntities(entities) {
-    return entities.map(entity => {
-      const tiers = entity.slices.map(tier => `<li class="tier"><input type="radio" name="tier" value="${tier.nav}" id="${tier.nav}" data-amount="${tier.amount}" /><label for="${tier.nav}">${printAmount(tier.amount)}</label></li>`).join("");
+    return entities.map((entity, index) => {
+      const tiers = entity.slices.map((tier, index) => `<li class="tier" onclick="selectTier(event)"><div class="tier-item" aria-label="${generateTierLabel(printAmount(tier.amount), index + 1, entity.slices.length)}" data-tier="${tier.nav}" data-amount="${tier.amount}" aria-selected="false" role="option" tabindex="0">${printAmount(tier.amount)}</div></li>`).join("");
       const charity = `<li class="charity" id="${entity.cf}" data-charity-id="${entity.cf}" data-tiers="${encodeURI(tiers)}" onclick="selectCharity(event)">
-                    <img class="charity-logo"
-                         src="data:image/png;base64,${entity.base64Logo}"/>
-                    <div class="charity-details">
-                        <h2>${entity.name}</h2>
-                        <p>${entity.reason}</p>
-                        <a data-url="${entity.web_site}" href="#" onclick="openUrl(event)">Per saperne di più</a>
+                    <div class="charity-main" tabindex="0" aria-label="${generateCharityLabel(entity.name, entity.reason, index + 1, entities.length)}" aria-selected="false" role="option">
+                      <div class="charity-selector-container">
+                        <div class="charity-selector-radio" id="input-${entity.cf}" data-charity="${entity.cf}"></div>
+                      </div>
+                      
+                      <div class="charity-details">
+                          <h2 aria-hidden="true">${entity.name}</h2>
+                          <p aria-hidden="true">${entity.reason}</p>
+                      </div>
+
+                      <img class="charity-logo"
+                          src="data:image/png;base64,${entity.base64Logo}" alt="${entity.name} logo" aria-hidden="true"/>
                     </div>
 
-                    <div class="charity-selector-container">
-                      <input type="radio" name="charity" class="charity-selector" value="${entity.cf}" id="input-${entity.cf}" />
-                      <label for="input-${entity.cf}" class="charity-selector-view"></label>
+                    <div class="charity-info">
+                      <a data-url="${entity.web_site}" aria-label="${entity.name}, per saperne di più" href="#" onclick="openUrl(event)">Per saperne di più</a>
                     </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
@@ -435,24 +463,42 @@
     try {
       const dataTiers = event.currentTarget.getAttribute("data-tiers");
       const charityID = event.currentTarget.getAttribute("data-charity-id");
+
       const input = document.getElementById(`input-${charityID}`);
-      input.setAttribute("checked", "true");
+      input.classList.add('active');
+
+      event.currentTarget.querySelector('.charity-main').setAttribute("aria-selected", "true")
+      
       const editBtn = document.getElementById("edit");
       editBtn.classList.remove("hidden");
+
       const tiersContainer = document.getElementById("tiers-container");
       tiersContainer.innerHTML = decodeURI(dataTiers);
+
+      const howMuch = document.querySelector(".how-much")
+      howMuch.setAttribute("aria-hidden", "false")
+
       const howMuchTitle = document.getElementById("how-much-title");
       howMuchTitle.classList.remove("disabled");
+
+      const infoSection = document.querySelector(".info-section")
+      infoSection.setAttribute("aria-hidden", "false")
+
       const info = document.getElementById("info");
       info.classList.remove("hidden");
+
       const instructions = document.getElementById("instructions");
       instructions.classList.add("hidden");
+
       const btn = document.getElementById("submit-btn");
       btn.classList.add("disabled");
+
       const list = document.getElementById("entities-container").children[0];
       const selectedCharity = document.getElementById(charityID);
       replaceChildren(list, [selectedCharity]);
       selectedCharity.classList.add("selected");
+
+      document.getElementById("how-much-title").focus()
     } catch (e) {
       reportError(e);
     }
@@ -462,34 +508,65 @@
     try {
       const editBtn = document.getElementById("edit");
       editBtn.classList.add("hidden");
+
       const tiersContainer = document.getElementById("tiers-container");
       tiersContainer.innerHTML = "";
+
+      const howMuch = document.querySelector(".how-much")
+      howMuch.setAttribute("aria-hidden", "true")
+
       const howMuchTitle = document.getElementById("how-much-title");
       howMuchTitle.classList.add("disabled");
+
       const info = document.getElementById("info");
       info.classList.add("hidden");
+
+      const infoSection = document.querySelector(".info-section")
+      infoSection.setAttribute("aria-hidden", "true")
+
       const instructions = document.getElementById("instructions");
       instructions.classList.remove("hidden");
+
       const btn = document.getElementById("submit-btn");
       btn.classList.add("disabled");
+      btn.setAttribute("disabled", "true")
+
       const list = document.getElementById("entities-container").children[0];
       list.innerHTML = allCharities;
+
+      document.querySelector('.charity-selector-radio').focus()
     } catch (e) {
       reportError(e);
     }
   }
 
   function selectTier(event) {
+    const tierItem = event.currentTarget.querySelector(".tier-item")
+
+    // Reset the selection
+    event.currentTarget.parentNode.querySelectorAll(".tier-item").forEach(el => {
+      el.setAttribute("aria-selected", "false");
+      el.classList.remove("active");
+    });
+
+    tierItem.setAttribute("aria-selected", "true");
+    tierItem.classList.add('active');
+
     const btn = document.getElementById("submit-btn");
     btn.classList.remove("disabled");
+    btn.removeAttribute("disabled")
+
+    btn.focus()
   }
 
   function submit() {
     try {
-      const charityId = document.querySelectorAll("input.charity-selector:checked")[0].value;
-      const tierNode = document.querySelectorAll(".tier input:checked")[0];
-      const tierId = tierNode.getAttribute("id");
-      const tierAmount = parseInt(tierNode.getAttribute("data-amount"), 10);
+      const charityId = document.querySelectorAll(".charity-selector-radio.active")[0].dataset.charity;
+      const tierNode = document.querySelectorAll(".tier-item.active")[0];
+
+      const tierId = tierNode.dataset.tier
+      const tierAmount = parseInt(tierNode.dataset.amount, 10);
+
       const paymentPayload = {
         kind: "payment",
         payload: {
@@ -534,7 +611,7 @@
     fetchData().then(parseEntities).then(entities => {
       const content = entities.map(e => e.charity).join("");
       setLoader(false);
-      entitiesContainer.innerHTML = `<ul class="entities-container">${content}</ul>`;
+      entitiesContainer.innerHTML = `<ul class="entities-container" role="listbox">${content}</ul>`;
       allCharities = content;
     }).catch(e => {
       reportError(e);
