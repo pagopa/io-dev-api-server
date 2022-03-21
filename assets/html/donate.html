@@ -90,6 +90,10 @@
         padding: 16px 0px 24px 0px;
     }
 
+    header.main {
+      paddint-top: 0px;
+    }
+
     ul {
         margin: 0;
         padding: 0;
@@ -117,6 +121,10 @@
       padding: 24px 0px;
     }
 
+    li.charity:first-child {
+      padding-top: 0px;
+    }
+
     li.charity .charity-main {
         display: flex;
         flex-direction: row-reverse;
@@ -139,7 +147,6 @@
     }
 
     section.how-much {
-        margin-top: 24px;
         border-top: 1px solid var(--bluegrey-light);
     }
 
@@ -365,7 +372,7 @@
 </style>
 <body onload="main()">
 <section>
-  <header>
+  <header class="main">
     <h1>A chi vuoi donare?</h1>
     <a id="edit" class="hidden" href="#" onclick="resetSelection()">modifica</a>
   </header>
