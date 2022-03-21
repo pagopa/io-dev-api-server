@@ -35,6 +35,14 @@ export const backendStatus: BackendStatus = {
           "Cashback is under maintenance, it will be operational again soon"
       }
     },
+    fims: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
     email_validation: {
       is_visible: false,
       level: LevelEnum.warning,
@@ -239,6 +247,9 @@ export const backendStatus: BackendStatus = {
         },
         url: `${serverUrl}/donate`
       }
+    },
+    fims: {
+      enabled: false
     }
   }
 };
