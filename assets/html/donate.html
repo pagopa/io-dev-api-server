@@ -545,7 +545,7 @@
       info.classList.add("hidden");
 
       const privacy = document.getElementById("privacy");
-      privacy.classList.add("hidden");
+      if (privacy) privacy.classList.add("hidden");
 
       const infoSection = document.querySelector(".info-section")
       infoSection.setAttribute("aria-hidden", "true")
