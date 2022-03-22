@@ -1,7 +1,7 @@
-import { EnrichedMessage } from "../../generated/definitions/backend/EnrichedMessage";
+import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { MessageStatusAttributes } from "../../generated/definitions/backend/MessageStatusAttributes";
 
-type MessageFromBE = EnrichedMessage;
+type MessageFromBE = CreatedMessageWithContent;
 
 export type MessageOnDB = MessageFromBE & MessageStatusAttributes;
 
