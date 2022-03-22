@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>нет войне</title>
+  <title>Donazioni</title>
   <link rel="stylesheet" href="https://io.italia.it/assets/selfhostedfonts.css">
 </head>
 <style>
@@ -42,6 +42,7 @@
     }
 
     h1, h2, p, a, span, label, button {
+        font-family: "Titillium Web", sans-serif;
         font-style: normal;
         letter-spacing: 0px;
         text-align: left;
@@ -90,6 +91,10 @@
         padding: 16px 0px 24px 0px;
     }
 
+    header.main {
+      paddint-top: 0px;
+    }
+
     ul {
         margin: 0;
         padding: 0;
@@ -117,6 +122,10 @@
       padding: 24px 0px;
     }
 
+    li.charity:first-child {
+      padding-top: 0px;
+    }
+
     li.charity .charity-main {
         display: flex;
         flex-direction: row-reverse;
@@ -139,7 +148,6 @@
     }
 
     section.how-much {
-        margin-top: 24px;
         border-top: 1px solid var(--bluegrey-light);
     }
 
@@ -233,7 +241,8 @@
         margin-right: 14px;
     }
 
-    .info-text {
+    .info-text,
+    .privacy {
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
@@ -251,10 +260,15 @@
     }
 
     .info-section {
-        display: flex;
-        flex: 1 1 auto;
-
         padding-bottom: 200px;
+    }
+
+    .privacy {
+      margin-top: 20px;
+    }
+
+    .privacy a {
+      text-decoration: none;
     }
 
     .submit-section {
@@ -293,6 +307,7 @@
     #loader {
         display: flex;
         align-items: center;
+        padding-bottom: 24px;
     }
 
     #loader p {
@@ -359,7 +374,7 @@
 </style>
 <body onload="main()">
 <section>
-  <header>
+  <header class="main">
     <h1>A chi vuoi donare?</h1>
     <a id="edit" class="hidden" href="#" onclick="resetSelection()">modifica</a>
   </header>
@@ -387,9 +402,12 @@
   <div id="info" class="info-box hidden">
     <span class="info-icon" aria-hidden="true">i</span>
     <p class="info-text">
-      Puoi donare con carta di credito, debito o prepagata, senza costi di commissione.
-      La donazione è parzialmente detraibile
+      Se doni con carta di credito, debito o prepagata non hai costi di commissione. Riceverai un’email con i dati utili ai fini delle agevolazioni fiscali
     </p>
+  </div>
+
+  <div id="privacy" class="privacy hidden" data-checkconfig="privacyUrl">
+    Proseguendo dichiari di aver letto e compreso i <a href="#" onclick="openPrivacyUrl(event)">Termini e condizioni d’uso e l’Informativa Privacy</a>
   </div>
 </section>
 
@@ -401,6 +419,11 @@
 <script>
   let allCharities = "";
 
+  const config = {
+    apiUrl: "/donations/availabledonations",
+    privacyUrl: null
+  };
+
   function replaceChildren(target, children) {
     target.textContent = '';
 
@@ -410,9 +433,7 @@
   }
 
   function fetchData() {
-    // Use this URL to get actual data
-    // const url = "https://api.dev.platform.pagopa.it/donations/availabledonations";
-    const url = "http://localhost:3000/donations/availabledonations";
+    const url = config.apiUrl;
     return fetch(url).then(res => res.json());
   }
 
@@ -452,7 +473,7 @@
                     </div>
 
                     <div class="charity-info">
-                      <a data-url="${entity.web_site}" aria-label="${entity.name}, per saperne di più" href="#" onclick="openUrl(event)">Per saperne di più</a>
+                      <a data-url="${entity.web_site}" aria-label="${entity.name}, scopri di più" href="#" onclick="openUrl(event)">Scopri di più</a>
                     </div>
                 </li>`;
       return { id: entity.cf, charity, tiers };
@@ -487,6 +508,9 @@
       const info = document.getElementById("info");
       info.classList.remove("hidden");
 
+      const privacy = document.getElementById("privacy");
+      if (privacy) privacy.classList.remove("hidden");
+
       const instructions = document.getElementById("instructions");
       instructions.classList.add("hidden");
 
@@ -520,6 +544,9 @@
 
       const info = document.getElementById("info");
       info.classList.add("hidden");
+
+      const privacy = document.getElementById("privacy");
+      if (privacy) privacy.classList.add("hidden");
 
       const infoSection = document.querySelector(".info-section")
       infoSection.setAttribute("aria-hidden", "true")
@@ -589,15 +616,25 @@
     });
   }
 
-  function openUrl(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const url = event.target.getAttribute("data-url");
+  function sendUrlMessage(url) {
     const openWebUrlPayload = {
       kind: "webUrl",
       payload: url
     };
     sendMessage(openWebUrlPayload);
+  }
+
+  function openUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const url = event.target.getAttribute("data-url");
+    sendUrlMessage(url);
+  }
+
+  function openPrivacyUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    sendUrlMessage(config.privacyUrl);
   }
 
   function sendMessage(message) {
@@ -608,6 +645,7 @@
 
   function main() {
     const entitiesContainer = document.getElementById("entities-container");
+
     fetchData().then(parseEntities).then(entities => {
       const content = entities.map(e => e.charity).join("");
       setLoader(false);
@@ -616,6 +654,15 @@
     }).catch(e => {
       reportError(e);
     });
+
+    // Hide all the elements that have a `data-checkconfig`
+    // attribute which is not present inside the config object.
+    document.querySelectorAll("[data-checkconfig]").forEach(el => {
+      const watchedConfig = el.dataset.checkconfig;
+
+      if (!!watchedConfig && !config[watchedConfig])
+        el.remove()
+    })
   }
 </script>
 </html>
