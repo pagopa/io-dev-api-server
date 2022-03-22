@@ -145,7 +145,6 @@ const createMessages = (
 
   /* medical */
   range(1, customConfig.messages.medicalCount).forEach(count => {
-    output.push(medicalMessage(count));
     const baseMessage = medicalMessage(count);
     const attachments: ReadonlyArray<MessageAttachment> = [
       {
