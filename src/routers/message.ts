@@ -2,8 +2,6 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
-import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { EnrichedMessage } from "../../generated/definitions/backend/EnrichedMessage";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ioDevServerConfig } from "../config";
@@ -21,7 +19,7 @@ const configResponse = ioDevServerConfig.messages.response;
 
 /* helper function to build messages response */
 const getPublicMessages = (
-  items: ReadonlyArray<CreatedMessageWithContent>,
+  items: ReadonlyArray<MessageOnDB>,
   enrichData: boolean
 ): ReadonlyArray<PublicMessage> => {
   return items.map(m => {
@@ -34,8 +32,8 @@ const getPublicMessages = (
           organization_name: senderService!.organization_name,
           message_title: m.content.subject,
           category: getCategory(m),
-          is_read: ((m as unknown) as MessageOnDB).is_read,
-          is_archived: ((m as unknown) as MessageOnDB).is_archived
+          is_read: m.is_read,
+          is_archived: m.is_archived
         }
       : {};
     return {
@@ -125,7 +123,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   }
 
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
-  const items = getPublicMessages(slice as any, params.enrichResultData!);
+  const items = getPublicMessages(slice, params.enrichResultData!);
 
   // the API doesn't return 'next' for previous page
   if (indexes.backward) {
