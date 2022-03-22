@@ -58,7 +58,7 @@ function persist(messages: MessageFromBE[]): void {
 }
 
 function findAllInbox(): ReadonlyArray<MessageOnDB> {
-  return inboxMessages as ReadonlyArray<MessageOnDB>;
+  return inboxMessages;
 }
 
 function findAllArchived(): ReadonlyArray<MessageOnDB> {
