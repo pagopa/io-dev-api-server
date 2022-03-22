@@ -62,7 +62,7 @@ function findAllInbox(): ReadonlyArray<MessageOnDB> {
 }
 
 function findAllArchived(): ReadonlyArray<MessageOnDB> {
-  return archivedMessages as ReadonlyArray<MessageOnDB>;
+  return archivedMessages;
 }
 
 /**
