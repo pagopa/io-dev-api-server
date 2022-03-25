@@ -30,13 +30,17 @@ import {
   messageMarkdown
 } from "./utils/variables";
 
-const getRandomServiceId = (): string => {
+const getServiceId = (): string => {
   if (services.length === 0) {
     throw new Error(
       "to create messages, at least one sender service must exist!"
     );
   }
-  return faker.random.arrayElement(services).service_id;
+  return getRandomValue(
+    services[0].service_id,
+    faker.random.arrayElement(services).service_id,
+    "messages"
+  );
 };
 
 const getNewMessage = (
