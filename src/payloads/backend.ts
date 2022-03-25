@@ -236,9 +236,9 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     uaDonations: {
-      enabled: false,
+      enabled: true,
       banner: {
-        visible: false,
+        visible: true,
         description: {
           "it-IT":
             "Con IO puoi fare una donazione alle organizzazioni umanitarie che assistono le vittime del conflitto in Ucraina",
