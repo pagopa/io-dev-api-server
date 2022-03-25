@@ -21,6 +21,7 @@ import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { services } from "./routers/service";
 import { IoDevServerConfig } from "./types/config";
+import { getRandomValue } from "./utils/random";
 import {
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
@@ -51,7 +52,7 @@ const getNewMessage = (
   euCovidCert?: EUCovidCert
 ): CreatedMessageWithContent =>
   withContent(
-    createMessage(customConfig.profile.attrs.fiscal_code, getRandomServiceId()),
+    createMessage(customConfig.profile.attrs.fiscal_code, getServiceId()),
     subject,
     markdown,
     prescriptionData,
