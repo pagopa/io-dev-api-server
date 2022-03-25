@@ -5,11 +5,15 @@ import figlet from "figlet";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { routes } from "./payloads/response";
+import populatePersistence from "./populate-persistence";
 import app from "./server";
 import { readFileAsJSON } from "./utils/file";
 import { interfaces, serverHostname, serverPort } from "./utils/server";
 // read package.json to print some info
 const packageJson = readFileAsJSON("./package.json");
+
+// inject mock data in the messages store
+populatePersistence();
 
 app.listen(serverPort, serverHostname, async () => {
   child_process.exec("git branch --show-current", (err, stdout) => {

@@ -7,7 +7,8 @@ export const GetMessagesParameters = t.partial({
   pageSize: NumberFromString,
   enrichResultData: t.boolean,
   maximumId: NonEmptyString,
-  minimumId: NonEmptyString
+  minimumId: NonEmptyString,
+  getArchived: t.boolean
 });
 
 export type GetMessagesParameters = t.TypeOf<typeof GetMessagesParameters>;

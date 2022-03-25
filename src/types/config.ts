@@ -157,7 +157,8 @@ export const IoDevServerConfig = t.interface({
       withValidDueDateCount: t.number,
       // with invalid (expired) due date
       withInValidDueDateCount: t.number,
-      standardMessageCount: t.number
+      standardMessageCount: t.number,
+      archivedMessageCount: t.number
     }),
     AllowRandomValue,
     t.partial({

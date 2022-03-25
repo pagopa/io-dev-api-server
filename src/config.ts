@@ -82,6 +82,7 @@ const defaultConfig: IoDevServerConfig = {
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
     standardMessageCount: 2,
+    archivedMessageCount: 1,
     // atm it has effect only on legal message flow (pr welcome)
     allowRandomValues: true
   },
@@ -129,6 +130,7 @@ if (customConfig !== undefined) {
     )
   );
 }
+
 export const ioDevServerConfig: typeof defaultConfig = _.merge(
   defaultConfig,
   customConfig

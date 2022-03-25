@@ -4,7 +4,7 @@
 
 It's a simple mock server of [io-backend](https://github.com/teamdigitale/io-backend) for [io-app](https://github.com/teamdigitale/io-app).<br/>
 It has been created to make the app development process easier and more productive.<br/>
-With this local server the developer can:
+With this local server the developer can: 
 
 - **run it on local machine** (no internet connection needed)
 - **change response payloads** to test and stress the app
