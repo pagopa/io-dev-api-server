@@ -250,6 +250,9 @@ export const backendStatus: BackendStatus = {
     },
     fims: {
       enabled: false
+    },
+    premiumMessages: {
+      opt_in_out_enabled: false
     }
   }
 };
