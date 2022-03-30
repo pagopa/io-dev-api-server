@@ -59,7 +59,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     enrichResultData: (req.query.enrich_result_data ?? false) === "true",
     maximumId: req.query.maximum_id,
     minimumId: req.query.minimum_id,
-    getArchived: (req.query.get_archived ?? false) === "true"
+    getArchived: (req.query.archived ?? false) === "true"
   });
   if (E.isLeft(paginatedQuery)) {
     // bad request
