@@ -213,7 +213,12 @@ export const generateWalletV2Data = () => {
     abiResponse.data ?? [],
     walletV2Config.bPayCount
   ).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay, FA_BPD)
+    generateWalletV2FromSatispayOrBancomatPay(
+      c,
+      WalletTypeEnum.BPay,
+      FA_BPD,
+      true
+    )
   );
 
   // set a credit card as favorite

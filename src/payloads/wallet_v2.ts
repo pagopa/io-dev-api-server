@@ -285,7 +285,8 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     EnableableFunctionsEnum.FA,
     EnableableFunctionsEnum.pagoPA,
     EnableableFunctionsEnum.BPD
-  ]
+  ],
+  canPay: boolean = false
 ): WalletV2 => {
   const ed = faker.date.future();
   return {
@@ -297,7 +298,7 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
-    pagoPA: false,
+    pagoPA: canPay,
     updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
   };
 };
