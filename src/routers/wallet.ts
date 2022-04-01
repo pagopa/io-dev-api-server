@@ -71,12 +71,15 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
 const convertFavouriteWalletfromV2V1 = (
   wallet: WalletV2
 ): Wallet | undefined => {
-  // a favourite method can be only a CreditCard or PayPal
+  // a favourite method can be only a CreditCard, PayPal, BancomatPay
   return match(wallet.walletType)
     .with(WalletTypeEnum.Card, () =>
       generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
     )
     .with(WalletTypeEnum.PayPal, () =>
+      generateWalletV1FromPayPal(wallet.idWallet!)
+    )
+    .with(WalletTypeEnum.BPay, () =>
       generateWalletV1FromPayPal(wallet.idWallet!)
     )
     .otherwise(() => undefined);
