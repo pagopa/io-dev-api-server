@@ -20,7 +20,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
-import { ioDevServerConfig } from "../config";
+import { assetsFolder, ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
   getPspFromId,
@@ -195,10 +195,8 @@ addHandler(
   appendWalletV1Prefix("/wallet/:idWallet"),
   (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
-    const idPsp = req.body.data.idPsp;
-    const psp = getPspFromId(idPsp);
     const walletV2 = findWalletById(idWallet);
-    if (walletV2 === undefined || psp === undefined) {
+    if (walletV2 === undefined) {
       res.sendStatus(404);
       return;
     }
@@ -208,7 +206,7 @@ addHandler(
       return;
     }
     res.json({
-      data: { ...updatedWalletV1, psp }
+      data: { ...updatedWalletV1, psp: validPsp }
     });
   }
 );
