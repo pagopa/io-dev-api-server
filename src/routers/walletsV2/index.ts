@@ -216,7 +216,7 @@ export const generateWalletV2Data = () => {
     generateWalletV2FromSatispayOrBancomatPay(
       c,
       WalletTypeEnum.BPay,
-      FA_BPD,
+      [EnableableFunctionsEnum.pagoPA],
       true
     )
   );
