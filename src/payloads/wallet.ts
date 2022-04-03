@@ -2,6 +2,7 @@ import faker from "faker/locale/it";
 import { range } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import { PspDataListResponse } from "../../generated/definitions/pagopa/PspDataListResponse";
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
 import {
   LinguaEnum,
@@ -14,7 +15,8 @@ import {
   Wallet
 } from "../../generated/definitions/pagopa/walletv2/Wallet";
 import { WalletListResponse } from "../../generated/definitions/pagopa/walletv2/WalletListResponse";
-import { ioDevServerConfig } from "../config";
+import { assetsFolder } from "../config";
+import { readFileAsJSON } from "../utils/file";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
@@ -24,12 +26,6 @@ export const sessionToken: SessionResponse = {
     sessionToken: faker.random.alphaNumeric(128)
   }
 };
-const getAmount = () =>
-  getRandomValue(
-    ioDevServerConfig.wallet.payment?.pspFeeAmount,
-    faker.datatype.number({ min: 1, max: 150 }),
-    "wallet"
-  );
 
 export const validPsp: Psp = {
   id: 40000,
@@ -45,7 +41,7 @@ export const validPsp: Psp = {
   serviceName: "nomeServizio 10 white",
   fixedCost: {
     currency: "EUR",
-    amount: getAmount(),
+    amount: 123,
     decimalDigits: 2
   },
   appChannel: false,
@@ -70,7 +66,7 @@ const validPsp2: Psp = {
   serviceName: "nomeServizio 10 red",
   fixedCost: {
     currency: "EUR",
-    amount: getAmount(),
+    amount: 234,
     decimalDigits: 2
   },
   appChannel: false,
@@ -95,7 +91,7 @@ const validPsp3: Psp = {
   serviceName: "nomeServizio 10 Blu",
   fixedCost: {
     currency: "EUR",
-    amount: getAmount(),
+    amount: 567,
     decimalDigits: 2
   },
   appChannel: false,
@@ -107,10 +103,18 @@ const validPsp3: Psp = {
   idCard: 91,
   lingua: "IT" as LinguaEnum
 };
-
-export const pspList: ReadonlyArray<Psp> = [validPsp, validPsp2, validPsp3];
-export const getPspFromId = (idPsp: number) =>
-  pspList.find(p => p.id === idPsp);
+const psps = validatePayload(
+  PspDataListResponse,
+  readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
+);
+export const pspList: ReadonlyArray<Psp> = [validPsp, validPsp2, validPsp3].map(
+  (item, idx) => ({
+    ...item,
+    idPsp: psps.data[idx].idPsp,
+    id: parseInt(psps.data[idx].idPsp, 10),
+    businessName: psps.data[idx].ragioneSociale
+  })
+);
 
 export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let

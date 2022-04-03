@@ -19,7 +19,7 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
-import { ioDevServerConfig } from "../config";
+import { assetsFolder, ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
   getTransactions,
@@ -46,6 +46,9 @@ import {
   removeWalletV2,
   walletV2Config
 } from "./walletsV2";
+import { readFileAsJSON } from "../utils/file";
+import { PspDataListResponse } from "../../generated/definitions/pagopa/PspDataListResponse";
+import { Psp } from "../../generated/definitions/pagopa/walletv2/Psp";
 
 export const walletCount =
   walletV2Config.paypalCount +
@@ -194,7 +197,13 @@ addHandler(
   (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
     const walletV2 = findWalletById(idWallet);
-    if (walletV2 === undefined) {
+    const psps = validatePayload(
+      PspDataListResponse,
+      readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
+    );
+    const idPsp = req.body.data.idPsp;
+    const psp = psps.data.find(p => parseInt(p.idPsp, 10) === idPsp);
+    if (walletV2 === undefined || psp === undefined) {
       res.sendStatus(404);
       return;
     }
@@ -203,8 +212,19 @@ addHandler(
       res.sendStatus(400);
       return;
     }
+    // inject psp data in a psp with the expected shape
+    const injectedPsp: Psp = {
+      ...validPsp,
+      id: idPsp,
+      idPsp: idPsp.toString(),
+      businessName: psp.ragioneSociale,
+      fixedCost: { ...validPsp.fixedCost, amount: psp.fee }
+    };
     res.json({
-      data: { ...updatedWalletV1, psp: validPsp }
+      data: {
+        ...updatedWalletV1,
+        psp: injectedPsp
+      }
     });
   }
 );
