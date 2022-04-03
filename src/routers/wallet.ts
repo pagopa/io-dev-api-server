@@ -5,7 +5,6 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
-import { fromNullable } from "fp-ts/lib/Option";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { match } from "ts-pattern";
@@ -20,10 +19,9 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
-import { assetsFolder, ioDevServerConfig } from "../config";
+import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
-  getPspFromId,
   getTransactions,
   getWallets,
   pspList,
