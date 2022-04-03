@@ -115,6 +115,8 @@ export const pspList: ReadonlyArray<Psp> = [validPsp, validPsp2, validPsp3].map(
     businessName: psps.data[idx].ragioneSociale
   })
 );
+export const getPspFromId = (idPsp: number) =>
+  pspList.find(p => p.id === idPsp);
 
 export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
