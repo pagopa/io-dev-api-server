@@ -103,21 +103,21 @@ const validPsp3: Psp = {
   idCard: 91,
   lingua: "IT" as LinguaEnum
 };
-const psps = validatePayload(
+const pspListV2 = validatePayload(
   PspDataListResponse,
   readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
 );
-export const pspList: ReadonlyArray<Psp> = [validPsp, validPsp2, validPsp3].map(
-  (item, idx) => ({
-    ...item,
-    idPsp: psps.data[idx].idPsp,
-    id: parseInt(psps.data[idx].idPsp, 10),
-    businessName: psps.data[idx].ragioneSociale
-  })
-);
-export const getPspFromId = (idPsp: number) =>
-  pspList.find(p => p.id === idPsp);
-
+// psp should have always the same ID and NAME
+export const pspListV1: ReadonlyArray<Psp> = [
+  validPsp,
+  validPsp2,
+  validPsp3
+].map((item, idx) => ({
+  ...item,
+  idPsp: pspListV2.data[idx].idPsp,
+  id: parseInt(pspListV2.data[idx].idPsp, 10),
+  businessName: pspListV2.data[idx].ragioneSociale
+}));
 export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let walletId = 0;

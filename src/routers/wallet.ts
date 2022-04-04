@@ -19,13 +19,12 @@ import {
   WalletTypeEnum,
   WalletV2
 } from "../../generated/definitions/pagopa/WalletV2";
-import { assetsFolder, ioDevServerConfig } from "../config";
+import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
-  getPspFromId,
   getTransactions,
   getWallets,
-  pspList,
+  pspListV1,
   sessionToken,
   validPsp
 } from "../payloads/wallet";
@@ -144,26 +143,12 @@ addHandler(walletRouter, "get", appendWalletV1Prefix("/psps"), (_, res) =>
 addHandler(
   walletRouter,
   "get",
-  appendWalletV1Prefix("/psps/selected"),
-  (req, res) => {
-    const randomPsp = faker.random.arrayElement(pspList);
-    const language =
-      typeof req.query.language === "string" ? req.query.language : "IT";
-    res.json({
-      data: [{ ...randomPsp, lingua: language.toUpperCase() }]
-    });
-  }
-);
-
-addHandler(
-  walletRouter,
-  "get",
   appendWalletV1Prefix("/psps/all"),
   (req, res) => {
     const language =
       typeof req.query.language === "string" ? req.query.language : "IT";
     res.json({
-      data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
+      data: pspListV1.map(p => ({ ...p, lingua: language.toUpperCase() }))
     });
   }
 );
@@ -191,12 +176,12 @@ addHandler(
 addHandler(
   walletRouter,
   "put",
-  appendWalletV1Prefix("/wallet/:idWallet"),
+  appendWalletV2Prefix("/wallet/:idWallet"),
   (req, res) => {
     const idWallet = parseInt(req.params.idWallet, 10);
     const walletV2 = findWalletById(idWallet);
     const idPsp = req.body.data.idPsp;
-    const psp = getPspFromId(idPsp);
+    const psp = pspListV1.find(p => p.id === idPsp);
     if (walletV2 === undefined || psp === undefined) {
       res.sendStatus(404);
       return;
