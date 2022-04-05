@@ -28,6 +28,7 @@ import { WalletMethodConfig } from "../../types/config";
 import { readFileAsJSON } from "../../utils/file";
 import { validatePayload } from "../../utils/validator";
 import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
+import { pspListV2 } from "../../payloads/wallet";
 
 export const wallet2Router = Router();
 export const abiResponse: AbiListResponse = {
@@ -287,11 +288,7 @@ addHandler(
   "get",
   appendWalletV2Prefix("/payments/:idPayment/psps"),
   (_, res) => {
-    const psp = validatePayload(
-      PspDataListResponse,
-      readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
-    );
-    res.json(psp);
+    res.json(pspListV2);
   }
 );
 

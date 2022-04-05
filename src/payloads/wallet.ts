@@ -103,7 +103,7 @@ const validPsp3: Psp = {
   idCard: 91,
   lingua: "IT" as LinguaEnum
 };
-const pspListV2 = validatePayload(
+export const pspListV2 = validatePayload(
   PspDataListResponse,
   readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
 );
