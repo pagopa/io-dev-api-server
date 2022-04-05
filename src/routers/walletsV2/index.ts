@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
-import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 import {
   WalletTypeEnum,
   WalletV2
@@ -10,8 +9,9 @@ import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
-import { assetsFolder, ioDevServerConfig } from "../../config";
+import { ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
+import { pspListV2 } from "../../payloads/wallet";
 import {
   abiData,
   generateBancomatPay,
@@ -25,10 +25,7 @@ import {
   privativeIssuers
 } from "../../payloads/wallet_v2";
 import { WalletMethodConfig } from "../../types/config";
-import { readFileAsJSON } from "../../utils/file";
-import { validatePayload } from "../../utils/validator";
 import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
-import { pspListV2 } from "../../payloads/wallet";
 
 export const wallet2Router = Router();
 export const abiResponse: AbiListResponse = {
