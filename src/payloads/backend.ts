@@ -258,6 +258,9 @@ export const backendStatus: BackendStatus = {
     },
     premiumMessages: {
       opt_in_out_enabled: false
+    },
+    cdc: {
+      enabled: false
     }
   }
 };
