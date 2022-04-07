@@ -254,7 +254,8 @@ export const backendStatus: BackendStatus = {
       }
     },
     fims: {
-      enabled: false
+      enabled: false,
+      domain: `${serverUrl}`
     },
     premiumMessages: {
       opt_in_out_enabled: false
