@@ -231,6 +231,11 @@ export const backendStatus: BackendStatus = {
     paypal: {
       enabled: true
     },
+    bancomatPay: {
+      display: true,
+      onboarding: true,
+      payment: false
+    },
     cgn: {
       enabled: true,
       merchants_v2: false
@@ -254,6 +259,9 @@ export const backendStatus: BackendStatus = {
     },
     premiumMessages: {
       opt_in_out_enabled: false
+    },
+    cdc: {
+      enabled: false
     }
   }
 };
