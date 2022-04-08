@@ -46,7 +46,7 @@ addHandler(
   (_, res) => res.json({ message: "OK" })
 );
 
-// if profile section allows random values, generate random name and family_name
+// if profile section allows random values, generate random name, family_name and email
 currentProfile = {
   ...currentProfile,
   ...getRandomValue(
