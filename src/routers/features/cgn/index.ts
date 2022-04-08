@@ -21,6 +21,7 @@ import {
 } from "../../../../generated/definitions/cgn/EycaActivationDetail";
 import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 import { Otp } from "../../../../generated/definitions/cgn/Otp";
+import { ioDevServerConfig } from "../../../config";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
 import { cgnServiceId } from "../../../payloads/services/special";
@@ -73,11 +74,17 @@ addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
     O.fromNullable(idActivationCgn),
     O.fold(
       () => {
-        idActivationCgn = getRandomStringId();
-        firstCgnActivationRequestTime = new Date().getTime();
-        idActivationEyca = getRandomStringId();
-        firstEycaActivationRequestTime = new Date().getTime();
-        res.status(201).json({ id: idActivationCgn });
+        if (ioDevServerConfig.features.bonus.cgn.isCgnEligible) {
+          idActivationCgn = getRandomStringId();
+          firstCgnActivationRequestTime = new Date().getTime();
+          if (ioDevServerConfig.features.bonus.cgn.isEycaEligible) {
+            idActivationEyca = getRandomStringId();
+            firstEycaActivationRequestTime = new Date().getTime();
+          }
+          res.status(201).json({ id: idActivationCgn });
+          return;
+        }
+        res.sendStatus(403);
       },
       // Cannot activate a new bonus because another bonus related to this user was found.
       () =>
@@ -155,10 +162,14 @@ addHandler(cgnRouter, "post", addPrefix("/eyca/activation"), (_, res) => {
     O.fromNullable(idActivationEyca),
     O.fold(
       () => {
-        idActivationEyca = getRandomStringId();
-        firstEycaActivationRequestTime = new Date().getTime();
-        eycaActivationStatus = { status: StatusEnum.RUNNING };
-        res.status(201).json({ id: idActivationEyca });
+        if (ioDevServerConfig.features.bonus.cgn.isEycaEligible) {
+          idActivationEyca = getRandomStringId();
+          firstEycaActivationRequestTime = new Date().getTime();
+          eycaActivationStatus = { status: StatusEnum.RUNNING };
+          res.status(201).json({ id: idActivationEyca });
+          return;
+        }
+        res.sendStatus(403);
       },
       // Cannot activate a new bonus because another bonus related to this user was found.
       () =>
@@ -207,6 +218,10 @@ addHandler(cgnRouter, "get", addPrefix("/eyca/activation"), (_, res) =>
 // 403 -> user's not EYCA Eligible
 // 409 -> Error encountered but user's EYCA Eligible
 addHandler(cgnRouter, "get", addPrefix("/eyca/status"), (_, res) => {
+  if (!ioDevServerConfig.features.bonus.cgn.isEycaEligible) {
+    res.sendStatus(403);
+    return;
+  }
   if (firstEycaActivationRequestTime > 0 && idActivationEyca) {
     currentEyca = {
       status: ActivatedStatusEnum.ACTIVATED,
