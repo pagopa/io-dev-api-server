@@ -114,6 +114,16 @@ const defaultConfig: IoDevServerConfig = {
     includeCgn: true,
     // it has partially effect (pr welcome)
     allowRandomValues: true
+  },
+  features: {
+    bonus: {
+      cgn: {
+        isCgnEligible: false,
+        isEycaEligible: false,
+        allowRandomValues: true
+      }
+    },
+    allowRandomValues: true
   }
 };
 /**
