@@ -47,6 +47,8 @@ addHandler(
 );
 
 // if profile section allows random values, generate random name, family_name and email
+// 0 -> male, 1 -> female
+const gender = faker.random.arrayElement([0, 1]);
 currentProfile = {
   ...currentProfile,
   ...getRandomValue(
@@ -56,8 +58,8 @@ currentProfile = {
       email: currentProfile.email
     },
     {
-      name: faker.name.firstName(),
-      family_name: faker.name.lastName(),
+      name: faker.name.firstName(gender),
+      family_name: faker.name.lastName(gender),
       email: faker.internet.email().toLowerCase() as EmailAddress
     },
     "profile"
