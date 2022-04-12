@@ -118,8 +118,8 @@ const defaultConfig: IoDevServerConfig = {
   features: {
     bonus: {
       cgn: {
-        isCgnEligible: false,
-        isEycaEligible: false,
+        isCgnEligible: true,
+        isEycaEligible: true,
         allowRandomValues: true
       }
     },
