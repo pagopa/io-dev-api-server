@@ -11,9 +11,10 @@ import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
 import { ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
-import { pspListV2 } from "../../payloads/wallet";
+import { pspListV1, pspListV2 } from "../../payloads/wallet";
 import {
   abiData,
+  convertFavouriteWalletfromV2V1,
   generateBancomatPay,
   generateCards,
   generatePaypalInfo,
@@ -286,6 +287,38 @@ addHandler(
   appendWalletV2Prefix("/payments/:idPayment/psps"),
   (_, res) => {
     res.json(pspListV2);
+  }
+);
+
+/**
+ * update the psp of a specified wallet
+ * during the payment checkout the PM knows only about the payment method used
+ * the psp is included in the payment method ¯\_(ツ)_/¯
+ */
+addHandler(
+  wallet2Router,
+  "put",
+  appendWalletV2Prefix("/wallet/:idWallet"),
+  (req, res) => {
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const walletV2 = findWalletById(idWallet);
+    const idPsp = req.body.data.idPsp;
+    const psp = pspListV1.find(p => p.id === idPsp);
+    if (walletV2 === undefined || psp === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+    const updatedWalletV1 = convertFavouriteWalletfromV2V1(walletV2);
+    if (updatedWalletV1 === undefined) {
+      res.sendStatus(400);
+      return;
+    }
+    res.json({
+      data: {
+        ...updatedWalletV1,
+        psp
+      }
+    });
   }
 );
 

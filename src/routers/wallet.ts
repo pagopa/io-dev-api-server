@@ -30,9 +30,8 @@ import {
 } from "../payloads/wallet";
 import {
   abiData,
+  convertFavouriteWalletfromV2V1,
   generateCards,
-  generateWalletV1FromCardInfo,
-  generateWalletV1FromPayPal,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
@@ -65,20 +64,6 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
   true,
   wallets.data
 );
-
-const convertFavouriteWalletfromV2V1 = (
-  wallet: WalletV2
-): Wallet | undefined => {
-  // a favourite method can be only a CreditCard or PayPal
-  return match(wallet.walletType)
-    .with(WalletTypeEnum.Card, () =>
-      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
-    )
-    .with(WalletTypeEnum.PayPal, () =>
-      generateWalletV1FromPayPal(wallet.idWallet!)
-    )
-    .otherwise(() => undefined);
-};
 
 addHandler(
   walletRouter,
@@ -170,33 +155,6 @@ addHandler(
     const idWallet = parseInt(req.params.idWallet, 10);
     const hasBeenDelete = removeWalletV2(idWallet);
     res.sendStatus(hasBeenDelete ? 200 : 404);
-  }
-);
-
-addHandler(
-  walletRouter,
-  "put",
-  appendWalletV2Prefix("/wallet/:idWallet"),
-  (req, res) => {
-    const idWallet = parseInt(req.params.idWallet, 10);
-    const walletV2 = findWalletById(idWallet);
-    const idPsp = req.body.data.idPsp;
-    const psp = pspListV1.find(p => p.id === idPsp);
-    if (walletV2 === undefined || psp === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    const updatedWalletV1 = convertFavouriteWalletfromV2V1(walletV2);
-    if (updatedWalletV1 === undefined) {
-      res.sendStatus(400);
-      return;
-    }
-    res.json({
-      data: {
-        ...updatedWalletV1,
-        psp
-      }
-    });
   }
 );
 

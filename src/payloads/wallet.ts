@@ -115,7 +115,7 @@ export const pspListV1: ReadonlyArray<Psp> = [
 ].map((item, idx) => ({
   ...item,
   idPsp: pspListV2.data[idx].idPsp,
-  id: parseInt(pspListV2.data[idx].idPsp, 10),
+  id: pspListV2.data[idx].id,
   businessName: pspListV2.data[idx].ragioneSociale
 }));
 export const getWallets = (count: number = 4): WalletListResponse => {

@@ -6,6 +6,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as t from "io-ts";
 import sha256 from "sha256";
+import { match } from "ts-pattern";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { PayPalAccountPspInfo } from "../../generated/definitions/pagopa/PayPalAccountPspInfo";
 import { PayPalInfo } from "../../generated/definitions/pagopa/PayPalInfo";
@@ -215,6 +216,23 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   };
 });
 
+export const convertFavouriteWalletfromV2V1 = (
+  wallet: WalletV2
+): Wallet | undefined => {
+  // a favourite method can be only a CreditCard, PayPal or BancomatPay
+  return match(wallet.walletType)
+    .with(WalletTypeEnum.Card, () =>
+      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
+    )
+    .with(WalletTypeEnum.PayPal, () =>
+      generateWalletV1FromPayPal(wallet.idWallet!)
+    )
+    .with(WalletTypeEnum.BPay, () =>
+      generateWalletV1FromBPay(wallet.idWallet!, wallet.info)
+    )
+    .otherwise(() => undefined);
+};
+
 export const generateWalletV2FromCard = (
   card: Card,
   walletType: WalletTypeEnum,
@@ -353,6 +371,20 @@ export const generateWalletV1FromCardInfo = (
     brand: info.brand,
     onUs: false
   },
+  pspEditable: true,
+  isPspToIgnore: false,
+  saved: false,
+  registeredNexi: false
+});
+
+export const generateWalletV1FromBPay = (
+  idWallet: number,
+  info: BPayInfo | undefined
+): Wallet => ({
+  idWallet,
+  type: WalletV1TypeEnum.CREDIT_CARD,
+  favourite: false,
+  bPay: info,
   pspEditable: true,
   isPspToIgnore: false,
   saved: false,
