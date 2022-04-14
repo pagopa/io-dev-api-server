@@ -76,7 +76,7 @@ const defaultConfig: IoDevServerConfig = {
     paymentWithValidDueDateCount: 0,
     paymentWithExpiredDueDateCount: 0,
     medicalCount: 0,
-    withCTA: false,
+    withCTA: true,
     withEUCovidCert: false,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,

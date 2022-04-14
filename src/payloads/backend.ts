@@ -1,7 +1,7 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
-import { serverUrl } from "../utils/server";
+import { serverPort, serverUrl } from "../utils/server";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -255,7 +255,7 @@ export const backendStatus: BackendStatus = {
     },
     fims: {
       enabled: false,
-      domain: `${serverUrl}`
+      domain: `http://localhost:${serverPort}`
     },
     premiumMessages: {
       opt_in_out_enabled: false

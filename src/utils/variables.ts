@@ -137,6 +137,17 @@ en:
         action: "ioit://SV_VOUCHER_LIST"
 ---`;
 
+export const frontMatter1CTAFims = `---
+it:
+    cta_1: 
+        text: "Fims SSO"
+        action: "iosso://http://localhost:3000/myportal_playground.html"
+en:
+    cta_1: 
+        text: "Fims SSO"
+        action: "iosso://http://localhost:3000/myportal_playground.html"
+---`;
+
 export const messageMarkdown = `
 # H1 
 
