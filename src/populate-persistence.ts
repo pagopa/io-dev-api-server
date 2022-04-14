@@ -26,6 +26,7 @@ import {
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
   frontMatter1CTABonusCgn,
+  frontMatter1CTAFims,
   frontMatter2CTA2,
   frontMatterBonusVacanze,
   messageMarkdown
@@ -113,6 +114,13 @@ const createMessages = (
         customConfig,
         `1 CTA start CGN`,
         frontMatter1CTABonusCgn + messageMarkdown
+      )
+    );
+    output.push(
+      getNewMessage(
+        customConfig,
+        `1 CTA start FISM SSO`,
+        frontMatter1CTAFims + messageMarkdown
       )
     );
   }
@@ -298,7 +306,7 @@ const createMessages = (
     )
   );
 
-  range(1, customConfig.messages.legalCount).forEach((count, idx) => {
+  range(1, customConfig.messages.legalCount).forEach(count => {
     const isOdd = count % 2 > 0;
     const message = getNewMessage(
       customConfig,

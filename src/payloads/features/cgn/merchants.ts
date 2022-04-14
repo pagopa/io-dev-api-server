@@ -73,7 +73,7 @@ export const onlineMerchants: OnlineMerchants = {
     return {
       discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
-      name: faker.company.companyName() as NonEmptyString,
+      name: `${faker.company.companyName()} [Online]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       websiteUrl: faker.internet.url() as NonEmptyString
     };
@@ -87,7 +87,7 @@ export const offlineMerchants: OfflineMerchants = {
     faker.seed(millis++);
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
-      name: faker.company.companyName() as NonEmptyString,
+      name: `${faker.company.companyName()} [Offline]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       address: {
         full_address: faker.address.streetAddress(true) as NonEmptyString,
@@ -202,7 +202,8 @@ export const generateMerchantDetail = (
       description: faker.lorem.paragraphs(2) as NonEmptyString,
       discounts: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
         Discount
-      >(_ => generateDiscount(merchant.productCategories))
+      >(_ => generateDiscount(merchant.productCategories)),
+      websiteUrl: faker.internet.url() as NonEmptyString
     };
   }
 };

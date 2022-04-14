@@ -4,7 +4,6 @@ import {
   WithinRangeNumber
 } from "@pagopa/ts-commons/lib/numbers";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import * as t from "io-ts";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { enumType } from "italia-ts-commons/lib/types";
@@ -13,10 +12,6 @@ import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
-import {
-  AssistanceToolConfig,
-  ToolEnum
-} from "../../generated/definitions/content/AssistanceToolConfig";
 
 /* profile */
 export const ProfileAttrs = t.interface({
@@ -209,6 +204,23 @@ export const IoDevServerConfig = t.interface({
       payment: PaymentConfig
     }),
 
+    AllowRandomValue
+  ]),
+  features: t.intersection([
+    t.interface({
+      bonus: t.interface({
+        // defines the special configuration for cgn eligibility
+        cgn: t.intersection([
+          t.interface({
+            // if true the user is eligible to the CGN
+            isCgnEligible: t.boolean,
+            // if true the user is eligible to the EYCA related activation
+            isEycaEligible: t.boolean
+          }),
+          AllowRandomValue
+        ])
+      })
+    }),
     AllowRandomValue
   ])
 });

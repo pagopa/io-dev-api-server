@@ -11,10 +11,7 @@ import { SpecialServiceCategoryEnum } from "../../../generated/definitions/backe
 import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
 import { ioDevServerConfig } from "../../config";
 import { getService, getServiceMetadata } from "../../utils/service";
-import {
-  frontMatter1CTASiciliaVola,
-  frontMatter2CTA2
-} from "../../utils/variables";
+import { frontMatter1CTASiciliaVola } from "../../utils/variables";
 
 const siciliaVolaServiceId = "serviceSv";
 const siciliaVolaService: ServicePublic = {
@@ -40,7 +37,7 @@ const withSiciliaVolaService = (
 export const cgnServiceId = "serviceCgn";
 const cgnService: ServicePublic = {
   ...getService(cgnServiceId),
-  organization_name: "Carta Giovani Nazionale" as OrganizationName,
+  organization_name: "PCM - Dipartimento per le Politche Giovanili e il Servizio Civile Universale" as OrganizationName,
   service_name: "Carta Giovani Nazionale" as ServiceName,
   service_metadata: {
     ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
