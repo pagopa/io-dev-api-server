@@ -1,7 +1,9 @@
 import { Router } from "express";
+import faker from "faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { Profile } from "../../generated/definitions/backend/Profile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
@@ -14,6 +16,7 @@ import { getProblemJson } from "../payloads/error";
 import { currentProfile as profile } from "../payloads/profile";
 import { addHandler } from "../payloads/response";
 import { mockUserMetadata } from "../payloads/userMetadata";
+import { getRandomValue } from "../utils/random";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
@@ -43,6 +46,25 @@ addHandler(
   (_, res) => res.json({ message: "OK" })
 );
 
+// if profile section allows random values, generate random name, family_name and email
+// 0 -> male, 1 -> female
+const gender = faker.random.arrayElement([0, 1]);
+currentProfile = {
+  ...currentProfile,
+  ...getRandomValue(
+    {
+      name: currentProfile.name,
+      family_name: currentProfile.family_name,
+      email: currentProfile.email
+    },
+    {
+      name: faker.name.firstName(gender),
+      family_name: faker.name.lastName(gender),
+      email: faker.internet.email().toLowerCase() as EmailAddress
+    },
+    "profile"
+  )
+};
 // get profile
 addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) =>
   res.json(currentProfile)
