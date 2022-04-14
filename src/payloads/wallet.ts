@@ -107,7 +107,7 @@ export const pspListV2 = validatePayload(
   PspDataListResponse,
   readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
 );
-// psp should have always the same ID and NAME
+// psp v1 and v2 should have always the same IDPSP, ID and NAME
 export const pspListV1: ReadonlyArray<Psp> = [
   validPsp,
   validPsp2,
