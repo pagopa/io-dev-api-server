@@ -26,6 +26,7 @@ import {
   frontMatter1CTABonusBpd,
   frontMatter1CTABonusBpdIban,
   frontMatter1CTABonusCgn,
+  frontMatter1CTADonation,
   frontMatter1CTAFims,
   frontMatter2CTA2,
   frontMatterBonusVacanze,
@@ -187,7 +188,7 @@ const createMessages = (
       getNewMessage(
         customConfig,
         `standard message - ${count}`,
-        messageMarkdown
+        frontMatter1CTADonation + messageMarkdown
       )
     )
   );

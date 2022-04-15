@@ -148,6 +148,17 @@ en:
         action: "iosso://http://localhost:3000/myportal_playground.html"
 ---`;
 
+export const frontMatter1CTADonation = `---
+it:
+    cta_1: 
+        text: "Donate"
+        action: "ioit://UADONATION_ROUTES_WEBVIEW?urlToLoad=http://127.0.0.1:3000/donate"
+en:
+    cta_1: 
+        text: "Donate"
+        action: "ioit://UADONATION_ROUTES_WEBVIEW?urlToLoad=http://127.0.0.1:3000/donate"
+---`;
+
 export const messageMarkdown = `
 # H1 
 
