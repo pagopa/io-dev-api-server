@@ -695,19 +695,19 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@pagopa/ts-commons@^9.4.0":
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/@pagopa/ts-commons/-/ts-commons-9.4.0.tgz#680ba8a43db4c0397e6c4e8f9cfd3d758cc0b30c"
-  integrity sha512-eLuyLQPQsQArCHTfcLhtES8dan6GaJ99AfqbyZS8VsyZxuOZ0lyCZkFQBdd9QlmGUHXiEpLVjVEz+uXcGSnLUg==
+"@pagopa/ts-commons@^10.3.0":
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/@pagopa/ts-commons/-/ts-commons-10.3.0.tgz#6edccb731d5f99ad22c32c59e2a11f53a5f90207"
+  integrity sha512-pTp7qfOaL9cJSNEKrMMbYPtqrtZJNDrWMa9HnqiRQA4SAErrzGNGLTgxkLyOEsC1B4mS3uPWntAk+bblOKpyZw==
   dependencies:
     abort-controller "^3.0.0"
-    agentkeepalive "^4.1.2"
-    applicationinsights "^1.7.4"
-    fp-ts "1.17.4"
-    io-ts "1.8.5"
-    json-set-map "^1.0.2"
+    agentkeepalive "^4.1.4"
+    applicationinsights "^1.8.10"
+    fp-ts "^2.11.0"
+    io-ts "^2.2.16"
+    json-set-map "^1.1.2"
     node-fetch "^2.6.0"
-    validator "^10.1.0"
+    validator "^13.7.0"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -1091,6 +1091,15 @@ agentkeepalive@^4.1.2:
     depd "^1.1.2"
     humanize-ms "^1.2.1"
 
+agentkeepalive@^4.1.4:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/agentkeepalive/-/agentkeepalive-4.2.1.tgz#a7975cbb9f83b367f06c90cc51ff28fe7d499717"
+  integrity sha512-Zn4cw2NEqd+9fiSVWMscnjyQ1a8Yfoc5oBajLeo5w+YBHgDUcEBY2hS4YpTz6iN5f/2zQiktcuM6tS8x1p9dpA==
+  dependencies:
+    debug "^4.1.0"
+    depd "^1.1.2"
+    humanize-ms "^1.2.1"
+
 ansi-align@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
@@ -1182,7 +1191,7 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-applicationinsights@^1.7.4:
+applicationinsights@^1.7.4, applicationinsights@^1.8.10:
   version "1.8.10"
   resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-1.8.10.tgz#fffa482cd1519880fb888536a87081ac05130667"
   integrity sha512-ZLDA7mShh4mP2Z/HlFolmvhBPX1LfnbIWXrselyYVA7EKjHhri1fZzpu2EiWAmfbRxNBY6fRjoPJWbx5giKy4A==
@@ -2361,7 +2370,7 @@ forwarded@0.2.0:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-fp-ts@1.12.0, fp-ts@1.17.4, fp-ts@1.19.5, fp-ts@^1.0.0:
+fp-ts@1.12.0, fp-ts@1.17.4, fp-ts@1.19.5, fp-ts@^1.0.0, fp-ts@^2.11.0:
   version "1.19.5"
   resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.19.5.tgz#3da865e585dfa1fdfd51785417357ac50afc520a"
   integrity sha512-wDNqTimnzs8QqpldiId9OavWK2NptormjXnRJTQecNjzwfyp6P/8s/zG8e4h3ja3oqkKaY72UlTjQYt/1yXf9A==
@@ -2727,6 +2736,11 @@ io-ts@1.8.5:
   integrity sha512-4HzDeg7mTygFjFIKh7ajBSanoVaFryYSFI0ocdwndSWl3eWQXhg3wVR0WI+Li5Vq11TIsoIngQszVbN4dy//9A==
   dependencies:
     fp-ts "^1.0.0"
+
+io-ts@^2.2.16:
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.16.tgz#597dffa03db1913fc318c9c6df6931cb4ed808b2"
+  integrity sha512-y5TTSa6VP6le0hhmIyN0dqEXkrZeJLeC5KApJq6VLci3UEKF80lZ+KuoUs02RhBxNWlrqSNxzfI7otLX1Euv8Q==
 
 ipaddr.js@1.9.1:
   version "1.9.1"
@@ -3475,6 +3489,11 @@ json-set-map@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-set-map/-/json-set-map-1.0.2.tgz#608aacb5464d9759158d06523a6e30be5650adc4"
   integrity sha1-YIqstUZNl1kVjQZSOm4wvlZQrcQ=
+
+json-set-map@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/json-set-map/-/json-set-map-1.1.2.tgz#536cbc6549d06e8af11f76cb4fbd441ed2389e6e"
+  integrity sha512-x0TGwgcOG21jOa8wV1PWXDpSXUAKa1WuhMSHPBQhXU5Pb+4DdMrxOw5HMAWztVLP8KhSG5Kl5BoAOVF0aW63wA==
 
 json5@2.x, json5@^2.1.0:
   version "2.1.1"
@@ -5311,6 +5330,11 @@ validator@^12.0.0:
   version "12.2.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-12.2.0.tgz#660d47e96267033fd070096c3b1a6f2db4380a0a"
   integrity sha512-jJfE/DW6tIK1Ek8nCfNFqt8Wb3nzMoAbocBF6/Icgg1ZFSBpObdnwVY2jQj6qUqzhx5jc71fpvBWyLGO7Xl+nQ==
+
+validator@^13.7.0:
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.7.0.tgz#4f9658ba13ba8f3d82ee881d3516489ea85c0857"
+  integrity sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==
 
 vary@~1.1.2:
   version "1.1.2"
