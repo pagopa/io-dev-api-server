@@ -7,7 +7,6 @@ import { takeEnd } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { match } from "ts-pattern";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
@@ -24,7 +23,6 @@ import { addHandler } from "../payloads/response";
 import {
   getTransactions,
   getWallets,
-  pspListV1,
   sessionToken,
   validPsp
 } from "../payloads/wallet";
@@ -123,19 +121,6 @@ addHandler(
 
 addHandler(walletRouter, "get", appendWalletV1Prefix("/psps"), (_, res) =>
   res.json({ data: [validPsp] })
-);
-
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/psps/all"),
-  (req, res) => {
-    const language =
-      typeof req.query.language === "string" ? req.query.language : "IT";
-    res.json({
-      data: pspListV1.map(p => ({ ...p, lingua: language.toUpperCase() }))
-    });
-  }
 );
 
 addHandler(
