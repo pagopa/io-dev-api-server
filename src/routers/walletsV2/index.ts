@@ -14,7 +14,7 @@ import { addHandler } from "../../payloads/response";
 import { pspListV1, pspListV2 } from "../../payloads/wallet";
 import {
   abiData,
-  convertFavouriteWalletfromV2V1,
+  convertWalletV2toV1,
   generateBancomatPay,
   generateCards,
   generatePaypalInfo,
@@ -313,7 +313,7 @@ addHandler(
       res.sendStatus(404);
       return;
     }
-    const updatedWalletV1 = convertFavouriteWalletfromV2V1(walletV2);
+    const updatedWalletV1 = convertWalletV2toV1(walletV2);
     if (updatedWalletV1 === undefined) {
       res.sendStatus(400);
       return;

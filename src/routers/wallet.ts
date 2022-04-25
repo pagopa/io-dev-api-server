@@ -30,7 +30,7 @@ import {
 } from "../payloads/wallet";
 import {
   abiData,
-  convertFavouriteWalletfromV2V1,
+  convertWalletV2toV1,
   generateCards,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
@@ -289,7 +289,7 @@ addHandler(
         ],
         false
       );
-      const favoritePaymentMethodV1 = convertFavouriteWalletfromV2V1(
+      const favoritePaymentMethodV1 = convertWalletV2toV1(
         favoritePaymentMethod
       );
       // bad request

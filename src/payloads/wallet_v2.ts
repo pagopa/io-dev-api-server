@@ -216,9 +216,7 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   };
 });
 
-export const convertFavouriteWalletfromV2V1 = (
-  wallet: WalletV2
-): Wallet | undefined => {
+export const convertWalletV2toV1 = (wallet: WalletV2): Wallet | undefined => {
   // a favourite method can be only a CreditCard, PayPal or BancomatPay
   return match(wallet.walletType)
     .with(WalletTypeEnum.Card, () =>
