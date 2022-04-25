@@ -376,7 +376,7 @@ export const generateWalletV1FromCardInfo = (
   registeredNexi: false
 });
 
-export const generateWalletV1FromBPay = (
+const generateWalletV1FromBPay = (
   idWallet: number,
   info: BPayInfo | undefined
 ): Wallet => ({
