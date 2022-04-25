@@ -112,12 +112,15 @@ export const pspListV1: ReadonlyArray<Psp> = [
   validPsp,
   validPsp2,
   validPsp3
-].map((item, idx) => ({
-  ...item,
-  idPsp: pspListV2.data[idx].idPsp,
-  id: pspListV2.data[idx].id,
-  businessName: pspListV2.data[idx].ragioneSociale
-}));
+].map((item, idx) => {
+  const pspV2 = pspListV2.data[idx];
+  return {
+    ...item,
+    idPsp: pspV2.idPsp,
+    id: pspV2.id,
+    businessName: pspV2.ragioneSociale
+  };
+});
 export const getWallets = (count: number = 4): WalletListResponse => {
   // tslint:disable-next-line: no-let
   let walletId = 0;
