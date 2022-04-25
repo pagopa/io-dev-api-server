@@ -3,7 +3,6 @@ import faker from "faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { Profile } from "../../generated/definitions/backend/Profile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
@@ -54,13 +53,11 @@ currentProfile = {
   ...getRandomValue(
     {
       name: currentProfile.name,
-      family_name: currentProfile.family_name,
-      email: currentProfile.email
+      family_name: currentProfile.family_name
     },
     {
       name: faker.name.firstName(gender),
-      family_name: faker.name.lastName(gender),
-      email: faker.internet.email().toLowerCase() as EmailAddress
+      family_name: faker.name.lastName(gender)
     },
     "profile"
   )
