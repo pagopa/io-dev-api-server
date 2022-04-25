@@ -381,7 +381,7 @@ export const generateWalletV1FromBPay = (
   info: BPayInfo | undefined
 ): Wallet => ({
   idWallet,
-  type: WalletV1TypeEnum.CREDIT_CARD,
+  type: WalletV1TypeEnum.EXTERNAL_PS,
   favourite: false,
   bPay: info,
   pspEditable: true,
