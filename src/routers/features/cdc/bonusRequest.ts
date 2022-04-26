@@ -93,6 +93,7 @@ addHandler(
           };
         }
 
+        // tslint:disable-next-line: no-object-mutation
         bonusStatusByYear[y.anno] = StatoBeneficiarioEnum.VALUTAZIONE;
 
         return {
