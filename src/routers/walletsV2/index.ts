@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
-import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 import {
   WalletTypeEnum,
   WalletV2
@@ -10,10 +9,12 @@ import { AbiListResponse } from "../../../generated/definitions/pagopa/walletv2/
 import { RestBPayResponse } from "../../../generated/definitions/pagopa/walletv2/RestBPayResponse";
 import { RestPanResponse } from "../../../generated/definitions/pagopa/walletv2/RestPanResponse";
 import { WalletV2ListResponse } from "../../../generated/definitions/pagopa/WalletV2ListResponse";
-import { assetsFolder, ioDevServerConfig } from "../../config";
+import { ioDevServerConfig } from "../../config";
 import { addHandler } from "../../payloads/response";
+import { pspListV1, pspListV2 } from "../../payloads/wallet";
 import {
   abiData,
+  convertWalletV2toV1,
   generateBancomatPay,
   generateCards,
   generatePaypalInfo,
@@ -25,8 +26,6 @@ import {
   privativeIssuers
 } from "../../payloads/wallet_v2";
 import { WalletMethodConfig } from "../../types/config";
-import { readFileAsJSON } from "../../utils/file";
-import { validatePayload } from "../../utils/validator";
 import { appendWalletV2Prefix, appendWalletV3Prefix } from "../../utils/wallet";
 
 export const wallet2Router = Router();
@@ -213,7 +212,12 @@ export const generateWalletV2Data = () => {
     abiResponse.data ?? [],
     walletV2Config.bPayCount
   ).map(c =>
-    generateWalletV2FromSatispayOrBancomatPay(c, WalletTypeEnum.BPay, FA_BPD)
+    generateWalletV2FromSatispayOrBancomatPay(
+      c,
+      WalletTypeEnum.BPay,
+      [EnableableFunctionsEnum.pagoPA],
+      true
+    )
   );
 
   // set a credit card as favorite
@@ -287,11 +291,39 @@ addHandler(
   "get",
   appendWalletV2Prefix("/payments/:idPayment/psps"),
   (_, res) => {
-    const psp = validatePayload(
-      PspDataListResponse,
-      readFileAsJSON(assetsFolder + "/pm/psp/pspV2.json")
-    );
-    res.json(psp);
+    res.json(pspListV2);
+  }
+);
+
+/**
+ * update the psp of a specified wallet
+ * during the payment checkout the PM knows only about the payment method used
+ * the psp is included in the payment method and its shape is about V1 and not V2 ¯\_(ツ)_/¯
+ */
+addHandler(
+  wallet2Router,
+  "put",
+  appendWalletV2Prefix("/wallet/:idWallet"),
+  (req, res) => {
+    const idWallet = parseInt(req.params.idWallet, 10);
+    const walletV2 = findWalletById(idWallet);
+    const idPsp = req.body.data.idPsp;
+    const psp = pspListV1.find(p => p.id === idPsp);
+    if (walletV2 === undefined || psp === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+    const updatedWalletV1 = convertWalletV2toV1(walletV2);
+    if (updatedWalletV1 === undefined) {
+      res.sendStatus(400);
+      return;
+    }
+    res.json({
+      data: {
+        ...updatedWalletV1,
+        psp
+      }
+    });
   }
 );
 
