@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
 import { BPay } from "../../../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../../../generated/definitions/pagopa/walletv2/BPayInfo";
 import { BPayRequest } from "../../../../generated/definitions/pagopa/walletv2/BPayRequest";
@@ -48,7 +49,9 @@ addHandler(
                 const w2BpayList = bPayList.map(bp =>
                   generateWalletV2FromSatispayOrBancomatPay(
                     bp,
-                    WalletTypeEnum.BPay
+                    WalletTypeEnum.BPay,
+                    [EnableableFunctionsEnum.pagoPA],
+                    true
                   )
                 );
                 addWalletV2([...walletsBPay, ...w2BpayList], false);
