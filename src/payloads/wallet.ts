@@ -41,7 +41,7 @@ export const validPsp: Psp = {
   serviceName: "nomeServizio 10 white",
   fixedCost: {
     currency: "EUR",
-    amount: 123,
+    amount: 100,
     decimalDigits: 2
   },
   appChannel: false,
