@@ -39,9 +39,7 @@ addHandler(
   cdcBonusRequestRouter,
   "get",
   addPrefix("/beneficiario/stato"),
-  (req, res) => {
-    return res.status(200).json(bonusAll);
-  }
+  (req, res) => res.json(bonusAll)
 );
 
 addHandler(
