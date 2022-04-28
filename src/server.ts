@@ -11,6 +11,7 @@ import { bpdRankingV2 } from "./routers/features/bdp/ranking/v2";
 import { bpdWinningTransactionsV1 } from "./routers/features/bdp/winning-transactions/v1";
 import { bpdWinningTransactionsV2 } from "./routers/features/bdp/winning-transactions/v2";
 import { bonusVacanze } from "./routers/features/bonus-vacanze";
+import { cdcRouter } from "./routers/features/cdc";
 import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
@@ -77,7 +78,8 @@ app.use(errorMiddleware);
   cgnMerchantsRouter,
   cgnGeoRouter,
   euCovidCertRouter,
-  svRouter
+  svRouter,
+  cdcRouter
 ].forEach(r => app.use(r));
 
 export default app;
