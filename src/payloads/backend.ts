@@ -234,7 +234,7 @@ export const backendStatus: BackendStatus = {
     bancomatPay: {
       display: true,
       onboarding: true,
-      payment: false
+      payment: true
     },
     cgn: {
       enabled: true,

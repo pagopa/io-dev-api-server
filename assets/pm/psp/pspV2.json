@@ -4,7 +4,8 @@
       "codiceAbi": "01010",
       "defaultPsp": true,
       "fee": 123,
-      "idPsp": "1",
+      "idPsp": "A",
+      "id": 1,
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
       "ragioneSociale": "BANCO di NAPOLI"
@@ -13,7 +14,8 @@
       "codiceAbi": "01015",
       "defaultPsp": true,
       "fee": 456,
-      "idPsp": "2",
+      "idPsp": "B",
+      "id": 2,
       "onboard": true,
       "privacyUrl": "https://io.italia.it",
       "ragioneSociale": "Banco di Sardegna"
@@ -22,9 +24,9 @@
       "codiceAbi": "03015",
       "defaultPsp": true,
       "fee": 789,
-      "idPsp": "3",
+      "idPsp": "C",
+      "id": 3,
       "onboard": true,
-      "privacyUrl": "https://io.italia.it",
       "ragioneSociale": "FINECO"
     }
   ]

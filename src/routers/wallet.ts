@@ -5,10 +5,8 @@ import { Router } from "express";
 import * as faker from "faker";
 import { takeEnd } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
-import { fromNullable } from "fp-ts/lib/Option";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { match } from "ts-pattern";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
@@ -23,18 +21,15 @@ import {
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
-  getPspFromId,
   getTransactions,
   getWallets,
-  pspList,
   sessionToken,
   validPsp
 } from "../payloads/wallet";
 import {
   abiData,
+  convertWalletV2toV1,
   generateCards,
-  generateWalletV1FromCardInfo,
-  generateWalletV1FromPayPal,
   generateWalletV2FromCard
 } from "../payloads/wallet_v2";
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
@@ -67,20 +62,6 @@ export const transactions: ReadonlyArray<Transaction> = getTransactions(
   true,
   wallets.data
 );
-
-const convertFavouriteWalletfromV2V1 = (
-  wallet: WalletV2
-): Wallet | undefined => {
-  // a favourite method can be only a CreditCard or PayPal
-  return match(wallet.walletType)
-    .with(WalletTypeEnum.Card, () =>
-      generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
-    )
-    .with(WalletTypeEnum.PayPal, () =>
-      generateWalletV1FromPayPal(wallet.idWallet!)
-    )
-    .otherwise(() => undefined);
-};
 
 addHandler(
   walletRouter,
@@ -145,33 +126,6 @@ addHandler(walletRouter, "get", appendWalletV1Prefix("/psps"), (_, res) =>
 addHandler(
   walletRouter,
   "get",
-  appendWalletV1Prefix("/psps/selected"),
-  (req, res) => {
-    const randomPsp = faker.random.arrayElement(pspList);
-    const language =
-      typeof req.query.language === "string" ? req.query.language : "IT";
-    res.json({
-      data: [{ ...randomPsp, lingua: language.toUpperCase() }]
-    });
-  }
-);
-
-addHandler(
-  walletRouter,
-  "get",
-  appendWalletV1Prefix("/psps/all"),
-  (req, res) => {
-    const language =
-      typeof req.query.language === "string" ? req.query.language : "IT";
-    res.json({
-      data: pspList.map(p => ({ ...p, lingua: language.toUpperCase() }))
-    });
-  }
-);
-
-addHandler(
-  walletRouter,
-  "get",
   appendWalletV1Prefix("/psps/:psp_id"),
   (req, res) => {
     res.json({ data: validPsp });
@@ -186,30 +140,6 @@ addHandler(
     const idWallet = parseInt(req.params.idWallet, 10);
     const hasBeenDelete = removeWalletV2(idWallet);
     res.sendStatus(hasBeenDelete ? 200 : 404);
-  }
-);
-
-addHandler(
-  walletRouter,
-  "put",
-  appendWalletV1Prefix("/wallet/:idWallet"),
-  (req, res) => {
-    const idWallet = parseInt(req.params.idWallet, 10);
-    const idPsp = req.body.data.idPsp;
-    const psp = getPspFromId(idPsp);
-    const walletV2 = findWalletById(idWallet);
-    if (walletV2 === undefined || psp === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    const updatedWalletV1 = convertFavouriteWalletfromV2V1(walletV2);
-    if (updatedWalletV1 === undefined) {
-      res.sendStatus(400);
-      return;
-    }
-    res.json({
-      data: { ...updatedWalletV1, psp }
-    });
   }
 );
 
@@ -344,7 +274,7 @@ addHandler(
         ],
         false
       );
-      const favoritePaymentMethodV1 = convertFavouriteWalletfromV2V1(
+      const favoritePaymentMethodV1 = convertWalletV2toV1(
         favoritePaymentMethod
       );
       // bad request
