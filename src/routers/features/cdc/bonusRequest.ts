@@ -12,6 +12,7 @@ import {
   StatoBeneficiarioEnum
 } from "../../../../generated/definitions/cdc/StatoBeneficiario";
 import { addHandler } from "../../../payloads/response";
+import { StatoBeneficiarioPerAnno } from "../../../../generated/definitions/cdc/StatoBeneficiarioPerAnno";
 
 export const cdcBonusRequestRouter = Router();
 
@@ -64,7 +65,10 @@ addHandler(
             Anno,
             StatoBeneficiario
           > = bonusAll.listaStatoPerAnno.reduce(
-            (acc, curr) => ({
+            (
+              acc: Record<Anno, StatoBeneficiario>,
+              curr: StatoBeneficiarioPerAnno
+            ) => ({
               ...acc,
               [curr.annoRiferimento]: curr.statoBeneficiario
             }),
