@@ -1,10 +1,10 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { fromNullable } from "fp-ts/lib/Option";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import fs from "fs";
 import * as t from "io-ts";
+import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
 import { BancomatCardsRequest } from "../../../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
 import { Card } from "../../../../generated/definitions/pagopa/walletv2/Card";
 import { Message } from "../../../../generated/definitions/pagopa/walletv2/Message";
@@ -126,12 +126,18 @@ addHandler(
     ];
     // transform bancomat to walletv2
     const addedBancomatsWalletV2 = bancomatNotPresent.map(c =>
-      generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
+      generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false, [
+        EnableableFunctionsEnum.BPD,
+        EnableableFunctionsEnum.FA
+      ])
     );
     addWalletV2([...walletData, ...addedBancomatsWalletV2], false);
     res.json({
       data: bancomatAdded.map(c =>
-        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false)
+        generateWalletV2FromCard(c, WalletTypeEnum.Bancomat, false, [
+          EnableableFunctionsEnum.BPD,
+          EnableableFunctionsEnum.FA
+        ])
       )
     });
   }
