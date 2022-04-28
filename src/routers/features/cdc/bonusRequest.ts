@@ -1,11 +1,16 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
+import { match } from "ts-pattern";
 import { AnniRiferimento } from "../../../../generated/definitions/cdc/AnniRiferimento";
 import { Anno } from "../../../../generated/definitions/cdc/Anno";
 import { EsitoRichiestaEnum } from "../../../../generated/definitions/cdc/EsitoRichiesta";
 import { ListaEsitoRichiestaPerAnno } from "../../../../generated/definitions/cdc/ListaEsitoRichiestaPerAnno";
 import { ListaStatoPerAnno } from "../../../../generated/definitions/cdc/ListaStatoPerAnno";
-import { StatoBeneficiarioEnum } from "../../../../generated/definitions/cdc/StatoBeneficiario";
+import {
+  StatoBeneficiario,
+  StatoBeneficiarioEnum
+} from "../../../../generated/definitions/cdc/StatoBeneficiario";
 import { addHandler } from "../../../payloads/response";
 
 export const cdcBonusRequestRouter = Router();
@@ -47,68 +52,71 @@ addHandler(
   "post",
   addPrefix("/beneficiario/registrazione"),
   (req, res) => {
-    const maybeAnniRiferimento = AnniRiferimento.decode(req.body);
-
-    if (E.isLeft(maybeAnniRiferimento)) {
-      res.sendStatus(500);
-      return;
-    }
-
-    const anniRiferimento = maybeAnniRiferimento.value.anniRif;
-
-    const bonusStatusByYear = Object.assign(
-      {},
-      ...bonusAll.listaStatoPerAnno.map(x => ({
-        [x.annoRiferimento]: x.statoBeneficiario
-      }))
+    pipe(
+      AnniRiferimento.decode(req.body),
+      E.fold(
+        () => {
+          res.sendStatus(500);
+        },
+        value => {
+          // tslint:disable-next-line:no-let
+          let bonusStatusByYear: Record<
+            Anno,
+            StatoBeneficiario
+          > = bonusAll.listaStatoPerAnno.reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr.annoRiferimento]: curr.statoBeneficiario
+            }),
+            {}
+          );
+          const anniRiferimento = value.anniRif;
+          const listaEsitoRichiestaPerAnno: ListaEsitoRichiestaPerAnno = {
+            listaEsitoRichiestaPerAnno: anniRiferimento.map(y => {
+              return match(bonusStatusByYear[y.anno])
+                .when(
+                  v => [undefined, StatoBeneficiarioEnum.INATTIVO].includes(v),
+                  () => ({
+                    annoRiferimento: y.anno,
+                    esitoRichiesta: EsitoRichiestaEnum.ANNO_NON_AMMISSIBILE
+                  })
+                )
+                .with(StatoBeneficiarioEnum.INATTIVABILE, () => ({
+                  annoRiferimento: y.anno,
+                  esitoRichiesta: EsitoRichiestaEnum.INIZIATIVA_TERMINATA
+                }))
+                .when(
+                  v =>
+                    [
+                      StatoBeneficiarioEnum.ATTIVO,
+                      StatoBeneficiarioEnum.VALUTAZIONE
+                    ].includes(v),
+                  () => ({
+                    annoRiferimento: y.anno,
+                    esitoRichiesta: EsitoRichiestaEnum.CIT_REGISTRATO
+                  })
+                )
+                .otherwise(() => {
+                  bonusStatusByYear = {
+                    ...bonusStatusByYear,
+                    [y.anno]: StatoBeneficiarioEnum.VALUTAZIONE
+                  };
+                  return {
+                    annoRiferimento: y.anno,
+                    esitoRichiesta: EsitoRichiestaEnum.OK
+                  };
+                });
+            })
+          };
+          bonusAll = {
+            listaStatoPerAnno: bonusAll.listaStatoPerAnno.map(s => ({
+              ...s,
+              statoBeneficiario: bonusStatusByYear[s.annoRiferimento]
+            }))
+          };
+          return res.json(listaEsitoRichiestaPerAnno);
+        }
+      )
     );
-
-    const listaEsitoRichiestaPerAnno: ListaEsitoRichiestaPerAnno = {
-      listaEsitoRichiestaPerAnno: anniRiferimento.map(y => {
-        if (
-          bonusStatusByYear[y.anno] === undefined ||
-          bonusStatusByYear[y.anno] === StatoBeneficiarioEnum.INATTIVO
-        ) {
-          return {
-            annoRiferimento: y.anno,
-            esitoRichiesta: EsitoRichiestaEnum.ANNO_NON_AMMISSIBILE
-          };
-        }
-
-        if (bonusStatusByYear[y.anno] === StatoBeneficiarioEnum.INATTIVABILE) {
-          return {
-            annoRiferimento: y.anno,
-            esitoRichiesta: EsitoRichiestaEnum.INIZIATIVA_TERMINATA
-          };
-        }
-
-        if (
-          bonusStatusByYear[y.anno] === StatoBeneficiarioEnum.ATTIVO ||
-          bonusStatusByYear[y.anno] === StatoBeneficiarioEnum.VALUTAZIONE
-        ) {
-          return {
-            annoRiferimento: y.anno,
-            esitoRichiesta: EsitoRichiestaEnum.CIT_REGISTRATO
-          };
-        }
-
-        // tslint:disable-next-line: no-object-mutation
-        bonusStatusByYear[y.anno] = StatoBeneficiarioEnum.VALUTAZIONE;
-
-        return {
-          annoRiferimento: y.anno,
-          esitoRichiesta: EsitoRichiestaEnum.OK
-        };
-      })
-    };
-
-    bonusAll = {
-      listaStatoPerAnno: bonusAll.listaStatoPerAnno.map(s => ({
-        ...s,
-        statoBeneficiario: bonusStatusByYear[s.annoRiferimento]
-      }))
-    };
-
-    return res.status(200).json(listaEsitoRichiestaPerAnno);
   }
 );
