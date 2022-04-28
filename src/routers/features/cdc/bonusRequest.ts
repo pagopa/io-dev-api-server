@@ -10,7 +10,7 @@ import { addHandler } from "../../../payloads/response";
 
 export const cdcBonusRequestRouter = Router();
 
-const generateBonusAll = (): ListaStatoPerAnno => {
+export const generateBonusAll = (): ListaStatoPerAnno => {
   return {
     listaStatoPerAnno: [
       {
@@ -30,10 +30,10 @@ const generateBonusAll = (): ListaStatoPerAnno => {
 };
 
 // TODO: update the prefix when will be official
-const addPrefix = (path: string) => `${path}`;
+const addPrefix = (path: string) => `/bonus${path}`;
 
 // tslint:disable-next-line: no-let
-let bonusAll: ListaStatoPerAnno = generateBonusAll();
+export let bonusAll: ListaStatoPerAnno = generateBonusAll();
 
 addHandler(
   cdcBonusRequestRouter,
@@ -50,6 +50,7 @@ addHandler(
   addPrefix("/beneficiario/registrazione"),
   (req, res) => {
     const maybeAnniRiferimento = AnniRiferimento.decode(req.body);
+
     if (E.isLeft(maybeAnniRiferimento)) {
       res.sendStatus(500);
       return;
@@ -72,14 +73,14 @@ addHandler(
         ) {
           return {
             annoRiferimento: y.anno,
-            statoBeneficiario: EsitoRichiestaEnum.ANNO_NON_AMMISSIBILE
+            esitoRichiesta: EsitoRichiestaEnum.ANNO_NON_AMMISSIBILE
           };
         }
 
         if (bonusStatusByYear[y.anno] === StatoBeneficiarioEnum.INATTIVABILE) {
           return {
             annoRiferimento: y.anno,
-            statoBeneficiario: EsitoRichiestaEnum.INIZIATIVA_TERMINATA
+            esitoRichiesta: EsitoRichiestaEnum.INIZIATIVA_TERMINATA
           };
         }
 
@@ -89,7 +90,7 @@ addHandler(
         ) {
           return {
             annoRiferimento: y.anno,
-            statoBeneficiario: EsitoRichiestaEnum.CIT_REGISTRATO
+            esitoRichiesta: EsitoRichiestaEnum.CIT_REGISTRATO
           };
         }
 
@@ -98,7 +99,7 @@ addHandler(
 
         return {
           annoRiferimento: y.anno,
-          statoBeneficiario: EsitoRichiestaEnum.CIT_REGISTRATO
+          esitoRichiesta: EsitoRichiestaEnum.OK
         };
       })
     };
