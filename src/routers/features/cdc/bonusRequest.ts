@@ -11,8 +11,8 @@ import {
   StatoBeneficiario,
   StatoBeneficiarioEnum
 } from "../../../../generated/definitions/cdc/StatoBeneficiario";
-import { addHandler } from "../../../payloads/response";
 import { StatoBeneficiarioPerAnno } from "../../../../generated/definitions/cdc/StatoBeneficiarioPerAnno";
+import { addHandler } from "../../../payloads/response";
 
 export const cdcBonusRequestRouter = Router();
 
