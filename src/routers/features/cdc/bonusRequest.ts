@@ -64,7 +64,9 @@ addHandler(
           let bonusStatusByYear: Record<
             Anno,
             StatoBeneficiario
-          > = bonusAll.listaStatoPerAnno.reduce(
+          > = bonusAll.listaStatoPerAnno.reduce<
+            Record<Anno, StatoBeneficiario>
+          >(
             (
               acc: Record<Anno, StatoBeneficiario>,
               curr: StatoBeneficiarioPerAnno
