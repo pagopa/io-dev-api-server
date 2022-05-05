@@ -129,6 +129,15 @@ addHandler(
     ].flatMap(item => item.productCategories);
     const categoriesSet = new Set(categories);
 
+    if (req.query.count_new_discounts) {
+      res.json({
+        items: Array.from(categoriesSet).map(c => ({
+          productCategory: c,
+          newDiscounts: faker.datatype.number(30)
+        }))
+      });
+      return;
+    }
     res.json({ items: Array.from(categoriesSet) });
   }
 );

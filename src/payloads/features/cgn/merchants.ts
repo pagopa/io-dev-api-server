@@ -75,7 +75,8 @@ export const onlineMerchants: OnlineMerchants = {
       id: faker.datatype.number().toString() as NonEmptyString,
       name: `${faker.company.companyName()} [Online]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
-      websiteUrl: faker.internet.url() as NonEmptyString
+      websiteUrl: faker.internet.url() as NonEmptyString,
+      newDiscounts: faker.datatype.boolean()
     };
   })
 };
@@ -97,7 +98,8 @@ export const offlineMerchants: OfflineMerchants = {
       distance: faker.datatype.number({
         min: 0,
         max: 50000
-      }) as NonNegativeInteger
+      }) as NonNegativeInteger,
+      newDiscounts: faker.datatype.boolean()
     };
   })
 };
@@ -163,7 +165,8 @@ const generateDiscount = (
     condition: getRandomValue(false, faker.datatype.boolean(), "global")
       ? (faker.lorem.lines(1) as NonEmptyString)
       : undefined,
-    productCategories: discountCategories
+    productCategories: discountCategories,
+    isNew: faker.datatype.boolean()
   };
 
   return {
