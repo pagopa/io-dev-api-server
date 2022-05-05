@@ -27,6 +27,7 @@ import {
   frontMatter1CTABonusBpdIban,
   frontMatter1CTABonusCgn,
   frontMatter1CTAFims,
+  frontMatter1CTAV2BonusCgnDetails,
   frontMatter2CTA2,
   frontMatterBonusVacanze,
   messageMarkdown
@@ -114,6 +115,13 @@ const createMessages = (
         customConfig,
         `1 CTA start CGN`,
         frontMatter1CTABonusCgn + messageMarkdown
+      )
+    );
+    output.push(
+      getNewMessage(
+        customConfig,
+        `1 CTA v2 CGN details`,
+        frontMatter1CTAV2BonusCgnDetails + messageMarkdown
       )
     );
     output.push(

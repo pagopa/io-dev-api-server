@@ -120,6 +120,23 @@ en:
         action: "ioit://CTA_START_CGN"
 ---`;
 
+export const frontMatter1CTAV2BonusCgnDetails = `---
+it:
+    cta_1: 
+        text: "Vai alla carta v2"
+        action: "ioapp://cgn/detail"
+    cta_2: 
+        text: "CTA invalid"
+        action: "ioapp://cgn/details"
+en:
+    cta_1: 
+        text: "Vai alla carta v2"
+        action: "ioapp://cgn/detail"
+    cta_2: 
+        text: "CTA invalid"
+        action: "ioapp://cgn/details"
+---`;
+
 export const frontMatter1CTASiciliaVola = `---
 it:
     cta_1: 
@@ -234,6 +251,10 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
+
+[LINK navigation v2](ioapp://cgn/detail)
+
+[LINK navigation v2 errore](ioapp://cgn/details)
 
 ### Handled link
 [http - google](iohandledlink://http://www.google.com)
