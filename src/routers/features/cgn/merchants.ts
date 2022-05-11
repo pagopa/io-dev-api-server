@@ -139,7 +139,7 @@ addHandler(
     ].flatMap(item => item.productCategories);
     const categoriesSet = new Set(categories);
 
-    if (req.query.count_new_discounts) {
+    if (req.query.count_new_discounts === "true") {
       res.json({
         items: Array.from(categoriesSet).map(c => ({
           productCategory: c,
