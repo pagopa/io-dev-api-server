@@ -262,6 +262,9 @@ export const backendStatus: BackendStatus = {
     },
     cdc: {
       enabled: false
+    },
+    barcodesScanner: {
+      dataMatrixPosteEnabled: false
     }
   }
 };
