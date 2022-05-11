@@ -1,6 +1,8 @@
 import { Router } from "express";
 import faker from "faker/locale/it";
+import { reverse, sortBy } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
+import { contramap, ordBoolean } from "fp-ts/lib/Ord";
 import { pipe } from "fp-ts/lib/pipeable";
 import { NonEmptyString } from "italia-ts-commons/lib/strings";
 import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
@@ -47,8 +49,16 @@ const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
         pc => merchant.productCategories.some(cat => pc.includes(cat))
       )
     );
-
-  return merchants.filter(filters);
+  const merchantsFiltered = merchants.filter(filters);
+  const byNewDiscounts = contramap((m: T) => m.newDiscounts)(ordBoolean);
+  const orderMerchantsByNewDiscount = sortBy([byNewDiscounts]);
+  return pipe(
+    orderMerchantsByNewDiscount,
+    O.fold(
+      () => merchantsFiltered,
+      f => reverse(f(merchantsFiltered))
+    )
+  );
 };
 
 addHandler(
@@ -129,6 +139,15 @@ addHandler(
     ].flatMap(item => item.productCategories);
     const categoriesSet = new Set(categories);
 
+    if (req.query.count_new_discounts === "true") {
+      res.json({
+        items: Array.from(categoriesSet).map(c => ({
+          productCategory: c,
+          newDiscounts: faker.datatype.number(30)
+        }))
+      });
+      return;
+    }
     res.json({ items: Array.from(categoriesSet) });
   }
 );
