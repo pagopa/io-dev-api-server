@@ -80,7 +80,7 @@ const specialServicesFactory: ReadonlyArray<readonly [
 ]> = [
   [ioDevServerConfig.services.includeSiciliaVola, withSiciliaVolaService],
   [ioDevServerConfig.services.includeCgn, withCgnService],
-  [true, withCdcService]
+  [ioDevServerConfig.services.includeCdc, withCdcService]
 ];
 
 // eventually add the special services based on config flags
