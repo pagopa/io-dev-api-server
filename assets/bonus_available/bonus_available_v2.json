@@ -110,14 +110,14 @@
   {
     "id_type": 4,
     "it": {
-      "name": "Carta Della Cultura ",
+      "name": "Carta Della Cultura",
       "description": "Carta Della Cultura (CDC) è l’incentivo per i giovani che favorisce la partecipazione ad attività culturali, sportive e ricreative, su tutto il territorio nazionale",
       "subtitle": "Carta Della Cultura (CDC) è l’incentivo per i giovani che favorisce la partecipazione ad attività culturali, sportive e ricreative, su tutto il territorio nazionale",
       "title": "Attiva la Carta Della Cultura",
       "content": ""
     },
     "en": {
-      "name": "Carta Giovani Nazionale",
+      "name": "Carta Della Cultura",
       "description": "Carta della Cultura (CDC) is an incentive for young people to participate in cultural, sporting and recreational activities throughout the country",
       "subtitle": "Carta della Cultura (CDC) is an incentive for young people to participate in cultural, sporting and recreational activities throughout the country",
       "title": "Activate the Carta della Cultura",
@@ -125,8 +125,8 @@
     },
     "hidden": false,
     "service_id": "01G2AFTME08TS0QD2P2S682CJ0",
-    "is_active": false,
-    "visibility": "hidden",
+    "is_active": true,
+    "visibility": "visible",
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2020-12-31T00:00:00.000Z",
     "cover": "https://assets.cdn.io.italia.it/bonus/cdc/logo/logo-cdc.png",
