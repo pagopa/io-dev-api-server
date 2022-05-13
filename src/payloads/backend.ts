@@ -17,6 +17,14 @@ export const backendStatus: BackendStatus = {
     "en-EN": "english message"
   },
   sections: {
+    cdc: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
     cashback: {
       is_visible: false,
       level: LevelEnum.warning,
