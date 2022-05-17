@@ -35,8 +35,7 @@ export const generateBonusAll = (): ListaStatoPerAnno => {
   };
 };
 
-// TODO: update the prefix when will be official
-const addPrefix = (path: string) => `/bonus${path}`;
+const addPrefix = (path: string) => `/bonus/cdc${path}`;
 
 // tslint:disable-next-line: no-let
 export let bonusAll: ListaStatoPerAnno = generateBonusAll();
@@ -120,9 +119,11 @@ addHandler(
               statoBeneficiario: bonusStatusByYear[s.annoRiferimento]
             }))
           };
+
           return res.json(listaEsitoRichiestaPerAnno);
         }
       )
     );
-  }
+  },
+  2000
 );
