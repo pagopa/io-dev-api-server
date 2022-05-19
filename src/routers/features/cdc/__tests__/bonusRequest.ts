@@ -12,7 +12,7 @@ const request = supertest(app);
 
 describe("GET beneficiario/stato", () => {
   it("should return the bonus list", async () => {
-    const response = await request.get("/bonus/beneficiario/stato");
+    const response = await request.get("/bonus/cdc/beneficiario/stato");
 
     expect(response.status).toBe(200);
     const bonuses = ListaStatoPerAnno.decode(response.body);
@@ -29,7 +29,7 @@ describe("POST /beneficiario/registrazione", () => {
       anniRiferimento: {}
     };
     const response = await request
-      .post("/bonus/beneficiario/registrazione")
+      .post("/bonus/cdc/beneficiario/registrazione")
       .set(wrongPayload);
 
     expect(response.status).toBe(500);
@@ -43,7 +43,7 @@ describe("POST /beneficiario/registrazione", () => {
       ]
     };
     const responseRegistered = await request
-      .post("/bonus/beneficiario/registrazione")
+      .post("/bonus/cdc/beneficiario/registrazione")
       .send(payload);
 
     const requestRegisteredOutcome = ListaEsitoRichiestaPerAnno.decode(
@@ -74,7 +74,7 @@ describe("POST /beneficiario/registrazione", () => {
     );
 
     const responsePending = await request
-      .post("/bonus/beneficiario/registrazione")
+      .post("/bonus/cdc/beneficiario/registrazione")
       .send(payload);
 
     const requestPendingOutcome = ListaEsitoRichiestaPerAnno.decode(
