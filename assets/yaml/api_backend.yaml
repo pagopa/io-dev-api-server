@@ -944,6 +944,9 @@ definitions:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v23.7.0/openapi/definitions.yaml#/IsTestProfile"
   IsWebhookEnabled:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v23.7.0/openapi/definitions.yaml#/IsWebhookEnabled"
+  IsPremiumMessageReadStatusEnabled:
+    type: boolean
+    description: Premium messages temporary definition
   LimitedProfile:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v23.7.0/openapi/definitions.yaml#/LimitedProfile"
   MessageBodyMarkdown:
@@ -1039,7 +1042,27 @@ definitions:
   ServicesPreferencesMode:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v23.7.0/openapi/definitions.yaml#/ServicesPreferencesMode"
   ServicePreference:
-    $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v23.7.0/openapi/definitions.yaml#/ServicePreference"
+    description: |-
+      Define a set of preferences of a Citizen for a given Service.
+      It's needed by Citizens to express how they want Services to get in touch with them.
+    type: object
+    properties:
+      is_email_enabled:
+        type: boolean
+      is_inbox_enabled:
+        type: boolean
+      is_webhook_enabled:
+        type: boolean
+      is_premium_message_read_status_enabled:
+        type: boolean
+      settings_version:
+        type: integer
+        minimum: 0
+    required:
+      - is_email_enabled
+      - is_inbox_enabled
+      - is_webhook_enabled
+      - settings_version
   EnrichedMessage:
     $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v23.7.0/openapi/definitions.yaml#/EnrichedMessage"
   PublicMessage:
@@ -1174,6 +1197,8 @@ definitions:
         $ref: "#/definitions/IsEmailEnabled"
       is_webhook_enabled:
         $ref: "#/definitions/IsWebhookEnabled"
+      is_premium_message_read_status_enabled:
+        $ref: "#/definitions/IsPremiumMessageReadStatusEnabled"
       family_name:
         type: string
       fiscal_code:
