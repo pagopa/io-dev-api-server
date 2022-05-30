@@ -21,6 +21,9 @@ jobs:
           name: Generate models
           command: yarn generate:all
       - run:
+          name: Run compilation
+          command: yarn tsc:noemit
+      - run:
           name: Run linter
           command: yarn tslint --config tslint.json -p tsconfig.json
       - run:
