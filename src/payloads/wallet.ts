@@ -9,7 +9,7 @@ import {
   Psp
 } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/walletv2/SessionResponse";
-import { Transaction } from "../../generated/definitions/pagopa/walletv2/Transaction";
+import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import {
   TypeEnum,
   Wallet
