@@ -3,13 +3,13 @@ import { range } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { PspDataListResponse } from "../../generated/definitions/pagopa/PspDataListResponse";
+import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";
 import {
   LinguaEnum,
   Psp
 } from "../../generated/definitions/pagopa/walletv2/Psp";
 import { SessionResponse } from "../../generated/definitions/pagopa/walletv2/SessionResponse";
-import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import {
   TypeEnum,
   Wallet
