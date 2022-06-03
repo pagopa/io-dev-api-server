@@ -239,3 +239,59 @@ describe("given the `/messages/:id/message-status` endpoint", () => {
     });
   });
 });
+
+describe("given the `/messages/:id` endpoint", () => {
+  beforeAll(() => {
+    populatePersistence(customConfig);
+  });
+
+  afterAll(() => {
+    MessagesDB.dropAll();
+  });
+
+  describe("when public_message is true", () => {
+    it("then the result contains all the expected properties", async () => {
+      const messageId = MessagesDB.findAllInbox()[0].id;
+      const message = await request
+        .get(`${basePath}/messages/${messageId}`)
+        .query({ public_message: true })
+        .expect(200)
+        .then(r => r.body);
+      expect(message.content).toBeDefined();
+      expect(message.created_at).toBeDefined();
+      expect(message.fiscal_code).toBeDefined();
+      expect(message.id).toBeDefined();
+      expect(message.sender_service_id).toBeDefined();
+      expect(message.time_to_live).toBeDefined();
+      expect(message.category).toBeDefined();
+      expect(message.is_archived).toBeDefined();
+      expect(message.is_read).toBeDefined();
+      expect(message.message_title).toBeDefined();
+      expect(message.organization_name).toBeDefined();
+      expect(message.service_name).toBeDefined();
+    });
+  });
+
+  describe("when public_message is false", () => {
+    it("then the result contains just the expected properties", async () => {
+      const messageId = MessagesDB.findAllInbox()[0].id;
+      const message = await request
+        .get(`${basePath}/messages/${messageId}`)
+        .query({ public_message: false })
+        .expect(200)
+        .then(r => r.body);
+      expect(message.content).toBeDefined();
+      expect(message.created_at).toBeDefined();
+      expect(message.fiscal_code).toBeDefined();
+      expect(message.id).toBeDefined();
+      expect(message.sender_service_id).toBeDefined();
+      expect(message.time_to_live).toBeDefined();
+      expect(message.category).toBeUndefined();
+      expect(message.is_archived).toBeUndefined();
+      expect(message.is_read).toBeUndefined();
+      expect(message.message_title).toBeUndefined();
+      expect(message.organization_name).toBeUndefined();
+      expect(message.service_name).toBeUndefined();
+    });
+  });
+});
