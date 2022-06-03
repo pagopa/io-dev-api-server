@@ -1,9 +1,8 @@
-import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { MessageStatusAttributes } from "../../generated/definitions/backend/MessageStatusAttributes";
+import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 
-type MessageFromBE = CreatedMessageWithContent;
+type MessageFromBE = CreatedMessageWithContentAndEnrichedData;
 
-export type MessageOnDB = MessageFromBE & MessageStatusAttributes;
+export type MessageOnDB = MessageFromBE;
 
 // tslint:disable-next-line: readonly-array no-let
 let inboxMessages: MessageOnDB[] = [];

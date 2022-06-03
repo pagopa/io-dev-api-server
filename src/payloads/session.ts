@@ -17,7 +17,8 @@ export const customSession: PublicSession = {
   walletToken: getToken("AAAAAAAAAAAAA1"),
   myPortalToken: getToken("AAAAAAAAAAAAA2"),
   bpdToken: getToken("AAAAAAAAAAAAA3"),
-  zendeskToken: getToken("AAAAAAAAAAAAA4")
+  zendeskToken: getToken("AAAAAAAAAAAAA4"),
+  fimsToken: getToken("AAAAAAAAAAAAA5")
 };
 export const session: IOResponse<PublicSession> = {
   payload: validatePayload(PublicSession, customSession),
