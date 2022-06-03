@@ -226,6 +226,7 @@ describe("given the `/messages/:id/message-status` endpoint", () => {
           .expect(200);
         const message = await request
           .get(`${basePath}/messages/${messageId}`)
+          .query({ public_message: true })
           .expect(200)
           .then(r => r.body);
         if (typeof payload.is_read === "boolean") {
