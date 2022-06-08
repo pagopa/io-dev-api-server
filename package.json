@@ -27,7 +27,7 @@
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "nodemon",
     "test": "jest",
