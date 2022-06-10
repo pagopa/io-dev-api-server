@@ -117,6 +117,9 @@ export const getServicesPreferences = (
             is_webhook_enabled: hasSpecialServiceInbox
               ? getRandomValue(false, faker.datatype.boolean(), "services")
               : false,
+            can_access_message_read_status: hasSpecialServiceInbox
+              ? getRandomValue(false, faker.datatype.boolean(), "services")
+              : false,
             settings_version: 0 as ServicePreference["settings_version"]
           }
         ];
@@ -128,6 +131,9 @@ export const getServicesPreferences = (
           is_inbox_enabled: isInboxEnabled,
           is_email_enabled: isInboxEnabled ? faker.datatype.boolean() : false,
           is_webhook_enabled: isInboxEnabled ? faker.datatype.boolean() : false,
+          can_access_message_read_status: isInboxEnabled
+            ? faker.datatype.boolean()
+            : false,
           settings_version: 0 as ServicePreference["settings_version"]
         }
       ];
