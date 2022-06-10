@@ -111,16 +111,16 @@
     "id_type": 4,
     "it": {
       "name": "Carta Della Cultura",
-      "description": "Carta Della Cultura (CDC) è l’incentivo per i giovani che favorisce la partecipazione ad attività culturali, sportive e ricreative, su tutto il territorio nazionale",
-      "subtitle": "Carta Della Cultura (CDC) è l’incentivo per i giovani che favorisce la partecipazione ad attività culturali, sportive e ricreative, su tutto il territorio nazionale",
+      "description": "Carta della Cultura è l’incentivo per supportare le famiglie nell’acquisto di libri, sia in formato cartaceo che digitale.",
       "title": "Attiva la Carta Della Cultura",
-      "content": ""
+      "subtitle": "",
+      "content": "<body>Carta della Cultura è l’incentivo per supportare le famiglie nell’acquisto di libri, sia in formato cartaceo che digitale.<br><br><a href=\"https://io.italia.it/app-content/tos_privacy_cartacultura.html\">Informativa Privacy</a><hr><h4>Chi può attivarla?</h4>Tutti i cittadini residenti in Italia con un ISEE in corso di validità non superiore a 15.000 €. Verrà assegnata una carta per nucleo familiare, nei limiti delle risorse disponibili.<h4>Cosa offre?</h4>Un importo annuo di 100 €, da utilizzare per l’acquisto di libri, muniti di codice ISBN, in formato cartaceo o digitale. Oltre che per l’anno in corso, puoi richiedere la Carta anche per il 2020 e il 2021. Il credito può essere speso entro un anno dal rilascio della Carta.<h4>Dove posso utilizzare la Carta?</h4>Per sapere dove puoi utilizzare la Carta, consulta la <a href=\"\">lista esercenti</a><h4>Come faccio ad utilizzare il credito?</h4>Per ogni Carta attivata, puoi generare uno o più buoni, pari al credito utile al tuo acquisto, direttamente in app IO. Una volta concluso l’acquisto, potrai visualizzare direttamente in app il credito residuo disponibile.<h4>Come posso richiederla?</h4>L’app IO è l’unico canale per poter richiedere l’attivazione della Carta. Se hai i requisiti, segui i seguenti passaggi:<ul><li>chiedi l’attivazione della Carta in app entro il  xx/xx/xxxx;</li><li>una volta stilata la graduatoria degli aventi diritto, riceverai su IO un messaggio con l’esito della tua richiesta;</li><li>se l’attivazione avrà esito positivo, potrai visualizzare la Carta della Cultura nella sezione Portafoglio dell’app.</li></ul><hr>Premendo “Continua “dichiari di essere in possesso dei requisiti e di avere letto e compreso i <a href=\"\">Termini di Servizio</a> e l’Informativa <a href=\"\">sul trattamento dei dati personali</a> del servizio.</body>"
     },
     "en": {
       "name": "Carta Della Cultura",
       "description": "Carta della Cultura (CDC) is an incentive for young people to participate in cultural, sporting and recreational activities throughout the country",
-      "subtitle": "Carta della Cultura (CDC) is an incentive for young people to participate in cultural, sporting and recreational activities throughout the country",
       "title": "Activate the Carta della Cultura",
+      "subtitle": "",
       "content": ""
     },
     "hidden": false,
@@ -130,7 +130,7 @@
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2020-12-31T00:00:00.000Z",
     "cover": "https://assets.cdn.io.italia.it/bonus/cdc/logo/logo-cdc.png",
-    "sponsorship_description": "PCM - Dipartimento per le Politiche Giovanili e il Servizio Civile Universale",
+    "sponsorship_description": "Ministero della Cultura",
     "sponsorship_cover": "https://assets.cdn.io.italia.it/bonus/cdc/logo/logo-cdc.png"
   }
 ]

@@ -21,15 +21,15 @@ export const generateBonusAll = (): ListaStatoPerAnno => {
     listaStatoPerAnno: [
       {
         annoRiferimento: "2020" as Anno,
-        statoBeneficiario: StatoBeneficiarioEnum.ATTVABILE
+        statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
       },
       {
         annoRiferimento: "2021" as Anno,
-        statoBeneficiario: StatoBeneficiarioEnum.ATTVABILE
+        statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
       },
       {
         annoRiferimento: "2022" as Anno,
-        statoBeneficiario: StatoBeneficiarioEnum.ATTVABILE
+        statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
       }
     ]
   };
