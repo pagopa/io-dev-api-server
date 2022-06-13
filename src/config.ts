@@ -70,6 +70,7 @@ const defaultConfig: IoDevServerConfig = {
       getMVLMessageResponseCode: 200
     },
     legalCount: 0,
+    pnCount: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -113,6 +114,7 @@ const defaultConfig: IoDevServerConfig = {
     includeSiciliaVola: true,
     includeCgn: true,
     includeCdc: true,
+    includePn: false,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },

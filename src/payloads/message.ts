@@ -11,11 +11,16 @@ import { LegalMessageWithContent } from "../../generated/definitions/backend/Leg
 import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
 import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
 import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
+import {
+  MessageCategoryPN,
+  TagEnum as TagEnumPN
+} from "../../generated/definitions/backend/MessageCategoryPN";
 import { NewMessageContent } from "../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../config";
 import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
@@ -25,6 +30,7 @@ import { getRandomValue } from "../utils/random";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+import { pnServiceId } from "./services/special";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -112,6 +118,27 @@ export const withLegalContent = (
   };
 };
 
+export const withPNContent = (
+  message: CreatedMessageWithContent,
+  id: string,
+  original_sender: string,
+  summary: string,
+  original_receipt_date: Date
+): ThirdPartyMessageWithContent => {
+  return {
+    ...message,
+    third_party_message: {
+      attachments: [],
+      details: {
+        id,
+        original_sender,
+        summary,
+        original_receipt_date
+      }
+    }
+  };
+};
+
 export const withPaymentData = (
   message: CreatedMessageWithContent,
   invalidAfterDueDate: boolean = false,
@@ -160,6 +187,19 @@ export const getCategory = (
   const senderService = services.find(
     s => s.service_id === message.sender_service_id
   )!;
+  if (
+    ThirdPartyMessageWithContent.is(message) &&
+    senderService.service_id === pnServiceId
+  ) {
+    return {
+      tag: TagEnumPN.PN,
+      original_sender: message.third_party_message.details?.original_sender,
+      id: message.third_party_message.details?.id,
+      original_receipt_date:
+        message.third_party_message.details?.original_receipt_date,
+      summary: message.third_party_message.details?.summary
+    } as MessageCategoryPN;
+  }
   if (LegalMessageWithContent.is(message)) {
     return {
       tag: TagEnumBase.LEGAL_MESSAGE
