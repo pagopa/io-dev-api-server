@@ -20,7 +20,8 @@ const configResponse = ioDevServerConfig.messages.response;
 /* helper function to build messages response */
 const getPublicMessages = (
   items: ReadonlyArray<MessageOnDB>,
-  enrichData: boolean
+  enrichData: boolean,
+  withContent: boolean
 ): ReadonlyArray<PublicMessage> => {
   return items.map(m => {
     const senderService = services.find(
@@ -33,7 +34,13 @@ const getPublicMessages = (
           message_title: m.content.subject,
           category: getCategory(m),
           is_read: m.is_read,
-          is_archived: m.is_archived
+          is_archived: m.is_archived,
+          has_attachments: m.has_attachments
+        }
+      : {};
+    const content = withContent
+      ? {
+          content: m.content
         }
       : {};
     return {
@@ -42,7 +49,8 @@ const getPublicMessages = (
       created_at: m.created_at,
       sender_service_id: m.sender_service_id,
       time_to_live: m.time_to_live,
-      ...extraData
+      ...extraData,
+      ...content
     };
   });
 };
@@ -123,7 +131,7 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   }
 
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
-  const items = getPublicMessages(slice, params.enrichResultData!);
+  const items = getPublicMessages(slice, params.enrichResultData!, false);
 
   // the API doesn't return 'next' for previous page
   if (indexes.backward) {
@@ -153,11 +161,16 @@ addHandler(
     }
     // retrieve the messageIndex from id
     const message = MessagesDB.findOneById(req.params.id);
-    if (message === undefined) {
+    if (message === null) {
       res.json(getProblemJson(404, "message not found"));
       return;
     }
-    res.json(message);
+    const response = getPublicMessages(
+      [message],
+      req.query.public_message === "true",
+      true
+    )[0];
+    res.json(response);
   }
 );
 
