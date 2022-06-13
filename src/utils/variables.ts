@@ -112,11 +112,17 @@ en:
 export const frontMatter1CTABonusCgn = `---
 it:
     cta_1: 
-        text: "CGN start"
+        text: "CGN start v2"
+        action: "ioit://cgn-activation/start"
+    cta_2: 
+        text: "CGN start (legacy)"
         action: "ioit://CTA_START_CGN"
 en:
     cta_1: 
-        text: "CGN start"
+        text: "CGN start v2"
+        action: "ioit://cgn-activation/start"
+    cta_2: 
+        text: "CGN start (legacy)"
         action: "ioit://CTA_START_CGN"
 ---`;
 
@@ -124,17 +130,17 @@ export const frontMatter1CTAV2BonusCgnDetails = `---
 it:
     cta_1: 
         text: "Vai alla carta v2"
-        action: "ioapp://cgn/detail"
+        action: "ioit://cgn-details/detail"
     cta_2: 
-        text: "CTA invalid"
-        action: "ioapp://cgn/details"
+        text: "Vai alla carta (legacy)"
+        action: "ioit://CGN_DETAILS"
 en:
     cta_1: 
         text: "Vai alla carta v2"
-        action: "ioapp://cgn/detail"
+        action: "ioit://cgn-details/detail"
     cta_2: 
-        text: "CTA invalid"
-        action: "ioapp://cgn/details"
+        text: "Vai alla carta (legacy)"
+        action: "ioit://CGN_DETAILS"
 ---`;
 
 export const frontMatter1CTASiciliaVola = `---
@@ -248,13 +254,20 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [WALLET_HOME con parametri](ioit://WALLET_HOME?param1=a&param2=b&param3=c&param4=100)
 
+[CGN Start (legacy)](ioit://CTA_START_CGN)
+
+[CGN Start v2](ioit://cgn-activation/start)
+
+[CGN Details (legacy)](ioit://CGN_DETAILS)
+
+[CGN Details v2](ioit://cgn-details/detail)
+
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
 
-[LINK navigation v2](ioapp://cgn/detail)
 
-[LINK navigation v2 errore](ioapp://cgn/details)
+[LINK navigation v2 errore](ioit://cgn/details)
 
 ### Handled link
 [http - google](iohandledlink://http://www.google.com)
