@@ -266,7 +266,6 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [LINK CORROTTO](ioit://WRONG&$)
 
-[LINK navigation v2](ioit://cgn/detail)
 
 [LINK navigation v2 errore](ioit://cgn/details)
 
