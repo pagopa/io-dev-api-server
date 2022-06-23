@@ -67,7 +67,8 @@ const defaultConfig: IoDevServerConfig = {
     response: {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200,
-      getMVLMessageResponseCode: 200
+      getMVLMessageResponseCode: 200,
+      getThirdPartyMessageResponseCode: 200
     },
     legalCount: 0,
     pnCount: 0,

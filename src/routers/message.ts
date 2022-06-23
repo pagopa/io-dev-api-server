@@ -1,9 +1,11 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
+import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
 import { getCategory } from "../payloads/message";
@@ -274,5 +276,27 @@ addHandler(
     }
     res.setHeader("Content-Type", attachment.content_type);
     sendFile(`assets/messages/mvl/attachments/${attachment.name}`, res);
+  }
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id"),
+  (req, res) => {
+    if (configResponse.getThirdPartyMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
+      return;
+    }
+
+    const message = MessagesDB.findOneById(req.params.id);
+
+    const thirdPartyMessage = O.fromEither(
+      ThirdPartyMessageWithContent.decode(message)
+    ).toUndefined();
+
+    thirdPartyMessage
+      ? res.json(thirdPartyMessage)
+      : res.json(getProblemJson(404, "message not found"));
   }
 );

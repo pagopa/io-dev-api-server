@@ -129,7 +129,9 @@ export const IoDevServerConfig = t.interface({
         // 200 success with payload
         getMessageResponseCode: HttpResponseCode,
         // 200 success with payload
-        getMVLMessageResponseCode: HttpResponseCode
+        getMVLMessageResponseCode: HttpResponseCode,
+        // 200 success with payload
+        getThirdPartyMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
       legalCount: t.number,
