@@ -3,6 +3,7 @@ import * as E from "fp-ts/lib/Either";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
+import { UpsertServicePreference } from "../../generated/definitions/backend/UpsertServicePreference";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import {
@@ -82,7 +83,7 @@ addHandler(
       res.sendStatus(configResponse.postServicesPreference);
       return;
     }
-    const maybeUpdatePreference = ServicePreference.decode(req.body);
+    const maybeUpdatePreference = UpsertServicePreference.decode(req.body);
     if (E.isLeft(maybeUpdatePreference)) {
       res.sendStatus(400);
       return;
