@@ -67,6 +67,7 @@ const getNewPnMessage = (
   customConfig: IoDevServerConfig,
   sender: string,
   subject: string,
+  abstract: string,
   markdown: string
 ): CreatedMessageWithContent =>
   withPNContent(
@@ -78,6 +79,7 @@ const getNewPnMessage = (
     faker.helpers.replaceSymbols("######-#-####-####-#"),
     sender,
     subject,
+    abstract,
     getRandomValue(new Date(), faker.date.past(), "messages")
   );
 
@@ -349,8 +351,10 @@ const createMessages = (
   range(1, customConfig.messages.pnCount).forEach(count => {
     const sender = "Comune di Milano";
     const subject = "infrazione al codice della strada";
+    const abstract =
+      "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
     output.push(
-      getNewPnMessage(customConfig, sender, subject, messageMarkdown)
+      getNewPnMessage(customConfig, sender, subject, abstract, messageMarkdown)
     );
   });
 

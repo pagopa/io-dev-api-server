@@ -120,20 +120,22 @@ export const withLegalContent = (
 
 export const withPNContent = (
   message: CreatedMessageWithContent,
-  id: string,
-  original_sender: string,
-  summary: string,
-  original_receipt_date: Date
+  iun: string,
+  senderDenomination: string | undefined,
+  subject: string,
+  abstract: string | undefined,
+  sentAt: Date
 ): ThirdPartyMessageWithContent => {
   return {
     ...message,
     third_party_message: {
       attachments: [],
       details: {
-        id,
-        original_sender,
-        summary,
-        original_receipt_date
+        iun,
+        senderDenomination,
+        subject,
+        abstract,
+        sentAt
       }
     }
   };
