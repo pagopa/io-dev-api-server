@@ -125,6 +125,9 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
             currentPreference?.is_email_enabled ??
             getRandomValue(false, faker.datatype.boolean(), "services"),
           is_webhook_enabled: faker.datatype.boolean(),
+          can_access_message_read_status:
+            currentPreference?.can_access_message_read_status ??
+            getRandomValue(false, faker.datatype.boolean(), "services"),
           settings_version: increasedSettingsVersion
         });
 
@@ -282,6 +285,7 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
           is_inbox_enabled: false,
           is_email_enabled: false,
           is_webhook_enabled: false,
+          can_access_message_read_status: false,
           settings_version: increasedSettingsVersion
         });
         res.status(201).json({ id: getRandomStringId() });
