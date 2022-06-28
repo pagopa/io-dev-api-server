@@ -136,7 +136,7 @@ export const withPNContent = (
             taxId: `${currentProfile.fiscal_code}`,
             denomination: `${currentProfile.name} ${currentProfile.family_name}`,
             payment: {
-              noticeCode: paymentData.notice_number,
+              noticeNumber: paymentData.notice_number,
               creditorTaxId: paymentData.payee.fiscal_code
             }
           }
