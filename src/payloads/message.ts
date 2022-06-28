@@ -30,6 +30,7 @@ import { getRandomValue } from "../utils/random";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+import { currentProfile } from "./profile";
 import { pnServiceId } from "./services/special";
 
 // tslint:disable-next-line: no-let
@@ -126,6 +127,23 @@ export const withPNContent = (
   abstract: string | undefined,
   sentAt: Date
 ): ThirdPartyMessageWithContent => {
+  const paymentData = withPaymentData(message).content.payment_data;
+  const recipients = paymentData
+    ? {
+        recipients: [
+          {
+            recipientType: "PF",
+            taxId: `${currentProfile.fiscal_code}`,
+            denomination: `${currentProfile.name} ${currentProfile.family_name}`,
+            payment: {
+              noticeCode: paymentData.notice_number,
+              creditorTaxId: paymentData.payee.fiscal_code
+            }
+          }
+        ]
+      }
+    : {};
+
   return {
     ...message,
     third_party_message: {
@@ -135,7 +153,8 @@ export const withPNContent = (
         senderDenomination,
         subject,
         abstract,
-        sentAt
+        sentAt,
+        ...recipients
       }
     }
   };
