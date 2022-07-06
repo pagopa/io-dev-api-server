@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
@@ -291,9 +292,11 @@ addHandler(
 
     const message = MessagesDB.findOneById(req.params.id);
 
-    const thirdPartyMessage = O.fromEither(
-      ThirdPartyMessageWithContent.decode(message)
-    ).toUndefined();
+    const thirdPartyMessage = pipe(
+      ThirdPartyMessageWithContent.decode(message),
+      O.fromEither,
+      O.toUndefined
+    );
 
     thirdPartyMessage
       ? res.json(thirdPartyMessage)
