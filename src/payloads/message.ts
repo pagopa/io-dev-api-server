@@ -20,6 +20,7 @@ import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { ThirdPartyAttachment } from "../../generated/definitions/backend/ThirdPartyAttachment";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../config";
 import { services } from "../routers/service";
@@ -136,7 +137,7 @@ export const withPNContent = (
             taxId: `${currentProfile.fiscal_code}`,
             denomination: `${currentProfile.name} ${currentProfile.family_name}`,
             payment: {
-              noticeNumber: paymentData.notice_number,
+              noticeCode: paymentData.notice_number,
               creditorTaxId: paymentData.payee.fiscal_code
             }
           }
@@ -147,7 +148,7 @@ export const withPNContent = (
   return {
     ...message,
     third_party_message: {
-      attachments: [],
+      attachments: getPnAttachments(),
       details: {
         iun,
         senderDenomination,
@@ -214,11 +215,10 @@ export const getCategory = (
   ) {
     return {
       tag: TagEnumPN.PN,
-      original_sender: message.third_party_message.details?.original_sender,
-      id: message.third_party_message.details?.id,
-      original_receipt_date:
-        message.third_party_message.details?.original_receipt_date,
-      summary: message.third_party_message.details?.summary
+      original_sender: message.third_party_message.details?.senderDenomination,
+      id: message.third_party_message.details?.iun,
+      original_receipt_date: message.third_party_message.details?.sentAt,
+      summary: message.third_party_message.details?.subject
     } as MessageCategoryPN;
   }
   if (LegalMessageWithContent.is(message)) {
@@ -276,4 +276,23 @@ export const getMvlAttachments = (
       };
     }
   });
+};
+
+const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
+
+export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> => {
+  return pnAttachmentsFiles
+    .filter(f => f.endsWith("pdf"))
+    .map((filename, _) => {
+      const parsedFile = path.parse(filename);
+      const attachmentId = sha256(parsedFile.name);
+      const attachmentUrl = attachmentId;
+      return {
+        id: attachmentId,
+        name: parsedFile.base,
+        content_type:
+          contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
+        url: attachmentUrl
+      } as ThirdPartyAttachment;
+    });
 };
