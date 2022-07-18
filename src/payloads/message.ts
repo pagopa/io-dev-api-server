@@ -242,7 +242,7 @@ export const getCategory = (
   };
 };
 
-const defaultContentType = "application/octet-stream";
+export const defaultContentType = "application/octet-stream";
 // list all files available as mvl attachments
 const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
 /**
