@@ -271,6 +271,9 @@ export const backendStatus: BackendStatus = {
     cdc: {
       enabled: true
     },
+    fci: {
+      enabled: true
+    },
     barcodesScanner: {
       dataMatrixPosteEnabled: false
     }
