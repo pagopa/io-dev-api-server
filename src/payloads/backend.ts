@@ -272,7 +272,7 @@ export const backendStatus: BackendStatus = {
       enabled: true
     },
     fci: {
-      enabled: true
+      enabled: false
     },
     barcodesScanner: {
       dataMatrixPosteEnabled: false
