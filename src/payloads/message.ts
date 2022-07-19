@@ -145,6 +145,34 @@ export const withPNContent = (
       }
     : {};
 
+  const notificationStatusHistory = [
+    {
+      status: "ACCEPTED",
+      activeFrom: "2022-07-07T13:26:59.494+00:00",
+      relatedTimelineElements: [
+        "TPAK-PJUT-RALE-202207-X-1_request_accepted",
+        "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
+        "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
+        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
+      ]
+    },
+    {
+      status: "DELIVERING",
+      activeFrom: "2022-07-07T13:27:15.913+00:00",
+      relatedTimelineElements: [
+        "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
+        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
+      ]
+    },
+    {
+      status: "VIEWED",
+      activeFrom: "2022-07-07T14:26:22.669+00:00",
+      relatedTimelineElements: [
+        "TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"
+      ]
+    }
+  ];
+
   return {
     ...message,
     third_party_message: {
@@ -155,6 +183,7 @@ export const withPNContent = (
         subject,
         abstract,
         sentAt,
+        notificationStatusHistory,
         ...recipients
       }
     }
