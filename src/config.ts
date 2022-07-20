@@ -113,6 +113,7 @@ const defaultConfig: IoDevServerConfig = {
     includeSiciliaVola: true,
     includeCgn: true,
     includeCdc: true,
+    includeFci: true,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },
