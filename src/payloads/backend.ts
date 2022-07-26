@@ -273,6 +273,13 @@ export const backendStatus: BackendStatus = {
     },
     barcodesScanner: {
       dataMatrixPosteEnabled: false
+    },
+    fci: {
+      enabled: false
+    },
+    pn: {
+      enabled: true,
+      frontend_url: `http://localhost:${serverPort}`
     }
   }
 };
