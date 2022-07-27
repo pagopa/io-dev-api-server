@@ -279,7 +279,7 @@ export const backendStatus: BackendStatus = {
     },
     pn: {
       enabled: true,
-      frontend_url: `http://localhost:${serverPort}`
+      frontend_url: `https://portale.dev.pn.pagopa.it/`
     }
   }
 };
