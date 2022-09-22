@@ -145,7 +145,11 @@ export const withPNContent = (
       }
     : {};
 
-  const notificationStatusHistory = [
+  const notificationStatusHistory: ReadonlyArray<{
+    status: string;
+    activeFrom: string;
+    relatedTimelineElements: ReadonlyArray<string>;
+  }> = [
     {
       status: "ACCEPTED",
       activeFrom: "2022-07-07T13:26:59.494+00:00",
