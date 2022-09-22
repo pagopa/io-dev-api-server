@@ -71,10 +71,7 @@ export const backendStatus: BackendStatus = {
     pn: {
       enabled: true,
       frontend_url: "https://notifichedigitali.it"
-    },
-    fci: {
-      enabled: false
-    },
+    }
   },
   sections: {
     email_validation: {
