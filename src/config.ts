@@ -26,7 +26,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
-  accepted_tos_version: 2.4 as NonNegativeNumber,
+  accepted_tos_version: 4.0 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT]
 };
 
