@@ -1,12 +1,12 @@
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
+import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
+import { ServicePreference } from "../../../\../generated/definitions/backend/ServicePreference";
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
 import { addHandler } from "../../../payloads/response";
-import { addApiV1Prefix } from "../../../utils/strings";
-import * as E from "fp-ts/lib/Either";
-import { servicesPreferences } from "../../service";
 import { pnServiceId } from "../../../payloads/services/special";
-import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import { addApiV1Prefix } from "../../../utils/strings";
+import { servicesPreferences } from "../../service";
 
 export const pnRouter = Router();
 
