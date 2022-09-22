@@ -1,7 +1,6 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
-import { serverPort, serverUrl } from "../utils/server";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -13,226 +12,18 @@ export const backendInfo = {
 export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
-    "it-IT": "messaggio personalizzabile in italiano test test",
-    "en-EN": "english message"
-  },
-  sections: {
-    cdc: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "",
-        "en-EN": ""
-      }
-    },
-    cashback: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
-        "en-EN":
-          "Cashback is under maintenance, it will be operational again soon"
-      }
-    },
-    cgn: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "Il cashback è in manutenzione, tornerà operativo a breve",
-        "en-EN":
-          "Cashback is under maintenance, it will be operational again soon"
-      }
-    },
-    fims: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "",
-        "en-EN": ""
-      }
-    },
-    email_validation: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT":
-          "la sezione messaggi è in manutenzione, tornerà operativa a breve",
-        "en-EN":
-          "the messages section is under maintenance, it will be operational again shortly"
-      }
-    },
-    messages: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT":
-          "la sezione messaggi è in manutenzione, tornerà operativa a breve",
-        "en-EN":
-          "the messages section is under maintenance, it will be operational again shortly"
-      }
-    },
-    services: {
-      is_visible: false,
-      level: LevelEnum.critical,
-      web_url: {
-        "it-IT": "https://io.italia.it/",
-        "en-EN": "https://io.italia.it/"
-      },
-      message: {
-        "it-IT":
-          "la sezione servizi è in manutenzione, tornerà operativa a breve",
-        "en-EN":
-          "the services section is under maintenance, it will be operational again shortly"
-      }
-    },
-    login: {
-      is_visible: false,
-      level: LevelEnum.normal,
-      web_url: {
-        "it-IT": "https://io.italia.it/",
-        "en-EN": "https://io.italia.it/"
-      },
-      message: {
-        "it-IT":
-          "il sistema di autenticazione è in manutenzione, tornerà operativa a breve",
-        "en-EN":
-          "the authentication system is under maintenance, it will be operational again shortly"
-      }
-    },
-    wallets: {
-      is_visible: false,
-      level: LevelEnum.critical,
-      web_url: {
-        "it-IT": "https://io.italia.it/",
-        "en-EN": "https://io.italia.it/"
-      },
-      message: {
-        "it-IT":
-          "la sezione portafoglio è in manutenzione, tornerà operativa a breve",
-        "en-EN":
-          "the wallet section is under maintenance, it will be operational again shortly"
-      }
-    },
-    ingress: {
-      is_visible: false,
-      level: LevelEnum.critical,
-      web_url: {
-        "it-IT": "https://io.italia.it/",
-        "en-EN": "https://io.italia.it/"
-      },
-      message: {
-        "it-IT":
-          "i nostri sistemi potrebbero rispondere con lentezza, ci scusiamo per il disagio",
-        "en-EN":
-          "our systems may respond slowly, we apologize for the inconvenience"
-      }
-    },
-    credit_card: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      badge: {
-        "it-IT": "warning message",
-        "en-EN": "possible slowness"
-      },
-      message: {
-        "it-IT": "warning message",
-        "en-EN": "possible slowness"
-      }
-    },
-    paypal: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      badge: {
-        "it-IT": "",
-        "en-EN": ""
-      },
-      message: {
-        "it-IT": "",
-        "en-EN": ""
-      }
-    },
-    satispay: {
-      is_visible: false,
-      level: LevelEnum.critical,
-      message: {
-        "it-IT": "satispay",
-        "en-EN": "satispay"
-      }
-    },
-    bancomat: {
-      is_visible: false,
-      level: LevelEnum.normal,
-      message: {
-        "it-IT": "bancomat",
-        "en-EN": "bancomat"
-      },
-      badge: {
-        "it-IT": "bancomat badge",
-        "en-EN": "bancomat"
-      }
-    },
-    bancomatpay: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "bancomatpay",
-        "en-EN": "bancomatpay"
-      }
-    },
-    digital_payments: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "digital_payments",
-        "en-EN": "digital_payments"
-      }
-    },
-    cobadge: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "cobadge",
-        "en-EN": "cobadge"
-      }
-    },
-    euCovidCert: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "euCovidCert banner test",
-        "en-EN": "euCovidCert banner test"
-      }
-    },
-    favourite_language: {
-      is_visible: false,
-      level: LevelEnum.warning,
-      message: {
-        "it-IT": "",
-        "en-EN": ""
-      }
-    },
-    app_update_required: {
-      is_visible: false,
-      level: LevelEnum.normal,
-      web_url: {
-        "it-IT": "",
-        "en-EN": ""
-      },
-      message: {
-        "it-IT": "aggiornamento richiesto",
-        "en-EN": "update required"
-      }
-    }
+    "it-IT": "",
+    "en-EN": "English message"
   },
   config: {
+    bpd_ranking: false,
+    bpd_ranking_v2: true,
+    cgn_merchants_v2: false,
     bpd: {
       enroll_bpd_after_add_payment_method: false,
       program_active: false,
       opt_in_payment_methods: false
     },
-    bpd_ranking: true,
-    bpd_ranking_v2: true,
-    cgn_merchants_v2: false,
     assistanceTool: {
       tool: ToolEnum.zendesk
     },
@@ -248,34 +39,271 @@ export const backendStatus: BackendStatus = {
       enabled: true,
       merchants_v2: false
     },
+    fims: {
+      enabled: false,
+      domain: "https://fims-dev-app-provider.azurewebsites.net/"
+    },
     uaDonations: {
       enabled: true,
       banner: {
         visible: true,
         description: {
           "it-IT":
-            "Con IO puoi fare una donazione alle organizzazioni umanitarie che assistono le vittime del conflitto in Ucraina",
+            "Fai una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina",
           "en-EN":
-            "With IO you can make a donation to humanitarian organizations that assist the victims of the conflict in Ukraine"
+            "Make a donation to humanitarian organizations that assist the civilians affected by the crisis in Ukraine"
         },
-        url: `${serverUrl}/donate`
+        url: "https://assets.cdn.io.italia.it/html/donate.html"
       }
     },
-    fims: {
-      enabled: false,
-      domain: `http://localhost:${serverPort}`
-    },
     premiumMessages: {
-      opt_in_out_enabled: false
+      opt_in_out_enabled: true
     },
     cdc: {
-      enabled: true
+      enabled: false
+    },
+    barcodesScanner: {
+      dataMatrixPosteEnabled: true
     },
     fci: {
       enabled: false
     },
-    barcodesScanner: {
-      dataMatrixPosteEnabled: false
+    pn: {
+      enabled: true,
+      frontend_url: "https://notifichedigitali.it"
+    },
+    fci: {
+      enabled: false
+    },
+  },
+  sections: {
+    email_validation: {
+      is_visible: false,
+      level: LevelEnum.critical,
+      web_url: {
+        "it-IT": "https://io.italia.it/status/#2012081628",
+        "en-EN": "https://io.italia.it/status/en/#2012081628"
+      },
+      message: {
+        "it-IT":
+          "Il messaggio di validazione indirizzo email potrebbe arrivare dopo diverse ore.",
+        "en-EN": "The email validation message may arrive after several hours."
+      }
+    },
+    cashback: {
+      is_visible: true,
+      level: LevelEnum.warning,
+      web_url: {
+        "it-IT": "https://io.italia.it/cashback",
+        "en-EN": "https://io.italia.it/cashback"
+      },
+      message: {
+        "it-IT": "L’iniziativa del Cashback si è conclusa.",
+        "en-EN": "The Cashback initiative has ended."
+      }
+    },
+    cdc: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    cgn: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    fims: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    messages: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT":
+          "Ci sono dei problemi con la visualizzazione delle Certificazioni Verdi. I tecnici sono al lavoro per ripristinare il servizio.",
+        "en-EN":
+          "We’re having issues showing EU digital COVID certificates. Technicians are working to restore service."
+      }
+    },
+    services: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT":
+          "Stiamo aggiornando i servizi locali. La lista tornerà presto disponibile.",
+        "en-EN": "We're updating local services. The list will be back soon."
+      }
+    },
+    login: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT":
+          "I nostri sistemi potrebbero rispondere con lentezza, ci scusiamo per il disagio.",
+        "en-EN":
+          "Our systems may respond slowly, we apologize for the inconvenience."
+      }
+    },
+    wallets: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "Dalle 20:30 alle 22:40 non sarà possibile pagare con PayPal.",
+        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
+      }
+    },
+    ingress: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT":
+          "I nostri sistemi potrebbero rispondere con lentezza, ci scusiamo per il disagio.",
+        "en-EN":
+          "Our systems may respond slowly, we apologize for the inconvenience."
+      }
+    },
+    bancomat: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    satispay: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    bancomatpay: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    credit_card: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT":
+          "Per il grande numero di richieste, la verifica della tua carta potrebbe subire dei rallentamenti",
+        "en-EN":
+          "Due to the big number of requests, the card verification process may be slowed down"
+      },
+      badge: {
+        "it-IT": "possibili rallentamenti",
+        "en-EN": "possible slowdowns"
+      }
+    },
+    paypal: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    digital_payments: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    cobadge: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      badge: {
+        "it-IT": "",
+        "en-EN": ""
+      }
+    },
+    euCovidCert: {
+      is_visible: false,
+      level: LevelEnum.warning,
+      message: {
+        "it-IT":
+          "Ci sono dei problemi con la visualizzazione delle Certificazioni Verdi. I tecnici sono al lavoro per ripristinare il servizio.",
+        "en-EN":
+          "We’re having issues showing EU digital COVID certificates. Technicians are working to restore service."
+      }
+    },
+    favourite_language: {
+      is_visible: true,
+      level: LevelEnum.normal,
+      web_url: {
+        "it-IT": "https://github.com/pagopa/io-app/issues/new/choose",
+        "en-EN": "https://github.com/pagopa/io-app/issues/new/choose"
+      },
+      message: {
+        "it-IT": "La traduzione in tedesco è in corso. Contribuisci su GitHub!",
+        "en-EN": "German translation is in progress. Contribute on GitHub!"
+      }
+    },
+    app_update_required: {
+      is_visible: false,
+      level: LevelEnum.normal,
+      web_url: {
+        "it-IT": "",
+        "en-EN": ""
+      },
+      message: {
+        "it-IT": "",
+        "en-EN": ""
+      }
     }
   }
 };
