@@ -312,9 +312,9 @@ const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
 export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> => {
   return pnAttachmentsFiles
     .filter(f => f.endsWith("pdf"))
-    .map((filename, _) => {
+    .map((filename, index) => {
       const parsedFile = path.parse(filename);
-      const attachmentId = sha256(parsedFile.name);
+      const attachmentId = `${index}`;
       const attachmentUrl = attachmentId;
       return {
         id: attachmentId,
