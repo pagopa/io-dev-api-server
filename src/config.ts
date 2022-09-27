@@ -67,11 +67,9 @@ const defaultConfig: IoDevServerConfig = {
     response: {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200,
-      getMVLMessageResponseCode: 200,
-      getThirdPartyMessageResponseCode: 200
+      getMVLMessageResponseCode: 200
     },
     legalCount: 0,
-    pnCount: 1,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -115,7 +113,6 @@ const defaultConfig: IoDevServerConfig = {
     includeSiciliaVola: true,
     includeCgn: true,
     includeCdc: true,
-    includePn: true,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },
