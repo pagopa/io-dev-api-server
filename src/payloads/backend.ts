@@ -19,6 +19,7 @@ export const backendStatus: BackendStatus = {
     bpd_ranking: false,
     bpd_ranking_v2: true,
     cgn_merchants_v2: false,
+    payments: {},
     bpd: {
       enroll_bpd_after_add_payment_method: false,
       program_active: false,
