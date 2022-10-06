@@ -4,6 +4,14 @@ import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend
 import { ioDevServerConfig } from "../config";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
+
+const reminderStatus =
+  ioDevServerConfig.profile.attrs.reminder_status !== undefined
+    ? {
+        reminder_status: ioDevServerConfig.profile.attrs.reminder_status
+      }
+    : {};
+
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.AUTO
@@ -20,7 +28,8 @@ const spidProfile: InitializedProfile = {
   version: 1,
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
-  preferred_languages: profileAttrConfig.preferred_languages
+  preferred_languages: profileAttrConfig.preferred_languages,
+  ...reminderStatus
 };
 
 // mock a SPID profile on first onboarding
@@ -57,7 +66,8 @@ const cieProfile: InitializedProfile = {
   version: 1,
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
-  preferred_languages: profileAttrConfig.preferred_languages
+  preferred_languages: profileAttrConfig.preferred_languages,
+  ...reminderStatus
 };
 
 // mock a cie profile on first onboarding
