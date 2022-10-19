@@ -159,12 +159,6 @@ definitions:
       - title
       - status
       - detail
-  Email:
-    type: string
-    description: User's email.
-    format: EmailString
-    x-import: "@pagopa/ts-commons/lib/strings"
-    example: me@example.com
   Clause:
     type: object
     properties:
@@ -288,14 +282,6 @@ definitions:
         type: string
     required:
       - text
-  PublicKey:
-    type: string
-    format: base64url
-    description: PEM public key encoded in base64
-  SamlAssertion:
-    type: string
-    format: base64url
-    description: SPID SAML assertion encoded in base64
   ClausesSignature:
     type: object
     properties:
@@ -345,12 +331,6 @@ definitions:
     properties:
       signatureRequestId:
         $ref: "#/definitions/SignatureRequestId"
-      email:
-        $ref: "#/definitions/Email"
-      publicKey:
-        $ref: "#/definitions/PublicKey"
-      spidSamlAssertion:
-        $ref: "#/definitions/SamlAssertion"
       documentSignatures:
         type: array
         items:
@@ -361,9 +341,6 @@ definitions:
         $ref: "#/definitions/QtspClausesMetadata"
     required:
       - signatureRequestId
-      - email
-      - publicKey
-      - spidSamlAssertion
       - documentSignatures
       - qtspClauses
   SignatureId:
@@ -377,12 +354,6 @@ definitions:
         $ref: "#/definitions/SignatureId"
       signatureRequestId:
         $ref: "#/definitions/SignatureRequestId"
-      email:
-        $ref: "#/definitions/Email"
-      publicKey:
-        $ref: "#/definitions/PublicKey"
-      spidSamlAssertion:
-        $ref: "#/definitions/SamlAssertion"
       documentSignatures:
         type: array
         items:
@@ -392,9 +363,6 @@ definitions:
     required:
       - id
       - signatureRequestId
-      - email
-      - publicKey
-      - spidSamlAssertion
       - documentSignatures
       - qtspClauses
 x-components:
