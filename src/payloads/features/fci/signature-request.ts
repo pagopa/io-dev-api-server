@@ -1,6 +1,5 @@
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { ulid } from "ulid";
-import { EmailAddress } from "../../../../generated/definitions/backend/EmailAddress";
 import { QtspClausesMetadata } from "../../../../generated/definitions/fci/QtspClausesMetadata";
 import { SignatureDetailView } from "../../../../generated/definitions/fci/SignatureDetailView";
 import { SignatureRequestDetailView } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
@@ -64,9 +63,6 @@ export const signatureRequestDetailView: SignatureRequestDetailView = {
 export const signatureDetailView: SignatureDetailView = {
   id: SIGNATURE_ID,
   signatureRequestId: SIGNATURE_REQUEST_ID,
-  email: "" as EmailAddress,
-  publicKey: "",
-  spidSamlAssertion: "",
   documentSignatures: [],
   qtspClauses: {} as QtspClausesMetadata
 };
