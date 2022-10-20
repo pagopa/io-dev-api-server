@@ -1,385 +1,355 @@
+swagger: '2.0'
 info:
-  title: IO Sign - User API
+  title: IO Sign - Backend API
   version: 0.0.1
+basePath: /api/v1/fci
+schemes:
+  - https
 paths:
-  /signature-requests/{signatureRequestId}:
+  /qtsp/clauses:
     get:
-      operationId: getSignatureRequestById
-      summary: Get a Signature Request By Id
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: The QTSP clauses list
+          schema:
+            $ref: '#/definitions/QtspClauses'
+        '403':
+          $ref: "#/x-components/responses/Forbidden"
+        '404':
+          $ref: "#/x-components/responses/NotFound"
+        default:
+          $ref: "#/x-components/responses/Unexpected"
+      operationId: getQtspClauses
+      summary: Get clauses list and MRC from QTSP
+  '/signature-requests/{signatureRequestId}':
+    get:
+      produces:
+        - application/json
       parameters:
         - in: path
           name: signatureRequestId
           required: true
-          format: ulid
-          minLength: 1
-          type: string
       responses:
-        "200":
+        '200':
           description: The Signature Request detail
           schema:
-            $ref: "#/definitions/SignatureRequestDetailView"
-        "403":
-          description: You don't have enough privileges to perform this action
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        "404":
-          description: The specified resource was not found
-          schema:
-            $ref: "#/definitions/ProblemJson"
+            $ref: '#/definitions/SignatureRequestDetailView'
+        '403':
+          $ref: "#/x-components/responses/Forbidden"
+        '404':
+          $ref: "#/x-components/responses/NotFound"
         default:
-          description: Unexpected error
-          schema:
-            $ref: "#/definitions/ProblemJson"
-      produces:
-        - application/json
-  /qtsp/clauses:
-    get:
-      operationId: getQtspClauses
-      summary: Get clauses list and MRC from QTSP
-      responses:
-        "200":
-          description: The QTSP clauses list
-          schema:
-            $ref: "#/definitions/QtspClauses"
-        "403":
-          description: You don't have enough privileges to perform this action
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        "404":
-          description: The specified resource was not found
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        default:
-          description: Unexpected error
-          schema:
-            $ref: "#/definitions/ProblemJson"
-      parameters: []
-      produces:
-        - application/json
-  /signatures/{signatureId}:
-    get:
-      operationId: getSignatureById
-      summary: Get a Signature By Id
-      parameters:
-        - in: path
-          name: signatureId
-          required: true
-          format: ulid
-          minLength: 1
-          type: string
-      responses:
-        "200":
-          description: The Signature Request detail
-          schema:
-            $ref: "#/definitions/SignatureDetailView"
-        "403":
-          description: You don't have enough privileges to perform this action
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        "404":
-          description: The specified resource was not found
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        default:
-          description: Unexpected error
-          schema:
-            $ref: "#/definitions/ProblemJson"
-      produces:
-        - application/json
+          $ref: "#/x-components/responses/Unexpected"
+      operationId: getSignatureRequestById
+      summary: Get a Signature Request By Id
   /signatures:
     post:
-      operationId: createSignature
-      summary: Create a Signature from SignatureRequest
-      responses:
-        "201":
-          description: Signature created
-          schema:
-            $ref: "#/definitions/SignatureDetailView"
-        "400":
-          description: Validation error on body
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        "403":
-          description: You don't have enough privileges to perform this action
-          schema:
-            $ref: "#/definitions/ProblemJson"
-        default:
-          description: Unexpected error
-          schema:
-            $ref: "#/definitions/ProblemJson"
-      parameters:
-        - required: true
-          name: body
-          in: body
-          schema:
-            $ref: "#/definitions/CreateSignatureBody"
       consumes:
         - application/json
-      produces:
-        - application/json
-swagger: "2.0"
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateSignatureBody'
+      responses:
+        '201':
+          description: Signature created
+        '400':
+          $ref: "#/x-components/responses/BadRequest"
+        '403':
+          $ref: "#/x-components/responses/Forbidden"
+        default:
+          $ref: "#/x-components/responses/Unexpected"
+      operationId: createSignature
+      summary: Create a Signature from SignatureRequest
 definitions:
-  ProblemJson:
-    type: object
+  ClausesSignature:
     properties:
-      type:
-        type: string
-        format: uri
-        description: |-
-          An absolute URI that identifies the problem type. When dereferenced,
-          it SHOULD provide human-readable documentation for the problem type
-          (e.g., using HTML).
-        default: about:blank
-        example: https://example.com/problem/constraint-violation
-      title:
-        type: string
-        description: |-
-          A short, summary of the problem type. Written in english and readable
-          for engineers (usually not suited for non technical stakeholders and
-          not localized); example: Service Unavailable
-      status:
-        type: integer
-        format: int32
-        description: The HTTP status code generated by the origin server for this occurrence of the problem.
-        minimum: 100
-        maximum: 600
-        exclusiveMaximum: true
-        example: 200
-      detail:
-        type: string
-        description: |-
-          A human readable explanation specific to this occurrence of the
-          problem.
-        example: There was an error processing the request
-      instance:
-        type: string
-        format: uri
-        description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
-    required:
-      - title
-      - status
-      - detail
-  Clause:
-    type: object
-    properties:
-      title:
-        type: string
+      accepted:
+        type: boolean
       signatureFieldId:
         type: string
-      required:
-        type: boolean
-    required:
-      - title
-      - signatureFieldId
-      - required
-  DocumentMetadata:
     type: object
+  CreateSignatureBody:
     properties:
+      documentSignatures:
+        items:
+          $ref: '#/definitions/DocumentSignature'
+        minItems: 1
+        type: array
+        uniqueItems: true
+      publicKeyDigest:
+        $ref: '#/definitions/PublicKeyDigest'
+      qtspClauses:
+        $ref: '#/definitions/QtspClausesMetadata'
+      signatureRequestId:
+        $ref: '#/definitions/SignatureRequestId'
+    required:
+      - signatureRequestId
+      - publicKeyDigest
+      - documentSignatures
+      - qtspClauses
+    type: object
+  Document:
+    allOf:
+      - properties:
+          id:
+            format: ulid
+            type: string
+          status:
+            $ref: '#/definitions/DocumentStatus'
+          url:
+            format: uri
+            type: string
+        required:
+          - id
+          - status
+        type: object
+      - $ref: '#/definitions/DocumentMetadata'
+  DocumentMetadata:
+    properties:
+      clauses:
+        items:
+          $ref: '#/definitions/Clause'
+        minItems: 1
+        type: array
+        uniqueItems: true
       title:
         type: string
-      clauses:
-        type: array
-        items:
-          $ref: "#/definitions/Clause"
-        minItems: 1
-        uniqueItems: true
     required:
       - title
       - clauses
-  Document:
-    allOf:
-      - type: object
-        properties:
-          id:
-            type: string
-            format: ulid
-          url:
-            type: string
-            format: uri
-        required:
-          - id
-      - $ref: "#/definitions/DocumentMetadata"
-  ProductId:
-    type: string
-    format: ulid
-  Timestamp:
-    type: string
-    format: UTCISODateFromString
-    description: A date-time field in ISO-8601 format and UTC timezone.
-    x-import: "@pagopa/ts-commons/lib/dates"
-    example: "2018-10-13T00:00:00.000Z"
-  QrCodeUrl:
-    type: string
-    format: url
-    minLength: 1
-  SignatureRequestStatus:
-    type: string
-    x-extensible-enum:
-      - DRAFT
-      - WAIT_FOR_ISSUER
-      - READY
-      - WAIT_FOR_SIGNATURE
-      - SIGNED
+    type: object
+  DocumentStatus:
     description: |
       Signature request status:
-       * `DRAFT` - The signature request has been created but not all documents have been uploaded yet.
-       * `WAIT_FOR_ISSUER` - All documents have been uploaded but the ISSUER has not yet marked the signature request as READY.
-       * `READY` - The signature request is ready for processing. In this phase the documents will be analyzed and prepared for sending to the USER.
-       * `WAIT_FOR_SIGNATURE` - The signature request has been sent to the user and is awaiting signature
-       * `SIGNED` - The signature request was successfully signed.
-  SignatureRequestDetailView:
-    type: object
-    properties:
-      id:
-        type: string
-        format: ulid
-      status:
-        $ref: "#/definitions/SignatureRequestStatus"
-      productId:
-        $ref: "#/definitions/ProductId"
-      expiresAt:
-        $ref: "#/definitions/Timestamp"
-      qrCodeUrl:
-        $ref: "#/definitions/QrCodeUrl"
-      documents:
-        type: array
-        items:
-          $ref: "#/definitions/Document"
-    required:
-      - id
-      - productId
-      - qrCodeUrl
-      - documents
-  SignatureRequestId:
+       * `WAIT_FOR_UPLOAD` - The document has not been uploaded yet.
+       * `VALIDATION_IN_PROGRESS` - Validation of the uploaded document in progress.
+       * `READY` - The document has passed validation and is ready.
+       * `VALIDATION_ERROR` - An error occurred while validating the document.
     type: string
-    format: ulid
-    minLength: 1
-  QtspClauses:
-    type: object
+    x-extensible-enum:
+      - WAIT_FOR_UPLOAD
+      - VALIDATION_IN_PROGRESS
+      - READY
+      - VALIDATION_ERROR
+  DocumentSignature:
     properties:
       clauses:
-        type: array
         items:
-          $ref: "#/definitions/QtspClause"
-        minItems: 1
-        uniqueItems: true
-      mrcDocumentUrl:
+          $ref: '#/definitions/ClausesSignature'
+        type: array
+      documentId:
+        format: ulid
         type: string
-        format: uri
-      privacyDocumentUrl:
+      signature:
+        description: Signature of document digest concatenated with document clauses
+        format: base64url
         type: string
-        format: uri
-      tosDocumentUrl:
-        type: string
-        format: uri
     required:
-      - text
-      - mrcUrl
-  QtspClause:
+      - documentId
+      - signature
+      - clauses
     type: object
+  Clause:
+    properties:
+      type:
+        type: string
+        enum: 
+          - optional
+          - unfair
+          - mandatory
+      uniqueName:
+        type: string
+      title:
+        type: string
+    required:
+      - title
+      - uniqueName
+      - type
+    type: object
+  PublicKeyDigest:
+    description: Hash of PEM public key encoded in base64
+    format: base64url
+    type: string
+  QtspClause:
     properties:
       text:
         type: string
     required:
       - text
-  ClausesSignature:
     type: object
+  QtspClauses:
     properties:
-      signatureFieldId:
-        type: string
-      accepted:
-        type: boolean
-  DocumentSignature:
-    type: object
-    properties:
-      documentId:
-        type: string
-        format: ulid
-      signature:
-        type: string
-        format: base64url
-        description: Signature of document digest concatenated with document clauses
       clauses:
-        type: array
         items:
-          $ref: "#/definitions/ClausesSignature"
-    required:
-      - documentId
-      - signature
-      - clauses
-  QtspClausesMetadata:
-    type: object
-    properties:
-      acceptedClauses:
-        type: array
-        items:
-          $ref: "#/definitions/QtspClause"
+          $ref: '#/definitions/QtspClause'
         minItems: 1
+        type: array
         uniqueItems: true
       mrcDocumentUrl:
-        type: string
         format: uri
-      signature:
         type: string
-        format: base64url
+      privacyDocumentUrl:
+        format: uri
+        type: string
+      tosDocumentUrl:
+        format: uri
+        type: string
+    required:
+      - text
+      - mrcUrl
+    type: object
+  QtspClausesMetadata:
+    properties:
+      acceptedClauses:
+        items:
+          $ref: '#/definitions/QtspClause'
+        minItems: 1
+        type: array
+        uniqueItems: true
+      mrcDocumentUrl:
+        format: uri
+        type: string
+      signature:
         description: Signature of MRC digest concatenated with QTSP accepted clauses
+        format: base64url
+        type: string
     required:
       - qtspAcceptedClauses
       - signature
-  CreateSignatureBody:
     type: object
-    properties:
-      signatureRequestId:
-        $ref: "#/definitions/SignatureRequestId"
-      documentSignatures:
-        type: array
-        items:
-          $ref: "#/definitions/DocumentSignature"
-        minItems: 1
-        uniqueItems: true
-      qtspClauses:
-        $ref: "#/definitions/QtspClausesMetadata"
-    required:
-      - signatureRequestId
-      - documentSignatures
-      - qtspClauses
-  SignatureId:
-    type: string
+  ProductId:
     format: ulid
+    type: string
+  QrCodeUrl:
+    format: url
     minLength: 1
-  SignatureDetailView:
-    type: object
+    type: string
+  SignatureRequestDetailView:
     properties:
-      id:
-        $ref: "#/definitions/SignatureId"
-      signatureRequestId:
-        $ref: "#/definitions/SignatureRequestId"
-      documentSignatures:
-        type: array
+      documents:
         items:
-          $ref: "#/definitions/DocumentSignature"
-      qtspClauses:
-        $ref: "#/definitions/QtspClausesMetadata"
+          $ref: '#/definitions/Document'
+        type: array
+      expiresAt:
+        $ref: '#/definitions/Timestamp'
+      id:
+        format: ulid
+        type: string
+      productId:
+        $ref: '#/definitions/ProductId'
+      qrCodeUrl:
+        $ref: '#/definitions/QrCodeUrl'
+      status:
+        $ref: '#/definitions/SignatureRequestStatus'
     required:
       - id
-      - signatureRequestId
-      - documentSignatures
-      - qtspClauses
+      - productId
+      - qrCodeUrl
+      - documents
+    type: object
+  SignatureRequestId:
+    format: ulid
+    minLength: 1
+    type: string
+  SignatureRequestStatus:
+    description: |
+      Signature request status:
+       * `DRAFT` - The signature request has been created but not all documents have been uploaded yet.
+       * `READY` - The signature request is ready for processing. In this phase the documents will be analyzed and prepared for sending to the USER.
+       * `WAIT_FOR_SIGNATURE` - The signature request has been sent to the user and is awaiting signature
+       * `SIGNED` - The signature request was successfully signed.
+    type: string
+    x-extensible-enum:
+      - DRAFT
+      - READY
+      - WAIT_FOR_SIGNATURE
+      - SIGNED
+  Timestamp:
+    description: A date-time field in ISO-8601 format and UTC timezone.
+    example: '2018-10-13T00:00:00.000Z'
+    format: UTCISODateFromString
+    type: string
+    x-import: '@pagopa/ts-commons/lib/dates'
+  ProblemJson:
+    properties:
+      detail:
+        description: |-
+          A human readable explanation specific to this occurrence of the
+          problem.
+        example: There was an error processing the request
+        type: string
+      instance:
+        description: >-
+          An absolute URI that identifies the specific occurrence of the
+          problem. It may or may not yield further information if dereferenced.
+        format: uri
+        type: string
+      status:
+        description: >-
+          The HTTP status code generated by the origin server for this
+          occurrence of the problem.
+        example: 200
+        exclusiveMaximum: true
+        format: int32
+        maximum: 600
+        minimum: 100
+        type: integer
+      title:
+        description: |-
+          A short, summary of the problem type. Written in english and readable
+          for engineers (usually not suited for non technical stakeholders and
+          not localized); example: Service Unavailable
+        type: string
+      type:
+        default: 'about:blank'
+        description: |-
+          An absolute URI that identifies the problem type. When dereferenced,
+          it SHOULD provide human-readable documentation for the problem type
+          (e.g., using HTML).
+        example: 'https://example.com/problem/constraint-violation'
+        format: uri
+        type: string
+    required:
+      - title
+      - status
+      - detail
+    type: object
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+security:
+  - Bearer: []
 x-components:
   responses:
-    NotFound:
-      description: The specified resource was not found
-      schema:
-        $ref: "#/definitions/ProblemJson"
     BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/ProblemJson'
       description: Validation error on body
-      schema:
-        $ref: "#/definitions/ProblemJson"
     Forbidden:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/ProblemJson'
       description: You don't have enough privileges to perform this action
-      schema:
-        $ref: "#/definitions/ProblemJson"
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/ProblemJson'
+      description: The specified resource was not found
     Unexpected:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/ProblemJson'
       description: Unexpected error
-      schema:
-        $ref: "#/definitions/ProblemJson"
