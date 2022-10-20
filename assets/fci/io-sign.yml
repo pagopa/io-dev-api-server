@@ -31,6 +31,7 @@ paths:
       parameters:
         - in: path
           name: signatureRequestId
+          type: string
           required: true
       responses:
         '200':
@@ -122,7 +123,6 @@ definitions:
         type: string
     required:
       - title
-      - clauses
     type: object
   DocumentStatus:
     description: |
@@ -157,9 +157,28 @@ definitions:
     type: object
   Clause:
     properties:
+      coords:
+        type: object
+        properties:
+          page:
+            type: number
+            description: the page where is the signatureBox
+          x:
+            type: number
+            description: x coord of the signature box
+          y:
+            type: number
+            description: y coord of the signature box
+          w:
+            type: number
+            description: the width of the signature box
+          h:
+            type: number
+            description: the height of the signature box
+        description: coords that match signature box with zero reference at the top left of the page
       type:
         type: string
-        enum: 
+        enum:
           - optional
           - unfair
           - mandatory
