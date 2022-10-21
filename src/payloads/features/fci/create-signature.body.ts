@@ -4,7 +4,10 @@ import { DocumentSignature } from "../../../../generated/definitions/fci/Documen
 import { QtspClausesMetadata } from "../../../../generated/definitions/fci/QtspClausesMetadata";
 import { qtspClauses } from "./qtsp-clauses";
 import { documents, SIGNATURE_REQUEST_ID } from "./signature-request";
-import { ClausesSignature } from "../../../../generated/definitions/fci/ClausesSignature";
+import {
+  ClausesSignature,
+  TypeEnum as ClauseSignatureType
+} from "../../../../generated/definitions/fci/ClausesSignature";
 
 const documentSignatures: DocumentSignature[] = [
   {
@@ -12,12 +15,12 @@ const documentSignatures: DocumentSignature[] = [
     signature: "",
     clauses: [
       {
-        signatureFieldId: "signatureField1",
-        accepted: true
+        signatureFieldData: "signatureField1",
+        type: ClauseSignatureType.fieldName
       } as ClausesSignature,
       {
-        signatureFieldId: "signatureField2",
-        accepted: true
+        signatureFieldData: "signatureField2",
+        type: ClauseSignatureType.fieldName
       } as ClausesSignature
     ]
   },
@@ -26,12 +29,12 @@ const documentSignatures: DocumentSignature[] = [
     signature: "",
     clauses: [
       {
-        signatureFieldId: "signatureField1",
-        accepted: true
+        signatureFieldData: "signatureField1",
+        type: ClauseSignatureType.fieldName
       } as ClausesSignature,
       {
-        signatureFieldId: "signatureField2",
-        accepted: true
+        signatureFieldData: "signatureField2",
+        type: ClauseSignatureType.fieldName
       } as ClausesSignature
     ]
   }
@@ -41,6 +44,7 @@ export const createSignatureBody: CreateSignatureBody = {
   signatureRequestId: SIGNATURE_REQUEST_ID,
   documentSignatures,
   publicKeyDigest: "" as NonEmptyString,
+  timestamp: new Date(),
   qtspClauses: {
     acceptedClauses: qtspClauses.clauses,
     mrcDocumentUrl: qtspClauses.mrcDocumentUrl,
