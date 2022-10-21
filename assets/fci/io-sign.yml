@@ -73,8 +73,8 @@ definitions:
       type:
         type: string
         enum:
-          - coords
-          - fieldName
+          - COORDS
+          - UNIQUE_NAME
         description: base64 of coords object or fieldName string
       signatureFieldData:
         type: string
@@ -172,9 +172,9 @@ definitions:
       type:
         type: string
         enum:
-          - optional
-          - unfair
-          - mandatory
+          - OPTIONAL
+          - UNFAIR
+          - MANDATORY
       uniqueName:
         type: string
       title:
