@@ -70,10 +70,16 @@ paths:
 definitions:
   ClausesSignature:
     properties:
-      accepted:
-        type: boolean
-      signatureFieldId:
+      type:
         type: string
+        enum:
+          - coords
+          - fieldName
+        description: base64 of coords object or fieldName string
+      signatureFieldData:
+        type: string
+        description: uniqueName or base64(Coords) base64({x,y,w,h,page})
+    description: accepted signature clause
     type: object
   CreateSignatureBody:
     properties:
@@ -89,11 +95,15 @@ definitions:
         $ref: '#/definitions/QtspClausesMetadata'
       signatureRequestId:
         $ref: '#/definitions/SignatureRequestId'
+      timestamp:
+        format: date-time
+        type: string 
     required:
       - signatureRequestId
       - publicKeyDigest
       - documentSignatures
       - qtspClauses
+      - timestamp
     type: object
   Document:
     allOf:
@@ -158,24 +168,7 @@ definitions:
   Clause:
     properties:
       coords:
-        type: object
-        properties:
-          page:
-            type: number
-            description: the page where is the signatureBox
-          x:
-            type: number
-            description: x coord of the signature box
-          y:
-            type: number
-            description: y coord of the signature box
-          w:
-            type: number
-            description: the width of the signature box
-          h:
-            type: number
-            description: the height of the signature box
-        description: coords that match signature box with zero reference at the top left of the page
+        $ref: '#/definitions/Coords'
       type:
         type: string
         enum:
@@ -191,6 +184,25 @@ definitions:
       - uniqueName
       - type
     type: object
+  Coords:
+    properties:
+        page:
+          type: number
+          description: the page where is the signatureBox
+        x:
+          type: number
+          description: x coord of the signature box
+        y:
+          type: number
+          description: y coord of the signature box
+        w:
+          type: number
+          description: the width of the signature box
+        h:
+          type: number
+          description: the height of the signature box
+    type: object
+    description: coords that match signature box with zero reference at the top left of the page
   PublicKeyDigest:
     description: Hash of PEM public key encoded in base64
     format: base64url
