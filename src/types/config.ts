@@ -12,17 +12,24 @@ import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
+import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 
 /* profile */
-export const ProfileAttrs = t.interface({
-  fiscal_code: FiscalCode,
-  name: t.string,
-  family_name: t.string,
-  mobile: NonEmptyString,
-  email: EmailAddress,
-  accepted_tos_version: NonNegativeNumber,
-  preferred_languages: PreferredLanguages
-});
+export const ProfileAttrs = t.intersection([
+  t.interface({
+    fiscal_code: FiscalCode,
+    name: t.string,
+    family_name: t.string,
+    mobile: NonEmptyString,
+    email: EmailAddress,
+    accepted_tos_version: NonNegativeNumber,
+    preferred_languages: PreferredLanguages
+  }),
+  t.partial({
+    reminder_status: ReminderStatus
+  })
+]);
+
 export type ProfileAttrs = t.TypeOf<typeof ProfileAttrs>;
 
 /* wallet */
