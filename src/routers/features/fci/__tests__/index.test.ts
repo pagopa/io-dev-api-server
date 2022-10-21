@@ -1,8 +1,7 @@
 import supertest from "supertest";
-import {
-  SIGNATURE_ID,
-  SIGNATURE_REQUEST_ID
-} from "../../../../payloads/features/fci/signature-request";
+import { ulid } from "ulid";
+import { createSignatureBody } from "../../../../payloads/features/fci/create-signature.body";
+import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
 
@@ -21,7 +20,7 @@ describe("io-sign API", () => {
     describe("when the signer request a signature-request without signatureRequestId", () => {
       it("should return 400", async () => {
         const response = await request.get(
-          addFciPrefix(`/signature-requests/t345yt345`)
+          addFciPrefix(`/signature-requests/${ulid()}`)
         );
         expect(response.status).toBe(400);
       });
@@ -36,20 +35,18 @@ describe("io-sign API", () => {
       });
     });
   });
-  describe("GET signature detail view", () => {
-    describe("when the signer request signature detail with a valid signatureId", () => {
-      it("should return 200", async () => {
-        const response = await request.get(
-          addFciPrefix(`/signatures/${SIGNATURE_ID}`)
-        );
-        expect(response.status).toBe(200);
+  describe("POST create signature", () => {
+    describe("when the signer request signature with a valid body", () => {
+      it("should return 201", async () => {
+        const response = await request
+          .post(addFciPrefix(`/signatures`))
+          .send(createSignatureBody);
+        expect(response.status).toBe(201);
       });
     });
-    describe("when the signer request signature detail with a not valid signatureId", () => {
+    describe("when the signer request signature detail with a not valid body", () => {
       it("should return 400", async () => {
-        const response = await request.get(
-          addFciPrefix(`/signatures/345345645`)
-        );
+        const response = await request.post(addFciPrefix(`/signatures`));
         expect(response.status).toBe(400);
       });
     });

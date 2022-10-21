@@ -1,20 +1,21 @@
 import { Router } from "express";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import * as E from "fp-ts/lib/Either";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
 import {
-  signatureDetailView,
   signatureRequestDetailView,
-  SIGNATURE_ID,
   SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
+import { createSignatureBody } from "../../../payloads/features/fci/create-signature.body";
+import { isEqual } from "lodash";
+import { staticContentRootPath } from "../../../config";
+import { sendFile } from "../../../utils/file";
 
 export const fciRouter = Router();
 
-export const addFciPrefix = (path: string) => addApiV1Prefix(`/sign${path}`);
+export const addFciPrefix = (path: string) => addApiV1Prefix(`/fci${path}`);
 
 addHandler(
   fciRouter,
@@ -31,9 +32,7 @@ addHandler(
       O.fold(
         // No signatureRequestId was found return a 404
         () => res.sendStatus(400),
-        _ => {
-          return res.status(200).json(signatureRequestDetailView);
-        }
+        _ => res.status(200).json(signatureRequestDetailView)
       )
     );
   }
@@ -43,27 +42,23 @@ addHandler(fciRouter, "get", addFciPrefix("/qtsp/clauses"), (_, res) => {
   res.status(200).json(qtspClauses);
 });
 
+addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
+  console.log(req.body);
+  pipe(
+    O.fromNullable(req.body),
+    O.chain(cb => (isEqual(cb, createSignatureBody) ? O.some(cb) : O.none)),
+    O.fold(
+      () => res.sendStatus(400),
+      _ => res.sendStatus(201)
+    )
+  );
+});
+
 addHandler(
   fciRouter,
   "get",
-  addFciPrefix("/signatures/:signatureId"),
+  `${staticContentRootPath}/fci/:filename`,
   (req, res) => {
-    pipe(
-      O.fromNullable(req.params["signatureId"]),
-      O.chain(signatureId =>
-        signatureId === SIGNATURE_ID ? O.some(signatureId) : O.none
-      ),
-      O.fold(
-        // No signatureId was found return a 404
-        () => res.sendStatus(400),
-        _ => {
-          return res.status(200).json(signatureDetailView);
-        }
-      )
-    );
+    sendFile(`assets/fci/pdf/${req.params.filename}.pdf`, res);
   }
 );
-
-addHandler(fciRouter, "post", addFciPrefix("/signatures"), (_, res) => {
-  res.status(200).json(signatureDetailView);
-});
