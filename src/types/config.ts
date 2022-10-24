@@ -13,6 +13,7 @@ import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEur
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
+import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
 
 /* profile */
 export const ProfileAttrs = t.intersection([
@@ -26,7 +27,8 @@ export const ProfileAttrs = t.intersection([
     preferred_languages: PreferredLanguages
   }),
   t.partial({
-    reminder_status: ReminderStatus
+    reminder_status: ReminderStatus,
+    push_notifications_content_type: PushNotificationsContentType
   })
 ]);
 
