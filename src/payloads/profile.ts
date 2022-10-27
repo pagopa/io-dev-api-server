@@ -5,7 +5,7 @@ import { ioDevServerConfig } from "../config";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
 
-const optInNotificationPreferences =
+const notificationPreferences =
   ioDevServerConfig.profile.attrs.reminder_status !== undefined &&
   ioDevServerConfig.profile.attrs.push_notifications_content_type !== undefined
     ? {
@@ -32,7 +32,7 @@ const spidProfile: InitializedProfile = {
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages,
-  ...optInNotificationPreferences
+  ...notificationPreferences
 };
 
 // mock a SPID profile on first onboarding
@@ -70,7 +70,7 @@ const cieProfile: InitializedProfile = {
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages,
-  ...optInNotificationPreferences
+  ...notificationPreferences
 };
 
 // mock a cie profile on first onboarding
