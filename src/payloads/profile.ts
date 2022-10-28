@@ -1,5 +1,5 @@
-import * as O from "fp-ts/Option";
-import { pipe } from "fp-ts/function";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { DateFromString } from "@pagopa/ts-commons/lib/dates";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
