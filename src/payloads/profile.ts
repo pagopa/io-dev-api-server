@@ -1,19 +1,19 @@
+import { DateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { DateFromString } from "@pagopa/ts-commons/lib/dates";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { PushNotificationsContentTypeEnum } from "../../generated/definitions/backend/PushNotificationsContentType";
+import { ReminderStatusEnum } from "../../generated/definitions/backend/ReminderStatus";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
 import { ioDevServerConfig } from "../config";
-import { ReminderStatusEnum } from "../../generated/definitions/backend/ReminderStatus";
-import { PushNotificationsContentTypeEnum } from "../../generated/definitions/backend/PushNotificationsContentType";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
 
-const optInOutputSelector = (reminder_status: ReminderStatusEnum) => (
-  push_notifications_content_type: PushNotificationsContentTypeEnum
+const optInOutputSelector = (reminderStatus: ReminderStatusEnum) => (
+  pushNotificationsContentType: PushNotificationsContentTypeEnum
 ) => ({
-  reminder_status,
-  push_notifications_content_type
+  reminder_status: reminderStatus,
+  push_notifications_content_type: pushNotificationsContentType
 });
 const remindersStatusInputSelector: O.Option<ReminderStatusEnum> = O.fromNullable(
   ioDevServerConfig.profile.attrs.reminder_status
@@ -22,11 +22,16 @@ const pushNotificationContentTypeInputSelector: O.Option<PushNotificationsConten
   ioDevServerConfig.profile.attrs.push_notifications_content_type
 );
 
+type OptInProps = {
+  reminder_status?: ReminderStatusEnum;
+  push_notifications_content_type?: PushNotificationsContentTypeEnum;
+};
+
 const optInNotificationPreferences = pipe(
   O.some(optInOutputSelector),
   O.ap(remindersStatusInputSelector),
   O.ap(pushNotificationContentTypeInputSelector),
-  O.getOrElse(() => ({}))
+  O.getOrElse((): OptInProps => ({}))
 );
 
 const spidProfile: InitializedProfile = {

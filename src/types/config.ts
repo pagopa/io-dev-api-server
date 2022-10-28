@@ -12,8 +12,8 @@ import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
-import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
+import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 
 /* profile */
 export const ProfileAttrs = t.intersection([
