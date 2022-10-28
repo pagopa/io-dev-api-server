@@ -1,19 +1,33 @@
+import * as O from "fp-ts/Option";
+import { pipe } from "fp-ts/function";
 import { DateFromString } from "@pagopa/ts-commons/lib/dates";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { ServicesPreferencesModeEnum } from "../../generated/definitions/backend/ServicesPreferencesMode";
 import { ioDevServerConfig } from "../config";
+import { ReminderStatusEnum } from "../../generated/definitions/backend/ReminderStatus";
+import { PushNotificationsContentTypeEnum } from "../../generated/definitions/backend/PushNotificationsContentType";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
 
-const notificationPreferences =
-  ioDevServerConfig.profile.attrs.reminder_status !== undefined &&
-  ioDevServerConfig.profile.attrs.push_notifications_content_type !== undefined
-    ? {
-        reminder_status: ioDevServerConfig.profile.attrs.reminder_status,
-        push_notifications_content_type:
-          ioDevServerConfig.profile.attrs.push_notifications_content_type
-      }
-    : {};
+const optInOutputSelector = (reminder_status: ReminderStatusEnum) => (
+  push_notifications_content_type: PushNotificationsContentTypeEnum
+) => ({
+  reminder_status,
+  push_notifications_content_type
+});
+const remindersStatusInputSelector: O.Option<ReminderStatusEnum> = O.fromNullable(
+  ioDevServerConfig.profile.attrs.reminder_status
+);
+const pushNotificationContentTypeInputSelector: O.Option<PushNotificationsContentTypeEnum> = O.fromNullable(
+  ioDevServerConfig.profile.attrs.push_notifications_content_type
+);
+
+const optInNotificationPreferences = pipe(
+  O.some(optInOutputSelector),
+  O.ap(remindersStatusInputSelector),
+  O.ap(pushNotificationContentTypeInputSelector),
+  O.getOrElse(() => ({}))
+);
 
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
@@ -32,7 +46,7 @@ const spidProfile: InitializedProfile = {
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages,
-  ...notificationPreferences
+  ...optInNotificationPreferences
 };
 
 // mock a SPID profile on first onboarding
@@ -70,7 +84,7 @@ const cieProfile: InitializedProfile = {
   date_of_birth: DateFromString.decode("1991-01-06").value as Date,
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages,
-  ...notificationPreferences
+  ...optInNotificationPreferences
 };
 
 // mock a cie profile on first onboarding
