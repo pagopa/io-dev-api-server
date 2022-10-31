@@ -30,6 +30,8 @@ import {
   frontMatter1CTAV2BonusCgnDetails,
   frontMatter2CTA2,
   frontMatterBonusVacanze,
+  frontMatterCTAFCISignatureRequest,
+  messageFciMarkdown,
   messageMarkdown
 } from "./utils/variables";
 
@@ -129,6 +131,13 @@ const createMessages = (
         customConfig,
         `1 CTA start FISM SSO`,
         frontMatter1CTAFims + messageMarkdown
+      )
+    );
+    output.push(
+      getNewMessage(
+        customConfig,
+        `Comune di Controguerra - Carta d'Identità Elettronica - Firma`,
+        frontMatterCTAFCISignatureRequest + messageFciMarkdown
       )
     );
   }

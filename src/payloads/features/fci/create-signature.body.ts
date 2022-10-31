@@ -16,11 +16,11 @@ const documentSignatures: DocumentSignature[] = [
     clauses: [
       {
         signatureFieldData: "signatureField1",
-        type: ClauseSignatureType.fieldName
+        type: ClauseSignatureType.UNIQUE_NAME
       } as ClausesSignature,
       {
         signatureFieldData: "signatureField2",
-        type: ClauseSignatureType.fieldName
+        type: ClauseSignatureType.UNIQUE_NAME
       } as ClausesSignature
     ]
   },
@@ -30,11 +30,11 @@ const documentSignatures: DocumentSignature[] = [
     clauses: [
       {
         signatureFieldData: "signatureField1",
-        type: ClauseSignatureType.fieldName
+        type: ClauseSignatureType.UNIQUE_NAME
       } as ClausesSignature,
       {
         signatureFieldData: "signatureField2",
-        type: ClauseSignatureType.fieldName
+        type: ClauseSignatureType.UNIQUE_NAME
       } as ClausesSignature
     ]
   }

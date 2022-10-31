@@ -4,6 +4,7 @@ import {
   Clause,
   TypeEnum as ClauseTypeEnum
 } from "../../../../generated/definitions/fci/Clause";
+import { Coords } from "../../../../generated/definitions/fci/Coords";
 import { Document } from "../../../../generated/definitions/fci/Document";
 import { DocumentStatusEnum } from "../../../../generated/definitions/fci/DocumentStatus";
 import { SignatureRequestDetailView } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
@@ -26,22 +27,22 @@ export const documents: Document[] = [
       {
         title: "CLAUSOLA 1 DOC 1" as NonEmptyString,
         uniqueName: "Signature1" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause,
       {
         title: "CLAUSOLA 2 DOC 1" as NonEmptyString,
         uniqueName: "Signature2" as NonEmptyString,
-        type: ClauseTypeEnum.unfair
+        type: ClauseTypeEnum.UNFAIR
       } as Clause,
       {
         title: "CLAUSOLA 3 DOC 1" as NonEmptyString,
         uniqueName: "Signature3" as NonEmptyString,
-        type: ClauseTypeEnum.optional
+        type: ClauseTypeEnum.OPTIONAL
       } as Clause,
       {
         title: "CLAUSOLA 4 DOC 1" as NonEmptyString,
         uniqueName: "Signature4" as NonEmptyString,
-        type: ClauseTypeEnum.optional
+        type: ClauseTypeEnum.OPTIONAL
       } as Clause
     ] as Clause[]
   },
@@ -54,17 +55,17 @@ export const documents: Document[] = [
       {
         title: "CLAUSOLA 1 DOC 1" as NonEmptyString,
         uniqueName: "Signature1" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause,
       {
         title: "CLAUSOLA 2 DOC 1" as NonEmptyString,
         uniqueName: "Signature2" as NonEmptyString,
-        type: ClauseTypeEnum.unfair
+        type: ClauseTypeEnum.UNFAIR
       } as Clause,
       {
         title: "CLAUSOLA 3 DOC 1" as NonEmptyString,
         uniqueName: "Signature3" as NonEmptyString,
-        type: ClauseTypeEnum.optional
+        type: ClauseTypeEnum.OPTIONAL
       } as Clause
     ] as Clause[]
   },
@@ -77,74 +78,74 @@ export const documents: Document[] = [
       {
         title: "CLAUSOLA 1 DOC 5" as NonEmptyString,
         uniqueName: "Signature1" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory,
+        type: ClauseTypeEnum.MANDATORY,
         coords: {
           page: 1,
           x: 17,
           y: 263,
           w: 53,
           h: 11
-        }
+        } as Coords
       } as Clause,
       {
         title: "CLAUSOLA 2 DOC 5" as NonEmptyString,
         uniqueName: "Signature2" as NonEmptyString,
-        type: ClauseTypeEnum.optional,
+        type: ClauseTypeEnum.OPTIONAL,
         coords: {
           page: 1,
           x: 17,
           y: 203,
           w: 53,
           h: 11
-        }
+        } as Coords
       } as Clause,
       {
         title: "CLAUSOLA 3 DOC 5" as NonEmptyString,
         uniqueName: "Signature3" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory,
+        type: ClauseTypeEnum.MANDATORY,
         coords: {
           page: 1,
           x: 118,
           y: 263,
           w: 53,
           h: 11
-        }
+        } as Coords
       } as Clause,
       {
         title: "CLAUSOLA 4 DOC 5" as NonEmptyString,
         uniqueName: "Signature4" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory,
+        type: ClauseTypeEnum.MANDATORY,
         coords: {
           page: 2,
           x: 25,
           y: 263,
           w: 53,
           h: 11
-        }
+        } as Coords
       } as Clause,
       {
         title: "CLAUSOLA 5 DOC 5" as NonEmptyString,
         uniqueName: "Signature5" as NonEmptyString,
-        type: ClauseTypeEnum.optional,
+        type: ClauseTypeEnum.OPTIONAL,
         coords: {
           page: 2,
           x: 25,
           y: 186,
           w: 53,
           h: 11
-        }
+        } as Coords
       } as Clause,
       {
         title: "CLAUSOLA 6 DOC 5" as NonEmptyString,
         uniqueName: "Signature6" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory,
+        type: ClauseTypeEnum.MANDATORY,
         coords: {
           page: 3,
           x: 25,
           y: 153,
           w: 53,
           h: 11
-        }
+        } as Coords
       } as Clause
     ] as Clause[]
   },
@@ -157,12 +158,12 @@ export const documents: Document[] = [
       {
         title: "CLAUSOLA 1 DOC 4" as NonEmptyString,
         uniqueName: "Signature1" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause,
       {
         title: "CLAUSOLA 1 DOC 4" as NonEmptyString,
         uniqueName: "Signature2" as NonEmptyString,
-        type: ClauseTypeEnum.optional
+        type: ClauseTypeEnum.OPTIONAL
       } as Clause
     ] as Clause[]
   },
@@ -175,32 +176,32 @@ export const documents: Document[] = [
       {
         title: "CLAUSOLA 1 DOC 5" as NonEmptyString,
         uniqueName: "Signature1" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause,
       {
         title: "CLAUSOLA 2 DOC 5" as NonEmptyString,
         uniqueName: "Signature2" as NonEmptyString,
-        type: ClauseTypeEnum.optional
+        type: ClauseTypeEnum.OPTIONAL
       } as Clause,
       {
         title: "CLAUSOLA 3 DOC 5" as NonEmptyString,
         uniqueName: "Signature3" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause,
       {
         title: "CLAUSOLA 4 DOC 5" as NonEmptyString,
         uniqueName: "Signature4" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause,
       {
         title: "CLAUSOLA 5 DOC 5" as NonEmptyString,
         uniqueName: "Signature5" as NonEmptyString,
-        type: ClauseTypeEnum.optional
+        type: ClauseTypeEnum.OPTIONAL
       } as Clause,
       {
         title: "CLAUSOLA 6 DOC 5" as NonEmptyString,
         uniqueName: "Signature6" as NonEmptyString,
-        type: ClauseTypeEnum.mandatory
+        type: ClauseTypeEnum.MANDATORY
       } as Clause
     ] as Clause[]
   }

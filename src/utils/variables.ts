@@ -1,3 +1,5 @@
+import { SIGNATURE_REQUEST_ID } from "../payloads/features/fci/signature-request";
+
 export const frontMatter2CTA = `---
 it:
   cta_1:
@@ -187,6 +189,24 @@ en:
         text: "Fims SSO"
         action: "iosso://http://localhost:3000/myportal_playground.html"
 ---`;
+
+export const frontMatterCTAFCISignatureRequest = `---
+it:
+    cta_1: 
+        text: "Vai ai documenti"
+        action: "ioit://FCI_MAIN?signatureRequestId=${SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "Go to the documents"
+        action: "ioit://FCI_MAIN?signatureRequestId=${SIGNATURE_REQUEST_ID}"
+---`;
+
+export const messageFciMarkdown = `
+**Comune di Controguerra** ha richiesto la firma dei documenti relativi a **Informativa Carta d'Identità Elettronica**.\n\n
+Puoi leggere e firmare i documenti direttamente in app: ti basterà confermare l'operazione con il **codice di sblocco** o 
+l’**autenticazione biometrica** del tuo dispositivo.\n\n
+Ti ricordiamo che la richiesta di firma scadrà il **12/02/2023** pertanto ti invitiamo a firmare il prima possibile.
+`;
 
 export const messageMarkdown = `
 # H1 
