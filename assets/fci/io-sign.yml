@@ -2,6 +2,7 @@ swagger: '2.0'
 info:
   title: IO Sign - Backend API
   version: 0.0.1
+host: app-backend.io.italia.it
 basePath: /api/v1/fci
 schemes:
   - https
@@ -15,24 +16,24 @@ paths:
         '200':
           description: The QTSP clauses list
           schema:
-            $ref: '#/definitions/QtspClauses'
+            $ref: '#/definitions/QtspClausesMetadata'
         '403':
           $ref: "#/x-components/responses/Forbidden"
         '404':
           $ref: "#/x-components/responses/NotFound"
-        default:
-          $ref: "#/x-components/responses/Unexpected"
-      operationId: getQtspClauses
+      operationId: getQtspClausesMetadata
       summary: Get clauses list and MRC from QTSP
-  '/signature-requests/{signatureRequestId}':
+  '/signature-requests/{id}':
     get:
       produces:
         - application/json
       parameters:
-        - in: path
-          name: signatureRequestId
-          type: string
+        - description: Entity Id
+          format: ulid
+          in: path
+          name: id
           required: true
+          type: string
       responses:
         '200':
           description: The Signature Request detail
@@ -42,8 +43,6 @@ paths:
           $ref: "#/x-components/responses/Forbidden"
         '404':
           $ref: "#/x-components/responses/NotFound"
-        default:
-          $ref: "#/x-components/responses/Unexpected"
       operationId: getSignatureRequestById
       summary: Get a Signature Request By Id
   /signatures:
@@ -68,92 +67,105 @@ paths:
       operationId: createSignature
       summary: Create a Signature from SignatureRequest
 definitions:
-  ClausesSignature:
+  Clause:
     properties:
+      title:
+        type: string
       type:
-        type: string
-        enum:
-          - COORDS
-          - UNIQUE_NAME
-        description: base64 of coords object or fieldName string
-      signatureFieldData:
-        type: string
-        description: uniqueName or base64(Coords) base64({x,y,w,h,page})
-    description: accepted signature clause
+        $ref: '#/definitions/ClausesType'
+    required:
+      - title
+      - type
     type: object
+  ClausesSignature:
+    description: accepted signature clause
+    properties:
+      attrs:
+        description: 'uniqueName or base64(Coords) base64({x,y,w,h,page})'
+        type: string
+      type:
+        $ref: '#/definitions/ClausesSignatureType'
+    required:
+      - type
+      - attrs
+  ClausesSignatureType:
+    type: string
+    x-extensible-enum:
+      - COORDS
+      - UNIQUE_NAME
+  ClausesType:
+    description: >
+      Signature request status:
+
+      * `REQUIRED` - The clause is mandatory and the user sees it already
+      accepted.
+
+      * `UNFAIR` - The clause is unfair and the user must explicitly accept it
+      to continue
+
+      * `OPTIONAL` - The clause is optional and the user can also decide not to
+      accept it
+    type: string
+    x-extensible-enum:
+      - REQUIRED
+      - UNFAIR
+      - OPTIONAL
   CreateSignatureBody:
     properties:
-      documentSignatures:
+      document_signatures:
         items:
           $ref: '#/definitions/DocumentSignature'
         minItems: 1
         type: array
         uniqueItems: true
-      publicKeyDigest:
+      public_key_digest:
         $ref: '#/definitions/PublicKeyDigest'
-      qtspClauses:
-        $ref: '#/definitions/QtspClausesMetadata'
-      signatureRequestId:
-        $ref: '#/definitions/SignatureRequestId'
+      qtsp_clauses:
+        $ref: '#/definitions/QtspClauses'
+      signature_request_id:
+        $ref: '#/definitions/Id'
       timestamp:
-        format: date-time
-        type: string 
+        $ref: '#/definitions/Timestamp'
     required:
-      - signatureRequestId
-      - publicKeyDigest
-      - documentSignatures
-      - qtspClauses
+      - signature_request_id
+      - public_key_digest
+      - document_signatures
+      - qtsp_clauses
       - timestamp
     type: object
   Document:
-    allOf:
-      - properties:
-          id:
-            format: ulid
-            type: string
-          status:
-            $ref: '#/definitions/DocumentStatus'
-          url:
-            format: uri
-            type: string
-        required:
-          - id
-          - status
-        type: object
-      - $ref: '#/definitions/DocumentMetadata'
+    properties:
+      created_at:
+        $ref: '#/definitions/Timestamp'
+      id:
+        $ref: '#/definitions/Id'
+      metadata:
+        $ref: '#/definitions/DocumentMetadata'
+      updated_at:
+        $ref: '#/definitions/Timestamp'
+    required:
+      - id
+      - status
+      - metadata
+      - created_at
+      - updated_at
+    type: object
   DocumentMetadata:
     properties:
-      clauses:
+      signature_fields:
         items:
-          $ref: '#/definitions/Clause'
-        minItems: 1
+          $ref: '#/definitions/SignatureField'
         type: array
-        uniqueItems: true
       title:
         type: string
-    required:
-      - title
     type: object
-  DocumentStatus:
-    description: |
-      Signature request status:
-       * `WAIT_FOR_UPLOAD` - The document has not been uploaded yet.
-       * `VALIDATION_IN_PROGRESS` - Validation of the uploaded document in progress.
-       * `READY` - The document has passed validation and is ready.
-       * `VALIDATION_ERROR` - An error occurred while validating the document.
-    type: string
-    x-extensible-enum:
-      - WAIT_FOR_UPLOAD
-      - VALIDATION_IN_PROGRESS
-      - READY
-      - VALIDATION_ERROR
   DocumentSignature:
     properties:
       clauses:
         items:
           $ref: '#/definitions/ClausesSignature'
         type: array
-      documentId:
+      document_id:
         format: ulid
         type: string
       signature:
@@ -161,48 +173,45 @@ definitions:
         format: base64url
         type: string
     required:
-      - documentId
+      - document_id
       - signature
       - clauses
     type: object
-  Clause:
-    properties:
-      coords:
-        $ref: '#/definitions/Coords'
-      type:
-        type: string
-        enum:
-          - OPTIONAL
-          - UNFAIR
-          - MANDATORY
-      uniqueName:
-        type: string
-      title:
-        type: string
-    required:
-      - title
-      - uniqueName
-      - type
-    type: object
-  Coords:
-    properties:
-        page:
-          type: number
-          description: the page where is the signatureBox
-        x:
-          type: number
-          description: x coord of the signature box
-        y:
-          type: number
-          description: y coord of the signature box
-        w:
-          type: number
-          description: the width of the signature box
-        h:
-          type: number
-          description: the height of the signature box
-    type: object
-    description: coords that match signature box with zero reference at the top left of the page
+  DocumentUploaded:
+    allOf:
+      - $ref: '#/definitions/Document'
+      - properties:
+          status:
+            enum:
+              - READY
+            type: string
+          uploaded_at:
+            $ref: '#/definitions/Timestamp'
+          url:
+            format: uri
+            type: string
+        required:
+          - status
+          - uploaded_at
+          - url
+        type: object
+  ForwardedSignatureRequestStatus:
+    description: >
+      Signature request status:
+
+      * `WAIT_FOR_SIGNATURE` - The signature request has been sent to the user
+      and is awaiting signature
+
+      * `SIGNED` - The signature request was successfully signed.
+    type: string
+    x-extensible-enum:
+      - WAIT_FOR_SIGNATURE
+      - SIGNED
+  Id:
+    description: Entity Id
+    example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+    format: ulid
+    type: string
   PublicKeyDigest:
     description: Hash of PEM public key encoded in base64
     format: base64url
@@ -216,34 +225,13 @@ definitions:
     type: object
   QtspClauses:
     properties:
-      clauses:
+      accepted_clauses:
         items:
           $ref: '#/definitions/QtspClause'
         minItems: 1
         type: array
         uniqueItems: true
-      mrcDocumentUrl:
-        format: uri
-        type: string
-      privacyDocumentUrl:
-        format: uri
-        type: string
-      tosDocumentUrl:
-        format: uri
-        type: string
-    required:
-      - text
-      - mrcUrl
-    type: object
-  QtspClausesMetadata:
-    properties:
-      acceptedClauses:
-        items:
-          $ref: '#/definitions/QtspClause'
-        minItems: 1
-        type: array
-        uniqueItems: true
-      mrcDocumentUrl:
+      filled_mrc_document_url:
         format: uri
         type: string
       signature:
@@ -251,56 +239,90 @@ definitions:
         format: base64url
         type: string
     required:
-      - qtspAcceptedClauses
+      - accepted_clauses
+      - filled_mrc_document_url
       - signature
     type: object
-  ProductId:
-    format: ulid
-    type: string
-  QrCodeUrl:
-    format: url
-    minLength: 1
-    type: string
+  QtspClausesMetadata:
+    properties:
+      clauses:
+        items:
+          $ref: '#/definitions/QtspClause'
+        minItems: 1
+        type: array
+        uniqueItems: true
+      mrc_document_url:
+        format: uri
+        type: string
+      privacy_document_url:
+        format: uri
+        type: string
+      tos_document_url:
+        format: uri
+        type: string
+    required:
+      - clauses
+      - mrc_document_url
+      - privacy_document_url
+      - tos_document_url
+    type: object
+  SignatureField:
+    properties:
+      attrs:
+        type: object
+      clause:
+        $ref: '#/definitions/Clause'
+    required:
+      - unique_name
+      - clause
+    type: object
+  SignatureFieldAttributes:
+    properties:
+      unique_name:
+        type: string
+    type: object
+  SignatureFieldToBeCreatedAttributes:
+    properties:
+      coordinates:
+        properties:
+          x:
+            minimum: 0
+            type: number
+          'y':
+            minimum: 0
+            type: number
+        type: object
+      page:
+        minimum: 0
+        type: number
+      size:
+        properties:
+          h:
+            minimum: 0
+            type: number
+          w:
+            minimum: 0
+            type: number
+        type: object
+    type: object
   SignatureRequestDetailView:
     properties:
       documents:
         items:
-          $ref: '#/definitions/Document'
+          $ref: '#/definitions/DocumentUploaded'
         type: array
-      expiresAt:
+      expires_at:
         $ref: '#/definitions/Timestamp'
       id:
-        format: ulid
-        type: string
-      productId:
-        $ref: '#/definitions/ProductId'
-      qrCodeUrl:
-        $ref: '#/definitions/QrCodeUrl'
+        $ref: '#/definitions/Id'
       status:
-        $ref: '#/definitions/SignatureRequestStatus'
+        $ref: '#/definitions/ForwardedSignatureRequestStatus'
     required:
       - id
-      - productId
-      - qrCodeUrl
+      - expires_at
+      - status
       - documents
     type: object
-  SignatureRequestId:
-    format: ulid
-    minLength: 1
-    type: string
-  SignatureRequestStatus:
-    description: |
-      Signature request status:
-       * `DRAFT` - The signature request has been created but not all documents have been uploaded yet.
-       * `READY` - The signature request is ready for processing. In this phase the documents will be analyzed and prepared for sending to the USER.
-       * `WAIT_FOR_SIGNATURE` - The signature request has been sent to the user and is awaiting signature
-       * `SIGNED` - The signature request was successfully signed.
-    type: string
-    x-extensible-enum:
-      - DRAFT
-      - READY
-      - WAIT_FOR_SIGNATURE
-      - SIGNED
   Timestamp:
     description: A date-time field in ISO-8601 format and UTC timezone.
     example: '2018-10-13T00:00:00.000Z'
