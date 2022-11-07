@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { ulid } from "ulid";
-import { createSignatureBody } from "../../../../payloads/features/fci/create-signature.body";
+import { createSignatureBody } from "../../../../payloads/features/fci/create-signature-body";
 import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";

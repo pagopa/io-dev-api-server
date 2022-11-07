@@ -1,7 +1,7 @@
 import { QtspClause } from "../../../../generated/definitions/fci/QtspClause";
-import { QtspClauses } from "../../../../generated/definitions/fci/QtspClauses";
+import { QtspClausesMetadata } from "../../../../generated/definitions/fci/QtspClausesMetadata";
 
-export const qtspClauses: QtspClauses = {
+export const qtspClauses: QtspClausesMetadata = {
   clauses: [
     {
       text:
@@ -16,9 +16,11 @@ export const qtspClauses: QtspClauses = {
         "(3) Io sottoscritto/a acconsento al trattamento dei dati personali come specificato nel QUADRO G - CONSENSO AL TRATTAMENTO DEI DATI PERSONALI"
     } as QtspClause
   ],
-  mrcDocumentUrl:
+  document_url:
     "https://pagopa.demo.bit4id.org/static/docs/modulo_richiesta_V1.pdf",
-  privacyDocumentUrl:
-    "https://docs.namirialtsp.com/documents/Mod_NAM_GDPR03D_ITA.pdf",
-  tosDocumentUrl: "https://docs.namirialtsp.com/documents/Mod_NAM_CA01D_ITA.pdf"
+  nonce: "",
+  privacy_url: "https://docs.namirialtsp.com/documents/Mod_NAM_GDPR03D_ITA.pdf",
+  privacy_text: "",
+  terms_and_conditions_url:
+    "https://docs.namirialtsp.com/documents/Mod_NAM_CA01D_ITA.pdf"
 };

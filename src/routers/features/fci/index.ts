@@ -8,10 +8,11 @@ import {
 } from "../../../payloads/features/fci/signature-request";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { createSignatureBody } from "../../../payloads/features/fci/create-signature.body";
+import { createSignatureBody } from "../../../payloads/features/fci/create-signature-body";
 import { isEqual } from "lodash";
 import { staticContentRootPath } from "../../../config";
 import { sendFile } from "../../../utils/file";
+import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp_filled_document";
 
 export const fciRouter = Router();
 
@@ -42,8 +43,16 @@ addHandler(fciRouter, "get", addFciPrefix("/qtsp/clauses"), (_, res) => {
   res.status(200).json(qtspClauses);
 });
 
+addHandler(
+  fciRouter,
+  "post",
+  addFciPrefix("/qtsp/clause/filled_documents"),
+  (_, res) => {
+    res.status(200).json(qtspFilledDocument);
+  }
+);
+
 addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
-  console.log(req.body);
   pipe(
     O.fromNullable(req.body),
     O.chain(cb => (isEqual(cb, createSignatureBody) ? O.some(cb) : O.none)),
