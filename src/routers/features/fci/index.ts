@@ -55,7 +55,7 @@ addHandler(
 addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
   pipe(
     O.fromNullable(req.body),
-    O.chain(cb => (isEqual(cb, createSignatureBody) ? O.some(cb) : O.none)),
+    O.chain(cb => (isEqual(cb, {}) ? O.none : O.some(cb))),
     O.fold(
       () => res.sendStatus(400),
       _ => res.sendStatus(201)
