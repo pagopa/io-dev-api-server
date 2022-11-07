@@ -24,7 +24,7 @@
   "api_eu_covid_cert": "https://raw.githubusercontent.com/pagopa/io-backend/v9.1.0-RELEASE/api_eucovidcert.yaml",
   "api_sicilia_vola": "assets/SiciliaVola.yml",
   "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
-  "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v8.9.0-RELEASE/api_pn.yaml",
+  "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v9.1.0-RELEASE/api_pn.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
