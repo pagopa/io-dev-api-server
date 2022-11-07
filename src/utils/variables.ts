@@ -289,6 +289,8 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [LINK navigation v2 errore](ioit://cgn/details)
 
+[PN Activation](ioit://services/service-detail?serviceId=servicePN&activate=true)
+
 ### Handled link
 [http - google](iohandledlink://http://www.google.com)
 
