@@ -3,7 +3,7 @@ info:
   title: IO Sign - Backend API
   version: 0.0.1
 host: app-backend.io.italia.it
-basePath: /api/v1/fci
+basePath: /api/v1/sign
 schemes:
   - https
 paths:
@@ -21,8 +21,35 @@ paths:
           $ref: "#/x-components/responses/Forbidden"
         '404':
           $ref: "#/x-components/responses/NotFound"
+      tags:
+        - QTSP Clauses
       operationId: getQtspClausesMetadata
       summary: Get clauses list and MRC from QTSP
+  /qtsp/clauses/filled_document:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateFilledDocumentBody'
+      responses:
+        '201':
+          description: Filled document created
+          schema:
+            $ref: '#/definitions/FilledDocumentDetailView'
+        '400':
+          $ref: '#/x-components/responses/BadRequest'
+        '403':
+          $ref: '#/x-components/responses/Forbidden'
+      tags:
+        - QTSP Clauses
+      operationId: createFilledDocument
+      summary: Create a filled document for QTSP
   '/signature-requests/{id}':
     get:
       produces:
@@ -40,9 +67,11 @@ paths:
           schema:
             $ref: '#/definitions/SignatureRequestDetailView'
         '403':
-          $ref: "#/x-components/responses/Forbidden"
+          $ref: '#/x-components/responses/Forbidden'
         '404':
-          $ref: "#/x-components/responses/NotFound"
+          $ref: '#/x-components/responses/NotFound'
+      tags:
+        - Signature Request
       operationId: getSignatureRequestById
       summary: Get a Signature Request By Id
   /signatures:
@@ -59,11 +88,11 @@ paths:
         '201':
           description: Signature created
         '400':
-          $ref: "#/x-components/responses/BadRequest"
+          $ref: '#/x-components/responses/BadRequest'
         '403':
-          $ref: "#/x-components/responses/Forbidden"
-        default:
-          $ref: "#/x-components/responses/Unexpected"
+          $ref: '#/x-components/responses/Forbidden'
+      tags:
+        - Signature
       operationId: createSignature
       summary: Create a Signature from SignatureRequest
 definitions:
@@ -77,22 +106,6 @@ definitions:
       - title
       - type
     type: object
-  ClausesSignature:
-    description: accepted signature clause
-    properties:
-      attrs:
-        description: 'uniqueName or base64(Coords) base64({x,y,w,h,page})'
-        type: string
-      type:
-        $ref: '#/definitions/ClausesSignatureType'
-    required:
-      - type
-      - attrs
-  ClausesSignatureType:
-    type: string
-    x-extensible-enum:
-      - COORDS
-      - UNIQUE_NAME
   ClausesType:
     description: >
       Signature request status:
@@ -110,6 +123,14 @@ definitions:
       - REQUIRED
       - UNFAIR
       - OPTIONAL
+  CreateFilledDocumentBody:
+    properties:
+      document_url:
+        format: url
+        type: string
+    required:
+      - document_url
+    type: object
   CreateSignatureBody:
     properties:
       document_signatures:
@@ -124,14 +145,11 @@ definitions:
         $ref: '#/definitions/QtspClauses'
       signature_request_id:
         $ref: '#/definitions/Id'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
     required:
       - signature_request_id
       - public_key_digest
       - document_signatures
       - qtsp_clauses
-      - timestamp
     type: object
   Document:
     properties:
@@ -141,6 +159,13 @@ definitions:
         $ref: '#/definitions/Id'
       metadata:
         $ref: '#/definitions/DocumentMetadata'
+      status:
+        enum:
+          - WAIT_FOR_UPLOAD
+          - WAIT_FOR_VALIDATION
+          - READY
+          - REJECTED
+        type: string
       updated_at:
         $ref: '#/definitions/Timestamp'
     required:
@@ -150,6 +175,19 @@ definitions:
       - created_at
       - updated_at
     type: object
+  DocumentDetailView:
+    allOf:
+      - $ref: '#/definitions/Document'
+      - properties:
+          uploaded_at:
+            $ref: '#/definitions/Timestamp'
+          url:
+            format: uri
+            type: string
+        required:
+          - uploaded_at
+          - url
+        type: object
   DocumentMetadata:
     properties:
       signature_fields:
@@ -161,10 +199,6 @@ definitions:
     type: object
   DocumentSignature:
     properties:
-      clauses:
-        items:
-          $ref: '#/definitions/ClausesSignature'
-        type: array
       document_id:
         format: ulid
         type: string
@@ -172,10 +206,14 @@ definitions:
         description: Signature of document digest concatenated with document clauses
         format: base64url
         type: string
+      signature_fields:
+        items:
+          $ref: '#/definitions/SignatureField'
+        type: array
     required:
       - document_id
       - signature
-      - clauses
+      - signature_fields
     type: object
   DocumentUploaded:
     allOf:
@@ -195,18 +233,21 @@ definitions:
           - uploaded_at
           - url
         type: object
-  ForwardedSignatureRequestStatus:
-    description: >
-      Signature request status:
-
-      * `WAIT_FOR_SIGNATURE` - The signature request has been sent to the user
-      and is awaiting signature
-
-      * `SIGNED` - The signature request was successfully signed.
-    type: string
-    x-extensible-enum:
-      - WAIT_FOR_SIGNATURE
-      - SIGNED
+  ExistingSignatureFieldAttrs:
+    properties:
+      unique_name:
+        type: string
+    required:
+      - unique_name
+    type: object
+  FilledDocumentDetailView:
+    properties:
+      filled_document_url:
+        format: url
+        type: string
+    required:
+      - filled_document_url
+    type: object
   Id:
     description: Entity Id
     example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
@@ -231,17 +272,20 @@ definitions:
         minItems: 1
         type: array
         uniqueItems: true
-      filled_mrc_document_url:
+      filled_document_url:
         format: uri
         type: string
       signature:
         description: Signature of MRC digest concatenated with QTSP accepted clauses
         format: base64url
         type: string
+      tos_signature_timestamp:
+        $ref: '#/definitions/Timestamp'
     required:
       - accepted_clauses
-      - filled_mrc_document_url
+      - filled_document_url
       - signature
+      - tos_signature_timestamp
     type: object
   QtspClausesMetadata:
     properties:
@@ -251,20 +295,26 @@ definitions:
         minItems: 1
         type: array
         uniqueItems: true
-      mrc_document_url:
+      document_url:
         format: uri
         type: string
-      privacy_document_url:
-        format: uri
+      nonce:
+        format: base64
         type: string
-      tos_document_url:
+      privacy_text:
+        type: string
+      privacy_url:
+        format: url
+        type: string
+      terms_and_conditions_url:
         format: uri
         type: string
     required:
       - clauses
-      - mrc_document_url
-      - privacy_document_url
-      - tos_document_url
+      - document_url
+      - privacy_url
+      - privacy_text
+      - terms_and_conditions_url
     type: object
   SignatureField:
     properties:
@@ -276,52 +326,77 @@ definitions:
       - unique_name
       - clause
     type: object
-  SignatureFieldAttributes:
-    properties:
-      unique_name:
-        type: string
-    type: object
-  SignatureFieldToBeCreatedAttributes:
+  SignatureFieldToBeCreatedAttrs:
     properties:
       coordinates:
         properties:
-          x:
-            minimum: 0
-            type: number
-          'y':
-            minimum: 0
-            type: number
+          bottom_left:
+            properties:
+              x:
+                minimum: 0
+                type: number
+              'y':
+                minimum: 0
+                type: number
+            type: object
+          top_right:
+            properties:
+              x:
+                minimum: 0
+                type: number
+              'y':
+                minimum: 0
+                type: number
+            type: object
+        required:
+          - bottom_left
+          - top_right
         type: object
       page:
         minimum: 0
         type: number
-      size:
-        properties:
-          h:
-            minimum: 0
-            type: number
-          w:
-            minimum: 0
-            type: number
-        type: object
+    required:
+      - coordinates
+      - page
     type: object
   SignatureRequestDetailView:
     properties:
+      created_at:
+        $ref: '#/definitions/Timestamp'
       documents:
         items:
-          $ref: '#/definitions/DocumentUploaded'
+          $ref: '#/definitions/DocumentDetailView'
         type: array
+      dossier_id:
+        $ref: '#/definitions/Id'
       expires_at:
         $ref: '#/definitions/Timestamp'
       id:
         $ref: '#/definitions/Id'
+      qr_code_url:
+        format: uri
+        type: string
+      signer_id:
+        $ref: '#/definitions/Id'
       status:
-        $ref: '#/definitions/ForwardedSignatureRequestStatus'
+        type: string
+        x-extensible-enum:
+          - DRAFT
+          - READY
+          - WAIT_FOR_SIGNATURE
+          - WAIT_FOR_QTSP
+          - SIGNED
+      updated_at:
+        $ref: '#/definitions/Timestamp'
     required:
       - id
-      - expires_at
       - status
+      - dossier_id
+      - signer_id
+      - expires_at
       - documents
+      - created_at
+      - updated_at
     type: object
   Timestamp:
     description: A date-time field in ISO-8601 format and UTC timezone.
