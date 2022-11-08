@@ -1,14 +1,11 @@
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreateSignatureBody } from "../../../../generated/definitions/fci/CreateSignatureBody";
 import { DocumentSignature } from "../../../../generated/definitions/fci/DocumentSignature";
+import { QtspClauses } from "../../../../generated/definitions/fci/QtspClauses";
 import { qtspClauses } from "./qtsp-clauses";
 import { documents, SIGNATURE_REQUEST_ID } from "./signature-request";
-import { QtspClauses } from "../../../../generated/definitions/fci/QtspClauses";
-import { SignatureField } from "../../../../generated/definitions/fci/SignatureField";
-import { Clause } from "../../../../generated/definitions/fci/Clause";
-import { ClausesTypeEnum } from "../../../../generated/definitions/fci/ClausesType";
 
-const documentSignatures: DocumentSignature[] = [
+const documentSignatures: ReadonlyArray<DocumentSignature> = [
   {
     document_id: documents[0].id,
     signature: "",
@@ -34,7 +31,7 @@ const documentSignatures: DocumentSignature[] = [
     signature: "",
     signature_fields: documents[4].metadata.signature_fields
   }
-] as DocumentSignature[];
+] as ReadonlyArray<DocumentSignature>;
 
 export const createSignatureBody: CreateSignatureBody = {
   signature_request_id: SIGNATURE_REQUEST_ID,

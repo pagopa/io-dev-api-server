@@ -1,21 +1,21 @@
 import { Router } from "express";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import { isEqual } from "lodash";
+import { staticContentRootPath } from "../../../config";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
+import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp_filled_document";
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
+  SIGNATURE_REQUEST_ID,
   signatureRequestDetailView,
   signatureRequestDetailViewExpired,
   signatureRequestDetailViewWaitQtsp,
-  SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
 import { addHandler } from "../../../payloads/response";
-import { addApiV1Prefix } from "../../../utils/strings";
-import { isEqual } from "lodash";
-import { staticContentRootPath } from "../../../config";
 import { sendFile } from "../../../utils/file";
-import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp_filled_document";
+import { addApiV1Prefix } from "../../../utils/strings";
 
 export const fciRouter = Router();
 
@@ -26,8 +26,9 @@ addHandler(
   "get",
   addFciPrefix("/signature-requests/:signatureRequestId"),
   (req, res) => {
+    const signatureRequestId = "signatureRequestId";
     pipe(
-      O.fromNullable(req.params["signatureRequestId"]),
+      O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
         signatureReqId === SIGNATURE_REQUEST_ID ||
         signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
