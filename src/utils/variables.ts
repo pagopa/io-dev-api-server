@@ -1,4 +1,8 @@
-import { SIGNATURE_REQUEST_ID } from "../payloads/features/fci/signature-request";
+import {
+  EXPIRED_SIGNATURE_REQUEST_ID,
+  SIGNATURE_REQUEST_ID,
+  WAIT_QTSP_SIGNATURE_REQUEST_ID
+} from "../payloads/features/fci/signature-request";
 
 export const frontMatter2CTA = `---
 it:
@@ -194,11 +198,33 @@ export const frontMatterCTAFCISignatureRequest = `---
 it:
     cta_1: 
         text: "Vai ai documenti"
-        action: "ioit://FCI_MAIN?signatureRequestId=${SIGNATURE_REQUEST_ID}"
+        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID}"
 en:
     cta_1: 
         text: "Go to the documents"
-        action: "ioit://FCI_MAIN?signatureRequestId=${SIGNATURE_REQUEST_ID}"
+        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestExpired = `---
+it:
+    cta_1: 
+        text: "Vai ai documenti"
+        action: "ioit://fci/main?signatureRequestId=${EXPIRED_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "Go to the documents"
+        action: "ioit://fci/main?signatureRequestId=${EXPIRED_SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestWaitQtsp = `---
+it:
+    cta_1: 
+        text: "Vai ai documenti"
+        action: "ioit://fci/main?signatureRequestId=${WAIT_QTSP_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "Go to the documents"
+        action: "ioit://fci/main?signatureRequestId=${WAIT_QTSP_SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const messageFciMarkdown = `

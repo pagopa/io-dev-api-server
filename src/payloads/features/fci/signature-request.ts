@@ -10,6 +10,8 @@ import {
 } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 
 export const SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
+export const EXPIRED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
+export const WAIT_QTSP_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const DOSSIER_ID = ulid() as NonEmptyString;
 export const SIGNATURE_ID = ulid() as NonEmptyString;
 
@@ -302,7 +304,31 @@ export const signatureRequestDetailView: SignatureRequestDetailView = {
   status: SignatureRequestStatus.WAIT_FOR_SIGNATURE,
   created_at: new Date(),
   dossier_id: DOSSIER_ID,
-  expires_at: new Date(now.getDate() + 1),
+  expires_at: new Date(now.setDate(now.getDate() + 30)),
+  qr_code_url: mockQrCodeUrl,
+  signer_id: SIGNATURE_ID,
+  updated_at: new Date(),
+  documents
+};
+
+export const signatureRequestDetailViewExpired: SignatureRequestDetailView = {
+  id: EXPIRED_SIGNATURE_REQUEST_ID,
+  status: SignatureRequestStatus.WAIT_FOR_SIGNATURE,
+  created_at: new Date(),
+  dossier_id: DOSSIER_ID,
+  expires_at: new Date(now.setDate(now.getDate() - 30)),
+  qr_code_url: mockQrCodeUrl,
+  signer_id: SIGNATURE_ID,
+  updated_at: new Date(),
+  documents
+};
+
+export const signatureRequestDetailViewWaitQtsp: SignatureRequestDetailView = {
+  id: WAIT_QTSP_SIGNATURE_REQUEST_ID,
+  status: SignatureRequestStatus.WAIT_FOR_QTSP,
+  created_at: new Date(),
+  dossier_id: DOSSIER_ID,
+  expires_at: new Date(now.setDate(now.getDate() + 30)),
   qr_code_url: mockQrCodeUrl,
   signer_id: SIGNATURE_ID,
   updated_at: new Date(),

@@ -3,12 +3,15 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
 import {
+  EXPIRED_SIGNATURE_REQUEST_ID,
   signatureRequestDetailView,
-  SIGNATURE_REQUEST_ID
+  signatureRequestDetailViewExpired,
+  signatureRequestDetailViewWaitQtsp,
+  SIGNATURE_REQUEST_ID,
+  WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { createSignatureBody } from "../../../payloads/features/fci/create-signature-body";
 import { isEqual } from "lodash";
 import { staticContentRootPath } from "../../../config";
 import { sendFile } from "../../../utils/file";
@@ -16,7 +19,7 @@ import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp_filled_d
 
 export const fciRouter = Router();
 
-export const addFciPrefix = (path: string) => addApiV1Prefix(`/fci${path}`);
+export const addFciPrefix = (path: string) => addApiV1Prefix(`/sign${path}`);
 
 addHandler(
   fciRouter,
@@ -26,14 +29,25 @@ addHandler(
     pipe(
       O.fromNullable(req.params["signatureRequestId"]),
       O.chain(signatureReqId =>
-        signatureReqId === SIGNATURE_REQUEST_ID
+        signatureReqId === SIGNATURE_REQUEST_ID ||
+        signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID
           ? O.some(signatureReqId)
           : O.none
       ),
       O.fold(
         // No signatureRequestId was found return a 404
         () => res.sendStatus(400),
-        _ => res.status(200).json(signatureRequestDetailView)
+        signatureReqId =>
+          res
+            .status(200)
+            .json(
+              signatureReqId === SIGNATURE_REQUEST_ID
+                ? signatureRequestDetailView
+                : signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID
+                ? signatureRequestDetailViewExpired
+                : signatureRequestDetailViewWaitQtsp
+            )
       )
     );
   }
