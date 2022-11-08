@@ -215,24 +215,6 @@ definitions:
       - signature
       - signature_fields
     type: object
-  DocumentUploaded:
-    allOf:
-      - $ref: '#/definitions/Document'
-      - properties:
-          status:
-            enum:
-              - READY
-            type: string
-          uploaded_at:
-            $ref: '#/definitions/Timestamp'
-          url:
-            format: uri
-            type: string
-        required:
-          - status
-          - uploaded_at
-          - url
-        type: object
   ExistingSignatureFieldAttrs:
     properties:
       unique_name:
