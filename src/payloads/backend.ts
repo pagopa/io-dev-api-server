@@ -22,8 +22,9 @@ export const backendStatus: BackendStatus = {
     payments: {},
     bpd: {
       enroll_bpd_after_add_payment_method: false,
-      program_active: false,
-      opt_in_payment_methods: false
+      program_active: true,
+      opt_in_payment_methods: false,
+      opt_in_payment_methods_v2: true
     },
     assistanceTool: {
       tool: ToolEnum.zendesk
