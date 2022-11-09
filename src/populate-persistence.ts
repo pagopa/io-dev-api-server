@@ -15,8 +15,10 @@ import {
   withContent,
   withDueDate,
   withLegalContent,
-  withPaymentData
+  withPaymentData,
+  withPNContent
 } from "./payloads/message";
+import { pnServiceId } from "./payloads/services/special";
 import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { services } from "./routers/service";
@@ -59,6 +61,26 @@ const getNewMessage = (
     markdown,
     prescriptionData,
     euCovidCert
+  );
+
+const getNewPnMessage = (
+  customConfig: IoDevServerConfig,
+  sender: string,
+  subject: string,
+  abstract: string,
+  markdown: string
+): CreatedMessageWithContent =>
+  withPNContent(
+    withContent(
+      createMessage(customConfig.profile.attrs.fiscal_code, pnServiceId),
+      `${sender}: ${subject}`,
+      markdown
+    ),
+    faker.helpers.replaceSymbols("######-#-####-####-#"),
+    sender,
+    subject,
+    abstract,
+    getRandomValue(new Date(), faker.date.past(), "messages")
   );
 
 const createMessages = (
@@ -324,6 +346,16 @@ const createMessages = (
     const mvlMsgId = message.id;
     const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
     output.push(withLegalContent(message, message.id, attachments, isOdd));
+  });
+
+  range(1, customConfig.messages.pnCount).forEach(count => {
+    const sender = "Comune di Milano";
+    const subject = "infrazione al codice della strada";
+    const abstract =
+      "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
+    output.push(
+      getNewPnMessage(customConfig, sender, subject, abstract, messageMarkdown)
+    );
   });
 
   return output;
