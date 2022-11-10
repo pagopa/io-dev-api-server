@@ -8,6 +8,7 @@ import {
   SignatureRequestDetailView,
   StatusEnum as SignatureRequestStatus
 } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
+import { staticContentRootPath } from "../../../config";
 
 export const SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const EXPIRED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
@@ -17,12 +18,12 @@ export const SIGNATURE_ID = ulid() as NonEmptyString;
 
 const now = new Date();
 const mockQrCodeUrl = "https://gist.githubusercontent.com/lucacavallaro/a3b9d5305cc6e2c9bdfb6ec1dc28fd96/raw/26799f357ff712396cdbc4f862a13099758e89d3/qr-code.png" as NonEmptyString;
-
+const basePath = "http://127.0.0.1:3000";
 export const documents: ReadonlyArray<DocumentDetailView> = [
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
-    url: "modulo_1.pdf" as NonEmptyString,
+    url: `${basePath}${staticContentRootPath}/fci/modulo_1` as NonEmptyString,
     updated_at: new Date(),
     uploaded_at: new Date(),
     status: DocumentStatusEnum.READY,
@@ -71,7 +72,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
-    url: "modulo_2.pdf" as NonEmptyString,
+    url: `${basePath}${staticContentRootPath}/fci/modulo_2` as NonEmptyString,
     updated_at: new Date(),
     uploaded_at: new Date(),
     status: DocumentStatusEnum.READY,
@@ -111,7 +112,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
-    url: "modulo_3.pdf" as NonEmptyString,
+    url: `${basePath}${staticContentRootPath}/fci/modulo_3` as NonEmptyString,
     updated_at: new Date(),
     uploaded_at: new Date(),
     status: DocumentStatusEnum.READY,
@@ -202,7 +203,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
-    url: "modulo_4.pdf" as NonEmptyString,
+    url: `${basePath}${staticContentRootPath}/fci/modulo_4` as NonEmptyString,
     updated_at: new Date(),
     uploaded_at: new Date(),
     status: DocumentStatusEnum.READY,
@@ -233,7 +234,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
-    url: "modulo_5.pdf" as NonEmptyString,
+    url: `${basePath}${staticContentRootPath}/fci/modulo_5` as NonEmptyString,
     updated_at: new Date(),
     uploaded_at: new Date(),
     status: DocumentStatusEnum.READY,

@@ -167,14 +167,14 @@ const createMessages = (
     output.push(
       getNewMessage(
         customConfig,
-        `Univerità di Controguerra - Contratto Erasmus - Firma [EXPIRED]`,
+        `Università di Controguerra - Contratto Erasmus - Firma [EXPIRED]`,
         frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
       )
     );
     output.push(
       getNewMessage(
         customConfig,
-        `Univerità di Cuneo - Contratto Erasmus - Firma [WAIT_FOR_QTSP]`,
+        `Università di Cuneo - Contratto Erasmus - Firma [WAIT_FOR_QTSP]`,
         frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
       )
     );
