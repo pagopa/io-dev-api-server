@@ -329,6 +329,8 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [CGN culture category merchant](ioit://cgn-details/categories-merchant/cultureAndEntertainment)
 
+[BPD Opt-in choice](ioit://wallet/bpd-opt-in/choice)
+
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
