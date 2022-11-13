@@ -68,7 +68,7 @@ export const backendStatus: BackendStatus = {
       dataMatrixPosteEnabled: true
     },
     fci: {
-      enabled: false
+      enabled: true
     },
     pn: {
       enabled: true,
