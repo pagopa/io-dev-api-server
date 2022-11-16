@@ -138,10 +138,14 @@ export const IoDevServerConfig = t.interface({
         // 200 success with payload
         getMessageResponseCode: HttpResponseCode,
         // 200 success with payload
-        getMVLMessageResponseCode: HttpResponseCode
+        getMVLMessageResponseCode: HttpResponseCode,
+        // 200 success with payload
+        getThirdPartyMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
       legalCount: t.number,
+      // number of messages coming from PN (aka Piattaforma Notifiche)
+      pnCount: t.number,
       // number of message - invalid after due date - containing a payment and a valid (not expired) due date
       paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
       // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
@@ -188,7 +192,8 @@ export const IoDevServerConfig = t.interface({
       local: t.number,
       includeSiciliaVola: t.boolean,
       includeCgn: t.boolean,
-      includeCdc: t.boolean
+      includeCdc: t.boolean,
+      includePn: t.boolean
     }),
     AllowRandomValue
   ]),

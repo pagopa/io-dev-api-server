@@ -72,6 +72,25 @@ const withCdcService = (
   organization_fiscal_code: organizationFiscalCode
 });
 
+export const pnServiceId = "servicePN";
+const pnService: ServicePublic = {
+  ...getService(pnServiceId),
+  organization_name: "Piattaforma delle notifiche digitali" as OrganizationName,
+  service_name: "Avvisi di cortesia" as ServiceName,
+  service_metadata: {
+    ...getServiceMetadata(ServiceScopeEnum.NATIONAL),
+    category: SpecialServiceCategoryEnum.SPECIAL,
+    custom_special_flow: "pn" as SpecialServiceMetadata["custom_special_flow"]
+  }
+};
+
+const withPnService = (
+  organizationFiscalCode: OrganizationFiscalCode
+): ServicePublic => ({
+  ...pnService,
+  organization_fiscal_code: organizationFiscalCode
+});
+
 // list of tuple where the first element is a flag indicating if the relative service should be included
 // the second element is the service factory
 const specialServicesFactory: ReadonlyArray<readonly [
@@ -80,7 +99,8 @@ const specialServicesFactory: ReadonlyArray<readonly [
 ]> = [
   [ioDevServerConfig.services.includeSiciliaVola, withSiciliaVolaService],
   [ioDevServerConfig.services.includeCgn, withCgnService],
-  [ioDevServerConfig.services.includeCdc, withCdcService]
+  [ioDevServerConfig.services.includeCdc, withCdcService],
+  [ioDevServerConfig.services.includePn, withPnService]
 ];
 
 // eventually add the special services based on config flags

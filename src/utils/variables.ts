@@ -283,11 +283,15 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [CGN culture category merchant](ioit://cgn-details/categories-merchant/cultureAndEntertainment)
 
+[BPD Opt-in choice](ioit://wallet/bpd-opt-in/choice)
+
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
 
 [LINK navigation v2 errore](ioit://cgn/details)
+
+[PN Activation](ioit://services/service-detail?serviceId=servicePN&activate=true)
 
 ### Handled link
 [http - google](iohandledlink://http://www.google.com)

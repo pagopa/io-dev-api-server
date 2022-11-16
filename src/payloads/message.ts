@@ -11,11 +11,17 @@ import { LegalMessageWithContent } from "../../generated/definitions/backend/Leg
 import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
 import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
 import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
+import {
+  MessageCategoryPN,
+  TagEnum as TagEnumPN
+} from "../../generated/definitions/backend/MessageCategoryPN";
 import { NewMessageContent } from "../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
 import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
+import { ThirdPartyAttachment } from "../../generated/definitions/backend/ThirdPartyAttachment";
+import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../config";
 import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
@@ -25,6 +31,8 @@ import { getRandomValue } from "../utils/random";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+import { currentProfile } from "./profile";
+import { pnServiceId } from "./services/special";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -112,6 +120,80 @@ export const withLegalContent = (
   };
 };
 
+export const withPNContent = (
+  message: CreatedMessageWithContent,
+  iun: string,
+  senderDenomination: string | undefined,
+  subject: string,
+  abstract: string | undefined,
+  sentAt: Date
+): ThirdPartyMessageWithContent => {
+  const paymentData = withPaymentData(message).content.payment_data;
+  const recipients = paymentData
+    ? {
+        recipients: [
+          {
+            recipientType: "PF",
+            taxId: `${currentProfile.fiscal_code}`,
+            denomination: `${currentProfile.name} ${currentProfile.family_name}`,
+            payment: {
+              noticeCode: paymentData.notice_number,
+              creditorTaxId: paymentData.payee.fiscal_code
+            }
+          }
+        ]
+      }
+    : {};
+
+  const notificationStatusHistory: ReadonlyArray<{
+    status: string;
+    activeFrom: string;
+    relatedTimelineElements: ReadonlyArray<string>;
+  }> = [
+    {
+      status: "ACCEPTED",
+      activeFrom: "2022-07-07T13:26:59.494+00:00",
+      relatedTimelineElements: [
+        "TPAK-PJUT-RALE-202207-X-1_request_accepted",
+        "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
+        "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
+        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
+      ]
+    },
+    {
+      status: "DELIVERING",
+      activeFrom: "2022-07-07T13:27:15.913+00:00",
+      relatedTimelineElements: [
+        "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
+        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
+      ]
+    },
+    {
+      status: "VIEWED",
+      activeFrom: "2022-07-07T14:26:22.669+00:00",
+      relatedTimelineElements: [
+        "TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"
+      ]
+    }
+  ];
+
+  return {
+    ...message,
+    third_party_message: {
+      attachments: getPnAttachments(),
+      details: {
+        iun,
+        senderDenomination,
+        subject,
+        abstract,
+        sentAt,
+        notificationStatusHistory,
+        ...recipients
+      }
+    }
+  };
+};
+
 export const withPaymentData = (
   message: CreatedMessageWithContent,
   invalidAfterDueDate: boolean = false,
@@ -160,6 +242,18 @@ export const getCategory = (
   const senderService = services.find(
     s => s.service_id === message.sender_service_id
   )!;
+  if (
+    ThirdPartyMessageWithContent.is(message) &&
+    senderService.service_id === pnServiceId
+  ) {
+    return {
+      tag: TagEnumPN.PN,
+      original_sender: message.third_party_message.details?.senderDenomination,
+      id: message.third_party_message.details?.iun,
+      original_receipt_date: message.third_party_message.details?.sentAt,
+      summary: message.third_party_message.details?.subject
+    } as MessageCategoryPN;
+  }
   if (LegalMessageWithContent.is(message)) {
     return {
       tag: TagEnumBase.LEGAL_MESSAGE
@@ -181,7 +275,7 @@ export const getCategory = (
   };
 };
 
-const defaultContentType = "application/octet-stream";
+export const defaultContentType = "application/octet-stream";
 // list all files available as mvl attachments
 const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
 /**
@@ -215,4 +309,23 @@ export const getMvlAttachments = (
       };
     }
   });
+};
+
+const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
+
+export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> => {
+  return pnAttachmentsFiles
+    .filter(f => f.endsWith("pdf"))
+    .map((filename, index) => {
+      const parsedFile = path.parse(filename);
+      const attachmentId = `${index}`;
+      const attachmentUrl = attachmentId;
+      return {
+        id: attachmentId,
+        name: parsedFile.base,
+        content_type:
+          contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
+        url: attachmentUrl
+      } as ThirdPartyAttachment;
+    });
 };
