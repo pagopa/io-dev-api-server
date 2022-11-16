@@ -1,12 +1,16 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
+import { MessageContentWithAttachments } from "../../generated/definitions/backend/MessageContentWithAttachments";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
+import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
-import { getCategory } from "../payloads/message";
+import { defaultContentType, getCategory } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
@@ -275,4 +279,58 @@ addHandler(
     res.setHeader("Content-Type", attachment.content_type);
     sendFile(`assets/messages/mvl/attachments/${attachment.name}`, res);
   }
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id"),
+  (req, res) => {
+    if (configResponse.getThirdPartyMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
+      return;
+    }
+
+    const message = MessagesDB.findOneById(req.params.id);
+
+    const thirdPartyMessage = pipe(
+      ThirdPartyMessageWithContent.decode(message),
+      O.fromEither,
+      O.toUndefined
+    );
+
+    thirdPartyMessage
+      ? res.json(thirdPartyMessage)
+      : res.json(getProblemJson(404, "message not found"));
+  }
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:messageId/attachments/:attachmentId"),
+  (req, res) => {
+    // find the message by the given messageId
+    const message = MessagesDB.findOneById(req.params.messageId);
+    const thirdPartyMessage = ThirdPartyMessageWithContent.decode(message);
+    // ensure message exists and it has a legal content
+    if (message === undefined || E.isLeft(thirdPartyMessage)) {
+      res.json(getProblemJson(404, "message not found"));
+      return;
+    }
+    // find the attachment by the given attachmentId
+    const attachment = thirdPartyMessage.value.third_party_message?.attachments?.find(
+      a => a.id === req.params.attachmentId
+    );
+    if (attachment === undefined) {
+      res.json(getProblemJson(404, "attachment not found"));
+      return;
+    }
+    res.setHeader(
+      "Content-Type",
+      attachment.content_type ?? defaultContentType
+    );
+    sendFile(`assets/messages/pn/attachments/${attachment.name}`, res);
+  },
+  3000
 );

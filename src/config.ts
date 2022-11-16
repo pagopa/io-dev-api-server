@@ -26,7 +26,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
-  accepted_tos_version: 2.4 as NonNegativeNumber,
+  accepted_tos_version: 4.0 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT]
 };
 
@@ -67,9 +67,11 @@ const defaultConfig: IoDevServerConfig = {
     response: {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200,
-      getMVLMessageResponseCode: 200
+      getMVLMessageResponseCode: 200,
+      getThirdPartyMessageResponseCode: 200
     },
     legalCount: 0,
+    pnCount: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -113,6 +115,7 @@ const defaultConfig: IoDevServerConfig = {
     includeSiciliaVola: true,
     includeCgn: true,
     includeCdc: true,
+    includePn: false,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },
