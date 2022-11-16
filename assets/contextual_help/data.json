@@ -3,17 +3,493 @@
   "it": {
     "screens": [
       {
+        "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
+        "title": "Notifiche push",
+        "content": "Qui puoi personalizzare le notifiche push.",
+        "faqs": [
+          {
+            "title": "Cosa significa 'Mostra anteprime'?",
+            "body": "Attivando l’opzione 'Mostra anteprime', le notifiche push di IO includeranno il mittente e l’oggetto dei messaggi. Così, puoi sapere chi ti ha scritto senza entrare in app."
+          },
+          {
+            "title": "Cosa significa 'Consenti promemoria'?",
+            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_PREFERENCES",
+        "title": "Notifiche push",
+        "content": "Qui puoi personalizzare le notifiche push.",
+        "faqs": [
+          {
+            "title": "Cosa significa 'Mostra anteprime'?",
+            "body": "Attivando l’opzione 'Mostra anteprime', le notifiche push di IO includeranno il mittente e l’oggetto dei messaggi. Così, puoi sapere chi ti ha scritto senza entrare in app."
+          },
+          {
+            "title": "Cosa significa 'Consenti promemoria'?",
+            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_NOTIFICATIONS",
+        "title": "Notifiche push",
+        "content": "Qui puoi personalizzare le notifiche push.",
+        "faqs": [
+          {
+            "title": "Cosa significa 'Mostra anteprime'?",
+            "body": "Attivando l’opzione 'Mostra anteprime', le notifiche push di IO includeranno il mittente e l’oggetto dei messaggi. Così, puoi sapere chi ti ha scritto senza entrare in app."
+          },
+          {
+            "title": "Cosa significa 'Consenti promemoria'?",
+            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_LANDING",
+        "title": "Come accedere a IO",
+        "content": "Per accedere a IO, devi autenticarti con la tua identità SPID o con la Carta d'Identità Elettronica (CIE). Per attivare SPID, segui la procedura che trovi [in questo sito](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/). Per richiedere la CIE, vai sul sito del tuo Comune.",
+        "faqs": [
+          {
+            "title": "Cos’è SPID?",
+            "body": "SPID è il sistema di autenticazione che permette a cittadini e imprese di accedere ai servizi online della Pubblica Amministrazione e dei privati aderenti con un’identità digitale unica, costituita da un nome utente e una password."
+          },
+          {
+            "title": "Come posso attivare SPID?",
+            "body": "[In questo sito](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/) trovi tutte le informazioni su dove e come attivare SPID."
+          },
+          {
+            "title": "Ho perso le mie credenziali SPID. Come posso fare?",
+            "body": "Non preoccuparti: puoi recuperarle in qualsiasi momento. Seleziona il tuo Identity Provider per sapere come procedere: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in caso di password dimenticata](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste.it/recuperocredenziali.shtml), [Register, in caso di username dimenticato](https://spid.register.it/selfcare/recovery/username), [Register, in caso di password dimenticata](https://spid.register.it/selfcare/recovery/password), [Sielte, in caso di password dimenticata](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in caso di username dimenticata](https://login.id.tim.it/mps/fu.php), [Tim, in caso di password dimenticata](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)."
+          },
+          {
+            "title": "Cos’è la CIE?",
+            "body": "La Carta d’Identità Elettronica (CIE) è il documento d’identità dei cittadini italiani. Permette l’accertamento dell’identità di chi la possiede e l’accesso ai servizi online delle Pubbliche Amministrazioni."
+          },
+          {
+            "title": "Come posso richiedere la CIE?",
+            "body": "[Vai a questo sito](https://www.prenotazionicie.interno.gov.it/) e digita il nome del tuo Comune, per verificare se utilizza il sistema di appuntamenti online Agenda CIE. Se sì, procedi alla prenotazione dell'appuntamento. In caso contrario, chiedi un appuntamento dal sito del tuo Comune o vai in un ufficio comunale."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_IPD_SELECTION",
+        "title": "Il tuo Identity Provider",
+        "content": "L'Identity Provider è il gestore della tua identità digitale. Puoi autenticarti solo dopo aver selezionato l'Identity Provider che ha rilasciato il tuo SPID.",
+        "faqs": [
+          {
+            "title": "Che cos’è un Identity Provider?",
+            "body": "L’identità SPID è rilasciata dagli Identity Provider, che forniscono le identità digitali e gestiscono l’autenticazione degli utenti. Il tuo Identity Provider è il soggetto che hai scelto come fornitore del tuo SPID."
+          }
+        ]
+      },
+      {
+        "route_name": "CIE_PIN_SCREEN",
+        "title": "Il codice PIN della tua CIE",
+        "content": "Il codice PIN della tua Carta d’Identità Elettronica è un codice di 8 cifre, necessario per l’accesso.",
+        "faqs": [
+          {
+            "title": "Dove trovo i codici PIN e PUK della CIE?",
+            "body": "I codici PIN e PUK sono composti da 8 cifre ciascuno: le prime 4 cifre ti sono state consegnate all'anagrafe, mentre le ultime 4 ti sono state spedite a casa, insieme alla Carta d’Identità Elettronica. Il codice PUK serve a sbloccare il codice PIN dopo tre tentativi errati."
+          },
+          {
+            "title": "Non ho il codice PIN e/o PUK. Cosa posso fare?",
+            "body": "[In questo sito](https://www.cartaidentita.interno.gov.it/anagrafe/procedure/) trovi tutte le informazioni per recuperarli."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_FINGERPRINT",
+        "title": "Come funziona il riconoscimento biometrico",
+        "content": "Con il riconoscimento biometrico, puoi accedere all’app senza inserire ogni volta il codice di sblocco. Puoi abilitarlo o disabilitarlo nella sezione 'Profilo'",
+        "faqs": [
+          {
+            "title": "Quando mi verrà chiesto il riconoscimento biometrico?",
+            "body": "Se l’hai abilitato, puoi usare il riconoscimento biometrico al posto del codice di sblocco. Come il codice di sblocco, anche questo riconoscimento rimane attivo per 30 giorni dall'ultimo accesso con SPID o CIE. Dopo quel lasso di tempo, dovrai di nuovo autenticarti."
+          },
+          {
+            "title": "Come posso abilitare il riconoscimento biometrico?",
+            "body": "Se il tuo telefono supporta il riconoscimento biometrico, attivalo dalle preferenze di sistema. Poi, vai alla sezione 'Profilo' e abilitalo anche lì."
+          },
+          {
+            "title": "Come posso disabilitare il riconoscimento biometrico?",
+            "body": "Vai alla sezione 'Profilo'. Il riconoscimento biometrico risulterà già disattivato se il tuo dispositivo non lo supporta, o se è disabilitato nelle preferenze di sistema."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_PIN",
+        "title": "Come funziona il codice di sblocco",
+        "content": "Qui puoi impostare o modificare il tuo codice di sblocco. Se è la prima volta che entri nell'app, scegli un codice e memorizzalo, così da poterlo utilizzare ogni volta che devi accedere. Se l'hai già impostato e non lo ricordi, premi 'Hai dimenticato il codice di sblocco?' e impostane uno nuovo. Se vuoi modificarlo, premi 'Modifica il codice di sblocco'.\n\nIl codice di sblocco è legato al dispositivo su cui l'hai impostato: se cambi telefono, dovrai impostarlo nuovamente al primo accesso all'app.",
+        "faqs": [
+          {
+            "title": "Cos’è il codice di sblocco?",
+            "body": "È un codice di 6 cifre che imposti la prima volta che accedi a IO e che ti permette di entrare in app senza dover inserire ogni volta le credenziali SPID o CIE. Dovrai inserirlo anche per visualizzare dati sensibili e per confermare alcune operazioni, come fare un pagamento o eliminare l’account.\n\nQuesto riconoscimento rimane attivo per 30 giorni dall'ultimo accesso con SPID o CIE. Dopo quel lasso di tempo, dovrai di nuovo autenticarti e impostare un nuovo codice di sblocco."
+          },
+          {
+            "title": "Ho dimenticato il codice di sblocco. Cosa posso fare?",
+            "body": "Premi 'Hai dimenticato il codice di sblocco?', autenticati con SPID o CIE e inserisci il nuovo codice."
+          },
+          {
+            "title": "Come posso cambiare il codice di sblocco?",
+            "body": "Se ricordi il codice di sblocco ma vuoi modificarlo, seleziona 'Reimposta Codice di sblocco', autenticati con SPID o CIE e inserisci il nuovo codice."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_TOS",
+        "title": "Privacy e Condizioni d’uso",
+        "content": "Qui trovi la descrizione completa di come IO gestisce i tuoi dati personali e le condizioni di uso dell’app."
+      },
+      {
+        "route_name": "PROFILE_MAIN",
+        "title": "Cosa puoi fare nel tuo Profilo",
+        "content": "Qui puoi gestire le tue preferenze e il tuo account, trovare informazioni sul trattamento dei dati personali e visualizzare la versione digitale del tuo Codice Fiscale.",
+        "faqs": [
+          {
+            "title": "Come viene tutelata la mia privacy?",
+            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti.\n\nPer maggiori informazioni, leggi l’Informativa sul trattamento dei dati personali che trovi in questa sezione alla voce 'Privacy e Condizioni d’uso'."
+          },
+          {
+            "title": "A cosa serve la versione digitale del mio Codice Fiscale? ",
+            "body": "Nella parte alta della sezione trovi la versione digitale del tuo Codice Fiscale. Questo fac-simile non sostituisce il documento fisico, ma può essere utilizzato per la lettura dei dati e del codice a barre da parte degli esercenti che lo richiedono, per esempio in farmacia o negli uffici postali.\n\nPer vedere i dettagli del Codice Fiscale, premi sulla card. Se premi di nuovo, il documento si ingrandirà a tutto schermo."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_DATA",
+        "title": "I tuoi dati",
+        "content": "Qui puoi visualizzare il tuo nome e cognome e modificare l’indirizzo e-mail associato a IO.",
+        "faqs": [
+          {
+            "title": "Come posso eliminare il mio account e cancellare i miei dati?",
+            "body": "Vai alla voce 'Privacy e Condizioni d’uso' che trovi in questa sezione e seleziona 'Elimina il tuo account'. Al termine dell'eliminazione, riceverai un messaggio di conferma all’indirizzo email associato all'app. Questo non significa che non potrai più utilizzare IO: se accedi di nuovo, si genererà un nuovo account."
+          },
+          {
+            "title": "Come posso modificare il mio indirizzo email?",
+            "body": "Premi 'Indirizzo email', poi seleziona 'Modifica email' e inserisci il nuovo indirizzo."
+          }
+        ]
+      },
+      {
+        "route_name": "READ_EMAIL_SCREEN",
+        "title": "Il tuo indirizzo email",
+        "content": "Questo è l’indirizzo email che hai confermato in fase di registrazione. Lì ti inviamo le ricevute dei pagamenti e, se hai abilitato l’opzione, ti inoltriamo i messaggi che ricevi in app."
+      },
+      {
+        "route_name": "INSERT_EMAIL_SCREEN",
+        "title": "Modifica il tuo indirizzo email",
+        "content": "Qui puoi modificare l’indirizzo e-mail. Una volta inserito, dovrai validarlo premendo sul link che riceverai al nuovo indirizzo."
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_HOME",
+        "title": "Le tue preferenze",
+        "content": "Qui puoi visualizzare e modificare le impostazioni utilizzate da tutti i servizi presenti su IO. Puoi anche selezionare il calendario su cui vuoi salvare i promemoria, abilitare l’inoltro automatico dei messaggi che ricevi su IO al tuo indirizzo email, e modificare la lingua.",
+        "faqs": []
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_SERVICES",
+        "title": "La configurazione dei servizi",
+        "content": "Qui puoi decidere come configurare i servizi in app. IO veicola messaggi da parte di enti nazionali o locali che hanno qualcosa da dire proprio a te. Per questo, ti consigliamo di utilizzare la configurazione rapida: così, se un ente ha qualcosa da dirti, potrà farlo.",
+        "faqs": [
+          {
+            "title": "Perché dovrei usare la configurazione rapida?",
+            "body": "Perché IO manda solo messaggi rivolti proprio a te e non manda messaggi broadcast o spam. Usando la configurazione rapida, riceverai messaggi anche dai servizi che arriveranno in futuro."
+          },
+          {
+            "title": "Cosa succede se utilizzo la configurazione manuale?",
+            "body": "Con la configurazione manuale i servizi di IO, presenti o futuri, non possono inviarti messaggi. Per permettere ai servizi che ti interessano di scriverti, devi configurarli uno a uno selezionando la voce 'Contattarti in app' che trovi in ogni scheda servizio. Gli enti potranno comunque contattarti attraverso altri canali.\n\nAlcuni servizi, come per esempio i bonus, prevedono una richiesta di iscrizione da parte tua. In questi casi, una volta completata l’iscrizione, non puoi disabilitare la voce 'Contattarti in app'. Se non vuoi ricevere più messaggi da questi servizi devi disiscriverti, ma perderai anche i benefici connessi."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_EMAIL_FORWARDING",
+        "title": "L'inoltro dei messaggi",
+        "content": "Qui puoi abilitare o disabilitare l’inoltro dei messaggi che ricevi su IO al tuo indirizzo e-mail."
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_LANGUAGE",
+        "title": "Come cambiare la lingua",
+        "content": "Di default, IO usa la lingua del sistema operativo del tuo dispositivo. Puoi modificarla in ogni momento da questa pagina. La lingua del contenuto dei messaggi, invece, è definita da ciascun ente, che decide se inviare il contenuto tradotto in diverse lingue."
+      },
+      {
+        "route_name": "PROFILE_SECURITY",
+        "title": "Le tue modalità di autenticazione",
+        "content": "Qui puoi modificare il codice di sblocco e attivare o disattivare il riconoscimento biometrico.",
+        "faqs": [
+          {
+            "title": "Cos’è il codice di sblocco?",
+            "body": "È un codice di 6 cifre che imposti la prima volta che accedi a IO e che ti permette di entrare in app senza dover inserire ogni volta le credenziali SPID o CIE. Va inserito anche per visualizzare dati sensibili e per confermare alcune operazioni, come fare un pagamento o eliminare l’account.\n\nQuesto riconoscimento rimane attivo per 30 giorni dall'ultimo accesso con SPID o CIE. Dopo quel lasso di tempo, dovrai di nuovo autenticarti e impostare un nuovo codice di sblocco."
+          },
+          {
+            "title": "Ho dimenticato il codice di sblocco. Cosa posso fare?",
+            "body": "Premi 'Hai dimenticato il codice di sblocco?', autenticati con SPID o CIE e inserisci il nuovo codice."
+          },
+          {
+            "title": "Come posso cambiare il codice di sblocco?",
+            "body": "Se ricordi il codice di sblocco ma vuoi modificarlo, seleziona 'Reimposta Codice di sblocco', autenticati con SPID o CIE e inserisci il nuovo codice."
+          },
+          {
+            "title": "A cosa serve il riconoscimento biometrico?",
+            "body": "Se abilitato, puoi usare il riconoscimento biometrico al posto del codice di sblocco. Come il codice di sblocco, anche questo riconoscimento rimane attivo per 30 giorni dall'ultimo accesso con SPID o CIE. Dopo quel lasso di tempo, dovrai di nuovo autenticarti."
+          },
+          {
+            "title": "Come posso abilitare il riconoscimento biometrico?",
+            "body": "Se il tuo telefono supporta il riconoscimento biometrico, attivalo dalle preferenze di sistema. Poi, vai alla sezione 'Profilo' dell’app IO e abilitalo anche lì."
+          },
+          {
+            "title": "Come posso disabilitare il riconoscimento biometrico?",
+            "body": "Vai alla sezione 'Profilo' dell'app. Il riconoscimento biometrico risulterà già disattivato se il tuo dispositivo non lo supporta, o se è disabilitato nelle preferenze di sistema."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PRIVACY_MAIN",
+        "title": "Le tue impostazioni privacy",
+        "content": "Qui trovi informazioni sul trattamento dei tuoi dati personali e sulle condizioni d’uso di IO. In particolare, puoi consultare l’Informativa Privacy, scaricare una copia dei dati associati al tuo account o eliminarlo e dare o revocare il permesso a IO di raccogliere i tuoi dati di utilizzo.",
+        "faqs": [
+          {
+            "title": "Come viene tutelata la mia privacy?",
+            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti."
+          },
+          {
+            "title": "Come posso eliminare il mio account e cancellare i miei dati?",
+            "body": "Seleziona 'Elimina il tuo account' e segui le istruzioni. Al termine dell'eliminazione, riceverai un messaggio di conferma all’indirizzo email associato all'app. Questo non significa che non potrai più utilizzare IO: se accedi di nuovo, si genererà un nuovo account."
+          },
+          {
+            "title": "Come posso chiedere una copia dei dati associati al mio account IO?",
+            "body": "Seleziona 'Accedi ai tuoi dati', poi premi 'Richiedi una copia dei tuoi dati'. Riceverai un’email con un file che contiene una copia dei dati associati al tuo account."
+          },
+          {
+            "title": "Ho delle domande sulla privacy e sull’uso dei miei dati. A chi posso rivolgermi?",
+            "body": "Compila [questo modulo](https://privacyportal-de.onetrust.com/webform/77f17844-04c3-4969-a11d-462ee77acbe1/9ab6533d-be4a-482e-929a-0d8d2ab29df8), dedicato esclusivamente alle richieste che riguardano il trattamento dei dati personali in app."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PRIVACY",
+        "title": "Privacy e Condizioni d’uso",
+        "content": "Qui trovi la descrizione completa di come IO gestisce i tuoi dati personali e le condizioni di uso dell’app.",
+        "faqs": []
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_PRIVATIVE_CHOOSE_ISSUER",
+        "title": "Paga con la tua carta supermercato",
+        "content": "In questa pagina puoi aggiungere la tua carta supermercato come metodo di pagamento. Potrai modificare le impostazioni del nuovo metodo di pagamento o eliminarlo in ogni momento, premendo sulla card corrispondente nel tuo Portafoglio.",
+        "faqs": [
+          {
+            "title": "Quali carte supermercato posso aggiungere?",
+            "body": "Puoi aggiungere soltanto le carte supermercato che permettono di pagare. Non sono valide le carte supermercato che non consentono di effettuare pagamenti, ma solo di accumulare punti o avere accesso a sconti."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BANCOMAT_START",
+        "title": "Paga con la tua carta PagoBANCOMAT",
+        "content": "In questa pagina puoi aggiungere una carta PagoBANCOMAT come metodo di pagamento. Potrai modificare le impostazioni del nuovo metodo di pagamento o eliminarlo in ogni momento, premendo sulla card corrispondente nel tuo Portafoglio. Prima di procedere all'aggiunta delle tue carte PagoBANCOMAT, ti invitiamo a leggere l'informativa.",
+        "faqs": [
+          {
+            "title": "Perché non trovo la mia banca?",
+            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una banca differente. Se premi su 'Continua', IO cercherà tutte le carte PagoBANCOMAT a te intestate sulla base del tuo codice fiscale, che viene recuperato dallo SPID o dalla CIE con cui hai effettuato l'accesso."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ADD_CARD",
+        "title": "Paga con una carta credito, debito o prepagata",
+        "content": "In questa pagina puoi aggiungere una carta di credito, debito o prepagata come metodo di pagamento. Potrai modificare le impostazioni del nuovo metodo di pagamento o eliminarlo in ogni momento, premendo sulla card corrispondente nel tuo Portafoglio.",
+        "faqs": [
+          {
+            "title": "Dove trovo il codice di sicurezza?",
+            "body": "Il codice di sicurezza, chiamato anche CVV o CVS, è un codice a tre cifre che si trova sul retro della tua carta. Sulle carte American Express si chiama CID, è a quattro cifre e si trova sul fronte. Se non lo trovi, probabilmente la tua carta non è abilitata ai pagamenti online."
+          },
+          {
+            "title": "Non riesco ad aggiungere la mia carta. Come mai?",
+            "body": "In questo caso, ti consigliamo di contattare la tua banca. I motivi possono essere diversi, i più frequenti sono:\n\n- La tua carta non è abilitata agli acquisti online;\n\n- La tua carta è stata messa 'in pausa';\n\n- Non hai ancora attivato [il servizio 3DS](https://io.italia.it/faq/#n3_4), un sistema di sicurezza legato ai pagamenti online.\n\n Alla pagina [metodi di pagamento](https://io.italia.it/metodi-pagamento/) trovi un elenco dettagliato dei metodi supportati dall’app."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_PRIVATIVE_DETAIL",
+        "title": "La tua carta supermercato",
+        "content": "In questa pagina puoi vedere i dettagli di questo metodo di pagamento, modificare le impostazioni o eliminarlo dal Portafoglio."
+      },
+      {
+        "route_name": "WALLET_BANCOMAT_DETAIL",
+        "title": "La tua carta PagoBANCOMAT",
+        "content": "In questa pagina puoi vedere i dettagli di questo metodo di pagamento, modificare le impostazioni o eliminarlo dal Portafoglio.",
+        "faqs": [
+          {
+            "title": "Come posso impostare questo metodo di pagamento come preferito?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Premi sulla card di questo metodo e impostalo come preferito."
+          },
+          {
+            "title": "Come posso eliminare questo metodo di pagamento?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Seleziona la card del metodo che vuoi eliminare e poi premi 'Elimina questo metodo'."
+          },
+          {
+            "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
+            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni."
+          },
+          {
+            "title": "Perché c'è scritto che la mia carta non è compatibile con i pagamenti in app?",
+            "body": "Il circuito PagoBANCOMAT non ti consente di effettuare pagamenti online. Se vuoi pagare con la tua carta, puoi: \n\n- Aggiungere al Portafoglio BANCOMAT Pay, se la tua banca offre questo servizio;\n\n- Aggiungere il secondo circuito, se la tua carta ha il codice di sicurezza ed è già abilitata ai pagamenti online."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_PAYPAL_DETAIL",
+        "title": "Il tuo account PayPal",
+        "content": "In questa pagina puoi vedere i dettagli di questo metodo di pagamento, modificare le impostazioni o eliminarlo dal Portafoglio.",
+        "faqs": [
+          {
+            "title": "Come posso impostare questo metodo di pagamento come preferito?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Premi sulla card di questo metodo e impostalo come preferito."
+          },
+          {
+            "title": "Come posso eliminare questo metodo di pagamento?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Seleziona la card del metodo che vuoi eliminare e poi premi 'Elimina questo metodo'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_BPAY_DETAIL",
+        "title": "Il tuo account BANCOMAT Pay",
+        "content": "In questa pagina puoi vedere i dettagli di questo metodo di pagamento, modificare le impostazioni o eliminarlo dal Portafoglio.",
+        "faqs": [
+          {
+            "title": "Come posso impostare questo metodo di pagamento come preferito?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Premi sulla card di questo metodo e impostalo come preferito."
+          },
+          {
+            "title": "Come posso eliminare questo metodo di pagamento?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Seleziona la card del metodo che vuoi eliminare e poi premi 'Elimina questo metodo'."
+          },
+          {
+            "title": "Non riesco ad abilitare i pagamenti in app con BANCOMAT Pay. Cosa posso fare?",
+            "body": "Per risolvere il problema, prova ad aggiornare l’app all’ultima versione disponibile.\nUna volta fatto, elimina il metodo di pagamento dal tuo Portafoglio, aggiungilo nuovamente e riprova ad effettuare il pagamento."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_CREDIT_CARD_DETAIL",
+        "title": "La tua carta",
+        "content": "In questa pagina puoi vedere i dettagli di questo metodo di pagamento, modificare le impostazioni o eliminarlo dal Portafoglio.",
+        "faqs": [
+          {
+            "title": "Come posso impostare questo metodo di pagamento come preferito?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Premi sulla card di questo metodo e impostalo come preferito."
+          },
+          {
+            "title": "Come posso eliminare questo metodo di pagamento?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Seleziona la card del metodo che vuoi eliminare e poi premi 'Elimina questo metodo'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_HOME",
+        "title": "Cosa puoi fare nel tuo Portafoglio",
+        "content": "Nel Portafoglio trovi i metodi di pagamento che hai aggiunto, i bonus e le iniziative a cui hai aderito e lo storico delle transazioni effettuate con pagoPA, la piattaforma dei pagamenti verso la Pubblica Amministrazione. In questa sezione, puoi anche pagare tutti gli avvisi di pagamento cartacei con il logo pagoPA.",
+        "faqs": [
+          {
+            "title": "Come posso pagare su IO?",
+            "body": "Puoi pagare con carte di debito, credito e prepagate, con PayPal o BANCOMAT Pay. Trovi l'elenco aggiornato dei metodi disponibili alla pagina [metodi di pagamento](https://io.italia.it/metodi-pagamento)."
+          },
+          {
+            "title": "Come posso aggiungere un metodo di pagamento?",
+            "body": "Vai al Portafoglio, premi 'Aggiungi' e 'Metodo di Pagamento'. Poi, seleziona il metodo che vuoi aggiungere e inserisci i dati richiesti."
+          },
+          {
+            "title": "Quali bonus, sconti o altre iniziative posso richiedere?",
+            "body": "Vai al Portafoglio, premi 'Aggiungi' e 'Sconti, bonus e altre iniziative'. Comparirà una lista con tutti i bonus e le iniziative che puoi richiedere tramite l’app IO."
+          },
+          {
+            "title": "Non riesco ad aggiungere un metodo di pagamento. Cosa posso fare?",
+            "body": "Accedi alla pagina [stato aggiunta metodi di pagamento](ioit://CREDIT_CARD_ONBOARDING_ATTEMPTS_SCREEN), seleziona il tentativo di aggiunta fallito e contatta l’assistenza."
+          },
+          {
+            "title": "Come posso eliminare un metodo di pagamento?",
+            "body": "I tuoi metodi di pagamento sono visualizzati come card nella parte alta dello schermo del Portafoglio. Seleziona la card del metodo che vuoi eliminare e poi premi 'Elimina questo metodo'."
+          },
+          {
+            "title": "Ho un problema con un pagamento. Cosa posso fare?",
+            "body": "Accedi alla pagina [stato dei tuoi pagamenti](ioit://PAYMENTS_HISTORY_SCREEN), seleziona il tentativo di pagamento fallito e contatta l’assistenza."
+          },
+          {
+            "title": "Dove trovo i pagamenti che ho effettuato?",
+            "body": "Nel Portafoglio trovi una lista che contiene i pagamenti effettuati con successo tramite l’app IO. La lista include anche i pagamenti effettuati tramite il sito o l’app degli enti aderenti, se ti sei autenticato con SPID."
+          },
+          {
+            "title": "Posso pagare un avviso che non ho ricevuto tramite IO?",
+            "body": "Sì, se sull’avviso sono presenti il logo pagoPA e il codice QR o il Codice Avviso. Per farlo, vai nel Portafoglio, scansiona il QR o inserisci il Codice Avviso e completa il pagamento."
+          },
+          {
+            "title": "Perché il Cashback è terminato?",
+            "body": "La fine del programma Cashback è stata stabilita dalla [legge n.234 del 30 dicembre 2021](https://www.gazzettaufficiale.it/atto/serie_generale/caricaDettaglioAtto/originario?atto.dataPubblicazioneGazzetta=2021-12-31&atto.codiceRedazionale=21G00256&elenco30giorni=true) (art.1, commi 637-644). Pertanto, il relativo servizio su IO non è più attivo. Questo significa che non si apriranno nuovi periodi, e che non sarà più possibile maturare nuovi importi."
+          },
+          {
+            "title": "Nel 2021 ho maturato degli importi che non mi sono ancora stati rimborsati. Cosa posso fare?",
+            "body": "Probabilmente non hai indicato l’IBAN del conto su cui desideri ricevere l’accredito, oppure quello che hai indicato non è valido.Per inserire l’IBAN o verificarne la correttezza, apri l’app, vai al Portafoglio e premi sulla card del Cashback. Poi, inseriscilo o modificalo e seleziona 'Continua'. Entro 90 giorni riceverai tramite l’app IO un messaggio sullo stato del rimborso. Le attività tra PagoPA S.p.A. e Consap S.p.A. per i pagamenti dei rimborsi sono in corso di dismissione, quindi, se non inserisci o non correggi l’IBAN entro il 31/07/2022, potrebbe non essere più possibile effettuare il bonifico per il rimborso."
+          },
+          {
+            "title": "Che cos’è un codice QR?",
+            "body": "Il codice QR è un’immagine quadrata composta da elementi bianchi e neri. Se inquadrato dalla fotocamera di un telefono permette di accedere a contenuti digitali, come ad esempio un sito web, un pagamento o un articolo.\n\nIl codice QR che trovi sugli avvisi di pagamento è associato a un Codice Avviso. Se vai al tuo Portafoglio, premi su 'Paga un avviso' e inquadri il codice con la fotocamera, puoi pagare l’avviso senza dover inserire manualmente informazioni come causale, cifra o codice fiscale."
+          },
+          {
+            "title": "Che cos’è pagoPA?",
+            "body": "pagoPA è una piattaforma per rendere più semplici, sicuri e trasparenti tutti i pagamenti verso la Pubblica Amministrazione. Tra i vari benefici, permette di aumentare l’uso di modalità elettroniche di pagamento e rende le persone libere di scegliere come pagare, dando evidenza dei costi di commissione. Per saperne di più, [vai sul sito di pagoPA](https://www.pagopa.gov.it/)."
+          },
+          {
+            "title": "Come posso saperne di più sui pagamenti digitali?",
+            "body": "Per approfondire i temi di tuo interesse legati al mondo dei pagamenti digitali, puoi consultare i materiali messi a disposizione dalla [Banca d’Italia](https://www.bancaditalia.it/) nell’ambito dei programmi di educazione finanziaria, tra cui la [sezione dedicata](https://economiapertutti.bancaditalia.it/pagare/) del sito [L’Economia per tutti](https://economiapertutti.bancaditalia.it/) e la [Guida sui Pagamenti nel Commercio Elettronico](https://www.bancaditalia.it/pubblicazioni/guide-bi/guida-pagamenti-comm-elettronico/guide-BI-i-pagamenti-nel-commercio-elettronico_ITA.pdf).\n\nPer esempio, se vuoi saperne di più sui metodi di pagamento che puoi aggiungere al Portafoglio dell’app IO, puoi leggere le schede informative dedicate, come la [carta di credito](https://economiapertutti.bancaditalia.it/pagare/carta-di-credito/), la [carta di debito](https://economiapertutti.bancaditalia.it/pagare/carta-di-debito/), la [carta prepagata](https://economiapertutti.bancaditalia.it/pagare/carta-prepagata/) e la [carta co-badge](https://economiapertutti.bancaditalia.it/pagare/carte_co-badge_multifunzione/)."
+          }
+        ]
+      },
+      {
+        "route_name": "UADONATION_ROUTES_WEBVIEW",
+        "title": "Donazioni Ucraina",
+        "content": "In questa pagina, puoi fare una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina.",
+        "faqs": [
+          {
+            "title": "Come posso donare?",
+            "body": "Per donare, scegli un’organizzazione umanitaria tra quelle che trovi nella lista. Poi, seleziona l’importo che vuoi donare e premi 'Continua'. Usa un metodo di pagamento compatibile o selezionalo dal Portafoglio. Infine, premi 'Paga' per completare la donazione."
+          },
+          {
+            "title": "Con che metodi di pagamento posso fare la donazione?",
+            "body": "Puoi donare con carta di credito, debito o prepagata e con conto PayPal."
+          },
+          {
+            "title": "C'è un importo minimo?",
+            "body": "Sì, puoi donare da un minimo di 5 € a un massimo di 200 €. Se vuoi donare importi superiori, ripeti la donazione."
+          },
+          {
+            "title": "La donazione prevede dei costi di commissione?",
+            "body": "Se doni con carta di credito, debito o prepagata non hai costi di commissione."
+          },
+          {
+            "title": "Dopo la donazione, non ho ricevuto nessuna email con la ricevuta. Cosa posso fare?",
+            "body": "Se doni tramite un dispositivo Android, ti invieremo un'email con la ricevuta. Se non la ricevi, guarda nella cartella spam e verifica che l'indirizzo che trovi nella sezione Profilo > I tuoi dati sia corretto. Ti consigliamo di conservare la ricevuta della donazione, insieme alla documentazione originale del versamento (come l'estratto conto della banca o della carta di credito) per fini fiscali."
+          },
+          {
+            "title": "Rappresento un'organizzazione umanitaria: posso partecipare all'iniziativa?",
+            "body": "Per avere informazioni su come partecipare all'iniziativa, scrivi un'email a affari.istituzionali@pagopa.it."
+          }
+        ]
+      },
+      {
         "route_name": "WALLET_ONBOARDING_PAYPAL_SEARCH_PSP",
         "title": "Scegli il gestore della transazione",
         "content": "Il gestore della transazione, ovvero il soggetto che riscuote l’importo dovuto per conto di un Ente Creditore, può applicare ad ogni pagamento una commissione variabile. In questa pagina, puoi scegliere quale gestore della transazione utilizzare. Potrai modificare questa scelta ad ogni pagamento, scegliendo in base alla commissione proposta.",
         "faqs": [
           {
             "title": "Cos’è il gestore della transazione?",
-            "body": "Il gestore della transazione, conosciuto anche come PSP (Prestatore di Servizi di Pagamento), è il soggetto che riscuote l’importo dovuto per conto di un Ente Creditore. Per svolgere questo servizio, il gestore può applicare ogni volta una commissione.\n\npagoPA ti permette di effettuare pagamenti elettronici tramite uno dei gestori della transazione aderenti. È questo il tramite che ti permette di pagare un avviso, una retta, un bollo o un tributo direttamente in app."
+            "body": "Il gestore della transazione, conosciuto anche come PSP (Prestatore di Servizi di Pagamento), è il soggetto che riscuote l’importo dovuto per conto di un Ente Creditore. Per svolgere questo servizio, il gestore può applicare ogni volta una commissione. Puoi trovare i costi applicati dai singoli gestori [in questa pagina](https://www.pagopa.gov.it/it/cittadini/trasparenza-costi/).\n\npagoPA ti permette di effettuare pagamenti elettronici tramite uno dei gestori della transazione aderenti. È questo il tramite che ti permette di pagare un avviso, una retta, un bollo o un tributo direttamente in app."
           },
           {
             "title": "Perché devo scegliere il gestore della transazione?",
-            "body": "Quando effettui un pagamento, IO ti mostra tutti i gestori della transazione che puoi utilizzare, così che tu possa scegliere quello che ti conviene di più a seconda della commissione proposta. Ad incassare questa commissione non è pagoPA, ma il gestore stesso."
+            "body": "Quando effettui un pagamento, IO ti mostra tutti i gestori della transazione che puoi utilizzare, così che tu possa scegliere quello che ti conviene di più a seconda della commissione proposta. Ad incassare questa commissione non è pagoPA, ma il gestore stesso.Puoi trovare i costi applicati dai singoli gestori [in questa pagina](https://www.pagopa.gov.it/it/cittadini/trasparenza-costi/)."
           },
           {
             "title": "Quale gestore devo scegliere?",
@@ -21,17 +497,17 @@
           },
           {
             "title": "A cosa è dovuto il costo della transazione?",
-            "body": "Per sostenere i costi di gestione e garantire la sicurezza del trasferimento di denaro, ogni gestore della transazione può applicare una commissione variabile. La commissione varia a seconda delle politiche commerciali e delle condizioni contrattuali sottoscritte col gestore che hai scelto. IO ti mostrerà sempre il costo della transazione indicato dal gestore della transazione, per permetterti di scegliere quello più conveniente."
+            "body": "Per sostenere i costi di gestione e garantire la sicurezza del trasferimento di denaro, ogni gestore della transazione può applicare una commissione variabile. La commissione varia a seconda delle politiche commerciali e delle condizioni contrattuali sottoscritte col gestore che hai scelto. IO ti mostrerà sempre il costo della transazione indicato dal gestore della transazione, per permetterti di scegliere quello più conveniente.Puoi trovare i costi applicati dai singoli gestori [in questa pagina](https://www.pagopa.gov.it/it/cittadini/trasparenza-costi/)."
           },
           {
-            "title": "Non riesco ad aggiungere PayPal come metodo di pagamento su IO.",
-            "body": "Se hai dei problemi ad aggiungere il tuo conto PayPal su IO, ti suggeriamo di:\n\n1.Controllare che il tuo dispositivo sia connesso a una rete.\n\n2.Accertarti di aver inserito correttamente username e password del tuo conto PayPal.\n\n3.Assicurarti di avere completato l’autenticazione a due fattori.\n\nSe hai effettuato tutti i passaggi correttamente e non hai ancora risolto il problema contatta l’[assistenza di PayPal](https://www.paypal.com/it/smarthelp/contact-us)."
+            "title": "Non riesco ad aggiungere PayPal come metodo di pagamento.",
+            "body": "Se hai dei problemi ad aggiungere il tuo conto PayPal, ti suggeriamo di:\n\n1. Controllare che il tuo dispositivo sia connesso a una rete.\n\n1. Accertarti di aver inserito correttamente username e password del tuo conto PayPal.\n\n1. Assicurarti di avere completato l’autenticazione a due fattori.\n\nSe hai effettuato tutti i passaggi correttamente e non hai ancora risolto il problema contatta l’[assistenza di PayPal](https://www.paypal.com/it/smarthelp/contact-us)."
           }
         ]
       },
       {
         "route_name": "WALLET_ONBOARDING_PAYPAL_START",
-        "title": "Paga su IO con PayPal",
+        "title": "Paga con PayPal",
         "content": "In questa pagina potrai aggiungere PayPal come metodo di pagamento nell’app IO.\n\nPayPal ti permette di pagare senza inserire ogni volta i tuoi dati finanziari. Ti permette anche di collegare il tuo conto bancario, che risulta utile qualora dovessi pagare importi elevati che superano il massimale della tua carta.",
         "faqs": [
           {
@@ -40,15 +516,60 @@
           },
           {
             "title": "Come funziona?",
-            "body": "Per utilizzare PayPal su IO, registrati con il tuo nome e indirizzo email sul sito [paypal.com](https://www.paypal.com/it) e collega il tuo conto bancario o la tua carta di credito, di debito o prepagata.\n\nPoi, aggiungilo come metodo di pagamento nella sezione Portafoglio di IO. Per farlo, ti verranno richiesti l’indirizzo email e la password del tuo conto PayPal. Dovrai inoltre completare l’autenticazione a due fattori utilizzando una modalità a scelta tra app PayPal, SMS o chiamata."
+            "body": "Per utilizzare PayPal su IO, registrati con il tuo nome e indirizzo email sul sito [paypal.com](https://www.paypal.com/it) e collega la tua carta di credito, di debito, prepagata o il conto corrente.\n\nPoi, aggiungilo come metodo di pagamento nella sezione Portafoglio di IO. Per farlo, ti verranno richiesti l’indirizzo email e la password del tuo conto PayPal. Dovrai inoltre completare l’autenticazione a due fattori utilizzando una modalità a scelta tra app PayPal, SMS o chiamata."
           },
           {
             "title": "Che vantaggi ho ad utilizzare PayPal per pagare tramite IO?",
-            "body": "PayPal ti permetterà di autorizzare le operazioni di pagamento su IO in modo semplice e veloce, senza che tu debba inserire i tuoi dati finanziari.\n\nPuoi collegare al tuo conto PayPal non solo la carta di credito, di debito o prepagata, ma anche il conto bancario, che risulta utile qualora dovessi pagare importi elevati che superano il massimale della tua carta.\n\n[Scopri qui](https://www.paypal.com/it/smarthelp/article/come-faccio-a-collegare-il-mio-conto-bancario-al-mio-conto-paypal-faq686) come collegare il tuo conto bancario a PayPal."
+            "body": "PayPal ti permetterà di autorizzare le operazioni di pagamento in modo semplice e veloce, senza che tu debba inserire i tuoi dati finanziari.\n\nPuoi collegare al tuo conto PayPal non solo la carta di credito, di debito o prepagata, ma anche il conto bancario, che risulta utile qualora dovessi pagare importi elevati che superano il massimale della tua carta.\n\n[Scopri qui](https://www.paypal.com/it/smarthelp/article/come-faccio-a-collegare-il-mio-conto-bancario-al-mio-conto-paypal-faq686) come collegare il tuo conto bancario a PayPal."
           },
           {
             "title": "Non ho un conto PayPal. Come posso crearne uno?",
-            "body": "Per creare un conto PayPal, devi registrarti con il tuo nome e indirizzo email sul sito [paypal.com](https://www.paypal.com/it). Per farlo, devi essere maggiorenne e collegare uno o più metodi di pagamento tra conto bancario, carta di credito, carta di debito o prepagata."
+            "body": "Per creare un conto PayPal, devi registrarti con il tuo nome e indirizzo email sul sito [paypal.com](https://www.paypal.com/it). Per farlo, devi essere maggiorenne e collegare almeno un metodo di pagamento."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BPAY_START",
+        "title": "Paga con BANCOMAT Pay",
+        "content": "In questa pagina puoi aggiungere BANCOMAT Pay come metodo di pagamento nell’app IO. BANCOMAT Pay ti permette di effettuare pagamenti in modo semplice, rapido e sicuro.",
+        "faqs": [
+          {
+            "title": "Cos’è BANCOMAT Pay?",
+            "body": "BANCOMAT Pay è un servizio di pagamento digitale che ti consente di pagare, inviare denaro e accettare pagamenti in modo semplice e veloce. Una volta attivato il servizio, infatti, ti basterà utilizzare il tuo numero di cellulare per effettuare le operazioni. Per approfondire, vai sul sito di [BANCOMAT Pay](https://bancomat.it/it/bancomat/bancomat-pay®)."
+          },
+          {
+            "title": "Come funziona?",
+            "body": "BANCOMAT Pay associa il tuo numero di cellulare a un’IBAN, che può essere di un conto corrente o di una carta prepagata.\nPer utilizzare BANCOMAT Pay su IO, verifica se la tua banca è [tra quelle aderenti](https://bancomat.it/it/bancomat/bancomat-pay%C2%AE#banca-appbancomatpay) e attiva il servizio tramite l’app BANCOMAT Pay o l’app della tua banca.\nPoi, aggiungilo come metodo di pagamento nella sezione Portafoglio di IO, selezionando l’account che vuoi aggiungere."
+          },
+          {
+            "title": "Non ho un account BANCOMAT Pay, come posso fare?",
+            "body": "[Scopri qui](https://bancomat.it/it/bancomat/bancomat-pay%C2%AE) se la tua banca offre il servizio. Se presente, puoi richiedere l’abilitazione tramite l’home banking o l’app della tua banca.\nPer altre informazioni consulta le [domande più frequenti](https://bancomat.it/it/faq-questions-top)."
+          },
+          {
+            "title": "Non riesco ad aggiungere BANCOMAT Pay come metodo di pagamento.",
+            "body": "Se hai dei problemi ad aggiungere il tuo account BANCOMAT Pay su IO, ti suggeriamo di:\n1. Controllare che il tuo dispositivo sia connesso a una rete.\n2. Accertarti che il servizio sia attivo. Puoi farlo tramite home banking o l’app della tua banca, oppure attraverso l’app BANCOMAT Pay.\n\nSe hai effettuato tutti i passaggi correttamente e non hai ancora risolto il problema contatta la tua banca."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BPAY_SEARCH_AVAILABLE_USER_ACCOUNT",
+        "title": "Aggiungi BANCOMAT Pay",
+        "content": "In questa pagina puoi visualizzare i tuoi account BANCOMAT Pay e aggiungerli al Portafoglio.",
+        "faqs": [
+          {
+            "title": "Non riesco ad aggiungere BANCOMAT Pay come metodo di pagamento.",
+            "body": "Se hai dei problemi ad aggiungere il tuo account BANCOMAT Pay su IO, ti suggeriamo di:\n1. Controllare che il tuo dispositivo sia connesso a una rete.\n2. Accertarti che il servizio sia attivo. Puoi farlo tramite home banking o l’app della tua banca, oppure attraverso l’app BANCOMAT Pay.\n\nSe hai effettuato tutti i passaggi correttamente e non hai ancora risolto il problema contatta la tua banca."
+          }
+        ]
+      },
+      {
+        "route_name": "PAYMENT_PICK_PAYMENT_METHOD",
+        "title": "Scelta del metodo di pagamento",
+        "content": "Qui puoi scegliere il metodo con cui procedere al pagamento.",
+        "faqs": [
+          {
+            "title": "Ho BANCOMAT Pay ma non riesco a pagare",
+            "body": "Per risolvere il problema, prova ad aggiornare l’app all’ultima versione disponibile.\nUna volta fatto, elimina il metodo di pagamento dal tuo Portafoglio, aggiungilo nuovamente e riprova ad effettuare il pagamento."
           }
         ]
       },
@@ -77,55 +598,35 @@
       },
       {
         "route_name": "SERVICES_HOME",
-        "title": "Cosa puoi fare nei tuoi Servizi",
-        "content": "Qui puoi visualizzare la lista dei servizi nazionali o locali disponibili su IO. \nPremi sul nome di un servizio per visualizzarne i dettagli.",
+        "title": "Cosa puoi fare nei Servizi",
+        "content": "Qui puoi visualizzare la lista dei servizi nazionali e locali disponibili in app.\nPremi sul nome di un servizio per visualizzarne i dettagli. Dalla pagina di dettaglio del servizio, puoi anche gestire l'invio di notifiche push e l'inoltro dei messaggi al tuo indirizzo e-mail.",
         "faqs": [
           {
-            "title": "Come gestire i servizi su IO?",
-            "body": "Utilizza le configurazioni disponibili nella sezione 'Profilo > Preferenze > Gestione servizi', oppure le opzioni contenute nel dettaglio di ciascun servizio per decidere come riceverne le comunicazioni (messaggio in app, notifica push, inoltro del messaggio via e-mail). \n \nAttenzione! Vedere la lista completa dei servizi non significa che ti contatteranno servizi che non ti riguardano: gli enti comunicano con te solo se in possesso del tuo codice fiscale e nel momento in cui hanno necessità di inviarti comunicazioni importanti."
+            "title": "Come posso configurare i servizi?",
+            "body": "Per ogni servizio, puoi decidere se vuoi ricevere messaggi in app e notifiche push. Nella sezione Profilo > Preferenze > Inoltro invio messaggi via email puoi anche attivare l’inoltro dei messaggi di tutti i servizi attivi al tuo indirizzo e-mail.\n \nAnche se vedi la lista completa dei servizi, ti contatteranno solo  gli enti che conoscono il tuo Codice Fiscale che hanno una comunicazione che ti riguarda personalmente."
           },
           {
-            "title": "Puoi contattare gli enti tramite IO?",
-            "body": "Non puoi direttamente contattare gli enti dall'app IO ma puoi visualizzare le loro informazioni di contatto all'interno della sezione 'Servizi', nella scheda di ciascun servizio."
+            "title": "Posso contattare gli enti tramite IO?",
+            "body": "No, non puoi contattare direttamente gli enti dall'app. Se hai bisogno di contattare un ente, puoi farlo tramite i contatti che trovi nella scheda di ciascun servizio all'interno della sezione Servizi."
           }
         ]
       },
       {
         "route_name": "SERVICE_DETAIL",
         "title": "Dettagli del Servizio",
-        "content": "In questa schermata puoi visualizzare la descrizione del servizio, l'informativa privacy e condizioni d'uso, i dati di contatto dell'ente o del servizio e puoi configurare le modalità di comunicazione per questo specifico servizio. \n \nRicorda che su IO ti scriveranno solo servizi che hanno qualche informazione personalizzata da comunicarti: non riceverai messaggi di spam o contenuti che non ti riguardano direttamente. \n \nSe vuoi comunque impedire al servizio di contattarti puoi farlo nell'area 'Questo servizio può', disabilitando l'opzione 'Contattarti in app'. \nL'ente non ti scriverà più tramite IO, ma potrà comunque contattarti tramite i consueti canali di comunicazione in uso (email, telefono o posta a seconda dei casi). \n \nDa questa pagina puoi inoltre gestire l'invio di notifiche push e l'inoltro dei messaggi anche al tuo indirizzo e-mail.",
+        "content": "Qui trovi la descrizione del servizio, l'informativa privacy e le condizioni d'uso e i dati di contatto dell'ente o del servizio. Puoi anche scegliere in quale modalità vuoi ricevere comunicazioni da questo specifico servizio.\n \n Ti scriveranno solo servizi che hanno informazioni che ti riguardano. Non riceverai messaggi di spam o contenuti non di tuo interesse.\n \n Se non vuoi ricevere comunicazioni dal servizio, puoi farlo dall'area 'Questo servizio può', disabilitando l'opzione 'Contattarti in app'. L'ente non ti scriverà più tramite IO, ma potrà comunque contattarti tramite altri canali, come per email, telefono o posta.",
         "faqs": [
           {
-            "title": "Cosa succede se disattivi un servizio?",
-            "body": "Non riceverai più le comunicazioni di quello specifico servizio nell'app IO. L'ente che eroga il servizio potrà comunque contattarti o essere contattato attraverso altri canali quali sito, email, numero di telefono o ufficio di pertinenza."
+            "title": "Cosa succede se disattivo un servizio?",
+            "body": "Non riceverai più comunicazioni da quel servizio nell'app IO. L'ente che eroga il servizio potrà comunque contattarti o essere contattato attraverso altri canali come sito, email o numero di telefono."
           },
           {
-            "title": "Come funzionano le notifiche push?",
-            "body": "Le notifiche push ti informano che è arrivato un nuovo messaggio nell'app IO, e ti invitano a procedere alla lettura. \n \nSe preferisci disattivarle, disabilita nell'area 'Questo servizio può' l'opzione 'Inviarti notifiche push'. Nella sezione Messaggi potrai comunque distinguere i messaggi non letti grazie al pallino blu."
+            "title": "Cosa sono e come funzionano le notifiche push?",
+            "body": "Le notifiche push sono messaggi istantanei che puoi ricevere sul tuo dispositivo. Ti informano che è arrivato un nuovo messaggio nell'app IO e ti invitano a leggerlo. Se preferisci disattivarle, disabilita nell'area 'Questo servizio può' l'opzione 'Inviarti notifiche push'."
           },
           {
             "title": "Come funziona l'inoltro via email dei messaggi?",
-            "body": "Attivando l'inoltro via email dei messaggi, riceverai all'indirizzo email associato all'app una copia del messaggio che ricevi su IO. \nL'inoltro via mail non è disponibile per alcuni servizi, sulla base di decisioni prese dall'ente in merito alla sensibilità dei contenuti del messaggio stesso."
-          }
-        ]
-      },
-      {
-        "route_name": "PROFILE_PREFERENCES_EMAIL_FORWARDING",
-        "title": "Come gestire l'inoltro dei messaggi",
-        "content": "Qui puoi abilitare o disabilitare l'inoltro al tuo indirizzo e-mail dei messaggi che ricevi su IO."
-      },
-      {
-        "route_name": "PROFILE_PREFERENCES_SERVICES",
-        "title": "Gestisci servizi in app",
-        "content": "Qui puoi decidere come gestire la comunicazione dei servizi. \nL'app IO vuole essere un canale di comunicazione aggiuntivo per gli enti nazionali o locali che hanno qualcosa da dire proprio a te. \nNon manda messaggi broadcast o spam e per questo ti consigliamo di utilizzare la configurazione rapida, mantenendo la comunicazione dei servizi sempre attiva.",
-        "faqs": [
-          {
-            "title": "Perché dovrei usare la configurazione rapida?",
-            "body": "Perchè IO manda solo messaggi utili e rivolti proprio a te: gli enti erogatori dei servizi devono conoscere il tuo codice fiscale per poterti scrivere e questo è garanzia del fatto che hanno già una relazione con te. Usando la configurazione rapida non devi pensare a niente e riceverai i messaggi che ti riguardano anche dai servizi che arriveranno in futuro. \nSe decidi comunque di usare la configurazione manuale, sappi che gli enti potranno contattarti attraverso i canali tradizionali a loro disposizione."
-          },
-          {
-            "title": "Cosa succede se utilizzo la configurazione manuale?",
-            "body": "La configurazione manuale spegne la comunicazione di tutti i servizi, quelli attualmente presenti e quelli che arriveranno in futuro. \nPer ricevere i messaggi dai servizi che ti interessano dovrai configurarli uno a uno dalle relative schede servizio. \nAttenzione! Spegnendo la comunicazione tramite IO, l'ente che eroga il servizio potrà comunque contattarti attraverso i canali tradizionali disponibili (es. e-mail, posta, SMS)."
+            "body": "Attivando l'inoltro via email dei messaggi, riceverai all'indirizzo email associato all'app una copia del messaggio che ricevi su IO.\n \nL'inoltro via email non è disponibile per alcuni servizi, poichè l’ente può decidere di non inoltrare messaggi dal contenuto sensibile."
           }
         ]
       },
@@ -175,6 +676,10 @@
             "body": "Premendo il pulsante 'Salva', puoi salvare il QR code del certificato nella galleria immagini del tuo dispositivo per poterlo usare anche se non sei connesso ad internet."
           },
           {
+            "title": "Posso ricevere su IO la Certificazione di esenzione dalla vaccinazione anti-COVID-19?",
+            "body": "Sì, puoi ricevere e visualizzare il tuo Certificato di esenzione direttamente in app.\n Questa certificazione è valida solo in Italia fino alla data indicata sulla certificazione e può essere utilizzata per accedere dove è richiesta una Certificazione Verde COVID-19.\n Per maggiori informazioni sulla Certificazione di esenzione dalla vaccinazione anti-COVID-19, consulta le FAQ dedicate [https://www.dgc.gov.it/web/esenzione.html](https://www.dgc.gov.it/web/esenzione.html)."
+          },
+          {
             "title": "Vuoi saperne di più sulla Certificazione Verde COVID-19?",
             "body": "Per la Certificazione Verde su IO app, vai su [io.italia.it/certificato-verde-green-pass-covid](https://io.italia.it/certificato-verde-green-pass-covid) \nPer conoscere meglio l’iniziativa o gli altri canali disponibili visita [dgc.gov.it](https://www.dgc.gov.it/)"
           }
@@ -210,6 +715,10 @@
             "body": "Premendo il pulsante 'Salva', puoi salvare il QR code del certificato nella galleria immagini del tuo dispositivo per poterlo usare anche se non sei connesso ad internet."
           },
           {
+            "title": "Posso ricevere su IO la Certificazione di esenzione dalla vaccinazione anti-COVID-19?",
+            "body": "Sì, puoi ricevere e visualizzare il tuo Certificato di esenzione direttamente in app.\n Questa certificazione è valida solo in Italia fino alla data indicata sulla certificazione e può essere utilizzata per accedere dove è richiesta una Certificazione Verde COVID-19.\n Per maggiori informazioni sulla Certificazione di esenzione dalla vaccinazione anti-COVID-19, consulta le FAQ dedicate [https://www.dgc.gov.it/web/esenzione.html](https://www.dgc.gov.it/web/esenzione.html)."
+          },
+          {
             "title": "Vuoi saperne di più sulla Certificazione Verde COVID-19?",
             "body": "Per la Certificazione Verde su IO app, vai su [io.italia.it/certificato-verde-green-pass-covid](https://io.italia.it/certificato-verde-green-pass-covid) \nPer conoscere meglio l’iniziativa o gli altri canali disponibili visita [dgc.gov.it](https://www.dgc.gov.it/)"
           }
@@ -218,23 +727,23 @@
       {
         "route_name": "CGN_INFORMATION_TOS",
         "title": "Attiva la Carta Giovani Nazionale",
-        "content": "Qui sono visualizzate tutte le informazioni relative alla Carta Giovani Nazionale, il provvedimento istituito dal Dipartimento per le Politiche Giovanili e il Servizio Civile Universale che dà diritto a sconti e agevolazioni ai giovani residenti in Italia sull'acquisto di determinati beni e servizi.",
+        "content": "Qui puoi visualizzare tutte le informazioni relative alla Carta Giovani Nazionale, il provvedimento istituito dal Dipartimento per le Politiche Giovanili e il Servizio Civile Universale che dà diritto a sconti e agevolazioni ai giovani residenti in Italia sull'acquisto di determinati beni e servizi.",
         "faqs": [
           {
             "title": "Come faccio a richiedere la Carta Giovani Nazionale?",
-            "body": "Se sei maggiorenne e risiedi in Italia, semplicemente premi sul pulsante 'Attiva la tua Carta Giovani' in fondo alla pagina e segui le indicazioni in app. L'App IO effettuerà un controllo sulla tua età e, se risulterà idonea, attiverà la Carta Giovani Nazionale."
+            "body": "Se sei maggiorenne e risiedi in Italia, premi sul pulsante 'Richiedi la Carta' in fondo alla pagina e segui le indicazioni in app. L'app IO effettuerà un controllo sulla tua età e, se risulterà idonea, attiverà la Carta Giovani Nazionale."
           },
           {
             "title": "Cos'è il circuito EYCA?",
-            "body": "Il circuito EYCA unisce tutte le carte giovani dei diversi Paesi europei e offre agevolazioni in ottica di reciprocità: un giovane italiano con Carta Giovani Nazionale aderente a EYCA può usufruire dei benefici previsti nei Paesi aderenti, così come i giovani stranieri in visita nel nostro Paese, potranno utilizzare le loro carte EYCA presso gli esercenti aderenti a Carta Giovani Nazionale."
+            "body": "Il circuito EYCA unisce tutte le carte giovani dei Paesi europei e offre agevolazioni in ottica di reciprocità: un giovane italiano con Carta Giovani Nazionale aderente a EYCA può usufruire dei benefici previsti nei Paesi aderenti, così come i giovani stranieri in visita nel nostro Paese, potranno utilizzare le loro carte EYCA presso gli esercenti aderenti a Carta Giovani Nazionale."
           },
           {
             "title": "Cosa devo fare per aderire a EYCA?",
-            "body": "L'adesione ad EYCA è prevista solo per giovani fino ai 30 anni compiuti. Se rientri in questa fascia d'età non dovrai fare nulla. L'App IO comunicherà la richiesta ai sistemi di EYCA. Se nel dettaglio della tua Carta Giovani Nazionale compaiono anche il numero di carta EYCA e il relativo logo, puoi considerarla abilitata anche al circuito europeo."
+            "body": "L'adesione a EYCA è prevista solo per i giovani fino ai 30 anni compiuti. Se rientri in questa fascia d'età non dovrai fare nulla: sarà IO a comunicare la richiesta ai sistemi di EYCA. Nel dettaglio della tua Carta Giovani Nazionale compariranno il numero di carta e il logo EYCA. Questi dati ti serviranno per accedere alle agevolazioni previste nel circuito europeo."
           },
           {
             "title": "Quanto tempo passa dal momento della richiesta al momento dell’attivazione della mia Carta Giovani Nazionale?",
-            "body": "Se sei in possesso di tutti i requisiti che danno diritto alla Carta Giovani Nazionale, l’attivazione è pressoché immediata: in pochi minuti, dal momento della richiesta, l’App completa le verifiche necessarie e attiva la tua Carta."
+            "body": "Se possiedi tutti i requisiti che danno diritto alla Carta Giovani Nazionale, l’attivazione è pressoché immediata: in pochi minuti, dal momento della richiesta, IO completa le verifiche necessarie e attiva la tua Carta."
           },
           {
             "title": "Posso condividere le agevolazioni della Carta Giovani Nazionale con i miei familiari e amici?",
@@ -242,38 +751,38 @@
           },
           {
             "title": "Devo aggiungere una carta di credito sull’app IO per richiedere e utilizzare la Carta Giovani Nazionale?",
-            "body": "No. Anche se trovi la funzione per richiedere la Carta Giovani all’interno della sezione “Portafoglio” dell’App IO, il suo utilizzo non è associato in alcun modo alla disponibilità di una carta di credito né di altri metodi di pagamento salvati nell’app. Quando utilizzerai le agevolazioni della Carta per ottenere uno sconto - sull’e-commerce o presso le strutture fisiche dell’esercente convenzionato - provvederai al pagamento con la modalità che preferisci."
+            "body": "No, il suo utilizzo non è associato in alcun modo alla disponibilità di una carta di credito né di altri metodi di pagamento salvati nell’app. Quando utilizzerai le agevolazioni della Carta per ottenere uno sconto - sull’e-commerce o presso le strutture fisiche dell’operatore convenzionato - provvederai al pagamento con la modalità che preferisci."
           },
           {
             "title": "Se utilizzo le agevolazioni della mia Carta Giovani Nazionale per un acquisto online, l’applicazione dello sconto è immediata o riceverò un rimborso successivamente?",
-            "body": "L’applicazione dello sconto è immediata. Assicurati di digitare correttamente il codice sconto in fase di acquisto, per vederlo subito applicato nel carrello dell’e-commerce dell’esercente."
+            "body": "L’applicazione dello sconto è immediata. Nel caso in cui l’agevolazione preveda l’inserimento di un codice sconto in fase di acquisto, assicurati di digitarlo  correttamente, per vedere subito applicato lo sconto al carrello dell’e-commerce dell’operatore."
           }
         ]
       },
       {
         "route_name": "CGN_DETAILS",
         "title": "La tua Carta Giovani Nazionale",
-        "content": "Questa è la schermata di dettaglio della tua Carta Giovani Nazionale. Da qui puoi visualizzare la lista degli esercenti che aderiscono all'iniziativa, generare un codice sconto temporaneo o copiare il tuo numero di carta EYCA se hai tra i 18 e i 30 anni.",
+        "content": "Questa è la schermata di dettaglio della tua Carta Giovani Nazionale. Da qui puoi visualizzare la lista degli esercenti e delle istituzioni che aderiscono all'iniziativa e le relative agevolazioni, o copiare il tuo numero di carta EYCA se hai tra i 18 e i 30 anni.",
         "faqs": [
           {
-            "title": "Come si usa la Carta Giovani Nazionale per ottenere gli sconti?",
-            "body": "Per acquisti presso strutture fisiche basterà aprire l'App IO e mostrare la Carta Giovani Nazionale alla cassa. Per gli acquisti online devi generare un codice sconto temporaneo e incollarlo nel campo sconto presente nel portale dell'esercente. Se il codice sconto non dovesse funzionare verifica nella scheda dell'esercente di tuo interesse se è presente un codice sconto. Se lo fosse, inserisci quel codice nel campo sconto. Se il codice inserito è valido, lo sconto verrà automaticamente calcolato al tuo carrello."
+            "title": "Come posso ottenere sconti con la Carta Giovani Nazionale?",
+            "body": "Per acquisti presso strutture fisiche, apri l'app IO e mostra la Carta Giovani Nazionale prima del pagamento. Per gli acquisti online, copia il codice sconto che trovi nella scheda dell'agevolazione di tuo interesse e incollalo nel campo sconto presente nel portale dell'esercente. Se il codice inserito è corretto, lo sconto verrà automaticamente applicato al tuo carrello."
           },
           {
             "title": "Cos'è il circuito EYCA?",
-            "body": "Il circuito EYCA unisce tutte le carte giovani dei diversi Paesi europei e offre agevolazioni in ottica di reciprocità: un giovane italiano con Carta Giovani Nazionale aderente a EYCA può usufruire dei benefici previsti nei Paesi aderenti, così come i giovani stranieri in visita nel nostro Paese, potranno utilizzare le loro carte EYCA presso gli esercenti aderenti a Carta Giovani Nazionale."
+            "body": "Il circuito EYCA unisce tutte le carte giovani dei Paesi europei e offre agevolazioni in ottica di reciprocità: un giovane italiano con Carta Giovani Nazionale aderente a EYCA può usufruire dei benefici previsti nei Paesi aderenti, così come i giovani stranieri in visita nel nostro Paese, potranno utilizzare le loro carte EYCA presso gli esercenti aderenti a Carta Giovani Nazionale."
           },
           {
             "title": "Cosa devo fare per aderire a EYCA?",
-            "body": "L'adesione ad EYCA è prevista solo per giovani fino ai 30 anni compiuti. Se rientri in questa fascia d'età non dovrai fare nulla. L'App IO comunicherà la richiesta ai sistemi di EYCA. Se nel dettaglio della tua Carta Giovani Nazionale compaiono anche il numero di carta EYCA e il relativo logo, puoi considerarla abilitata anche al circuito europeo."
+            "body": "L'adesione a EYCA è prevista solo per i giovani fino ai 30 anni compiuti. Se rientri in questa fascia d'età non dovrai fare nulla: sarà IO a comunicare la richiesta ai sistemi di EYCA. Nel dettaglio della tua Carta Giovani Nazionale compariranno il numero di carta e il logo EYCA. Questi dati ti serviranno per accedere alle agevolazioni previste nel circuito europeo."
           },
           {
             "title": "Quando scade la mia Carta Giovani Nazionale?",
-            "body": "La tua Carta Giovani Nazionale perde validità al compimento del 36esimo anno di età. La data di scadenza è indicata nel dettaglio della tua Carta sempre consultabile nella sezione “Portafoglio” dell’App. Dopo i 30 anni, in ogni caso, puoi usufruire soltanto delle agevolazioni promosse sul territorio nazionale, dal momento che quelle offerte dal circuito EYCA a livello europeo sono valide fino al compimento del 31° anno di età."
+            "body": "La tua Carta Giovani Nazionale perde validità al compimento del 36esimo anno di età. La data di scadenza è indicata nel dettaglio della tua Carta sempre consultabile nella sezione 'Portafoglio' dell’App. Dopo i 30 anni, in ogni caso, puoi usufruire soltanto delle agevolazioni promosse sul territorio nazionale, dal momento che quelle offerte dal circuito EYCA a livello europeo sono valide fino al compimento del 31° anno di età."
           },
           {
             "title": "Posso disattivare la mia Carta Giovani Nazionale?",
-            "body": "No, la tua Carta verrà disattivata alla sua scadenza naturale. L’attivazione, in ogni caso, non comporta vincoli di alcun tipo; se non ti interessano gli sconti a cui dà diritto, puoi semplicemente non usarla."
+            "body": "Sì. Dalla schermata di dettaglio della CGN premi 'Disattiva la tua carta' e conferma. Da quel momento non vedrai più la CGN nel portafoglio. Disattivando la CGN, perdi anche i diritti relativi al circuito EYCA."
           },
           {
             "title": "Posso condividere le agevolazioni della Carta Giovani Nazionale con i miei familiari e amici?",
@@ -281,148 +790,41 @@
           },
           {
             "title": "Se utilizzo le agevolazioni della mia Carta Giovani Nazionale per un acquisto online, l’applicazione dello sconto è immediata o riceverò un rimborso successivamente?",
-            "body": "L’applicazione dello sconto è immediata. Assicurati di digitare correttamente il codice sconto in fase di acquisto, per vederlo subito applicato nel carrello dell’e-commerce dell’esercente."
+            "body": "L’applicazione dello sconto è immediata. Nel caso in cui l’agevolazione preveda l’inserimento di un codice sconto in fase di acquisto, assicurati di digitarlo  correttamente, per vedere subito applicato lo sconto al carrello dell’e-commerce dell’operatore."
           },
           {
             "title": "Quanti acquisti, online o fisici, posso effettuare usufruendo delle agevolazioni della Carta Giovani Nazionale?",
-            "body": "L’iniziativa non prevede un limite al numero degli sconti utilizzabili. In ogni caso, ogni esercente convenzionato può disporre autonomamente delle modalità di utilizzo dei codici sconto che mette a disposizione rendendo esplicite eventuali condizioni relative alle proprie agevolazioni."
+            "body": "L’iniziativa non prevede un limite al numero degli sconti utilizzabili. In ogni caso, ogni operatore convenzionato può disporre autonomamente delle modalità di utilizzo dei codici sconto che mette a disposizione rendendo esplicite eventuali condizioni nella scheda relativa alle proprie agevolazioni, sempre visibile nell’App IO. "
           }
         ]
       },
       {
         "route_name": "CGN_MERCHANTS_LIST",
-        "title": "Lista esercenti",
-        "content": "Qui puoi visualizzare la lista sempre aggiornata degli esercenti che aderiscono all'iniziativa. La lista contiene sia strutture fisiche che operatori online.",
+        "title": "Lista operatori",
+        "content": "Qui puoi visualizzare la lista sempre aggiornata degli esercenti e delle istituzioni che aderiscono all'iniziativa. La lista contiene sia strutture fisiche che operatori online.",
         "faqs": [
           {
-            "title": "Come si usa la Carta Giovani Nazionale per ottenere gli sconti?",
-            "body": "Per acquisti presso strutture fisiche basterà aprire l'App IO e mostrare la Carta Giovani Nazionale alla cassa. Per gli acquisti online devi generare un codice sconto temporaneo e incollarlo nel campo sconto presente nel portale dell'esercente. Se il codice sconto non dovesse funzionare verifica nella scheda dell'esercente di tuo interesse se è presente un codice sconto. Se lo fosse, inserisci quel codice nel campo sconto. Se il codice inserito è valido, lo sconto verrà automaticamente calcolato al tuo carrello."
+            "title": "Come posso ottenere sconti con la Carta Giovani Nazionale?",
+            "body": "Per acquisti presso strutture fisiche, apri l'app IO e mostra la Carta Giovani Nazionale prima del pagamento. Per gli acquisti online, copia il codice sconto che trovi nella scheda dell'agevolazione di tuo interesse e incollalo nel campo sconto presente nel portale dell'esercente. Se il codice inserito è corretto, lo sconto verrà automaticamente applicato al tuo carrello."
           },
           {
-            "title": "Perché il codice sconto temporaneo non funziona?",
-            "body": "Se il codice non risulta valido, può dipendere da diversi motivi: \n\n - non hai digitato correttamente il codice sconto in fase di acquisto; \n\n - l’esercente prescelto applica particolari condizioni relative alle modalità di utilizzo e alla validità dello sconto: verifica nella scheda servizi dell’esercente se ci sono indicazioni al riguardo. \n\n - hai utilizzato un codice generato tramite l’app IO, ma l’esercente fornisce uno specifico codice sconto per quel servizio: verifica nella scheda servizi dell’esercente se è già presente un codice sconto. \n\n Se i casi descritti sopra non ti aiutano a risolvere il tuo problema, contatta l'assistenza, aprendo una segnalazione qui sotto."
+            "title": "Perché il codice sconto non funziona?",
+            "body": "Se il codice non risulta valido: \n\n - verifica di averlo inserito correttamente; \n\n - Assicurati che sia ancora valido: alcuni codici scadono nel giro di poco tempo; \n\n - Controlla nel dettaglio dell'agevolazione se l'operatore applica condizioni relative alle modalità di utilizzo e alla validità dello sconto. \n\n Se il problema persiste, contatta l’assistenza dell’operatore."
           }
         ]
       },
       {
         "route_name": "CGN_MERCHANTS_DETAIL",
-        "title": "Dettaglio esercente",
-        "content": "In questa schermata trovi tutte le informazioni relative all'esercente che hai selezionato, incluse le agevolazioni in corso.",
+        "title": "Dettaglio operatore",
+        "content": "In questa schermata trovi tutte le informazioni relative all'operatore che hai selezionato, incluse le agevolazioni in corso di validità.",
         "faqs": [
           {
-            "title": "Come si usa la Carta Giovani Nazionale per ottenere gli sconti?",
-            "body": "Per acquisti presso strutture fisiche basterà aprire l'App IO e mostrare la Carta Giovani Nazionale alla cassa. Per gli acquisti online devi generare un codice sconto temporaneo e incollarlo nel campo sconto presente nel portale dell'esercente. Se il codice sconto non dovesse funzionare verifica nella scheda dell'esercente di tuo interesse se è presente un codice sconto. Se lo fosse, inserisci quel codice nel campo sconto. Se il codice inserito è valido, lo sconto verrà automaticamente calcolato al tuo carrello."
+            "title": "Come posso ottenere sconti con la Carta Giovani Nazionale?",
+            "body": "Per acquisti presso strutture fisiche, apri l'app IO e mostra la Carta Giovani Nazionale prima del pagamento. Per gli acquisti online, copia il codice sconto che trovi nella scheda dell'agevolazione di tuo interesse e incollalo nel campo sconto presente nel portale dell'esercente. Se il codice inserito è corretto, lo sconto verrà automaticamente applicato al tuo carrello."
           },
           {
-            "title": "Perché il codice sconto temporaneo non funziona?",
-            "body": "Se il codice non risulta valido, può dipendere da diversi motivi: \n\n - non hai digitato correttamente il codice sconto in fase di acquisto; \n\n - l’esercente prescelto applica particolari condizioni relative alle modalità di utilizzo e alla validità dello sconto: verifica nella scheda servizi dell’esercente se ci sono indicazioni al riguardo. \n\n - hai utilizzato un codice generato tramite l’app IO, ma l’esercente fornisce uno specifico codice sconto per quel servizio: verifica nella scheda servizi dell’esercente se è già presente un codice sconto. \n\n Se i casi descritti sopra non ti aiutano a risolvere il tuo problema, contatta l'assistenza, aprendo una segnalazione qui sotto."
-          }
-        ]
-      },
-      {
-        "route_name": "CGN_DETAILS_OTP",
-        "title": "Il tuo codice sconto temporaneo",
-        "content": "Questa schermata mostra il codice sconto temporaneo che hai generato e che dovrai inserire nell'apposito campo presente nel portale dell'esercente aderente all'iniziativa di tuo interesse.",
-        "faqs": [
-          {
-            "title": "Perché il codice sconto temporaneo non funziona?",
-            "body": "Se il codice non risulta valido, può dipendere da diversi motivi: \n\n - non hai digitato correttamente il codice sconto in fase di acquisto; \n\n - l’esercente prescelto applica particolari condizioni relative alle modalità di utilizzo e alla validità dello sconto: verifica nella scheda servizi dell’esercente se ci sono indicazioni al riguardo. \n\n - hai utilizzato un codice generato tramite l’app IO, ma l’esercente fornisce uno specifico codice sconto per quel servizio: verifica nella scheda servizi dell’esercente se è già presente un codice sconto. \n\n Se i casi descritti sopra non ti aiutano a risolvere il tuo problema, contatta l'assistenza, aprendo una segnalazione qui sotto."
-          }
-        ]
-      },
-      {
-        "route_name": "BPD_INFORMATION_TOS",
-        "title": "Programma Cashback",
-        "content": "Qui sono visualizzate tutte le informazioni relative al Cashback, il provvedimento istituito dal Ministero dell'Economia e delle Finanze per incentivare l'utilizzo della moneta elettronica anche per piccole somme.",
-        "faqs": [
-          {
-            "title": "Come faccio a richiedere il Cashback?",
-            "body": "Se sei maggiorenne e risiedi in Italia, semplicemente premi sul pulsante 'Attiva il Cashback' in fondo alla pagina e segui il flusso che ti viene proposto.\nA seguito dell'autodichiarazione, ti verrà chiesto di:\n- inserire un IBAN, che utilizzeremo a fine periodo per rimborsarti eventuali importi accumulati;\n- aggiungere metodi di pagamento elettronici (o attivare quelli già presenti nel tuo portafoglio).\n\nEntrambi i passaggi sono facoltativi, ma ti consigliamo di effettuarli subito per evitare di dimenticarti e iniziare quanto prima ad accumulare transazioni valide."
-          },
-          {
-            "title": "Cosa serve per richiedere il Cashback?",
-            "body": "Devi essere maggiorenne, risiedere in Italia e avere almeno un IBAN a te intestato o cointestato e almeno un metodo di pagamento elettronico."
-          },
-          {
-            "title": "Ci sono limiti di reddito? Serve presentare una DSU per il calcolo dell’ISEE per accedere al Cashback?",
-            "body": "No, l’erogazione dei rimborsi previsti dal programma non è legata in alcun modo al reddito né alla situazione patrimoniale dei partecipanti."
-          },
-          {
-            "title": "Possono partecipare tutti i componenti maggiorenni dello stesso nucleo familiare?",
-            "body": "Per aderire al Cashback non c’è un limite al numero di partecipanti per nucleo familiare. Ogni componente maggiorenne e residente in Italia può iscriversi individualmente al programma e ricevere il proprio rimborso."
-          },
-          {
-            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
-            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
-          }
-        ]
-      },
-      {
-        "route_name": "BPD_DECLARATION",
-        "title": "Iscrizione al Cashback",
-        "content": "Leggi le condizioni descritte in questa pagina e, se corrispondono al vero, spunta i relativi quadratini, premendoli.\nPuoi proseguire nell'attivazione del Cashback solo se tutti e 4 i quadratini sono spuntati.\nTi ricordiamo che dichiarando il falso potrai incorrere in sanzioni penali, oltre a perdere il diritto al rimborso di eventuali importi accumulati ai sensi degli [Articoli 46 e 47 del Dpr 28 dicembre 2000 n. 445](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:2000-12-28;445)",
-        "faqs": [
-          {
-            "title": "Cosa vuole dire \"acquisti non legati ad attività di Impresa, Arte o Professione\"?",
-            "body": "Significa che non sono valide le transazioni per acquisti legati alla propria attività professionale, ad esempio per l'acquisto di materiale per l'ufficio. I cittadini devono attivare al Cashback solo i metodi di pagamento con cui effettuano acquisti di carattere esclusivamente personale."
-          },
-          {
-            "title": "Per aderire devo avere la cittadinanza italiana?",
-            "body": "No, è sufficiente che tu abbia la residenza in Italia."
-          },
-          {
-            "title": "Mio/a figlio/a è minorenne, ma ha una carta; può partecipare all’iniziativa?",
-            "body": "No, un minorenne non può partecipare al Cashback. Solo se sei il o la titolare della carta di tuo/a figlio/a, puoi registrarla tra i metodi di pagamento elettronici e attivarla sul tuo profilo ai fini del Cashback."
-          }
-        ]
-      },
-      {
-        "route_name": "BPD_ENROLL_PAYMENT_METHODS",
-        "title": "Abilita i tuoi metodi di pagamento al Cashback",
-        "content": "In questa schermata ti mostriamo i metodi di pagamento che hai già registrato nel tuo Portafoglio in IO.\nSeleziona quelli che vuoi attivare per il Cashback – premendo sull'icona grigia alla destra dell'elemento nella lista – e conferma la tua scelta.\nTi ricordiamo che puoi attivare ai fini del Cashback solo i metodi di pagamento **a te intestati.**",
-        "faqs": [
-          {
-            "title": "Cosa vuol dire 'Metodi di pagamento non attivabili o non compatibili'?",
-            "body": "Se nella lista vedi metodi di pagamento sotto questa dicitura, significa che alcuni metodi che hai salvato non possono essere attivati ai fini del Cashback. Puoi toccare la 'i' a fianco di ciascun elemento per leggere la motivazione."
-          },
-          {
-            "title": "Quali metodi di pagamento posso usare per il Cashback?",
-            "body": "Ti invitiamo a controllare la lista completa al seguente link: [Metodi di Pagamento](https://io.italia.it/metodi-pagamento).\nStiamo lavorando per includere quanti più metodi di pagamento elettronico possibile, per cui la lista si potrebbe presto aggiornare!"
-          },
-          {
-            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
-            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
-            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
-            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
-          }
-        ]
-      },
-      {
-        "route_name": "BPD_NO_PAYMENT_METHODS",
-        "title": "Salva i tuoi metodi di pagamento e abilitali al Cashback",
-        "content": "Per iniziare a collezionare transazioni valide che ti permettano di accumulare il cashback, è necessario salvare in IO i tuoi metodi di pagamento elettronico e abilitarli al Cashback.\nPuoi farlo anche in un secondo momento, ma ti informiamo che inizieremo a collezionare le transazioni su un determinato metodo a partire dalle 00:01 del giorno successivo alla sua attivazione in IO.\nTi ricordiamo che puoi attivare ai fini del Cashback solo i metodi di pagamento **a te intestati**.",
-        "faqs": [
-          {
-            "title": "Quali metodi di pagamento posso usare per il Cashback?",
-            "body": "Ti invitiamo a controllare la lista completa al seguente link: [Metodi di Pagamento](https://io.italia.it/metodi-pagamento).\nStiamo lavorando per includere quanti più metodi di pagamento elettronico possibile, per cui la lista si potrebbe presto aggiornare!"
-          },
-          {
-            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
-            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)."
-          },
-          {
-            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
-            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)."
-          },
-          {
-            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
-            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
+            "title": "Perché il codice sconto non funziona?",
+            "body": "Se il codice non risulta valido: \n\n - verifica di averlo inserito correttamente; \n\n - Assicurati che sia ancora valido: alcuni codici scadono nel giro di poco tempo; \n\n - Controlla nel dettaglio dell'agevolazione se l'operatore applica condizioni relative alle modalità di utilizzo e alla validità dello sconto. \n\n Se il problema persiste, contatta l’assistenza dell’operatore."
           }
         ]
       },
@@ -532,136 +934,13 @@
         ]
       },
       {
-        "route_name": "WALLET_ONBOARDING_BANCOMAT_CHOOSE_BANK",
-        "title": "Informativa sul trattamento dei dati personali",
-        "content": "In questa schermata ti invitiamo a leggere l'informativa prima di procedere all'aggiunta delle tue carte PagoBANCOMAT.",
-        "faqs": [
-          {
-            "title": "Cosa devo fare adesso?",
-            "body": "IO è in grado di risalire a tutte le carte PagoBANCOMAT a te intestate sulla base del tuo codice fiscale, che viene preso dall'account SPID o CIE con cui hai effettuato l'accesso. **In questo caso premi semplicemente su Continua.**\nSe vuoi puoi anche cercare il nome della tua banca, ma non è necessario."
-          },
-          {
-            "title": "Perché non trovo la mia banca?",
-            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una Banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni.\n\n**Premi su Continua e IO cercherà tutte le carte PagoBANCOMAT a te intestate** sulla base del tuo codice fiscale, che viene preso dall'account SPID o CIE con cui hai effettuato l'accesso."
-          }
-        ]
-      },
-      {
         "route_name": "WALLET_ONBOARDING_BANCOMAT_SEARCH_AVAILABLE_USER_BANCOMAT",
         "title": "Le tue carte PagoBANCOMAT",
         "content": "In questa schermata ti mostriamo la o le carte PagoBANCOMAT a te intestate. Puoi aggiungerle premendo 'Aggiungi', oppure saltare la carta in questione per uscire dal flusso o passare alla carta successiva nel caso ne siano state trovate più di una.",
         "faqs": [
           {
-            "title": "Una volta abilitata la carta, posso iniziare subito a collezionare transazioni?",
-            "body": "No, quando si aggiunge un nuovo metodo di pagamento, verranno collezionate le transazioni effettuate a partire dalle 00:01 del giorno successivo a quello dell'attivazione."
-          },
-          {
             "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
             "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni."
-          },
-          {
-            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
-            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
-            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Posso salvare tra i metodi di pagamento per il Cashback una carta già registrata ai fini del programma da un altro partecipante?",
-            "body": "No, lo stesso metodo di pagamento non può essere attivato contemporaneamente da due o più partecipanti al programma."
-          },
-          {
-            "title": "Ho appena registrato un metodo di pagamento al Cashback sull’app IO, posso fare da subito acquisti validi ai fini del programma?",
-            "body": "No, saranno conteggiati come validi per il Cashback gli acquisti effettuati con il metodo di pagamento che hai attivato, a partire dalle ore 00:01 del giorno seguente all’attivazione."
-          }
-        ]
-      },
-      {
-        "route_name": "WALLET_ONBOARDING_BANCOMAT_SUGGEST_BPD_ACTIVATION",
-        "title": "Vuoi iscriverti al programma Cashback?",
-        "content": "Se stai visualizzando questa schermata, significa che hai appena aggiunto metodi di pagamento compatibili con l'iniziativa Cashback.\nSe vuoi iscriverti per provare a ottenere un rimborso sui tuoi acquisti effettuati con strumenti di pagamento elettronico, premi su **Info e Attivazione**, altrimenti premi **No, grazie.**",
-        "faqs": [
-          {
-            "title": "Quali metodi di pagamento posso usare per partecipare al Cashback?",
-            "body": "Puoi partecipare al Cashback con:\n- carte di credito;\n-carte di debito su circuiti internazionali e su circuito PagoBANCOMAT;\n- carte prepagate;\n- le cosiddette carte fedeltà, ovvero carte e app di pagamento connesse a circuiti privativi e/o a spendibilità limitata (esclusi, quindi, quelli solo per accumulo punti);\n- app di pagamento, come ad esempio Satispay o BANCOMAT Pay;\n- altri sistemi di pagamento, come ad esempio Google Pay e Apple Pay (a partire dal 2021)."
-          },
-          {
-            "title": "Posso cancellarmi dal Cashback in qualsiasi momento?",
-            "body": "Sì. Se ti sei iscritto al programma tramite app IO, puoi sempre recedere cliccando su 'Cancella la tua iscrizione al Cashback' dalla schermata di dettaglio Cashback nella sezione 'Portafoglio'.\nSe invece per iscriverti hai usato uno di uno degli [Issuer Convenzionati](https://io.italia.it/cashback/issuer), puoi cancellarti  solo se non hai attivi altri metodi di pagamento su altri canali."
-          }
-        ]
-      },
-      {
-        "route_name": "WALLET_ONBOARDING_BANCOMAT_ACTIVATE_BPD_NEW",
-        "title": "Attiva il Cashback sulle tue carte PagoBANCOMAT",
-        "content": "In questa schermata ti chiediamo di abilitare i metodi di pagamento appena aggiunti per il Cashback.\nUna volta attivi, potrai iniziare a collezionare transazioni valide a partire dal giorno successivo alla data di attivazione.\n\nPer attivare i metodi, devi semplicemente premere sull'icona grigia alla destra dell'elemento. Se l'icona diventa blu, allora il metodo selezionato è attivo.",
-        "faqs": [
-          {
-            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
-            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
-            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
-            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
-          },
-          {
-            "title": "Ho appena registrato la mia carta al Cashback sull’app IO, posso fare da subito acquisti validi ai fini del programma?",
-            "body": "No, saranno conteggiati come validi per il Cashback gli acquisti effettuati con il metodo di pagamento che hai attivato, a partire dalle ore 00:01 del giorno seguente all’attivazione."
-          }
-        ]
-      },
-      {
-        "route_name": "WALLET_ONBOARDING_CREDIT_CARD_ACTIVATE_BPD_NEW",
-        "title": "Attiva il Cashback sulle tue carte",
-        "content": "In questa schermata ti chiediamo di abilitare i metodi di pagamento appena aggiunti per il Cashback.\nUna volta attivi, potrai iniziare a collezionare transazioni valide a partire dal giorno successivo alla data di attivazione.\n\nPer attivare i metodi, devi semplicemente premere sull'icona grigia alla destra dell'elemento. Se l'icona diventa blu, allora il metodo selezionato è attivo.",
-        "faqs": [
-          {
-            "title": "Dopo aver aderito al Cashback, posso aggiungere nuovi metodi di pagamento (o eliminarne alcuni) in qualsiasi momento?",
-            "body": "Sì, per tutta la durata del programma, è sempre possibile attivare metodi di pagamento aggiuntivi (o disattivare quelli utilizzati fino a un determinato periodo) per il Cashback. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Quanti metodi di pagamento elettronico posso attivare per il Cashback?",
-            "body": "Non c’è un limite: puoi attivare tutti i tuoi metodi di pagamento elettronici, che siano registrabili per partecipare al programma, e utilizzarli per acquisti personali, fuori dall’attività professionale. [Verifica quali metodi di pagamento puoi già attivare](https://io.italia.it/metodi-pagamento)"
-          },
-          {
-            "title": "Posso partecipare al Cashback anche con una carta intestata a un'altra persona?",
-            "body": "Devi essere tu il titolare dei metodi di pagamento elettronico su cui attivi il Cashback. Inoltre, anche nel caso in cui lo stesso metodo di pagamento sia cointestato, solo uno dei titolari può concorrere al programma con quello strumento."
-          },
-          {
-            "title": "Ho appena registrato la mia carta al Cashback sull’app IO, posso fare da subito acquisti validi ai fini del programma?",
-            "body": "No, saranno conteggiati come validi per il Cashback gli acquisti effettuati con il metodo di pagamento che hai attivato, a partire dalle ore 00:01 del giorno seguente all’attivazione."
-          }
-        ]
-      },
-      {
-        "route_name": "WALLET_BANCOMAT_DETAIL",
-        "title": "La tua carta PagoBANCOMAT",
-        "content": "Questa è la schermata di dettaglio della tua carta PagoBANCOMAT. Sulla carta sono rappresentati il logo della banca che ha emesso la carta e la data di scadenza.",
-        "faqs": [
-          {
-            "title": "Cosa posso fare da qui?",
-            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento, come ad esempio il Cashback.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
-          },
-          {
-            "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
-            "body": "Probabilmente la tua carta PagoBANCOMAT è stata emessa da una banca differente. Questo succede soprattutto per le banche online o in caso di incorporazioni."
-          },
-          {
-            "title": "Perché c'è scritto che la mia carta non è compatibile con i pagamenti in app?",
-            "body": "Il circuito PagoBANCOMAT non ti consente di effettuare pagamenti online, ma esistono altri modi per pagare su IO con la tua carta: \n- aggiungi al Portafoglio BANCOMAT Pay, se la tua banca offre questo servizio;\n- aggiungi il secondo circuito, se la tua carta ha il codice di sicurezza ed è già abilitata ai pagamenti online."
-          },
-          {
-            "title": "Cosa succede se disattivo o elimino dall’app IO un metodo di pagamento su cui è attivo il Cashback?",
-            "body": "Continuerai a vedere le transazioni valide effettuate con quel metodo fino a quel giorno, ma non potrai accumularne di nuove dopo la mezzanotte del giorno in cui l’hai cancellato."
-          },
-          {
-            "title": "Ho disattivato il Cashback su una mia carta ma vedo che, con quella carta, continuo ancora a collezionare acquisti validi ai fini del programma, come mai?",
-            "body": "Se scegli di cancellare o sospendere temporaneamente un metodo di pagamento precedentemente registrato, la disattivazione o la sospensione della raccolta delle transazioni su quello strumento è effettiva a partire dalla mezzanotte del giorno successivo."
           }
         ]
       },
@@ -690,8 +969,12 @@
         "content": "Questo servizio ti permette di cercare tutte le carte con circuito internazionale (Maestro, Mastercard, Visa e V-Pay) a te intestate.",
         "faqs": [
           {
+            "title": "Posso aggiungere anche carte con circuito internazionale?",
+            "body": "Sì, puoi aggiungere anche carte di debito o credito con circuito internazionale (Maestro, Mastercard, VISA e V-Pay), anche se non sono abilitate ai pagamenti online. Le carte devono essere intestate a te ed emesse dalle [banche aderenti](https://io.italia.it/cashback/carta-non-abilitata-pagamenti-online) al servizio."
+          },
+          {
             "title": "Perché non trovo alcuna carta?",
-            "body": "Il servizio cerca soltanto carte intestate a te, su circuito internazionale (Maestro, Mastercard, Visa e V-Pay) presso le banche aderenti al servizio. Assicurati che la carta in tuo possesso sia effettivamente intestata a te."
+            "body": "Il servizio cerca solo carte con circuito internazionale intestate a te. Assicurati che la carta in tuo possesso sia effettivamente intestata a te e che sia emessa da una delle [banche aderenti](https://io.italia.it/cashback/carta-non-abilitata-pagamenti-online)"
           }
         ]
       },
@@ -721,7 +1004,7 @@
         "faqs": [
           {
             "title": "Cosa posso fare da qui?",
-            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento, come ad esempio il Cashback.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
+            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
           },
           {
             "title": "Perché il nome e il logo della banca sono diversi da quelli riportati sulla mia carta?",
@@ -734,119 +1017,33 @@
           {
             "title": "Perché il numero della carta è diverso?",
             "body": "IO ti mostra le ultime 4 cifre relative al circuito internazionale. Tale numero viene riportato anche sugli scontrini, quando effettui acquisti usando tale circuito. In alcuni casi, la carta potrebbe invece mostrare un numero differente, ma ciò non inficia l'aggiunta."
-          },
-          {
-            "title": "Cosa succede se disattivo o elimino dall’app IO un metodo di pagamento su cui è attivo il Cashback?",
-            "body": "Continuerai a vedere le transazioni valide effettuate con quel metodo fino a quel giorno, ma non potrai accumularne di nuove dopo la mezzanotte del giorno in cui l’hai cancellato."
-          },
-          {
-            "title": "Ho disattivato il Cashback su una mia carta ma vedo che, con quella carta, continuo ancora a collezionare acquisti validi ai fini del programma, come mai?",
-            "body": "Se scegli di cancellare o sospendere temporaneamente un metodo di pagamento precedentemente registrato, la disattivazione o la sospensione della raccolta delle transazioni su quello strumento è effettiva a partire dalla mezzanotte del giorno successivo."
-          }
-        ]
-      },
-      {
-        "route_name": "WALLET_PAYMENT_METHOD_DETAIL",
-        "title": "La tua carta di debito (o credito)",
-        "content": "Questa è la schermata di dettaglio della tua carta di debito (o credito). Sulla carta sono rappresentati il logo del circuito, l'intestatario, la data di scadenza e le ultime 4 cifre della carta.",
-        "faqs": [
-          {
-            "title": "Cosa posso fare da qui?",
-            "body": "Puoi attivare o disattivare alcune funzioni sullo specifico metodo di pagamento, come ad esempio il Cashback.\nPuoi inoltre eliminare questo metodo di pagamento dal tuo Portafoglio."
-          },
-          {
-            "title": "Cosa sono i pagamenti in app?",
-            "body": "Se lo desideri, questo metodo ti permette di pagare su IO tutti gli avvisi pagoPA, anche quelli cartacei."
-          },
-          {
-            "title": "Cosa significa 'Usa come preferito'?",
-            "body": "Quando paghi in app, IO può mostrare in automatico questo metodo di pagamento se lo imposti come preferito. È necessario avere almeno un metodo preferito nel tuo Portafoglio."
-          },
-          {
-            "title": "Cosa succede se disattivo o elimino dall’app IO un metodo di pagamento su cui è attivo il Cashback?",
-            "body": "Continuerai a vedere le transazioni valide effettuate con quel metodo fino a quel giorno, ma non potrai accumularne di nuove dopo la mezzanotte del giorno in cui l’hai cancellato."
-          },
-          {
-            "title": "Ho disattivato il Cashback su una mia carta ma vedo che, con quella carta, continuo ancora a collezionare acquisti validi ai fini del programma, come mai?",
-            "body": "Se scegli di cancellare o sospendere temporaneamente un metodo di pagamento precedentemente registrato, la disattivazione o la sospensione della raccolta delle transazioni su quello strumento è effettiva a partire dalla mezzanotte del giorno successivo."
-          }
-        ]
-      },
-      {
-        "route_name": "AUTHENTICATION_LANDING",
-        "title": "Come accedere all'app IO",
-        "content": "Per accedere all'app IO dovrai autenticarti con la tua identità SPID (Sistema Pubblico di Identità Digitale) oppure utilizzando la CIE (Carta d'Identità Elettronica).\n**Grazie a questi sistemi di registrazione il tuo accesso all'app sarà sempre sicuro.** \nPer richiedere un'identità digitale SPID puoi visitare [spid.gov.it](https://www.spid.gov.it) e scegliere un Identity Provider tra quelli proposti.\nSe invece desideri fare richiesta per la CIE, puoi consultare maggiori informazioni sul sito del tuo Comune e prenotare un appuntamento.",
-        "faqs": [
-          {
-            "title": "Cos'è SPID?",
-            "body": "SPID è il sistema di autenticazione che permette a cittadini ed imprese di accedere ai servizi online della pubblica amministrazione e dei privati aderenti con un’identità digitale unica. L’identità SPID è costituita da credenziali (nome utente e password) che vengono rilasciate all’utente e che permettono l’accesso a tutti i servizi online."
-          },
-          {
-            "title": "Come puoi ottenere SPID?",
-            "body": "Per ottenere le tue credenziali SPID devi rivolgerti a Aruba, Infocert, Intesa, Namirial, Poste, Register, Sielte, Tim o Lepida. Questi soggetti (detti Identity Provider) ti offrono diverse modalità per richiedere e ottenere SPID, puoi scegliere quella più adatta alle tue esigenze. Tutte le informazioni su dove e come chiedere le tue credenziali SPID sul sito [https://www.spid.gov.it/cos-e-spid/come-attivare-spid/](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/)."
-          },
-          {
-            "title": "Hai perso le tue credenziali SPID?",
-            "body": "Non ti preoccupare, è sempre possibile recuperare le tue credenziali.\n- Se hai richiesto SPID a **Aruba** segui la procedura di recupero qui: [https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx)\n- Se hai richiesto SPID a **Infocert** segui la procedura di recupero qui: [https://my.infocert.it/selfcare/#/recoveryPin](https://my.infocert.it/selfcare/#/recoveryPin)\n- Se hai richiesto SPID a **Namirial** segui la procedura di recupero qui: [https://portale.namirialtsp.com/private/user/spid_reset.php](https://portale.namirialtsp.com/private/user/spid_reset.php)\n- Se hai richiesto SPID a **Intesa** segui la procedura di recupero qui: [https://spid.intesa.it/area-privata/forgot-password.aspx](https://spid.intesa.it/area-privata/forgot-password.aspx)\n- Se hai richiesto SPID a **Poste** segui la procedura di recupero qui: [https://posteid.poste.it/recuperocredenziali.shtml](https://posteid.poste.it/recuperocredenziali.shtml)\n- Se hai richiesto SPID a **Register** segui la procedura di recupero qui:\n(username dimenticata) [https://spid.register.it/selfcare/recovery/username](https://spid.register.it/selfcare/recovery/username)\n(password dimenticata) [https://spid.register.it/selfcare/recovery/password](https://spid.register.it/selfcare/recovery/password)\n- Se hai richiesto SPID a **Sielte** segui la procedura di recupero qui:\n(password dimenticata) [https://myid.sieltecloud.it/profile/recovery/forgotPassword](https://myid.sieltecloud.it/profile/recovery/forgotPassword)\n- Se hai richiesto SPID a **Tim** segui la procedura di recupero qui:\n(username dimenticata) [https://login.id.tim.it/mps/fu.php](https://login.id.tim.it/mps/fu.php)\n(password dimenticata) [https://login.id.tim.it/mps/fp.php](https://login.id.tim.it/mps/fp.php)\n- Se hai richiesto SPID a **Lepida** segui la procedura di recupero qui: [https://id.lepida.it/idm/app/recupero_credenziali.jsp](https://id.lepida.it/idm/app/recupero_credenziali.jsp)"
-          },
-          {
-            "title": "Cos'è la CIE?",
-            "body": "La CIE, la Carta d’Identità Elettronica, è un documento elettronico altamente sicuro, dotato di un microprocessore a radiofrequenza che ne permette l’utilizzo in svariati scenari, incluso l’accesso a servizi online. Risponde alle esigenze di sicurezza del nostro Paese e sostituisce la versione cartacea."
-          },
-          {
-            "title": "Come puoi ottenere la CIE?",
-            "body": "Puoi collegarti all’indirizzo [https://www.prenotazionicie.interno.gov.it/](https://www.prenotazionicie.interno.gov.it) e digitare il nome del tuo Comune, per verificare se utilizza il sistema di appuntamenti online Agenda CIE. In caso positivo, puoi procedere alla prenotazione dell'appuntamento direttamente dal sito, senza nessun login. In alternativa, puoi chiedere un appuntamento sempre online sul sito del tuo Comune, oppure recandoti ad uno degli uffici comunali."
-          },
-          {
-            "title": "Come funziona il Certificato Verde COVID-19 (Green Pass) su IO?",
-            "body": "Il Certificato Verde COVID-19 viene rilasciato dalla Piattaforma Nazionale DGC di cui è titolare il Ministero della Salute e certifica l'avvenuta vaccinazione, un test negativo o la guarigione dalla malattia.\nRiceverai su IO i tuoi certificati non appena verranno generati, sotto forma di messaggio in app. Non dovrai fare nessuna richiesta esplicita: basta aver fatto accesso a IO con SPID o CIE.\nPer saperne di più sul Certificato Verde COVID-19 visita il sito dedicato [dgc.gov.it](https://www.dgc.gov.it/). Per altre informazioni sul certificato su IO visita la [pagina dedicata su io.italia.it](https://io.italia.it/certificato-verde-green-pass-covid)"
-          },
-          {
-            "title": "Quando riceverò il Certificato Verde COVID-19 su IO?",
-            "body": "Il Certificato Verde COVID-19 viene inviato tramite IO non appena la Piattaforma Nazionale DGC di cui è titolare il Ministero della Salute lo genera. I tempi di generazione del certificato dipendono da diversi fattori, compresa la velocità con cui le varie strutture sanitarie inviano i dati alla Piattaforma Nazionale.\nDalla partenza dell'iniziativa potrebbe essere necessario qualche giorno per ricevere tutti i certificati. Per saperne di più visita [dgc.gov.it](https://www.dgc.gov.it/)"
-          },
-          {
-            "title": "Posso ricevere su IO i certificati dei miei familiari?",
-            "body": "No, su IO vengono inviati esclusivamente i certificati relativi all'utente autenticato nell'app attraverso le proprie credenziali SPID o CIE. Puoi comunque ottenere i certificati relativi ai tuoi familiari attraverso gli altri canali disponibili. Per saperne di più vai su [dgc.gov.it](https://www.dgc.gov.it/)"
-          },
-          {
-            "title": "Posso ricevere il certificato su IO anche se sono minorenne?",
-            "body": "Sì, per ricevere i tuoi certificati accedi a IO con la tua Carta d'Identità Elettronica."
-          },
-          {
-            "title": "IO è l'unico canale attraverso cui ottenere il Certificato Verde COVID-19?",
-            "body": "No. Puoi consultare tutti i canali disponibili sul sito dedicato [dgc.gov.it](https://www.dgc.gov.it/)"
-          },
-          {
-            "title": "Ho ricevuto tramite sms/mail il codice AUTHCODE per acquisire il Certificato, ma non vedo ancora nessun messaggio su IO. Cosa devo fare?",
-            "body": "Sull'app IO non devi inserire alcun codice: riceverai un messaggio non appena il tuo Certificato Verde sarà disponibile.\nPuoi utilizzare il codice AUTHCODE sugli altri canali; per saperne di più visita il sito [dgc.gov.it](https://www.dgc.gov.it/)"
-          },
-          {
-            "title": "Vuoi saperne di più sulla Certificazione Verde COVID-19?",
-            "body": "Per la Certificazione Verde su IO app, vai su [io.italia.it/certificato-verde-green-pass-covid](https://io.italia.it/certificato-verde-green-pass-covid) \nPer conoscere meglio l’iniziativa o gli altri canali disponibili visita [dgc.gov.it](https://www.dgc.gov.it/)"
-          },
-          {
-            "title": "Usi Android e non riesci ad aggiornare IO?",
-            "body": "Per provare a risolvere il problema, ti consigliamo di chiudere l'app 'Play Store' e successivamente premere questo link: https://play.google.com/store/apps/details?id=it.pagopa.io.app \nIn alternativa, riavvia il tuo dispositivo Android e [aggiorna nuovamente app IO dal Play Store](https://play.google.com/store/apps/details?id=it.pagopa.io.app)"
           }
         ]
       },
       {
         "route_name": "MESSAGES_HOME",
         "title": "Cosa puoi fare nei tuoi Messaggi",
-        "content": "**La sezione Messaggi raccoglie tutte le comunicazioni in arrivo dagli enti che offrono i propri servizi tramite IO**.\nÈ possibile fissare dei promemoria per le scadenze o procedere al pagamento di un avviso direttamente dal messaggio.\nI messaggi sono suddivisi tra **ricevuti** (che contiene tutti i messaggi arrivati e non archiviati), **scadenze** (che visualizza al suo interno solo i messaggi contenenti una data di scadenza, in modo da facilitare la gestione delle cose da fare), e **archiviati** (che tiene traccia di tutti i messaggi archiviati).\nPer archiviare un messaggio è sufficiente tenere premuta l'area del messaggio da archiviare, e selezionare il pulsante 'archivia' che comparirà in quel momento sullo schermo.",
+        "content": "**Nella sezione Messaggi trovi le comunicazioni che ti inviano gli enti aderenti a IO**.\nTi scriveranno solo enti che hanno qualcosa da dirti, come informarti di un avviso di pagamento, ricordarti una scadenza, darti un’informazione o comunicarti un aggiornamento. I messaggi sono suddivisi in due schede: 'Ricevuti', che contiene i messaggi che ricevi, e 'Archiviati', che contiene i messaggi che archivi.",
         "faqs": [
           {
             "title": "Che tipo di messaggi posso ricevere?",
-            "body": "L'app IO permette di ricevere diversi tipi di messaggi: avvisi di pagamento (con possibilità di pagare contestualmente tramite l’app), promemoria di scadenze, notifiche e aggiornamenti vari.\nNon si tratta di messaggi generici che riguardando l'attività dell'ente, ma di comunicazioni che ti riguardano personalmente, come ad esempio un messaggio che ti avvisa della scadenza di un documento. Non aspettarti di ricevere spam sull'app IO: ti scriveranno solo i servizi che hanno qualcosa di importante da dirti."
+            "body": "Su IO puoi ricevere diversi tipi di messaggi: avvisi di pagamento, promemoria di scadenze, notifiche e aggiornamenti. Non riceverai mai messaggi generici, ma sempre e solo comunicazioni che ti riguardano personalmente, come ad esempio un avviso di scadenza di un documento di identità"
           },
           {
-            "title": "Cosa succede se archivio i messaggi?",
-            "body": "I messaggi archiviati vengono spostati nella tab 'Archiviati' della sezione messaggi.\nQuesta modifica ha effetto solo sul telefono che stai utilizzando per effettuare l'operazione di archiviazione: se effettuerai l'accesso con le stesse credenziali su un altro dispositivo, ritroverai tutti i messaggi all'interno della categoria 'Ricevuti'. Puoi comunque rimuovere i messaggi dall'archivio e li ritroverai automaticamente nella tab principale 'Messaggi'."
+            "title": "Cosa posso fare nei miei messaggi?",
+            "body": "All’interno dei messaggi, puoi:\n- visualizzare un’informazione, come per esempio il Codice QR della tua Certificazione Verde;\n- fissare un promemoria per ricordarti di una scadenza;\n- procedere al pagamento di un avviso."
           },
           {
-            "title": "I messaggi possono essere cancellati?",
-            "body": "No, i messaggi ricevuti non possono essere cancellati dall'app.\nPer questo abbiamo creato la sezione ‘*Archiviati*’, dove puoi spostare i messaggi che non vuoi più vedere tra quelli ricevuti. In questo modo, se in futuro avrai bisogno di trovare informazioni contenute in un vecchio messaggio, puoi cercare direttamente nella scheda ‘*Archiviati*’."
+            "title": "Come posso archiviare un messaggio?",
+            "body": "Per archiviare un messaggio, tienilo premuto e seleziona il pulsante 'Archivia' che vedrai comparire sullo schermo. Il messaggio si sposterà nella scheda 'Archiviati'. Con la stessa modalità, puoi spostare i messaggi da 'Archiviati' a 'Ricevuti'."
+          },
+          {
+            "title": "Posso cancellare un messaggio?",
+            "body": "No, non puoi cancellare i messaggi che ricevi su IO, ma puoi spostarli in 'Archiviati'. In questo modo, se in futuro avrai bisogno di trovare informazioni contenute in un vecchio messaggio, puoi cercare direttamente in quella scheda."
+          },
+          {
+            "title": "Perché non vedo più la scheda 'In scadenza'?",
+            "body": "In precedenza, su IO era possibile vedere i messaggi in scadenza in un scheda separata, chiamata 'In scadenza'. Questa scheda non è più disponibile dopo che sono state introdotte delle novità per migliorare la sezione Messaggi."
           },
           {
             "title": "Come funziona il Certificato Verde COVID-19 (Green Pass) su IO?",
@@ -873,7 +1070,7 @@
             "body": "No. Puoi consultare tutti i canali disponibili sul sito dedicato [dgc.gov.it](https://www.dgc.gov.it/)"
           },
           {
-            "title": "Ho ricevuto tramite sms/mail il CUN (Codice Univoco Nazionale), dove va inserito?",
+            "title": "Ho ricevuto tramite sms/mail il CUN (Codice Univoco Nazionale). Dove va inserito?",
             "body": "Sull'app IO non devi inserire alcun codice: riceverai un messaggio non appena il tuo Certificato Verde sarà disponibile.\nPuoi utilizzare il codice CUN sugli altri canali; per saperne di più visita il sito [dgc.gov.it](https://www.dgc.gov.it/)"
           },
           {
@@ -883,10 +1080,6 @@
           {
             "title": "Vuoi saperne di più sulla Certificazione Verde COVID-19?",
             "body": "Per la Certificazione Verde su IO app, vai su [io.italia.it/certificato-verde-green-pass-covid](https://io.italia.it/certificato-verde-green-pass-covid) \nPer conoscere meglio l’iniziativa o gli altri canali disponibili visita [dgc.gov.it](https://www.dgc.gov.it/)"
-          },
-          {
-            "title": "Usi Android e non riesci ad aggiornare IO?",
-            "body": "Per provare a risolvere il problema, ti consigliamo di chiudere l'app 'Play Store' e successivamente premere questo link: https://play.google.com/store/apps/details?id=it.pagopa.io.app \nIn alternativa, riavvia il tuo dispositivo Android e [aggiorna nuovamente app IO dal Play Store](https://play.google.com/store/apps/details?id=it.pagopa.io.app)"
           }
         ]
       }
@@ -910,7 +1103,7 @@
         "recover_password": "https://my.infocert.it/selfcare/#/recoveryPin"
       },
       "intesaid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Intesa  selezionando una delle opzioni disponibili qui di seguito.",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Intesa selezionando una delle opzioni disponibili qui di seguito.",
         "email": "hdintesa@advalia.com",
         "helpdesk_form": "https://www.hda.intesa.it/area-clienti",
         "phone": "800805093",
@@ -936,7 +1129,7 @@
         "recover_password": "https://portal.namirialtsp.com/public/resetPassword.xhtml"
       },
       "posteid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
         "helpdesk_form": "https://www.poste.it/scrivici.html",
         "phone": "800007777",
         "web_site": "https://posteid.poste.it",
@@ -944,7 +1137,7 @@
         "recover_password": "https://posteid.poste.it/recuperocredenziali.shtml"
       },
       "sielteid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
         "helpdesk_form": "https://www.sielteid.it/contact.html#blocco-contatti-form",
         "phone": "00390957171301",
         "web_site": "https://www.sielteid.it/che-cos-e-sielteid.html",
@@ -958,7 +1151,7 @@
         "recover_password": "https://spid.register.it/selfcare/recovery/password"
       },
       "timid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim  selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
         "email": "supportotimid@telecomitalia.it",
         "helpdesk_form": "https://www.trusttechnologies.it/contatti/#form",
         "phone": "800405800",
@@ -969,7 +1162,628 @@
     }
   },
   "en": {
-    "screens": [],
+    "screens": [
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
+        "title": "Push notifications",
+        "content": "Here you can customize push notifications.",
+        "faqs": [
+          {
+            "title": "What does ‘Show Previews’ mean?",
+            "body": "By enabling ‘Show previews’, push notifications from IO will include the sender and subject of the messages. That way, you can know who messaged you without entering the app."
+          },
+          {
+            "title": "What does ‘Allow reminders’ mean?",
+            "body": "By enabling ‘Allow Reminders’, upon the sender's request you will receive push notifications close to deadlines or when you have unread messages."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_PREFERENCES",
+        "title": "Push notifications",
+        "content": "Here you can customize push notifications.",
+        "faqs": [
+          {
+            "title": "What does ‘Show Previews’ mean?",
+            "body": "By enabling ‘Show previews’, push notifications from IO will include the sender and subject of the messages. That way, you can know who messaged you without entering the app."
+          },
+          {
+            "title": "What does ‘Allow reminders’ mean?",
+            "body": "By enabling ‘Allow Reminders’, upon the sender's request you will receive push notifications close to deadlines or when you have unread messages."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_NOTIFICATIONS",
+        "title": "Push notifications",
+        "content": "Here you can customize push notifications.",
+        "faqs": [
+          {
+            "title": "What does ‘Show Previews’ mean?",
+            "body": "By enabling ‘Show previews’, push notifications from IO will include the sender and subject of the messages. That way, you can know who messaged you without entering the app."
+          },
+          {
+            "title": "What does ‘Allow reminders’ mean?",
+            "body": "By enabling ‘Allow Reminders’, upon the sender's request you will receive push notifications close to deadlines or when you have unread messages."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_LANDING",
+        "title": "How to access IO",
+        "content": "To access IO, you must authenticate with either your SPID identity or Electronic Identity Card (CIE). To activate SPID, follow the information found [on this website](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/). To request your CIE, go to your Municipality's website.",
+        "faqs": [
+          {
+            "title": "What is SPID?",
+            "body": "SPID is the authentication system that allows citizens and businesses to access online services of the Public Administration and participating individuals with a unique digital identity consisting of a username and password."
+          },
+          {
+            "title": "How can I get SPID?",
+            "body": "[At this website](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/) you will find all the information about where and how to activate SPID."
+          },
+          {
+            "title": "I have lost my SPID credentials. What can I do?",
+            "body": "Don't worry: you can recover them at any time. Select your Identity Provider to find out how to proceed: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in case of forgotten password](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste. en/recuperocredenziali.shtml), [Register, in case of forgotten username](https://spid.register.it/selfcare/recovery/username), [Register, in case of forgotten password](https://spid.register.it/selfcare/recovery/password), [Sielte, in case of forgotten password](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in case of forgotten username](https://login.id.tim.it/mps/fu.php), [Tim, in case of forgotten password](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)."
+          },
+          {
+            "title": "What is the CIE?",
+            "body": "The Electronic Identity Card (CIE) is the identity document of Italian citizens. It allows the verification of the identity of its holder and access to online services of public administrations."
+          },
+          {
+            "title": "How can I request the CIE?",
+            "body": "[Go to this website](https://www.prenotazionicie.interno.gov.it/) and type in the name of your municipality to see if it uses the Agenda CIE online appointment system. If it does, book an appointment. If it doesn’t, request an appointment from your municipality's website or go to a municipal office."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_IPD_SELECTION",
+        "title": "Your Identity Provider",
+        "content": "The Identity Provider is the manager of your digital identity. You can authenticate only after selecting the Identity Provider that issued your SPID.",
+        "faqs": [
+          {
+            "title": "What is an Identity Provider?",
+            "body": "SPID identity is issued by Identity Providers, who provide digital identities and manage user authentication. Your Identity Provider is the entity you chose as your SPID provider."
+          }
+        ]
+      },
+      {
+        "route_name": "CIE_PIN_SCREEN",
+        "title": "The PIN code of your CIE",
+        "content": "The PIN code on your Electronic Identity Card is an eight-digit code required to access the app.",
+        "faqs": [
+          {
+            "title": "Where do I find the PIN and PUK codes of the CIE?",
+            "body": "PIN and PUK codes are each composed of 8 digits: the first 4 digits were given to you at the registry office, while the last 4 were sent to your home address, along with the Electronic Identity Card. The PUK code is for unlocking the PIN code after three failed attempts."
+          },
+          {
+            "title": "I don't have the PIN and/or PUK code. What can I do?",
+            "body": "[At this website](https://www.cartaidentita.interno.gov.it/anagrafe/procedure/) you will find how to recover them."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_FINGERPRINT",
+        "title": "How biometric recognition works",
+        "content": "With biometric recognition, you can access the app without entering the unlock code each time. You can enable or disable it in the Profile section of the app.",
+        "faqs": [
+          {
+            "title": "When will I be asked for biometric recognition?",
+            "body": "If you have enabled it, you can use biometric recognition in place of the unlock code. Just like the unlock code, this authentication mode remains active for 30 days after your last login with SPID or CIE. After that time frame, you will need to re-authenticate."
+          },
+          {
+            "title": "How can I enable biometric recognition?",
+            "body": "If your phone supports biometric recognition, enable it from the system preferences. Then, go to the 'Profile' section and enable it there too."
+          },
+          {
+            "title": "How can I disable biometric recognition?",
+            "body": "Go to the 'Profile' section. Biometric recognition will already be turned off if your device does not support it, or if it is disabled in the system preferences."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_PIN",
+        "title": "How the unlock code works",
+        "content": "Here you can set up or change your unlock code. If this is your first time in the app, choose a code and memorize it so you can use it each time you need to log in. If you have already set it and can't remember it, press 'Did you forget the unlock code?' and set a new one. If you want to change it, press 'Change the unlock code'.\n\nThe unlock code is tied to the device you set it on: if you change devices, you will have to set it again the first time you log in to the app.",
+        "faqs": [
+          {
+            "title": "What is the unlock code?",
+            "body": "The unlock code is a six-digit code that you set up the first time you enter IO. It allows you to enter the app without having to insert SPID or CIE credentials each time. It is also required to view sensitive data, and to confirm specific operations, such as making a payment and deleting the account.\n\nThis authentication mode remains active for 30 days after your last login with SPID or CIE. After that time frame, you will need to re-authenticate and set up a new unlock code."
+          },
+          {
+            "title": "I forgot the unlock code. What can I do?",
+            "body": "Press 'Did you forget the unlock code?', insert your SPID or CIE credentials, and enter the new code."
+          },
+          {
+            "title": "How can I change the unlock code?",
+            "body": "Select 'Change the unlock code', insert your SPID or CIE credentials, and enter the new code."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_TOS",
+        "title": "Privacy Policy and Terms of Service",
+        "content": "Here you can find the full description of how IO handles your personal data and the terms of service of the app."
+      },
+      {
+        "route_name": "PROFILE_MAIN",
+        "title": "What you can do in your Profile",
+        "content": "Here you can manage your preferences and account, read our Privacy Policy and Terms of Service, and access the digital version of your Tax Code.",
+        "faqs": [
+          {
+            "title": "How is my privacy protected?",
+            "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). It is therefore a safe tool that protects your information and rights.\n\nFor more information, please read the Privacy Policy that you can find in this section under 'Privacy and Terms of Use.'"
+          },
+          {
+            "title": "What is the digital version of my Tax Code for?",
+            "body": "At the top of the page you will find the digital version of your Tax Code. This facsimile does not replace the actual card. You can show it to retailers who need its details or barcode, such as pharmacies or post offices.\n\nTo see the Tax Code details, tap the card. If you tap again, the document will zoom to full screen."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_DATA",
+        "title": "Your data",
+        "content": "Here you can view your first and last name and change the email address associated with IO.",
+        "faqs": [
+          {
+            "title": "How can I delete my account and data?",
+            "body": "Go to 'Privacy and Terms of Use' and select 'Delete your account.' When the deletion is complete, you will receive a confirmation message to the email address associated with the app. This does not mean that you will no longer be able to use IO: if you log in again, a new account will be generated."
+          },
+          {
+            "title": "How I change my email address?",
+            "body": "Tap 'Email Address', then 'Change Email' and enter the new address."
+          }
+        ]
+      },
+      {
+        "route_name": "READ_EMAIL_SCREEN",
+        "title": "Your email address",
+        "content": "This is the email address you confirmed when you registered. It's where we send you your payment receipts and, if you have enabled the option, forward the messages you receive in the app."
+      },
+      {
+        "route_name": "INSERT_EMAIL_SCREEN",
+        "title": "Change your email address",
+        "content": "Here you can change your email address. Once entered, we'll send you an email with a verification link to confirm it.There we send you your payment receipts and, if you have enabled the option, forward the messages you receive in the app."
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_HOME",
+        "title": "Your preferences",
+        "content": "Here you can see and change the settings used by all services on IO. You can also select the default calendar for your reminders, turn on or off the automatic forward of your messages to an email address, and change the language.",
+        "faqs": []
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_SERVICES",
+        "title": "Your services setup",
+        "content": "Here you can choose between the quick and manual setups for the services on the app. IO conveys messages that are directed to you specifically. For this reason, we recommend that you use the quick setup, so that institutions can get in touch with you if they need to.",
+        "faqs": [
+          {
+            "title": "Why should I use the quick setup?",
+            "body": "Because IO only sends messages that are meaningful and addressed specifically to you and doesn't send broadcast or spam messages. With the quick setup, you also allow services that will be available in the future on IO to contact you."
+          },
+          {
+            "title": "What happens if I choose the manual configuration?",
+            "body": "With manual configuration, the services on IO, present or future, will not be able to contact you. To allow the services you are interested in to contact you, you will have to configure them one by one by enabling 'Contact you in app' in each service detail page. Institutions will still be able to contact you through other channels.\n\nSome services, such as bonuses, require you to register. In these cases, once you have completed your registration, you cannot disable 'Contact you in app'. If you do not want to receive messages from these services anymore, you must unregister, but you will also lose the related benefits."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_EMAIL_FORWARDING",
+        "title": "Message forwarding",
+        "content": "Here you can turn on or off the automatic forward of the messages you receive on IO to an email address."
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_LANGUAGE",
+        "title": "How to change language",
+        "content": "By default, IO uses the language of your device's operating system. You can change it at any time from this page. The language of messages, on the other hand, is defined by each institution, which decides whether to send translated content in different languages."
+      },
+      {
+        "route_name": "PROFILE_SECURITY",
+        "title": "Your authentication modes",
+        "content": "Here you can change the unlock code and enable or disable biometric recognition.",
+        "faqs": [
+          {
+            "title": "What is the unlock code?",
+            "body": "The unlock code is a six-digit code that you set up the first time you enter IO. It allows you to enter the app without having to insert SPID or CIE credentials each time. It is also required to view sensitive data, and to confirm specific operations, such as making a payment and deleting the account. This authentication mode remains active for 30 days after your last login with SPID or CIE. After that time frame, you will need to re-authenticate and set up a new unlock code."
+          },
+          {
+            "title": "I forgot the unlock code. What can I do?",
+            "body": "Press 'Did you forget the unlock code?', insert your SPID or CIE credentials, and enter the new code."
+          },
+          {
+            "title": "How can I change the unlock code?",
+            "body": "Select 'Change the unlock code', insert your SPID or CIE credentials, and enter the new code."
+          },
+          {
+            "title": "What is biometric recognition for?",
+            "body": "You can use biometric recognition, when enabled, in place of the unlock code. Just like the unlock code, this authentication mode remains active for 30 days after your last login with SPID or CIE. After that time frame, you will need to re-authenticate."
+          },
+          {
+            "title": "How can I enable biometric recognition?",
+            "body": "If your phone supports biometric recognition, enable it from the system preferences. Then, go to the 'Profile' section of the IO app and enable it there too."
+          },
+          {
+            "title": "How can I disable biometric recognition?",
+            "body": "Go to the 'Profile' section of the IO app. Biometric recognition will already be turned off if your device does not support it, or if it is disabled in the system preferences."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PRIVACY_MAIN",
+        "title": "Your privacy settings",
+        "content": "Here you can find information about the processing of your personal data and IO's terms of use. More specifically, you can read the Privacy Policy, download a copy of the data associated with your account or delete it and give or withdraw permission to the app to collect your usage data.",
+        "faqs": [
+          {
+            "title": "How is my privacy protected?",
+            "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=)."
+          },
+          {
+            "title": "How can I delete my account and data?",
+            "body": "Select 'Delete your account' and follow the instructions. When the deletion is complete, you will receive a confirmation message to the email address associated with the app.This does not mean that you will no longer be able to use IO: if you log in again, a new account will be generated."
+          },
+          {
+            "title": "How can I get a copy of the data associated with my IO account?",
+            "body": "Select 'Access your data',  then press 'Request a copy of your data'. You will receive an email with a file containing a copy of the data associated with your account."
+          },
+          {
+            "title": " I have questions about privacy and the use of my data. Who can I contact?",
+            "body": "Fill out [this form](https://privacyportal-de.onetrust.com/webform/77f17844-04c3-4969-a11d-462ee77acbe1/9ab6533d-be4a-482e-929a-0d8d2ab29df8), which is dedicated exclusively to requests concerning the processing of personal data in the app."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PRIVACY",
+        "title": " Privacy Policy and Terms of Service",
+        "content": "Here you will find the full description of how IO handles your personal data and the terms of use of the app.",
+        "faqs": []
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_PRIVATIVE_CHOOSE_ISSUER",
+        "title": "Pay with your supermarket card",
+        "content": "Here you can add your supermarket card as a payment method. To edit the settings of this payment method or delete it, select the card in your Wallet.",
+        "faqs": [
+          {
+            "title": "Which supermarket cards can I add?",
+            "body": "You can add only supermarket cards that allow you to pay. Supermarket cards that allow you to collect points or get access to discounts only are not valid."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BANCOMAT_START",
+        "title": "Pay with your PagoBANCOMAT card",
+        "content": "Here you can add your PagoBANCOMAT card as a payment method. To edit the settings of this payment method or delete it, select the card in your Wallet. Before proceeding with the addition of your PagoBANCOMAT cards, please read the privacy policy.",
+        "faqs": [
+          {
+            "title": "Why can't I find my bank?",
+            "body": "Probably your PagoBANCOMAT card has been issued by a different bank. If you press 'Add', IO will search for all the PagoBANCOMAT cards in your name based on your tax code, which is deducted from the SPID or CIE you used to log in."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ADD_CARD",
+        "title": "Pay with a credit, debit, or prepaid card",
+        "content": "Here you can add your credit, debit, or prepaid card as a payment method. To edit the settings of this payment method or delete it, select the card in your Wallet.",
+        "faqs": [
+          {
+            "title": "Where do I find the security code?",
+            "body": "The security code, also called CVV or CVS, is a three-digit code on the back of your card. In American Express cards it's called CID, it has four digits and is located on the front. If you can't find the security code, your card probably isn't enabled for online payments."
+          },
+          {
+            "title": "I’m having trouble adding my card. What can I do?",
+            "body": "In this case, we recommend that you contact your bank. The reasons may be different, but the most frequent cases are: \n\n* Your card is not enabled for online purchases; \n\n* Your card has been 'paused'\n\n*;You have not yet activated the [3DS service](https://io.italia.it/faq/#n3_4), a security system related to online payments. You can see a detailed list of supported methods on the [Payment Methods page](https://io.italia.it/metodi-pagamento/)."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_PRIVATIVE_DETAIL",
+        "title": "Your supermarket card",
+        "content": "Here you can see the details of this payment method, edit the settings or delete it from the Wallet."
+      },
+      {
+        "route_name": "WALLET_BANCOMAT_DETAIL",
+        "title": "Your PagoBANCOMAT card",
+        "content": "Here you can see the details of this payment method, edit the settings or delete it from the Wallet.",
+        "faqs": [
+          {
+            "title": "How can I set this payment method as favorite?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card of this method and set it as favorite."
+          },
+          {
+            "title": "How can I delete this payment method?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card you want to delete and press on 'Delete this payment method'."
+          },
+          {
+            "title": "Why is the bank's name and logo different from the name and logo on my card?",
+            "body": "Your PagoBANCOMAT card has probably been issued by a different bank. This happens mostly with online banks or in case of mergers."
+          },
+          {
+            "title": "Why does it say my card is not compatible with in-app payments?",
+            "body": "The PagoBANCOMAT network does not let you make online payments. If you want to pay on IO with your card, you can: \n* Add BANCOMAT Pay to the Wallet, if your bank offers this service;\n* Add the second circuit, if your card has the security code and is already enabled for online payments."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_PAYPAL_DETAIL",
+        "title": "Your PayPal account",
+        "content": "Here you can see the details of this payment method, edit the settings or delete it from the Wallet.",
+        "faqs": [
+          {
+            "title": "How can I set this payment method as favorite?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card of this method and set it as favorite."
+          },
+          {
+            "title": "How can I delete this payment method?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card you want to delete and press on 'Delete this payment method'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_BPAY_DETAIL",
+        "title": "Your BANCOMAT Pay account",
+        "content": "Here you can see the details of this payment method, edit the settings or delete it from the Wallet.",
+        "faqs": [
+          {
+            "title": "How can I set this payment method as favorite?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card of this method and set it as favorite."
+          },
+          {
+            "title": "How can I delete this payment method?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card you want to delete and press on 'Delete this payment method'."
+          },
+          {
+            "title": "I can’t enable in-app payments with BANCOMAT Pay. What can I do?",
+            "body": "To fix this, try updating the app to the latest version.\nOnce done, delete the payment method from your Wallet, add it again and try to make the payment."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_CREDIT_CARD_DETAIL",
+        "title": "Your card",
+        "content": "Here you can see the details of this payment method, edit the settings or delete it from the Wallet.",
+        "faqs": [
+          {
+            "title": "How can I set this payment method as favorite?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card of this method and set it as favorite."
+          },
+          {
+            "title": "How can I delete this payment method?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card you want to delete and press 'Delete this payment method'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BPAY_START",
+        "title": "Pay with your PagoBANCOMAT card",
+        "content": "Here you can add your PagoBANCOMAT card as a payment method. To edit the settings of this payment method or delete it, select the card in your Wallet. Before proceeding with the addition of your PagoBANCOMAT cards, please read the privacy policy.",
+        "faqs": [
+          {
+            "title": "What is BANCOMAT Pay?",
+            "body": "BANCOMAT Pay is a digital payment service that allows you to pay, send money and accept payments quickly and easily. Once the service has been activated, you just need to use your mobile number to carry out the operations. To learn more, go to the[BANCOMAT Pay website](https://bancomat.it/it/bancomat/bancomat-pay%C2%AE)."
+          },
+          {
+            "title": "How does it work?",
+            "body": "BANCOMAT Pay associates your mobile number with an IBAN, which can be a bank account or a prepaid card.\nTo use BANCOMAT Pay on IO, check if your bank is [among those participating](https://bancomat.it/it/bancomat/bancomat-pay%C2%AE#banca-appbancomatpay) and activate the service via the BANCOMAT Pay app or your bank app.\nThen, add it as a payment method in the Wallet section of IO, selecting the account you want to add."
+          },
+          {
+            "title": "I don’t have an BANCOMAT Pay account, how can I do that?",
+            "body": "Find out here if your bank offers the service. If it does, you can request it enabled via your bank’s home banking or app.\nFor more information see the [FAQ](https://bancomat.it/it/faq-questions-top)."
+          },
+          {
+            "title": "I cannot add BANCOMAT Pay as a payment method.",
+            "body": "If you have problems adding your BANCOMAT Pay account to IO, we suggest you:\n1. Check that your device is connected to a network.\n2. Make sure the service is active. You can do this via your home banking or your bank app, or via the BANCOMAT Pay app.\n\nIf you have done all the steps correctly and the problem is not yet solved contact your bank."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_HOME",
+        "title": "What can you do in your Wallet",
+        "content": "In the Wallet you can find the payment methods you have added, the bonuses and initiatives you have joined and the history of transactions made with pagoPA, the platform for payments to the Public Administration. Here, you can also pay all the payment notices with the pagoPA logo.",
+        "faqs": [
+          {
+            "title": "How can I pay on IO?",
+            "body": "You can pay with credit, debit and prepaid cards, with PayPal or BANCOMAT Pay. You can find the updated list of available methods on the [payment methods page](https://io.italia.it/metodi-pagamento)."
+          },
+          {
+            "title": "How do I add a payment method?",
+            "body": "Go to the Wallet, press 'Add', and then 'Payment method'. Select the method you want to add and enter the required information."
+          },
+          {
+            "title": "What bonuses, discounts or other initiatives can I apply for?",
+            "body": "Go to Wallet, select 'Add' and 'Discounts, bonuses and other initiatives'. You will see a list with all the bonuses and initiatives you can apply for through IO."
+          },
+          {
+            "title": "I have trouble adding a payment method. What can I do?",
+            "body": "Go to the [payment method addition status page](ioit://CREDIT_CARD_ONBOARDING_ATTEMPTS_SCREEN), select the failed addition attempt and contact Support."
+          },
+          {
+            "title": "How can I delete a payment method?",
+            "body": "Your payment methods are displayed as cards in the top part of the screen. Select the card you want to delete and press 'Delete this payment method'."
+          },
+          {
+            "title": "I have trouble with a payment. What can I do?",
+            "body": "Go to [your payment status page](ioit://PAYMENTS_HISTORY_SCREEN), select the failed payment attempt and contact Support."
+          },
+          {
+            "title": "Where do I find the payments I have made?",
+            "body": "In the Wallet you will find a list of successful payments you have made through IO. The list also includes payments made through the partner institutions' website or app, if you logged in with SPID."
+          },
+          {
+            "title": "Can I pay a notice that I did not receive through IO?",
+            "body": "Yes, if the notice features the pagoPA logo and QR code or Notice Code. To do so, go to the Wallet, scan the QR or enter the Notice Code and complete the payment."
+          },
+          {
+            "title": "Why has the Cashback initiative ended?",
+            "body": "The end of the programme has been established by the [law n.234 of 30/12/2021](https://www.gazzettaufficiale.it/atto/serie_generale/caricaDettaglioAtto/originario?atto.dataPubblicazioneGazzetta=2021-12-31&atto.codiceRedazionale=21G00256&elenco30giorni=true) (section 1, paragraphs 637-644). Therefore, the related service on IO is inactive. This means that there won’t be new cashback periods, and that it won’t be possible to earn cashback rewards anymore."
+          },
+          {
+            "title": "In 2021 I earned Cashback rewards but I haven’t been refunded. What can I do?",
+            "body": "You probably didn't provide the IBAN of the account you want to be credited to. If you provided one, it may not be valid. To enter the IBAN or make sure it is correct, go to the Wallet and press on the Cashback card. Then, enter the IBAN or amend it and select 'Continue'. Within 90 days you will receive on IO a message about the status of your refund."
+          },
+          {
+            "title": "What is a QR code?",
+            "body": "The QR code is a square image made of white and black elements. When you scan it with a device's camera, it provides direct access to digital content, such as a website, a payment, or an item.\nThe QR code you find on payment notices is linked to a Notice Code. If you go to your Wallet, press 'Pay Notice' and scan the code with your camera, you can pay the notice without having to manually enter information such as a description, amount or tax code."
+          },
+          {
+            "title": "What is pagoPA?",
+            "body": "pagoPA is a platform that makes payments to the Public Administration easier, safer and more transparent. Among other benefits, it helps increase the use of e-payment methods and make individuals able to choose how to pay, highlighting the commission costs. To learn more, [go to the pagoPA website](https://www.pagopa.gov.it/)."
+          },
+          {
+            "title": "How can I learn more about digital payments?",
+            "body": "In order to learn more about the topics of your interest related to the world of digital payments, you can read the resources provided by [Banca d’Italia](https://www.bancaditalia.it/) as part of its financial education programs, such as the [dedicated section](https://economiapertutti.bancaditalia.it/pagare/) of the website [L’Economia per tutti](https://economiapertutti.bancaditalia.it/) and the [Guide to Payments in Electronic Commerce](https://www.bancaditalia.it/pubblicazioni/guide-bi/guida-pagamenti-comm-elettronico/guide-BI-i-pagamenti-nel-commercio-elettronico_ITA.pdf). \n\nFor example, if you want to learn more about the payment methods you can add to the Wallet of the IO app, you can read the dedicated information sheets, such as the [credit card](https://economiapertutti.bancaditalia.it/pagare/carta-di-credito/), the [debit card](https://economiapertutti.bancaditalia.it/pagare/carta-di-debito/), the [prepaid card](https://economiapertutti.bancaditalia.it/pagare/carta-prepagata/) and the [co-badge card](https://economiapertutti.bancaditalia.it/pagare/carte_co-badge_multifunzione/)."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BPAY_SEARCH_AVAILABLE_USER_ACCOUNT",
+        "title": "Add BANCOMAT Pay",
+        "content": "Here you can view your BANCOMAT Pay accounts and add them to your Wallet.",
+        "faqs": [
+          {
+            "title": "I cannot add BANCOMAT Pay as a payment method.",
+            "body": "If you have problems adding your BANCOMAT Pay account to IO, we suggest you:\n1. Check that your device is connected to a network.\n2. Make sure the service is active. You can do this via your home banking or your bank app, or via the BANCOMAT Pay app.\n\nIf you have done all the steps correctly and the problem is not yet solved contact your bank."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_COBADGE_CHOOSE_TYPE",
+        "title": "Add the second network of your PagoBANCOMAT card",
+        "content": "In order to properly add the international network associated to your PagoBANCOMAT card, we need to know if you have ever used this card online, so that we can redirect you to the relevant page.",
+        "faqs": [
+          {
+            "title": "How do I understand if my card is enabled for online payments?",
+            "body": "Your card must have a security code: it is a 3 digit code and is printed on the back. If you can't find it, it means that you can only use your card in stores.\n\n Also make sure that you have enabled the 3D Secure service (Mastercard Identity Check for Mastercard cards and Verified By Visa/Visa Secure for Visa cards). For more information, go to your home banking or contact your bank."
+          },
+          {
+            "title": "My card has the security code, but I still can't add it to the Wallet.",
+            "body": "After entering your card details, your bank runs a check, usually via SMS or with a notification through its app. Follow the instructions given by your bank and, in case of trouble, contact their customer service.\n\nIf you do not receive any message (or the transaction is denied) it means that your card is not enabled for online payments. Contact your bank and ask how to activate 3D Secure (Mastercard Identity Check for Mastercard cards and Verified By Visa/Visa Secure for Visa cards)."
+          },
+          {
+            "title": "I have already added the second network. What should I do?",
+            "body": "If you have already added the international network to the Wallet as a 'debit/credit card', there is no need to add the card again with this feature."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_COBADGE_START",
+        "title": "Add the second network of your PagoBANCOMAT card",
+        "content": "This feature allows you to search for all the cards with international network (Maestro, Mastercard, Visa and V-Pay) in your name.",
+        "faqs": [
+          {
+            "title": "Can I add cards with an international network?",
+            "body": "Yes, you can add debit or credit cards with an international network (Maestro, Mastercard, VISA and V-Pay), even if they are not enabled for online payments. The cards must be in your name and issued by the [participating banks](https://io.italia.it/cashback/carta-non-abilitata-pagamenti-online)."
+          },
+          {
+            "title": "Why can't I find any cards?",
+            "body": "The service searches only for international network cards in your name. Make sure that the card is actually in your name and is issued by one of the [participating banks](https://io.italia.it/cashback/carta-non-abilitata-pagamenti-online)."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_COBADGE_SEARCH_AVAILABLE",
+        "title": "Add the second network of your PagoBANCOMAT card",
+        "content": "Here you can see all the cards in your name with an international network (Maestro, Mastercard, Visa and V-Pay), issued by the banks participating in the service. If you don't want to add one of the cards listed, press 'Skip' and go to the next one.",
+        "faqs": [
+          {
+            "title": "Why is the expiration date different?",
+            "body": "In some cases, the expiration date displayed in the app may be different from the date printed on the card, but this does not affect the addition."
+          },
+          {
+            "title": "Why is the card number different?",
+            "body": "IO shows you the last 4 digits of the international network. This number is also indicated on the receipts of purchases made with this network. In some cases, the card may show a different number, but this does not affect the addition."
+          },
+          {
+            "title": "I have already added the second network, what should I do?",
+            "body": "If you have already added the international network to the Wallet as a 'debit/credit card', there is no need to add the card again with this feature."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_COBADGE_DETAIL",
+        "title": "Your card with international network",
+        "content": "Here you can see the details of your international network card. You can see the logo of the bank that issued the card, the expiration date and the logo and number of the international network.",
+        "faqs": [
+          {
+            "title": "What can I do here?",
+            "body": "You can enable or disable some features for this payment method.\n\n You can also delete this payment method from your Wallet."
+          },
+          {
+            "title": "Why is the bank's name and logo different from the name and logo on my card?",
+            "body": "Your card has probably been issued by a different bank. This happens mostly with online banks or in case of mergers."
+          },
+          {
+            "title": "Why is the expiration date different?",
+            "body": "In some cases, the expiration date displayed in the app may be different from the date printed on the card, but this does not affect the addition."
+          },
+          {
+            "title": "Why is the card number different?",
+            "body": "IO shows you the last 4 digits of the international network. This number is also indicated on the receipts of purchases made with this network. In some cases, the card may show a different number, but this does not affect the addition."
+          }
+        ]
+      },
+      {
+        "route_name": "SERVICES_HOME",
+        "title": "What you can do in Services",
+        "content": "Here you can view a list of national and local services available in the app. Press on a service name to check its details. From the service detail page, you can also manage the settings for push notifications and message forwarding to your email address.",
+        "faqs": [
+          {
+            "title": "How can I change the settings of each service?",
+            "body": "For each service, you can decide if you want to receive in-app messages and push notifications. At Profile > Preferences > Email Message Forwarding you can also enable message forwarding of all active services to your email address.\n \nEven if you see the full list of services, you’ll be contacted only by  institutions that know your Fiscal Code and have a communication that concerns you directly."
+          },
+          {
+            "title": "Can I contact institutions through IO?",
+            "body": "No, you cannot directly contact institutions through the app. If you need to contact an institution, you can do so through the contacts detailed in each service detail page."
+          }
+        ]
+      },
+      {
+        "route_name": "SERVICES_DETAIL",
+        "title": "Service detail",
+        "content": "Here you can find the service description, privacy policy and terms of use, and contact details of the institution or service. You can also choose how this specific service can contact you.\n \nYou’ll be contacted only by institutions that have a communication that concerns you directly. You will not receive spam messages or any information that is not relevant to you.\n \n If you do not want to receive communications from the service, disable the 'Contact you in app' option from the 'This service may' area. The institution will no longer write to you through IO, but it can still contact you through other channels, such as by email, phone, or mail.",
+        "faqs": [
+          {
+            "title": "What happens if I turn off a service?",
+            "body": "You will no longer receive communications from that service in the IO app. The institution providing the service may still contact you or be contacted through other channels such as website, email or phone number."
+          },
+          {
+            "title": "What are push notifications and how do they work?",
+            "body": "Push notifications are instant messages that you can receive on your device. They inform you that a new message has arrived in the IO app and invite you to read it. If you prefer to turn them off, disable the 'Send you push notifications' option in the 'This service may' area."
+          },
+          {
+            "title": "How does email forwarding of messages work?",
+            "body": "By enabling email forwarding of messages, you will receive a copy of the message you receive on IO to your email address associated with the app.\n \n Email forwarding is not available for some services, as the institution may decide not to forward messages with sensitive content."
+          }
+        ]
+      },
+      {
+        "route_name": "UADONATION_ROUTES_WEBVIEW",
+        "title": "Donations Ukraine",
+        "content": "In this page, you can make a donation to charities assisting the civilian victims of the crisis in Ukraine.",
+        "faqs": [
+          {
+            "title": "How can I make a donation?",
+            "body": "To donate, choose a charity from the list. Then select the amount you want to donate and press 'Continue'. Use a supported payment method or select it from your Wallet. Finally, press 'Pay' to complete the donation."
+          },
+          {
+            "title": "What payment methods can I use to make the donation?",
+            "body": "You can donate with credit, debit or prepaid card and with PayPal."
+          },
+          {
+            "title": "Is there a minimum amount?",
+            "body": "Yes, you can donate from a minimum of €5 to a maximum of €200. If you want to donate higher amounts, you can repeat the donation."
+          },
+          {
+            "title": "Is there a commission cost associated with the donation?",
+            "body": " If you donate with credit, debit or prepaid card, no commissions are charged."
+          },
+          {
+            "title": "After donating, I did not receive the email with the receipt. What can I do?",
+            "body": "If you donate through an Android device, you will receive an email with the receipt. If you don't, check your spam folder and make sure the address you find under Profile > Your Information is correct. We recommend that you keep your receipt, along with original documentation of the payment (such as the bank or credit card statement) for tax purposes."
+          },
+          {
+            "title": "I represent a charity: can I participate in the initiative?",
+            "body": "For information on how to participate in the initiative, email affari.istituzionali@pagopa.it."
+          }
+        ]
+      }
+    ],
     "idps": {
       "arubaid": {
         "description": "For problems encountered during the authentication process, you can reach the support desk of Aruba by selecting  one of the options presented below.",
@@ -989,7 +1803,7 @@
         "recover_password": "https://my.infocert.it/selfcare/#/recoveryPin"
       },
       "intesaid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Intesa by selecting  one of the options presented below.",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Intesa by selecting one of the options presented below.",
         "email": "hdintesa@advalia.com",
         "helpdesk_form": "https://www.hda.intesa.it/area-clienti",
         "phone": "800805093",
@@ -998,7 +1812,7 @@
         "recover_password": "https://spid.intesa.it/area-privata/recupera-password.aspx"
       },
       "lepidaid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Lepida by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Lepida by selecting one of the options presented below. \n For further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
         "email": "helpdesk@lepida.it",
         "helpdesk_form": "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid",
         "phone": "800445500",
@@ -1007,7 +1821,7 @@
         "recover_password": "https://id.lepida.it/lepidaid/recuperapassword"
       },
       "namirialid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Namirial by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Namirial by selecting one of the options presented below. \n For further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
         "helpdesk_form": "https://support.namirial.com/it/supporto-tecnico",
         "phone": "003907163494",
         "web_site": "https://www.namirialtsp.com/spid/",
@@ -1015,7 +1829,7 @@
         "recover_password": "https://portal.namirialtsp.com/public/resetPassword.xhtml"
       },
       "posteid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Poste Italiane by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Poste Italiane by selecting one of the options presented below. \n For further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
         "helpdesk_form": "https://www.poste.it/scrivici.html",
         "phone": "800007777",
         "web_site": "https://posteid.poste.it",
@@ -1023,21 +1837,21 @@
         "recover_password": "https://posteid.poste.it/recuperocredenziali.shtml"
       },
       "sielteid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting one of the options presented below. \n For further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
         "helpdesk_form": "https://www.sielteid.it/contact.html#blocco-contatti-form",
         "phone": "00390957171301",
         "web_site": "https://www.sielteid.it/che-cos-e-sielteid.html",
         "recover_password": "https://myid.sieltecloud.it/profile/forgotPassword"
       },
       "spiditalia": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting  the button below. \n For further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting the button below. \n For further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
         "phone": "+390355787979",
         "web_site": "https://www.register.it/spid/ ",
         "recover_username": "https://spid.register.it/selfcare/recovery/username ",
         "recover_password": "https://spid.register.it/selfcare/recovery/password"
       },
       "timid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Tim by selecting  one of the options presented below. \n For further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Tim by selecting one of the options presented below. \n For further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
         "email": "supportotimid@telecomitalia.it",
         "helpdesk_form": "https://www.trusttechnologies.it/contatti/#form",
         "phone": "800405800",

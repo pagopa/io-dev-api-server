@@ -12,17 +12,26 @@ import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
+import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
+import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 
 /* profile */
-export const ProfileAttrs = t.interface({
-  fiscal_code: FiscalCode,
-  name: t.string,
-  family_name: t.string,
-  mobile: NonEmptyString,
-  email: EmailAddress,
-  accepted_tos_version: NonNegativeNumber,
-  preferred_languages: PreferredLanguages
-});
+export const ProfileAttrs = t.intersection([
+  t.interface({
+    fiscal_code: FiscalCode,
+    name: t.string,
+    family_name: t.string,
+    mobile: NonEmptyString,
+    email: EmailAddress,
+    accepted_tos_version: NonNegativeNumber,
+    preferred_languages: PreferredLanguages
+  }),
+  t.partial({
+    reminder_status: ReminderStatus,
+    push_notifications_content_type: PushNotificationsContentType
+  })
+]);
+
 export type ProfileAttrs = t.TypeOf<typeof ProfileAttrs>;
 
 /* wallet */
@@ -129,10 +138,14 @@ export const IoDevServerConfig = t.interface({
         // 200 success with payload
         getMessageResponseCode: HttpResponseCode,
         // 200 success with payload
-        getMVLMessageResponseCode: HttpResponseCode
+        getMVLMessageResponseCode: HttpResponseCode,
+        // 200 success with payload
+        getThirdPartyMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
       legalCount: t.number,
+      // number of messages coming from PN (aka Piattaforma Notifiche)
+      pnCount: t.number,
       // number of message - invalid after due date - containing a payment and a valid (not expired) due date
       paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
       // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
@@ -179,7 +192,8 @@ export const IoDevServerConfig = t.interface({
       local: t.number,
       includeSiciliaVola: t.boolean,
       includeCgn: t.boolean,
-      includeCdc: t.boolean
+      includeCdc: t.boolean,
+      includePn: t.boolean
     }),
     AllowRandomValue
   ]),

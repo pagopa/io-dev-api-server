@@ -143,6 +143,23 @@ en:
         action: "ioit://CGN_DETAILS"
 ---`;
 
+export const frontMatter1CTAV2BonusCgnCategories = `---
+it:
+    cta_1: 
+        text: "Vai alle categorie di CGN"
+        action: "ioit://cgn-details/categories"
+    cta_2: 
+        text: "Vai agli operatori di Cultura"
+        action: "ioit://cgn-details/categories-merchant/cultureAndEntertainment"
+en:
+    cta_1: 
+        text: "Go to the CGN categories"
+        action: "ioit://cgn-details/categories"
+    cta_2: 
+        text: "Go to Culture operators"
+        action: "ioit://cgn-details/categories-merchant/cultureAndEntertainment"
+---`;
+
 export const frontMatter1CTASiciliaVola = `---
 it:
     cta_1: 
@@ -262,12 +279,19 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [CGN Details v2](ioit://cgn-details/detail)
 
+[CGN Categories screen](ioit://cgn-details/categories)
+
+[CGN culture category merchant](ioit://cgn-details/categories-merchant/cultureAndEntertainment)
+
+[BPD Opt-in choice](ioit://wallet/bpd-opt-in/choice)
+
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
 [LINK CORROTTO](ioit://WRONG&$)
 
-
 [LINK navigation v2 errore](ioit://cgn/details)
+
+[PN Activation](ioit://services/service-detail?serviceId=servicePN&activate=true)
 
 ### Handled link
 [http - google](iohandledlink://http://www.google.com)
