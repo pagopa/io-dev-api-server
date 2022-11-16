@@ -73,13 +73,7 @@ export const backendStatus: BackendStatus = {
     pn: {
       enabled: true,
       frontend_url: "https://notifichedigitali.it"
-    },
-    payments: {
-      preferredPspsByOrigin: {
-          poste_datamatrix_scan: [
-              "BPPIITRRXXX"
-          ]
-      }
+    }
     }
   },
   sections: {
