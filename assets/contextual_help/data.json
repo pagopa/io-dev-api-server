@@ -3,6 +3,51 @@
   "it": {
     "screens": [
       {
+        "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
+        "title": "Notifiche push",
+        "content": "Qui puoi personalizzare le notifiche push.",
+        "faqs": [
+          {
+            "title": "Cosa significa 'Mostra anteprime'?",
+            "body": "Attivando l’opzione 'Mostra anteprime', le notifiche push di IO includeranno il mittente e l’oggetto dei messaggi. Così, puoi sapere chi ti ha scritto senza entrare in app."
+          },
+          {
+            "title": "Cosa significa 'Consenti promemoria'?",
+            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_PREFERENCES",
+        "title": "Notifiche push",
+        "content": "Qui puoi personalizzare le notifiche push.",
+        "faqs": [
+          {
+            "title": "Cosa significa 'Mostra anteprime'?",
+            "body": "Attivando l’opzione 'Mostra anteprime', le notifiche push di IO includeranno il mittente e l’oggetto dei messaggi. Così, puoi sapere chi ti ha scritto senza entrare in app."
+          },
+          {
+            "title": "Cosa significa 'Consenti promemoria'?",
+            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_NOTIFICATIONS",
+        "title": "Notifiche push",
+        "content": "Qui puoi personalizzare le notifiche push.",
+        "faqs": [
+          {
+            "title": "Cosa significa 'Mostra anteprime'?",
+            "body": "Attivando l’opzione 'Mostra anteprime', le notifiche push di IO includeranno il mittente e l’oggetto dei messaggi. Così, puoi sapere chi ti ha scritto senza entrare in app."
+          },
+          {
+            "title": "Cosa significa 'Consenti promemoria'?",
+            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
         "route_name": "AUTHENTICATION_LANDING",
         "title": "Come accedere a IO",
         "content": "Per accedere a IO, devi autenticarti con la tua identità SPID o con la Carta d'Identità Elettronica (CIE). Per attivare SPID, segui la procedura che trovi [in questo sito](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/). Per richiedere la CIE, vai sul sito del tuo Comune.",
@@ -1118,6 +1163,51 @@
   },
   "en": {
     "screens": [
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
+        "title": "Push notifications",
+        "content": "Here you can customize push notifications.",
+        "faqs": [
+          {
+            "title": "What does ‘Show Previews’ mean?",
+            "body": "By enabling ‘Show previews’, push notifications from IO will include the sender and subject of the messages. That way, you can know who messaged you without entering the app."
+          },
+          {
+            "title": "What does ‘Allow reminders’ mean?",
+            "body": "By enabling ‘Allow Reminders’, upon the sender's request you will receive push notifications close to deadlines or when you have unread messages."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_PREFERENCES",
+        "title": "Push notifications",
+        "content": "Here you can customize push notifications.",
+        "faqs": [
+          {
+            "title": "What does ‘Show Previews’ mean?",
+            "body": "By enabling ‘Show previews’, push notifications from IO will include the sender and subject of the messages. That way, you can know who messaged you without entering the app."
+          },
+          {
+            "title": "What does ‘Allow reminders’ mean?",
+            "body": "By enabling ‘Allow Reminders’, upon the sender's request you will receive push notifications close to deadlines or when you have unread messages."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_NOTIFICATIONS",
+        "title": "Push notifications",
+        "content": "Here you can customize push notifications.",
+        "faqs": [
+          {
+            "title": "What does ‘Show Previews’ mean?",
+            "body": "By enabling ‘Show previews’, push notifications from IO will include the sender and subject of the messages. That way, you can know who messaged you without entering the app."
+          },
+          {
+            "title": "What does ‘Allow reminders’ mean?",
+            "body": "By enabling ‘Allow Reminders’, upon the sender's request you will receive push notifications close to deadlines or when you have unread messages."
+          }
+        ]
+      },
       {
         "route_name": "AUTHENTICATION_LANDING",
         "title": "How to access IO",
