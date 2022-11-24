@@ -60,7 +60,7 @@
     "generate:cdc-definitions": "rimraf generated/definitions/cdc && mkdir -p generated/definitions/cdc  && gen-api-models --api-spec $npm_package_api_cdc --out-dir ./generated/definitions/cdc --no-strict",
     "generate:fci-definitions": "rimraf generated/definitions/fci && mkdir -p generated/definitions/fci  && gen-api-models --api-spec $npm_package_api_fci --out-dir ./generated/definitions/fci --no-strict",
     "generate:pn-definitions": "rimraf generated/definitions/pn && mkdir -p generated/definitions/pn && gen-api-models --api-spec $npm_package_api_pn --out-dir ./generated/definitions/pn --no-strict --request-types --response-decoders",
-    "generate:all": "npm-run-all generate:models generate:content-definitions generate:pagopa-api generate:pagopa-cobadge-configuration-definitions generate:pagopa-privative-configuration-definitions generate:bonus-vacanze-definitions generate:bpd-citizen generate:bpd-citizen-v2 generate:pagopa-walletv2-definitions generate:bpd-payment generate:bpd-award generate:bpd-winning-transactions generate:bpd-winning-transactions-v2 generate:cgn-definitions generate:cgn-merchants-definitions generate:cgn-geo-definitions generate:eu-covid-cert-definitions generate:sicilia-vola-definitions generate:cdc-definitions generate:fci-definitions generate:pn-definitions"
+    "generate": "npm-run-all generate:*"
   },
   "jest": {
     "preset": "ts-jest",

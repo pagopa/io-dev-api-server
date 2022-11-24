@@ -8,6 +8,8 @@ import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
+import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
+import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
 import {
   IoDevServerConfig,
   ProfileAttrs,
@@ -26,8 +28,10 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
-  accepted_tos_version: 4.0 as NonNegativeNumber,
-  preferred_languages: [PreferredLanguageEnum.it_IT]
+  accepted_tos_version: 4.1 as NonNegativeNumber,
+  preferred_languages: [PreferredLanguageEnum.it_IT],
+  reminder_status: ReminderStatusEnum.ENABLED,
+  push_notifications_content_type: PushNotificationsContentTypeEnum.FULL
 };
 
 const paymentMethods: WalletMethodConfig = {
