@@ -1,7 +1,6 @@
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
-  SIGNATURE_REQUEST_ID_MULTIPLE_DOC,
-  SIGNATURE_REQUEST_ID_SINGLE_DOC,
+  SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../payloads/features/fci/signature-request";
 
@@ -195,26 +194,15 @@ en:
         action: "iosso://http://localhost:3000/myportal_playground.html"
 ---`;
 
-export const frontMatterCTAFCIMultipleDocSignatureRequest = `---
+export const frontMatterCTAFCISignatureRequest = `---
 it:
     cta_1: 
         text: "Vai ai documenti"
-        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID_MULTIPLE_DOC}"
+        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID}"
 en:
     cta_1: 
         text: "Go to the documents"
-        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID_MULTIPLE_DOC}"
----`;
-
-export const frontMatterCTAFCISingleDocSignatureRequest = `---
-it:
-    cta_1: 
-        text: "Vai ai documenti"
-        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID_SINGLE_DOC}"
-en:
-    cta_1: 
-        text: "Go to the documents"
-        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID_SINGLE_DOC}"
+        action: "ioit://fci/main?signatureRequestId=${SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const frontMatterCTAFCISignatureRequestExpired = `---

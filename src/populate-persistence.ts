@@ -32,10 +32,9 @@ import {
   frontMatter1CTAV2BonusCgnDetails,
   frontMatter2CTA2,
   frontMatterBonusVacanze,
-  frontMatterCTAFCIMultipleDocSignatureRequest,
+  frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestExpired,
   frontMatterCTAFCISignatureRequestWaitQtsp,
-  frontMatterCTAFCISingleDocSignatureRequest,
   messageFciMarkdown,
   messageMarkdown
 } from "./utils/variables";
@@ -161,15 +160,8 @@ const createMessages = (
     output.push(
       getNewMessage(
         customConfig,
-        `Comune di Controguerra - Carta d'Identità Elettronica - Firma [WAIT_FOR_SIGNATURE] single document`,
-        frontMatterCTAFCISingleDocSignatureRequest + messageFciMarkdown
-      )
-    );
-    output.push(
-      getNewMessage(
-        customConfig,
-        `Comune di Controguerra - Carta d'Identità Elettronica - Firma [WAIT_FOR_SIGNATURE] multiple documents`,
-        frontMatterCTAFCIMultipleDocSignatureRequest + messageFciMarkdown
+        `Comune di Controguerra - Carta d'Identità Elettronica - Firma [WAIT_FOR_SIGNATURE]`,
+        frontMatterCTAFCISignatureRequest + messageFciMarkdown
       )
     );
     output.push(

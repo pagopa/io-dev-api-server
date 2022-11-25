@@ -10,8 +10,7 @@ import {
 } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { staticContentRootPath } from "../../../config";
 
-export const SIGNATURE_REQUEST_ID_SINGLE_DOC = ulid() as NonEmptyString;
-export const SIGNATURE_REQUEST_ID_MULTIPLE_DOC = ulid() as NonEmptyString;
+export const SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const EXPIRED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const WAIT_QTSP_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const DOSSIER_ID = ulid() as NonEmptyString;
@@ -301,8 +300,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
   }
 ];
 
-export const signatureRequestDetailViewMultipleDoc: SignatureRequestDetailView = {
-  id: SIGNATURE_REQUEST_ID_MULTIPLE_DOC,
+export const signatureRequestDetailViewDoc: SignatureRequestDetailView = {
+  id: SIGNATURE_REQUEST_ID,
   status: SignatureRequestStatus.WAIT_FOR_SIGNATURE,
   created_at: new Date(),
   dossier_id: DOSSIER_ID,
@@ -311,18 +310,6 @@ export const signatureRequestDetailViewMultipleDoc: SignatureRequestDetailView =
   signer_id: SIGNATURE_ID,
   updated_at: new Date(),
   documents
-};
-
-export const signatureRequestDetailViewSingleDoc: SignatureRequestDetailView = {
-  id: SIGNATURE_REQUEST_ID_SINGLE_DOC,
-  status: SignatureRequestStatus.WAIT_FOR_SIGNATURE,
-  created_at: new Date(),
-  dossier_id: DOSSIER_ID,
-  expires_at: new Date(now.setDate(now.getDate() + 30)),
-  qr_code_url: mockQrCodeUrl,
-  signer_id: SIGNATURE_ID,
-  updated_at: new Date(),
-  documents: [documents[0]]
 };
 
 export const signatureRequestDetailViewExpired: SignatureRequestDetailView = {

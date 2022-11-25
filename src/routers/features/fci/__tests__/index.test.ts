@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import { ulid } from "ulid";
 import { createSignatureBody } from "../../../../payloads/features/fci/create-signature-body";
+import { createFilledDocumentBody } from "../../../../payloads/features/fci/qtsp_filled_document";
 import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
@@ -35,8 +36,19 @@ describe("io-sign API", () => {
       });
     });
   });
+  describe("POST qtsp filled document", () => {
+    describe("when the signer request qtsp filled document", () => {
+      it("should return 201 and the filled_document_url", async () => {
+        const response = await request
+          .post(addFciPrefix(`/qtsp/clauses/filled_document`))
+          .send(createFilledDocumentBody);
+        expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty("filled_document_url");
+      });
+    });
+  });
   describe("POST create signature", () => {
-    describe("when the signer request signature with a valid body", () => {
+    describe("when the signer request a signature with a valid body", () => {
       it("should return 201", async () => {
         const response = await request
           .post(addFciPrefix(`/signatures`))

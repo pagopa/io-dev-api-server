@@ -18,9 +18,9 @@ export const qtspClauses: QtspClausesMetadata = {
   ],
   document_url:
     "https://pagopa.demo.bit4id.org/static/docs/modulo_richiesta_V1.pdf",
-  nonce: "",
+  nonce: "nonceMocked",
   privacy_url: "https://docs.namirialtsp.com/documents/Mod_NAM_GDPR03D_ITA.pdf",
-  privacy_text: "",
+  privacy_text: "privacyTextMocked",
   terms_and_conditions_url:
     "https://docs.namirialtsp.com/documents/Mod_NAM_CA01D_ITA.pdf"
 };

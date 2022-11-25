@@ -8,7 +8,7 @@ import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp_filled_d
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
-  signatureRequestDetailView,
+  signatureRequestDetailViewDoc,
   signatureRequestDetailViewExpired,
   signatureRequestDetailViewWaitQtsp,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
@@ -44,7 +44,7 @@ addHandler(
             .status(200)
             .json(
               signatureReqId === SIGNATURE_REQUEST_ID
-                ? signatureRequestDetailView
+                ? signatureRequestDetailViewDoc
                 : signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID
                 ? signatureRequestDetailViewExpired
                 : signatureRequestDetailViewWaitQtsp
@@ -61,9 +61,16 @@ addHandler(fciRouter, "get", addFciPrefix("/qtsp/clauses"), (_, res) => {
 addHandler(
   fciRouter,
   "post",
-  addFciPrefix("/qtsp/clause/filled_documents"),
-  (_, res) => {
-    res.status(200).json(qtspFilledDocument);
+  addFciPrefix("/qtsp/clauses/filled_document"),
+  (req, res) => {
+    pipe(
+      O.fromNullable(req.body),
+      O.chain(cb => (isEqual(cb, {}) ? O.none : O.some(cb))),
+      O.fold(
+        () => res.sendStatus(400),
+        _ => res.status(201).json(qtspFilledDocument)
+      )
+    );
   }
 );
 
