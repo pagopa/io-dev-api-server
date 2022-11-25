@@ -19,7 +19,7 @@ jobs:
             - node_modules
       - run:
           name: Generate models
-          command: yarn generate:all
+          command: yarn generate
       - run:
           name: Run compilation
           command: yarn tsc:noemit
