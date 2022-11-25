@@ -58,6 +58,7 @@
     "generate:sicilia-vola-definitions": "rimraf generated/definitions/siciliaVola && mkdir -p generated/definitions/siciliaVola && gen-api-models --api-spec $npm_package_api_sicilia_vola --out-dir ./generated/definitions/siciliaVola --no-strict",
     "generate:cdc-definitions": "rimraf generated/definitions/cdc && mkdir -p generated/definitions/cdc  && gen-api-models --api-spec $npm_package_api_cdc --out-dir ./generated/definitions/cdc --no-strict",
     "generate:pn-definitions": "rimraf generated/definitions/pn && mkdir -p generated/definitions/pn && gen-api-models --api-spec $npm_package_api_pn --out-dir ./generated/definitions/pn --no-strict --request-types --response-decoders",
+    "generate:pagopa": "npm-run-all generate:pagopa-walletv2-definitions generate:pagopa-privative-configuration-definitions generate:pagopa-cobadge-configuration-definitions",
     "generate": "npm-run-all generate:*"
   },
   "jest": {
