@@ -1,6 +1,7 @@
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
+  SIGNED_SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../payloads/features/fci/signature-request";
 
@@ -227,11 +228,27 @@ en:
         action: "ioit://fci/main?signatureRequestId=${WAIT_QTSP_SIGNATURE_REQUEST_ID}"
 ---`;
 
+export const frontMatterCTAFCISignatureRequestSigned = `---
+it:
+    cta_1: 
+        text: "Visualizza i documenti"
+        action: "ioit://fci/main?signatureRequestId=${SIGNED_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "View documents"
+        action: "ioit://fci/main?signatureRequestId=${SIGNED_SIGNATURE_REQUEST_ID}"
+---`;
+
 export const messageFciMarkdown = `
 **Comune di Controguerra** ha richiesto la firma dei documenti relativi a **Informativa Carta d'Identità Elettronica**.\n\n
 Puoi leggere e firmare i documenti direttamente in app: ti basterà confermare l'operazione con il **codice di sblocco** o 
 l’**autenticazione biometrica** del tuo dispositivo.\n\n
 Ti ricordiamo che la richiesta di firma scadrà il **12/02/2023** pertanto ti invitiamo a firmare il prima possibile.
+`;
+
+export const messageFciSignedMarkdown = `
+I documenti che hai firmato sono pronti!\n\n
+Hai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo. 
 `;
 
 export const messageMarkdown = `

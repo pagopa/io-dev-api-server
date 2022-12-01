@@ -9,10 +9,10 @@ import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   signatureRequestDetailViewDoc,
-  signatureRequestDetailViewExpired,
-  signatureRequestDetailViewWaitQtsp,
-  WAIT_QTSP_SIGNATURE_REQUEST_ID
+  WAIT_QTSP_SIGNATURE_REQUEST_ID,
+  SIGNED_SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
+import { StatusEnum as SignatureRequestStatus } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
@@ -20,6 +20,8 @@ import { addApiV1Prefix } from "../../../utils/strings";
 export const fciRouter = Router();
 
 export const addFciPrefix = (path: string) => addApiV1Prefix(`/sign${path}`);
+
+const now = new Date();
 
 addHandler(
   fciRouter,
@@ -32,7 +34,8 @@ addHandler(
       O.chain(signatureReqId =>
         signatureReqId === SIGNATURE_REQUEST_ID ||
         signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID
+        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
+        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID
           ? O.some(signatureReqId)
           : O.none
       ),
@@ -40,15 +43,27 @@ addHandler(
         // No signatureRequestId was found return a 404
         () => res.sendStatus(400),
         signatureReqId =>
-          res
-            .status(200)
-            .json(
-              signatureReqId === SIGNATURE_REQUEST_ID
-                ? signatureRequestDetailViewDoc
-                : signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID
-                ? signatureRequestDetailViewExpired
-                : signatureRequestDetailViewWaitQtsp
-            )
+          res.status(200).json(
+            signatureReqId === SIGNATURE_REQUEST_ID
+              ? signatureRequestDetailViewDoc
+              : signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID
+              ? {
+                  ...signatureRequestDetailViewDoc,
+                  id: EXPIRED_SIGNATURE_REQUEST_ID,
+                  expires_at: new Date(now.setDate(now.getDate() - 30))
+                }
+              : signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID
+              ? {
+                  ...signatureRequestDetailViewDoc,
+                  id: WAIT_QTSP_SIGNATURE_REQUEST_ID,
+                  status: SignatureRequestStatus.WAIT_FOR_QTSP
+                }
+              : {
+                  ...signatureRequestDetailViewDoc,
+                  id: SIGNED_SIGNATURE_REQUEST_ID,
+                  status: SignatureRequestStatus.SIGNED
+                }
+          )
       )
     );
   }

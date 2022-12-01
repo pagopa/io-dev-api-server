@@ -34,8 +34,10 @@ import {
   frontMatterBonusVacanze,
   frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestExpired,
+  frontMatterCTAFCISignatureRequestSigned,
   frontMatterCTAFCISignatureRequestWaitQtsp,
   messageFciMarkdown,
+  messageFciSignedMarkdown,
   messageMarkdown
 } from "./utils/variables";
 
@@ -176,6 +178,13 @@ const createMessages = (
         customConfig,
         `Università di Cuneo - Contratto Erasmus - Firma [WAIT_FOR_QTSP]`,
         frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
+      )
+    );
+    output.push(
+      getNewMessage(
+        customConfig,
+        `Comune di Controguerra - Carta d'identità Elettronica - Documento Firmato`,
+        frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
       )
     );
   }
