@@ -9,7 +9,7 @@ export const qtspClauses: QtspClausesMetadata = {
     } as QtspClause,
     {
       text:
-        "(2) Io sottoscritto/a accetto le Condizioni Generali di Contratto (Mod.NAM CA01) e le clausole vessatorie riportate nel [QUADRO F – CLAUSOLE VESSATORIE](@DOCUMENT_URL)"
+        "(2) Io sottoscritto/a accetto le Condizioni Generali di Contratto ([Mod.NAM CA01](https://docs.namirialtsp.com/documents/Mod_NAM_CA01D_ITA.pdf)) e le clausole vessatorie riportate nel [QUADRO F – CLAUSOLE VESSATORIE](@DOCUMENT_URL)"
     } as QtspClause
   ],
   document_url:
