@@ -1,7 +1,8 @@
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { QtspClause } from "../../../../generated/definitions/fci/QtspClause";
-import { QtspClausesMetadata } from "../../../../generated/definitions/fci/QtspClausesMetadata";
+import { QtspClausesMetadataDetailView } from "../../../../generated/definitions/fci/QtspClausesMetadataDetailView";
 
-export const qtspClauses: QtspClausesMetadata = {
+export const qtspClauses: QtspClausesMetadataDetailView = {
   clauses: [
     {
       text:
@@ -14,10 +15,9 @@ export const qtspClauses: QtspClausesMetadata = {
   ],
   document_url:
     "https://pagopa.demo.bit4id.org/static/docs/modulo_richiesta_V1.pdf",
-  nonce: "nonceMocked",
+  nonce: "nonceMockedBase64" as NonEmptyString,
   privacy_url: "https://docs.namirialtsp.com/documents/Mod_NAM_GDPR03D_ITA.pdf",
-  privacy_text:
-    "Presa visione dell'informativa sul trattamento dei dati personali.",
+  privacy_text: "Presa visione dell'informativa sul trattamento dei dati personali." as NonEmptyString,
   terms_and_conditions_url:
     "https://docs.namirialtsp.com/documents/Mod_NAM_CA01D_ITA.pdf"
 };
