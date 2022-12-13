@@ -123,10 +123,10 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         {
           attrs: {
             coordinates: {
-              bottom_left: { x: 17, y: 263 },
-              top_right: { x: 0, y: 0 }
+              bottom_left: { x: 85, y: 700 },
+              top_right: { x: 35, y: 550 }
             },
-            page: 1
+            page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
             title: "CLAUSOLA 1 DOC 3" as NonEmptyString,
@@ -136,10 +136,10 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         {
           attrs: {
             coordinates: {
-              bottom_left: { x: 17, y: 203 },
-              top_right: { x: 0, y: 0 }
+              bottom_left: { x: 350, y: 700 },
+              top_right: { x: 300, y: 550 }
             },
-            page: 1
+            page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
             title: "CLAUSOLA 2 DOC 3" as NonEmptyString,
@@ -149,53 +149,53 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         {
           attrs: {
             coordinates: {
-              bottom_left: { x: 118, y: 263 },
-              top_right: { x: 0, y: 0 }
+              bottom_left: { x: 85, y: 520 },
+              top_right: { x: 35, y: 370 }
             },
-            page: 1
+            page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
             title: "CLAUSOLA 3 DOC 3" as NonEmptyString,
-            type: ClausesTypeEnum.REQUIRED
+            type: ClausesTypeEnum.OPTIONAL
           }
         },
         {
           attrs: {
             coordinates: {
-              bottom_left: { x: 25, y: 263 },
-              top_right: { x: 0, y: 0 }
+              bottom_left: { x: 85, y: 680 },
+              top_right: { x: 35, y: 530 }
             },
-            page: 1
+            page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
             title: "CLAUSOLA 4 DOC 3" as NonEmptyString,
-            type: ClausesTypeEnum.REQUIRED
+            type: ClausesTypeEnum.UNFAIR
           }
         },
         {
           attrs: {
             coordinates: {
-              bottom_left: { x: 25, y: 186 },
-              top_right: { x: 0, y: 0 }
+              bottom_left: { x: 85, y: 470 },
+              top_right: { x: 35, y: 320 }
             },
-            page: 1
+            page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
             title: "CLAUSOLA 5 DOC 3" as NonEmptyString,
-            type: ClausesTypeEnum.REQUIRED
+            type: ClausesTypeEnum.OPTIONAL
           }
         },
         {
           attrs: {
             coordinates: {
-              bottom_left: { x: 25, y: 153 },
-              top_right: { x: 0, y: 0 }
+              bottom_left: { x: 85, y: 360 },
+              top_right: { x: 35, y: 210 }
             },
-            page: 1
+            page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
             title: "CLAUSOLA 6 DOC 3" as NonEmptyString,
-            type: ClausesTypeEnum.REQUIRED
+            type: ClausesTypeEnum.UNFAIR
           }
         }
       ]
