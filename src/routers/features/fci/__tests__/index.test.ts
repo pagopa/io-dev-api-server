@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { ulid } from "ulid";
 import { createSignatureBody } from "../../../../payloads/features/fci/create-signature-body";
-import { createFilledDocumentBody } from "../../../../payloads/features/fci/qtsp_filled_document";
+import { createFilledDocumentBody } from "../../../../payloads/features/fci/qtsp-filled-document";
 import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
@@ -53,7 +53,7 @@ describe("io-sign API", () => {
         const response = await request
           .post(addFciPrefix(`/signatures`))
           .send(createSignatureBody);
-        expect(response.status).toBe(201);
+        expect(response.status).toBe(200);
       });
     });
     describe("when the signer request signature detail with a not valid body", () => {

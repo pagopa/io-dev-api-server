@@ -2,7 +2,7 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreateSignatureBody } from "../../../../generated/definitions/fci/CreateSignatureBody";
 import { DocumentToSign } from "../../../../generated/definitions/fci/DocumentToSign";
 import { QtspClauses } from "../../../../generated/definitions/fci/QtspClauses";
-import { qtspFilledDocument } from "./qtsp_filled_document";
+import { qtspFilledDocument } from "./qtsp-filled-document";
 import { qtspClauses } from "./qtsp-clauses";
 import { documents, SIGNATURE_REQUEST_ID } from "./signature-request";
 

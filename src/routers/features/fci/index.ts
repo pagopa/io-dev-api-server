@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { isEqual } from "lodash";
 import { staticContentRootPath } from "../../../config";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
-import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp_filled_document";
+import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp-filled-document";
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
@@ -16,6 +16,7 @@ import { StatusEnum as SignatureRequestStatus } from "../../../../generated/defi
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
+import { mockSignatureDetailView } from "../../../payloads/features/fci/signature-detail-request";
 
 export const fciRouter = Router();
 
@@ -95,7 +96,7 @@ addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
     O.chain(cb => (isEqual(cb, {}) ? O.none : O.some(cb))),
     O.fold(
       () => res.sendStatus(400),
-      _ => res.sendStatus(201)
+      _ => res.status(200).json(mockSignatureDetailView)
     )
   );
 });
