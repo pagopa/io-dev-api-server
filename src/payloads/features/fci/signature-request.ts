@@ -1,8 +1,8 @@
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { ulid } from "ulid";
-import { ClausesTypeEnum } from "../../../../generated/definitions/fci/ClausesType";
-import { StatusEnum as DocumentStatusEnum } from "../../../../generated/definitions/fci/Document";
 import { DocumentDetailView } from "../../../../generated/definitions/fci/DocumentDetailView";
+import { DocumentMetadata } from "../../../../generated/definitions/fci/DocumentMetadata";
+import { TypeEnum as ClausesTypeEnum } from "../../../../generated/definitions/fci/Clause";
 import { SignatureFieldToBeCreatedAttrs } from "../../../../generated/definitions/fci/SignatureFieldToBeCreatedAttrs";
 import {
   SignatureRequestDetailView,
@@ -26,14 +26,12 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
     created_at: new Date(),
     url: `${basePath}${staticContentRootPath}/fci/modulo_1` as NonEmptyString,
     updated_at: new Date(),
-    uploaded_at: new Date(),
-    status: DocumentStatusEnum.READY,
     metadata: {
       title: "DEMO POC #1",
       signature_fields: [
         {
           attrs: {
-            unique_name: "Signature1"
+            unique_name: "Signature1" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 1 DOC 1" as NonEmptyString,
@@ -42,7 +40,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature2"
+            unique_name: "Signature2" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 2 DOC 1" as NonEmptyString,
@@ -51,7 +49,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature3"
+            unique_name: "Signature3" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 3 DOC 1" as NonEmptyString,
@@ -60,7 +58,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature4"
+            unique_name: "Signature4" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 4 DOC 1" as NonEmptyString,
@@ -68,21 +66,19 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
           }
         }
       ]
-    }
+    } as DocumentMetadata
   },
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
     url: `${basePath}${staticContentRootPath}/fci/modulo_2` as NonEmptyString,
     updated_at: new Date(),
-    uploaded_at: new Date(),
-    status: DocumentStatusEnum.READY,
     metadata: {
       title: "DEMO POC #2",
       signature_fields: [
         {
           attrs: {
-            unique_name: "Signature1"
+            unique_name: "Signature1" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 1 DOC 2" as NonEmptyString,
@@ -91,7 +87,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature2"
+            unique_name: "Signature2" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 2 DOC 2" as NonEmptyString,
@@ -100,7 +96,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature3"
+            unique_name: "Signature3" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 3 DOC 2" as NonEmptyString,
@@ -108,24 +104,20 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
           }
         }
       ]
-    }
+    } as DocumentMetadata
   },
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
     url: `${basePath}${staticContentRootPath}/fci/modulo_3` as NonEmptyString,
     updated_at: new Date(),
-    uploaded_at: new Date(),
-    status: DocumentStatusEnum.READY,
     metadata: {
       title: "DEMO POC #3",
       signature_fields: [
         {
           attrs: {
-            coordinates: {
-              bottom_left: { x: 85, y: 700 },
-              top_right: { x: 35, y: 550 }
-            },
+            bottom_left: { x: 85, y: 700 },
+            top_right: { x: 35, y: 550 },
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
@@ -135,10 +127,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            coordinates: {
-              bottom_left: { x: 350, y: 700 },
-              top_right: { x: 300, y: 550 }
-            },
+            bottom_left: { x: 350, y: 700 },
+            top_right: { x: 300, y: 550 },
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
@@ -148,10 +138,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            coordinates: {
-              bottom_left: { x: 85, y: 520 },
-              top_right: { x: 35, y: 370 }
-            },
+            bottom_left: { x: 85, y: 520 },
+            top_right: { x: 35, y: 370 },
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
@@ -161,10 +149,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            coordinates: {
-              bottom_left: { x: 85, y: 680 },
-              top_right: { x: 35, y: 530 }
-            },
+            bottom_left: { x: 85, y: 680 },
+            top_right: { x: 35, y: 530 },
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
@@ -174,10 +160,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            coordinates: {
-              bottom_left: { x: 85, y: 470 },
-              top_right: { x: 35, y: 320 }
-            },
+            bottom_left: { x: 85, y: 470 },
+            top_right: { x: 35, y: 320 },
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
@@ -187,10 +171,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            coordinates: {
-              bottom_left: { x: 85, y: 360 },
-              top_right: { x: 35, y: 210 }
-            },
+            bottom_left: { x: 85, y: 360 },
+            top_right: { x: 35, y: 210 },
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
@@ -199,21 +181,19 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
           }
         }
       ]
-    }
+    } as DocumentMetadata
   },
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
     url: `${basePath}${staticContentRootPath}/fci/modulo_4` as NonEmptyString,
     updated_at: new Date(),
-    uploaded_at: new Date(),
-    status: DocumentStatusEnum.READY,
     metadata: {
       title: "DEMO POC #4",
       signature_fields: [
         {
           attrs: {
-            unique_name: "Signature1"
+            unique_name: "Signature1" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 1 DOC 1" as NonEmptyString,
@@ -222,7 +202,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature2"
+            unique_name: "Signature2" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 2 DOC 1" as NonEmptyString,
@@ -230,21 +210,19 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
           }
         }
       ]
-    }
+    } as DocumentMetadata
   },
   {
     id: ulid() as NonEmptyString,
     created_at: new Date(),
     url: `${basePath}${staticContentRootPath}/fci/modulo_5` as NonEmptyString,
     updated_at: new Date(),
-    uploaded_at: new Date(),
-    status: DocumentStatusEnum.READY,
     metadata: {
       title: "DEMO POC #5",
       signature_fields: [
         {
           attrs: {
-            unique_name: "Signature1"
+            unique_name: "Signature1" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 1 DOC 5" as NonEmptyString,
@@ -253,7 +231,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature2"
+            unique_name: "Signature2" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 2 DOC 5" as NonEmptyString,
@@ -262,7 +240,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature3"
+            unique_name: "Signature3" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 3 DOC 5" as NonEmptyString,
@@ -271,7 +249,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature4"
+            unique_name: "Signature4" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 4 DOC 5" as NonEmptyString,
@@ -280,7 +258,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature5"
+            unique_name: "Signature5" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 5 DOC 5" as NonEmptyString,
@@ -289,7 +267,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
         },
         {
           attrs: {
-            unique_name: "Signature6"
+            unique_name: "Signature6" as NonEmptyString
           },
           clause: {
             title: "CLAUSOLA 6 DOC 5" as NonEmptyString,
@@ -297,7 +275,7 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
           }
         }
       ]
-    }
+    } as DocumentMetadata
   }
 ];
 
