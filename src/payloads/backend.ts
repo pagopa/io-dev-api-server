@@ -68,7 +68,14 @@ export const backendStatus: BackendStatus = {
       dataMatrixPosteEnabled: true
     },
     fci: {
-      enabled: true
+      enabled: false,
+      min_app_version: {
+        ios: "1.2.3",
+        android: "1.2.3"
+      }
+    },
+    lollipop: {
+      enabled: false
     },
     pn: {
       enabled: true,
