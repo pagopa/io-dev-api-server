@@ -24,7 +24,7 @@ The node version used in this project is stored in [.node-version](.node-version
 1. install all packages needed:<br/>
    `yarn install`
 1. generate API definitions:<br/>
-   `yarn generate:all`
+   `yarn generate`
 1. you are ready! start the server:<br/>
    `yarn start`
 
