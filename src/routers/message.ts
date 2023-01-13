@@ -248,7 +248,9 @@ addHandler(
     }
     if (!LegalMessageWithContent.is(message)) {
       // act as the IO backend
-      res.status(500).json(getProblemJson(500, "requested message is not of legal type"));
+      res
+        .status(500)
+        .json(getProblemJson(500, "requested message is not of legal type"));
       return;
     }
     res.json(message);
