@@ -1,9 +1,8 @@
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreateSignatureBody } from "../../../../generated/definitions/fci/CreateSignatureBody";
 import { DocumentToSign } from "../../../../generated/definitions/fci/DocumentToSign";
 import { QtspClauses } from "../../../../generated/definitions/fci/QtspClauses";
-import { qtspFilledDocument } from "./qtsp-filled-document";
 import { qtspClauses } from "./qtsp-clauses";
+import { qtspFilledDocument } from "./qtsp-filled-document";
 import { documents, SIGNATURE_REQUEST_ID } from "./signature-request";
 
 const documentSignatures: ReadonlyArray<DocumentToSign> = [

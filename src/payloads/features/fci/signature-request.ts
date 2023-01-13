@@ -1,8 +1,8 @@
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { ulid } from "ulid";
+import { TypeEnum as ClausesTypeEnum } from "../../../../generated/definitions/fci/Clause";
 import { DocumentDetailView } from "../../../../generated/definitions/fci/DocumentDetailView";
 import { DocumentMetadata } from "../../../../generated/definitions/fci/DocumentMetadata";
-import { TypeEnum as ClausesTypeEnum } from "../../../../generated/definitions/fci/Clause";
 import { SignatureFieldToBeCreatedAttrs } from "../../../../generated/definitions/fci/SignatureFieldToBeCreatedAttrs";
 import {
   SignatureRequestDetailView,

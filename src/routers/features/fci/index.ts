@@ -2,21 +2,21 @@ import { Router } from "express";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { isEqual } from "lodash";
+import { StatusEnum as SignatureRequestStatus } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { staticContentRootPath } from "../../../config";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
 import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp-filled-document";
+import { mockSignatureDetailView } from "../../../payloads/features/fci/signature-detail-request";
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   signatureRequestDetailViewDoc,
-  WAIT_QTSP_SIGNATURE_REQUEST_ID,
-  SIGNED_SIGNATURE_REQUEST_ID
+  SIGNED_SIGNATURE_REQUEST_ID,
+  WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
-import { StatusEnum as SignatureRequestStatus } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { mockSignatureDetailView } from "../../../payloads/features/fci/signature-detail-request";
 
 export const fciRouter = Router();
 
