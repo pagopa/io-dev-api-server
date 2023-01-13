@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
-import { MessageContentWithAttachments } from "../../generated/definitions/backend/MessageContentWithAttachments";
+import { TagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
@@ -14,7 +14,7 @@ import { defaultContentType, getCategory } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
-import { sendFile } from "../utils/file";
+import { fileExists, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { services } from "./service";
 
@@ -314,7 +314,7 @@ addHandler(
     const message = MessagesDB.findOneById(req.params.messageId);
     const thirdPartyMessage = ThirdPartyMessageWithContent.decode(message);
     // ensure message exists and it has a legal content
-    if (message === undefined || E.isLeft(thirdPartyMessage)) {
+    if (!message || E.isLeft(thirdPartyMessage)) {
       res.json(getProblemJson(404, "message not found"));
       return;
     }
@@ -326,11 +326,19 @@ addHandler(
       res.json(getProblemJson(404, "attachment not found"));
       return;
     }
+    const messageCategory = getCategory(message);
+    const categoryTag = messageCategory?.tag;
+    const attachmentFolderName = categoryTag === TagEnum.PN ? "pn" : "remote";
+    const attachmentAbsolutePath = `assets/messages/${attachmentFolderName}/attachments/${attachment.name}`;
+    if (!fileExists(attachmentAbsolutePath)) {
+      res.json(getProblemJson(404, "resource gone"));
+      return;
+    }
     res.setHeader(
       "Content-Type",
       attachment.content_type ?? defaultContentType
     );
-    sendFile(`assets/messages/pn/attachments/${attachment.name}`, res);
+    sendFile(attachmentAbsolutePath, res);
   },
   3000
 );
