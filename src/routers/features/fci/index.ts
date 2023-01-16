@@ -11,6 +11,7 @@ import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   signatureRequestDetailViewDoc,
+  SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNED_SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
@@ -36,7 +37,8 @@ addHandler(
         signatureReqId === SIGNATURE_REQUEST_ID ||
         signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
         signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID
+        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID
           ? O.some(signatureReqId)
           : O.none
       ),
@@ -51,13 +53,21 @@ addHandler(
               ? {
                   ...signatureRequestDetailViewDoc,
                   id: EXPIRED_SIGNATURE_REQUEST_ID,
-                  expires_at: new Date(now.setDate(now.getDate() - 30))
+                  expires_at: new Date(now.setDate(now.getDate() - 30)),
+                  status: SignatureRequestStatus.WAIT_FOR_SIGNATURE
                 }
               : signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID
               ? {
                   ...signatureRequestDetailViewDoc,
                   id: WAIT_QTSP_SIGNATURE_REQUEST_ID,
                   status: SignatureRequestStatus.WAIT_FOR_QTSP
+                }
+              : signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID
+              ? {
+                  ...signatureRequestDetailViewDoc,
+                  id: SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
+                  updated_at: new Date(now.setDate(now.getDate() - 90)),
+                  status: SignatureRequestStatus.SIGNED
                 }
               : {
                   ...signatureRequestDetailViewDoc,

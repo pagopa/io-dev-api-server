@@ -35,6 +35,7 @@ import {
   frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestExpired,
   frontMatterCTAFCISignatureRequestSigned,
+  frontMatterCTAFCISignatureRequestSignedExpired,
   frontMatterCTAFCISignatureRequestWaitQtsp,
   messageFciMarkdown,
   messageFciSignedMarkdown,
@@ -185,6 +186,14 @@ const createMessages = (
         customConfig,
         `Comune di Controguerra - Carta d'identità Elettronica - Documento Firmato`,
         frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
+      )
+    );
+    output.push(
+      getNewMessage(
+        customConfig,
+        `Comune di Controguerra - Carta d'identità Elettronica - Documento Firmato [90 days expired]`,
+        frontMatterCTAFCISignatureRequestSignedExpired +
+          messageFciSignedMarkdown
       )
     );
   }

@@ -1,6 +1,7 @@
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
+  SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNED_SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../payloads/features/fci/signature-request";
@@ -237,6 +238,17 @@ en:
     cta_1: 
         text: "View documents"
         action: "ioit://fci/main?signatureRequestId=${SIGNED_SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestSignedExpired = `---
+it:
+    cta_1: 
+        text: "Visualizza i documenti"
+        action: "ioit://fci/main?signatureRequestId=${SIGNED_EXPIRED_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "View documents"
+        action: "ioit://fci/main?signatureRequestId=${SIGNED_EXPIRED_SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const messageFciMarkdown = `
