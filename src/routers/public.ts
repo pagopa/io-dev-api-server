@@ -19,7 +19,15 @@ import { resetWalletV2 } from "./walletsV2";
 
 export const publicRouter = Router();
 
-addHandler(publicRouter, "get", "/login", (req, res) => {
+// addHandler(publicRouter, "get", "/login", (req, res) => {
+//   if (
+//     req.headers["x-pagopa-lollipop-pub-key"] &&
+//     req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
+//   ) {
+//   }
+// });
+
+addHandler(publicRouter, "get", "/idp-login", (req, res) => {
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     res.redirect(loginWithToken);
     return;
