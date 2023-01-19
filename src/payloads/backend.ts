@@ -80,6 +80,12 @@ export const backendStatus: BackendStatus = {
     pn: {
       enabled: true,
       frontend_url: "https://notifichedigitali.it"
+    },
+    idPay: {
+      min_app_version: {
+        ios: "1.2.3",
+        android: "1.2.3"
+      }
     }
   },
   sections: {
