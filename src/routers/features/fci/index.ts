@@ -23,14 +23,13 @@ export const fciRouter = Router();
 
 export const addFciPrefix = (path: string) => addApiV1Prefix(`/sign${path}`);
 
-const now = new Date();
-
 addHandler(
   fciRouter,
   "get",
   addFciPrefix("/signature-requests/:signatureRequestId"),
   (req, res) => {
     const signatureRequestId = "signatureRequestId";
+    const now = new Date();
     pipe(
       O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
