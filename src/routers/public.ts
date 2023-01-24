@@ -18,6 +18,7 @@ import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
 
 export const publicRouter = Router();
+const appUrlScheme = "ioit";
 
 addHandler(publicRouter, "get", "/login", (req, res) => {
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
@@ -29,6 +30,19 @@ addHandler(publicRouter, "get", "/login", (req, res) => {
     return;
   }
   sendFile("assets/html/login.html", res);
+});
+
+addHandler(publicRouter, "get", "/error.html", (req, res) => {
+  const url = `${appUrlScheme}://${req.headers.host}${req.originalUrl}`
+  res.redirect(url);
+  return;
+});
+
+addHandler(publicRouter, "get", "/profile.html", (req, res) => {
+if(req.query.token){
+  const url = `${appUrlScheme}://${req.headers.host}${req.originalUrl}`
+  res.redirect(url);
+}
 });
 
 addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
