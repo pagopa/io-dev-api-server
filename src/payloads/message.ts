@@ -212,7 +212,6 @@ export const withPaymentData = (
       )?.organization_fiscal_code!
     }
   };
-  console.log(data.payee);
   const paymementData = validatePayload(PaymentDataWithRequiredPayee, data);
   return {
     ...message,

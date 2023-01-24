@@ -173,8 +173,6 @@ export const getWallets = (count: number = 4): WalletListResponse => {
     };
   };
 
-  console.log(`Wallet count: ${count}`);
-
   const data = {
     data: count > 0 ? range(1, count).map(generateWallet) : []
   };
