@@ -16,11 +16,11 @@ const testForPng = async (url: string) => {
 
 it("login should response with a welcome page", async () => {
   const response = await request.get("/login");
-  expect(response.status).toBe(200);
+  expect(response.status).toBe(302);
 });
 
 it("login with auth should response with a redirect and the token as param", async () => {
-  const response = await request.get("/login?authorized=1");
+  const response = await request.get("/idp-login?authorized=1");
   expect(response.status).toBe(302);
   expect(response.text).toBe(
     "Found. Redirecting to /profile.html?token=" + loginSessionToken

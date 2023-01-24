@@ -54,7 +54,11 @@ export const walletCount =
   walletV2Config.bPayCount;
 export const walletRouter = Router();
 // wallets and transactions
+
+console.log(walletCount);
+
 export const wallets = getWallets(walletCount);
+console.log(wallets.data?.length);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
 export const transactions: ReadonlyArray<Transaction> = getTransactions(

@@ -75,46 +75,50 @@ export const resetCardConfig = () => {
 export const generateSatispayInfo = (
   count: number
 ): ReadonlyArray<SatispayInfo> => {
-  return range(1, count).map(_ => {
-    const config = pipe(
-      O.fromNullable(cardConfigMap.get(WalletTypeEnum.Satispay)),
-      O.getOrElse(() => defaultCardConfig)
-    );
-    const uuid = sha256(
-      config.prefix + config.index.toString().padStart(4, "0")
-    );
-    cardConfigMap.set(WalletTypeEnum.Satispay, {
-      ...config,
-      index: config.index + 1
-    });
-    return {
-      uuid
-    };
-  });
+  return count > 0
+    ? range(1, count).map(_ => {
+        const config = pipe(
+          O.fromNullable(cardConfigMap.get(WalletTypeEnum.Satispay)),
+          O.getOrElse(() => defaultCardConfig)
+        );
+        const uuid = sha256(
+          config.prefix + config.index.toString().padStart(4, "0")
+        );
+        cardConfigMap.set(WalletTypeEnum.Satispay, {
+          ...config,
+          index: config.index + 1
+        });
+        return {
+          uuid
+        };
+      })
+    : [];
 };
 
 export const generatePaypalInfo = (
   count: number
 ): ReadonlyArray<PayPalInfo> => {
-  return range(1, count).map(_ => {
-    const config = pipe(
-      O.fromNullable(cardConfigMap.get(WalletTypeEnum.PayPal)),
-      O.getOrElse(() => defaultCardConfig)
-    );
-    const emailPp = `${config.prefix}.${config.index.toString()}@paypal.it`;
-    cardConfigMap.set(WalletTypeEnum.PayPal, {
-      ...config,
-      index: config.index + 1
-    });
-    const maybePspResponse = validatePayload(
-      t.readonlyArray(PayPalAccountPspInfo),
-      readFileAsJSON(assetsFolder + "/pm/paypal/psp_account.json")
-    );
-    return {
-      // inject the email
-      pspInfo: maybePspResponse.map(p => ({ ...p, email: emailPp }))
-    };
-  });
+  return count > 0
+    ? range(1, count).map(_ => {
+        const config = pipe(
+          O.fromNullable(cardConfigMap.get(WalletTypeEnum.PayPal)),
+          O.getOrElse(() => defaultCardConfig)
+        );
+        const emailPp = `${config.prefix}.${config.index.toString()}@paypal.it`;
+        cardConfigMap.set(WalletTypeEnum.PayPal, {
+          ...config,
+          index: config.index + 1
+        });
+        const maybePspResponse = validatePayload(
+          t.readonlyArray(PayPalAccountPspInfo),
+          readFileAsJSON(assetsFolder + "/pm/paypal/psp_account.json")
+        );
+        return {
+          // inject the email
+          pspInfo: maybePspResponse.map(p => ({ ...p, email: emailPp }))
+        };
+      })
+    : [];
 };
 
 export const satispay = {
@@ -129,27 +133,29 @@ export const generateBancomatPay = (
   count: number
 ): ReadonlyArray<BPay> => {
   const shuffledAbis = faker.helpers.shuffle([...abis]);
-  return range(1, count).map((_, idx) => {
-    const config = pipe(
-      O.fromNullable(cardConfigMap.get(WalletTypeEnum.BPay)),
-      O.getOrElse(() => defaultCardConfig)
-    );
-    const suffix = config.index.toString().padStart(4, "0");
-    const cn = config.prefix + suffix;
-    const uidHash = sha256(cn);
-    cardConfigMap.set(WalletTypeEnum.BPay, {
-      ...config,
-      index: config.index + 1
-    });
-    return {
-      bankName: faker.company.companyName(),
-      instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
-      numberObfuscated: "+3934" + "*".repeat(7) + suffix,
-      paymentInstruments: [],
-      serviceState: "ATT",
-      uidHash
-    };
-  });
+  return count > 0
+    ? range(1, count).map((_, idx) => {
+        const config = pipe(
+          O.fromNullable(cardConfigMap.get(WalletTypeEnum.BPay)),
+          O.getOrElse(() => defaultCardConfig)
+        );
+        const suffix = config.index.toString().padStart(4, "0");
+        const cn = config.prefix + suffix;
+        const uidHash = sha256(cn);
+        cardConfigMap.set(WalletTypeEnum.BPay, {
+          ...config,
+          index: config.index + 1
+        });
+        return {
+          bankName: faker.company.companyName(),
+          instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
+          numberObfuscated: "+3934" + "*".repeat(7) + suffix,
+          paymentInstruments: [],
+          serviceState: "ATT",
+          uidHash
+        };
+      })
+    : [];
 };
 
 export const isCobadge = (wallet: WalletV2, card: CardInfo) =>
@@ -170,29 +176,32 @@ export const generateCards = (
   const listAbi = ioDevServerConfig.wallet.shuffleAbi
     ? faker.helpers.shuffle([...abis])
     : abis;
-  return range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
-    const config = pipe(
-      O.fromNullable(cardConfigMap.get(cardType)),
-      O.getOrElse(() => defaultCardConfig)
-    );
-    const cn = config.prefix + config.index.toString().padStart(4, "0");
-    if (cardConfigMap.get(cardType)) {
-      cardConfigMap.set(cardType, { ...config, index: config.index + 1 });
-    } else {
-      defaultCardConfig = { ...config, index: config.index + 1 };
-    }
-    const ed = faker.date.future();
-    return {
-      abi: listAbi[idx % listAbi.length].abi,
-      cardNumber: cn,
-      cardPartialNumber: cn.slice(-4),
-      expiringDate: ed.toISOString(),
-      hpan: sha256(cn),
-      productType: ProductTypeEnum.PP,
-      tokens: ["token1", "token2"],
-      validityState: ValidityStateEnum.V
-    };
-  });
+
+  return count > 0
+    ? range(1, Math.min(count, abis.length)).map<CardInfo>((_, idx) => {
+        const config = pipe(
+          O.fromNullable(cardConfigMap.get(cardType)),
+          O.getOrElse(() => defaultCardConfig)
+        );
+        const cn = config.prefix + config.index.toString().padStart(4, "0");
+        if (cardConfigMap.get(cardType)) {
+          cardConfigMap.set(cardType, { ...config, index: config.index + 1 });
+        } else {
+          defaultCardConfig = { ...config, index: config.index + 1 };
+        }
+        const ed = faker.date.future();
+        return {
+          abi: listAbi[idx % listAbi.length].abi,
+          cardNumber: cn,
+          cardPartialNumber: cn.slice(-4),
+          expiringDate: ed.toISOString(),
+          hpan: sha256(cn),
+          productType: ProductTypeEnum.PP,
+          tokens: ["token1", "token2"],
+          validityState: ValidityStateEnum.V
+        };
+      })
+    : [];
 };
 
 const maybeAbiList = t

@@ -138,6 +138,7 @@ export const generateWalletV2Data = () => {
     EnableableFunctionsEnum.BPD
   ];
 
+  console.log(walletV2Config);
   // add bancomat
   walletBancomat = generateCards(
     abiResponse.data ?? [],
@@ -244,9 +245,10 @@ export const generateWalletV2Data = () => {
 };
 
 // return the list of wallets
-addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) =>
-  res.json(walletV2Response)
-);
+addHandler(wallet2Router, "get", appendWalletV2Prefix("/wallet"), (_, res) => {
+  console.log(walletV2Response);
+  res.json(walletV2Response);
+});
 
 // PM compliance: despite the endpoint is v3, the payment methods list returned by this API includes methods of type v2
 // v3 is the same of v2 but in addition it includes paypal ¯\_(ツ)_/¯

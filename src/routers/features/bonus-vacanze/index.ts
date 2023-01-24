@@ -1,8 +1,8 @@
 import { Second } from "@pagopa/ts-commons/lib/units";
 import { Router } from "express";
 import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
+import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import {

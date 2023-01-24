@@ -187,168 +187,182 @@ const createMessages = (
     .toString("base64");
 
   /* medical */
-  range(1, customConfig.messages.medicalCount).forEach(count => {
-    const baseMessage = medicalMessage(count);
-    const attachments: ReadonlyArray<MessageAttachment> = [
-      {
-        name: "prescription A",
-        content: "up, down, strange, charm, bottom, top",
-        mime_type: "text/plain"
-      },
-      {
-        name: "prescription B",
-        content: barcodeReceipt,
-        mime_type: "image/svg+xml"
-      }
-    ];
-    output.push({
-      ...baseMessage,
-      content: {
-        ...baseMessage.content,
-        subject: `💊 medical prescription with attachments - ${count}` as MessageSubject,
-        attachments
-      }
+  customConfig.messages.medicalCount > 0 &&
+    range(1, customConfig.messages.medicalCount).forEach(count => {
+      const baseMessage = medicalMessage(count);
+      const attachments: ReadonlyArray<MessageAttachment> = [
+        {
+          name: "prescription A",
+          content: "up, down, strange, charm, bottom, top",
+          mime_type: "text/plain"
+        },
+        {
+          name: "prescription B",
+          content: barcodeReceipt,
+          mime_type: "image/svg+xml"
+        }
+      ];
+      output.push({
+        ...baseMessage,
+        content: {
+          ...baseMessage.content,
+          subject: `💊 medical prescription with attachments - ${count}` as MessageSubject,
+          attachments
+        }
+      });
     });
-  });
 
   /* standard message */
-  range(1, customConfig.messages.standardMessageCount).forEach(count =>
-    output.push(
-      getNewMessage(
-        customConfig,
-        `standard message - ${count}`,
-        messageMarkdown
+  customConfig.messages.standardMessageCount > 0 &&
+    range(1, customConfig.messages.standardMessageCount).forEach(count =>
+      output.push(
+        getNewMessage(
+          customConfig,
+          `standard message - ${count}`,
+          messageMarkdown
+        )
       )
-    )
-  );
+    );
 
   /* due date */
-  range(1, customConfig.messages.withValidDueDateCount).forEach(count =>
-    output.push(
-      withDueDate(
-        getNewMessage(
-          customConfig,
-          `🕙✅ due date valid - ${count}`,
-          messageMarkdown
-        ),
-        new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+  customConfig.messages.withValidDueDateCount > 0 &&
+    range(1, customConfig.messages.withValidDueDateCount).forEach(count =>
+      output.push(
+        withDueDate(
+          getNewMessage(
+            customConfig,
+            `🕙✅ due date valid - ${count}`,
+            messageMarkdown
+          ),
+          new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+        )
       )
-    )
-  );
+    );
 
-  range(1, customConfig.messages.withInValidDueDateCount).forEach(count =>
-    output.push(
-      withDueDate(
-        getNewMessage(
-          customConfig,
-          `🕙❌ due date invalid - ${count}`,
-          messageMarkdown
-        ),
-        new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
+  customConfig.messages.withInValidDueDateCount > 0 &&
+    range(1, customConfig.messages.withInValidDueDateCount).forEach(count =>
+      output.push(
+        withDueDate(
+          getNewMessage(
+            customConfig,
+            `🕙❌ due date invalid - ${count}`,
+            messageMarkdown
+          ),
+          new Date(now.getTime() - 60 * 1000 * 60 * 24 * 8)
+        )
       )
-    )
-  );
+    );
 
   /* payments */
-  range(
-    1,
-    customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
-  ).forEach(count =>
-    output.push(
-      withDueDate(
-        withPaymentData(
-          getNewMessage(
-            customConfig,
-            `💰🕙❌ payment - expired - invalid after due date - ${count}`,
-            messageMarkdown
+  customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount > 0 &&
+    range(
+      1,
+      customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
+    ).forEach(count =>
+      output.push(
+        withDueDate(
+          withPaymentData(
+            getNewMessage(
+              customConfig,
+              `💰🕙❌ payment - expired - invalid after due date - ${count}`,
+              messageMarkdown
+            ),
+            true
           ),
-          true
-        ),
-        new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+          new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+        )
       )
-    )
-  );
-
-  range(
-    1,
-    customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
-  ).forEach(count =>
-    output.push(
-      withDueDate(
-        withPaymentData(
-          getNewMessage(
-            customConfig,
-            `💰🕙✅ payment - valid - invalid after due date - ${count}`,
-            messageMarkdown
-          ),
-          true
-        ),
-        new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
-      )
-    )
-  );
-
-  range(
-    1,
-    customConfig.messages.paymentWithExpiredDueDateCount
-  ).forEach(count =>
-    output.push(
-      withDueDate(
-        withPaymentData(
-          getNewMessage(
-            customConfig,
-            `💰🕙 payment - expired - ${count}`,
-            messageMarkdown
-          ),
-          false
-        ),
-        new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
-      )
-    )
-  );
-
-  range(1, customConfig.messages.paymentWithValidDueDateCount).forEach(count =>
-    output.push(
-      withDueDate(
-        withPaymentData(
-          getNewMessage(
-            customConfig,
-            `💰🕙✅ payment message - ${count}`,
-            messageMarkdown
-          ),
-          true
-        ),
-        new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
-      )
-    )
-  );
-
-  range(1, customConfig.messages.paymentsCount).forEach(count =>
-    output.push(
-      withPaymentData(
-        getNewMessage(
-          customConfig,
-          `💰✅ payment - ${count} `,
-          messageMarkdown
-        ),
-        true
-      )
-    )
-  );
-
-  range(1, customConfig.messages.legalCount).forEach(count => {
-    const isOdd = count % 2 > 0;
-    const message = getNewMessage(
-      customConfig,
-      `⚖️ Legal -${isOdd ? "" : "without HTML"} ${count}`,
-      messageMarkdown
     );
-    const mvlMsgId = message.id;
-    const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
-    output.push(withLegalContent(message, message.id, attachments, isOdd));
-  });
+
+  customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount > 0 &&
+    range(
+      1,
+      customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
+    ).forEach(count =>
+      output.push(
+        withDueDate(
+          withPaymentData(
+            getNewMessage(
+              customConfig,
+              `💰🕙✅ payment - valid - invalid after due date - ${count}`,
+              messageMarkdown
+            ),
+            true
+          ),
+          new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+        )
+      )
+    );
+
+  customConfig.messages.paymentWithExpiredDueDateCount > 0 &&
+    range(
+      1,
+      customConfig.messages.paymentWithExpiredDueDateCount
+    ).forEach(count =>
+      output.push(
+        withDueDate(
+          withPaymentData(
+            getNewMessage(
+              customConfig,
+              `💰🕙 payment - expired - ${count}`,
+              messageMarkdown
+            ),
+            false
+          ),
+          new Date(now.getTime() - 60 * 1000 * 60 * 24 * 3)
+        )
+      )
+    );
+
+  customConfig.messages.paymentWithValidDueDateCount > 0 &&
+    range(
+      1,
+      customConfig.messages.paymentWithValidDueDateCount
+    ).forEach(count =>
+      output.push(
+        withDueDate(
+          withPaymentData(
+            getNewMessage(
+              customConfig,
+              `💰🕙✅ payment message - ${count}`,
+              messageMarkdown
+            ),
+            true
+          ),
+          new Date(now.getTime() + 60 * 1000 * 60 * 24 * 8)
+        )
+      )
+    );
+
+  customConfig.messages.paymentsCount > 0 &&
+    range(1, customConfig.messages.paymentsCount).forEach(count =>
+      output.push(
+        withPaymentData(
+          getNewMessage(
+            customConfig,
+            `💰✅ payment - ${count} `,
+            messageMarkdown
+          ),
+          true
+        )
+      )
+    );
+
+  customConfig.messages.legalCount > 0 &&
+    range(1, customConfig.messages.legalCount).forEach(count => {
+      const isOdd = count % 2 > 0;
+      const message = getNewMessage(
+        customConfig,
+        `⚖️ Legal -${isOdd ? "" : "without HTML"} ${count}`,
+        messageMarkdown
+      );
+      const mvlMsgId = message.id;
+      const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
+      output.push(withLegalContent(message, message.id, attachments, isOdd));
+    });
 
   ioDevServerConfig.services.includePn &&
+    customConfig.messages.pnCount > 0 &&
     range(1, customConfig.messages.pnCount).forEach(_ => {
       const sender = "Comune di Milano";
       const subject = "infrazione al codice della strada";

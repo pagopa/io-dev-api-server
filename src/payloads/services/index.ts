@@ -3,8 +3,8 @@ import {
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
 import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
+import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
 import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
