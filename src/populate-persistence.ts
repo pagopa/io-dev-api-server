@@ -1,5 +1,5 @@
 import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
+import { range } from "fp-ts/lib/NonEmptyArray";
 import fs from "fs";
 import _ from "lodash";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
@@ -348,15 +348,22 @@ const createMessages = (
     output.push(withLegalContent(message, message.id, attachments, isOdd));
   });
 
-  range(1, customConfig.messages.pnCount).forEach(count => {
-    const sender = "Comune di Milano";
-    const subject = "infrazione al codice della strada";
-    const abstract =
-      "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
-    output.push(
-      getNewPnMessage(customConfig, sender, subject, abstract, messageMarkdown)
-    );
-  });
+  ioDevServerConfig.services.includePn &&
+    range(1, customConfig.messages.pnCount).forEach(_ => {
+      const sender = "Comune di Milano";
+      const subject = "infrazione al codice della strada";
+      const abstract =
+        "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
+      output.push(
+        getNewPnMessage(
+          customConfig,
+          sender,
+          subject,
+          abstract,
+          messageMarkdown
+        )
+      );
+    });
 
   return output;
 };

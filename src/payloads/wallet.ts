@@ -1,7 +1,7 @@
 import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/lib/function";
+import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import { PspDataListResponse } from "../../generated/definitions/pagopa/PspDataListResponse";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { CreditCard } from "../../generated/definitions/pagopa/walletv2/CreditCard";

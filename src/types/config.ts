@@ -3,10 +3,9 @@ import {
   WithinRangeInteger,
   WithinRangeNumber
 } from "@pagopa/ts-commons/lib/numbers";
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { enumType } from "@pagopa/ts-commons/lib/types";
 import * as t from "io-ts";
-import { NonEmptyString } from "italia-ts-commons/lib/strings";
-import { enumType } from "italia-ts-commons/lib/types";
 
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";

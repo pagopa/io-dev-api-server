@@ -1,10 +1,11 @@
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Router } from "express";
 import faker from "faker/locale/it";
 import { reverse, sortBy } from "fp-ts/lib/Array";
+import { Ord } from "fp-ts/lib/boolean";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { contramap, ordBoolean } from "fp-ts/lib/Ord";
-import { pipe } from "fp-ts/lib/pipeable";
-import { NonEmptyString } from "italia-ts-commons/lib/strings";
+import { contramap } from "fp-ts/lib/Ord";
 import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
 import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
 import { OfflineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OfflineMerchantSearchRequest";
@@ -50,15 +51,9 @@ const filterMerchants = <T extends OnlineMerchant | OfflineMerchant>(
       )
     );
   const merchantsFiltered = merchants.filter(filters);
-  const byNewDiscounts = contramap((m: T) => m.newDiscounts)(ordBoolean);
+  const byNewDiscounts = contramap((m: T) => m.newDiscounts)(Ord);
   const orderMerchantsByNewDiscount = sortBy([byNewDiscounts]);
-  return pipe(
-    orderMerchantsByNewDiscount,
-    O.fold(
-      () => merchantsFiltered,
-      f => reverse(f(merchantsFiltered))
-    )
-  );
+  return pipe(merchantsFiltered, reverse, orderMerchantsByNewDiscount);
 };
 
 addHandler(

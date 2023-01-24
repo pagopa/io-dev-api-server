@@ -1,8 +1,8 @@
-import faker from "faker/locale/it";
 import {
   NonEmptyString,
   OrganizationFiscalCode
-} from "italia-ts-commons/lib/strings";
+} from "@pagopa/ts-commons/lib/strings";
+import faker from "faker/locale/it";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";

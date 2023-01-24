@@ -1,7 +1,7 @@
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Request, Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import fs from "fs";
-import { readableReport } from "italia-ts-commons/lib/reporters";
 import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definitions/pagopa/walletv2/CobadegPaymentInstrumentsRequest";
 import { CobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/CobadgeResponse";
@@ -55,7 +55,7 @@ const handleCobadge = (req: Request, res: Response) => {
     .toString();
   const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
   if (E.isLeft(maybeResponse)) {
-    res.status(400).send(readableReport(maybeResponse.value));
+    res.status(400).send(readableReport(maybeResponse.left));
     return;
   }
   const queryAbi: string | undefined =
@@ -68,17 +68,17 @@ const handleCobadge = (req: Request, res: Response) => {
     .map<PaymentInstrument>(cb =>
       fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
     );
-  const cobadgeResponse = maybeResponse.value;
+  const cobadgeResponse = maybeResponse.right;
   const response = {
     ...cobadgeResponse,
     payload: { ...cobadgeResponse.payload, paymentInstruments }
   };
   const validResponse = RestCobadgeResponse.decode({ data: response });
   if (E.isLeft(validResponse)) {
-    res.status(500).send(readableReport(validResponse.value));
+    res.status(500).send(readableReport(validResponse.left));
     return;
   }
-  res.status(200).json(validResponse.value);
+  res.status(200).json(validResponse.right);
 };
 
 const handlePrivative = (req: Request, res: Response) => {
@@ -86,7 +86,7 @@ const handlePrivative = (req: Request, res: Response) => {
     readFileAsJSON(assetsFolder + "/pm/cobadge/pans.json")
   );
   if (E.isLeft(maybeResponse)) {
-    res.status(400).send(readableReport(maybeResponse.value));
+    res.status(400).send(readableReport(maybeResponse.left));
     return;
   }
   const queryAbi: string | undefined =
@@ -101,7 +101,7 @@ const handlePrivative = (req: Request, res: Response) => {
     ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
     productType: ProductTypeEnum.PRIVATIVE
   }));
-  const cobadgeResponse = maybeResponse.value;
+  const cobadgeResponse = maybeResponse.right;
   const response = {
     ...cobadgeResponse,
     payload: {
@@ -111,10 +111,10 @@ const handlePrivative = (req: Request, res: Response) => {
   };
   const validResponse = RestCobadgeResponse.decode({ data: response });
   if (E.isLeft(validResponse)) {
-    res.status(500).send(readableReport(validResponse.value));
+    res.status(500).send(readableReport(validResponse.left));
     return;
   }
-  res.status(200).json(validResponse.value);
+  res.status(200).json(validResponse.right);
 };
 
 /**
@@ -152,23 +152,23 @@ addHandler(
       .toString();
     const maybeResponse = CobadgeResponse.decode(JSON.parse(pansStubData));
     if (E.isLeft(maybeResponse)) {
-      res.status(400).send(readableReport(maybeResponse.value));
+      res.status(400).send(readableReport(maybeResponse.left));
       return;
     }
     const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge.map<
       PaymentInstrument
     >(cb => fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo));
-    const cobadgeResponse = maybeResponse.value;
+    const cobadgeResponse = maybeResponse.right;
     const response = {
       ...cobadgeResponse,
       payload: { ...cobadgeResponse.payload, paymentInstruments }
     };
     const validResponse = RestCobadgeResponse.decode({ data: response });
     if (E.isLeft(validResponse)) {
-      res.status(500).send(readableReport(validResponse.value));
+      res.status(500).send(readableReport(validResponse.left));
       return;
     }
-    res.status(200).json(validResponse.value);
+    res.status(200).json(validResponse.right);
   },
   0
 );
@@ -185,11 +185,11 @@ addHandler(
     const maybeData = CobadegPaymentInstrumentsRequest.decode(data);
     // cant decode the body
     if (E.isLeft(maybeData)) {
-      res.status(400).send(readableReport(maybeData.value));
+      res.status(400).send(readableReport(maybeData.left));
       return;
     }
     // assume the request includes only ONE card
-    const paymentInstrument = maybeData.value.data!.payload!
+    const paymentInstrument = maybeData.right.data!.payload!
       .paymentInstruments![0];
     const cobadge = [...citizenCreditCardCoBadge, ...citizenPrivativeCard].find(
       cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode

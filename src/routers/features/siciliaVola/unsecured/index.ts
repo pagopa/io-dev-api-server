@@ -52,8 +52,8 @@ addHandler(
       return;
     }
 
-    const regions = maybeRegions.value.map((r: ProvinciaBean) => r.idRegione);
-    const regionIdAccepted = regions.includes(maybeRegionId.value);
+    const regions = maybeRegions.right.map((r: ProvinciaBean) => r.idRegione);
+    const regionIdAccepted = regions.includes(maybeRegionId.right);
 
     if (regionIdAccepted) {
       const maybeProvinces = t

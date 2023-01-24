@@ -1,9 +1,9 @@
 import { format } from "date-fns";
 import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as t from "io-ts";
 import sha256 from "sha256";
 import { match } from "ts-pattern";
@@ -201,7 +201,7 @@ const maybeAbiList = t
 if (E.isLeft(maybeAbiList)) {
   throw Error("invalid abi list");
 }
-const abiCodes = (maybeAbiList.value ?? [])
+const abiCodes = (maybeAbiList.right ?? [])
   .map((a: Abi) => a.abi)
   .filter(isDefined);
 // tslint:disable-next-line: no-let

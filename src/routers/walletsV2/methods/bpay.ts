@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
 import { BPay } from "../../../../generated/definitions/pagopa/walletv2/BPay";
 import { BPayInfo } from "../../../../generated/definitions/pagopa/walletv2/BPayInfo";

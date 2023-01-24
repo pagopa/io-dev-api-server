@@ -1,16 +1,22 @@
 /**
  * this router serves all public API (those ones don't need session)
  */
+import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import { Router } from "express";
+import * as E from "fp-ts/lib/Either";
+import * as jose from "jose";
+import * as zlib from "zlib";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { backendInfo } from "../payloads/backend";
 import {
   errorRedirectUrl,
+  loginLolliPopRedirect,
   loginSessionToken,
   loginWithToken
 } from "../payloads/login";
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
+import { getSamlRequest } from "../utils/login";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -19,13 +25,39 @@ import { resetWalletV2 } from "./walletsV2";
 
 export const publicRouter = Router();
 
-// addHandler(publicRouter, "get", "/login", (req, res) => {
-//   if (
-//     req.headers["x-pagopa-lollipop-pub-key"] &&
-//     req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
-//   ) {
-//   }
-// });
+export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
+
+addHandler(publicRouter, "get", "/login", async (req, res) => {
+  if (
+    req.headers["x-pagopa-lollipop-pub-key"] &&
+    req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
+  ) {
+    console.log(req.headers["x-pagopa-lollipop-pub-key"]);
+    const jwkPK = parseJwkOrError(
+      req.headers["x-pagopa-lollipop-pub-key"] as string
+    );
+    console.log(JSON.stringify(jwkPK));
+    if (E.isRight(jwkPK) && JwkPublicKey.is(jwkPK.right)) {
+      const pkHash = await jose.calculateJwkThumbprint(
+        jwkPK.right,
+        DEFAULT_LOLLIPOP_HASH_ALGORITHM
+      );
+
+      const samlRequest = getSamlRequest(pkHash);
+
+      const authNRequest = zlib.deflateRawSync(samlRequest).toString();
+
+      const redirectUrl = `${loginLolliPopRedirect}?authNRequest=${authNRequest}`;
+      res.redirect(redirectUrl);
+      return;
+    } else {
+      res.sendStatus(500);
+      return;
+    }
+  }
+  res.redirect(loginLolliPopRedirect);
+  return;
+});
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {

@@ -27,7 +27,7 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
 
   const updatedPreference = {
     ...currentPreference,
-    is_inbox_enabled: maybeActivation.value.activation_status
+    is_inbox_enabled: maybeActivation.right.activation_status
   };
 
   const increasedSettingsVersion = ((currentPreference.settings_version as number) +

@@ -18,7 +18,7 @@ describe("GET beneficiario/stato", () => {
     const bonuses = ListaStatoPerAnno.decode(response.body);
     expect(E.isRight(bonuses)).toBeTruthy();
     if (E.isRight(bonuses)) {
-      expect(bonuses.value).toStrictEqual(bonusRequest.generateBonusAll());
+      expect(bonuses.right).toStrictEqual(bonusRequest.generateBonusAll());
     }
   });
 });
@@ -69,10 +69,11 @@ describe("POST /beneficiario/registrazione", () => {
 
     expect(responseRegistered.status).toBe(200);
     expect(E.isRight(requestRegisteredOutcome)).toBeTruthy();
-    expect(requestRegisteredOutcome.value).toStrictEqual(
-      expectedRegisteredOutcome
-    );
-
+    if (E.isRight(requestRegisteredOutcome)) {
+      expect(requestRegisteredOutcome.right).toStrictEqual(
+        expectedRegisteredOutcome
+      );
+    }
     const responsePending = await request
       .post("/bonus/cdc/beneficiario/registrazione")
       .send(payload);
@@ -100,6 +101,8 @@ describe("POST /beneficiario/registrazione", () => {
 
     expect(responsePending.status).toBe(200);
     expect(E.isRight(requestPendingOutcome)).toBeTruthy();
-    expect(requestPendingOutcome.value).toStrictEqual(expectedPendingOutcome);
+    if (E.isRight(requestPendingOutcome)) {
+      expect(requestPendingOutcome.right).toStrictEqual(expectedPendingOutcome);
+    }
   });
 });

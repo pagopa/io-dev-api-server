@@ -1,7 +1,7 @@
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Response } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
+import { pipe } from "fp-ts/lib/function";
 import fs from "fs";
 import { Validation } from "io-ts";
 
