@@ -45,9 +45,11 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 
       const samlRequest = getSamlRequest(pkHash);
 
-      const authNRequest = zlib.deflateRawSync(samlRequest).toString();
+      const authNRequest = zlib.deflateRawSync(samlRequest).toString("base64");
 
-      const redirectUrl = `${loginLolliPopRedirect}?authNRequest=${authNRequest}`;
+      const redirectUrl = `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(
+        authNRequest
+      )}`;
       res.redirect(redirectUrl);
       return;
     } else {
