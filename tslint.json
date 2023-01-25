@@ -1,5 +1,5 @@
 {
-  "rulesDirectory": ["./node_modules/fp-ts/rules"],
+  "rulesDirectory": [],
   "extends": [],
   "jsRules": {},
   "rules": {
