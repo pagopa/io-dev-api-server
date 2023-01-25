@@ -3,6 +3,7 @@
  */
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import { Router } from "express";
+import * as faker from "faker";
 import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import * as zlib from "zlib";
@@ -32,11 +33,9 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     req.headers["x-pagopa-lollipop-pub-key"] &&
     req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
   ) {
-    console.log(req.headers["x-pagopa-lollipop-pub-key"]);
     const jwkPK = parseJwkOrError(
       req.headers["x-pagopa-lollipop-pub-key"] as string
     );
-    console.log(JSON.stringify(jwkPK));
     if (E.isRight(jwkPK) && JwkPublicKey.is(jwkPK.right)) {
       const pkHash = await jose.calculateJwkThumbprint(
         jwkPK.right,
@@ -57,7 +56,14 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
       return;
     }
   }
-  res.redirect(loginLolliPopRedirect);
+
+  const id = faker.datatype.uuid();
+  const samlRequest = getSamlRequest(id);
+
+  const authNRequest = zlib.deflateRawSync(samlRequest).toString("base64");
+  res.redirect(
+    `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(authNRequest)}`
+  );
   return;
 });
 
