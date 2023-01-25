@@ -75,7 +75,11 @@ export const backendStatus: BackendStatus = {
       }
     },
     lollipop: {
-      enabled: false
+      enabled: false,
+      min_app_version: {
+        ios: "2.25.0.0",
+        android: "2.25.0.0"
+      }
     },
     pn: {
       enabled: true,
