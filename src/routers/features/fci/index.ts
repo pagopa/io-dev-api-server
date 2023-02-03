@@ -65,7 +65,7 @@ addHandler(
               ? {
                   ...signatureRequestDetailViewDoc,
                   id: SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
-                  updated_at: new Date(now.setDate(now.getDate() - 90)),
+                  updated_at: new Date(now.setDate(now.getDate() - 91)),
                   status: SignatureRequestStatus.SIGNED
                 }
               : {
