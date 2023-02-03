@@ -1,6 +1,6 @@
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
-import _ from "lodash";
+import { slice } from "lodash";
 import * as path from "path";
 import sha256 from "sha256";
 import { Attachment } from "../../generated/definitions/backend/Attachment";
@@ -368,7 +368,7 @@ export const getRemoteAttachments = (
     attachmentCount,
     remoteAttachmentFileCount
   );
-  const slicedRemoteAttachmentFiles = _.slice(
+  const slicedRemoteAttachmentFiles = slice(
     remoteAttachmentFiles,
     0,
     safeAttachmentCount
