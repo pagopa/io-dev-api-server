@@ -14,7 +14,7 @@ import { defaultContentType, getCategory } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
-import { fileExists, sendFile } from "../utils/file";
+import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { services } from "./service";
 
@@ -333,7 +333,27 @@ addHandler(
     const attachmentFolderName = categoryTag === TagEnum.PN ? "pn" : "remote";
     const attachmentAbsolutePath = `assets/messages/${attachmentFolderName}/attachments/${attachment.name}`;
     if (!fileExists(attachmentAbsolutePath)) {
-      res.status(404).json(getProblemJson(404, "attachment gone"));
+      // The real IO-backend replies with a 500 if the attachment is not found so we must replicate the same behaviour
+      res.status(500).json(getProblemJson(500, "attachment gone"));
+      return;
+    }
+    try {
+      const isAttachmentASupportedPDF = isPDFFile(attachmentAbsolutePath);
+      if (!isAttachmentASupportedPDF) {
+        res
+          .status(415)
+          .json(getProblemJson(415, "Not a supported PDF attachment"));
+        return;
+      }
+    } catch (e) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            `Unable to check requested attachment (${(e as Error).message})`
+          )
+        );
       return;
     }
     res.setHeader(
