@@ -1,9 +1,9 @@
 ---
 version: 2
 jobs:
-  node-18: &test
+  node-16: &test
     docker:
-      - image: node:18
+      - image: node:16
     working_directory: ~/src
     steps:
       - checkout
@@ -38,4 +38,4 @@ workflows:
   version: 2
   "io-dev-api-server":
     jobs:
-      - node-18
+      - node-16
