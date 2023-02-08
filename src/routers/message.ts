@@ -330,7 +330,8 @@ addHandler(
     }
     const messageCategory = getCategory(message);
     const categoryTag = messageCategory?.tag;
-    const attachmentFolderName = categoryTag === PNCategoryTagEnum.PN ? "pn" : "remote";
+    const attachmentFolderName =
+      categoryTag === PNCategoryTagEnum.PN ? "pn" : "remote";
     const attachmentAbsolutePath = `assets/messages/${attachmentFolderName}/attachments/${attachment.name}`;
     if (!fileExists(attachmentAbsolutePath)) {
       // The real IO-backend replies with a 500 if the attachment is not found so we must replicate the same behaviour
