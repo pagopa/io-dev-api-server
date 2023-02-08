@@ -127,11 +127,11 @@ function handleLollipopLoginRedirect(
   samlRequest: string,
   thumbprint?: string
 ) {
-  const samlReq = zlib.deflateRawSync(samlRequest).toString("base64");
-  void debugSamlRequestIfNeeded(samlReq, thumbprint);
+  const base64EncodedSAMLReq = zlib.deflateRawSync(samlRequest).toString("base64");
+  void debugSamlRequestIfNeeded(base64EncodedSAMLReq, thumbprint);
 
   const redirectUrl = `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(
-    samlRequest
+    base64EncodedSAMLReq
   )}`;
   res.redirect(redirectUrl);
 }
