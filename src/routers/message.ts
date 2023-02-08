@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
-import { TagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
+import { TagEnum as PNCategoryTagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
@@ -330,7 +330,7 @@ addHandler(
     }
     const messageCategory = getCategory(message);
     const categoryTag = messageCategory?.tag;
-    const attachmentFolderName = categoryTag === TagEnum.PN ? "pn" : "remote";
+    const attachmentFolderName = categoryTag === PNCategoryTagEnum.PN ? "pn" : "remote";
     const attachmentAbsolutePath = `assets/messages/${attachmentFolderName}/attachments/${attachment.name}`;
     if (!fileExists(attachmentAbsolutePath)) {
       // The real IO-backend replies with a 500 if the attachment is not found so we must replicate the same behaviour
