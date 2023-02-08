@@ -146,6 +146,8 @@ export const IoDevServerConfig = t.interface({
       legalCount: t.number,
       // number of messages coming from PN (aka Piattaforma Notifiche)
       pnCount: t.number,
+      // number of messages with remote attachments
+      withRemoteAttachments: t.number,
       // number of message - invalid after due date - containing a payment and a valid (not expired) due date
       paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
       // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
