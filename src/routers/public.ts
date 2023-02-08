@@ -2,7 +2,8 @@
  * this router serves all public API (those ones don't need session)
  */
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
-import { Router } from "express";
+import chalk from "chalk";
+import { Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
@@ -27,69 +28,37 @@ import { resetWalletV2 } from "./walletsV2";
 export const publicRouter = Router();
 
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
-
-let thumbprint: string;
-let samlReq: string;
-
-const test = async () => {
-  const decoded = decodeURIComponent(samlReq);
-
-  const deflated = zlib
-    .inflateRawSync(Buffer.from(decoded, "base64"))
-    .toString();
-
-  console.log(deflated);
-
-  const xmlToJson = await parseStringPromise(deflated);
-
-  const authnRequest = xmlToJson["samlp:AuthnRequest"];
-
-  if (authnRequest) {
-    console.log("authn req id", authnRequest.$.ID);
-    console.log("stored thumb", thumbprint);
-  }
-};
+const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
   if (
-    req.headers["x-pagopa-lollipop-pub-key"] &&
-    req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
+    !req.headers[DEFAULT_HEADER_LOLLIPOP_PUB_KEY] ||
+    !req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
   ) {
-    const jwkPK = parseJwkOrError(
-      req.headers["x-pagopa-lollipop-pub-key"] as string
-    );
-
-    if (E.isRight(jwkPK) && JwkPublicKey.is(jwkPK.right)) {
-      thumbprint = await jose.calculateJwkThumbprint(
-        jwkPK.right,
-        DEFAULT_LOLLIPOP_HASH_ALGORITHM
-      );
-
-      samlReq = zlib
-        .deflateRawSync(getSamlRequest(thumbprint))
-        .toString("base64");
-
-      const redirectUrl = `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(
-        samlReq
-      )}`;
-      res.redirect(redirectUrl);
-      return;
-    } else {
-      res.sendStatus(500);
-      return;
-    }
+    const samlRequest = getSamlRequest();
+    handleLollipopLoginRedirect(res, samlRequest);
+    return;
   }
 
-  samlReq = zlib.deflateRawSync(getSamlRequest()).toString("base64");
-
-  res.redirect(
-    `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(samlReq)}`
+  const jwkPK = parseJwkOrError(
+    req.headers[DEFAULT_HEADER_LOLLIPOP_PUB_KEY] as string
   );
-  return;
+
+  if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const thumbprint = await jose.calculateJwkThumbprint(
+    jwkPK.right,
+    DEFAULT_LOLLIPOP_HASH_ALGORITHM
+  );
+
+  const samlRequest = getSamlRequest(thumbprint);
+  handleLollipopLoginRedirect(res, samlRequest, thumbprint);
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
-  test();
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     res.redirect(loginWithToken);
     return;
@@ -152,3 +121,43 @@ addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.json(readFileAsJSON(assetsFolder + "/data/availableDonations.json"));
 });
+
+function handleLollipopLoginRedirect(
+  res: Response<any, Record<string, any>>,
+  samlRequest: string,
+  thumbprint?: string
+) {
+  const samlReq = zlib.deflateRawSync(samlRequest).toString("base64");
+  void debugSamlRequestIfNeeded(samlReq, thumbprint);
+
+  const redirectUrl = `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(
+    samlRequest
+  )}`;
+  res.redirect(redirectUrl);
+}
+
+async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
+  if (!ioDevServerConfig.global.logSAMLRequest) {
+    return;
+  }
+
+  const decoded = decodeURIComponent(samlReq);
+
+  const deflated = zlib
+    .inflateRawSync(Buffer.from(decoded, "base64"))
+    .toString();
+
+  console.log(chalk.bgBlack(chalk.green(`Deflated samlReq: ${deflated}`)));
+
+  const xmlToJson = await parseStringPromise(deflated);
+
+  const authnRequest = xmlToJson["samlp:AuthnRequest"];
+  if (authnRequest) {
+    console.log(
+      chalk.bgBlack(chalk.green(`Authn Request Id: ${authnRequest.$.ID}`))
+    );
+  }
+  if (thumbprint) {
+    console.log(chalk.bgBlack(chalk.green(`Stored Thumbprint: ${thumbprint}`)));
+  }
+}

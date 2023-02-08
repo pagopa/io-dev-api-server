@@ -58,7 +58,8 @@ const defaultConfig: IoDevServerConfig = {
     delay: 0,
     autoLogin: false,
     allowRandomValues: true,
-    responseError: undefined
+    responseError: undefined,
+    logSAMLRequest: true
   },
   profile: {
     attrs: defaultProfileAttrs,

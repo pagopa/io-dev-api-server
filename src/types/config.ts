@@ -107,7 +107,9 @@ export const IoDevServerConfig = t.interface({
       // if true, no login page will be shown (SPID)
       autoLogin: t.boolean,
       // if false fixed values will be used
-      allowRandomValues: t.boolean
+      allowRandomValues: t.boolean,
+      // if true, logs the lollipop parameters generated during a login request
+      logSAMLRequest: t.boolean
     }),
     AllowRandomValue,
     t.partial({
