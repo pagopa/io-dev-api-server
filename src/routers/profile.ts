@@ -1,8 +1,8 @@
 import { Router } from "express";
 import faker from "faker/locale/it";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import { Profile } from "../../generated/definitions/backend/Profile";
 import { UserDataProcessing } from "../../generated/definitions/backend/UserDataProcessing";
 import {
@@ -77,7 +77,7 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
   // profile is merged with the one coming from request.
   // furthermore this profile's version is increased by 1
   const clientProfileIncreased: Profile = {
-    ...maybeProfileToUpdate.value,
+    ...maybeProfileToUpdate.right,
     version: parseInt(req.body.version, 10) + 1
   };
   currentProfile = {
@@ -158,7 +158,7 @@ addHandler(
       return;
     }
 
-    const choice = maybeChoice.value;
+    const choice = maybeChoice.right;
     // The abort function is managed only for the DELETE
     if (choice === UserDataProcessingChoiceEnum.DOWNLOAD) {
       res.sendStatus(409);
@@ -166,7 +166,8 @@ addHandler(
     }
 
     const acceptedOrConflictStatus = pipe(
-      O.fromNullable(userChoices[choice]),
+      userChoices[choice],
+      O.fromNullable,
       O.fold(
         () => 409,
         c => (c.status !== UserDataProcessingStatusEnum.PENDING ? 409 : 202)

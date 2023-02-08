@@ -1,11 +1,11 @@
-import faker from "faker/locale/it";
-import { range } from "fp-ts/lib/Array";
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import {
   NonEmptyString,
   OrganizationFiscalCode
-} from "italia-ts-commons/lib/strings";
+} from "@pagopa/ts-commons/lib/strings";
+import faker from "faker/locale/it";
+import { pipe } from "fp-ts/lib/function";
+import { range } from "fp-ts/lib/NonEmptyArray";
+import * as O from "fp-ts/lib/Option";
 import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServiceId } from "../../../generated/definitions/backend/ServiceId";
@@ -13,7 +13,6 @@ import { ServicePreference } from "../../../generated/definitions/backend/Servic
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
 import { SpecialServiceMetadata } from "../../../generated/definitions/backend/SpecialServiceMetadata";
-import { ioDevServerConfig } from "../../config";
 import { isCgnActivated } from "../../routers/features/cgn";
 import { getRandomValue } from "../../utils/random";
 import { getService, getServiceMetadata } from "../../utils/service";

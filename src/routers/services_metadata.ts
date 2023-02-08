@@ -1,10 +1,10 @@
 /**
  * this router serves all data and assets provided by io-services-metadata https://github.com/pagopa/io-services-metadata
  */
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
-import { readableReport } from "italia-ts-commons/lib/reporters";
+import { pipe } from "fp-ts/lib/function";
 import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
@@ -189,10 +189,10 @@ addHandler(
       readFileAsJSON(assetsFolder + "/data/cobadgeServices.json")
     );
     if (E.isLeft(decoded)) {
-      res.status(500).send(readableReport(decoded.value));
+      res.status(500).send(readableReport(decoded.left));
       return;
     }
-    res.json(decoded.value);
+    res.json(decoded.right);
   },
   0
 );
@@ -206,10 +206,10 @@ addHandler(
       readFileAsJSON(assetsFolder + "/data/privativeServices.json")
     );
     if (E.isLeft(decoded)) {
-      res.status(500).send(readableReport(decoded.value));
+      res.status(500).send(readableReport(decoded.left));
       return;
     }
-    res.json(decoded.value);
+    res.json(decoded.right);
   },
   0
 );

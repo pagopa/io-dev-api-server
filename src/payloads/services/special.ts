@@ -2,7 +2,7 @@
 import {
   NonEmptyString,
   OrganizationFiscalCode
-} from "italia-ts-commons/lib/strings";
+} from "@pagopa/ts-commons/lib/strings";
 import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
 import { ServiceName } from "../../../generated/definitions/backend/ServiceName";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";

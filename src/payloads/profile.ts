@@ -1,6 +1,7 @@
 import { DateFromString } from "@pagopa/ts-commons/lib/dates";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 import { PushNotificationsContentTypeEnum } from "../../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatusEnum } from "../../generated/definitions/backend/ReminderStatus";
@@ -48,7 +49,11 @@ const spidProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: profileAttrConfig.name,
   version: 1,
-  date_of_birth: DateFromString.decode("1991-01-06").value as Date,
+  date_of_birth: pipe(
+    "1991-01-06",
+    DateFromString.decode,
+    E.getOrElseW(() => new Date())
+  ),
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages,
   ...optInNotificationPreferences
@@ -68,7 +73,11 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   is_email_validated: true,
   name: profileAttrConfig.name,
   version: 0,
-  date_of_birth: DateFromString.decode("1991-01-06").value as Date,
+  date_of_birth: pipe(
+    "1991-01-06",
+    DateFromString.decode,
+    E.getOrElseW(() => new Date())
+  ),
   fiscal_code: profileAttrConfig.fiscal_code
 };
 
@@ -86,7 +95,11 @@ const cieProfile: InitializedProfile = {
   is_webhook_enabled: true,
   name: profileAttrConfig.name,
   version: 1,
-  date_of_birth: DateFromString.decode("1991-01-06").value as Date,
+  date_of_birth: pipe(
+    "1991-01-06",
+    DateFromString.decode,
+    E.getOrElseW(() => new Date())
+  ),
   fiscal_code: profileAttrConfig.fiscal_code,
   preferred_languages: profileAttrConfig.preferred_languages,
   ...optInNotificationPreferences
@@ -105,7 +118,11 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   is_webhook_enabled: false,
   name: profileAttrConfig.name,
   version: 0,
-  date_of_birth: DateFromString.decode("1991-01-06").value as Date,
+  date_of_birth: pipe(
+    "1991-01-06",
+    DateFromString.decode,
+    E.getOrElseW(() => new Date())
+  ),
   fiscal_code: profileAttrConfig.fiscal_code
 };
 const spidCie = {

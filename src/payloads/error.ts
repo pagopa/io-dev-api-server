@@ -1,5 +1,4 @@
 import { ProblemJson } from "../../generated/definitions/backend/ProblemJson";
-import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 
 export const getProblemJson = (
@@ -14,7 +13,7 @@ export const getProblemJson = (
     title,
     instance,
     detail,
-    status
+    status: status as ProblemJson["status"]
   };
 };
 

@@ -1,5 +1,5 @@
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import { NextFunction, Request, Response } from "express";
-import { Millisecond } from "italia-ts-commons/lib/units";
 
 export const delayer = (delay: Millisecond) => (
   _: Request,

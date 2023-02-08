@@ -18,7 +18,7 @@ it("profile should return a valid profile", async () => {
   const profile = InitializedProfile.decode(response.body);
   expect(E.isRight(profile)).toBeTruthy();
   if (E.isRight(profile)) {
-    expect(profile.value.fiscal_code).toBe(
+    expect(profile.right.fiscal_code).toBe(
       ioDevServerConfig.profile.attrs.fiscal_code
     );
   }
@@ -40,7 +40,7 @@ it("profile should return a valid updated profile (version increased)", async ()
   expect(response.status).toBe(200);
   const updatedProfile = InitializedProfile.decode(response.body);
   if (E.isRight(updatedProfile)) {
-    expect(updatedProfile.value.version).toBe(profile.version + 1);
+    expect(updatedProfile.right.version).toBe(profile.version + 1);
   }
 });
 
@@ -69,6 +69,6 @@ it("post user-metadata should return the updated user-metadata", async () => {
   const updatedUsermetadata = UserMetadata.decode(response.body);
   expect(E.isRight(updatedUsermetadata)).toBeTruthy();
   if (E.isRight(updatedUsermetadata)) {
-    expect(updatedUsermetadata.value).toEqual(mockUserMetadata);
+    expect(updatedUsermetadata.right).toEqual(mockUserMetadata);
   }
 });

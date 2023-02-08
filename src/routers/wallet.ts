@@ -3,15 +3,15 @@
  */
 import { Router } from "express";
 import * as faker from "faker";
-import { takeEnd } from "fp-ts/lib/Array";
+import { takeRight } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { EnableableFunctionsEnum } from "../../generated/definitions/pagopa/EnableableFunctions";
 import { Transaction } from "../../generated/definitions/pagopa/Transaction";
 import { TransactionListResponse } from "../../generated/definitions/pagopa/TransactionListResponse";
-import { TypeEnum, Wallet } from "../../generated/definitions/pagopa/Wallet";
+import { TypeEnum } from "../../generated/definitions/pagopa/Wallet";
 import { WalletPaymentStatusRequest } from "../../generated/definitions/pagopa/WalletPaymentStatusRequest";
 import { WalletResponse } from "../../generated/definitions/pagopa/WalletResponse";
 import {
@@ -54,6 +54,7 @@ export const walletCount =
   walletV2Config.bPayCount;
 export const walletRouter = Router();
 // wallets and transactions
+
 export const wallets = getWallets(walletCount);
 export const transactionPageSize = 10;
 export const transactionsTotal = 25;
@@ -83,9 +84,9 @@ addHandler(
       O.map(s => Math.max(parseInt(s, 10), 0)),
       O.getOrElse(() => 0)
     );
-    const transactionsSlice = takeEnd(
-      transactions.length - Math.min(start, transactions.length),
-      [...transactions]
+    const transactionsSlice = pipe(
+      [...transactions],
+      takeRight(transactions.length - Math.min(start, transactions.length))
     ).slice(0, transactionPageSize);
     const response = validatePayload(TransactionListResponse, {
       data: transactionsSlice,
@@ -324,9 +325,9 @@ addHandler(
     }
     const updatedWallet: WalletV2 = {
       ...wallet,
-      pagoPA: payload.value.data.pagoPA,
+      pagoPA: payload.right.data.pagoPA,
       // remove favourite if pagoPA===false
-      favourite: !payload.value.data.pagoPA ? false : wallet.favourite
+      favourite: !payload.right.data.pagoPA ? false : wallet.favourite
     };
     removeWalletV2(updatedWallet.idWallet!);
     addWalletV2([updatedWallet], true);

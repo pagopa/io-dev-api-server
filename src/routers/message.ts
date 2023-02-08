@@ -1,9 +1,9 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import _ from "lodash";
-import { __, match, not } from "ts-pattern";
+import { match, not, __ } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { TagEnum as PNCategoryTagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
@@ -79,9 +79,13 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     return;
   }
 
-  const params = paginatedQuery.value;
+  const params = paginatedQuery.right;
   const orderedList =
-    paginatedQuery.map(p => p.getArchived).value === true
+    pipe(
+      paginatedQuery,
+      E.map(p => p.getArchived),
+      E.getOrElseW(() => false)
+    ) === true
       ? MessagesDB.findAllArchived()
       : MessagesDB.findAllInbox();
 
@@ -271,7 +275,7 @@ addHandler(
       return;
     }
     // find the attachment by the given attachmentId
-    const attachment = legalMessage.value.legal_message.eml.attachments.find(
+    const attachment = legalMessage.right.legal_message.eml.attachments.find(
       a => a.id === req.params.attachmentId
     );
     if (attachment === undefined) {
@@ -321,7 +325,7 @@ addHandler(
       return;
     }
     // find the attachment by the given attachmentId
-    const attachment = thirdPartyMessage.value.third_party_message?.attachments?.find(
+    const attachment = thirdPartyMessage.right.third_party_message?.attachments?.find(
       a => a.id === req.params.attachmentId
     );
     if (attachment === undefined) {
