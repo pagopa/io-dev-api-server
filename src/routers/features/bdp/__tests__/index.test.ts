@@ -44,7 +44,7 @@ describe("citizen V2 API", () => {
       const cr = CitizenResource.decode(response.body);
       expect(E.isRight(cr)).toBeTruthy();
       if (E.isRight(cr)) {
-        expect(cr.value.enabled === true).toBeTruthy();
+        expect(cr.right.enabled === true).toBeTruthy();
       }
     });
     it("PUT Should return a 200 with optInStatus update", async () => {
@@ -56,9 +56,9 @@ describe("citizen V2 API", () => {
       const cr = CitizenResource.decode(response.body);
       expect(E.isRight(cr)).toBeTruthy();
       if (E.isRight(cr)) {
-        expect(cr.value.enabled === true).toBeTruthy();
+        expect(cr.right.enabled === true).toBeTruthy();
         expect(
-          cr.value.optInStatus === CitizenOptInStatusEnum.ACCEPTED
+          cr.right.optInStatus === CitizenOptInStatusEnum.ACCEPTED
         ).toBeTruthy();
       }
     });

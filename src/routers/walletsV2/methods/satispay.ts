@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
+import { pipe } from "fp-ts/lib/function";
 import { Satispay } from "../../../../generated/definitions/pagopa/walletv2/Satispay";
 import { WalletTypeEnum } from "../../../../generated/definitions/pagopa/walletv2/WalletV2";
 import { addHandler } from "../../../payloads/response";

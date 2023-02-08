@@ -50,7 +50,7 @@ addHandler(
       return;
     }
 
-    const vouchersParams = maybeParams.value;
+    const vouchersParams = maybeParams.right;
     if (
       vouchersParams.pageNum === undefined ||
       vouchersParams.elementsXPage === undefined
@@ -124,7 +124,7 @@ addHandler(
 
     if (vouchersBeneficiary) {
       vouchersBeneficiary = vouchersBeneficiary.filter(
-        v => v.idVoucher !== maybeVoucherId.value
+        v => v.idVoucher !== maybeVoucherId.right
       );
     }
     res.json({});

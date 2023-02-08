@@ -3,10 +3,9 @@ import {
   WithinRangeInteger,
   WithinRangeNumber
 } from "@pagopa/ts-commons/lib/numbers";
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { enumType } from "@pagopa/ts-commons/lib/types";
 import * as t from "io-ts";
-import { NonEmptyString } from "italia-ts-commons/lib/strings";
-import { enumType } from "italia-ts-commons/lib/types";
 
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
@@ -108,7 +107,9 @@ export const IoDevServerConfig = t.interface({
       // if true, no login page will be shown (SPID)
       autoLogin: t.boolean,
       // if false fixed values will be used
-      allowRandomValues: t.boolean
+      allowRandomValues: t.boolean,
+      // if true, logs the lollipop parameters generated during a login request
+      logSAMLRequest: t.boolean
     }),
     AllowRandomValue,
     t.partial({
