@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import _ from "lodash";
 import { __, match, not } from "ts-pattern";
 import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
-import { MessageContentWithAttachments } from "../../generated/definitions/backend/MessageContentWithAttachments";
+import { TagEnum as PNCategoryTagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
@@ -14,7 +14,7 @@ import { defaultContentType, getCategory } from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
-import { sendFile } from "../utils/file";
+import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { services } from "./service";
 
@@ -166,7 +166,7 @@ addHandler(
     // retrieve the messageIndex from id
     const message = MessagesDB.findOneById(req.params.id);
     if (message === null) {
-      res.json(getProblemJson(404, "message not found"));
+      res.status(404).json(getProblemJson(404, "message not found"));
       return;
     }
     const response = getPublicMessages(
@@ -189,7 +189,7 @@ addHandler(
     }
     const { change_type, is_archived, is_read } = req.body;
     if (is_archived === undefined && is_read === undefined) {
-      return res.json(getProblemJson(400, "Invalid payload"));
+      return res.status(400).json(getProblemJson(400, "Invalid payload"));
     }
     // tslint:disable-next-line: no-let
     let result = false;
@@ -221,7 +221,7 @@ addHandler(
         }
         break;
       default:
-        return res.json(getProblemJson(400, "Invalid payload"));
+        return res.status(400).json(getProblemJson(400, "Invalid payload"));
     }
 
     if (result) {
@@ -243,12 +243,14 @@ addHandler(
     // retrieve the messageIndex from id
     const message = MessagesDB.findOneById(req.params.id);
     if (message === undefined) {
-      res.json(getProblemJson(404, "message not found"));
+      res.status(404).json(getProblemJson(404, "message not found"));
       return;
     }
     if (!LegalMessageWithContent.is(message)) {
       // act as the IO backend
-      res.json(getProblemJson(500, "requested message is not of legal type"));
+      res
+        .status(500)
+        .json(getProblemJson(500, "requested message is not of legal type"));
       return;
     }
     res.json(message);
@@ -265,7 +267,7 @@ addHandler(
     const legalMessage = LegalMessageWithContent.decode(message);
     // ensure message exists and it has a legal content
     if (message === undefined || E.isLeft(legalMessage)) {
-      res.json(getProblemJson(404, "message not found"));
+      res.status(404).json(getProblemJson(404, "message not found"));
       return;
     }
     // find the attachment by the given attachmentId
@@ -273,7 +275,7 @@ addHandler(
       a => a.id === req.params.attachmentId
     );
     if (attachment === undefined) {
-      res.json(getProblemJson(404, "attachment not found"));
+      res.status(404).json(getProblemJson(404, "attachment not found"));
       return;
     }
     res.setHeader("Content-Type", attachment.content_type);
@@ -301,7 +303,7 @@ addHandler(
 
     thirdPartyMessage
       ? res.json(thirdPartyMessage)
-      : res.json(getProblemJson(404, "message not found"));
+      : res.status(404).json(getProblemJson(404, "message not found"));
   }
 );
 
@@ -314,8 +316,8 @@ addHandler(
     const message = MessagesDB.findOneById(req.params.messageId);
     const thirdPartyMessage = ThirdPartyMessageWithContent.decode(message);
     // ensure message exists and it has a legal content
-    if (message === undefined || E.isLeft(thirdPartyMessage)) {
-      res.json(getProblemJson(404, "message not found"));
+    if (!message || E.isLeft(thirdPartyMessage)) {
+      res.status(404).json(getProblemJson(404, "message not found"));
       return;
     }
     // find the attachment by the given attachmentId
@@ -323,14 +325,43 @@ addHandler(
       a => a.id === req.params.attachmentId
     );
     if (attachment === undefined) {
-      res.json(getProblemJson(404, "attachment not found"));
+      res.status(404).json(getProblemJson(404, "attachment not found"));
+      return;
+    }
+    const messageCategory = getCategory(message);
+    const categoryTag = messageCategory?.tag;
+    const attachmentFolderName =
+      categoryTag === PNCategoryTagEnum.PN ? "pn" : "remote";
+    const attachmentAbsolutePath = `assets/messages/${attachmentFolderName}/attachments/${attachment.name}`;
+    if (!fileExists(attachmentAbsolutePath)) {
+      // The real IO-backend replies with a 500 if the attachment is not found so we must replicate the same behaviour
+      res.status(500).json(getProblemJson(500, "attachment gone"));
+      return;
+    }
+    try {
+      const isAttachmentASupportedPDF = isPDFFile(attachmentAbsolutePath);
+      if (!isAttachmentASupportedPDF) {
+        res
+          .status(415)
+          .json(getProblemJson(415, "Not a supported PDF attachment"));
+        return;
+      }
+    } catch (e) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            `Unable to check requested attachment (${(e as Error).message})`
+          )
+        );
       return;
     }
     res.setHeader(
       "Content-Type",
       attachment.content_type ?? defaultContentType
     );
-    sendFile(`assets/messages/pn/attachments/${attachment.name}`, res);
+    sendFile(attachmentAbsolutePath, res);
   },
   3000
 );
