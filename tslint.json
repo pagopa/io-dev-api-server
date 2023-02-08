@@ -1,6 +1,6 @@
 {
-  "rulesDirectory": ["./node_modules/fp-ts/rules"],
-  "extends": ["italia-tslint-rules/basic", "italia-tslint-rules/react"],
+  "rulesDirectory": [],
+  "extends": [],
   "jsRules": {},
   "rules": {
     "no-console": false,

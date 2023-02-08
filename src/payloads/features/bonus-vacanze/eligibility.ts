@@ -1,4 +1,4 @@
-import { FiscalCode, NonEmptyString } from "italia-ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Dsu } from "../../../../generated/definitions/bonus_vacanze/Dsu";
 import {
   EligibilityCheckFailure,

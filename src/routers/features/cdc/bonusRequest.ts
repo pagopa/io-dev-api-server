@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
+import { pipe } from "fp-ts/lib/function";
 import { match } from "ts-pattern";
 import { AnniRiferimento } from "../../../../generated/definitions/cdc/AnniRiferimento";
 import { Anno } from "../../../../generated/definitions/cdc/Anno";

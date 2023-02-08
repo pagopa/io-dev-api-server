@@ -1,5 +1,5 @@
+import { OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
 import faker from "faker/locale/it";
-import { OrganizationFiscalCode } from "italia-ts-commons/lib/strings";
 
 import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
 import { Iban } from "../../generated/definitions/backend/Iban";

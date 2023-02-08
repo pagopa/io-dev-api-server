@@ -16,7 +16,7 @@ it("services should return a valid services list", async () => {
 
   expect(E.isRight(list)).toBeTruthy();
   if (E.isRight(list)) {
-    expect(list.value).toEqual(visibleServices.payload);
+    expect(list.right).toEqual(visibleServices.payload);
   }
 });
 
@@ -27,7 +27,7 @@ it("services should return a valid service with content", async () => {
   const service = ServicePublic.decode(response.body);
   expect(E.isRight(service)).toBeTruthy();
   if (E.isRight(service)) {
-    expect(service.value.service_id).toBe(serviceId);
+    expect(service.right.service_id).toBe(serviceId);
   }
 });
 

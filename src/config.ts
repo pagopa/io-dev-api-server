@@ -1,9 +1,8 @@
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import chalk from "chalk";
 import * as E from "fp-ts/lib/Either";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
@@ -59,7 +58,8 @@ const defaultConfig: IoDevServerConfig = {
     delay: 0,
     autoLogin: false,
     allowRandomValues: true,
-    responseError: undefined
+    responseError: undefined,
+    logSAMLRequest: false
   },
   profile: {
     attrs: defaultProfileAttrs,
@@ -158,7 +158,7 @@ const checkData = IoDevServerConfig.decode(ioDevServerConfig);
 if (E.isLeft(checkData)) {
   throw new Error(
     `your custom config file ${customConfig} contains some invalid data:\n${readableReport(
-      checkData.value
+      checkData.left
     )}`
   );
 }

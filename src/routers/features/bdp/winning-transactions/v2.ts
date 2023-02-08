@@ -1,9 +1,9 @@
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import chalk from "chalk";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import { readableReport } from "italia-ts-commons/lib/reporters";
 import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { TrxCountByDayResourceArray } from "../../../../../generated/definitions/bpd/winning_transactions/v2/TrxCountByDayResourceArray";
 import { WinningTransactionPageResource } from "../../../../../generated/definitions/bpd/winning_transactions/v2/WinningTransactionPageResource";
@@ -66,7 +66,7 @@ addHandler(
             console.log(chalk.red(`${p} is not a valid TotalCashbackResource`));
             res.sendStatus(500);
           } else {
-            res.json(maybeTotalCashBack.value);
+            res.json(maybeTotalCashBack.right);
           }
         }
       )
@@ -113,13 +113,13 @@ addHandler(
           console.log(
             chalk.red(
               `${period.toString()}/${file} is not a valid WinningTransactionPageResource\n${readableReport(
-                maybeTransactions.value
+                maybeTransactions.left
               )}`
             )
           );
           res.sendStatus(500);
         } else {
-          res.json(maybeTransactions.value);
+          res.json(maybeTransactions.right);
         }
       } catch (e) {
         if (
@@ -181,7 +181,7 @@ addHandler(
             );
             res.sendStatus(500);
           } else {
-            res.json(maybeCountByDay.value);
+            res.json(maybeCountByDay.right);
           }
         }
       )

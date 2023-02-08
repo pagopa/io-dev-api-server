@@ -13,6 +13,6 @@ it("services should return a valid public session", async () => {
 
   expect(E.isRight(publicSession)).toBeTruthy();
   if (E.isRight(publicSession)) {
-    expect(publicSession.value).toEqual(session.payload);
+    expect(publicSession.right).toEqual(session.payload);
   }
 });
