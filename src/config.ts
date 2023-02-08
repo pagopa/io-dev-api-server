@@ -75,6 +75,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     legalCount: 0,
     pnCount: 0,
+    withRemoteAttachments: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,

@@ -11,6 +11,25 @@ export const sendFile = (filePath: string, res: Response) => {
   });
 };
 
+export const readBinaryFileSegment = (
+  fileName: string,
+  length: number
+): Buffer => {
+  const fileDescriptor = fs.openSync(fileName, "r");
+  const buffer = Buffer.alloc(length);
+  const byteRead = fs.readSync(fileDescriptor, buffer);
+  if (byteRead > 0) {
+    return buffer;
+  }
+  throw new Error(`Unable to read (${length}) bytes from file (${fileName})`);
+};
+
+export const isPDFFile = (fileName: string): boolean => {
+  const buffer = readBinaryFileSegment(fileName, 4);
+  const header = buffer.toString("utf8", 0, buffer.length);
+  return header === "%PDF";
+};
+
 export const readFileAsJSON = (fileName: string): any =>
   fs.existsSync(fileName)
     ? JSON.parse(fs.readFileSync(fileName).toString())

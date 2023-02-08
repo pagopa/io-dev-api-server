@@ -8,15 +8,18 @@ import { EUCovidCert } from "../generated/definitions/backend/EUCovidCert";
 import { MessageAttachment } from "../generated/definitions/backend/MessageAttachment";
 import { MessageSubject } from "../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../generated/definitions/backend/PrescriptionData";
+import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "./config";
 import {
   createMessage,
   getMvlAttachments,
+  remoteAttachmentFileCount,
   withContent,
   withDueDate,
   withLegalContent,
   withPaymentData,
-  withPNContent
+  withPNContent,
+  withRemoteAttachments
 } from "./payloads/message";
 import { pnServiceId } from "./payloads/services/special";
 import MessagesDB from "./persistence/messages";
@@ -81,6 +84,22 @@ const getNewPnMessage = (
     subject,
     abstract,
     getRandomValue(new Date(), faker.date.past(), "messages")
+  );
+
+const getNewRemoteAttachmentsMessage = (
+  customConfig: IoDevServerConfig,
+  sender: string,
+  subject: string,
+  markdown: string,
+  attachmentCount: number
+): ThirdPartyMessageWithContent =>
+  withRemoteAttachments(
+    withContent(
+      createMessage(customConfig.profile.attrs.fiscal_code, getServiceId()),
+      `${sender}: ${subject}`,
+      markdown
+    ),
+    attachmentCount
   );
 
 const createMessages = (
@@ -378,6 +397,18 @@ const createMessages = (
         )
       );
     });
+
+  range(1, customConfig.messages.withRemoteAttachments).forEach(index => {
+    output.push(
+      getNewRemoteAttachmentsMessage(
+        customConfig,
+        `Sender ${index}`,
+        `Subject ${index}: remote attachments`,
+        messageMarkdown,
+        1 + (index % remoteAttachmentFileCount)
+      )
+    );
+  });
 
   return output;
 };

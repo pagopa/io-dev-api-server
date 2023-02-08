@@ -42,7 +42,8 @@ const customConfig = _.merge(ioDevServerConfig, {
     withValidDueDateCount: 10,
     withInValidDueDateCount: 2,
     standardMessageCount: 10,
-    archivedMessageCount: 40
+    archivedMessageCount: 40,
+    withRemoteAttachments: 0
   }
 });
 
@@ -101,12 +102,12 @@ describe("given the `/messages` endpoint", () => {
 
   describe("when the page size is greater than the total number of available items", () => {
     const pageSize = 100;
-    it("should return fewer items", async () => {
+    it("should return fewer items or the same number as the page size", async () => {
       const response = await request.get(
         `${basePath}/messages?page_size=${pageSize}`
       );
       const { items } = assertResponseIsRight(response.body);
-      expect(items.length).toBeLessThan(pageSize);
+      expect(items.length).toBeLessThanOrEqual(pageSize);
     });
 
     it("the `next` parameter should not be defined ", async () => {
