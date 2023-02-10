@@ -3,7 +3,9 @@
  */
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
-import { Response, Router } from "express";
+import { Request, Response, Router } from "express";
+import { ParamsDictionary } from "express-serve-static-core";
+import { ParsedQs } from "qs";
 import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
@@ -31,18 +33,26 @@ export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
-  if (
-    !req.headers[DEFAULT_HEADER_LOLLIPOP_PUB_KEY] ||
-    !req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
-  ) {
+  const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
+  const lollipopHashAlgorithmHeaderValue = req.get(
+    "x-pagopa-lollipop-pub-key-hash-algo"
+  );
+  if (!lollipopPublicKeyHeaderValue || !lollipopHashAlgorithmHeaderValue) {
     const samlRequest = getSamlRequest();
     handleLollipopLoginRedirect(res, samlRequest);
     return;
   }
 
-  const jwkPK = parseJwkOrError(
-    req.headers[DEFAULT_HEADER_LOLLIPOP_PUB_KEY] as string
-  );
+  if (!checkLollipopUserAgentHader(req, res)) {
+    res.status(400).json({
+      detail: "Wrong Lollipop UserAgent",
+      status: 400,
+      title: "Bad Request"
+    });
+    return;
+  }
+
+  const jwkPK = parseJwkOrError(lollipopPublicKeyHeaderValue);
 
   if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
     res.sendStatus(400);
@@ -54,7 +64,10 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     DEFAULT_LOLLIPOP_HASH_ALGORITHM
   );
 
-  const samlRequest = getSamlRequest(thumbprint);
+  const samlRequest = getSamlRequest(
+    DEFAULT_LOLLIPOP_HASH_ALGORITHM,
+    thumbprint
+  );
   handleLollipopLoginRedirect(res, samlRequest, thumbprint);
 });
 
@@ -127,13 +140,35 @@ function handleLollipopLoginRedirect(
   samlRequest: string,
   thumbprint?: string
 ) {
-  const base64EncodedSAMLReq = zlib.deflateRawSync(samlRequest).toString("base64");
+  const base64EncodedSAMLReq = zlib
+    .deflateRawSync(samlRequest)
+    .toString("base64");
   void debugSamlRequestIfNeeded(base64EncodedSAMLReq, thumbprint);
 
   const redirectUrl = `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(
     base64EncodedSAMLReq
   )}`;
   res.redirect(redirectUrl);
+}
+
+function checkLollipopUserAgentHader(
+  req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
+  res: Response<any, Record<string, any>>
+): boolean {
+  const userAgent = req.get("user-agent") ?? "";
+  const userAgentRegex = "IO-App/(\\d+).(\\d+).(\\d+)";
+  const userAgentMatches = userAgent.match(userAgentRegex);
+  const matchedGroupCount = userAgentMatches?.length ?? 0;
+  if (matchedGroupCount < 4) {
+    return false;
+  }
+  const majorVersion = parseInt(userAgentMatches![1]);
+  var minorVersion = parseInt(userAgentMatches![2]);
+  var patchVersion = parseInt(userAgentMatches![3]);
+  if (majorVersion < 2 || minorVersion < 23 || patchVersion < 0) {
+    return false;
+  }
+  return true;
 }
 
 async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
@@ -154,7 +189,9 @@ async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
   const authnRequest = xmlToJson["samlp:AuthnRequest"];
   if (authnRequest) {
     console.log(
-      chalk.bgBlack(chalk.green(`Authn Request Id: ${authnRequest.$.ID}`))
+      chalk.bgBlack(
+        chalk.green(`Authn Request Algorithm-Id: ${authnRequest.$.ID}`)
+      )
     );
   }
   if (thumbprint) {
