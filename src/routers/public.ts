@@ -163,8 +163,8 @@ function checkLollipopUserAgentHader(
     return false;
   }
   const majorVersion = parseInt(userAgentMatches![1]);
-  var minorVersion = parseInt(userAgentMatches![2]);
-  var patchVersion = parseInt(userAgentMatches![3]);
+  const minorVersion = parseInt(userAgentMatches![2]);
+  const patchVersion = parseInt(userAgentMatches![3]);
   if (majorVersion < 2 || minorVersion < 23 || patchVersion < 0) {
     return false;
   }
