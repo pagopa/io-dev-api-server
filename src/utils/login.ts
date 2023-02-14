@@ -1,8 +1,9 @@
 export const getSamlRequest = (
-  id: string = "_2d2a89e99c7583e221b4"
+  algorithm: string = "sha256",
+  hash: string = "sha256-_2d2a89e99c7583e221b4"
 ) => `<?xml version="1.0"?>
 <samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
-                    ID="${id}"
+                    ID="${algorithm}-${hash}"
                     Version="2.0"
                     IssueInstant="2023-01-20T10:03:42.600Z"
                     ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
