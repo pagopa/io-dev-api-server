@@ -1,11 +1,15 @@
 /**
  * this router serves all public API (those ones don't need session)
  */
+import {
+  SemverFromFromUserAgentString,
+  UserAgentSemver,
+  UserAgentSemverValid
+} from "@pagopa/ts-commons/lib/http-user-agent";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
-import { Request, Response, Router } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
+import { Response, Router } from "express";
+import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
@@ -31,6 +35,10 @@ export const publicRouter = Router();
 
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
+const ACCEPTED_LOLLIPOP_USER_AGENT = {
+  clientName: "IO-App",
+  clientVersion: "2.23.0"
+} as UserAgentSemver;
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
@@ -43,7 +51,8 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     return;
   }
 
-  if (!checkLollipopUserAgentHader(req, res)) {
+  const userAgent = req.get("user-agent") ?? "";
+  if (!checkLollipopUserAgent(userAgent)) {
     res.status(400).json({
       detail: "Wrong Lollipop UserAgent",
       status: 400,
@@ -135,11 +144,11 @@ addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {
   res.json(readFileAsJSON(assetsFolder + "/data/availableDonations.json"));
 });
 
-function handleLollipopLoginRedirect(
+const handleLollipopLoginRedirect = (
   res: Response<any, Record<string, any>>,
   samlRequest: string,
   thumbprint?: string
-) {
+) => {
   const base64EncodedSAMLReq = zlib
     .deflateRawSync(samlRequest)
     .toString("base64");
@@ -149,29 +158,23 @@ function handleLollipopLoginRedirect(
     base64EncodedSAMLReq
   )}`;
   res.redirect(redirectUrl);
-}
+};
 
-function checkLollipopUserAgentHader(
-  req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-  res: Response<any, Record<string, any>>
-): boolean {
-  const userAgent = req.get("user-agent") ?? "";
-  const userAgentRegex = "IO-App/(\\d+).(\\d+).(\\d+)";
-  const userAgentMatches = userAgent.match(userAgentRegex);
-  const matchedGroupCount = userAgentMatches?.length ?? 0;
-  if (matchedGroupCount < 4) {
-    return false;
-  }
-  const majorVersion = parseInt(userAgentMatches![1]);
-  const minorVersion = parseInt(userAgentMatches![2]);
-  const patchVersion = parseInt(userAgentMatches![3]);
-  if (majorVersion < 2 || minorVersion < 23 || patchVersion < 0) {
-    return false;
-  }
-  return true;
-}
+const checkLollipopUserAgent = (userAgent: string): boolean =>
+  pipe(
+    userAgent,
+    SemverFromFromUserAgentString.decode,
+    E.fold(
+      () => false,
+      userAgent =>
+        UserAgentSemverValid.equals(userAgent, ACCEPTED_LOLLIPOP_USER_AGENT)
+    )
+  );
 
-async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
+const debugSamlRequestIfNeeded = async (
+  samlReq: string,
+  thumbprint?: string
+) => {
   if (!ioDevServerConfig.global.logSAMLRequest) {
     return;
   }
@@ -197,4 +200,4 @@ async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
   if (thumbprint) {
     console.log(chalk.bgBlack(chalk.green(`Stored Thumbprint: ${thumbprint}`)));
   }
-}
+};
