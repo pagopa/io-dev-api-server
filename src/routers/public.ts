@@ -1,9 +1,15 @@
 /**
  * this router serves all public API (those ones don't need session)
  */
+import {
+  SemverFromFromUserAgentString,
+  UserAgentSemver,
+  UserAgentSemverValid
+} from "@pagopa/ts-commons/lib/http-user-agent";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
 import { Response, Router } from "express";
+import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
@@ -29,20 +35,33 @@ export const publicRouter = Router();
 
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
+const ACCEPTED_LOLLIPOP_USER_AGENT = {
+  clientName: "IO-App",
+  clientVersion: "2.23.0"
+} as UserAgentSemver;
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
-  if (
-    !req.headers[DEFAULT_HEADER_LOLLIPOP_PUB_KEY] ||
-    !req.headers["x-pagopa-lollipop-pub-key-hash-algo"]
-  ) {
+  const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
+  const lollipopHashAlgorithmHeaderValue = req.get(
+    "x-pagopa-lollipop-pub-key-hash-algo"
+  );
+  if (!lollipopPublicKeyHeaderValue || !lollipopHashAlgorithmHeaderValue) {
     const samlRequest = getSamlRequest();
     handleLollipopLoginRedirect(res, samlRequest);
     return;
   }
 
-  const jwkPK = parseJwkOrError(
-    req.headers[DEFAULT_HEADER_LOLLIPOP_PUB_KEY] as string
-  );
+  const userAgent = req.get("user-agent") ?? "";
+  if (!checkLollipopUserAgent(userAgent)) {
+    res.status(400).json({
+      detail: "Wrong Lollipop UserAgent",
+      status: 400,
+      title: "Bad Request"
+    });
+    return;
+  }
+
+  const jwkPK = parseJwkOrError(lollipopPublicKeyHeaderValue);
 
   if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
     res.sendStatus(400);
@@ -54,7 +73,10 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     DEFAULT_LOLLIPOP_HASH_ALGORITHM
   );
 
-  const samlRequest = getSamlRequest(thumbprint);
+  const samlRequest = getSamlRequest(
+    DEFAULT_LOLLIPOP_HASH_ALGORITHM,
+    thumbprint
+  );
   handleLollipopLoginRedirect(res, samlRequest, thumbprint);
 });
 
@@ -122,21 +144,37 @@ addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {
   res.json(readFileAsJSON(assetsFolder + "/data/availableDonations.json"));
 });
 
-function handleLollipopLoginRedirect(
+const handleLollipopLoginRedirect = (
   res: Response<any, Record<string, any>>,
   samlRequest: string,
   thumbprint?: string
-) {
-  const base64EncodedSAMLReq = zlib.deflateRawSync(samlRequest).toString("base64");
+) => {
+  const base64EncodedSAMLReq = zlib
+    .deflateRawSync(samlRequest)
+    .toString("base64");
   void debugSamlRequestIfNeeded(base64EncodedSAMLReq, thumbprint);
 
   const redirectUrl = `${loginLolliPopRedirect}?SAMLRequest=${encodeURIComponent(
     base64EncodedSAMLReq
   )}`;
   res.redirect(redirectUrl);
-}
+};
 
-async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
+const checkLollipopUserAgent = (userAgent: string): boolean =>
+  pipe(
+    userAgent,
+    SemverFromFromUserAgentString.decode,
+    E.fold(
+      () => false,
+      userAgent =>
+        UserAgentSemverValid.equals(userAgent, ACCEPTED_LOLLIPOP_USER_AGENT)
+    )
+  );
+
+const debugSamlRequestIfNeeded = async (
+  samlReq: string,
+  thumbprint?: string
+) => {
   if (!ioDevServerConfig.global.logSAMLRequest) {
     return;
   }
@@ -154,10 +192,12 @@ async function debugSamlRequestIfNeeded(samlReq: string, thumbprint?: string) {
   const authnRequest = xmlToJson["samlp:AuthnRequest"];
   if (authnRequest) {
     console.log(
-      chalk.bgBlack(chalk.green(`Authn Request Id: ${authnRequest.$.ID}`))
+      chalk.bgBlack(
+        chalk.green(`Authn Request Algorithm-Id: ${authnRequest.$.ID}`)
+      )
     );
   }
   if (thumbprint) {
     console.log(chalk.bgBlack(chalk.green(`Stored Thumbprint: ${thumbprint}`)));
   }
-}
+};
