@@ -72,7 +72,8 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "1.2.3",
         android: "1.2.3"
-      }
+      },
+      service_id: "serviceFci"
     },
     lollipop: {
       enabled: false,

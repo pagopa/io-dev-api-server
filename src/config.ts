@@ -121,6 +121,7 @@ const defaultConfig: IoDevServerConfig = {
     includeCgn: true,
     includeCdc: true,
     includePn: false,
+    includeFci: true,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },
