@@ -51,16 +51,6 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     return;
   }
 
-  const userAgent = req.get("user-agent") ?? "";
-  if (!checkLollipopUserAgent(userAgent)) {
-    res.status(400).json({
-      detail: "Wrong Lollipop UserAgent",
-      status: 400,
-      title: "Bad Request"
-    });
-    return;
-  }
-
   const jwkPK = parseJwkOrError(lollipopPublicKeyHeaderValue);
 
   if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
@@ -159,17 +149,6 @@ const handleLollipopLoginRedirect = (
   )}`;
   res.redirect(redirectUrl);
 };
-
-const checkLollipopUserAgent = (userAgent: string): boolean =>
-  pipe(
-    userAgent,
-    SemverFromFromUserAgentString.decode,
-    E.fold(
-      () => false,
-      userAgent =>
-        UserAgentSemverValid.equals(userAgent, ACCEPTED_LOLLIPOP_USER_AGENT)
-    )
-  );
 
 const debugSamlRequestIfNeeded = async (
   samlReq: string,
