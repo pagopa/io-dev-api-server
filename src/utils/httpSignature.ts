@@ -1,7 +1,29 @@
-import * as jose from "jose";
-console.log("*** WELCOME ***");
+import { pipe } from "fp-ts/lib/function";
+import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
 
-export function getValueToVerify(
+export const getCustomContentSignatureBase = (
+  signatureInput: string,
+  challengeHex: string,
+  headerName: string
+) =>
+  pipe(
+    signatureInput.split(","),
+    A.filterWithIndex((index, value) => {
+      return value.indexOf(`sig${index + 1}=("${headerName}")`) >= 0;
+    }),
+    A.head,
+    O.fold(
+      () => undefined,
+      sigInput =>
+        `"${headerName}": ${challengeHex}\n"@signature-params": ${sigInput.replace(
+          /^sig\d=/,
+          ""
+        )}`
+    )
+  );
+
+export function getValueToVerify2(
   signatureInput: string,
   challengeHex: string,
   headerName: string

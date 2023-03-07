@@ -1,4 +1,4 @@
-import { getValueToVerify } from "../httpSignature";
+import { getCustomContentSignatureBase } from "../httpSignature";
 import * as jose from "jose";
 
 const ecPublicKeyJwk = {
@@ -44,19 +44,19 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("test FCI custom content to sign", async () => {
-    const tosChallengeSignatureBase = getValueToVerify(
+    const tosChallengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       TOS_CHALLENGE,
       "x-pagopa-lollipop-custom-tos-challange"
     );
 
-    const challengeSignatureBase = getValueToVerify(
+    const challengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       CHALLENGE,
       "x-pagopa-lollipop-custom-sign-challenge"
     );
 
-    expect(TOS_CHALLENGE_SIGNATURE_BASE).toBe(tosChallengeSignatureBase);
-    expect(CHALLENGE_SIGNATURE_BASE).toBe(challengeSignatureBase);
+    expect(tosChallengeSignatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
+    expect(challengeSignatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
   });
 });
