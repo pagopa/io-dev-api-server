@@ -80,10 +80,6 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("Verify tos challenge signature", async () => {
-    const signatureData = new Uint8Array(
-      Buffer.from(TOS_CHALLENGE_SIGNATURE, "base64")
-    );
-
     const tosChallengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       TOS_CHALLENGE,
@@ -93,15 +89,15 @@ describe("suite to test the http signature verification utility", () => {
     const pemPublicKey = await toPem(ecPublicKeyJwk);
     const verifier = crypto.createVerify("sha256");
     verifier.update(tosChallengeSignatureBase!);
-    const verificationResult = verifier.verify(pemPublicKey, signatureData);
+    const verificationResult = verifier.verify(
+      pemPublicKey,
+      TOS_CHALLENGE_SIGNATURE,
+      "base64"
+    );
     expect(verificationResult).toBeTruthy();
   });
 
   it("Verify challenge signature", async () => {
-    const signatureData = new Uint8Array(
-      Buffer.from(CHALLENGE_SIGNATURE, "base64")
-    );
-
     const challengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       CHALLENGE,
@@ -111,7 +107,11 @@ describe("suite to test the http signature verification utility", () => {
     const pemPublicKey = await toPem(ecPublicKeyJwk);
     const verifier = crypto.createVerify("sha256");
     verifier.update(challengeSignatureBase!);
-    const verificationResult = verifier.verify(pemPublicKey, signatureData);
+    const verificationResult = verifier.verify(
+      pemPublicKey,
+      CHALLENGE_SIGNATURE,
+      "base64"
+    );
     expect(verificationResult).toBeTruthy();
   });
 });
