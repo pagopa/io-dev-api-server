@@ -1,8 +1,9 @@
 import {
   getCustomContentSignatureBase,
-  getCustomContentSignatureBaseImperative
+  getCustomContentSignatureBaseImperative,
+  toPem
 } from "../httpSignature";
-import * as jose from "jose";
+import * as crypto from "crypto";
 
 const ecPublicKeyJwk = {
   crv: "P-256",
@@ -34,15 +35,13 @@ describe("suite to test the http signature verification utility", () => {
   const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign-challenge": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
 "@signature-params": ("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"`;
 
-  it("test JWK to PEM", async () => {
-    const ecPublicKey = (await jose.importJWK(
-      ecPublicKeyJwk,
-      "ES256"
-    )) as jose.KeyLike;
-    // here we get the value trimmed because we remove prefix spaces
-    // in our test variable
-    const pemKey = (await jose.exportSPKI(ecPublicKey)).trim();
+  const TOS_CHALLENGE_SIGNATURE =
+    "MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==";
+  const CHALLENGE_SIGNATURE =
+    "MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==";
 
+  it("test JWK to PEM", async () => {
+    const pemKey = await toPem(ecPublicKeyJwk);
     expect(pemKey).toBe(ecPublicKeyPem);
   });
 
@@ -78,5 +77,41 @@ describe("suite to test the http signature verification utility", () => {
 
     expect(tosChallengeSignatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
     expect(challengeSignatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
+  });
+
+  it("Verify tos challenge signature", async () => {
+    const signatureData = new Uint8Array(
+      Buffer.from(TOS_CHALLENGE_SIGNATURE, "base64")
+    );
+
+    const tosChallengeSignatureBase = getCustomContentSignatureBase(
+      SIGNATURE_INPUT,
+      TOS_CHALLENGE,
+      "x-pagopa-lollipop-custom-tos-challange"
+    );
+
+    const pemPublicKey = await toPem(ecPublicKeyJwk);
+    const verifier = crypto.createVerify("sha256");
+    verifier.update(tosChallengeSignatureBase!);
+    const verificationResult = verifier.verify(pemPublicKey, signatureData);
+    expect(verificationResult).toBeTruthy();
+  });
+
+  it("Verify challenge signature", async () => {
+    const signatureData = new Uint8Array(
+      Buffer.from(CHALLENGE_SIGNATURE, "base64")
+    );
+
+    const challengeSignatureBase = getCustomContentSignatureBase(
+      SIGNATURE_INPUT,
+      CHALLENGE,
+      "x-pagopa-lollipop-custom-sign-challenge"
+    );
+
+    const pemPublicKey = await toPem(ecPublicKeyJwk);
+    const verifier = crypto.createVerify("sha256");
+    verifier.update(challengeSignatureBase!);
+    const verificationResult = verifier.verify(pemPublicKey, signatureData);
+    expect(verificationResult).toBeTruthy();
   });
 });

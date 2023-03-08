@@ -1,6 +1,25 @@
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
+import * as jose from "jose";
+
+export const verifyCustomContentChallenge = (
+  signatureBase: string,
+  publicKey: jose.JWK
+) => {};
+
+const toDigestAlgo = (jwk: jose.JWK) => (jwk.kty === "EC" ? "ES256" : "PS256");
+
+// https://www.scottbrady91.com/jose/jwts-which-signing-algorithm-should-i-use
+export const toPem = async (jwk: jose.JWK) => {
+  const publicKey = (await jose.importJWK(
+    jwk,
+    toDigestAlgo(jwk)
+  )) as jose.KeyLike;
+  // here we get the value trimmed because we remove prefix spaces
+  // in our test variable
+  return (await jose.exportSPKI(publicKey)).trim();
+};
 
 export const getCustomContentSignatureBase = (
   signatureInput: string,
