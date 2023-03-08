@@ -4,6 +4,7 @@ import {
   toPem
 } from "../httpSignature";
 import * as crypto from "crypto";
+import * as jose from "jose";
 
 const ecPublicKeyJwk = {
   crv: "P-256",
@@ -39,6 +40,14 @@ describe("suite to test the http signature verification utility", () => {
     "MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==";
   const CHALLENGE_SIGNATURE =
     "MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==";
+
+  it("test JWK thumbprint", async () => {
+    const thumbprint = await jose.calculateJwkThumbprint(
+      ecPublicKeyJwk,
+      "sha256"
+    );
+    expect(thumbprint).toBe("cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4");
+  });
 
   it("test JWK to PEM", async () => {
     const pemKey = await toPem(ecPublicKeyJwk);
