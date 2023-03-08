@@ -36,7 +36,7 @@ export const getCustomContentSignatureBase = (
       () => undefined,
       sigInput =>
         `"${headerName}": ${challengeHex}\n"@signature-params": ${sigInput.replace(
-          /^sig\d=/,
+          /^sig\d+=/,
           ""
         )}`
     )
