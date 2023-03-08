@@ -23,7 +23,7 @@ export const getCustomContentSignatureBase = (
     )
   );
 
-export function getValueToVerify2(
+export function getCustomContentSignatureBaseImperative(
   signatureInput: string,
   challengeHex: string,
   headerName: string

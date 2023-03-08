@@ -1,4 +1,7 @@
-import { getCustomContentSignatureBase } from "../httpSignature";
+import {
+  getCustomContentSignatureBase,
+  getCustomContentSignatureBaseImperative
+} from "../httpSignature";
 import * as jose from "jose";
 
 const ecPublicKeyJwk = {
@@ -43,7 +46,7 @@ describe("suite to test the http signature verification utility", () => {
     expect(pemKey).toBe(ecPublicKeyPem);
   });
 
-  it("test FCI custom content to sign", async () => {
+  it("test FCI custom content to sign (fp-ts)", async () => {
     const tosChallengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       TOS_CHALLENGE,
@@ -51,6 +54,23 @@ describe("suite to test the http signature verification utility", () => {
     );
 
     const challengeSignatureBase = getCustomContentSignatureBase(
+      SIGNATURE_INPUT,
+      CHALLENGE,
+      "x-pagopa-lollipop-custom-sign-challenge"
+    );
+
+    expect(tosChallengeSignatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
+    expect(challengeSignatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
+  });
+
+  it("test FCI custom content to sign (imperative)", async () => {
+    const tosChallengeSignatureBase = getCustomContentSignatureBaseImperative(
+      SIGNATURE_INPUT,
+      TOS_CHALLENGE,
+      "x-pagopa-lollipop-custom-tos-challange"
+    );
+
+    const challengeSignatureBase = getCustomContentSignatureBaseImperative(
       SIGNATURE_INPUT,
       CHALLENGE,
       "x-pagopa-lollipop-custom-sign-challenge"
