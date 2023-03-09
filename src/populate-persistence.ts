@@ -179,42 +179,6 @@ const createMessages = (
         frontMatter1CTAFims + messageMarkdown
       )
     );
-    output.push(
-      getNewMessage(
-        customConfig,
-        `Comune di Controguerra - Carta d'Identità Elettronica - Firma [WAIT_FOR_SIGNATURE]`,
-        frontMatterCTAFCISignatureRequest + messageFciMarkdown
-      )
-    );
-    output.push(
-      getNewMessage(
-        customConfig,
-        `Università di Controguerra - Contratto Erasmus - Firma [EXPIRED]`,
-        frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
-      )
-    );
-    output.push(
-      getNewMessage(
-        customConfig,
-        `Università di Cuneo - Contratto Erasmus - Firma [WAIT_FOR_QTSP]`,
-        frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
-      )
-    );
-    output.push(
-      getNewMessage(
-        customConfig,
-        `Comune di Controguerra - Carta d'identità Elettronica - Documento Firmato`,
-        frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
-      )
-    );
-    output.push(
-      getNewMessage(
-        customConfig,
-        `Comune di Controguerra - Carta d'identità Elettronica - Documento Firmato [90 days expired]`,
-        frontMatterCTAFCISignatureRequestSignedExpired +
-          messageFciSignedMarkdown
-      )
-    );
   }
 
   /* with EUCovidCert */
@@ -272,6 +236,64 @@ const createMessages = (
           attachments
         }
       });
+    });
+
+  /* Firma con IO */
+  customConfig.messages.fci.waitForSignatureCount > 0 &&
+    range(1, customConfig.messages.fci.waitForSignatureCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_SIGNATURE] - ${count}`,
+          frontMatterCTAFCISignatureRequest + messageFciMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.expiredCount > 0 &&
+    range(1, customConfig.messages.fci.expiredCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [EXPIRED] - ${count}`,
+          frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.waitForQtspCount > 0 &&
+    range(1, customConfig.messages.fci.waitForQtspCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_QTSP] - ${count} `,
+          frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.expired90Count > 0 &&
+    range(1, customConfig.messages.fci.expired90Count).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [90 days expired] ${count} `,
+          frontMatterCTAFCISignatureRequestSignedExpired +
+            messageFciSignedMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.rejectedCount > 0 &&
+    range(1, customConfig.messages.fci.rejectedCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${count} `,
+          frontMatterCTAFCISignatureRequestSignedExpired +
+            messageFciSignedMarkdown
+        )
+      );
     });
 
   /* standard message */
