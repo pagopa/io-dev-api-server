@@ -16,7 +16,7 @@ export const validatePayload = <T, O, I>(
   if (E.isLeft(maybeValidPayload)) {
     throw Error(PathReporter.report(maybeValidPayload).toString());
   }
-  return maybeValidPayload.value;
+  return maybeValidPayload.right;
 };
 
 export const validateAndCreatePayload = <T, O, I>(
@@ -28,7 +28,7 @@ export const validateAndCreatePayload = <T, O, I>(
   if (E.isLeft(maybeValidPayload)) {
     throw Error(PathReporter.report(maybeValidPayload).toString());
   }
-  return { payload: maybeValidPayload.value, isJson: true, status: statusCode };
+  return { payload: maybeValidPayload.right, isJson: true, status: statusCode };
 };
 
 export const toPayload = <T>(

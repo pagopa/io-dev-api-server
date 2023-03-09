@@ -1,5 +1,4 @@
 import * as E from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
 import * as t from "io-ts";
 
 /*
@@ -17,7 +16,7 @@ export class DateFromISOStringType extends t.Type<Date, string, unknown> {
         if (E.isLeft(validation)) {
           return validation as any;
         } else {
-          const s = validation.value;
+          const s = validation.right;
           const d = new Date(s);
           return isNaN(d.getTime()) ? t.failure(s, c) : t.success(d);
         }

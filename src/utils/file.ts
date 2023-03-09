@@ -1,7 +1,7 @@
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Response } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
+import { pipe } from "fp-ts/lib/function";
 import fs from "fs";
 import { Validation } from "io-ts";
 
@@ -9,6 +9,25 @@ export const sendFile = (filePath: string, res: Response) => {
   res.sendFile(filePath, {
     root: "."
   });
+};
+
+export const readBinaryFileSegment = (
+  fileName: string,
+  length: number
+): Buffer => {
+  const fileDescriptor = fs.openSync(fileName, "r");
+  const buffer = Buffer.alloc(length);
+  const byteRead = fs.readSync(fileDescriptor, buffer);
+  if (byteRead > 0) {
+    return buffer;
+  }
+  throw new Error(`Unable to read (${length}) bytes from file (${fileName})`);
+};
+
+export const isPDFFile = (fileName: string): boolean => {
+  const buffer = readBinaryFileSegment(fileName, 4);
+  const header = buffer.toString("utf8", 0, buffer.length);
+  return header === "%PDF";
 };
 
 export const readFileAsJSON = (fileName: string): any =>

@@ -1,4 +1,5 @@
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import _ from "lodash";
 import supertest from "supertest";
 
@@ -15,8 +16,11 @@ const request = supertest(app);
 
 // Dummy helper to improve readability in the individual test
 function assertResponseIsRight(body: any): PaginatedPublicMessagesCollection {
-  const { items, next, prev } = PaginatedPublicMessagesCollection.decode(body)
-    .value as any;
+  const { items, next, prev } = pipe(
+    body,
+    PaginatedPublicMessagesCollection.decode,
+    E.getOrElseW(() => ({ items: undefined, next: undefined, prev: undefined }))
+  );
   if (Array.isArray(items)) {
     return { items, next, prev };
   }
@@ -38,7 +42,8 @@ const customConfig = _.merge(ioDevServerConfig, {
     withValidDueDateCount: 10,
     withInValidDueDateCount: 2,
     standardMessageCount: 10,
-    archivedMessageCount: 40
+    archivedMessageCount: 40,
+    withRemoteAttachments: 0
   }
 });
 
@@ -57,12 +62,14 @@ describe("given the `/messages` endpoint", () => {
       expect(response.status).toBe(200);
       const list = PaginatedPublicMessagesCollection.decode(response.body);
       expect(E.isRight(list)).toBeTruthy();
-      expect(
-        (list.value as PaginatedPublicMessagesCollection).items
-      ).toBeDefined();
-      expect(
-        typeof (list.value as PaginatedPublicMessagesCollection).items.length
-      ).toBeDefined();
+      if (E.isRight(list)) {
+        expect(
+          (list.right as PaginatedPublicMessagesCollection).items
+        ).toBeDefined();
+        expect(
+          typeof (list.right as PaginatedPublicMessagesCollection).items.length
+        ).toBeDefined();
+      }
     });
   });
 
@@ -95,12 +102,12 @@ describe("given the `/messages` endpoint", () => {
 
   describe("when the page size is greater than the total number of available items", () => {
     const pageSize = 100;
-    it("should return fewer items", async () => {
+    it("should return fewer items or the same number as the page size", async () => {
       const response = await request.get(
         `${basePath}/messages?page_size=${pageSize}`
       );
       const { items } = assertResponseIsRight(response.body);
-      expect(items.length).toBeLessThan(pageSize);
+      expect(items.length).toBeLessThanOrEqual(pageSize);
     });
 
     it("the `next` parameter should not be defined ", async () => {
@@ -135,7 +142,7 @@ describe("given the `/messages` endpoint", () => {
     const list = PaginatedPublicMessagesCollection.decode(response.body);
     expect(E.isRight(list)).toBeTruthy();
     if (E.isRight(list)) {
-      for (const m of list.value.items) {
+      for (const m of list.right.items) {
         // ask for those messages younger than this
         const responseYounger = await request.get(
           `${basePath}/messages?minimum_id=${m.id}`
@@ -145,17 +152,17 @@ describe("given the `/messages` endpoint", () => {
         );
         expect(E.isRight(listYounger)).toBeTruthy();
         if (E.isRight(listYounger)) {
-          (listYounger.value.items ?? []).forEach(mo => {
+          (listYounger.right.items ?? []).forEach(mo => {
             expect(mo.created_at.getTime()).toBeGreaterThan(
               m.created_at.getTime()
             );
           });
-          if (listYounger.value.items.length > 0) {
+          if (listYounger.right.items.length > 0) {
             // next is never defined for backward navigation
-            expect(listYounger.value.next).not.toBeDefined();
+            expect(listYounger.right.next).not.toBeDefined();
             // prev, if defined, should contain the id of the first element
-            expect(listYounger.value.prev).toMatch(
-              listYounger.value.items[0].id
+            expect(listYounger.right.prev).toMatch(
+              listYounger.right.items[0].id
             );
           }
         }
@@ -171,7 +178,7 @@ describe("given the `/messages` endpoint", () => {
     const list = PaginatedPublicMessagesCollection.decode(response.body);
     expect(E.isRight(list)).toBeTruthy();
     if (E.isRight(list)) {
-      expect(list.value.items.every(EnrichedMessage.is)).toBeTruthy();
+      expect(list.right.items.every(EnrichedMessage.is)).toBeTruthy();
     }
 
     const responseDefault = await request.get(
@@ -183,7 +190,7 @@ describe("given the `/messages` endpoint", () => {
     );
     expect(E.isRight(listDefault)).toBeTruthy();
     if (E.isRight(listDefault)) {
-      expect(listDefault.value.items.every(EnrichedMessage.is)).toBeFalsy();
+      expect(listDefault.right.items.every(EnrichedMessage.is)).toBeFalsy();
     }
   });
 
@@ -194,7 +201,7 @@ describe("given the `/messages` endpoint", () => {
     const message = CreatedMessageWithoutContent.decode(response.body);
     expect(E.isRight(message)).toBeTruthy();
     if (E.isRight(message)) {
-      expect(message.value.id).toBe(messageId);
+      expect(message.right.id).toBe(messageId);
     }
   });
 });

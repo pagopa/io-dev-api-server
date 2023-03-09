@@ -1,5 +1,6 @@
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as faker from "faker";
+import { slice } from "lodash";
 import * as path from "path";
 import sha256 from "sha256";
 import { Attachment } from "../../generated/definitions/backend/Attachment";
@@ -194,6 +195,26 @@ export const withPNContent = (
   };
 };
 
+export const withRemoteAttachments = (
+  message: CreatedMessageWithContent,
+  attachmentCount: number
+): ThirdPartyMessageWithContent => {
+  return {
+    ...message,
+    content: {
+      ...message.content,
+      third_party_data: {
+        ...message.content.third_party_data,
+        id: message.id as NonEmptyString,
+        has_attachments: true
+      }
+    },
+    third_party_message: {
+      attachments: getRemoteAttachments(attachmentCount)
+    }
+  };
+};
+
 export const withPaymentData = (
   message: CreatedMessageWithContent,
   invalidAfterDueDate: boolean = false,
@@ -311,10 +332,10 @@ export const getMvlAttachments = (
   });
 };
 
-const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
-
-export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> => {
-  return pnAttachmentsFiles
+function thirdPartyAttachmentFromAbsolutePathArray(
+  absolutePaths: ReadonlyArray<string>
+) {
+  return absolutePaths
     .filter(f => f.endsWith("pdf"))
     .map((filename, index) => {
       const parsedFile = path.parse(filename);
@@ -328,4 +349,29 @@ export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> => {
         url: attachmentUrl
       } as ThirdPartyAttachment;
     });
+}
+
+const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
+
+export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> =>
+  thirdPartyAttachmentFromAbsolutePathArray(pnAttachmentsFiles);
+
+const remoteAttachmentFiles = listDir(
+  assetsFolder + "/messages/remote/attachments"
+);
+export const remoteAttachmentFileCount = remoteAttachmentFiles.length;
+
+export const getRemoteAttachments = (
+  attachmentCount: number
+): ReadonlyArray<ThirdPartyAttachment> => {
+  const safeAttachmentCount = Math.min(
+    attachmentCount,
+    remoteAttachmentFileCount
+  );
+  const slicedRemoteAttachmentFiles = slice(
+    remoteAttachmentFiles,
+    0,
+    safeAttachmentCount
+  );
+  return thirdPartyAttachmentFromAbsolutePathArray(slicedRemoteAttachmentFiles);
 };

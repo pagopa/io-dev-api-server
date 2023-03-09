@@ -1,9 +1,8 @@
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import chalk from "chalk";
 import * as E from "fp-ts/lib/Either";
-import { FiscalCode } from "italia-ts-commons/lib/strings";
 import _ from "lodash";
 import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
@@ -28,7 +27,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
-  accepted_tos_version: 4.1 as NonNegativeNumber,
+  accepted_tos_version: 4.4 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT],
   reminder_status: ReminderStatusEnum.ENABLED,
   push_notifications_content_type: PushNotificationsContentTypeEnum.FULL
@@ -59,7 +58,8 @@ const defaultConfig: IoDevServerConfig = {
     delay: 0,
     autoLogin: false,
     allowRandomValues: true,
-    responseError: undefined
+    responseError: undefined,
+    logSAMLRequest: false
   },
   profile: {
     attrs: defaultProfileAttrs,
@@ -76,6 +76,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     legalCount: 0,
     pnCount: 0,
+    withRemoteAttachments: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -157,7 +158,7 @@ const checkData = IoDevServerConfig.decode(ioDevServerConfig);
 if (E.isLeft(checkData)) {
   throw new Error(
     `your custom config file ${customConfig} contains some invalid data:\n${readableReport(
-      checkData.value
+      checkData.left
     )}`
   );
 }

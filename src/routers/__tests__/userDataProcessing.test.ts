@@ -1,3 +1,4 @@
+import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { ProblemJson } from "../../../generated/definitions/backend/ProblemJson";
 import { UserDataProcessing } from "../../../generated/definitions/backend/UserDataProcessing";
@@ -14,7 +15,7 @@ it("info should return ProblemJson with not found", async () => {
   );
   expect(response.status).toBe(404);
   const sr = ProblemJson.decode(response.body);
-  expect(sr.isRight()).toBeTruthy();
+  expect(E.isRight(sr)).toBeTruthy();
 });
 
 it("Delete should return conflict error if DELETE status is undefined", async () => {
@@ -36,8 +37,8 @@ it("Post should create a pending operation", async () => {
     version: 1
   };
   const sr = UserDataProcessing.decode(response.body);
-  expect(sr.isRight()).toBeTruthy();
-  expect(sr.value).toEqual(pending);
+  expect(E.isRight(sr)).toBeTruthy();
+  if (E.isRight(sr)) expect(sr.right).toEqual(pending);
 });
 
 it("Delete should set the request as aborted if the choice is DELETE and status is PENDING", async () => {
@@ -55,8 +56,8 @@ it("Delete should set the request as aborted if the choice is DELETE and status 
     version: 1
   };
   const sr = UserDataProcessing.decode(newStatus.body);
-  expect(sr.isRight()).toBeTruthy();
-  expect(sr.value).toEqual(aborted);
+  expect(E.isRight(sr)).toBeTruthy();
+  if (E.isRight(sr)) expect(sr.right).toEqual(aborted);
 });
 
 it("Delete should return conflict error if choice is DOWNLOAD", async () => {

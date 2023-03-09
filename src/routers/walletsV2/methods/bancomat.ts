@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import { constUndefined, pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import fs from "fs";
 import * as t from "io-ts";
 import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
@@ -62,7 +62,11 @@ addHandler(
       ...pansResponse,
       data: {
         ...pansResponse.data,
-        messages: t.readonlyArray(Message).decode(JSON.parse(msg)).value
+        messages: pipe(
+          JSON.parse(msg),
+          t.readonlyArray(Message).decode,
+          E.getOrElseW(constUndefined)
+        )
       }
     };
     if (!abi) {
@@ -100,7 +104,7 @@ addHandler(
       return;
     }
     const walletData = getWalletV2();
-    const bancomatsToAdd = maybeData.value.data?.data ?? [];
+    const bancomatsToAdd = maybeData.right.data?.data ?? [];
     // check if a bancomat is already present in the wallet list
     const findBancomat = (card: Card): Card | undefined => {
       return walletData.find(nc =>
