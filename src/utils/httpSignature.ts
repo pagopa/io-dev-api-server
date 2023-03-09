@@ -57,11 +57,6 @@ export const getCustomContentSignatureBase = (
     )
   );
 
-type CustomContentSignature = {
-  signatureBase: string;
-  signatureLabel: string;
-};
-
 export function getCustomContentSignatureBaseImperative(
   signatureInput: string,
   challengeHex: string,
