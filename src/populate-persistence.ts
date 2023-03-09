@@ -398,17 +398,18 @@ const createMessages = (
       );
     });
 
-  range(1, customConfig.messages.withRemoteAttachments).forEach(index => {
-    output.push(
-      getNewRemoteAttachmentsMessage(
-        customConfig,
-        `Sender ${index}`,
-        `Subject ${index}: remote attachments`,
-        messageMarkdown,
-        1 + (index % remoteAttachmentFileCount)
-      )
-    );
-  });
+  customConfig.messages.withRemoteAttachments > 0 &&
+    range(1, customConfig.messages.withRemoteAttachments).forEach(index => {
+      output.push(
+        getNewRemoteAttachmentsMessage(
+          customConfig,
+          `Sender ${index}`,
+          `Subject ${index}: remote attachments`,
+          messageMarkdown,
+          1 + (index % remoteAttachmentFileCount)
+        )
+      );
+    });
 
   return output;
 };
