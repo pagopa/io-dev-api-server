@@ -83,6 +83,13 @@ const defaultConfig: IoDevServerConfig = {
     paymentWithValidDueDateCount: 0,
     paymentWithExpiredDueDateCount: 0,
     medicalCount: 0,
+    fci: {
+      waitForSignatureCount: 0,
+      rejectedCount: 0,
+      expiredCount: 0,
+      expired90Count: 0,
+      waitForQtspCount: 0
+    },
     withCTA: false,
     withEUCovidCert: false,
     withValidDueDateCount: 0,
@@ -121,6 +128,7 @@ const defaultConfig: IoDevServerConfig = {
     includeCgn: true,
     includeCdc: true,
     includePn: false,
+    includeFci: true,
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },

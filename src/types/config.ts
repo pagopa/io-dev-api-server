@@ -160,6 +160,14 @@ export const IoDevServerConfig = t.interface({
       // whether we dynamically create new messages or not
       // number of medical messages
       medicalCount: t.number,
+      // number of fci messages
+      fci: t.interface({
+        waitForSignatureCount: t.number,
+        rejectedCount: t.number,
+        expiredCount: t.number,
+        expired90Count: t.number,
+        waitForQtspCount: t.number
+      }),
       // if true, messages (all available) with nested CTA will be included
       withCTA: t.boolean,
       // if true, messages (all available) with EUCovidCert will be included
@@ -196,7 +204,8 @@ export const IoDevServerConfig = t.interface({
       includeSiciliaVola: t.boolean,
       includeCgn: t.boolean,
       includeCdc: t.boolean,
-      includePn: t.boolean
+      includePn: t.boolean,
+      includeFci: t.boolean
     }),
     AllowRandomValue
   ]),

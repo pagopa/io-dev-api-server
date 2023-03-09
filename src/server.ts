@@ -16,6 +16,7 @@ import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
 import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
+import { fciRouter } from "./routers/features/fci";
 import { pnRouter } from "./routers/features/pn";
 import { svRouter } from "./routers/features/siciliaVola";
 import { messageRouter } from "./routers/message";
@@ -81,6 +82,7 @@ app.use(errorMiddleware);
   euCovidCertRouter,
   svRouter,
   cdcRouter,
+  fciRouter,
   pnRouter
 ].forEach(r => app.use(r));
 
