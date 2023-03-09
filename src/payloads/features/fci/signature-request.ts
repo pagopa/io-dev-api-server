@@ -9,6 +9,7 @@ import {
   StatusEnum as SignatureRequestStatus
 } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { staticContentRootPath } from "../../../config";
+import { serverUrl } from "../../../utils/server";
 
 export const SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const EXPIRED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
@@ -20,7 +21,7 @@ export const SIGNATURE_ID = ulid() as NonEmptyString;
 
 const now = new Date();
 const mockQrCodeUrl = "https://gist.githubusercontent.com/lucacavallaro/a3b9d5305cc6e2c9bdfb6ec1dc28fd96/raw/26799f357ff712396cdbc4f862a13099758e89d3/qr-code.png" as NonEmptyString;
-const basePath = "http://127.0.0.1:3000";
+const basePath = serverUrl;
 export const documents: ReadonlyArray<DocumentDetailView> = [
   {
     id: ulid() as NonEmptyString,
