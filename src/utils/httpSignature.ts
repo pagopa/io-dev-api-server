@@ -49,11 +49,15 @@ export const getCustomContentSignatureBase = (
     }),
     O.fold(
       () => undefined,
-      sigInput =>
-        `"${headerName}": ${challengeHex}\n"@signature-params": ${sigInput.replace(
-          /^sig\d+=/,
-          ""
-        )}`
+      sigInput => {
+        return {
+          signatureBase: `"${headerName}": ${challengeHex}\n"@signature-params": ${sigInput.replace(
+            /^sig\d+=/,
+            ""
+          )}`,
+          signatureLabel: sigInput.match(/^sig(\d+)/)?.[0]
+        };
+      }
     )
   );
 

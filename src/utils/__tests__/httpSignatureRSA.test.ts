@@ -71,8 +71,8 @@ describe("suite to test the http signature verification utility", () => {
       "x-pagopa-lollipop-custom-sign"
     );
 
-    expect(tosChallengeSignatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
-    expect(challengeSignatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
+    expect(tosChallengeSignatureBase!.signatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
+    expect(challengeSignatureBase!.signatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
   });
 
   it("test FCI custom content to sign (imperative)", async () => {
@@ -95,19 +95,19 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("Verify tos challenge signature", async () => {
-    const tosChallengeSignatureBase = getCustomContentSignatureBaseImperative(
+    const tosChallengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       TOS_CHALLENGE,
       "x-pagopa-lollipop-custom-tos"
     );
 
     const signatureChallenge = getCustomContentChallenge(
-      tosChallengeSignatureBase.signatureLabel!,
+      tosChallengeSignatureBase!.signatureLabel!,
       SIGNATURE
     );
 
     const verificationResult = await verifyCustomContentChallenge(
-      tosChallengeSignatureBase.signatureBase,
+      tosChallengeSignatureBase!.signatureBase,
       signatureChallenge!,
       rsaPublicKeyJwk
     );
@@ -115,19 +115,19 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("Verify challenge signature", async () => {
-    const challengeSignatureBase = getCustomContentSignatureBaseImperative(
+    const challengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       CHALLENGE,
       "x-pagopa-lollipop-custom-sign"
     );
 
     const signatureChallenge = getCustomContentChallenge(
-      challengeSignatureBase.signatureLabel!,
+      challengeSignatureBase!.signatureLabel!,
       SIGNATURE
     );
 
     const verificationResult = await verifyCustomContentChallenge(
-      challengeSignatureBase.signatureBase,
+      challengeSignatureBase!.signatureBase,
       signatureChallenge!,
       rsaPublicKeyJwk
     );

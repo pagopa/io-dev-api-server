@@ -66,8 +66,8 @@ describe("suite to test the http signature verification utility", () => {
       "x-pagopa-lollipop-custom-sign-challenge"
     );
 
-    expect(tosChallengeSignatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
-    expect(challengeSignatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
+    expect(tosChallengeSignatureBase!.signatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
+    expect(challengeSignatureBase!.signatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
   });
 
   it("test FCI custom content to sign (imperative)", async () => {
@@ -90,39 +90,39 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("Verify tos challenge signature", async () => {
-    const tosChallengeSignatureBase = getCustomContentSignatureBaseImperative(
+    const tosChallengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       TOS_CHALLENGE,
       "x-pagopa-lollipop-custom-tos-challange"
     );
 
     const signatureChallenge = getCustomContentChallenge(
-      tosChallengeSignatureBase.signatureLabel!,
+      tosChallengeSignatureBase!.signatureLabel!,
       SIGNATURE
     );
 
     const verificationResult = await verifyCustomContentChallenge(
-      tosChallengeSignatureBase.signatureBase,
+      tosChallengeSignatureBase!.signatureBase,
       signatureChallenge!,
       ecPublicKeyJwk
     );
     expect(verificationResult).toBeTruthy();
   });
 
-  it("Verify challenge signature (imperative)", async () => {
-    const challengeSignatureBase = getCustomContentSignatureBaseImperative(
+  it("Verify challenge signature", async () => {
+    const challengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
       CHALLENGE,
       "x-pagopa-lollipop-custom-sign-challenge"
     );
 
     const signatureChallenge = getCustomContentChallenge(
-      challengeSignatureBase.signatureLabel!,
+      challengeSignatureBase!.signatureLabel!,
       SIGNATURE
     );
 
     const verificationResult = await verifyCustomContentChallenge(
-      challengeSignatureBase.signatureBase,
+      challengeSignatureBase!.signatureBase,
       signatureChallenge!,
       ecPublicKeyJwk
     );
