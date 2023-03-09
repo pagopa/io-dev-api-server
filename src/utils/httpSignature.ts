@@ -3,6 +3,8 @@ import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import * as crypto from "crypto";
 import * as jose from "jose";
+import * as TE from "fp-ts/TaskEither";
+import * as T from "fp-ts/lib/Task";
 
 export const verifyCustomContentChallenge = async (
   signatureBase: string | undefined,
@@ -12,7 +14,7 @@ export const verifyCustomContentChallenge = async (
   if (!signatureBase) {
     return false;
   }
-  const pemPublicKey = await toPem(publicKey);
+  const pemPublicKey = await toPem(publicKey)();
   const verifier = crypto.createVerify("sha256");
   verifier.update(signatureBase!);
   const keyObject: crypto.VerifyPublicKeyInput = {
@@ -27,7 +29,7 @@ export const verifyCustomContentChallenge = async (
 const toDigestAlgo = (jwk: jose.JWK) => (jwk.kty === "EC" ? "ES256" : "PS256");
 
 // https://www.scottbrady91.com/jose/jwts-which-signing-algorithm-should-i-use
-export const toPem = async (jwk: jose.JWK) => {
+export const toPemImperative = async (jwk: jose.JWK) => {
   const publicKey = (await jose.importJWK(
     jwk,
     toDigestAlgo(jwk)
@@ -36,6 +38,23 @@ export const toPem = async (jwk: jose.JWK) => {
   // in our test variable
   return (await jose.exportSPKI(publicKey)).trim();
 };
+
+export const toPem = (jwk: jose.JWK) =>
+  pipe(
+    TE.tryCatch(
+      () => jose.importJWK(jwk, toDigestAlgo(jwk)),
+      e => new Error(String(e))
+    ),
+    TE.chain(publicKey =>
+      TE.tryCatch(
+        () => jose.exportSPKI(<jose.KeyLike>publicKey),
+        e => new Error(String(e))
+      )
+    ),
+    TE.map(result => result.trim()),
+    // TODO: rimuovere per avere TaskEither quando anche il restò sarà in fp-ts
+    TE.getOrElse(() => T.of(""))
+  );
 
 export const getCustomContentSignatureBase = (
   signatureInput: string,

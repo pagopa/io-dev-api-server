@@ -49,7 +49,7 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("test JWK to PEM", async () => {
-    const pemKey = await toPem(ecPublicKeyJwk);
+    const pemKey = await toPem(ecPublicKeyJwk)();
     expect(pemKey).toBe(ecPublicKeyPem);
   });
 

@@ -5,7 +5,6 @@ import {
   toPem,
   verifyCustomContentChallenge
 } from "../httpSignature";
-import * as crypto from "crypto";
 import * as jose from "jose";
 
 const rsaPublicKeyJwk = {
@@ -54,7 +53,7 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("test JWK to PEM", async () => {
-    const pemKey = await toPem(rsaPublicKeyJwk);
+    const pemKey = await toPem(rsaPublicKeyJwk)();
     expect(pemKey).toBe(rsaPublicKeyPem);
   });
 
