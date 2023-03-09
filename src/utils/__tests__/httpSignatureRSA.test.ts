@@ -71,8 +71,12 @@ describe("suite to test the http signature verification utility", () => {
       "x-pagopa-lollipop-custom-sign"
     );
 
-    expect(tosChallengeSignatureBase!.signatureBase).toBe(TOS_CHALLENGE_SIGNATURE_BASE);
-    expect(challengeSignatureBase!.signatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
+    expect(tosChallengeSignatureBase!.signatureBase).toBe(
+      TOS_CHALLENGE_SIGNATURE_BASE
+    );
+    expect(challengeSignatureBase!.signatureBase).toBe(
+      CHALLENGE_SIGNATURE_BASE
+    );
   });
 
   it("test FCI custom content to sign (imperative)", async () => {

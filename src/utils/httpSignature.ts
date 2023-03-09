@@ -83,7 +83,7 @@ export function getCustomContentSignatureBaseImperative(
   return {};
 }
 
-export function getCustomContentChallenge(
+export function getCustomContentChallengeImperative(
   signatureLabel: string,
   signature: string
 ) {
@@ -92,3 +92,15 @@ export function getCustomContentChallenge(
   const match = signature.match(regex);
   return match?.length ? match[1] : undefined;
 }
+
+export const getCustomContentChallenge = (
+  signatureLabel: string,
+  signature: string
+) =>
+  pipe(
+    signature,
+    s => new RegExp(`${signatureLabel}:(.+?):`).exec(s),
+    O.fromNullable,
+    O.map(match => match[1]),
+    O.toUndefined
+  );
