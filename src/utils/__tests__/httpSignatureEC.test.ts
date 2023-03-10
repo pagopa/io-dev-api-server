@@ -14,24 +14,27 @@ import {
   verifySignatureHeader
 } from "@mattrglobal/http-signatures";
 
+// Android EC Public Key
 const ecPublicKeyJwk = {
+  x: "RwepAfMslwmtwEwgSUsLU74z6nRfhtC08xIcPuyvYwc=",
   crv: "P-256",
-  kty: "EC",
-  x: "/ric17QiSpZ9YCuitPxunbcHiCOjlicw76XOiBEpjpA=",
-  y: "5Ckmg/mOuanYif6/MQq7eScIxcFNf55N/T1GMj4Xmp0="
+  y: "OzmswHrhmrLItOEcZ8rih4N3kWKRLCY0wsGSNZJcblU=",
+  kty: "EC"
 };
 
 const ecPublicKeyPem = `-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/ric17QiSpZ9YCuitPxunbcHiCOj
-licw76XOiBEpjpDkKSaD+Y65qdiJ/r8xCrt5JwjFwU1/nk39PUYyPheanQ==
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAERwepAfMslwmtwEwgSUsLU74z6nRf
+htC08xIcPuyvYwc7OazAeuGassi04RxnyuKHg3eRYpEsJjTCwZI1klxuVQ==
 -----END PUBLIC KEY-----`;
+
+const ecThumbprint = "bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4";
 
 // signature_input header from the API request
 const SIGNATURE_INPUT =
-  'sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig2=("x-pagopa-lollipop-custom-tos-challange");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig3=("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"';
+  'sig1=("x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4",sig2=("x-pagopa-lollipop-custom-tos-challenge");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4",sig3=("x-pagopa-lollipop-custom-sign-challenge");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"';
 // signature header frome the API request
 const SIGNATURE =
-  "sig1=:MEYCIQDLDC1Iqg98aRhm0j8rWDdQHyrgeaDORsq1SeIzZgwywQIhAOYnl404A7A2dAlrZ5OrTEIZjHsqF6gm362UoYZWrHXY:,sig2=:MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==:,sig3=:MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==:";
+  "sig1=:MEUCIEIiVuX/89DqpcDbgxfGt6K4qyXuUZrSWw2VXiSvisnUAiEAk45ItfrPjVtCRNT9UxAdRNlqQFEQp3r/kKRmtm18/G8=:,sig2=:MEQCICEHaC5BU/YykE29PwfcAmwTkChlLldnEaTD7EeOiNo1AiBw5Jwde1v7hBHTTq6dPCeW3UXiILXHwkL+wrvV6ZOnzw==:,sig3=:MEQCIEvP0eFuLO5Grg3a878gQ4AKXXPMM8pokIA5Ieliq2TBAiBkJBe0DX0Ovd/kbhv0Wi1es2R2HYfCUPzruxvxjyCg7Q==:";
 // LC HEX encoded TOS hash to be verified
 const TOS_CHALLENGE =
   "f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa";
@@ -39,15 +42,15 @@ const TOS_CHALLENGE =
 const CHALLENGE =
   "2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676";
 
-const TOS_CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-tos-challange": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
-"@signature-params": ("x-pagopa-lollipop-custom-tos-challange");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"`;
+const TOS_CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-tos-challenge": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
+"@signature-params": ("x-pagopa-lollipop-custom-tos-challenge");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"`;
 
 const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign-challenge": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
-"@signature-params": ("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"`;
+"@signature-params": ("x-pagopa-lollipop-custom-sign-challenge");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"`;
 
 const TEST_CONTENT = [
   {
-    header: "x-pagopa-lollipop-custom-tos-challange",
+    header: "x-pagopa-lollipop-custom-tos-challenge",
     signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
     challenge: TOS_CHALLENGE
   },
@@ -64,7 +67,7 @@ describe("Suite to test the http signature verification utility", () => {
       ecPublicKeyJwk,
       "sha256"
     );
-    expect(thumbprint).toBe("cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4");
+    expect(thumbprint).toBe(ecThumbprint);
   });
 
   it("Test JWK to PEM", async () => {
@@ -122,6 +125,7 @@ const ecVerifier = async (
   data: Uint8Array,
   signature: Uint8Array
 ) => {
+  console.log(Buffer.from(data).toString("utf-8"));
   return await verifyCustomContentChallenge(
     Buffer.from(data).toString("utf-8"),
     Buffer.from(signature).toString("base64"),
@@ -146,7 +150,7 @@ const mockRequestOptions: VerifySignatureHeaderOptions = {
    * httpHeaders is filtered during verification to include only the ones form the signature.
    */
   httpHeaders: {
-    "x-pagopa-lollipop-custom-tos-challange": TOS_CHALLENGE,
+    "x-pagopa-lollipop-custom-tos-challenge": TOS_CHALLENGE,
     signature: SIGNATURE,
     "signature-input": SIGNATURE_INPUT
   },
@@ -166,8 +170,8 @@ const mockRequestOptions: VerifySignatureHeaderOptions = {
 };
 
 describe("Test http-signature", () => {
-  it("Test custom signature: sig2", async () => {
+  it("Test custom signature: sig3", async () => {
     const verificationResult = await verifySignatureHeader(mockRequestOptions);
-    expect(verificationResult).toBeTruthy();
+    expect(verificationResult.isOk()).toBeTruthy();
   });
 });
