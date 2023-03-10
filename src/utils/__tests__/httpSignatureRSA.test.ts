@@ -1,11 +1,13 @@
 import {
   getCustomContentChallenge,
   getCustomContentSignatureBase,
-  getCustomContentSignatureBaseImperative,
   toPem,
   verifyCustomContentChallenge
 } from "../httpSignature";
 import * as jose from "jose";
+import * as TE from "fp-ts/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as T from "fp-ts/lib/Task";
 
 const rsaPublicKeyJwk = {
   e: "AQAB",
@@ -53,8 +55,12 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("test JWK to PEM", async () => {
-    const pemKey = await toPem(rsaPublicKeyJwk)();
-    expect(pemKey).toBe(rsaPublicKeyPem);
+    const pemKey = () =>
+      pipe(
+        toPem(rsaPublicKeyJwk),
+        TE.getOrElse(() => T.of(""))
+      )();
+    expect(await pemKey()).toBe(rsaPublicKeyPem);
   });
 
   it("test FCI custom content to sign (fp-ts)", async () => {
@@ -78,25 +84,6 @@ describe("suite to test the http signature verification utility", () => {
     );
   });
 
-  it("test FCI custom content to sign (imperative)", async () => {
-    const tosChallengeSignatureBase = getCustomContentSignatureBaseImperative(
-      SIGNATURE_INPUT,
-      TOS_CHALLENGE,
-      "x-pagopa-lollipop-custom-tos"
-    );
-
-    const challengeSignatureBase = getCustomContentSignatureBaseImperative(
-      SIGNATURE_INPUT,
-      CHALLENGE,
-      "x-pagopa-lollipop-custom-sign"
-    );
-
-    expect(tosChallengeSignatureBase.signatureBase).toBe(
-      TOS_CHALLENGE_SIGNATURE_BASE
-    );
-    expect(challengeSignatureBase.signatureBase).toBe(CHALLENGE_SIGNATURE_BASE);
-  });
-
   it("Verify tos challenge signature", async () => {
     const tosChallengeSignatureBase = getCustomContentSignatureBase(
       SIGNATURE_INPUT,
@@ -109,7 +96,7 @@ describe("suite to test the http signature verification utility", () => {
       SIGNATURE
     );
 
-    const verificationResult = await verifyCustomContentChallenge(
+    const verificationResult = verifyCustomContentChallenge(
       tosChallengeSignatureBase!.signatureBase,
       signatureChallenge!,
       rsaPublicKeyJwk
@@ -129,7 +116,7 @@ describe("suite to test the http signature verification utility", () => {
       SIGNATURE
     );
 
-    const verificationResult = await verifyCustomContentChallenge(
+    const verificationResult = verifyCustomContentChallenge(
       challengeSignatureBase!.signatureBase,
       signatureChallenge!,
       rsaPublicKeyJwk
