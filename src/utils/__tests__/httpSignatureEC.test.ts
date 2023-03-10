@@ -21,40 +21,40 @@ MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/ric17QiSpZ9YCuitPxunbcHiCOj
 licw76XOiBEpjpDkKSaD+Y65qdiJ/r8xCrt5JwjFwU1/nk39PUYyPheanQ==
 -----END PUBLIC KEY-----`;
 
-describe("suite to test the http signature verification utility", () => {
-  // signature_input header from the API request
-  const SIGNATURE_INPUT =
-    'sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig2=("x-pagopa-lollipop-custom-tos-challange");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig3=("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"';
-  // signature header frome the API request
-  const SIGNATURE =
-    "sig1:MEYCIQDLDC1Iqg98aRhm0j8rWDdQHyrgeaDORsq1SeIzZgwywQIhAOYnl404A7A2dAlrZ5OrTEIZjHsqF6gm362UoYZWrHXY:,sig2:MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==:,sig3:MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==:";
-  // LC HEX encoded TOS hash to be verified
-  const TOS_CHALLENGE =
-    "f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa";
-  // LC HEX encoded Documents hash to be verified
-  const CHALLENGE =
-    "2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676";
+// signature_input header from the API request
+const SIGNATURE_INPUT =
+  'sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig2=("x-pagopa-lollipop-custom-tos-challange");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig3=("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"';
+// signature header frome the API request
+const SIGNATURE =
+  "sig1:MEYCIQDLDC1Iqg98aRhm0j8rWDdQHyrgeaDORsq1SeIzZgwywQIhAOYnl404A7A2dAlrZ5OrTEIZjHsqF6gm362UoYZWrHXY:,sig2:MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==:,sig3:MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==:";
+// LC HEX encoded TOS hash to be verified
+const TOS_CHALLENGE =
+  "f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa";
+// LC HEX encoded Documents hash to be verified
+const CHALLENGE =
+  "2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676";
 
-  const TOS_CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-tos-challange": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
+const TOS_CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-tos-challange": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
 "@signature-params": ("x-pagopa-lollipop-custom-tos-challange");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"`;
 
-  const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign-challenge": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
+const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign-challenge": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
 "@signature-params": ("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"`;
 
-  const TEST_CONTENT = [
-    {
-      header: "x-pagopa-lollipop-custom-tos-challange",
-      signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
-      challenge: TOS_CHALLENGE
-    },
-    {
-      header: "x-pagopa-lollipop-custom-sign-challenge",
-      signatureBase: CHALLENGE_SIGNATURE_BASE,
-      challenge: CHALLENGE
-    }
-  ];
+const TEST_CONTENT = [
+  {
+    header: "x-pagopa-lollipop-custom-tos-challange",
+    signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
+    challenge: TOS_CHALLENGE
+  },
+  {
+    header: "x-pagopa-lollipop-custom-sign-challenge",
+    signatureBase: CHALLENGE_SIGNATURE_BASE,
+    challenge: CHALLENGE
+  }
+];
 
-  it("test JWK thumbprint", async () => {
+describe("Suite to test the http signature verification utility", () => {
+  it("Test JWK thumbprint", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
       ecPublicKeyJwk,
       "sha256"
@@ -62,15 +62,14 @@ describe("suite to test the http signature verification utility", () => {
     expect(thumbprint).toBe("cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4");
   });
 
-  it("test JWK to PEM", async () => {
+  it("Test JWK to PEM", async () => {
     pipe(
       toPem(ecPublicKeyJwk),
-      TE.getOrElse(() => T.of("")),
-      T.map(pemKey => expect(pemKey).toBe(ecPublicKeyPem))
+      TE.map(pemKey => expect(pemKey).toBe(ecPublicKeyPem))
     );
   });
 
-  it("test FCI custom content to sign", async () => {
+  it("Test FCI custom content to sign", async () => {
     TEST_CONTENT.forEach(content => {
       pipe(
         getCustomContentSignatureBase(

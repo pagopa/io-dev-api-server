@@ -60,9 +60,9 @@ export const getCustomContentSignatureBase = (
 ) =>
   pipe(
     signatureInput.split(","),
-    A.findFirst(value => {
-      return new RegExp(`^sig\\d+=\\("${headerName}"\\)`).test(value);
-    }),
+    A.findFirst(value =>
+      new RegExp(`^sig\\d+=\\("${headerName}"\\)`).test(value)
+    ),
     O.fold(
       () => undefined,
       sigInput => {
