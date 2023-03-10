@@ -68,7 +68,7 @@ describe("suite to test the http signature verification utility", () => {
       TE.getOrElse(() => T.of("")),
       T.map(pemKey => expect(pemKey).toBe(ecPublicKeyPem))
     );
-});
+  });
 
   it("test FCI custom content to sign", async () => {
     TEST_CONTENT.forEach(content => {

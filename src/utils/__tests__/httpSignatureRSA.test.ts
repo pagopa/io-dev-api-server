@@ -46,19 +46,18 @@ describe("suite to test the http signature verification utility", () => {
   const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign": DAFDEFAF323DSFA==
 "@signature-params": ("x-pagopa-lollipop-custom-sign");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4"`;
 
-const TEST_CONTENT = [
-  {
-    header: "x-pagopa-lollipop-custom-tos",
-    signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
-    challenge: TOS_CHALLENGE
-  },
-  {
-    header: "x-pagopa-lollipop-custom-sign",
-    signatureBase: CHALLENGE_SIGNATURE_BASE,
-    challenge: CHALLENGE
-  }
-]
-
+  const TEST_CONTENT = [
+    {
+      header: "x-pagopa-lollipop-custom-tos",
+      signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
+      challenge: TOS_CHALLENGE
+    },
+    {
+      header: "x-pagopa-lollipop-custom-sign",
+      signatureBase: CHALLENGE_SIGNATURE_BASE,
+      challenge: CHALLENGE
+    }
+  ];
 
   it("test JWK thumbprint", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
@@ -69,11 +68,11 @@ const TEST_CONTENT = [
   });
 
   it("test JWK to PEM", async () => {
-      pipe(
-        toPem(rsaPublicKeyJwk),
-        TE.getOrElse(() => T.of("")),
-        T.map(pemKey => expect(pemKey).toBe(rsaPublicKeyPem))
-      );
+    pipe(
+      toPem(rsaPublicKeyJwk),
+      TE.getOrElse(() => T.of("")),
+      T.map(pemKey => expect(pemKey).toBe(rsaPublicKeyPem))
+    );
   });
 
   it("test FCI custom content to sign", async () => {
@@ -119,6 +118,4 @@ const TEST_CONTENT = [
       );
     });
   });
-
- 
 });
