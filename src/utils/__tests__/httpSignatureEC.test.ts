@@ -133,62 +133,45 @@ const ecVerifier = async (
   )();
 };
 
-const mockRequestOptions: VerifySignatureHeaderOptions = {
-  verifier: {
-    verify: ecVerifier
-  },
-  /**
-   * Full url of the request including query parameters
-   */
-  url: "http://www.example.com",
-  /**
-   * The HTTP request method of the request
-   */
-  method: "GET",
-  /**
-   * Headers of the request
-   * httpHeaders is filtered during verification to include only the ones form the signature.
-   */
-  httpHeaders: {
-    host: "127.0.0.1:3000",
-    connection: "Keep-Alive",
-    "accept-encoding": "gzip",
-    "user-agent": "okhttp/4.9.2",
-    "x-pagopa-lollipop-original-url": "/api/v1/profile",
-    "x-pagopa-lollipop-original-method": "GET",
-    "x-pagopa-lollipop-custom-tos-challenge": TOS_CHALLENGE,
-    "x-pagopa-lollipop-custom-sign-challenge": CHALLENGE,
-    signature: SIGNATURE,
-    "signature-input": SIGNATURE_INPUT
-  },
-  /**
-   * The body of the request
-   */
-  body: undefined,
-  /**
-   * Optional field to identify a single signature that should be verified from the signature header. If omitted, this function will attempt to verify all signatures present.
-   */
-  signatureKey: "sig3",
-  /**
-   * Optionally set this field to false if you don't want to fail verification based on the signature being past its expiry timestamp.
-   * Defaults to true.
-   */
-  verifyExpiry: false
-};
-
 describe("Test http-signature", () => {
-  it("Test custom signature: sig3", async () => {
-    const verificationResult = await verifySignatureHeader(mockRequestOptions);
-    const verification = verificationResult.unwrapOr({
-      verified: false
-    }).verified;
-    console.log(
-      "✅ " +
-        JSON.stringify(verificationResult) +
-        ", " +
-        verificationResult.andThen
-    );
-    expect(verificationResult.isOk()).toBeTruthy();
-    expect(verification).toBeTruthy();
+  ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
+    const mockRequestOptions: VerifySignatureHeaderOptions = {
+      verifier: {
+        verify: ecVerifier
+      },
+      url: "http://127.0.0.1:3000",
+      method: "GET",
+      httpHeaders: {
+        host: "127.0.0.1:3000",
+        connection: "Keep-Alive",
+        "accept-encoding": "gzip",
+        "user-agent": "okhttp/4.9.2",
+        "x-pagopa-lollipop-original-url": "/api/v1/profile",
+        "x-pagopa-lollipop-original-method": "GET",
+        "x-pagopa-lollipop-custom-tos-challenge": TOS_CHALLENGE,
+        "x-pagopa-lollipop-custom-sign-challenge": CHALLENGE,
+        signature: SIGNATURE,
+        "signature-input": SIGNATURE_INPUT
+      },
+      body: undefined,
+      signatureKey: sigLabel,
+      verifyExpiry: false
+    };
+    it(`Test custom signature: ${sigLabel}`, async () => {
+      const verificationResult = await verifySignatureHeader(
+        mockRequestOptions
+      );
+      const verification = verificationResult.unwrapOr({
+        verified: false
+      }).verified;
+      console.log(
+        "✅ " +
+          JSON.stringify(verificationResult) +
+          ", " +
+          verificationResult.andThen
+      );
+      expect(verificationResult.isOk()).toBeTruthy();
+      expect(verification).toBeTruthy();
+    });
   });
 });
