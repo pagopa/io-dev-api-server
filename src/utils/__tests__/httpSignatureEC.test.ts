@@ -42,20 +42,23 @@ const TOS_CHALLENGE =
 const CHALLENGE =
   "2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676";
 
-const TOS_CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-tos-challenge": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
-"@signature-params": ("x-pagopa-lollipop-custom-tos-challenge");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"`;
+const TOS_HEADER_NAME = "x-pagopa-lollipop-custom-tos-challenge";
+const SIGNATURE_HEADER_NAME = "x-pagopa-lollipop-custom-sign-challenge";
 
-const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign-challenge": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
-"@signature-params": ("x-pagopa-lollipop-custom-sign-challenge");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"`;
+const TOS_CHALLENGE_SIGNATURE_BASE = `"${TOS_HEADER_NAME}": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
+"@signature-params": ("${TOS_HEADER_NAME}");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"`;
+
+const CHALLENGE_SIGNATURE_BASE = `"${SIGNATURE_HEADER_NAME}": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
+"@signature-params": ("${SIGNATURE_HEADER_NAME}");created=1678475063;nonce="nonce-123";alg="ecdsa-p256-sha256";keyid="bLYYuCTAYVd7hEgxjGBkoyn1u6ztoSPlJZ5Oof6r3D4"`;
 
 const TEST_CONTENT = [
   {
-    header: "x-pagopa-lollipop-custom-tos-challenge",
+    header: TOS_HEADER_NAME,
     signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
     challenge: TOS_CHALLENGE
   },
   {
-    header: "x-pagopa-lollipop-custom-sign-challenge",
+    header: SIGNATURE_HEADER_NAME,
     signatureBase: CHALLENGE_SIGNATURE_BASE,
     challenge: CHALLENGE
   }
@@ -125,7 +128,6 @@ const ecVerifier = async (
   data: Uint8Array,
   signature: Uint8Array
 ) => {
-  console.log(Buffer.from(data).toString("utf-8"));
   return await verifyCustomContentChallenge(
     Buffer.from(data).toString("utf-8"),
     Buffer.from(signature).toString("base64"),
@@ -148,8 +150,8 @@ describe("Test http-signature", () => {
         "user-agent": "okhttp/4.9.2",
         "x-pagopa-lollipop-original-url": "/api/v1/profile",
         "x-pagopa-lollipop-original-method": "GET",
-        "x-pagopa-lollipop-custom-tos-challenge": TOS_CHALLENGE,
-        "x-pagopa-lollipop-custom-sign-challenge": CHALLENGE,
+        [TOS_HEADER_NAME]: TOS_CHALLENGE,
+        [SIGNATURE_HEADER_NAME]: CHALLENGE,
         signature: SIGNATURE,
         "signature-input": SIGNATURE_INPUT
       },
@@ -164,12 +166,6 @@ describe("Test http-signature", () => {
       const verification = verificationResult.unwrapOr({
         verified: false
       }).verified;
-      console.log(
-        "✅ " +
-          JSON.stringify(verificationResult) +
-          ", " +
-          verificationResult.andThen
-      );
       expect(verificationResult.isOk()).toBeTruthy();
       expect(verification).toBeTruthy();
     });
