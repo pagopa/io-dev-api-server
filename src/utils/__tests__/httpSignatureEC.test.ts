@@ -8,7 +8,11 @@ import * as TE from "fp-ts/TaskEither";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
 import * as T from "fp-ts/lib/Task";
-import { resourceUsage } from "process";
+import {
+  VerifySignatureHeaderOptions,
+  AlgorithmTypes,
+  verifySignatureHeader
+} from "@mattrglobal/http-signatures";
 
 const ecPublicKeyJwk = {
   crv: "P-256",
@@ -74,9 +78,10 @@ describe("Suite to test the http signature verification utility", () => {
     expect(pemKey).toBe(ecPublicKeyPem);
   });
 
-  
-    TEST_CONTENT.forEach(content => {
-      it(`Test FCI custom content to sign: ${JSON.stringify(content)}`, async () => {
+  TEST_CONTENT.forEach(content => {
+    it(`Test FCI custom content to sign: ${JSON.stringify(
+      content
+    )}`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -89,7 +94,7 @@ describe("Suite to test the http signature verification utility", () => {
   });
 
   TEST_CONTENT.forEach(content => {
-      it(`Verify challenge signature: ${JSON.stringify(content)}`, async () => {
+    it(`Verify challenge signature: ${JSON.stringify(content)}`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -106,9 +111,63 @@ describe("Suite to test the http signature verification utility", () => {
         customContentChallenge!,
         ecPublicKeyJwk
       )();
-      
+
       expect(result).toBeTruthy();
-      
     });
+  });
+});
+
+const ecVerifier = async (
+  _: { keyid: string; alg: AlgorithmTypes },
+  data: Uint8Array,
+  signature: Uint8Array
+) => {
+  return await verifyCustomContentChallenge(
+    Buffer.from(data).toString("utf-8"),
+    Buffer.from(signature).toString("base64"),
+    ecPublicKeyJwk
+  )();
+};
+
+const mockRequestOptions: VerifySignatureHeaderOptions = {
+  verifier: {
+    verify: ecVerifier
+  },
+  /**
+   * Full url of the request including query parameters
+   */
+  url: "http://www.example.com",
+  /**
+   * The HTTP request method of the request
+   */
+  method: "GET",
+  /**
+   * Headers of the request
+   * httpHeaders is filtered during verification to include only the ones form the signature.
+   */
+  httpHeaders: {
+    "x-pagopa-lollipop-custom-tos-challange": TOS_CHALLENGE,
+    signature: SIGNATURE,
+    "signature-input": SIGNATURE_INPUT
+  },
+  /**
+   * The body of the request
+   */
+  body: undefined,
+  /**
+   * Optional field to identify a single signature that should be verified from the signature header. If omitted, this function will attempt to verify all signatures present.
+   */
+  signatureKey: "sig2",
+  /**
+   * Optionally set this field to false if you don't want to fail verification based on the signature being past its expiry timestamp.
+   * Defaults to true.
+   */
+  verifyExpiry: false
+};
+
+describe("Test http-signature", () => {
+  it("Test custom signature: sig2", async () => {
+    const verificationResult = await verifySignatureHeader(mockRequestOptions);
+    expect(verificationResult).toBeTruthy();
   });
 });
