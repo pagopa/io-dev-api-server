@@ -129,7 +129,7 @@ describe("Suite to test the http signature verification utility", () => {
   });
 });
 
-const ecVerifier = async (
+const rsaVerifier = async (
   _: { keyid: string; alg: AlgorithmTypes },
   data: Uint8Array,
   signature: Uint8Array
@@ -145,7 +145,7 @@ describe("Test http-signature", () => {
   ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
       verifier: {
-        verify: ecVerifier
+        verify: rsaVerifier
       },
       url: "http://127.0.0.1:3000",
       method: "GET",

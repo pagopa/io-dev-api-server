@@ -88,6 +88,6 @@ export const getCustomContentChallenge = (
     O.map(match => match[1]),
     O.fold(
       () => "",
-      result => result 
+      result => result
     )
   );
