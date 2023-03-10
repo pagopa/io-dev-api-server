@@ -32,7 +32,7 @@ const SIGNATURE_INPUT =
   'sig1=("x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4",sig2=("x-pagopa-lollipop-custom-tos");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4",sig3=("x-pagopa-lollipop-custom-sign");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4"';
 // signature header frome the API request
 const SIGNATURE =
-  "sig1:foo:,sig2:mqxQLiN8iKiRPpQmR6az6pFyOjByTkyF5joBjo0FW+HCzKcK5o14BMCoa40lRYmujIkdISwtgY5Y+nON3yCTk4o+z4tCCujeUdi2gTmnV2hbxMobdk8cS3xD4wVsWYh8AZAog9Oq6zpOgEYSEGwELkLraxtZOpLrLiPWNeqZrLXJ83vFiufz79Mva4xF+UV9dNReTml6bBI1yX6L7Kg8PNNJ9Le8/tacrsTxbq7vg+rzSqaVnqM54Y++Z+/OhoCLDACDYCsXhW6xKloSrwbyfzmNvn3M3rIu8BbmznTlAuPtPoCmAUVOIE2ZxT+4iMDc9vZqY6t89wQSoYATom5FFA==:,sig3:NbKJPJSiZ4XJilXYHFP2dL1CFCfU2Yl5xWQHPBczVwsDDlB6R8mGo0O3z85aqBY0NEKzCES/df91Q0LvBP9lx37XD3rHU2hBDkesF4uIS9cpB9EGYkkrrW6KpH3UyvyZnIcWnICLqV7dyDr8rwPBvF+Nf4ZBfRgZLn+35f4PP8BgT0Jxz6OJD9KeVFsCXlHZ3qwzTfOMnwyn5yu2ugpxbzSNLMsiaW9T1Lqram2y9mzuyKXWHo53Fl+Giftqhj7CdNt89OyLL8c6+t5mnchpFCj9h3H6E6IhPBckvZVw3Nw93T4eUUrchhNrv8vV2uMt56f04fFsOfWZNQDf8PgVvw==:";
+  "sig1=:foo:,sig2=:mqxQLiN8iKiRPpQmR6az6pFyOjByTkyF5joBjo0FW+HCzKcK5o14BMCoa40lRYmujIkdISwtgY5Y+nON3yCTk4o+z4tCCujeUdi2gTmnV2hbxMobdk8cS3xD4wVsWYh8AZAog9Oq6zpOgEYSEGwELkLraxtZOpLrLiPWNeqZrLXJ83vFiufz79Mva4xF+UV9dNReTml6bBI1yX6L7Kg8PNNJ9Le8/tacrsTxbq7vg+rzSqaVnqM54Y++Z+/OhoCLDACDYCsXhW6xKloSrwbyfzmNvn3M3rIu8BbmznTlAuPtPoCmAUVOIE2ZxT+4iMDc9vZqY6t89wQSoYATom5FFA==:,sig3=:NbKJPJSiZ4XJilXYHFP2dL1CFCfU2Yl5xWQHPBczVwsDDlB6R8mGo0O3z85aqBY0NEKzCES/df91Q0LvBP9lx37XD3rHU2hBDkesF4uIS9cpB9EGYkkrrW6KpH3UyvyZnIcWnICLqV7dyDr8rwPBvF+Nf4ZBfRgZLn+35f4PP8BgT0Jxz6OJD9KeVFsCXlHZ3qwzTfOMnwyn5yu2ugpxbzSNLMsiaW9T1Lqram2y9mzuyKXWHo53Fl+Giftqhj7CdNt89OyLL8c6+t5mnchpFCj9h3H6E6IhPBckvZVw3Nw93T4eUUrchhNrv8vV2uMt56f04fFsOfWZNQDf8PgVvw==:";
 // LC HEX encoded TOS hash to be verified
 const TOS_CHALLENGE = "ASDFFA324SDFA==";
 
@@ -68,53 +68,51 @@ describe("Suite to test the http signature verification utility", () => {
   });
 
   it("Test JWK to PEM", async () => {
-    pipe(
+    const pemKey = await pipe(
       toPem(rsaPublicKeyJwk),
-      TE.map(pemKey => expect(pemKey).toBe(rsaPublicKeyPem))
-    );
+      TE.fold(
+        () => T.of(""),
+        result => T.of(result)
+      )
+    )();
+    expect(pemKey).toBe(rsaPublicKeyPem);
   });
 
-  it("Test FCI custom content to sign", async () => {
+  
     TEST_CONTENT.forEach(content => {
-      pipe(
-        getCustomContentSignatureBase(
-          SIGNATURE_INPUT,
-          content.challenge,
-          content.header
-        ),
-        customContentSignatureBase =>
-          expect(customContentSignatureBase!.signatureBase).toBe(
-            content.signatureBase
-          )
+      it(`Test FCI custom content to sign: ${JSON.stringify(content)}`, async () => {
+      const customContentSignatureBase = getCustomContentSignatureBase(
+        SIGNATURE_INPUT,
+        content.challenge,
+        content.header
+      );
+      expect(customContentSignatureBase!.signatureBase).toBe(
+        content.signatureBase
       );
     });
   });
 
-  it("Verify tos challenge signature", async () => {
-    TEST_CONTENT.forEach(content => {
-      pipe(
-        getCustomContentSignatureBase(
-          SIGNATURE_INPUT,
-          content.challenge,
-          content.header
-        ),
-        signatureBase =>
-          pipe(
-            getCustomContentChallenge(
-              signatureBase!.signatureLabel!,
-              SIGNATURE
-            ),
-            signatureChallenge =>
-              pipe(
-                verifyCustomContentChallenge(
-                  signatureBase!.signatureBase,
-                  signatureChallenge!,
-                  rsaPublicKeyJwk
-                ),
-                verificationResult => expect(verificationResult).toBeTruthy()
-              )
-          )
+  TEST_CONTENT.forEach(content => {
+      it(`Verify challenge signature: ${JSON.stringify(content)}`, async () => {
+      const customContentSignatureBase = getCustomContentSignatureBase(
+        SIGNATURE_INPUT,
+        content.challenge,
+        content.header
       );
+
+      const customContentChallenge = getCustomContentChallenge(
+        customContentSignatureBase!.signatureLabel!,
+        SIGNATURE
+      );
+
+      const result = await verifyCustomContentChallenge(
+        customContentSignatureBase!.signatureBase,
+        customContentChallenge!,
+        rsaPublicKeyJwk
+      )();
+      
+      expect(result).toBeTruthy();
+      
     });
   });
 });

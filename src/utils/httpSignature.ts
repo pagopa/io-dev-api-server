@@ -83,8 +83,11 @@ export const getCustomContentChallenge = (
 ) =>
   pipe(
     signature,
-    s => new RegExp(`${signatureLabel}:(.+?):`).exec(s),
+    s => new RegExp(`${signatureLabel}=:(.+?):`).exec(s),
     O.fromNullable,
     O.map(match => match[1]),
-    O.toUndefined
+    O.fold(
+      () => "",
+      result => result 
+    )
   );

@@ -8,6 +8,7 @@ import * as TE from "fp-ts/TaskEither";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
 import * as T from "fp-ts/lib/Task";
+import { resourceUsage } from "process";
 
 const ecPublicKeyJwk = {
   crv: "P-256",
@@ -26,7 +27,7 @@ const SIGNATURE_INPUT =
   'sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig2=("x-pagopa-lollipop-custom-tos-challange");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4",sig3=("x-pagopa-lollipop-custom-sign-challenge");created=1677499068;nonce="nonceMockedBase64";alg="ecdsa-p256-sha256";keyid="cZHpXWy9TJ4AlV7uPSra4o6ojTel5wQPvWhJOui7Wb4"';
 // signature header frome the API request
 const SIGNATURE =
-  "sig1:MEYCIQDLDC1Iqg98aRhm0j8rWDdQHyrgeaDORsq1SeIzZgwywQIhAOYnl404A7A2dAlrZ5OrTEIZjHsqF6gm362UoYZWrHXY:,sig2:MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==:,sig3:MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==:";
+  "sig1=:MEYCIQDLDC1Iqg98aRhm0j8rWDdQHyrgeaDORsq1SeIzZgwywQIhAOYnl404A7A2dAlrZ5OrTEIZjHsqF6gm362UoYZWrHXY:,sig2=:MEQCIHUQzoJAEFUIcWs2mhYKgxzShLRZjICzEQpbUeqY67YKAiA+VYHV3k+gtKvzi5ofkojk0kSu4sP1QDyfx2aGJLBvtA==:,sig3=:MEQCIDFGUsH31mYJ0eLM9OFEdwjkKBK12IyqJ4CbJnM3aes5AiBdqasrQvjW21lgxxrlEpmOWRXLKN4vwXzWxOnXBbJaLA==:";
 // LC HEX encoded TOS hash to be verified
 const TOS_CHALLENGE =
   "f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa";
@@ -63,53 +64,51 @@ describe("Suite to test the http signature verification utility", () => {
   });
 
   it("Test JWK to PEM", async () => {
-    pipe(
+    const pemKey = await pipe(
       toPem(ecPublicKeyJwk),
-      TE.map(pemKey => expect(pemKey).toBe(ecPublicKeyPem))
-    );
+      TE.fold(
+        () => T.of(""),
+        result => T.of(result)
+      )
+    )();
+    expect(pemKey).toBe(ecPublicKeyPem);
   });
 
-  it("Test FCI custom content to sign", async () => {
+  
     TEST_CONTENT.forEach(content => {
-      pipe(
-        getCustomContentSignatureBase(
-          SIGNATURE_INPUT,
-          content.challenge,
-          content.header
-        ),
-        customContentSignatureBase =>
-          expect(customContentSignatureBase!.signatureBase).toBe(
-            content.signatureBase
-          )
+      it(`Test FCI custom content to sign: ${JSON.stringify(content)}`, async () => {
+      const customContentSignatureBase = getCustomContentSignatureBase(
+        SIGNATURE_INPUT,
+        content.challenge,
+        content.header
+      );
+      expect(customContentSignatureBase!.signatureBase).toBe(
+        content.signatureBase
       );
     });
   });
 
-  it("Verify tos challenge signature", async () => {
-    TEST_CONTENT.forEach(content => {
-      pipe(
-        getCustomContentSignatureBase(
-          SIGNATURE_INPUT,
-          content.challenge,
-          content.header
-        ),
-        signatureBase =>
-          pipe(
-            getCustomContentChallenge(
-              signatureBase!.signatureLabel!,
-              SIGNATURE
-            ),
-            signatureChallenge =>
-              pipe(
-                verifyCustomContentChallenge(
-                  signatureBase!.signatureBase,
-                  signatureChallenge!,
-                  ecPublicKeyJwk
-                ),
-                verificationResult => expect(verificationResult).toBeTruthy()
-              )
-          )
+  TEST_CONTENT.forEach(content => {
+      it(`Verify challenge signature: ${JSON.stringify(content)}`, async () => {
+      const customContentSignatureBase = getCustomContentSignatureBase(
+        SIGNATURE_INPUT,
+        content.challenge,
+        content.header
       );
+
+      const customContentChallenge = getCustomContentChallenge(
+        customContentSignatureBase!.signatureLabel!,
+        SIGNATURE
+      );
+
+      const result = await verifyCustomContentChallenge(
+        customContentSignatureBase!.signatureBase,
+        customContentChallenge!,
+        ecPublicKeyJwk
+      )();
+      
+      expect(result).toBeTruthy();
+      
     });
   });
 });
