@@ -46,6 +46,20 @@ describe("suite to test the http signature verification utility", () => {
   const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign": DAFDEFAF323DSFA==
 "@signature-params": ("x-pagopa-lollipop-custom-sign");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4"`;
 
+const TEST_CONTENT = [
+  {
+    header: "x-pagopa-lollipop-custom-tos",
+    signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
+    challenge: TOS_CHALLENGE
+  },
+  {
+    header: "x-pagopa-lollipop-custom-sign",
+    signatureBase: CHALLENGE_SIGNATURE_BASE,
+    challenge: CHALLENGE
+  }
+]
+
+
   it("test JWK thumbprint", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
       rsaPublicKeyJwk,
@@ -55,73 +69,56 @@ describe("suite to test the http signature verification utility", () => {
   });
 
   it("test JWK to PEM", async () => {
-    const pemKey = () =>
       pipe(
         toPem(rsaPublicKeyJwk),
-        TE.getOrElse(() => T.of(""))
-      )();
-    expect(await pemKey()).toBe(rsaPublicKeyPem);
+        TE.getOrElse(() => T.of("")),
+        T.map(pemKey => expect(pemKey).toBe(rsaPublicKeyPem))
+      );
   });
 
-  it("test FCI custom content to sign (fp-ts)", async () => {
-    const tosChallengeSignatureBase = getCustomContentSignatureBase(
-      SIGNATURE_INPUT,
-      TOS_CHALLENGE,
-      "x-pagopa-lollipop-custom-tos"
-    );
-
-    const challengeSignatureBase = getCustomContentSignatureBase(
-      SIGNATURE_INPUT,
-      CHALLENGE,
-      "x-pagopa-lollipop-custom-sign"
-    );
-
-    expect(tosChallengeSignatureBase!.signatureBase).toBe(
-      TOS_CHALLENGE_SIGNATURE_BASE
-    );
-    expect(challengeSignatureBase!.signatureBase).toBe(
-      CHALLENGE_SIGNATURE_BASE
-    );
+  it("test FCI custom content to sign", async () => {
+    TEST_CONTENT.forEach(content => {
+      pipe(
+        getCustomContentSignatureBase(
+          SIGNATURE_INPUT,
+          content.challenge,
+          content.header
+        ),
+        customContentSignatureBase =>
+          expect(customContentSignatureBase!.signatureBase).toBe(
+            content.signatureBase
+          )
+      );
+    });
   });
 
   it("Verify tos challenge signature", async () => {
-    const tosChallengeSignatureBase = getCustomContentSignatureBase(
-      SIGNATURE_INPUT,
-      TOS_CHALLENGE,
-      "x-pagopa-lollipop-custom-tos"
-    );
-
-    const signatureChallenge = getCustomContentChallenge(
-      tosChallengeSignatureBase!.signatureLabel!,
-      SIGNATURE
-    );
-
-    const verificationResult = verifyCustomContentChallenge(
-      tosChallengeSignatureBase!.signatureBase,
-      signatureChallenge!,
-      rsaPublicKeyJwk
-    );
-    expect(verificationResult).toBeTruthy();
+    TEST_CONTENT.forEach(content => {
+      pipe(
+        getCustomContentSignatureBase(
+          SIGNATURE_INPUT,
+          content.challenge,
+          content.header
+        ),
+        signatureBase =>
+          pipe(
+            getCustomContentChallenge(
+              signatureBase!.signatureLabel!,
+              SIGNATURE
+            ),
+            signatureChallenge =>
+              pipe(
+                verifyCustomContentChallenge(
+                  signatureBase!.signatureBase,
+                  signatureChallenge!,
+                  rsaPublicKeyJwk
+                ),
+                verificationResult => expect(verificationResult).toBeTruthy()
+              )
+          )
+      );
+    });
   });
 
-  it("Verify challenge signature", async () => {
-    const challengeSignatureBase = getCustomContentSignatureBase(
-      SIGNATURE_INPUT,
-      CHALLENGE,
-      "x-pagopa-lollipop-custom-sign"
-    );
-
-    const signatureChallenge = getCustomContentChallenge(
-      challengeSignatureBase!.signatureLabel!,
-      SIGNATURE
-    );
-
-    const verificationResult = verifyCustomContentChallenge(
-      challengeSignatureBase!.signatureBase,
-      signatureChallenge!,
-      rsaPublicKeyJwk
-    );
-    expect(verificationResult).toBeTruthy();
-    expect(verificationResult).toBeTruthy();
-  });
+ 
 });

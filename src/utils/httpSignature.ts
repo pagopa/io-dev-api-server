@@ -16,23 +16,21 @@ export const verifyCustomContentChallenge = (
     TE.fold(
       _ => T.of(false),
       pemKey =>
-        pipe(
-          T.of(
-            crypto
-              .createVerify("sha256")
-              .update(signatureBase!)
-              .verify(
-                {
-                  key: pemKey,
-                  padding:
-                    publicKey.kty == "RSA"
-                      ? crypto.constants.RSA_PKCS1_PSS_PADDING
-                      : undefined
-                },
-                signatureToVerify,
-                "base64"
-              )
-          )
+        T.of(
+          crypto
+            .createVerify("sha256")
+            .update(signatureBase!)
+            .verify(
+              {
+                key: pemKey,
+                padding:
+                  publicKey.kty == "RSA"
+                    ? crypto.constants.RSA_PKCS1_PSS_PADDING
+                    : undefined
+              },
+              signatureToVerify,
+              "base64"
+            )
         )
     )
   );
