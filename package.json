@@ -24,7 +24,7 @@
   "api_eu_covid_cert": "https://raw.githubusercontent.com/pagopa/io-backend/v9.13.1-RELEASE/api_eucovidcert.yaml",
   "api_sicilia_vola": "assets/SiciliaVola.yml",
   "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
-  "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v9.6.0/api_io_sign.yaml",
+  "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v10.1.0/api_io_sign.yaml",
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v9.1.0-RELEASE/api_pn.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
@@ -67,9 +67,9 @@
     "preset": "ts-jest",
     "collectCoverage": true
   },
-  "dependencies": {
+  "dependencies": {    
     "@pagopa/ts-commons": "^10.13.0",
-    "body-parser": "^1.19.1",
+    "body-parser": "^1.19.2",
     "chalk": "^4.1.1",
     "cli-ux": "^5.6.3",
     "crypto": "^1.0.1",
@@ -86,6 +86,10 @@
     "rimraf": "^3.0.2",
     "sha256": "^0.2.0",
     "ts-pattern": "^3.3.4",
+    "xml2js": "^0.4.23",
+    "ulid": "^2.3.0"
+  },
+  "resolutions": {
     "xml2js": "^0.4.23",
     "zlib": "^1.0.5"
   },

@@ -35,6 +35,13 @@ import {
   frontMatter1CTAV2BonusCgnDetails,
   frontMatter2CTA2,
   frontMatterBonusVacanze,
+  frontMatterCTAFCISignatureRequest,
+  frontMatterCTAFCISignatureRequestExpired,
+  frontMatterCTAFCISignatureRequestSigned,
+  frontMatterCTAFCISignatureRequestSignedExpired,
+  frontMatterCTAFCISignatureRequestWaitQtsp,
+  messageFciMarkdown,
+  messageFciSignedMarkdown,
   messageMarkdown
 } from "./utils/variables";
 
@@ -229,6 +236,64 @@ const createMessages = (
           attachments
         }
       });
+    });
+
+  /* Firma con IO */
+  customConfig.messages.fci.waitForSignatureCount > 0 &&
+    range(1, customConfig.messages.fci.waitForSignatureCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_SIGNATURE] - ${count}`,
+          frontMatterCTAFCISignatureRequest + messageFciMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.expiredCount > 0 &&
+    range(1, customConfig.messages.fci.expiredCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [EXPIRED] - ${count}`,
+          frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.waitForQtspCount > 0 &&
+    range(1, customConfig.messages.fci.waitForQtspCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_QTSP] - ${count} `,
+          frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.expired90Count > 0 &&
+    range(1, customConfig.messages.fci.expired90Count).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [90 days expired] ${count} `,
+          frontMatterCTAFCISignatureRequestSignedExpired +
+            messageFciSignedMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.rejectedCount > 0 &&
+    range(1, customConfig.messages.fci.rejectedCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${count} `,
+          frontMatterCTAFCISignatureRequestSignedExpired +
+            messageFciSignedMarkdown
+        )
+      );
     });
 
   /* standard message */

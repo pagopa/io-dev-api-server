@@ -24,6 +24,16 @@ const siciliaVolaService: ServicePublic = {
   }
 };
 
+const fciServiceId = "serviceFci";
+const fciService: ServicePublic = {
+  ...getService(fciServiceId),
+  organization_name: "Firma con IO" as OrganizationName,
+  service_name: "Firma con IO" as ServiceName,
+  service_metadata: {
+    ...getServiceMetadata(ServiceScopeEnum.NATIONAL)
+  }
+};
+
 const getOrganizationFiscalCode = (organizationsCount: number) =>
   `${organizationsCount}`.padStart(11, "0") as OrganizationFiscalCode;
 
@@ -31,6 +41,13 @@ const withSiciliaVolaService = (
   organizationFiscalCode: OrganizationFiscalCode
 ): ServicePublic => ({
   ...siciliaVolaService,
+  organization_fiscal_code: organizationFiscalCode
+});
+
+const withFciService = (
+  organizationFiscalCode: OrganizationFiscalCode
+): ServicePublic => ({
+  ...fciService,
   organization_fiscal_code: organizationFiscalCode
 });
 
@@ -100,7 +117,8 @@ const specialServicesFactory: ReadonlyArray<readonly [
   [ioDevServerConfig.services.includeSiciliaVola, withSiciliaVolaService],
   [ioDevServerConfig.services.includeCgn, withCgnService],
   [ioDevServerConfig.services.includeCdc, withCdcService],
-  [ioDevServerConfig.services.includePn, withPnService]
+  [ioDevServerConfig.services.includePn, withPnService],
+  [ioDevServerConfig.services.includeFci, withFciService]
 ];
 
 // eventually add the special services based on config flags
