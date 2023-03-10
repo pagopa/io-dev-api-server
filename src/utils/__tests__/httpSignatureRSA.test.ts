@@ -4,8 +4,8 @@ import {
   toPem,
   verifyCustomContentChallenge
 } from "../httpSignature";
-import * as jose from "jose";
 import * as TE from "fp-ts/TaskEither";
+import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
 import * as T from "fp-ts/lib/Task";
 import {
@@ -14,50 +14,57 @@ import {
   verifySignatureHeader
 } from "@mattrglobal/http-signatures";
 
+// Android RSA Public Key
 const rsaPublicKeyJwk = {
   e: "AQAB",
   n:
-    "AKziIQ5w1ikOIPFWEczl7qsZDQ8mEdhqdebUo3dQxX53HIdXpMzLcMEvnqsBqISOPlGhdCUSOpUAaYQQTSEsi3SeVX9W9YQXHjua/QXQfDCZjrS/QOlQ5sf7LxA7JqIwp9J0dpMArQeZ1/3+YiIF+hlDZvqcKYzdTUbAX/05D/ifyVu8vynAYDEEPSmYobaH2vdDV/vJlKoeEP+41U51iVjuo+1bp1xnXR4N3CapPtaR/r5zzB/KWF+ZfHhE8V68NiqIoiS87TJnMso887HcCruqdPQpu77kRSYN9n+Au2tKUEKQgzBZGDDVVqTFJpZ5NQDRkakV7v+m6sbYxIYfKus=",
+    "AOGUlxpUt6Cq4AuTg+XSWKs7JJepRhNvD/kNwK2jXnSxIcFGAFLj2A/t+tPltMgB6LKrkFXfbl6fBSxsy90R922il61e/mtpxiCEPg/Go4NPYNbXSopPYRdbGdidn8ai5itQn4h3Zx++p8aE4YM9JbqZN0CetBL27PHk9H6XpkpxW8W0Dn62o1gXsNbD5s6YSUb0+qeREuWuKxS/xf2D+9ujh/DEb2n7WpbChFOvyk0Ui2zjxo57ZXnKe/h7qGcbH3c4K7Z1jqdGqZ9Cor6a2Hcl7Kt6CP7jdpW3j2FE+av4XOigGg3IJK57XW6HsbcU+Vm0mydHGDYBPSXB8+MaFB8=",
   alg: "RS256",
   kty: "RSA"
 };
 
-const rsaPublicKeyPem = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArOIhDnDWKQ4g8VYRzOXu
-qxkNDyYR2Gp15tSjd1DFfncch1ekzMtwwS+eqwGohI4+UaF0JRI6lQBphBBNISyL
-dJ5Vf1b1hBceO5r9BdB8MJmOtL9A6VDmx/svEDsmojCn0nR2kwCtB5nX/f5iIgX6
-GUNm+pwpjN1NRsBf/TkP+J/JW7y/KcBgMQQ9KZihtofa90NX+8mUqh4Q/7jVTnWJ
-WO6j7VunXGddHg3cJqk+1pH+vnPMH8pYX5l8eETxXrw2KoiiJLztMmcyyjzzsdwK
-u6p09Cm7vuRFJg32f4C7a0pQQpCDMFkYMNVWpMUmlnk1ANGRqRXu/6bqxtjEhh8q
-6wIDAQAB
+const ecPublicKeyPem = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4ZSXGlS3oKrgC5OD5dJY
+qzskl6lGE28P+Q3AraNedLEhwUYAUuPYD+360+W0yAHosquQVd9uXp8FLGzL3RH3
+baKXrV7+a2nGIIQ+D8ajg09g1tdKik9hF1sZ2J2fxqLmK1CfiHdnH76nxoThgz0l
+upk3QJ60Evbs8eT0fpemSnFbxbQOfrajWBew1sPmzphJRvT6p5ES5a4rFL/F/YP7
+26OH8MRvaftalsKEU6/KTRSLbOPGjntlecp7+HuoZxsfdzgrtnWOp0apn0KivprY
+dyXsq3oI/uN2lbePYUT5q/hc6KAaDcgkrntdboextxT5WbSbJ0cYNgE9JcHz4xoU
+HwIDAQAB
 -----END PUBLIC KEY-----`;
+
+const ecThumbprint = "Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc";
 
 // signature_input header from the API request
 const SIGNATURE_INPUT =
-  'sig1=("x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4",sig2=("x-pagopa-lollipop-custom-tos");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4",sig3=("x-pagopa-lollipop-custom-sign");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4"';
+  'sig1=("x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=1678478670;nonce="nonce-123";alg="rsa-pss-sha256";keyid="Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc",sig2=("x-pagopa-lollipop-custom-tos-challenge");created=1678478670;nonce="nonce-123";alg="rsa-pss-sha256";keyid="Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc",sig3=("x-pagopa-lollipop-custom-sign-challenge");created=1678478670;nonce="nonce-123";alg="rsa-pss-sha256";keyid="Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc"';
 // signature header frome the API request
 const SIGNATURE =
-  "sig1=:foo:,sig2=:mqxQLiN8iKiRPpQmR6az6pFyOjByTkyF5joBjo0FW+HCzKcK5o14BMCoa40lRYmujIkdISwtgY5Y+nON3yCTk4o+z4tCCujeUdi2gTmnV2hbxMobdk8cS3xD4wVsWYh8AZAog9Oq6zpOgEYSEGwELkLraxtZOpLrLiPWNeqZrLXJ83vFiufz79Mva4xF+UV9dNReTml6bBI1yX6L7Kg8PNNJ9Le8/tacrsTxbq7vg+rzSqaVnqM54Y++Z+/OhoCLDACDYCsXhW6xKloSrwbyfzmNvn3M3rIu8BbmznTlAuPtPoCmAUVOIE2ZxT+4iMDc9vZqY6t89wQSoYATom5FFA==:,sig3=:NbKJPJSiZ4XJilXYHFP2dL1CFCfU2Yl5xWQHPBczVwsDDlB6R8mGo0O3z85aqBY0NEKzCES/df91Q0LvBP9lx37XD3rHU2hBDkesF4uIS9cpB9EGYkkrrW6KpH3UyvyZnIcWnICLqV7dyDr8rwPBvF+Nf4ZBfRgZLn+35f4PP8BgT0Jxz6OJD9KeVFsCXlHZ3qwzTfOMnwyn5yu2ugpxbzSNLMsiaW9T1Lqram2y9mzuyKXWHo53Fl+Giftqhj7CdNt89OyLL8c6+t5mnchpFCj9h3H6E6IhPBckvZVw3Nw93T4eUUrchhNrv8vV2uMt56f04fFsOfWZNQDf8PgVvw==:";
+  "sig1=:po9EbbRn8V/H+/wmWYjLURelKiR6zicz8a71u7C6wxjLeANImDlvmgDke1ESGqv/dAhIny9XtxfaDUqZx6QKdIBPPwualgWdtkLc+v/7f27/5EUsCowtF9q0rUsTxU5yJIsgBILpsaFtZfKVCMEjvNNrX+H+SASUWDe1r4/h0BWcD56gGwtQ1yRkuV5WeDSL7ItThFS0w5Hcg1smC91y5CGCXaCKUxFlYDcyZD8vBnpGzX9GtZYJSRTfgoXcT9HbfO3y9MPq6x83Q64TSETbAknPIDg4JpSsh54TWdo8WGukbdc2smyhzlJk9IZKsMAv1e6Bfb2WgA9XfBHDRRXyxQ==:,sig2=:JrbXUBe+s0dUVw38e1voW8mvb40oBOB1ELxUgqiHrpTioTiOJgunh5w5UmPB2pKu2MZyKThrGnyGdeasKfHYXKWPDDyiQDIb4He5FKi/6AZMvGRe6yOebANWw2NCpXJqxwQIxr4CP6e22Ab8GCrvx0nRzlIobggjrJ7WCjQOen9v+8ftExGSFM3I0T9MZ/hORighy9TzRtciGxfVVpp4C64TtAwAI+Il09V2BGN7wle0GMsMLWCh/9XqTYlvNk4BPG60RyUSA3OBTs6PsPk7fSvrptMK7MwkD92ZZiylYjDkQ5QXuuAIJNXqqNXBplfxkGYqoxaOxW12Aw8qIiKHHA==:,sig3=:T0F/2mi8INdJ/STqsJ6bpIkeUN7YN32rE64u9AD2PAYSdzeoOZ/2+cY+2ZKq0r2eM3XTiTykGPfTZWJ1OiFW9rcOyhFbYTVd39suMUn/KLZUAX4pQIEUA7FP9Ald1H/xPwK/wcBFlzfPDQOV7mgnfzncsuPfiJaE+dElHP6vmQXYetQE9poryTTnx1oZybNmB/2amOKJF6uh2zoet4v0TwlJIqDDp56x2/KzY/yAwg1tjuKq/z2qWumIo58tPpSHTswIIHAbm9nscX2rCG3OS7ADsSgfNVLth+j77seKSRIBOG9bsgYPwK+XG3CN237dsLsMtoPAuBeqxp+1b6K0Jg==:";
 // LC HEX encoded TOS hash to be verified
-const TOS_CHALLENGE = "ASDFFA324SDFA==";
-
+const TOS_CHALLENGE =
+  "f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa";
 // LC HEX encoded Documents hash to be verified
-const CHALLENGE = "DAFDEFAF323DSFA==";
+const CHALLENGE =
+  "2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676";
 
-const TOS_CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-tos": ASDFFA324SDFA==
-"@signature-params": ("x-pagopa-lollipop-custom-tos");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4"`;
+const TOS_HEADER_NAME = "x-pagopa-lollipop-custom-tos-challenge";
+const SIGNATURE_HEADER_NAME = "x-pagopa-lollipop-custom-sign-challenge";
 
-const CHALLENGE_SIGNATURE_BASE = `"x-pagopa-lollipop-custom-sign": DAFDEFAF323DSFA==
-"@signature-params": ("x-pagopa-lollipop-custom-sign");created=1678294979;nonce="nonce-123";alg="rsa-pss-sha256";keyid="eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4"`;
+const TOS_CHALLENGE_SIGNATURE_BASE = `"${TOS_HEADER_NAME}": f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
+"@signature-params": ("${TOS_HEADER_NAME}");created=1678478670;nonce="nonce-123";alg="rsa-pss-sha256";keyid="Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc"`;
+
+const CHALLENGE_SIGNATURE_BASE = `"${SIGNATURE_HEADER_NAME}": 2a6a0a73efb1197847f2426d3b508411688ddc924248cde9aae0911aad73a676
+"@signature-params": ("${SIGNATURE_HEADER_NAME}");created=1678478670;nonce="nonce-123";alg="rsa-pss-sha256";keyid="Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc"`;
 
 const TEST_CONTENT = [
   {
-    header: "x-pagopa-lollipop-custom-tos",
+    header: TOS_HEADER_NAME,
     signatureBase: TOS_CHALLENGE_SIGNATURE_BASE,
     challenge: TOS_CHALLENGE
   },
   {
-    header: "x-pagopa-lollipop-custom-sign",
+    header: SIGNATURE_HEADER_NAME,
     signatureBase: CHALLENGE_SIGNATURE_BASE,
     challenge: CHALLENGE
   }
@@ -69,7 +76,7 @@ describe("Suite to test the http signature verification utility", () => {
       rsaPublicKeyJwk,
       "sha256"
     );
-    expect(thumbprint).toBe("eEnBCuyqeXY8y96UgWKLgoFMtS7JFrjYJY_oiHPmzw4");
+    expect(thumbprint).toBe(ecThumbprint);
   });
 
   it("Test JWK to PEM", async () => {
@@ -80,7 +87,7 @@ describe("Suite to test the http signature verification utility", () => {
         result => T.of(result)
       )
     )();
-    expect(pemKey).toBe(rsaPublicKeyPem);
+    expect(pemKey).toBe(ecPublicKeyPem);
   });
 
   TEST_CONTENT.forEach(content => {
@@ -122,7 +129,7 @@ describe("Suite to test the http signature verification utility", () => {
   });
 });
 
-const rsaVerifier = async (
+const ecVerifier = async (
   _: { keyid: string; alg: AlgorithmTypes },
   data: Uint8Array,
   signature: Uint8Array
@@ -134,45 +141,39 @@ const rsaVerifier = async (
   )();
 };
 
-const mockRequestOptions: VerifySignatureHeaderOptions = {
-  verifier: {
-    verify: rsaVerifier
-  },
-  /**
-   * Full url of the request including query parameters
-   */
-  url: "http://www.example.com",
-  /**
-   * The HTTP request method of the request
-   */
-  method: "GET",
-  /**
-   * Headers of the request
-   * httpHeaders is filtered during verification to include only the ones form the signature.
-   */
-  httpHeaders: {
-    "x-pagopa-lollipop-custom-tos-challange": TOS_CHALLENGE,
-    signature: SIGNATURE,
-    "signature-input": SIGNATURE_INPUT
-  },
-  /**
-   * The body of the request
-   */
-  body: undefined,
-  /**
-   * Optional field to identify a single signature that should be verified from the signature header. If omitted, this function will attempt to verify all signatures present.
-   */
-  signatureKey: "sig2",
-  /**
-   * Optionally set this field to false if you don't want to fail verification based on the signature being past its expiry timestamp.
-   * Defaults to true.
-   */
-  verifyExpiry: false
-};
-
 describe("Test http-signature", () => {
-  it("Test custom signature: sig2", async () => {
-    const verificationResult = await verifySignatureHeader(mockRequestOptions);
-    expect(verificationResult).toBeTruthy();
+  ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
+    const mockRequestOptions: VerifySignatureHeaderOptions = {
+      verifier: {
+        verify: ecVerifier
+      },
+      url: "http://127.0.0.1:3000",
+      method: "GET",
+      httpHeaders: {
+        host: "127.0.0.1:3000",
+        connection: "Keep-Alive",
+        "accept-encoding": "gzip",
+        "user-agent": "okhttp/4.9.2",
+        "x-pagopa-lollipop-original-url": "/api/v1/profile",
+        "x-pagopa-lollipop-original-method": "GET",
+        [TOS_HEADER_NAME]: TOS_CHALLENGE,
+        [SIGNATURE_HEADER_NAME]: CHALLENGE,
+        signature: SIGNATURE,
+        "signature-input": SIGNATURE_INPUT
+      },
+      body: undefined,
+      signatureKey: sigLabel,
+      verifyExpiry: false
+    };
+    it(`Test custom signature: ${sigLabel}`, async () => {
+      const verificationResult = await verifySignatureHeader(
+        mockRequestOptions
+      );
+      const verification = verificationResult.unwrapOr({
+        verified: false
+      }).verified;
+      expect(verificationResult.isOk()).toBeTruthy();
+      expect(verification).toBeTruthy();
+    });
   });
 });
