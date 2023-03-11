@@ -164,7 +164,7 @@ describe("Test provided signature algorithms", () => {
 });
 
 describe("Test http-signature request", () => {
-  ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
+  ["sig1", "sig2", "sig3", undefined, "sig8"].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
       verifier: {
         verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
@@ -189,15 +189,22 @@ describe("Test http-signature request", () => {
       signatureKey: sigLabel,
       verifyExpiry: false
     };
-    it(`Test that the verification for the "signature" haeder for the label ${sigLabel} are correct`, async () => {
+    it(`Test that the verification for the "signature" haeder for the label ${sigLabel} are ${
+      sigLabel !== "sig8" ? "correct" : "wrong"
+    }`, async () => {
       const verificationResult = await verifySignatureHeader(
         mockRequestOptions
       );
       const verification = verificationResult.unwrapOr({
         verified: false
       }).verified;
-      expect(verificationResult.isOk()).toBeTruthy();
-      expect(verification).toBeTruthy();
+      if (sigLabel !== "sig8") {
+        expect(verificationResult.isOk()).toBeTruthy();
+        expect(verification).toBeTruthy();
+      } else {
+        expect(verificationResult.isOk()).toBeTruthy();
+        expect(verification).toBeFalsy();
+      }
     });
   });
 });

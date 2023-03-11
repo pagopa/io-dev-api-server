@@ -1,11 +1,14 @@
 import {
   getCustomContentChallenge,
   getCustomContentSignatureBase,
+  getSignatureInfo,
+  isSignAlgorithmValid,
   signAlgorithmToVerifierMap,
   toPem,
   verifyCustomContentChallenge
 } from "../../httpSignature";
 import * as TE from "fp-ts/TaskEither";
+import * as O from "fp-ts/Option";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
 import * as T from "fp-ts/lib/Task";
@@ -24,7 +27,7 @@ const rsaPublicKeyJwk = {
   kty: "RSA"
 };
 
-const ecPublicKeyPem = `-----BEGIN PUBLIC KEY-----
+const rsaPublicKeyPem = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4ZSXGlS3oKrgC5OD5dJY
 qzskl6lGE28P+Q3AraNedLEhwUYAUuPYD+360+W0yAHosquQVd9uXp8FLGzL3RH3
 baKXrV7+a2nGIIQ+D8ajg09g1tdKik9hF1sZ2J2fxqLmK1CfiHdnH76nxoThgz0l
@@ -34,7 +37,7 @@ dyXsq3oI/uN2lbePYUT5q/hc6KAaDcgkrntdboextxT5WbSbJ0cYNgE9JcHz4xoU
 HwIDAQAB
 -----END PUBLIC KEY-----`;
 
-const ecThumbprint = "Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc";
+const rsaThumbprint = "Ii6BXhYgSGHgpjj0rj57ODP1Z4HX1y3J70IJ1iwb1Wc";
 
 // signature_input header from the API request
 const SIGNATURE_INPUT =
@@ -71,16 +74,24 @@ const TEST_CONTENT = [
   }
 ];
 
-describe("Suite to test the http signature verification utility", () => {
-  it("Test JWK thumbprint", async () => {
+describe("Test JWK utilities", () => {
+  it("Test JWK thumbprint to be right", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
       rsaPublicKeyJwk,
       "sha256"
     );
-    expect(thumbprint).toBe(ecThumbprint);
+    expect(thumbprint).toBe(rsaThumbprint);
   });
 
-  it("Test JWK to PEM", async () => {
+  it("Test JWK thumbprint to be wrong", async () => {
+    const thumbprint = await jose.calculateJwkThumbprint(
+      rsaPublicKeyJwk,
+      "sha512"
+    );
+    expect(thumbprint).not.toBe(rsaThumbprint);
+  });
+
+  it("Test JWK to PEM to be right", async () => {
     const pemKey = await pipe(
       toPem(rsaPublicKeyJwk),
       TE.fold(
@@ -88,13 +99,24 @@ describe("Suite to test the http signature verification utility", () => {
         result => T.of(result)
       )
     )();
-    expect(pemKey).toBe(ecPublicKeyPem);
+    expect(pemKey).toBe(rsaPublicKeyPem);
   });
 
+  it("Test JWK to PEM to be wrong", async () => {
+    const pemKey = await pipe(
+      toPem({ ...rsaPublicKeyJwk, e: "" }),
+      TE.fold(
+        () => T.of(""),
+        result => T.of(result)
+      )
+    )();
+    expect(pemKey).not.toBe(rsaPublicKeyPem);
+  });
+});
+
+describe("Test FCI custom content TOS and Sign Challenges", () => {
   TEST_CONTENT.forEach(content => {
-    it(`Test FCI custom content to sign: ${JSON.stringify(
-      content
-    )}`, async () => {
+    it(`Test FCI custom content to sign for "${content.header}" to be computed the right way`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -107,7 +129,7 @@ describe("Suite to test the http signature verification utility", () => {
   });
 
   TEST_CONTENT.forEach(content => {
-    it(`Verify challenge signature: ${JSON.stringify(content)}`, async () => {
+    it(`Test FCI custom content signature for "${content.header}" to be verified the right way`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -130,8 +152,23 @@ describe("Suite to test the http signature verification utility", () => {
   });
 });
 
-describe("Test http-signature", () => {
-  ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
+describe("Test provided signature algorithms", () => {
+  TEST_CONTENT.forEach(content => {
+    it(`Test that we retrive a valid sign algorithm for "${content.header}" from signature-input`, () => {
+      const signAlgorithm = getSignatureInfo(content.signatureBase);
+      expect(O.isSome(signAlgorithm)).toBeTruthy();
+      expect(isSignAlgorithmValid(signAlgorithm)).toBeTruthy();
+    });
+    it(`Test that we retrive a wrong sign algorithm for "${content.header}" from signature-input`, () => {
+      const wrongSignAlgorithm = getSignatureInfo("wrong-value");
+      expect(O.isNone(wrongSignAlgorithm)).toBeTruthy();
+      expect(isSignAlgorithmValid(wrongSignAlgorithm)).toBeFalsy();
+    });
+  });
+});
+
+describe("Test http-signature request", () => {
+  ["sig1", "sig2", "sig3", undefined, "sig8"].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
       verifier: {
         verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
@@ -156,15 +193,22 @@ describe("Test http-signature", () => {
       signatureKey: sigLabel,
       verifyExpiry: false
     };
-    it(`Test custom signature: ${sigLabel}`, async () => {
+    it(`Test that the verification for the "signature" haeder for the label ${sigLabel} are ${
+      sigLabel !== "sig8" ? "correct" : "wrong"
+    }`, async () => {
       const verificationResult = await verifySignatureHeader(
         mockRequestOptions
       );
       const verification = verificationResult.unwrapOr({
         verified: false
       }).verified;
-      expect(verificationResult.isOk()).toBeTruthy();
-      expect(verification).toBeTruthy();
+      if (sigLabel !== "sig8") {
+        expect(verificationResult.isOk()).toBeTruthy();
+        expect(verification).toBeTruthy();
+      } else {
+        expect(verificationResult.isOk()).toBeTruthy();
+        expect(verification).toBeFalsy();
+      }
     });
   });
 });
