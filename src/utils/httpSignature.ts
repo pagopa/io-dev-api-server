@@ -103,3 +103,25 @@ export const getCustomContentChallenge = (
       result => result
     )
   );
+
+export type SignatureAlgorithm = "ecdsa-p256-sha256" | "rsa-pss-sha256";
+
+export const getSignatureInfo = (
+  signatureBase: string
+): O.Option<SignatureAlgorithm> => <O.Option<SignatureAlgorithm>>pipe(
+    signatureBase,
+    s => new RegExp(`alg="(.+?)"`).exec(s),
+    O.fromNullable,
+    O.map(match => match[1])
+  );
+
+export const isSignAlgorithmValid = (
+  signAlghorithm: O.Option<SignatureAlgorithm>
+) =>
+  pipe(
+    signAlghorithm,
+    O.fold(
+      () => false,
+      v => v === "ecdsa-p256-sha256" || v === "rsa-pss-sha256"
+    )
+  );

@@ -1,12 +1,15 @@
+import { isSignAlgorithmValid } from "./../../httpSignature";
 import {
   getCustomContentChallenge,
   getCustomContentSignatureBase,
+  getSignatureInfo,
   toPem,
   verifyCustomContentChallenge
 } from "../../httpSignature";
 import * as TE from "fp-ts/TaskEither";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/lib/Option";
 import * as T from "fp-ts/lib/Task";
 import {
   VerifySignatureHeaderOptions,
@@ -96,6 +99,16 @@ describe("Suite to test the http signature verification utility", () => {
       expect(customContentSignatureBase!.signatureBase).toBe(
         content.signatureBase
       );
+    });
+
+    it("Test that we retrive a valid sign algorithm", () => {
+      const signAlgorithm = getSignatureInfo(content.signatureBase);
+      expect(O.isSome(signAlgorithm)).toBeTruthy();
+      expect(isSignAlgorithmValid(signAlgorithm)).toBeTruthy();
+
+      const wrongSignAlgorithm = getSignatureInfo("wrong-value");
+      expect(O.isNone(wrongSignAlgorithm)).toBeTruthy();
+      expect(isSignAlgorithmValid(wrongSignAlgorithm)).toBeFalsy();
     });
   });
 
