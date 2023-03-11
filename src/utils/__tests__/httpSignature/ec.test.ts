@@ -1,4 +1,7 @@
-import { isSignAlgorithmValid } from "./../../httpSignature";
+import {
+  isSignAlgorithmValid,
+  signAlgorithmToVerifierMap
+} from "./../../httpSignature";
 import {
   getCustomContentChallenge,
   getCustomContentSignatureBase,
@@ -136,23 +139,13 @@ describe("Suite to test the http signature verification utility", () => {
   });
 });
 
-const ecVerifier = async (
-  _: { keyid: string; alg: AlgorithmTypes },
-  data: Uint8Array,
-  signature: Uint8Array
-) => {
-  return await verifyCustomContentChallenge(
-    Buffer.from(data).toString("utf-8"),
-    Buffer.from(signature).toString("base64"),
-    ecPublicKeyJwk
-  )();
-};
-
 describe("Test http-signature", () => {
   ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
       verifier: {
-        verify: ecVerifier
+        verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
+          ecPublicKeyJwk
+        )
       },
       url: "http://127.0.0.1:3000",
       method: "GET",

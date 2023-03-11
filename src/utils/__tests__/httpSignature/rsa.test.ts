@@ -1,6 +1,7 @@
 import {
   getCustomContentChallenge,
   getCustomContentSignatureBase,
+  signAlgorithmToVerifierMap,
   toPem,
   verifyCustomContentChallenge
 } from "../../httpSignature";
@@ -129,23 +130,13 @@ describe("Suite to test the http signature verification utility", () => {
   });
 });
 
-const rsaVerifier = async (
-  _: { keyid: string; alg: AlgorithmTypes },
-  data: Uint8Array,
-  signature: Uint8Array
-) => {
-  return await verifyCustomContentChallenge(
-    Buffer.from(data).toString("utf-8"),
-    Buffer.from(signature).toString("base64"),
-    rsaPublicKeyJwk
-  )();
-};
-
 describe("Test http-signature", () => {
   ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
       verifier: {
-        verify: rsaVerifier
+        verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
+          rsaPublicKeyJwk
+        )
       },
       url: "http://127.0.0.1:3000",
       method: "GET",

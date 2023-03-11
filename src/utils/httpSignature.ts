@@ -5,6 +5,7 @@ import * as crypto from "crypto";
 import * as jose from "jose";
 import * as TE from "fp-ts/TaskEither";
 import * as T from "fp-ts/lib/Task";
+import { AlgorithmTypes } from "@mattrglobal/http-signatures";
 
 export const verifyCustomContentChallenge = (
   signatureBase: string | undefined,
@@ -125,3 +126,36 @@ export const isSignAlgorithmValid = (
       v => v === "ecdsa-p256-sha256" || v === "rsa-pss-sha256"
     )
   );
+
+export const signatureVerifier = (publicKey: JsonWebKey) => async (
+  _: { keyid: string; alg: AlgorithmTypes },
+  data: Uint8Array,
+  signature: Uint8Array
+): Promise<boolean> => {
+  return await verifyCustomContentChallenge(
+    Buffer.from(data).toString("utf-8"),
+    Buffer.from(signature).toString("base64"),
+    <jose.JWK>publicKey
+  )();
+};
+
+type VerifyFunctionWrapper = (privateKey: JsonWebKey) => VerifyFunction;
+
+type VerifyFunction = (
+  signatureParams: { keyid: string; alg: AlgorithmTypes },
+  data: Uint8Array,
+  signature: Uint8Array
+) => Promise<boolean>;
+
+export const signAlgorithmToVerifierMap: {
+  [key: string]: {
+    verify: VerifyFunctionWrapper;
+  };
+} = {
+  ["rsa-pss-sha256"]: {
+    verify: signatureVerifier
+  },
+  ["ecdsa-p256-sha256"]: {
+    verify: signatureVerifier
+  }
+};
