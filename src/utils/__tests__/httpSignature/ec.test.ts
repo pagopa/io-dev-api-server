@@ -70,8 +70,8 @@ const TEST_CONTENT = [
   }
 ];
 
-describe("Suite to test the http signature verification utility", () => {
-  it("Test JWK thumbprint", async () => {
+describe("Test JWK utilities", () => {
+  it("Test JWK thumbprint to be right", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
       ecPublicKeyJwk,
       "sha256"
@@ -79,7 +79,15 @@ describe("Suite to test the http signature verification utility", () => {
     expect(thumbprint).toBe(ecThumbprint);
   });
 
-  it("Test JWK to PEM", async () => {
+  it("Test JWK thumbprint to be wrong", async () => {
+    const thumbprint = await jose.calculateJwkThumbprint(
+      ecPublicKeyJwk,
+      "sha512"
+    );
+    expect(thumbprint).not.toBe(ecThumbprint);
+  });
+
+  it("Test JWK to PEM to be right", async () => {
     const pemKey = await pipe(
       toPem(ecPublicKeyJwk),
       TE.fold(
@@ -90,10 +98,21 @@ describe("Suite to test the http signature verification utility", () => {
     expect(pemKey).toBe(ecPublicKeyPem);
   });
 
+  it("Test JWK to PEM to be wrong", async () => {
+    const pemKey = await pipe(
+      toPem({ ...ecPublicKeyJwk, x: "" }),
+      TE.fold(
+        () => T.of(""),
+        result => T.of(result)
+      )
+    )();
+    expect(pemKey).not.toBe(ecPublicKeyPem);
+  });
+});
+
+describe("Test FCI custom content TOS and Sign Challenges", () => {
   TEST_CONTENT.forEach(content => {
-    it(`Test FCI custom content to sign: ${JSON.stringify(
-      content
-    )}`, async () => {
+    it(`Test FCI custom content to sign for "${content.header}" to be computed the right way`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -103,20 +122,10 @@ describe("Suite to test the http signature verification utility", () => {
         content.signatureBase
       );
     });
-
-    it("Test that we retrive a valid sign algorithm", () => {
-      const signAlgorithm = getSignatureInfo(content.signatureBase);
-      expect(O.isSome(signAlgorithm)).toBeTruthy();
-      expect(isSignAlgorithmValid(signAlgorithm)).toBeTruthy();
-
-      const wrongSignAlgorithm = getSignatureInfo("wrong-value");
-      expect(O.isNone(wrongSignAlgorithm)).toBeTruthy();
-      expect(isSignAlgorithmValid(wrongSignAlgorithm)).toBeFalsy();
-    });
   });
 
   TEST_CONTENT.forEach(content => {
-    it(`Verify challenge signature: ${JSON.stringify(content)}`, async () => {
+    it(`Test FCI custom content signature for "${content.header}" to be verified the right way`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -139,7 +148,22 @@ describe("Suite to test the http signature verification utility", () => {
   });
 });
 
-describe("Test http-signature", () => {
+describe("Test provided signature algorithms", () => {
+  TEST_CONTENT.forEach(content => {
+    it(`Test that we retrive a valid sign algorithm for "${content.header}" from signature-input`, () => {
+      const signAlgorithm = getSignatureInfo(content.signatureBase);
+      expect(O.isSome(signAlgorithm)).toBeTruthy();
+      expect(isSignAlgorithmValid(signAlgorithm)).toBeTruthy();
+    });
+    it(`Test that we retrive a wrong sign algorithm for "${content.header}" from signature-input`, () => {
+      const wrongSignAlgorithm = getSignatureInfo("wrong-value");
+      expect(O.isNone(wrongSignAlgorithm)).toBeTruthy();
+      expect(isSignAlgorithmValid(wrongSignAlgorithm)).toBeFalsy();
+    });
+  });
+});
+
+describe("Test http-signature request", () => {
   ["sig1", "sig2", "sig3", undefined].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
       verifier: {
@@ -165,7 +189,7 @@ describe("Test http-signature", () => {
       signatureKey: sigLabel,
       verifyExpiry: false
     };
-    it(`Test custom signature: ${sigLabel}`, async () => {
+    it(`Test that the verification for the "signature" haeder for the label ${sigLabel} are correct`, async () => {
       const verificationResult = await verifySignatureHeader(
         mockRequestOptions
       );
