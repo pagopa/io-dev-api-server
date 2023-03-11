@@ -3,7 +3,7 @@ import {
   getCustomContentSignatureBase,
   toPem,
   verifyCustomContentChallenge
-} from "../httpSignature";
+} from "../../httpSignature";
 import * as TE from "fp-ts/TaskEither";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
