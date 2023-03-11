@@ -53,11 +53,16 @@ export const toPem = (jwk: jose.JWK) =>
     TE.map(result => result.trim())
   );
 
+export type SignatureBaseInfo = {
+  signatureBase: string;
+  signatureLabel: string;
+};
+
 export const getCustomContentSignatureBase = (
   signatureInput: string,
   challengeHex: string,
   headerName: string
-) =>
+): SignatureBaseInfo | undefined =>
   pipe(
     signatureInput.split(","),
     A.findFirst(value =>
@@ -71,7 +76,14 @@ export const getCustomContentSignatureBase = (
             /^sig\d+=/,
             ""
           )}`,
-          signatureLabel: sigInput.match(/^sig(\d+)/)?.[0]
+          signatureLabel: pipe(
+            sigInput.match(/^sig(\d+)/),
+            O.fromNullable,
+            O.fold(
+              () => "",
+              v => v[0]
+            )
+          )
         };
       }
     )
