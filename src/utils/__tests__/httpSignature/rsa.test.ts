@@ -14,7 +14,6 @@ import { pipe } from "fp-ts/lib/function";
 import * as T from "fp-ts/lib/Task";
 import {
   VerifySignatureHeaderOptions,
-  AlgorithmTypes,
   verifySignatureHeader
 } from "@mattrglobal/http-signatures";
 
@@ -75,7 +74,7 @@ const TEST_CONTENT = [
 ];
 
 describe("Test JWK utilities", () => {
-  it("Test JWK thumbprint to be right", async () => {
+  it("it should check that the JWK thumbprint is right", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
       rsaPublicKeyJwk,
       "sha256"
@@ -83,7 +82,7 @@ describe("Test JWK utilities", () => {
     expect(thumbprint).toBe(rsaThumbprint);
   });
 
-  it("Test JWK thumbprint to be wrong", async () => {
+  it("it should check that the JWK thumbprint is wrong", async () => {
     const thumbprint = await jose.calculateJwkThumbprint(
       rsaPublicKeyJwk,
       "sha512"
@@ -91,7 +90,7 @@ describe("Test JWK utilities", () => {
     expect(thumbprint).not.toBe(rsaThumbprint);
   });
 
-  it("Test JWK to PEM to be right", async () => {
+  it("it should convert the JWK to PEM successfully", async () => {
     const pemKey = await pipe(
       toPem(rsaPublicKeyJwk),
       TE.fold(
@@ -102,7 +101,7 @@ describe("Test JWK utilities", () => {
     expect(pemKey).toBe(rsaPublicKeyPem);
   });
 
-  it("Test JWK to PEM to be wrong", async () => {
+  it("it should fails to convert the JWK to PEM", async () => {
     const pemKey = await pipe(
       toPem({ ...rsaPublicKeyJwk, e: "" }),
       TE.fold(
@@ -114,9 +113,9 @@ describe("Test JWK utilities", () => {
   });
 });
 
-describe("Test FCI custom content TOS and Sign Challenges", () => {
+describe("Test custom content TOS and Sign Challenges", () => {
   TEST_CONTENT.forEach(content => {
-    it(`Test FCI custom content to sign for "${content.header}" to be computed the right way`, async () => {
+    it(`it should compute successfully the signature base of "${content.header}"`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -129,7 +128,7 @@ describe("Test FCI custom content TOS and Sign Challenges", () => {
   });
 
   TEST_CONTENT.forEach(content => {
-    it(`Test FCI custom content signature for "${content.header}" to be verified the right way`, async () => {
+    it(`it should verify successfully the signature of the signature base of "${content.header}"`, async () => {
       const customContentSignatureBase = getCustomContentSignatureBase(
         SIGNATURE_INPUT,
         content.challenge,
@@ -152,14 +151,14 @@ describe("Test FCI custom content TOS and Sign Challenges", () => {
   });
 });
 
-describe("Test provided signature algorithms", () => {
+describe("Test the signature algorithms", () => {
   TEST_CONTENT.forEach(content => {
-    it(`Test that we retrive a valid sign algorithm for "${content.header}" from signature-input`, () => {
+    it(`it should retrive a valid sign algorithm for "${content.header}" from signature-input`, () => {
       const signAlgorithm = getSignatureInfo(content.signatureBase);
       expect(O.isSome(signAlgorithm)).toBeTruthy();
       expect(isSignAlgorithmValid(signAlgorithm)).toBeTruthy();
     });
-    it(`Test that we retrive a wrong sign algorithm for "${content.header}" from signature-input`, () => {
+    it(`it should retrive a wrong sign algorithm for "${content.header}" from signature-input`, () => {
       const wrongSignAlgorithm = getSignatureInfo("wrong-value");
       expect(O.isNone(wrongSignAlgorithm)).toBeTruthy();
       expect(isSignAlgorithmValid(wrongSignAlgorithm)).toBeFalsy();
@@ -167,33 +166,37 @@ describe("Test provided signature algorithms", () => {
   });
 });
 
+const MOCK_VERIFY_SIGNATURE_HEADER_OPTIONS: VerifySignatureHeaderOptions = {
+  verifier: {
+    verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
+      rsaPublicKeyJwk
+    )
+  },
+  url: "http://127.0.0.1:3000",
+  method: "GET",
+  httpHeaders: {
+    host: "127.0.0.1:3000",
+    connection: "Keep-Alive",
+    "accept-encoding": "gzip",
+    "user-agent": "okhttp/4.9.2",
+    "x-pagopa-lollipop-original-url": "/api/v1/profile",
+    "x-pagopa-lollipop-original-method": "GET",
+    [TOS_HEADER_NAME]: TOS_CHALLENGE,
+    [SIGNATURE_HEADER_NAME]: CHALLENGE,
+    signature: SIGNATURE,
+    "signature-input": SIGNATURE_INPUT
+  },
+  body: undefined,
+  signatureKey: "",
+  verifyExpiry: false
+};
 describe("Test http-signature request", () => {
   ["sig1", "sig2", "sig3", undefined, "sig8"].forEach(sigLabel => {
     const mockRequestOptions: VerifySignatureHeaderOptions = {
-      verifier: {
-        verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
-          rsaPublicKeyJwk
-        )
-      },
-      url: "http://127.0.0.1:3000",
-      method: "GET",
-      httpHeaders: {
-        host: "127.0.0.1:3000",
-        connection: "Keep-Alive",
-        "accept-encoding": "gzip",
-        "user-agent": "okhttp/4.9.2",
-        "x-pagopa-lollipop-original-url": "/api/v1/profile",
-        "x-pagopa-lollipop-original-method": "GET",
-        [TOS_HEADER_NAME]: TOS_CHALLENGE,
-        [SIGNATURE_HEADER_NAME]: CHALLENGE,
-        signature: SIGNATURE,
-        "signature-input": SIGNATURE_INPUT
-      },
-      body: undefined,
-      signatureKey: sigLabel,
-      verifyExpiry: false
+      ...MOCK_VERIFY_SIGNATURE_HEADER_OPTIONS,
+      signatureKey: sigLabel
     };
-    it(`Test that the verification for the "signature" haeder for the label ${sigLabel} are ${
+    it(`it should expect that the verification of the "signature" haeder for the label ${sigLabel} to be ${
       sigLabel !== "sig8" ? "correct" : "wrong"
     }`, async () => {
       const verificationResult = await verifySignatureHeader(
