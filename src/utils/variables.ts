@@ -1,5 +1,6 @@
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
+  REJECTED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNED_SIGNATURE_REQUEST_ID,
@@ -227,6 +228,17 @@ en:
     cta_1: 
         text: "Go to the documents"
         action: "ioit://fci/main?signatureRequestId=${WAIT_QTSP_SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestRejected = `---
+it:
+    cta_1: 
+        text: "Visualizza i documenti"
+        action: "ioit://fci/main?signatureRequestId=${REJECTED_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "View documents"
+        action: "ioit://fci/main?signatureRequestId=${REJECTED_SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const frontMatterCTAFCISignatureRequestSigned = `---
