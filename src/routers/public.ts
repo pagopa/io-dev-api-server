@@ -30,6 +30,7 @@ import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
+import { setAssertionRef } from "../persistence/lollipop";
 
 export const publicRouter = Router();
 
@@ -62,6 +63,8 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     jwkPK.right,
     DEFAULT_LOLLIPOP_HASH_ALGORITHM
   );
+
+  setAssertionRef(thumbprint);
 
   const samlRequest = getSamlRequest(
     DEFAULT_LOLLIPOP_HASH_ALGORITHM,
