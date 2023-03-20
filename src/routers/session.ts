@@ -11,7 +11,7 @@ addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
   {
     const payload = {
       ...session.payload,
-      lollipop_assertion_ref: getAssertionRef()
+      lollipopAssertionRef: getAssertionRef()
     }
     return res.json(payload)
   }
