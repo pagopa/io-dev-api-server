@@ -67,9 +67,14 @@ addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/logos/organizations/:organization_id"),
-  (_, res) => {
-    // ignoring organization id and send always the same image
-    sendFile("assets/imgs/logos/organizations/organization_1.png", res);
+  (req, res) => {
+    if (req.params.organization_id === "4.png") {
+      // we send a 404 for the service number 4 to check missing image values
+      res.sendStatus(404);
+    } else {
+      // ignoring organization id and send always the same image
+      sendFile("assets/imgs/logos/organizations/organization_1.png", res);
+    }
   }
 );
 
