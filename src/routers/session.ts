@@ -7,15 +7,13 @@ import { getRandomValue } from "../utils/random";
 import { addApiV1Prefix } from "../utils/strings";
 export const sessionRouter = Router();
 
-addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
-  {
-    const payload = {
-      ...session.payload,
-      lollipopAssertionRef: getAssertionRef()
-    }
-    return res.json(payload)
-  }
-);
+addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) => {
+  const payload = {
+    ...session.payload,
+    lollipopAssertionRef: getAssertionRef()
+  };
+  return res.json(payload);
+});
 
 addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), (_, res) =>
   res.json({
@@ -27,4 +25,3 @@ addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), (_, res) =>
     expires_in: getRandomValue(180, faker.datatype.number(), "global")
   })
 );
-

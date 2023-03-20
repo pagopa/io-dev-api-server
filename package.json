@@ -4,7 +4,7 @@
   "description": "A mock server to help io-app development https://io.italia.it/",
   "version": "1.0.0",
   "main": "app.js",
-  "api_backend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/IOCIT-374-assertion-ref-get-profile/api_backend.yaml",
+  "api_backend_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v10.5.0-RELEASE/api_backend.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v9.13.1-RELEASE/api_public.yaml",
   "api_bonus_vacanze": "https://raw.githubusercontent.com/pagopa/io-backend/v9.13.1-RELEASE/api_bonus.yaml",
   "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/v9.13.1-RELEASE/api_cgn.yaml",
