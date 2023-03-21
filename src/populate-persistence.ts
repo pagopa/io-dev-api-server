@@ -37,7 +37,7 @@ import {
   frontMatterBonusVacanze,
   frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestExpired,
-  frontMatterCTAFCISignatureRequestSigned,
+  frontMatterCTAFCISignatureRequestRejected,
   frontMatterCTAFCISignatureRequestSignedExpired,
   frontMatterCTAFCISignatureRequestWaitQtsp,
   messageFciMarkdown,
@@ -290,8 +290,18 @@ const createMessages = (
         getNewMessage(
           customConfig,
           `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${count} `,
-          frontMatterCTAFCISignatureRequestSignedExpired +
-            messageFciSignedMarkdown
+          frontMatterCTAFCISignatureRequestRejected + messageFciSignedMarkdown
+        )
+      );
+    });
+
+  customConfig.messages.fci.signedCount > 0 &&
+    range(1, customConfig.messages.fci.signedCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [SIGNED] - ${count} `,
+          frontMatterCTAFCISignatureRequest + messageFciSignedMarkdown
         )
       );
     });
