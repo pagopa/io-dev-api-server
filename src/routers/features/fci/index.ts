@@ -19,6 +19,7 @@ import {
 import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
+import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 
 export const fciRouter = Router();
 
@@ -127,3 +128,7 @@ addHandler(
     sendFile(`assets/fci/pdf/${req.params.filename}.pdf`, res);
   }
 );
+
+addHandler(fciRouter, "get", addFciPrefix("/metadata"), (_, res) => {
+  res.status(200).json(mockFciMetadata);
+});
