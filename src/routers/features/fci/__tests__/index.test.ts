@@ -63,4 +63,13 @@ describe("io-sign API", () => {
       });
     });
   });
+  describe("GET fci metadata", () => {
+    describe("when the signer request metadata", () => {
+      it("should return 200 and the fci metadata", async () => {
+        const response = await request.get(addFciPrefix(`/metadata`));
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty("serviceId");
+      });
+    });
+  });
 });
