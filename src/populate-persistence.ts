@@ -38,6 +38,7 @@ import {
   frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestExpired,
   frontMatterCTAFCISignatureRequestRejected,
+  frontMatterCTAFCISignatureRequestSigned,
   frontMatterCTAFCISignatureRequestSignedExpired,
   frontMatterCTAFCISignatureRequestWaitQtsp,
   messageFciMarkdown,
@@ -301,7 +302,7 @@ const createMessages = (
         getNewMessage(
           customConfig,
           `Comune di Controguerra - Richiesta di Firma [SIGNED] - ${count} `,
-          frontMatterCTAFCISignatureRequest + messageFciSignedMarkdown
+          frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
         )
       );
     });
