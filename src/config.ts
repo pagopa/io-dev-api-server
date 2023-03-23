@@ -88,7 +88,8 @@ const defaultConfig: IoDevServerConfig = {
       rejectedCount: 0,
       expiredCount: 0,
       expired90Count: 0,
-      waitForQtspCount: 0
+      waitForQtspCount: 0,
+      signedCount: 0
     },
     withCTA: false,
     withEUCovidCert: false,
