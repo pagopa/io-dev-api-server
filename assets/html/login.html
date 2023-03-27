@@ -65,7 +65,7 @@
 
         const simulateSpidError = () => {
             const container = document.getElementById("spidSelect");
-            window.location.href = `/login?authorized=0&error=${container.value}`;
+            window.location.href = `/idp-login?authorized=0&error=${container.value}`;
             return false;
         }
 
