@@ -4,6 +4,7 @@
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
+import * as B from "fp-ts/lib/boolean";
 import { pipe } from "fp-ts/lib/function";
 import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
@@ -67,10 +68,17 @@ addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/logos/organizations/:organization_id"),
-  (_, res) => {
-    // ignoring organization id and send always the same image
-    sendFile("assets/imgs/logos/organizations/organization_1.png", res);
-  }
+  (req, res) =>
+    pipe(
+      req.params.organization_id === "4.png",
+      B.fold(
+        // ignoring organization id and send always the same image
+        () =>
+          sendFile("assets/imgs/logos/organizations/organization_1.png", res),
+        // we send a 404 for the service number 4 to check missing image values
+        () => res.sendStatus(404)
+      )
+    )
 );
 
 addHandler(
