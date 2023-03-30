@@ -1,6 +1,6 @@
 import { pipe } from "fp-ts/lib/function";
-import { IbanDTO } from "../../../../generated/definitions/idpay/IbanDTO";
-import { IbanListDTO } from "../../../../generated/definitions/idpay/IbanListDTO";
+import { IbanDTO } from "../../../../../generated/definitions/idpay/IbanDTO";
+import { IbanListDTO } from "../../../../../generated/definitions/idpay/IbanListDTO";
 import faker from "faker/locale/it";
 
 const createRandomIbanDTO = (): IbanDTO => ({

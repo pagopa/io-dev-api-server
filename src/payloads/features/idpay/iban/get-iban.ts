@@ -1,4 +1,4 @@
-import { IbanDTO } from "../../../../generated/definitions/idpay/IbanDTO";
+import { IbanDTO } from "../../../../../generated/definitions/idpay/IbanDTO";
 import faker from "faker/locale/it";
 
 export const getIbanResponse: IbanDTO = {
