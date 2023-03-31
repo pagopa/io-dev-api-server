@@ -26,7 +26,7 @@
   "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
   "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v10.4.0-RELEASE/api_io_sign.yaml",
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v9.1.0-RELEASE/api_pn.yaml",
-  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v2.30.0/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
+  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v2.43.0/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
