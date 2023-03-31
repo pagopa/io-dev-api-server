@@ -4,7 +4,7 @@ import { addApiV1Prefix } from "../../../utils/strings";
 
 export const idpayRouter = Router();
 
-const addIdPayPrefix = (path: string) => addApiV1Prefix(`/idpay${path}`);
+const addIdPayPrefix = (path: string) => `/idpay${path}`;
 
 export const addIdPayHandler = (
   method: SupportedMethod,
