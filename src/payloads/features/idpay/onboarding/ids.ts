@@ -35,13 +35,3 @@ export enum IDPayInitiativeID {
   OK_SELF_MULTI_ONLY = "TESTINIT15",
   OK_SELF_BOOL_ONLY = "TESTINIT16"
 }
-
-export const onboardableInitiativesIDs: ReadonlyArray<IDPayInitiativeID> = [
-  IDPayInitiativeID.OK,
-  IDPayInitiativeID.OK_INVITED,
-  IDPayInitiativeID.OK_NO_PREREQUISITES,
-  IDPayInitiativeID.OK_PDND_ONLY,
-  IDPayInitiativeID.OK_SELF_ONLY,
-  IDPayInitiativeID.OK_SELF_MULTI_ONLY,
-  IDPayInitiativeID.OK_SELF_BOOL_ONLY
-];

@@ -1,15 +1,18 @@
 import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/onboarding/get-initiative-data";
-import {
-  IDPayInitiativeID,
-  onboardableInitiativesIDs
-} from "../../../payloads/features/idpay/onboarding/ids";
+import { IDPayInitiativeID } from "../../../payloads/features/idpay/onboarding/ids";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/onboarding-status";
 import { addIdPayHandler } from "./router";
-import { checkPrerequisitesResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/check-prerequisites";
+import {
+  checkPrerequisitesResponseByInitiativeId,
+  getPrerequisitesErrorDTO,
+  prerequisitesErrorByInitiativeId
+} from "../../../payloads/features/idpay/onboarding/check-prerequisites";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
+import { DetailsEnum } from "../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 
 /**
  * Retrieves the initiative ID starting from the corresponding service ID
@@ -54,7 +57,9 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
     O.fromEither,
     O.map(body => body.initiativeId),
     O.chain(initiativeId =>
-      onboardableInitiativesIDs.includes(initiativeId as IDPayInitiativeID)
+      Object.values(IDPayInitiativeID).includes(
+        initiativeId as IDPayInitiativeID
+      )
         ? O.some(initiativeId)
         : O.none
     ),
@@ -68,13 +73,30 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
 /**
  * Check the initiative prerequisites
  */
-addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
-  pipe(
+addIdPayHandler("put", "/onboarding/initiative", (req, res) => {
+  const initiativeId = pipe(
     OnboardingPutDTO.decode(req.body),
     O.fromEither,
-    O.map(body => body.initiativeId),
+    O.map(body => body.initiativeId)
+  );
+
+  if (O.isNone(initiativeId)) {
+    return res.status(400).json(getIdPayError(400));
+  }
+
+  const prerequisitesError =
+    prerequisitesErrorByInitiativeId[initiativeId.value];
+
+  if (prerequisitesError !== undefined) {
+    return res.status(403).json(getPrerequisitesErrorDTO(prerequisitesError));
+  }
+
+  return pipe(
+    initiativeId,
     O.chain(initiativeId =>
-      onboardableInitiativesIDs.includes(initiativeId as IDPayInitiativeID)
+      Object.values(IDPayInitiativeID).includes(
+        initiativeId as IDPayInitiativeID
+      )
         ? O.some(initiativeId)
         : O.none
     ),
@@ -84,20 +106,24 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
       return O.fromNullable(prerequisites);
     }),
     O.fold(
-      () => res.status(400).json(getIdPayError(400)),
+      () => res.status(404).json(getIdPayError(400)),
       prerequisites => res.status(200).json(prerequisites)
     )
-  )
-);
+  );
+});
 
 /**
  * Save the consensus of both PDND and self-declaration
  */
 addIdPayHandler("put", "/onboarding/consent", (req, res) =>
   pipe(
-    O.fromNullable(req.body?.initiativeId),
+    OnboardingPutDTO.decode(req.body),
+    O.fromEither,
+    O.map(body => body.initiativeId),
     O.chain(initiativeId =>
-      onboardableInitiativesIDs.includes(initiativeId)
+      Object.values(IDPayInitiativeID).includes(
+        initiativeId as IDPayInitiativeID
+      )
         ? O.some(initiativeId)
         : O.none
     ),
