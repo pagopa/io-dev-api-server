@@ -6,7 +6,7 @@ import { IDPayInitiativeID, IDPayServiceID } from "./ids";
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeId: ulid(),
   initiativeName: faker.company.catchPhrase(),
-  description: faker.lorem.paragraphs(4),
+  description: faker.lorem.paragraphs(6),
   organizationId: ulid(),
   organizationName: faker.company.companyName(),
   tcLink: "https://google.it",

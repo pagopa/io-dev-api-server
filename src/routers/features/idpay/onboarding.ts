@@ -8,6 +8,8 @@ import {
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/onboarding-status";
 import { addIdPayHandler } from "./router";
 import { checkPrerequisitesResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/check-prerequisites";
+import { getIdPayError } from "../../../payloads/features/idpay/error";
+import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
 
 /**
  * Retrieves the initiative ID starting from the corresponding service ID
@@ -20,7 +22,7 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
       return O.fromNullable(initiative);
     }),
     O.fold(
-      () => res.sendStatus(404),
+      () => res.status(404).json(getIdPayError(404)),
       initiative => res.status(200).json(initiative)
     )
   )
@@ -37,8 +39,8 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
       return O.fromNullable(status);
     }),
     O.fold(
-      () => res.sendStatus(404),
-      initiative => res.status(200).json(initiative)
+      () => res.status(404).json(getIdPayError(404)),
+      status => res.status(200).json(status)
     )
   )
 );
@@ -48,15 +50,17 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
  */
 addIdPayHandler("put", "/onboarding/", (req, res) =>
   pipe(
-    O.fromNullable(req.body?.initiativeId),
+    OnboardingPutDTO.decode(req.body),
+    O.fromEither,
+    O.map(body => body.initiativeId),
     O.chain(initiativeId =>
-      onboardableInitiativesIDs.includes(initiativeId)
+      onboardableInitiativesIDs.includes(initiativeId as IDPayInitiativeID)
         ? O.some(initiativeId)
         : O.none
     ),
     O.fold(
-      () => res.sendStatus(400),
-      _ => res.status(204).json()
+      () => res.status(400).json(getIdPayError(400)),
+      _ => res.sendStatus(204)
     )
   )
 );
@@ -66,9 +70,11 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
  */
 addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
   pipe(
-    O.fromNullable(req.body?.initiativeId),
+    OnboardingPutDTO.decode(req.body),
+    O.fromEither,
+    O.map(body => body.initiativeId),
     O.chain(initiativeId =>
-      onboardableInitiativesIDs.includes(initiativeId)
+      onboardableInitiativesIDs.includes(initiativeId as IDPayInitiativeID)
         ? O.some(initiativeId)
         : O.none
     ),
@@ -78,7 +84,7 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
       return O.fromNullable(prerequisites);
     }),
     O.fold(
-      () => res.sendStatus(400),
+      () => res.status(400).json(getIdPayError(400)),
       prerequisites => res.status(200).json(prerequisites)
     )
   )
@@ -96,8 +102,8 @@ addIdPayHandler("put", "/onboarding/consent", (req, res) =>
         : O.none
     ),
     O.fold(
-      () => res.sendStatus(400),
-      _ => res.status(202).json()
+      () => res.status(400).json(getIdPayError(400)),
+      _ => res.sendStatus(202)
     )
   )
 );

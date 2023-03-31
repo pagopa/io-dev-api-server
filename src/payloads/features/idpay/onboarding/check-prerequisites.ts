@@ -54,6 +54,10 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
 export const checkPrerequisitesResponseByInitiativeId: {
   [id: string]: RequiredCriteriaDTO;
 } = {
+  [IDPayInitiativeID.OK]: {
+    pdndCriteria,
+    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+  },
   [IDPayInitiativeID.OK_NO_PREREQUISITES]: {
     pdndCriteria: [],
     selfDeclarationList: []
