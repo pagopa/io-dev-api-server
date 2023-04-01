@@ -1,9 +1,10 @@
+import * as O from "fp-ts/lib/Option";
 import faker from "faker/locale/it";
 import { ulid } from "ulid";
 import { PDNDCriteriaDTO } from "../../../../../generated/definitions/idpay/PDNDCriteriaDTO";
 import {
   PrerequisitesErrorDTO,
-  DetailsEnum as PrerequisitesErrorDetailsEnum
+  DetailsEnum
 } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 import { RequiredCriteriaDTO } from "../../../../../generated/definitions/idpay/RequiredCriteriaDTO";
 import {
@@ -14,7 +15,7 @@ import {
   SelfDeclarationMultiDTO,
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
-import { IDPayInitiativeID } from "./ids";
+import { IDPayInitiativeID } from "./types";
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   {
@@ -72,51 +73,64 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
   }
 ];
 
-export const checkPrerequisitesResponseByInitiativeId: {
-  [id: string]: RequiredCriteriaDTO;
-} = {
-  [IDPayInitiativeID.OK]: {
-    pdndCriteria,
-    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
-  },
-  [IDPayInitiativeID.OK_INVITED]: {
-    pdndCriteria,
-    selfDeclarationList: []
-  },
-  [IDPayInitiativeID.OK_NO_PREREQUISITES]: {
-    pdndCriteria: [],
-    selfDeclarationList: []
-  },
-  [IDPayInitiativeID.OK_PDND_ONLY]: {
-    pdndCriteria,
-    selfDeclarationList: []
-  },
-  [IDPayInitiativeID.OK_SELF_ONLY]: {
-    pdndCriteria: [],
-    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
-  },
-  [IDPayInitiativeID.OK_SELF_MULTI_ONLY]: {
-    pdndCriteria: [],
-    selfDeclarationList: selfDeclarationMulti
-  },
-  [IDPayInitiativeID.OK_SELF_BOOL_ONLY]: {
-    pdndCriteria: [],
-    selfDeclarationList: selfDeclarationBool
+export const getCheckPrerequisitesResponseByInitiativeId = (
+  id: IDPayInitiativeID
+) => {
+  switch (id) {
+    case IDPayInitiativeID.DEFAULT:
+      return O.some({
+        pdndCriteria,
+        selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+      });
+    case IDPayInitiativeID.NO_PREREQUISITES:
+      return O.some({
+        pdndCriteria: [],
+        selfDeclarationList: []
+      });
+    case IDPayInitiativeID.PDND_ONLY:
+      O.some({
+        pdndCriteria,
+        selfDeclarationList: []
+      });
+    case IDPayInitiativeID.SELF_ONLY:
+      return O.some({
+        pdndCriteria: [],
+        selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+      });
+    default:
+      return O.none;
   }
 };
 
-export const prerequisitesErrorByInitiativeId: {
-  [id: string]: PrerequisitesErrorDetailsEnum;
-} = {
-  [IDPayInitiativeID.ERR_BUDGET_TERMINATED]:
-    PrerequisitesErrorDetailsEnum.BUDGET_TERMINATED,
-  [IDPayInitiativeID.ERR_ENDED]: PrerequisitesErrorDetailsEnum.INITIATIVE_END,
-  [IDPayInitiativeID.ERR_NOT_STARTED]:
-    PrerequisitesErrorDetailsEnum.INITIATIVE_NOT_STARTED,
-  [IDPayInitiativeID.ERR_SUSPENDED]:
-    PrerequisitesErrorDetailsEnum.INITIATIVE_SUSPENDED
+export const getPrerequisitesErrorByInitiativeId = (
+  id: IDPayInitiativeID
+): O.Option<PrerequisitesErrorDTO> => {
+  switch (id) {
+    case IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED:
+      return O.some({
+        code: 403,
+        message: "",
+        details: DetailsEnum.BUDGET_TERMINATED
+      });
+    case IDPayInitiativeID.ERR_CHECK_ENDED:
+      return O.some({
+        code: 403,
+        message: "",
+        details: DetailsEnum.INITIATIVE_END
+      });
+    case IDPayInitiativeID.ERR_CHECK_NOT_STARTED:
+      return O.some({
+        code: 403,
+        message: "",
+        details: DetailsEnum.INITIATIVE_NOT_STARTED
+      });
+    case IDPayInitiativeID.ERR_CHECK_SUSPENDED:
+      return O.some({
+        code: 403,
+        message: "",
+        details: DetailsEnum.INITIATIVE_SUSPENDED
+      });
+    default:
+      return O.none;
+  }
 };
-
-export const getPrerequisitesErrorDTO = (
-  details: PrerequisitesErrorDetailsEnum
-): PrerequisitesErrorDTO => ({ code: 403, message: "", details });

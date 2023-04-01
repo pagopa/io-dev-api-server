@@ -1,7 +1,7 @@
 import { InitiativeDataDTO } from "../../../../../generated/definitions/idpay/InitiativeDataDTO";
 import faker from "faker/locale/it";
 import { ulid } from "ulid";
-import { IDPayInitiativeID, IDPayServiceID } from "./ids";
+import { IDPayInitiativeID, IDPayServiceID } from "./types";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeId: ulid(),
@@ -14,87 +14,79 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   logoURL: ""
 });
 
-export const getInitiativeDataResponseByServiceId: {
-  [id: string]: InitiativeDataDTO;
-} = {
-  [IDPayServiceID.OK]: {
+export const getInitiativeDataResponseByServiceId: Record<
+  IDPayServiceID,
+  InitiativeDataDTO
+> = {
+  [IDPayServiceID.DEFAULT]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK,
+    initiativeId: IDPayInitiativeID.DEFAULT,
     initiativeName: "Iniziativa"
   },
-  [IDPayServiceID.ERR_NOT_ELIGIBLE]: {
+  [IDPayServiceID.INVITED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_NOT_ELIGIBLE,
-    initiativeName: "Iniziativa - Non eligibile"
-  },
-  [IDPayServiceID.ERR_NO_REQUIREMENTS]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_NO_REQUIREMENTS,
-    initiativeName: "Iniziativa - No requisiti"
-  },
-  [IDPayServiceID.ERR_ONBOARDED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_ONBOARDED,
-    initiativeName: "Iniziativa - Onboarding terminato"
-  },
-  [IDPayServiceID.ERR_UNSUBSCRIBED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_UNSUBSCRIBED,
-    initiativeName: "Iniziativa - Recesso"
-  },
-  [IDPayServiceID.ERR_ON_EVALUATION]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_ON_EVALUATION,
-    initiativeName: "Iniziativa - In valutazione"
-  },
-  [IDPayServiceID.OK_INVITED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK_INVITED,
+    initiativeId: IDPayInitiativeID.INVITED,
     initiativeName: "Iniziativa - Con invito"
   },
-  [IDPayServiceID.ERR_BUDGET_TERMINATED]: {
+  [IDPayServiceID.NO_PREREQUISITES]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_BUDGET_TERMINATED,
-    initiativeName: "Iniziativa - No budget"
-  },
-  [IDPayServiceID.ERR_ENDED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_ENDED,
-    initiativeName: "Iniziativa - Terminata"
-  },
-  [IDPayServiceID.ERR_NOT_STARTED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_NOT_STARTED,
-    initiativeName: "Iniziativa - Non iniziata"
-  },
-  [IDPayServiceID.ERR_SUSPENDED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_SUSPENDED,
-    initiativeName: "Iniziativa - Sospesa"
-  },
-  [IDPayServiceID.OK_NO_PREREQUISITES]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK_NO_PREREQUISITES,
+    initiativeId: IDPayInitiativeID.NO_PREREQUISITES,
     initiativeName: "Iniziativa - Senza prerequisiti"
   },
-  [IDPayServiceID.OK_PDND_ONLY]: {
+  [IDPayServiceID.PDND_ONLY]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK_PDND_ONLY,
+    initiativeId: IDPayInitiativeID.PDND_ONLY,
     initiativeName: "Iniziativa - Solo PDND"
   },
-  [IDPayServiceID.OK_SELF_ONLY]: {
+  [IDPayServiceID.SELF_ONLY]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK_SELF_ONLY,
+    initiativeId: IDPayInitiativeID.SELF_ONLY,
     initiativeName: "Iniziativa - Solo auto dichiarazioni"
   },
-  [IDPayServiceID.OK_SELF_MULTI_ONLY]: {
+  [IDPayServiceID.ERR_STATUS_NOT_ELIGIBLE]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK_SELF_MULTI_ONLY,
-    initiativeName: "Iniziativa - Solo auto dichiarazioni multi"
+    initiativeId: IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE,
+    initiativeName: "Iniziativa - Non eligibile"
   },
-  [IDPayServiceID.OK_SELF_BOOL_ONLY]: {
+  [IDPayServiceID.ERR_STATUS_NO_REQUIREMENTS]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.OK_SELF_BOOL_ONLY,
-    initiativeName: "Iniziativa - Solo auto dichiarazioni bool"
+    initiativeId: IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS,
+    initiativeName: "Iniziativa - No requisiti"
+  },
+  [IDPayServiceID.ERR_STATUS_ONBOARDED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_STATUS_ONBOARDED,
+    initiativeName: "Iniziativa - Onboarding terminato"
+  },
+  [IDPayServiceID.ERR_STATUS_UNSUBSCRIBED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED,
+    initiativeName: "Iniziativa - Recesso"
+  },
+  [IDPayServiceID.ERR_STATUS_ON_EVALUATION]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_STATUS_ON_EVALUATION,
+    initiativeName: "Iniziativa - In valutazione"
+  },
+
+  [IDPayServiceID.ERR_CHECK_BUDGET_TERMINATED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED,
+    initiativeName: "Iniziativa - No budget"
+  },
+  [IDPayServiceID.ERR_CHECK_ENDED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_CHECK_ENDED,
+    initiativeName: "Iniziativa - Terminata"
+  },
+  [IDPayServiceID.ERR_CHECK_NOT_STARTED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_CHECK_NOT_STARTED,
+    initiativeName: "Iniziativa - Non iniziata"
+  },
+  [IDPayServiceID.ERR_CHECK_SUSPENDED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: IDPayInitiativeID.ERR_CHECK_SUSPENDED,
+    initiativeName: "Iniziativa - Sospesa"
   }
 };

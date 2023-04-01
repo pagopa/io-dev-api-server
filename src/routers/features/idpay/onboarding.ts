@@ -2,17 +2,20 @@ import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/onboarding/get-initiative-data";
-import { IDPayInitiativeID } from "../../../payloads/features/idpay/onboarding/ids";
+import {
+  IDPayInitiativeID,
+  IDPayServiceID
+} from "../../../payloads/features/idpay/onboarding/types";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/onboarding-status";
 import { addIdPayHandler } from "./router";
-import {
-  checkPrerequisitesResponseByInitiativeId,
-  getPrerequisitesErrorDTO,
-  prerequisitesErrorByInitiativeId
-} from "../../../payloads/features/idpay/onboarding/check-prerequisites";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
 import { DetailsEnum } from "../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
+import { Id } from "../../../../generated/definitions/fci/Id";
+import {
+  getCheckPrerequisitesResponseByInitiativeId,
+  getPrerequisitesErrorByInitiativeId
+} from "../../../payloads/features/idpay/onboarding/check-prerequisites";
 
 /**
  * Retrieves the initiative ID starting from the corresponding service ID
@@ -21,7 +24,8 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
   pipe(
     O.fromNullable(req.params.serviceId),
     O.chain(serviceId => {
-      const initiative = getInitiativeDataResponseByServiceId[serviceId];
+      const initiative =
+        getInitiativeDataResponseByServiceId[serviceId as IDPayServiceID];
       return O.fromNullable(initiative);
     }),
     O.fold(
@@ -37,10 +41,11 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
 addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
   pipe(
     O.fromNullable(req.params.initiativeId),
-    O.chain(initiativeId => {
-      const status = getOnboardingStatusResponseByInitiativeId[initiativeId];
-      return O.fromNullable(status);
-    }),
+    O.chain(initiativeId =>
+      getOnboardingStatusResponseByInitiativeId(
+        initiativeId as IDPayInitiativeID
+      )
+    ),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
       status => res.status(200).json(status)
@@ -84,29 +89,31 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) => {
     return res.status(400).json(getIdPayError(400));
   }
 
-  const prerequisitesError =
-    prerequisitesErrorByInitiativeId[initiativeId.value];
+  if (
+    !Object.values(IDPayInitiativeID).includes(
+      initiativeId.value as IDPayInitiativeID
+    )
+  ) {
+    return res.status(404).json(getIdPayError(404));
+  }
 
-  if (prerequisitesError !== undefined) {
-    return res.status(403).json(getPrerequisitesErrorDTO(prerequisitesError));
+  const prerequisitesError = getPrerequisitesErrorByInitiativeId(
+    initiativeId.value as IDPayInitiativeID
+  );
+
+  if (O.isSome(prerequisitesError)) {
+    return res.status(403).json(prerequisitesError.value);
   }
 
   return pipe(
     initiativeId,
     O.chain(initiativeId =>
-      Object.values(IDPayInitiativeID).includes(
+      getCheckPrerequisitesResponseByInitiativeId(
         initiativeId as IDPayInitiativeID
       )
-        ? O.some(initiativeId)
-        : O.none
     ),
-    O.chain(initiativeId => {
-      const prerequisites =
-        checkPrerequisitesResponseByInitiativeId[initiativeId];
-      return O.fromNullable(prerequisites);
-    }),
     O.fold(
-      () => res.status(404).json(getIdPayError(400)),
+      () => res.sendStatus(202),
       prerequisites => res.status(200).json(prerequisites)
     )
   );
