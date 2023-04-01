@@ -82,11 +82,6 @@ export const getCheckPrerequisitesResponseByInitiativeId = (
         pdndCriteria,
         selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
       });
-    case IDPayInitiativeID.NO_PREREQUISITES:
-      return O.some({
-        pdndCriteria: [],
-        selfDeclarationList: []
-      });
     case IDPayInitiativeID.PDND_ONLY:
       O.some({
         pdndCriteria,
