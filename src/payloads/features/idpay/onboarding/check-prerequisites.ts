@@ -15,7 +15,7 @@ import {
   SelfDeclarationMultiDTO,
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
-import { IDPayInitiativeID } from "./types";
+import { IDPayInitiativeID } from "../types";
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   {

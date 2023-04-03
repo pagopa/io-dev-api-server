@@ -1,7 +1,9 @@
+import * as O from "fp-ts/lib/Option";
 import { InitiativeDataDTO } from "../../../../../generated/definitions/idpay/InitiativeDataDTO";
 import faker from "faker/locale/it";
 import { ulid } from "ulid";
-import { IDPayInitiativeID, IDPayServiceID } from "./types";
+import { IDPayInitiativeID, IDPayServiceID } from "../types";
+import { initiativeIdToString } from "../utils";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeId: ulid(),
@@ -14,79 +16,93 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   logoURL: ""
 });
 
-export const getInitiativeDataResponseByServiceId: Record<
+export const initiativeDataResponseByServiceId: Record<
   IDPayServiceID,
   InitiativeDataDTO
 > = {
   [IDPayServiceID.DEFAULT]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.DEFAULT,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.DEFAULT),
     initiativeName: "Iniziativa"
   },
   [IDPayServiceID.INVITED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.INVITED,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.INVITED),
     initiativeName: "Iniziativa - Con invito"
   },
   [IDPayServiceID.NO_PREREQUISITES]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.NO_PREREQUISITES,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.NO_PREREQUISITES),
     initiativeName: "Iniziativa - Senza prerequisiti"
   },
   [IDPayServiceID.PDND_ONLY]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.PDND_ONLY,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.PDND_ONLY),
     initiativeName: "Iniziativa - Solo PDND"
   },
   [IDPayServiceID.SELF_ONLY]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.SELF_ONLY,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.SELF_ONLY),
     initiativeName: "Iniziativa - Solo auto dichiarazioni"
   },
   [IDPayServiceID.ERR_STATUS_NOT_ELIGIBLE]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE,
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE
+    ),
     initiativeName: "Iniziativa - Non eligibile"
   },
   [IDPayServiceID.ERR_STATUS_NO_REQUIREMENTS]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS,
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS
+    ),
     initiativeName: "Iniziativa - No requisiti"
   },
   [IDPayServiceID.ERR_STATUS_ONBOARDED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_STATUS_ONBOARDED,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_STATUS_ONBOARDED),
     initiativeName: "Iniziativa - Onboarding terminato"
   },
   [IDPayServiceID.ERR_STATUS_UNSUBSCRIBED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED,
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED
+    ),
     initiativeName: "Iniziativa - Recesso"
   },
   [IDPayServiceID.ERR_STATUS_ON_EVALUATION]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_STATUS_ON_EVALUATION,
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.ERR_STATUS_ON_EVALUATION
+    ),
     initiativeName: "Iniziativa - In valutazione"
   },
-
   [IDPayServiceID.ERR_CHECK_BUDGET_TERMINATED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED,
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED
+    ),
     initiativeName: "Iniziativa - No budget"
   },
   [IDPayServiceID.ERR_CHECK_ENDED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_CHECK_ENDED,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_CHECK_ENDED),
     initiativeName: "Iniziativa - Terminata"
   },
   [IDPayServiceID.ERR_CHECK_NOT_STARTED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_CHECK_NOT_STARTED,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_CHECK_NOT_STARTED),
     initiativeName: "Iniziativa - Non iniziata"
   },
   [IDPayServiceID.ERR_CHECK_SUSPENDED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: IDPayInitiativeID.ERR_CHECK_SUSPENDED,
+    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_CHECK_SUSPENDED),
     initiativeName: "Iniziativa - Sospesa"
   }
 };
+
+export const getInitiativeDataResponseByServiceId = (
+  id: IDPayServiceID
+): O.Option<InitiativeDataDTO> =>
+  O.fromNullable(initiativeDataResponseByServiceId[id]);

@@ -3,7 +3,7 @@ import {
   OnboardingStatusDTO,
   StatusEnum as OnboardingStatusEnum
 } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { IDPayInitiativeID, IDPayServiceID } from "./types";
+import { IDPayInitiativeID, IDPayServiceID } from "../types";
 
 export const getOnboardingStatusResponseByInitiativeId = (
   id: IDPayInitiativeID
@@ -23,6 +23,5 @@ export const getOnboardingStatusResponseByInitiativeId = (
       return O.some({ status: OnboardingStatusEnum.ON_EVALUATION });
     default:
       return O.none;
-      break;
   }
 };
