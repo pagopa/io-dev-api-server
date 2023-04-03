@@ -1,8 +1,6 @@
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { IDPayInitiativeID, IDPayServiceID } from "./types";
-import { Iban } from "../../../../generated/definitions/backend/Iban";
-import { PatternString } from "@pagopa/ts-commons/lib/strings";
 
 const NUMBER_PATTERN = /\d+/;
 
