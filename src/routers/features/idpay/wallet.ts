@@ -7,6 +7,15 @@ import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/featur
 import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-wallet";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
 import { addIdPayHandler } from "./router";
+import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
+
+const initiativeIdExists = (id: O.Option<IDPayInitiativeID>) =>
+  pipe(
+    id,
+    O.chain(getWalletDetailResponse),
+    O.map(_ => id),
+    O.flatten
+  );
 
 /**
  * Returns the list of active initiatives of a citizen
@@ -57,15 +66,7 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
     req.params.initiativeId,
     O.fromNullable,
     O.map(initiativeIdFromString),
-    O.chain(initiativeId =>
-      // Checks if id exists in wallet
-      pipe(
-        initiativeId,
-        O.chain(getWalletDetailResponse),
-        O.map(_ => initiativeId),
-        O.flatten
-      )
-    ),
+    O.chain(initiativeIdExists),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
       initiativeId =>
