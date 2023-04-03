@@ -1,5 +1,5 @@
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import {
@@ -75,36 +75,34 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
     O.fromEither,
     O.fold(
       () => res.status(400).json(getIdPayError(400)), // Wrong request body
-      data =>
-        pipe(
-          data,
-          O.some,
-          O.map(({ initiativeId }) => initiativeId),
-          O.map(initiativeIdFromString),
-          O.flatten,
-          O.fold(
-            () => res.status(404).json(getIdPayError(404)), // Initiative not found
-            initiativeId =>
-              pipe(
-                initiativeId,
-                O.some,
-                O.chain(getPrerequisitesErrorByInitiativeId),
-                O.fold(
-                  () =>
-                    pipe(
-                      initiativeId,
-                      O.some,
-                      O.chain(getCheckPrerequisitesResponseByInitiativeId),
-                      O.fold(
-                        () => res.sendStatus(202), // Initiative without prerequisites
-                        prerequisites => res.status(200).json(prerequisites) // Prerequisites found
-                      )
-                    ),
-                  prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
-                )
+      flow(
+        O.some,
+        O.map(({ initiativeId }) => initiativeId),
+        O.map(initiativeIdFromString),
+        O.flatten,
+        O.fold(
+          () => res.status(404).json(getIdPayError(404)), // Initiative not found
+          initiativeId =>
+            pipe(
+              initiativeId,
+              O.some,
+              O.chain(getPrerequisitesErrorByInitiativeId),
+              O.fold(
+                () =>
+                  pipe(
+                    initiativeId,
+                    O.some,
+                    O.chain(getCheckPrerequisitesResponseByInitiativeId),
+                    O.fold(
+                      () => res.sendStatus(202), // Initiative without prerequisites
+                      prerequisites => res.status(200).json(prerequisites) // Prerequisites found
+                    )
+                  ),
+                prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
               )
-          )
+            )
         )
+      )
     )
   )
 );
