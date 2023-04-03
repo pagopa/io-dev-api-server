@@ -1,15 +1,14 @@
-import { ulid } from "ulid";
+import faker from "faker/locale/it";
+import { AccumulatedTypeEnum } from "../../../../../generated/definitions/idpay/AccumulatedAmountDTO";
 import {
   InitiativeDTO,
   StatusEnum
 } from "../../../../../generated/definitions/idpay/InitiativeDTO";
-import { WalletDTO } from "../../../../../generated/definitions/idpay/WalletDTO";
-import faker from "faker/locale/it";
-import { initiativeIdToString } from "../utils";
-import { IDPayInitiativeID } from "../types";
 import { InitiativeDetailDTO } from "../../../../../generated/definitions/idpay/InitiativeDetailDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
-import { AccumulatedTypeEnum } from "../../../../../generated/definitions/idpay/AccumulatedAmountDTO";
+import { IDPayInitiativeID } from "../types";
+import { initiativeIdToString } from "../utils";
+import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
 
 export const initiativeList: { [id: number]: InitiativeDTO } = {
   [IDPayInitiativeID.NO_CONFIGURATION]: {
@@ -21,7 +20,7 @@ export const initiativeList: { [id: number]: InitiativeDTO } = {
     accrued: 0,
     refunded: 0,
     lastCounterUpdate: faker.date.recent(1),
-    iban: undefined,
+    iban: "a",
     nInstr: 0
   },
   [IDPayInitiativeID.CONFIGURED]: {
