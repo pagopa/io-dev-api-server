@@ -1,10 +1,6 @@
+import * as O from "fp-ts/lib/Option";
 import { IbanDTO } from "../../../../../generated/definitions/idpay/IbanDTO";
-import faker from "faker/locale/it";
+import { ibanList } from "./data";
 
-export const getIbanResponse: IbanDTO = {
-  iban: faker.finance.iban(),
-  checkIbanStatus: faker.datatype.string(),
-  holderBank: faker.company.companyName(),
-  description: faker.random.words(5),
-  channel: faker.datatype.string()
-};
+export const getIbanResponse = (input: string): O.Option<IbanDTO> =>
+  O.fromNullable(ibanList.find(({ iban }) => iban === input));
