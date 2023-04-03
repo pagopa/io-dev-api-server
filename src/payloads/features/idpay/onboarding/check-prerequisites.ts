@@ -15,7 +15,7 @@ import {
   SelfDeclarationMultiDTO,
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
-import { IDPayInitiativeID } from "./types";
+import { IDPayInitiativeID } from "../types";
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   {
@@ -73,59 +73,54 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
   }
 ];
 
-export const getCheckPrerequisitesResponseByInitiativeId = (
-  id: IDPayInitiativeID
-) => {
-  switch (id) {
-    case IDPayInitiativeID.DEFAULT:
-      return O.some({
-        pdndCriteria,
-        selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
-      });
-    case IDPayInitiativeID.PDND_ONLY:
-      O.some({
-        pdndCriteria,
-        selfDeclarationList: []
-      });
-    case IDPayInitiativeID.SELF_ONLY:
-      return O.some({
-        pdndCriteria: [],
-        selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
-      });
-    default:
-      return O.none;
+const checkPrerequisitesResponseByInitiativeId: {
+  [id: number]: RequiredCriteriaDTO;
+} = {
+  [IDPayInitiativeID.DEFAULT]: {
+    pdndCriteria,
+    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+  },
+  [IDPayInitiativeID.PDND_ONLY]: {
+    pdndCriteria,
+    selfDeclarationList: []
+  },
+  [IDPayInitiativeID.SELF_ONLY]: {
+    pdndCriteria: [],
+    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
   }
 };
 
-export const getPrerequisitesErrorByInitiativeId = (
-  id: IDPayInitiativeID
-): O.Option<PrerequisitesErrorDTO> => {
-  switch (id) {
-    case IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED:
-      return O.some({
-        code: 403,
-        message: "",
-        details: DetailsEnum.BUDGET_TERMINATED
-      });
-    case IDPayInitiativeID.ERR_CHECK_ENDED:
-      return O.some({
-        code: 403,
-        message: "",
-        details: DetailsEnum.INITIATIVE_END
-      });
-    case IDPayInitiativeID.ERR_CHECK_NOT_STARTED:
-      return O.some({
-        code: 403,
-        message: "",
-        details: DetailsEnum.INITIATIVE_NOT_STARTED
-      });
-    case IDPayInitiativeID.ERR_CHECK_SUSPENDED:
-      return O.some({
-        code: 403,
-        message: "",
-        details: DetailsEnum.INITIATIVE_SUSPENDED
-      });
-    default:
-      return O.none;
+const prerequisitesErrorByInitiativeId: {
+  [id: number]: PrerequisitesErrorDTO;
+} = {
+  [IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED]: {
+    code: 403,
+    message: "",
+    details: DetailsEnum.BUDGET_TERMINATED
+  },
+  [IDPayInitiativeID.ERR_CHECK_ENDED]: {
+    code: 403,
+    message: "",
+    details: DetailsEnum.INITIATIVE_END
+  },
+  [IDPayInitiativeID.ERR_CHECK_NOT_STARTED]: {
+    code: 403,
+    message: "",
+    details: DetailsEnum.INITIATIVE_NOT_STARTED
+  },
+  [IDPayInitiativeID.ERR_CHECK_SUSPENDED]: {
+    code: 403,
+    message: "",
+    details: DetailsEnum.INITIATIVE_SUSPENDED
   }
 };
+
+export const getCheckPrerequisitesResponseByInitiativeId = (
+  id: IDPayInitiativeID
+): O.Option<RequiredCriteriaDTO> =>
+  O.fromNullable(checkPrerequisitesResponseByInitiativeId[id]);
+
+export const getPrerequisitesErrorByInitiativeId = (
+  id: IDPayInitiativeID
+): O.Option<PrerequisitesErrorDTO> =>
+  O.fromNullable(prerequisitesErrorByInitiativeId[id]);
