@@ -16,10 +16,9 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   logoURL: ""
 });
 
-export const initiativeDataResponseByServiceId: Record<
-  IDPayServiceID,
-  InitiativeDataDTO
-> = {
+const initiativeDataResponseByServiceId: {
+  [id: number]: InitiativeDataDTO;
+} = {
   [IDPayServiceID.DEFAULT]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(IDPayInitiativeID.DEFAULT),
