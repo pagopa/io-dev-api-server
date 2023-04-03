@@ -2,12 +2,13 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { IbanPutDTO } from "../../../../generated/definitions/idpay/IbanPutDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
+import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
 import { initiativeIdFromString } from "../../../payloads/features/idpay/utils";
+import { enrollIbanToInitiative } from "../../../payloads/features/idpay/wallet/data";
 import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/wallet/get-initiative-beneficiary-detail";
 import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-wallet";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
 import { addIdPayHandler } from "./router";
-import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
 
 const initiativeIdExists = (id: O.Option<IDPayInitiativeID>) =>
   pipe(
@@ -21,7 +22,7 @@ const initiativeIdExists = (id: O.Option<IDPayInitiativeID>) =>
  * Returns the list of active initiatives of a citizen
  */
 addIdPayHandler("get", "/wallet/", (req, res) =>
-  res.status(200).json(getWalletResponse)
+  res.status(200).json(getWalletResponse())
 );
 
 /**
@@ -75,7 +76,10 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
           O.fromEither,
           O.fold(
             () => res.status(400).json(getIdPayError(400)),
-            iban => res.sendStatus(200)
+            ({ iban }) => {
+              enrollIbanToInitiative(initiativeId, iban);
+              return res.sendStatus(200);
+            }
           )
         )
     )

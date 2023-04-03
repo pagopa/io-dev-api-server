@@ -10,7 +10,7 @@ import { IDPayInitiativeID } from "../types";
 import { initiativeIdToString } from "../utils";
 import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
 
-export const initiativeList: { [id: number]: InitiativeDTO } = {
+export var initiativeList: { [id: number]: InitiativeDTO } = {
   [IDPayInitiativeID.NO_CONFIGURATION]: {
     initiativeId: initiativeIdToString(IDPayInitiativeID.NO_CONFIGURATION),
     initiativeName: "Iniziativa da configurare",
@@ -68,4 +68,8 @@ export const initiativeDetailList: { [id: number]: InitiativeDetailDTO } = {
     ...createRandomInitiativeDetails(),
     initiativeName: "Iniziativa di test"
   }
+};
+
+export const enrollIbanToInitiative = (id: IDPayInitiativeID, iban: string) => {
+  initiativeList[id] = { ...initiativeList[id], iban };
 };
