@@ -1,38 +1,39 @@
 import faker from "faker/locale/it";
+import { ulid } from "ulid";
 import { AccumulatedTypeEnum } from "../../../../../generated/definitions/idpay/AccumulatedAmountDTO";
 import {
   InitiativeDTO,
   StatusEnum as InitiativeStatus
 } from "../../../../../generated/definitions/idpay/InitiativeDTO";
 import { InitiativeDetailDTO } from "../../../../../generated/definitions/idpay/InitiativeDetailDTO";
-import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
-import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
-import { initiativeIdToString } from "../utils";
-import { getIbanListResponse } from "../iban/get-iban-list";
 import {
   InstrumentDTO,
   StatusEnum as InstrumentStatus
 } from "../../../../../generated/definitions/idpay/InstrumentDTO";
-import { ulid } from "ulid";
+import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { getWalletV2 } from "../../../../routers/walletsV2";
+import { getIbanListResponse } from "../iban/get-iban-list";
+import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
+import { initiativeIdToString } from "../utils";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
 let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
-  [InitiativeId.NO_CONFIGURATION]: [],
+  [InitiativeId.NOT_CONFIGURED]: [],
   [InitiativeId.CONFIGURED]: [
     {
       instrumentId: ulid(),
       activationDate: faker.date.past(1),
-      idWallet: "2"
+      idWallet: "2",
+      status: InstrumentStatus.ACTIVE
     }
-  ]
+  ],
+  [InitiativeId.UNSUBSCRIBED]: []
 };
 
 let initiativeList: { [id: number]: InitiativeDTO } = {
-  [InitiativeId.NO_CONFIGURATION]: {
-    initiativeId: initiativeIdToString(InitiativeId.NO_CONFIGURATION),
+  [InitiativeId.NOT_CONFIGURED]: {
+    initiativeId: initiativeIdToString(InitiativeId.NOT_CONFIGURED),
     initiativeName: "Iniziativa da configurare",
     status: InitiativeStatus.NOT_REFUNDABLE,
     endDate: faker.date.future(1),
@@ -54,6 +55,18 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     lastCounterUpdate: faker.date.recent(1),
     iban: getIbanListResponse.ibanList[0].iban,
     nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
+  },
+  [InitiativeId.UNSUBSCRIBED]: {
+    initiativeId: initiativeIdToString(InitiativeId.UNSUBSCRIBED),
+    initiativeName: "Iniziativa disiscritta",
+    status: InitiativeStatus.UNSUBSCRIBED,
+    endDate: faker.date.future(1),
+    amount: 30,
+    accrued: 70,
+    refunded: 45,
+    lastCounterUpdate: faker.date.recent(1),
+    iban: undefined,
+    nInstr: 0
   }
 };
 
@@ -80,7 +93,7 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
 });
 
 const initiativeDetailsList: { [id: number]: InitiativeDetailDTO } = {
-  [InitiativeId.NO_CONFIGURATION]: {
+  [InitiativeId.NOT_CONFIGURED]: {
     ...createRandomInitiativeDetails(),
     initiativeName: "Iniziativa da configurare"
   },
@@ -173,7 +186,9 @@ const removeInstrumentFromInitiative = (
 };
 
 const unsubscribeFromInitiative = (id: IDPayInitiativeID) => {
-  if (!initiativeList[id]) {
+  const initiative = initiativeList[id];
+
+  if (!initiative || initiative.status === InitiativeStatus.UNSUBSCRIBED) {
     return false;
   }
 
