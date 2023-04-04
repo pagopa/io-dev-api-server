@@ -4,7 +4,11 @@ import { IbanPutDTO } from "../../../../generated/definitions/idpay/IbanPutDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
 import { initiativeIdFromString } from "../../../payloads/features/idpay/utils";
-import { addIbanToInitiative } from "../../../payloads/features/idpay/wallet/data";
+import {
+  addIbanToInitiative,
+  addInstrumentToInitiative,
+  removeInstrumentFromInitiative
+} from "../../../payloads/features/idpay/wallet/data";
 import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/wallet/get-initiative-beneficiary-detail";
 import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-wallet";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
@@ -12,13 +16,22 @@ import { addIdPayHandler } from "./router";
 import { getInstrumentListResponse } from "../../../payloads/features/idpay/wallet/get-instrument-list";
 import { getWalletStatusResponse } from "../../../payloads/features/idpay/wallet/get-wallet-status";
 import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/wallet/get-initiatives-with-instrument";
+import { getWalletV2 } from "../../walletsV2";
 
-const initiativeIdExists = (id: O.Option<IDPayInitiativeID>) =>
+const initiativeIdExists = (id: IDPayInitiativeID) =>
   pipe(
     id,
+    O.some,
     O.chain(getWalletDetailResponse),
-    O.map(_ => id),
-    O.flatten
+    O.map(_ => id)
+  );
+
+const getWallet = (id: string) =>
+  pipe(
+    id,
+    O.some,
+    O.map(id => parseInt(id)),
+    O.chain(id => O.fromNullable(getWalletV2().find(w => w.idWallet === id)))
   );
 
 /**
@@ -35,8 +48,7 @@ addIdPayHandler("get", "/wallet/:initiativeId", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.map(initiativeIdFromString),
-    O.flatten,
+    O.chain(initiativeIdFromString),
     O.chain(getWalletDetailResponse),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -52,8 +64,7 @@ addIdPayHandler("get", "/wallet/:initiativeId/detail", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.map(initiativeIdFromString),
-    O.flatten,
+    O.chain(initiativeIdFromString),
     O.chain(getInitiativeBeneficiaryDetailResponse),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -69,8 +80,7 @@ addIdPayHandler("get", "/wallet/:initiativeId/status", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.map(initiativeIdFromString),
-    O.flatten,
+    O.chain(initiativeIdFromString),
     O.chain(getWalletStatusResponse),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -86,7 +96,7 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.map(initiativeIdFromString),
+    O.chain(initiativeIdFromString),
     O.chain(initiativeIdExists),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -113,7 +123,7 @@ addIdPayHandler("get", "/wallet/:initiativeId/instruments", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.map(initiativeIdFromString),
+    O.chain(initiativeIdFromString),
     O.chain(initiativeIdExists),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -130,7 +140,6 @@ addIdPayHandler("get", "/wallet/:initiativeId/instruments", (req, res) =>
 
 /**
  *  Association of a payment instrument to an initiative
- *  TODO association (idk how)
  */
 addIdPayHandler(
   "put",
@@ -139,7 +148,7 @@ addIdPayHandler(
     pipe(
       req.params.initiativeId,
       O.fromNullable,
-      O.map(initiativeIdFromString),
+      O.chain(initiativeIdFromString),
       O.chain(initiativeIdExists),
       O.fold(
         () => res.status(404).json(getIdPayError(404)),
@@ -147,9 +156,13 @@ addIdPayHandler(
           pipe(
             req.params.walletId,
             O.fromNullable,
+            O.chain(getWallet),
             O.fold(
               () => res.status(400).json(getIdPayError(400)),
-              walletId => res.sendStatus(200)
+              wallet => {
+                const isAdded = addInstrumentToInitiative(initiativeId, wallet);
+                return res.sendStatus(isAdded ? 200 : 403);
+              }
             )
           )
       )
@@ -158,7 +171,6 @@ addIdPayHandler(
 
 /**
  *   Delete a payment instrument from an initiative
- *   TODO deletion (idk how)
  */
 addIdPayHandler(
   "delete",
@@ -167,17 +179,23 @@ addIdPayHandler(
     pipe(
       req.params.initiativeId,
       O.fromNullable,
-      O.map(initiativeIdFromString),
+      O.chain(initiativeIdFromString),
       O.chain(initiativeIdExists),
       O.fold(
         () => res.status(404).json(getIdPayError(404)),
         initiativeId =>
           pipe(
-            req.params.walletId,
+            req.params.instrumentId,
             O.fromNullable,
             O.fold(
               () => res.status(400).json(getIdPayError(400)),
-              instrumentId => res.sendStatus(200)
+              instrumentId => {
+                const isRemoved = removeInstrumentFromInitiative(
+                  initiativeId,
+                  instrumentId
+                );
+                return res.sendStatus(isRemoved ? 200 : 403);
+              }
             )
           )
       )
@@ -186,7 +204,6 @@ addIdPayHandler(
 
 /**
  *   Returns the initiatives list associated to a payment instrument
- *   TODO actual wallet
  */
 addIdPayHandler(
   "delete",

@@ -5,4 +5,7 @@ import { instrumentList } from "./data";
 
 export const getInstrumentListResponse = (
   id: IDPayInitiativeID
-): O.Option<InstrumentListDTO> => O.fromNullable(instrumentList[id]);
+): O.Option<InstrumentListDTO> =>
+  instrumentList[id] !== undefined
+    ? O.some({ instrumentList: instrumentList[id] })
+    : O.none;
