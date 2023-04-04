@@ -11,9 +11,9 @@ import { initiativeIdToString } from "../utils";
 import { getIbanListResponse } from "../iban/get-iban-list";
 import { InstrumentListDTO } from "../../../../../generated/definitions/idpay/InstrumentListDTO";
 
-export const instrumentList: { [id: number]: InstrumentListDTO } = {};
+let instrumentList: { [id: number]: InstrumentListDTO } = {};
 
-export var initiativeList: { [id: number]: InitiativeDTO } = {
+let initiativeList: { [id: number]: InitiativeDTO } = {
   [InitiativeId.NO_CONFIGURATION]: {
     initiativeId: initiativeIdToString(InitiativeId.NO_CONFIGURATION),
     initiativeName: "Iniziativa da configurare",
@@ -63,7 +63,7 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   updateDate: faker.date.recent(1)
 });
 
-export const initiativeDetailList: { [id: number]: InitiativeDetailDTO } = {
+const initiativeDetailsList: { [id: number]: InitiativeDetailDTO } = {
   [InitiativeId.NO_CONFIGURATION]: {
     ...createRandomInitiativeDetails(),
     initiativeName: "Iniziativa da configurare"
@@ -74,6 +74,13 @@ export const initiativeDetailList: { [id: number]: InitiativeDetailDTO } = {
   }
 };
 
-export const addIbanToInitiative = (id: InitiativeId, iban: string) => {
+const addIbanToInitiative = (id: InitiativeId, iban: string) => {
   initiativeList[id] = { ...initiativeList[id], iban };
+};
+
+export {
+  initiativeList,
+  instrumentList,
+  initiativeDetailsList,
+  addIbanToInitiative
 };
