@@ -9,6 +9,6 @@ const createRandomIbanDTO = (): IbanDTO => ({
   channel: faker.datatype.string()
 });
 
-export const ibanList: ReadonlyArray<IbanDTO> = Array.from({ length: 10 }, () =>
+export const ibanList: ReadonlyArray<IbanDTO> = Array.from({ length: 5 }, () =>
   createRandomIbanDTO()
 );
