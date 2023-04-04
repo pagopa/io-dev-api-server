@@ -15,12 +15,26 @@ import {
 } from "../../../../../generated/definitions/idpay/InstrumentDTO";
 import { ulid } from "ulid";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
+import { getWalletV2 } from "../../../../routers/walletsV2";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
 let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
   [InitiativeId.NO_CONFIGURATION]: [],
-  [InitiativeId.CONFIGURED]: []
+  [InitiativeId.CONFIGURED]: [
+    {
+      instrumentId: ulid(),
+      activationDate: faker.date.past(1),
+      idWallet: "2"
+    }
+  ],
+  [InitiativeId.EXPIRED]: [
+    {
+      instrumentId: ulid(),
+      activationDate: faker.date.past(1),
+      idWallet: "2"
+    }
+  ]
 };
 
 let initiativeList: { [id: number]: InitiativeDTO } = {
@@ -29,24 +43,36 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     initiativeName: "Iniziativa da configurare",
     status: InitiativeStatus.NOT_REFUNDABLE,
     endDate: faker.date.future(1),
-    amount: 0,
+    amount: 100,
     accrued: 0,
     refunded: 0,
     lastCounterUpdate: faker.date.recent(1),
-    iban: getIbanListResponse.ibanList[0].iban,
-    nInstr: (instrumentList[InitiativeId.NO_CONFIGURATION] ?? []).length
+    iban: undefined,
+    nInstr: 0
   },
   [InitiativeId.CONFIGURED]: {
     initiativeId: initiativeIdToString(InitiativeId.CONFIGURED),
     initiativeName: "Iniziativa di test",
     status: InitiativeStatus.REFUNDABLE,
     endDate: faker.date.future(1),
-    amount: 0,
-    accrued: 0,
-    refunded: 0,
+    amount: 30,
+    accrued: 70,
+    refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
-    iban: undefined,
+    iban: getIbanListResponse.ibanList[0].iban,
     nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
+  },
+  [InitiativeId.EXPIRED]: {
+    initiativeId: initiativeIdToString(InitiativeId.EXPIRED),
+    initiativeName: "Iniziativa terminata",
+    status: InitiativeStatus.REFUNDABLE,
+    endDate: faker.date.past(1),
+    amount: 0,
+    accrued: 100,
+    refunded: 100,
+    lastCounterUpdate: faker.date.recent(1),
+    iban: getIbanListResponse.ibanList[0].iban,
+    nInstr: (instrumentList[InitiativeId.EXPIRED] ?? []).length
   }
 };
 
