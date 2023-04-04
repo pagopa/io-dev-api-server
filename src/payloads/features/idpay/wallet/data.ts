@@ -6,7 +6,7 @@ import {
 } from "../../../../../generated/definitions/idpay/InitiativeDTO";
 import { InitiativeDetailDTO } from "../../../../../generated/definitions/idpay/InitiativeDetailDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
-import { IDPayInitiativeID as InitiativeId } from "../types";
+import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
 import { getIbanListResponse } from "../iban/get-iban-list";
 import {
@@ -191,11 +191,25 @@ const removeInstrumentFromInitiative = (
   return true;
 };
 
+const unsubscribeFromInitiative = (id: IDPayInitiativeID) => {
+  if (!initiativeList[id]) {
+    return false;
+  }
+
+  initiativeList[id] = {
+    ...initiativeList[id],
+    status: InitiativeStatus.UNSUBSCRIBED
+  };
+
+  return true;
+};
+
 export {
   initiativeList,
   instrumentList,
   initiativeDetailsList,
   addIbanToInitiative,
   addInstrumentToInitiative,
-  removeInstrumentFromInitiative
+  removeInstrumentFromInitiative,
+  unsubscribeFromInitiative
 };

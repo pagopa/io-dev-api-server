@@ -7,7 +7,8 @@ import { initiativeIdFromString } from "../../../payloads/features/idpay/utils";
 import {
   addIbanToInitiative,
   addInstrumentToInitiative,
-  removeInstrumentFromInitiative
+  removeInstrumentFromInitiative,
+  unsubscribeFromInitiative
 } from "../../../payloads/features/idpay/wallet/data";
 import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/wallet/get-initiative-beneficiary-detail";
 import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-wallet";
@@ -160,8 +161,8 @@ addIdPayHandler(
             O.fold(
               () => res.status(400).json(getIdPayError(400)),
               wallet => {
-                const isAdded = addInstrumentToInitiative(initiativeId, wallet);
-                return res.sendStatus(isAdded ? 200 : 403);
+                const result = addInstrumentToInitiative(initiativeId, wallet);
+                return res.sendStatus(result ? 200 : 403);
               }
             )
           )
@@ -190,11 +191,11 @@ addIdPayHandler(
             O.fold(
               () => res.status(400).json(getIdPayError(400)),
               instrumentId => {
-                const isRemoved = removeInstrumentFromInitiative(
+                const result = removeInstrumentFromInitiative(
                   initiativeId,
                   instrumentId
                 );
-                return res.sendStatus(isRemoved ? 200 : 403);
+                return res.sendStatus(result ? 200 : 403);
               }
             )
           )
@@ -213,6 +214,24 @@ addIdPayHandler("get", "/wallet/instrument/:walletId/initiatives", (req, res) =>
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
       data => res.status(200).json(data)
+    )
+  )
+);
+
+/**
+ *   Unsubscribe to an initiative
+ */
+addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
+  pipe(
+    req.params.initiativeId,
+    O.fromNullable,
+    O.chain(initiativeIdFromString),
+    O.fold(
+      () => res.status(404).json(getIdPayError(404)),
+      initiativeId => {
+        const result = unsubscribeFromInitiative(initiativeId);
+        return res.sendStatus(result ? 200 : 403);
+      }
     )
   )
 );
