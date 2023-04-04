@@ -5,7 +5,7 @@ const createRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban(),
   checkIbanStatus: faker.datatype.string(),
   holderBank: faker.company.companyName(),
-  description: faker.random.words(5),
+  description: faker.company.bs(),
   channel: faker.datatype.string()
 });
 
