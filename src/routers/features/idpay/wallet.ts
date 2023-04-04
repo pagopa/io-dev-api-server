@@ -11,6 +11,7 @@ import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet
 import { addIdPayHandler } from "./router";
 import { getInstrumentListResponse } from "../../../payloads/features/idpay/wallet/get-instrument-list";
 import { getWalletStatusResponse } from "../../../payloads/features/idpay/wallet/get-wallet-status";
+import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/wallet/get-initiatives-with-instrument";
 
 const initiativeIdExists = (id: O.Option<IDPayInitiativeID>) =>
   pipe(
@@ -179,6 +180,25 @@ addIdPayHandler(
               instrumentId => res.sendStatus(200)
             )
           )
+      )
+    )
+);
+
+/**
+ *   Returns the initiatives list associated to a payment instrument
+ *   TODO actual wallet
+ */
+addIdPayHandler(
+  "delete",
+  "/wallet/instrument/:walletId/initiatives",
+  (req, res) =>
+    pipe(
+      req.params.walletId,
+      O.fromNullable,
+      O.chain(getInitiativeWithInstrumentResponse),
+      O.fold(
+        () => res.status(404).json(getIdPayError(404)),
+        data => res.status(200).json(data)
       )
     )
 );
