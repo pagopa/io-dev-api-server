@@ -8,7 +8,6 @@ import {
 } from "../../../payloads/features/idpay/onboarding/check-prerequisites";
 import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/onboarding/get-initiative-data";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/onboarding-status";
-import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
 import {
   initiativeIdFromString,
   serviceIdFromString
@@ -56,12 +55,18 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
   pipe(
     OnboardingPutDTO.decode(req.body),
     O.fromEither,
-    O.map(({ initiativeId }) => initiativeId),
-    O.map(initiativeIdFromString),
-    O.flatten,
     O.fold(
       () => res.status(400).json(getIdPayError(400)),
-      _ => res.sendStatus(204)
+      flow(
+        O.some,
+        O.map(({ initiativeId }) => initiativeId),
+        O.map(initiativeIdFromString),
+        O.flatten,
+        O.fold(
+          () => res.status(404).json(getIdPayError(404)),
+          _ => res.sendStatus(204)
+        )
+      )
     )
   )
 );
