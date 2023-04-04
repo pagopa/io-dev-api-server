@@ -6,13 +6,16 @@ import {
 } from "../../../../../generated/definitions/idpay/InitiativeDTO";
 import { InitiativeDetailDTO } from "../../../../../generated/definitions/idpay/InitiativeDetailDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
-import { IDPayInitiativeID } from "../types";
+import { IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
-import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
+import { getIbanListResponse } from "../iban/get-iban-list";
+import { InstrumentListDTO } from "../../../../../generated/definitions/idpay/InstrumentListDTO";
+
+export const instrumentList: { [id: number]: InstrumentListDTO } = {};
 
 export var initiativeList: { [id: number]: InitiativeDTO } = {
-  [IDPayInitiativeID.NO_CONFIGURATION]: {
-    initiativeId: initiativeIdToString(IDPayInitiativeID.NO_CONFIGURATION),
+  [InitiativeId.NO_CONFIGURATION]: {
+    initiativeId: initiativeIdToString(InitiativeId.NO_CONFIGURATION),
     initiativeName: "Iniziativa da configurare",
     status: StatusEnum.NOT_REFUNDABLE,
     endDate: faker.date.future(1),
@@ -20,11 +23,12 @@ export var initiativeList: { [id: number]: InitiativeDTO } = {
     accrued: 0,
     refunded: 0,
     lastCounterUpdate: faker.date.recent(1),
-    iban: "a",
-    nInstr: 0
+    iban: getIbanListResponse.ibanList[0].iban,
+    nInstr:
+      instrumentList[InitiativeId.NO_CONFIGURATION]?.instrumentList.length || 0
   },
-  [IDPayInitiativeID.CONFIGURED]: {
-    initiativeId: initiativeIdToString(IDPayInitiativeID.CONFIGURED),
+  [InitiativeId.CONFIGURED]: {
+    initiativeId: initiativeIdToString(InitiativeId.CONFIGURED),
     initiativeName: "Iniziativa di test",
     status: StatusEnum.REFUNDABLE,
     endDate: faker.date.future(1),
@@ -33,7 +37,7 @@ export var initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 0,
     lastCounterUpdate: faker.date.recent(1),
     iban: undefined,
-    nInstr: 0
+    nInstr: instrumentList[InitiativeId.CONFIGURED]?.instrumentList.length || 0
   }
 };
 
@@ -60,16 +64,16 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
 });
 
 export const initiativeDetailList: { [id: number]: InitiativeDetailDTO } = {
-  [IDPayInitiativeID.NO_CONFIGURATION]: {
+  [InitiativeId.NO_CONFIGURATION]: {
     ...createRandomInitiativeDetails(),
     initiativeName: "Iniziativa da configurare"
   },
-  [IDPayInitiativeID.CONFIGURED]: {
+  [InitiativeId.CONFIGURED]: {
     ...createRandomInitiativeDetails(),
     initiativeName: "Iniziativa di test"
   }
 };
 
-export const enrollIbanToInitiative = (id: IDPayInitiativeID, iban: string) => {
+export const addIbanToInitiative = (id: InitiativeId, iban: string) => {
   initiativeList[id] = { ...initiativeList[id], iban };
 };
