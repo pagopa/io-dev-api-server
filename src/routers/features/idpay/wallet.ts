@@ -10,6 +10,7 @@ import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-w
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
 import { addIdPayHandler } from "./router";
 import { getInstrumentListResponse } from "../../../payloads/features/idpay/wallet/get-instrument-list";
+import { getWalletStatusResponse } from "../../../payloads/features/idpay/wallet/get-wallet-status";
 
 const initiativeIdExists = (id: O.Option<IDPayInitiativeID>) =>
   pipe(
@@ -56,6 +57,23 @@ addIdPayHandler("get", "/wallet/:initiativeId/detail", (req, res) =>
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
       initiative => res.status(200).json(initiative)
+    )
+  )
+);
+
+/**
+ *  Returns the actual wallet status
+ */
+addIdPayHandler("get", "/wallet/:initiativeId/status", (req, res) =>
+  pipe(
+    req.params.initiativeId,
+    O.fromNullable,
+    O.map(initiativeIdFromString),
+    O.flatten,
+    O.chain(getWalletStatusResponse),
+    O.fold(
+      () => res.status(404).json(getIdPayError(404)),
+      status => res.status(200).json(status)
     )
   )
 );
