@@ -159,7 +159,7 @@ addIdPayHandler(
             O.fromNullable,
             O.chain(getWalletInstrument),
             O.fold(
-              () => res.status(400).json(getIdPayError(400)),
+              () => res.status(404).json(getIdPayError(404)),
               wallet => {
                 const result = addInstrumentToInitiative(initiativeId, wallet);
                 return res.sendStatus(result ? 200 : 403);
