@@ -21,8 +21,7 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
   pipe(
     req.params.serviceId,
     O.fromNullable,
-    O.map(serviceIdFromString),
-    O.flatten,
+    O.chain(serviceIdFromString),
     O.chain(getInitiativeDataResponseByServiceId),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -38,8 +37,7 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.map(initiativeIdFromString),
-    O.flatten,
+    O.chain(initiativeIdFromString),
     O.chain(getOnboardingStatusResponseByInitiativeId),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -60,8 +58,7 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
       flow(
         O.some,
         O.map(({ initiativeId }) => initiativeId),
-        O.map(initiativeIdFromString),
-        O.flatten,
+        O.chain(initiativeIdFromString),
         O.fold(
           () => res.status(404).json(getIdPayError(404)),
           _ => res.sendStatus(204)
@@ -83,8 +80,7 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
       flow(
         O.some,
         O.map(({ initiativeId }) => initiativeId),
-        O.map(initiativeIdFromString),
-        O.flatten,
+        O.chain(initiativeIdFromString),
         O.fold(
           () => res.status(404).json(getIdPayError(404)), // Initiative not found
           initiativeId =>
@@ -119,12 +115,17 @@ addIdPayHandler("put", "/onboarding/consent", (req, res) =>
   pipe(
     OnboardingPutDTO.decode(req.body),
     O.fromEither,
-    O.map(({ initiativeId }) => initiativeId),
-    O.map(initiativeIdFromString),
-    O.flatten,
     O.fold(
       () => res.status(400).json(getIdPayError(400)),
-      _ => res.sendStatus(202)
+      flow(
+        O.some,
+        O.map(({ initiativeId }) => initiativeId),
+        O.chain(initiativeIdFromString),
+        O.fold(
+          () => res.status(404).json(getIdPayError(404)),
+          _ => res.sendStatus(202)
+        )
+      )
     )
   )
 );
