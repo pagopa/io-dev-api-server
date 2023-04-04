@@ -136,3 +136,31 @@ addIdPayHandler(
       )
     )
 );
+
+/**
+ *   Delete a payment instrument from an initiative
+ *   TODO deletion (idk how)
+ */
+addIdPayHandler(
+  "delete",
+  "/wallet/:initiativeId/instruments/:instrumentId",
+  (req, res) =>
+    pipe(
+      req.params.initiativeId,
+      O.fromNullable,
+      O.map(initiativeIdFromString),
+      O.chain(initiativeIdExists),
+      O.fold(
+        () => res.status(404).json(getIdPayError(404)),
+        initiativeId =>
+          pipe(
+            req.params.walletId,
+            O.fromNullable,
+            O.fold(
+              () => res.status(400).json(getIdPayError(400)),
+              instrumentId => res.sendStatus(200)
+            )
+          )
+      )
+    )
+);
