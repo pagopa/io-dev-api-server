@@ -27,7 +27,7 @@ const initiativeIdExists = (id: IDPayInitiativeID) =>
     O.map(_ => id)
   );
 
-const getWallet = (id: string) =>
+const getWalletInstrument = (id: string) =>
   pipe(
     id,
     O.some,
@@ -157,7 +157,7 @@ addIdPayHandler(
           pipe(
             req.params.walletId,
             O.fromNullable,
-            O.chain(getWallet),
+            O.chain(getWalletInstrument),
             O.fold(
               () => res.status(400).json(getIdPayError(400)),
               wallet => {
