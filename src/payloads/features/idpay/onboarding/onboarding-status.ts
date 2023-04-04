@@ -10,6 +10,6 @@ export const getOnboardingStatusResponseByInitiativeId = (
   pipe(
     id,
     O.some,
-    O.map(id => onboardingStatuses[id]),
+    O.chain(id => O.fromNullable(onboardingStatuses[id])),
     O.map(status => ({ status }))
   );
