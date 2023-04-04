@@ -205,17 +205,14 @@ addIdPayHandler(
 /**
  *   Returns the initiatives list associated to a payment instrument
  */
-addIdPayHandler(
-  "delete",
-  "/wallet/instrument/:walletId/initiatives",
-  (req, res) =>
-    pipe(
-      req.params.walletId,
-      O.fromNullable,
-      O.chain(getInitiativeWithInstrumentResponse),
-      O.fold(
-        () => res.status(404).json(getIdPayError(404)),
-        data => res.status(200).json(data)
-      )
+addIdPayHandler("get", "/wallet/instrument/:walletId/initiatives", (req, res) =>
+  pipe(
+    req.params.walletId,
+    O.fromNullable,
+    O.chain(getInitiativeWithInstrumentResponse),
+    O.fold(
+      () => res.status(404).json(getIdPayError(404)),
+      data => res.status(200).json(data)
     )
+  )
 );
