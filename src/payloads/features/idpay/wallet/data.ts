@@ -27,13 +27,6 @@ let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
       activationDate: faker.date.past(1),
       idWallet: "2"
     }
-  ],
-  [InitiativeId.EXPIRED]: [
-    {
-      instrumentId: ulid(),
-      activationDate: faker.date.past(1),
-      idWallet: "2"
-    }
   ]
 };
 
@@ -61,18 +54,6 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     lastCounterUpdate: faker.date.recent(1),
     iban: getIbanListResponse.ibanList[0].iban,
     nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
-  },
-  [InitiativeId.EXPIRED]: {
-    initiativeId: initiativeIdToString(InitiativeId.EXPIRED),
-    initiativeName: "Iniziativa terminata",
-    status: InitiativeStatus.REFUNDABLE,
-    endDate: faker.date.past(1),
-    amount: 0,
-    accrued: 100,
-    refunded: 100,
-    lastCounterUpdate: faker.date.recent(1),
-    iban: getIbanListResponse.ibanList[0].iban,
-    nInstr: (instrumentList[InitiativeId.EXPIRED] ?? []).length
   }
 };
 
