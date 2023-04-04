@@ -36,6 +36,7 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
+import { idpayRouter } from "./routers/features/idpay";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -83,7 +84,8 @@ app.use(errorMiddleware);
   svRouter,
   cdcRouter,
   fciRouter,
-  pnRouter
+  pnRouter,
+  idpayRouter
 ].forEach(r => app.use(r));
 
 export default app;

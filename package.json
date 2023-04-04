@@ -26,6 +26,7 @@
   "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
   "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v10.4.0-RELEASE/api_io_sign.yaml",
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v9.1.0-RELEASE/api_pn.yaml",
+  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v2.30.0/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,
@@ -60,6 +61,7 @@
     "generate:cdc-definitions": "rimraf generated/definitions/cdc && mkdir -p generated/definitions/cdc  && gen-api-models --api-spec $npm_package_api_cdc --out-dir ./generated/definitions/cdc --no-strict",
     "generate:fci-definitions": "rimraf generated/definitions/fci && mkdir -p generated/definitions/fci  && gen-api-models --api-spec $npm_package_api_fci --out-dir ./generated/definitions/fci --no-strict",
     "generate:pn-definitions": "rimraf generated/definitions/pn && mkdir -p generated/definitions/pn && gen-api-models --api-spec $npm_package_api_pn --out-dir ./generated/definitions/pn --no-strict --request-types --response-decoders",
+    "generate:idpay-definitions": "rimraf generated/definitions/idpay && mkdir -p generated/definitions/idpay  && gen-api-models --api-spec $npm_package_api_idpay --out-dir ./generated/definitions/idpay --no-strict",
     "generate:pagopa": "npm-run-all generate:pagopa-walletv2-definitions generate:pagopa-privative-configuration-definitions generate:pagopa-cobadge-configuration-definitions",
     "generate": "npm-run-all generate:*"
   },
