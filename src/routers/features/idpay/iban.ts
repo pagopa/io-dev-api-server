@@ -13,7 +13,7 @@ addIdPayHandler("get", "/iban/:iban", (req, res) =>
     O.fromNullable(req.params.iban),
     O.chain(getIbanResponse),
     O.fold(
-      () => res.sendStatus(400),
+      () => res.sendStatus(404),
       iban => res.status(200).json(iban)
     )
   )
