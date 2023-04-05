@@ -1,3 +1,4 @@
+import { ulid } from "ulid";
 import faker from "faker/locale/it";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
 import { DossierTitle } from "../../../../generated/definitions/fci/DossierTitle";
@@ -8,13 +9,13 @@ import { SignatureRequestList } from "../../../../generated/definitions/fci/Sign
 const now = new Date();
 
 const createRandomSignatureRequest = (): SignatureRequestListView => ({
-  id: faker.datatype.uuid() as SignatureRequestListView["id"],
+  id: ulid() as SignatureRequestListView["id"],
   status: getRandomEnumValue(SignatureRequestStatusEnum),
   created_at: new Date(),
   dossier_id: faker.datatype.uuid() as SignatureRequestListView["dossier_id"],
   dossier_title: faker.random.words(5) as DossierTitle,
   expires_at: new Date(now.setDate(now.getDate() + 30)),
-  signer_id: faker.datatype.uuid() as SignatureRequestListView["signer_id"],
+  signer_id: ulid() as SignatureRequestListView["signer_id"],
   updated_at: new Date()
 });
 
