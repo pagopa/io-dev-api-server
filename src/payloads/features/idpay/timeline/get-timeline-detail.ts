@@ -1,28 +1,20 @@
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { OperationDTO } from "../../../../../generated/definitions/idpay/OperationDTO";
-import { operationList } from "./data";
-import { OperationTypeEnum } from "../../../../../generated/definitions/idpay/IbanOperationDTO";
 import { IDPayInitiativeID } from "../types";
+import { timelineDetails } from "./data";
 
 export const getTimelineDetailResponse = (
   initiativeId: IDPayInitiativeID,
   operationId: string
-): O.Option<OperationDTO> => {
-  const operation = operationList.find(o => o.operationId === operationId);
-
-  return O.some({
-    accrued: 0,
-    amount: 0,
-    brand: "",
-    brandLogo: "",
-    channel: "",
-    circuitType: "",
-    iban: "",
-    idTrxAcquirer: "",
-    idTrxIssuer: "",
-    maskedPan: "",
-    operationDate: new Date(),
-    operationId: "",
-    operationType: OperationTypeEnum.ADD_IBAN
-  });
-};
+): O.Option<OperationDTO> =>
+  pipe(
+    timelineDetails[initiativeId],
+    O.fromNullable,
+    O.chain(details =>
+      pipe(
+        details.find(o => o.operationId === operationId),
+        O.fromNullable
+      )
+    )
+  );

@@ -5,7 +5,7 @@ import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
 import { IDPayInitiativeID } from "../../../../payloads/features/idpay/types";
 import { initiativeIdToString } from "../../../../payloads/features/idpay/utils";
-import { operationList } from "../../../../payloads/features/idpay/timeline/data";
+import { timeline } from "../../../../payloads/features/idpay/timeline/data";
 
 const request = supertest(app);
 
@@ -22,7 +22,7 @@ describe("IDPay Timeline API", () => {
     });
     it("should return 200 with correct pagination info", async () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
-      const operationSize = operationList.length;
+      const operationSize = timeline[IDPayInitiativeID.CONFIGURED].length;
 
       const page = 1;
       const size = 4;
@@ -50,7 +50,7 @@ describe("IDPay Timeline API", () => {
   describe("GET getTimelineDetail", () => {
     it("should return 200 with operation details", async () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
-      const operationId = operationList[0].operationId;
+      const operationId = timeline[IDPayInitiativeID.CONFIGURED][0].operationId;
 
       const response = await request.get(
         addIdPayPrefix(`/timeline/${initiativeId}/${operationId}`)
@@ -60,7 +60,7 @@ describe("IDPay Timeline API", () => {
     });
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
-      const operationId = operationList[0].operationId;
+      const operationId = timeline[IDPayInitiativeID.CONFIGURED][0].operationId;
 
       const response = await request.get(
         addIdPayPrefix(`/timeline/${initiativeId}/${operationId}`)
