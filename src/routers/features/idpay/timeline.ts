@@ -7,12 +7,15 @@ import { getTimelineDetailResponse } from "../../../payloads/features/idpay/time
 import { initiativeIdFromString } from "../../../payloads/features/idpay/utils";
 import { addIdPayHandler } from "./router";
 
-const extractQuery = flow(
-  O.fromNullable,
-  O.map(toString),
-  O.map(parseInt),
-  O.toUndefined
-);
+type Query = string | qs.ParsedQs | string[] | qs.ParsedQs[] | undefined;
+
+const extractQuery = (query: Query) =>
+  pipe(
+    query,
+    O.fromNullable,
+    O.map(s => parseInt(s as string, 10)),
+    O.toUndefined
+  );
 
 /**
  *  Returns the list of transactions and operations of an initiative of a
@@ -30,7 +33,7 @@ addIdPayHandler("get", "/timeline/:initiativeId", (req, res) =>
           O.of(pipe(req.query.page, extractQuery)),
           O.of(pipe(req.query.size, extractQuery))
         ),
-        O.map(args => getTimelineResponse(...args))
+        O.chain(args => getTimelineResponse(...args))
       )
     ),
     O.fold(
@@ -45,23 +48,18 @@ addIdPayHandler("get", "/timeline/:initiativeId", (req, res) =>
  */
 addIdPayHandler("get", "/timeline/:initiativeId/:operationId", (req, res) =>
   pipe(
-    req.params.initiativeId,
-    O.fromNullable,
-    O.chain(initiativeIdFromString),
+    sequenceT(O.option)(
+      pipe(
+        req.params.initiativeId,
+        O.fromNullable,
+        O.chain(initiativeIdFromString)
+      ),
+      pipe(req.params.operationId, O.fromNullable)
+    ),
+    O.chain(args => getTimelineDetailResponse(...args)),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
-      initiativeId =>
-        pipe(
-          req.params.operationId,
-          O.fromNullable,
-          O.map(operationId =>
-            getTimelineDetailResponse(initiativeId, operationId)
-          ),
-          O.fold(
-            () => res.status(404).json(getIdPayError(404)),
-            operation => res.status(200).json(operation)
-          )
-        )
+      operation => res.status(200).json(operation)
     )
   )
 );
