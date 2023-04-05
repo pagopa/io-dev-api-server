@@ -5,6 +5,8 @@ import { createFilledDocumentBody } from "../../../../payloads/features/fci/qtsp
 import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
+import { SignatureRequestListView } from "../../../../../generated/definitions/fci/SignatureRequestListView";
+import { SignatureRequestList } from "../../../../../generated/definitions/fci/SignatureRequestList";
 
 const request = supertest(app);
 
@@ -69,6 +71,16 @@ describe("io-sign API", () => {
         const response = await request.get(addFciPrefix(`/metadata`));
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("serviceId");
+      });
+    });
+  });
+  describe("GET signature-requests list", () => {
+    describe("when the signer-requests called", () => {
+      it("should return 200 and the signature requests array", async () => {
+        const response = await request.get(addFciPrefix(`/signature-requests`));
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty("items");
+        expect(response.body.items).toBeInstanceOf(Array);
       });
     });
   });
