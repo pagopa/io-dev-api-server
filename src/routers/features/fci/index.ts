@@ -20,6 +20,7 @@ import { sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
+import { signatureRequestList } from "../../../payloads/features/fci/signature-requests";
 
 export const fciRouter = Router();
 
@@ -131,4 +132,8 @@ addHandler(
 
 addHandler(fciRouter, "get", addFciPrefix("/metadata"), (_, res) => {
   res.status(200).json(mockFciMetadata);
+});
+
+addHandler(fciRouter, "get", addFciPrefix("/signature-requests"), (_, res) => {
+  res.status(200).json(signatureRequestList);
 });
