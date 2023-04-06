@@ -1,15 +1,16 @@
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { ulid } from "ulid";
+import faker from "faker/locale/it";
 import { TypeEnum as ClausesTypeEnum } from "../../../../generated/definitions/fci/Clause";
 import { DocumentDetailView } from "../../../../generated/definitions/fci/DocumentDetailView";
 import { DocumentMetadata } from "../../../../generated/definitions/fci/DocumentMetadata";
 import { SignatureFieldToBeCreatedAttrs } from "../../../../generated/definitions/fci/SignatureFieldToBeCreatedAttrs";
-import {
-  SignatureRequestDetailView,
-  StatusEnum as SignatureRequestStatus
-} from "../../../../generated/definitions/fci/SignatureRequestDetailView";
+import { SignatureRequestDetailView } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { staticContentRootPath } from "../../../config";
 import { serverUrl } from "../../../utils/server";
+import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
+import { IssuerEnvironmentEnum } from "../../../../generated/definitions/fci/IssuerEnvironment";
+import { DossierTitle } from "../../../../generated/definitions/fci/DossierTitle";
 
 export const SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const EXPIRED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
@@ -284,13 +285,15 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
 
 export const signatureRequestDetailViewDoc: SignatureRequestDetailView = {
   id: SIGNATURE_REQUEST_ID,
-  status: SignatureRequestStatus.WAIT_FOR_SIGNATURE,
+  status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
   issuer: {
     email: "fake-email@issuer.nomail" as EmailString,
-    description: "Description of the issuer" as NonEmptyString
+    description: "Description of the issuer" as NonEmptyString,
+    environment: IssuerEnvironmentEnum.TEST
   },
   created_at: new Date(),
   dossier_id: DOSSIER_ID,
+  dossier_title: "Dossier title" as DossierTitle,
   expires_at: new Date(now.setDate(now.getDate() + 30)),
   qr_code_url: mockQrCodeUrl,
   signer_id: SIGNATURE_ID,
