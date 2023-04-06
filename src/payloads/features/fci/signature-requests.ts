@@ -1,5 +1,5 @@
 import { ulid } from "ulid";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
 import { DossierTitle } from "../../../../generated/definitions/fci/DossierTitle";
 import { SignatureRequestListView } from "../../../../generated/definitions/fci/SignatureRequestListView";
