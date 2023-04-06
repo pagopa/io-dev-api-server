@@ -24,7 +24,7 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeName: faker.company.catchPhrase(),
   description: faker.lorem.paragraphs(6),
   organizationId: ulid(),
-  organizationName: faker.company.companyName(),
+  organizationName: faker.company.name(),
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
   logoURL: faker.image.avatar()

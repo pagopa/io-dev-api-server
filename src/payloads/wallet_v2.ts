@@ -147,7 +147,7 @@ export const generateBancomatPay = (
           index: config.index + 1
         });
         return {
-          bankName: faker.company.companyName(),
+          bankName: faker.company.name(),
           instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
           numberObfuscated: "+3934" + "*".repeat(7) + suffix,
           paymentInstruments: [],
@@ -221,7 +221,7 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
     abi: abiCodes[
       faker.datatype.number({ min: 0, max: abiCodes.length - 1 })
     ].replace(".png", ""),
-    name: faker.company.companyName()
+    name: faker.company.name()
   };
 });
 

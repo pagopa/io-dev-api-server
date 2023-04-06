@@ -73,7 +73,7 @@ export const onlineMerchants: OnlineMerchants = {
     return {
       discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
-      name: `${faker.company.companyName()} [Online]` as NonEmptyString,
+      name: `${faker.company.name()} [Online]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       websiteUrl: faker.internet.url() as NonEmptyString,
       newDiscounts: faker.datatype.boolean()
@@ -88,7 +88,7 @@ export const offlineMerchants: OfflineMerchants = {
     faker.seed(millis++);
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
-      name: `${faker.company.companyName()} [Offline]` as NonEmptyString,
+      name: `${faker.company.name()} [Offline]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       address: {
         full_address: faker.address.streetAddress(true) as NonEmptyString,

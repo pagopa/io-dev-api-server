@@ -44,7 +44,7 @@ export const getServices = (
           11,
           "0"
         ) as OrganizationFiscalCode,
-        organization_name: `${faker.company.companyName()} [${organizationCount +
+        organization_name: `${faker.company.name()} [${organizationCount +
           1}]` as OrganizationName,
         service_metadata: {
           ...getServiceMetadata(scope),

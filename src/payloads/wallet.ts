@@ -221,7 +221,7 @@ export const getTransactions = (
         );
         const merchant = getRandomValue(
           `merchant-${idx}`,
-          faker.company.companyName(),
+          faker.company.name(),
           "wallet"
         );
         return validatePayload(Transaction, {

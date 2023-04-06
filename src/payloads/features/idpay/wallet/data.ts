@@ -71,7 +71,7 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
 };
 
 const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
-  initiativeName: faker.company.companyName(),
+  initiativeName: faker.company.name(),
   status: "",
   description: faker.lorem.paragraphs(6),
   ruleDescription: faker.lorem.paragraphs(4),

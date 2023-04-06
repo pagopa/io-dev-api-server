@@ -38,7 +38,7 @@ export const getServiceMetadata = (
     address: faker.address.streetAddress() as NonEmptyString,
     email: faker.internet.email() as NonEmptyString,
     pec: faker.internet.email() as NonEmptyString,
-    phone: faker.phone.phoneNumber() as NonEmptyString,
+    phone: faker.phone.number() as NonEmptyString,
     web_url: faker.internet.url() as NonEmptyString,
     app_android: faker.internet.url() as NonEmptyString,
     app_ios: faker.internet.url() as NonEmptyString,
