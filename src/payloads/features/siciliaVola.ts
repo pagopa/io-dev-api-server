@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import { AeroportoSedeBean } from "../../../generated/definitions/siciliaVola/AeroportoSedeBean";
 import { ListaVoucherBeneficiarioOutputBean } from "../../../generated/definitions/siciliaVola/ListaVoucherBeneficiarioOutputBean";

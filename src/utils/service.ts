@@ -2,7 +2,7 @@ import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";

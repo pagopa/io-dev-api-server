@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { IbanDTO } from "../../../../../generated/definitions/idpay/IbanDTO";
 
 const createRandomIbanDTO = (): IbanDTO => ({

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
@@ -47,7 +47,7 @@ addHandler(
 
 // if profile section allows random values, generate random name, family_name and email
 // 0 -> male, 1 -> female
-const gender = faker.random.arrayElement([0, 1]);
+const gender = faker.name.sexType();
 currentProfile = {
   ...currentProfile,
   ...getRandomValue(

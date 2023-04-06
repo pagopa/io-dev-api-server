@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
@@ -255,7 +255,7 @@ export const generateWalletV2FromCard = (
     : faker.date.future();
   const ccBrand = getRandomValue(
     CreditCardBrandEnum.MAESTRO,
-    faker.random.arrayElement(creditCardBrands),
+    faker.helpers.arrayElement(creditCardBrands),
     "wallet"
   );
 

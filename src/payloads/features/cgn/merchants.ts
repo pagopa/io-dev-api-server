@@ -1,6 +1,6 @@
 import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";

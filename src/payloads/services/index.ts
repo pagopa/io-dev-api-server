@@ -2,7 +2,7 @@ import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";

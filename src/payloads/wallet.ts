@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
@@ -129,7 +129,7 @@ export const getWallets = (count: number = 4): WalletListResponse => {
   const generateCreditCard = (): CreditCard => {
     const ccBrand = getRandomValue(
       creditCardBrands[0],
-      faker.random.arrayElement(creditCardBrands),
+      faker.helpers.arrayElement(creditCardBrands),
       "wallet"
     );
     creditCardId++;
