@@ -17,7 +17,7 @@ import {
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
 import { IDPayInitiativeID, IDPayServiceID } from "../types";
-import { initiativeIdToString } from "../utils";
+import { getRandomLogoUrl, initiativeIdToString } from "../utils";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeId: ulid(),
@@ -25,9 +25,9 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   description: faker.lorem.paragraphs(6),
   organizationId: ulid(),
   organizationName: faker.company.companyName(),
-  tcLink: "https://google.it",
-  privacyLink: "https://google.it",
-  logoURL: ""
+  privacyLink: faker.internet.url(),
+  tcLink: faker.internet.url(),
+  logoURL: getRandomLogoUrl()
 });
 
 const initiativeData: {

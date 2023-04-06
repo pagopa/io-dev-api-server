@@ -2,7 +2,6 @@ import { Router } from "express";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { isEqual } from "lodash";
-import { StatusEnum as SignatureRequestStatus } from "../../../../generated/definitions/fci/SignatureRequestDetailView";
 import { staticContentRootPath } from "../../../config";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
 import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp-filled-document";
@@ -20,6 +19,7 @@ import { addHandler } from "../../../payloads/response";
 import { sendFile } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
+import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
 
 export const fciRouter = Router();
 
@@ -56,32 +56,32 @@ addHandler(
                   ...signatureRequestDetailViewDoc,
                   id: EXPIRED_SIGNATURE_REQUEST_ID,
                   expires_at: new Date(now.setDate(now.getDate() - 30)),
-                  status: SignatureRequestStatus.WAIT_FOR_SIGNATURE
+                  status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE
                 }
               : signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID
               ? {
                   ...signatureRequestDetailViewDoc,
                   id: WAIT_QTSP_SIGNATURE_REQUEST_ID,
-                  status: SignatureRequestStatus.WAIT_FOR_QTSP
+                  status: SignatureRequestStatusEnum.WAIT_FOR_QTSP
                 }
               : signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID
               ? {
                   ...signatureRequestDetailViewDoc,
                   id: SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
                   updated_at: new Date(now.setDate(now.getDate() - 91)),
-                  status: SignatureRequestStatus.SIGNED
+                  status: SignatureRequestStatusEnum.SIGNED
                 }
               : signatureReqId === REJECTED_SIGNATURE_REQUEST_ID
               ? {
                   ...signatureRequestDetailViewDoc,
                   id: REJECTED_SIGNATURE_REQUEST_ID,
                   updated_at: new Date(now.setDate(now.getDate() - 91)),
-                  status: SignatureRequestStatus.REJECTED
+                  status: SignatureRequestStatusEnum.REJECTED
                 }
               : {
                   ...signatureRequestDetailViewDoc,
                   id: SIGNED_SIGNATURE_REQUEST_ID,
-                  status: SignatureRequestStatus.SIGNED
+                  status: SignatureRequestStatusEnum.SIGNED
                 }
           )
       )
