@@ -1,7 +1,4 @@
 {
-  "global": {
-    "delay": 3000
-  },
   "profile": {
     "attrs": {
       "name": "Gian Maria"
