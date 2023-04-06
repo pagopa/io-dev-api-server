@@ -14,7 +14,7 @@ import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimePar
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { getIbanListResponse } from "../iban/get-iban-list";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
-import { initiativeIdToString } from "../utils";
+import { getRandomLogoUrl, initiativeIdToString } from "../utils";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
@@ -86,9 +86,9 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
     },
     timeParameter: { timeType: TimeTypeEnum.MONTHLY }
   },
-  privacyLink: "https://google.it",
-  tcLink: "https://google.it",
-  logoURL: "https://google.it",
+  privacyLink: faker.internet.url(),
+  tcLink: faker.internet.url(),
+  logoURL: getRandomLogoUrl(),
   updateDate: faker.date.recent(1)
 });
 
