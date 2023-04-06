@@ -1,8 +1,7 @@
-import { pipe } from "fp-ts/lib/function";
+import faker from "faker/locale/it";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { IDPayInitiativeID, IDPayServiceID } from "./types";
-import { Iban } from "../../../../generated/definitions/backend/Iban";
-import { PatternString } from "@pagopa/ts-commons/lib/strings";
 
 const NUMBER_PATTERN = /\d+/;
 
@@ -34,3 +33,10 @@ export const initiativeIdFromString = (
     O.fromNullable,
     O.map(match => parseInt(match[1], 10))
   );
+
+export const getRandomLogoUrl = () =>
+  [
+    "https://i.ibb.co/gjML1zH/bonus-logo.png",
+    "https://i.ibb.co/gPJbVvq/logo-Bonus-Cashback-White.png",
+    "https://i.ibb.co/VYg1KZH/vacanze.png"
+  ][faker.datatype.number({ min: 0, max: 2 })];
