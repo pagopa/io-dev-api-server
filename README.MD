@@ -53,7 +53,7 @@ $ cd io-dev-api-server
 # Install node with nodenv, the returned version should match the one in the .node-version file
 $ nodenv install && nodenv version
 
-#Install yarn and rehash to install shims
+# Install yarn and rehash to install shims
 $ npm install -g yarn && nodenv rehash
 
 # Install dependencies 
@@ -67,7 +67,7 @@ $ yarn generate
 # Start the server
 $ yarn start
 ```
-***Note***: The default port (3000) can be changed in the server.ts file.
+***Note***: The default port (3000) can be changed in the [server.ts] file.
 ## Docker setup
 A [Docker](https://www.docker.com/get-started) image is also available for local dev purposes. From your command line, run:
 ```bash
@@ -84,7 +84,7 @@ $ docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api
 ```
 
 ## Usage with the app
-Run the server, either locally on via Docker. Then, in your command line type:
+Run the server, either locally on via Docker. Then, from your command line:
 ```bash
 # CD into the app folder
 $ cd io-app
