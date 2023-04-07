@@ -16,9 +16,6 @@
 
 ## Table of contents
 * [Features](#features)
-   * [Login](#login)
-   * [Session](#session)
-   * [Profile](#login)
 * [Local setup](#local-setup)
 * [Docker setup](#docker-setup)
 * [Usage with the app](#usage-with-the-app)
