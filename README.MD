@@ -41,25 +41,58 @@ The test server has been created to make the app development process easier and 
 
 
 ## Local setup
-The node version used in this project is stored in [.node-version](.node-version). 
-We recommend the use of a virtual environment, nodenv is the chosen virtual environment for this guide, along with yarn for managing depencendices:
-   1. Clone this repository and CD into it;
-   2. Install dependencies by running `yarn install`;
-   3. Generate API definitions by running `yarn generate`;
-   4. Start the sterver by running `yarn start`.
+We recommend the use of a virtual environment, [nodenv](https://github.com/nodenv/nodenv) is the chosen virtual environment for this guide, along with [yarn](https://yarnpkg.com/) for managing depencendices. From your command line, run:
 
-Note: commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change. The default port (3000) can be changed in the [server.ts](src/utils/server.ts) file.
+```bash
+# Clone this repository
+$ git clone https://github.com/pagopa/io-dev-api-server
 
+# CD into the repository
+$ cd io-dev-api-server
+
+# Install node with nodenv, the returned version should match the one in the .node-version file
+$ nodenv install && nodenv version
+
+#Install yarn and rehash to install shims
+$ npm install -g yarn && nodenv rehash
+
+# Install dependencies 
+# Run this only while setting up and when dependencies change
+$ yarn install
+
+# Generate API definitions
+# Run this only while setting up and when io-backend specs change
+$ yarn generate
+
+# Start the server
+$ yarn start
+```
+***Note***: The default port (3000) can be changed in the server.ts file.
 ## Docker setup
-A docker image is also available for local dev purposes by following these simple steps:
-   1. Install [docker](https://www.docker.com/get-started) on your system;
-   2. Login into the github packages registry by running `docker login -u <YOUR_GITHUB_USERNAME> -p <GITHUB_TOKEN> docker.pkg.github.com`. You can follow [these instructions](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages) for further assistance;
-   3. Point your browser to `https://github.com/pagopa/io-dev-api-server/packages` and choose the package version (namely `<CHOSEN_PACKAGE_VERSION>`) you are looking for. We recommend using the latest version;
-   4. Copy the `docker pull...` command and paste it into your terminal;
-   5. After the docker daemon finishes downloading the image, run this command: `docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:<CHOSEN_PACKAGE_VERSION>`
-   6. The server should be running at `http://127.0.0.1:<YOUR_HOST_PORT>/`.
+A [Docker](https://www.docker.com/get-started) image is also available for local dev purposes. From your command line, run:
+```bash
+# Login into the github packages registry
+# Reference: https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages
+$ docker login -u <YOUR_GITHUB_USERNAME> -p <GITHUB_TOKEN> docker.pkg.github.com
+
+# Pull the latest Docker image 
+# Other versions can be found here: https://github.com/pagopa/io-dev-api-server/pkgs/container/io-dev-api-server%2Fio-dev-api-server
+$ docker pull ghcr.io/pagopa/io-dev-api-server/io-dev-api-server:latest
+
+# Run the Docker container at http://127.0.0.1:<YOUR_HOST_PORT>/
+$ docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:latest`
+```
 
 ## Usage with the app
-   1. Run the server, either locally on via Docker;
-   2. In the app project folder run `cp .env.local .env` (it is configured with a server running in the same machine of the device, you can edit the server endpoint on your needs);
-   3. Run the app `yarn run-ios` or `yarn run-android`;
+Run the server, either locally on via Docker. Then, in your command line type:
+```bash
+# CD into the app folder
+$ cd io-app
+
+# Use the local env 
+# You can edit the server endpoint on your needs
+$ cp .env.local .env 
+
+# Run the app on iOS or Android
+$ yarn run-ios (or yarn-run-android)
+```
