@@ -67,7 +67,7 @@ $ yarn generate
 # Start the server
 $ yarn start
 ```
-***Note***: The default port (3000) can be changed in the [server.ts] file.
+***Note***: The default port (3000) can be changed in the [server.ts](src/utils/server.ts) file.
 ## Docker setup
 A [Docker](https://www.docker.com/get-started) image is also available for local dev purposes. From your command line, run:
 ```bash
