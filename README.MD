@@ -1,69 +1,98 @@
-[![codecov](https://codecov.io/gh/pagopa/io-dev-api-server/branch/master/graph/badge.svg)](https://codecov.io/gh/pagopa/io-dev-api-server)
+<h1 align="center">
+  <img src="assets/imgs/readme/main_screen.png" alt="io-dev-api-server"></a>
+  <br>
+  IO dev API server
+  <br>
+</h1>
 
-# IO dev API server
+<h4 align="center">Mock server of <a href="https://github.com/teamdigitale/io-backend">io-backend</a> for <a href=https://github.com/teamdigitale/io-app">io-app</a> development.</h4>
 
-It's a simple mock server of [io-backend](https://github.com/teamdigitale/io-backend) for [io-app](https://github.com/teamdigitale/io-app).<br/>
-It has been created to make the app development process easier and more productive.<br/>
-With this local server the developer can: 
+<p align="center">
+  <a href="https://app.codecov.io/gh/pagopa/io-dev-api-server">
+    <img src="https://codecov.io/gh/pagopa/io-dev-api-server/branch/master/graph/badge.svg"
+         alt="codecov">
+  </a>
+</p>
 
-- **run it on local machine** (no internet connection needed)
-- **change response payloads** to test and stress the app
-- **add new paths and handlers** to integrate and test features not yet released
-- **understand flows and data exchanged** between app and backend
+## Table of contents
+* [Features](#features)
+* [Local setup](#local-setup)
+* [Docker setup](#docker-setup)
+* [Usage with the app](#usage-with-the-app)
 
-<img src="assets/imgs/tour.gif" height="600" />
+## Features
+The test server has been created to make the app development process easier and more productive. Therefore you can:
+- Run it on local machines without an internet connection;
+- Change response payloads to test and stress the app;
+- Add new paths and handlers to integrate and test features not yet released;
+- Understand flows and data exchanged between app and backend.
 
-### Installation
+<details>
+   <summary>Login</summary>
+   The current login implementation by-passes SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user will be immediately logged in.
+   <br><br>
+   <img src="assets/imgs/readme/login.gif" height="400" />
+</details>
 
-On macOS and Linux we recommend the use of nodenv for managing multiple versions of NodeJS.
-The node version used in this project is stored in [.node-version](.node-version).
-
-#### Setup
-
-1. clone this repository
-1. install all packages needed:<br/>
-   `yarn install`
-1. generate API definitions:<br/>
-   `yarn generate`
-1. you are ready! start the server:<br/>
-   `yarn start`
-
-Commands _**2**_ and _**3**_ should be executed on the first setup and only when io-backend specs change
-
-#### Docker setup
-
-A docker image is also available for local dev purposes by following these simple steps:
-
-1. Be sure you have [docker](https://www.docker.com/get-started) installed on your system
-1. login into the github packages registry by running `docker login -u <YOUR_GITHUB_USERNAME> -p <GITHUB_TOKEN> docker.pkg.github.com` (The configuration is pretty simple and fast, you can follow [these instructions](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages))
-1. point your browser to: https://github.com/pagopa/io-dev-api-server/packages and choose the package version (namely `<CHOSEN_PACKAGE_VERSION>`) you are looking for. Please note that latest version is recommended.
-1. copy the Pull image from the command line and paste it into a terminal
-1. after docker daemon finish to download image run this command: `docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:<CHOSEN_PACKAGE_VERSION>`
-1. enjoy **io-dev-api-server** on `http://127.0.0.1:<YOUR_HOST_PORT>/`
-
-#### Run [IO-App](https://github.com/teamdigitale/io-app) with this server
-
-1. run the server `yarn start`
-1. in the app project folder run `cp .env.local .env` (it is configured with a server running in the same machine of the device. You can edit the server endpoint on your needs)
-1. run `yarn postinstall` (update config file injected into the app)
-1. run the app `yarn run-ios` or `yarn run-android`
-
-> you could edit the [server port](server.ts) (**serverPort** - default is 3000)
+<details>
+   <summary>Session</summary>
+   When the client asks for a session, a valid session is always returned. Of course the developer could implement a logic to return an expired session response to test different scenarios.
+</details>
 
 
-#### Login
+## Local setup
+We recommend the use of a virtual environment, [nodenv](https://github.com/nodenv/nodenv) is the chosen virtual environment for this guide, along with [yarn](https://yarnpkg.com/) for managing depencendices. From your command line, run:
 
-The current login implementation by-passes SPID authentication: when the user asks for a login with a certain SPID Identity Provider, the server responses with a redirect containing the session token. The user will be immediately logged in.
+```bash
+# Clone this repository
+$ git clone https://github.com/pagopa/io-dev-api-server
 
-<img src="assets/imgs/login.gif" height="600" />
+# CD into the repository
+$ cd io-dev-api-server
 
-#### Session
+# Install node with nodenv, the returned version should match the one in the .node-version file
+$ nodenv install && nodenv version
 
-When the client asks for a session, a valid session is always returned. Of course the developer could implement a logic to return an expired session response to test different scenarios.
+# Install yarn and rehash to install shims
+$ npm install -g yarn && nodenv rehash
 
-#### Profile
+# Install dependencies 
+# Run this only while setting up and when dependencies change
+$ yarn install
 
-The profile is [mocked](payloads/profile.ts) (hard-coded). If you want the server reponses a different profile, just edit it!
-<br/>On upsert profile request the server acts like a mirror: it gives back the updated profile (sent by the client) increasing the profile version
+# Generate API definitions
+# Run this only while setting up and when io-backend specs change
+$ yarn generate
 
-<img src="assets/imgs/profile.gif" height="600" />
+# Start the server
+$ yarn start
+```
+***Note***: The default port (3000) can be changed in the [server.ts](src/utils/server.ts) file.
+## Docker setup
+A [Docker](https://www.docker.com/get-started) image is also available for local dev purposes. From your command line, run:
+```bash
+# Login into the github packages registry
+# Reference: https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages
+$ docker login -u <YOUR_GITHUB_USERNAME> -p <GITHUB_TOKEN> docker.pkg.github.com
+
+# Pull the latest Docker image 
+# Other versions can be found here: https://github.com/pagopa/io-dev-api-server/pkgs/container/io-dev-api-server%2Fio-dev-api-server
+$ docker pull ghcr.io/pagopa/io-dev-api-server/io-dev-api-server:latest
+
+# Run the Docker container at http://127.0.0.1:<YOUR_HOST_PORT>/
+$ docker run -d -p <YOUR_HOST_PORT>:3000 docker.pkg.github.com/pagopa/io-dev-api-server/io-dev-api-server:latest`
+```
+
+## Usage with the app
+Run the server, either locally on via Docker. Then, from your command line:
+```bash
+# CD into the app folder
+$ cd io-app
+
+# Use the local env 
+# You can edit the server endpoint on your needs
+$ cp .env.local .env 
+
+# Run the app on iOS or Android
+$ yarn run-ios (or yarn-run-android)
+```
