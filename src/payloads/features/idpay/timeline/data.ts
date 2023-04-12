@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { ulid } from "ulid";
 import {
   IbanOperationDTO,
