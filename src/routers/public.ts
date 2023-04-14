@@ -72,12 +72,13 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
   handleLollipopLoginRedirect(res, samlRequest, thumbprint);
 });
 
-const toResponseMessage = (message: string) => {
-  return { message };
-};
 addHandler(publicRouter, "post", "/first-lollipop/sign", async (req, res) => {
   const headers = req.headers;
   const publicKey = getPublicKey();
+
+  const toResponseMessage = (message: string) => {
+    return { message };
+  };
 
   if (!publicKey) {
     return res.status(500).send(toResponseMessage("Public key not found"));
