@@ -1,3 +1,4 @@
+import { getProblemJson } from "./../payloads/error";
 /**
  * this router serves all public API (those ones don't need session)
  */
@@ -77,12 +78,8 @@ addHandler(publicRouter, "post", "/first-lollipop/sign", async (req, res) => {
   const headers = req.headers;
   const publicKey = getPublicKey();
 
-  const toResponseMessage = (message: string) => {
-    return { message };
-  };
-
   if (!publicKey) {
-    return res.status(500).send(toResponseMessage("Public key not found"));
+    return res.status(500).send(getProblemJson(500, "Public key not found"));
   }
 
   const requestOption = {
@@ -111,10 +108,10 @@ addHandler(publicRouter, "post", "/first-lollipop/sign", async (req, res) => {
     if (verification) {
       return res.send({ response: getAssertionRef() });
     } else {
-      return res.status(403).send(toResponseMessage("Invalid signature"));
+      return res.status(400).send(getProblemJson(400, "Invalid signature"));
     }
   } catch (e) {
-    return res.status(500).send(toResponseMessage(JSON.stringify(e)));
+    return res.status(500).send(getProblemJson(500, JSON.stringify(e)));
   }
 });
 
