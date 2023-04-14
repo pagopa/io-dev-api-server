@@ -1,11 +1,7 @@
 /**
  * this router serves all public API (those ones don't need session)
  */
-import {
-  SemverFromFromUserAgentString,
-  UserAgentSemver,
-  UserAgentSemverValid
-} from "@pagopa/ts-commons/lib/http-user-agent";
+import { UserAgentSemver } from "@pagopa/ts-commons/lib/http-user-agent";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
 import { Response, Router } from "express";
@@ -29,16 +25,19 @@ import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
-import { setAssertionRef } from "../persistence/lollipop";
+import {
+  getPublicKey,
+  setAssertionRef,
+  setPublicKey
+} from "../persistence/lollipop";
+import { verifySignatureHeader } from "@mattrglobal/http-signatures";
+import { signAlgorithmToVerifierMap } from "../utils/httpSignature";
+import { serverUrl } from "../utils/server";
 
 export const publicRouter = Router();
 
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
-const ACCEPTED_LOLLIPOP_USER_AGENT = {
-  clientName: "IO-App",
-  clientVersion: "2.23.0"
-} as UserAgentSemver;
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
@@ -64,12 +63,57 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
   );
 
   setAssertionRef(thumbprint);
+  setPublicKey(jwkPK.right);
 
   const samlRequest = getSamlRequest(
     DEFAULT_LOLLIPOP_HASH_ALGORITHM,
     thumbprint
   );
   handleLollipopLoginRedirect(res, samlRequest, thumbprint);
+});
+
+const toResponseMessage = (message: string) => {
+  return { message };
+};
+addHandler(publicRouter, "post", "/first-lollipop/sign", async (req, res) => {
+  const headers = req.headers;
+  const publicKey = getPublicKey();
+
+  if (!publicKey) {
+    return res.status(500).send(toResponseMessage("Public key not found"));
+  }
+
+  const requestOption = {
+    verifier: {
+      verify:
+        publicKey.kty === "EC"
+          ? signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(publicKey)
+          : signAlgorithmToVerifierMap["rsa-pss-sha256"].verify(publicKey)
+    },
+    url: serverUrl,
+    method: req.method,
+    httpHeaders:
+      req.body["message"] === "INVALID"
+        ? { ...headers, "x-pagopa-lollipop-original-method": "xxx" }
+        : headers,
+    body: req.body,
+    verifyExpiry: false
+  };
+
+  try {
+    const verificationResult = await verifySignatureHeader(requestOption);
+    const verification = verificationResult.unwrapOr({
+      verified: false
+    }).verified;
+
+    if (verification) {
+      return res.send({ body: req.body, result: "verified" });
+    } else {
+      return res.status(403).send(toResponseMessage("Invalid signature"));
+    }
+  } catch (e) {
+    return res.status(500).send(toResponseMessage(JSON.stringify(e)));
+  }
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
