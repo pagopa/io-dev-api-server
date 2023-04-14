@@ -26,6 +26,7 @@ import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
 import {
+  getAssertionRef,
   getPublicKey,
   setAssertionRef,
   setPublicKey
@@ -108,7 +109,7 @@ addHandler(publicRouter, "post", "/first-lollipop/sign", async (req, res) => {
     }).verified;
 
     if (verification) {
-      return res.send({ body: req.body, result: "verified" });
+      return res.send({ response: getAssertionRef() });
     } else {
       return res.status(403).send(toResponseMessage("Invalid signature"));
     }
