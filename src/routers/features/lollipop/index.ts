@@ -69,7 +69,7 @@ addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) =>
             e => e as Error
           ),
           TE.foldW(
-            e => toTaskError(res, 500, JSON.stringify(e)),
+            e => toTaskError(res, 500, e.message, JSON.stringify(e.stack)),
             verificationResult =>
               pipe(
                 verificationResult.verified,
