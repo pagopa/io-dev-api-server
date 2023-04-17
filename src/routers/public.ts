@@ -2,7 +2,6 @@ import { getProblemJson } from "./../payloads/error";
 /**
  * this router serves all public API (those ones don't need session)
  */
-import { UserAgentSemver } from "@pagopa/ts-commons/lib/http-user-agent";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
 import { Response, Router } from "express";
@@ -26,15 +25,7 @@ import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
-import {
-  getAssertionRef,
-  getPublicKey,
-  setAssertionRef,
-  setPublicKey
-} from "../persistence/lollipop";
-import { verifySignatureHeader } from "@mattrglobal/http-signatures";
-import { signAlgorithmToVerifierMap } from "../utils/httpSignature";
-import { serverUrl } from "../utils/server";
+import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
 
 export const publicRouter = Router();
 
@@ -72,47 +63,6 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     thumbprint
   );
   handleLollipopLoginRedirect(res, samlRequest, thumbprint);
-});
-
-addHandler(publicRouter, "post", "/first-lollipop/sign", async (req, res) => {
-  const headers = req.headers;
-  const publicKey = getPublicKey();
-
-  if (!publicKey) {
-    return res.status(500).send(getProblemJson(500, "Public key not found"));
-  }
-
-  const requestOption = {
-    verifier: {
-      verify:
-        publicKey.kty === "EC"
-          ? signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(publicKey)
-          : signAlgorithmToVerifierMap["rsa-pss-sha256"].verify(publicKey)
-    },
-    url: serverUrl,
-    method: req.method,
-    httpHeaders:
-      req.body["message"] === "INVALID"
-        ? { ...headers, "x-pagopa-lollipop-original-method": "xxx" }
-        : headers,
-    body: req.body,
-    verifyExpiry: false
-  };
-
-  try {
-    const verificationResult = await verifySignatureHeader(requestOption);
-    const verification = verificationResult.unwrapOr({
-      verified: false
-    }).verified;
-
-    if (verification) {
-      return res.send({ response: getAssertionRef() });
-    } else {
-      return res.status(400).send(getProblemJson(400, "Invalid signature"));
-    }
-  } catch (e) {
-    return res.status(500).send(getProblemJson(500, JSON.stringify(e)));
-  }
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {

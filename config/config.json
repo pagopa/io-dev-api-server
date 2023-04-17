@@ -3,5 +3,15 @@
     "attrs": {
       "name": "Gian Maria"
     }
+  },
+  "messages": {
+    "fci": 
+    { 
+      "waitForSignatureCount": 1, 
+      "rejectedCount": 1,
+      "expiredCount": 1, 
+      "waitForQtspCount": 1, 
+      "signedCount": 1 
+    } 
   }
 }
