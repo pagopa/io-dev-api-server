@@ -1,8 +1,14 @@
+import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import * as T from "fp-ts/lib/Task";
+import * as B from "fp-ts/lib/boolean";
 import { getProblemJson } from "../../../payloads/error";
+import * as jose from "jose";
 /**
  * this router serves lollipop API
  */
-import { Router } from "express";
+import { Request, Router } from "express";
 
 import { addHandler } from "../../../payloads/response";
 import { getAssertionRef, getPublicKey } from "../../../persistence/lollipop";
@@ -14,15 +20,9 @@ export const lollipopRouter = Router();
 
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 
-addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) => {
+const toRequestOption = (req: Request, publicKey: jose.JWK) => {
   const headers = req.headers;
-  const publicKey = getPublicKey();
-
-  if (!publicKey) {
-    return res.status(500).send(getProblemJson(500, "Public key not found"));
-  }
-
-  const requestOption = {
+  return {
     verifier: {
       verify:
         publicKey.kty === "EC"
@@ -38,19 +38,44 @@ addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) => {
     body: req.body,
     verifyExpiry: false
   };
+};
 
-  try {
-    const verificationResult = await verifySignatureHeader(requestOption);
-    const verification = verificationResult.unwrapOr({
-      verified: false
-    }).verified;
-
-    if (verification) {
-      return res.send({ response: getAssertionRef() });
-    } else {
-      return res.status(400).send(getProblemJson(400, "Invalid signature"));
-    }
-  } catch (e) {
-    return res.status(500).send(getProblemJson(500, JSON.stringify(e)));
-  }
-});
+addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) =>
+  pipe(
+    getPublicKey(),
+    O.fromNullable,
+    O.foldW(
+      () =>
+        T.of(res.status(500).send(getProblemJson(500, "Public key not found"))),
+      publicKey =>
+        pipe(
+          TE.tryCatch(
+            () =>
+              verifySignatureHeader(toRequestOption(req, publicKey)).unwrapOr({
+                verified: false
+              }),
+            e => e as Error
+          ),
+          TE.foldW(
+            e =>
+              T.of(() =>
+                res.status(500).send(getProblemJson(500, JSON.stringify(e)))
+              ),
+            verificationResult =>
+              pipe(
+                verificationResult.verified,
+                B.fold(
+                  () =>
+                    T.of(
+                      res
+                        .status(400)
+                        .send(getProblemJson(400, "Invalid signature"))
+                    ),
+                  () => T.of(res.send({ response: getAssertionRef() }))
+                )
+              )
+          )
+        )
+    )
+  )()
+);
