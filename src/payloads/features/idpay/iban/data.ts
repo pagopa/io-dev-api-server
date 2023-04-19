@@ -14,10 +14,3 @@ export const ibanList: ReadonlyArray<IbanDTO> = Array.from(
   { length: ioDevServerConfig.features.idpay.ibanSize },
   () => createRandomIbanDTO()
 );
-
-export const getRandomIban = (): IbanDTO | undefined => {
-  if (ibanList.length === 0) {
-    return undefined;
-  }
-  return ibanList[faker.datatype.number(ibanList.length)];
-};

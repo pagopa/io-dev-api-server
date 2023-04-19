@@ -33,7 +33,7 @@ import {
 import { CardInfo } from "../../../../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { getWalletV2 } from "../../../../routers/walletsV2";
-import { getRandomIban, ibanList } from "../iban/data";
+import { ibanList } from "../iban/data";
 import { IDPayInitiativeID as InitiativeId } from "../types";
 
 const wallet: WalletV2 = getWalletV2()[0];
@@ -120,7 +120,7 @@ const addIban: IbanOperationDTO = {
   operationDate: new Date(),
   operationId: ulid(),
   channel: "",
-  iban: getRandomIban()?.iban || ""
+  iban: ibanList[0]?.iban || ""
 };
 
 const deleteInstrument: InstrumentOperationDTO = {
