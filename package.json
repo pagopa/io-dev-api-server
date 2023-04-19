@@ -78,7 +78,6 @@
     "crypto": "^1.0.1",
     "date-fns": "^2.27.0",
     "express": "^4.17.3",
-    "faker": "^5.5.3",
     "figlet": "^1.5.2",
     "fp-ts": "^2.11.0",
     "io-ts": "^2.2.16",
@@ -97,11 +96,11 @@
     "zlib": "^1.0.5"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@pagopa/openapi-codegen-ts": "^12.0.2",
     "@types/body-parser": "^1.19.2",
     "@types/date-fns": "^2.6.0",
     "@types/express": "^4.17.13",
-    "@types/faker": "^5.5.7",
     "@types/figlet": "^1.5.4",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.178",

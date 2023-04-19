@@ -1,4 +1,4 @@
-import * as faker from "faker";
+import { faker } from "@faker-js/faker/locale/it";
 import { PublicSession } from "../../generated/definitions/backend/PublicSession";
 import { SpidLevel } from "../../generated/definitions/backend/SpidLevel";
 import { getRandomValue } from "../utils/random";

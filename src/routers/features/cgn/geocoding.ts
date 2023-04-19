@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as faker from "faker";
+import { faker } from "@faker-js/faker/locale/it";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import { AutocompleteResultItem } from "../../../../generated/definitions/cgn/geo/AutocompleteResultItem";
 import { LookupResponse } from "../../../../generated/definitions/cgn/geo/LookupResponse";

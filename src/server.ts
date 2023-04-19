@@ -37,6 +37,7 @@ import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { idpayRouter } from "./routers/features/idpay";
+import { lollipopRouter } from "./routers/features/lollipop";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -85,7 +86,8 @@ app.use(errorMiddleware);
   cdcRouter,
   fciRouter,
   pnRouter,
-  idpayRouter
+  idpayRouter,
+  lollipopRouter
 ].forEach(r => app.use(r));
 
 export default app;

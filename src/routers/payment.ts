@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
@@ -50,7 +50,7 @@ addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
-  // success response: res.json(getPaymentRequestsGetResponse(faker.random.arrayElement(services))))
+  // success response: res.json(getPaymentRequestsGetResponse(faker.helpers.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
   (_, res) => {
     pipe(
@@ -58,7 +58,7 @@ addHandler(
       O.fold(
         () => {
           paymentRequest = getPaymentRequestsGetResponse(
-            faker.random.arrayElement(services)
+            faker.helpers.arrayElement(services)
           );
           res.json(paymentRequest);
         },

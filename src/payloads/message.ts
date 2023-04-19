@@ -1,5 +1,5 @@
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import * as faker from "faker";
+import { faker } from "@faker-js/faker/locale/it";
 import { slice } from "lodash";
 import * as path from "path";
 import sha256 from "sha256";

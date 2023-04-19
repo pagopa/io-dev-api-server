@@ -1,6 +1,6 @@
 import { Second } from "@pagopa/ts-commons/lib/units";
 import { Router } from "express";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
@@ -43,7 +43,7 @@ const aLotOfBonus = range(1, faker.datatype.number({ min: 1, max: 3 })).map(
       dsu_request: {
         ...activeBonus.dsu_request,
         request_id: idx,
-        family_members: faker.random.arrayElements(
+        family_members: faker.helpers.arrayElements(
           familyMembers,
           familyMembersCount
         ),

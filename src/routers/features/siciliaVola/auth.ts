@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as faker from "faker";
+import { faker } from "@faker-js/faker/locale/it";
 import { addHandler } from "../../../payloads/response";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
