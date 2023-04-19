@@ -1,5 +1,8 @@
 import supertest from "supertest";
-import { ibanList } from "../../../../payloads/features/idpay/iban/data";
+import {
+  getRandomIban,
+  ibanList
+} from "../../../../payloads/features/idpay/iban/data";
 import { getIbanListResponse } from "../../../../payloads/features/idpay/iban/get-iban-list";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
@@ -16,9 +19,9 @@ describe("IDPay IBAN API", () => {
   });
   describe("GET getIban", () => {
     it("should return 200 with the requested IBAN if IBAN exists", async () => {
-      const iban = ibanList[0];
+      const iban = getRandomIban();
 
-      const response = await request.get(addIdPayPrefix(`/iban/${iban.iban}`));
+      const response = await request.get(addIdPayPrefix(`/iban/${iban?.iban}`));
       expect(response.status).toBe(200);
       expect(response.body).toStrictEqual(iban);
     });
