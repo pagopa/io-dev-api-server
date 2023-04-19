@@ -2,7 +2,7 @@ import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { DepartmentName } from "../../generated/definitions/backend/DepartmentName";
 import { NotificationChannelEnum } from "../../generated/definitions/backend/NotificationChannel";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
@@ -38,7 +38,7 @@ export const getServiceMetadata = (
     address: faker.address.streetAddress() as NonEmptyString,
     email: faker.internet.email() as NonEmptyString,
     pec: faker.internet.email() as NonEmptyString,
-    phone: faker.phone.phoneNumber() as NonEmptyString,
+    phone: faker.phone.number() as NonEmptyString,
     web_url: faker.internet.url() as NonEmptyString,
     app_android: faker.internet.url() as NonEmptyString,
     app_ios: faker.internet.url() as NonEmptyString,

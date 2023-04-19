@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { ulid } from "ulid";
 import { InitiativeDataDTO } from "../../../../../generated/definitions/idpay/InitiativeDataDTO";
 import { StatusEnum as OnboardingStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
@@ -17,17 +17,17 @@ import {
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
 import { IDPayInitiativeID, IDPayServiceID } from "../types";
-import { getRandomLogoUrl, initiativeIdToString } from "../utils";
+import { initiativeIdToString } from "../utils";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeId: ulid(),
   initiativeName: faker.company.catchPhrase(),
   description: faker.lorem.paragraphs(6),
   organizationId: ulid(),
-  organizationName: faker.company.companyName(),
+  organizationName: faker.company.name(),
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
-  logoURL: getRandomLogoUrl()
+  logoURL: faker.image.avatar()
 });
 
 const initiativeData: {

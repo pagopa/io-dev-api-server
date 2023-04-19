@@ -1,5 +1,5 @@
 import { Router } from "express";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { addHandler } from "../payloads/response";
 import { session } from "../payloads/session";
 import { getAssertionRef } from "../persistence/lollipop";

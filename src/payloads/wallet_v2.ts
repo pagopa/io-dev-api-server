@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
@@ -147,7 +147,7 @@ export const generateBancomatPay = (
           index: config.index + 1
         });
         return {
-          bankName: faker.company.companyName(),
+          bankName: faker.company.name(),
           instituteCode: shuffledAbis[idx % shuffledAbis.length].abi,
           numberObfuscated: "+3934" + "*".repeat(7) + suffix,
           paymentInstruments: [],
@@ -221,7 +221,7 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
     abi: abiCodes[
       faker.datatype.number({ min: 0, max: abiCodes.length - 1 })
     ].replace(".png", ""),
-    name: faker.company.companyName()
+    name: faker.company.name()
   };
 });
 
@@ -255,7 +255,7 @@ export const generateWalletV2FromCard = (
     : faker.date.future();
   const ccBrand = getRandomValue(
     CreditCardBrandEnum.MAESTRO,
-    faker.random.arrayElement(creditCardBrands),
+    faker.helpers.arrayElement(creditCardBrands),
     "wallet"
   );
 

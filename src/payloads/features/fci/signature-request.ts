@@ -1,6 +1,6 @@
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { ulid } from "ulid";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { TypeEnum as ClausesTypeEnum } from "../../../../generated/definitions/fci/Clause";
 import { DocumentDetailView } from "../../../../generated/definitions/fci/DocumentDetailView";
 import { DocumentMetadata } from "../../../../generated/definitions/fci/DocumentMetadata";

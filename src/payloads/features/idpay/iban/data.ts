@@ -1,10 +1,10 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { IbanDTO } from "../../../../../generated/definitions/idpay/IbanDTO";
 
 const createRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban(),
   checkIbanStatus: faker.datatype.string(),
-  holderBank: faker.company.companyName(),
+  holderBank: faker.company.name(),
   description: faker.company.bs(),
   channel: faker.datatype.string()
 });
