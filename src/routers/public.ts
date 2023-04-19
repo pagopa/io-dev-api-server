@@ -1,11 +1,7 @@
+import { getProblemJson } from "./../payloads/error";
 /**
  * this router serves all public API (those ones don't need session)
  */
-import {
-  SemverFromFromUserAgentString,
-  UserAgentSemver,
-  UserAgentSemverValid
-} from "@pagopa/ts-commons/lib/http-user-agent";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
 import { Response, Router } from "express";
@@ -29,16 +25,12 @@ import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
-import { setAssertionRef } from "../persistence/lollipop";
+import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
 
 export const publicRouter = Router();
 
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
-const ACCEPTED_LOLLIPOP_USER_AGENT = {
-  clientName: "IO-App",
-  clientVersion: "2.23.0"
-} as UserAgentSemver;
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
@@ -64,6 +56,7 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
   );
 
   setAssertionRef(thumbprint);
+  setPublicKey(jwkPK.right);
 
   const samlRequest = getSamlRequest(
     DEFAULT_LOLLIPOP_HASH_ALGORITHM,
