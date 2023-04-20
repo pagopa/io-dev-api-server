@@ -2,7 +2,12 @@ import { faker } from "@faker-js/faker/locale/it";
 import { ulid } from "ulid";
 import { InitiativeDataDTO } from "../../../../../generated/definitions/idpay/InitiativeDataDTO";
 import { StatusEnum as OnboardingStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { PDNDCriteriaDTO } from "../../../../../generated/definitions/idpay/PDNDCriteriaDTO";
+import {
+  AuthorityEnum,
+  CodeEnum,
+  OperatorEnum,
+  PDNDCriteriaDTO
+} from "../../../../../generated/definitions/idpay/PDNDCriteriaDTO";
 import {
   DetailsEnum,
   PrerequisitesErrorDTO
@@ -18,6 +23,7 @@ import {
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
 import { IDPayInitiativeID, IDPayServiceID } from "../types";
 import { initiativeIdToString } from "../utils";
+import { getRandomEnumValue } from "../../../utils/random";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   initiativeId: ulid(),
@@ -131,18 +137,27 @@ const onboardingStatuses: {
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   {
-    code: ulid(),
-    authority: faker.random.words(1),
+    code: CodeEnum.BIRTHDATE,
+    authority: AuthorityEnum.INPS,
     description: "Data di nascita",
+    operator: getRandomEnumValue(OperatorEnum),
     value: faker.date
       .past(30)
       .getFullYear()
       .toString()
   },
   {
-    code: ulid(),
-    authority: faker.random.words(1),
+    code: CodeEnum.ISEE,
+    authority: AuthorityEnum.AGID,
+    description: "ISEE",
+    operator: getRandomEnumValue(OperatorEnum),
+    value: faker.finance.amount(10000, 100000)
+  },
+  {
+    code: CodeEnum.RESIDENCE,
+    authority: AuthorityEnum.AGID,
     description: "Residenza",
+    operator: getRandomEnumValue(OperatorEnum),
     value: faker.address.country()
   }
 ];
