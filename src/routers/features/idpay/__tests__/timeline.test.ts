@@ -1,6 +1,4 @@
 import supertest from "supertest";
-import { ibanList } from "../../../../payloads/features/idpay/iban/data";
-import { getIbanListResponse } from "../../../../payloads/features/idpay/iban/get-iban-list";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
 import { IDPayInitiativeID } from "../../../../payloads/features/idpay/types";

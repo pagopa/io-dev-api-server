@@ -12,7 +12,6 @@ import {
 } from "../../../../../generated/definitions/idpay/InstrumentDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { getIbanListResponse } from "../iban/get-iban-list";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
 import { ibanList } from "../iban/data";

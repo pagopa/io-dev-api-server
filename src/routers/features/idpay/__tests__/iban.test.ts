@@ -11,7 +11,7 @@ describe("IDPay IBAN API", () => {
     it("should return 200 with IBAN list", async () => {
       const response = await request.get(addIdPayPrefix("/iban"));
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual(getIbanListResponse);
+      expect(response.body).toStrictEqual(getIbanListResponse());
     });
   });
   describe("GET getIban", () => {
