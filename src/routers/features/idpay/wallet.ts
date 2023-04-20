@@ -114,7 +114,7 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
               pipe(
                 Iban.decode(iban),
                 E.fold(
-                  () => res.status(404).json(getIdPayError(403)),
+                  () => res.status(403).json(getIdPayError(403)),
                   () => {
                     addIbanToInitiative(initiativeId, iban);
                     storeIban(iban, description);
