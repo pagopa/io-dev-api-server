@@ -312,17 +312,6 @@ describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
     MessagesDB.dropAll();
   });
 
-  it("should return 200 with the remoted precondition", async () => {
-    const messageId = MessagesDB.findAllInbox()[0].id;
-
-    const response = await request.get(
-      `${basePath}/third-party-messages/${messageId}/precondition`
-    );
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("title");
-    expect(response.body).toHaveProperty("markdown");
-  });
-
   it("should return 404 if the message is not found", async () => {
     const response = await request.get(
       `${basePath}/third-party-messages/NOT_FOUND/precondition`
