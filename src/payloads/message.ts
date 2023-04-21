@@ -34,6 +34,8 @@ import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { currentProfile } from "./profile";
 import { pnServiceId } from "./services/special";
+import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
+import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -375,3 +377,9 @@ export const getRemoteAttachments = (
   );
   return thirdPartyAttachmentFromAbsolutePathArray(slicedRemoteAttachmentFiles);
 };
+
+export const getThirdPartyMessagePrecondition = (): ThirdPartyMessagePrecondition =>
+  validatePayload(ThirdPartyMessagePrecondition, {
+    title: "Questo messaggio contiene una comunicazione a valore legale",
+    markdown: thirdPartyMessagePreconditionMarkdown
+  });

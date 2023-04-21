@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import { identity, pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
 import { match, not, __ } from "ts-pattern";
@@ -10,7 +10,11 @@ import { PublicMessage } from "../../generated/definitions/backend/PublicMessage
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
-import { defaultContentType, getCategory } from "../payloads/message";
+import {
+  defaultContentType,
+  getCategory,
+  getThirdPartyMessagePrecondition
+} from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
@@ -367,5 +371,40 @@ addHandler(
     );
     sendFile(attachmentAbsolutePath, res);
   },
+  3000
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id/precondition"),
+  (req, res) =>
+    pipe(
+      req.params.id,
+      MessagesDB.findOneById,
+      O.fromNullable,
+      O.fold(
+        () => res.status(404).json(getProblemJson(404, "message not found")),
+        message =>
+          pipe(
+            message,
+            getCategory,
+            O.fromNullable,
+            O.chainNullableK(category => category.tag),
+            // we must replace this check with a more generic one
+            O.map(tag => tag === PNCategoryTagEnum.PN),
+            O.chain(O.fromPredicate(identity)),
+            O.fold(
+              () =>
+                res
+                  .status(500)
+                  .json(
+                    getProblemJson(500, "requested message is not of pn type")
+                  ),
+              () => res.status(200).json(getThirdPartyMessagePrecondition())
+            )
+          )
+      )
+    ),
   3000
 );
