@@ -5,7 +5,7 @@ import { getIbanListResponse } from "../../../payloads/features/idpay/iban/get-i
 import { addIdPayHandler } from "./router";
 
 addIdPayHandler("get", "/iban", (_, res) =>
-  res.status(200).json(getIbanListResponse)
+  res.status(200).json(getIbanListResponse())
 );
 
 addIdPayHandler("get", "/iban/:iban", (req, res) =>
