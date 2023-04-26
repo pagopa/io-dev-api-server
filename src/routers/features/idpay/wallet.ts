@@ -1,7 +1,9 @@
 import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
 import { flow, pipe } from "fp-ts/lib/function";
 import { IbanPutDTO } from "../../../../generated/definitions/idpay/IbanPutDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
+import { storeIban } from "../../../payloads/features/idpay/iban/data";
 import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
 import { initiativeIdFromString } from "../../../payloads/features/idpay/utils";
 import {
@@ -11,13 +13,14 @@ import {
   unsubscribeFromInitiative
 } from "../../../payloads/features/idpay/wallet/data";
 import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/wallet/get-initiative-beneficiary-detail";
+import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/wallet/get-initiatives-with-instrument";
+import { getInstrumentListResponse } from "../../../payloads/features/idpay/wallet/get-instrument-list";
 import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-wallet";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
-import { addIdPayHandler } from "./router";
-import { getInstrumentListResponse } from "../../../payloads/features/idpay/wallet/get-instrument-list";
 import { getWalletStatusResponse } from "../../../payloads/features/idpay/wallet/get-wallet-status";
-import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/wallet/get-initiatives-with-instrument";
 import { getWalletV2 } from "../../walletsV2";
+import { addIdPayHandler } from "./router";
+import { Iban } from "../../../../generated/definitions/backend/Iban";
 
 const initiativeIdExists = (id: IDPayInitiativeID) =>
   pipe(
@@ -107,10 +110,18 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
           O.fromEither,
           O.fold(
             () => res.status(400).json(getIdPayError(400)),
-            ({ iban }) => {
-              addIbanToInitiative(initiativeId, iban);
-              return res.sendStatus(200);
-            }
+            ({ iban, description }) =>
+              pipe(
+                Iban.decode(iban),
+                E.fold(
+                  () => res.status(403).json(getIdPayError(403)),
+                  () => {
+                    addIbanToInitiative(initiativeId, iban);
+                    storeIban(iban, description);
+                    return res.sendStatus(200);
+                  }
+                )
+              )
           )
         )
     )

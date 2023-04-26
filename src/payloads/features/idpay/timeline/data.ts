@@ -120,7 +120,7 @@ const addIban: IbanOperationDTO = {
   operationDate: new Date(),
   operationId: ulid(),
   channel: "",
-  iban: ibanList[0].iban
+  iban: ibanList[0]?.iban || ""
 };
 
 const deleteInstrument: InstrumentOperationDTO = {
