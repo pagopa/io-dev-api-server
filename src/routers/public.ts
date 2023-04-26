@@ -91,9 +91,18 @@ addHandler(publicRouter, "get", "/info", (_, res) => res.json(backendInfo));
 addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 
 // test login
-addHandler(publicRouter, "post", "/test-login", (_, res) =>
-  res.json({ token: loginSessionToken })
-);
+addHandler(publicRouter, "post", "/test-login", (req, res) => {
+  const { _, password } = req.body;
+  if (password === "error") {
+    res.status(500).json({ token: loginSessionToken });
+  } else if (password === "delay") {
+    setTimeout(() => {
+      res.json({ token: loginSessionToken });
+    }, 3000);
+  } else {
+    res.json({ token: loginSessionToken });
+  }
+});
 
 addHandler(publicRouter, "get", "/paywebview", (_, res) => {
   sendFile("assets/imgs/how_to_login.png", res);
