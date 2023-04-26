@@ -21,6 +21,7 @@ import { GetMessagesParameters } from "../types/parameters";
 import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { services } from "./service";
+import { pnServiceId } from "../payloads/services/special";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -43,7 +44,8 @@ const getPublicMessages = (
           category: getCategory(m),
           is_read: m.is_read,
           is_archived: m.is_archived,
-          has_attachments: m.has_attachments
+          has_attachments: m.has_attachments,
+          has_precondition: senderService?.service_id === pnServiceId
         }
       : {};
     const content = withContent
