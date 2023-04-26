@@ -11,14 +11,14 @@ describe("IDPay IBAN API", () => {
     it("should return 200 with IBAN list", async () => {
       const response = await request.get(addIdPayPrefix("/iban"));
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual(getIbanListResponse);
+      expect(response.body).toStrictEqual(getIbanListResponse());
     });
   });
   describe("GET getIban", () => {
     it("should return 200 with the requested IBAN if IBAN exists", async () => {
       const iban = ibanList[0];
 
-      const response = await request.get(addIdPayPrefix(`/iban/${iban.iban}`));
+      const response = await request.get(addIdPayPrefix(`/iban/${iban?.iban}`));
       expect(response.status).toBe(200);
       expect(response.body).toStrictEqual(iban);
     });

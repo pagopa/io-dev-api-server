@@ -12,9 +12,9 @@ import {
 } from "../../../../../generated/definitions/idpay/InstrumentDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { getIbanListResponse } from "../iban/get-iban-list";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
+import { ibanList } from "../iban/data";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
@@ -53,7 +53,7 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     accrued: 70,
     refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
-    iban: getIbanListResponse.ibanList[0].iban,
+    iban: ibanList[0]?.iban || "",
     nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
   },
   [InitiativeId.UNSUBSCRIBED]: {
