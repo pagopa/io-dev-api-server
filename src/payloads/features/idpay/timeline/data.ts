@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { ulid } from "ulid";
 import {
   IbanOperationDTO,
@@ -120,7 +120,7 @@ const addIban: IbanOperationDTO = {
   operationDate: new Date(),
   operationId: ulid(),
   channel: "",
-  iban: ibanList[0].iban
+  iban: ibanList[0]?.iban || ""
 };
 
 const deleteInstrument: InstrumentOperationDTO = {

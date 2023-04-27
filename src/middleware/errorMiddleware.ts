@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
-import * as faker from "faker";
+import { faker } from "@faker-js/faker/locale/it";
 import { ioDevServerConfig } from "../config";
 
 /**
@@ -27,6 +27,6 @@ export const errorMiddleware = (
     return;
   }
   // pick an error code randomly
-  const errorCode = faker.random.arrayElement(codes);
+  const errorCode = faker.helpers.arrayElement(codes);
   res.sendStatus(errorCode);
 };

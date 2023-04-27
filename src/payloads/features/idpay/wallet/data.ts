@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { ulid } from "ulid";
 import { AccumulatedTypeEnum } from "../../../../../generated/definitions/idpay/AccumulatedAmountDTO";
 import {
@@ -12,9 +12,9 @@ import {
 } from "../../../../../generated/definitions/idpay/InstrumentDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { getIbanListResponse } from "../iban/get-iban-list";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
-import { getRandomLogoUrl, initiativeIdToString } from "../utils";
+import { initiativeIdToString } from "../utils";
+import { ibanList } from "../iban/data";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
@@ -53,7 +53,7 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     accrued: 70,
     refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
-    iban: getIbanListResponse.ibanList[0].iban,
+    iban: ibanList[0]?.iban || "",
     nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
   },
   [InitiativeId.UNSUBSCRIBED]: {
@@ -71,7 +71,7 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
 };
 
 const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
-  initiativeName: faker.company.companyName(),
+  initiativeName: faker.company.name(),
   status: "",
   description: faker.lorem.paragraphs(6),
   ruleDescription: faker.lorem.paragraphs(4),
@@ -88,7 +88,7 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   },
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
-  logoURL: getRandomLogoUrl(),
+  logoURL: faker.image.avatar(),
   updateDate: faker.date.recent(1)
 });
 

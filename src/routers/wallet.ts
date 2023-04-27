@@ -2,7 +2,7 @@
  * this router handles all requests about wallets
  */
 import { Router } from "express";
-import * as faker from "faker";
+import { faker } from "@faker-js/faker/locale/it";
 import { takeRight } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";

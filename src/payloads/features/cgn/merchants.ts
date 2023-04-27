@@ -1,6 +1,6 @@
 import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
@@ -73,7 +73,7 @@ export const onlineMerchants: OnlineMerchants = {
     return {
       discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
-      name: `${faker.company.companyName()} [Online]` as NonEmptyString,
+      name: `${faker.company.name()} [Online]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       websiteUrl: faker.internet.url() as NonEmptyString,
       newDiscounts: faker.datatype.boolean()
@@ -88,7 +88,7 @@ export const offlineMerchants: OfflineMerchants = {
     faker.seed(millis++);
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
-      name: `${faker.company.companyName()} [Offline]` as NonEmptyString,
+      name: `${faker.company.name()} [Offline]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       address: {
         full_address: faker.address.streetAddress(true) as NonEmptyString,

@@ -141,6 +141,9 @@ const defaultConfig: IoDevServerConfig = {
         allowRandomValues: true
       }
     },
+    idpay: {
+      ibanSize: 3
+    },
     allowRandomValues: true
   }
 };

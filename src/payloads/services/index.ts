@@ -2,7 +2,7 @@ import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
@@ -44,7 +44,7 @@ export const getServices = (
           11,
           "0"
         ) as OrganizationFiscalCode,
-        organization_name: `${faker.company.companyName()} [${organizationCount +
+        organization_name: `${faker.company.name()} [${organizationCount +
           1}]` as OrganizationName,
         service_metadata: {
           ...getServiceMetadata(scope),

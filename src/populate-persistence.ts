@@ -1,4 +1,4 @@
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import fs from "fs";
 import _ from "lodash";
@@ -54,7 +54,7 @@ const getServiceId = (): string => {
   }
   return getRandomValue(
     services[0].service_id,
-    faker.random.arrayElement(services).service_id,
+    faker.helpers.arrayElement(services).service_id,
     "messages"
   );
 };

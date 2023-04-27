@@ -1,6 +1,6 @@
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Router } from "express";
-import faker from "faker/locale/it";
+import { faker } from "@faker-js/faker/locale/it";
 import { reverse, sortBy } from "fp-ts/lib/Array";
 import { Ord } from "fp-ts/lib/boolean";
 import { pipe } from "fp-ts/lib/function";
