@@ -4,51 +4,43 @@
     "id": "1900004702053",
     "categories": [
       {
-        "value": "certificazione_verde_covid-19",
+        "value": "accesso_a_io",
         "description": {
-          "it-IT": "Certificazione Verde COVID-19",
-          "en-EN": "COVID-19 Green Certification"
+          "it-IT": "Accesso a IO",
+          "en-EN": "Login"
         },
         "zendeskSubCategories": {
-          "id": "360029178738",
+          "id": "8086272355217",
           "subCategories": [
             {
-              "value": "informazioni_generali",
+              "value": "accesso_spid",
               "description": {
-                "it-IT": "Informazioni generali",
-                "en-EN": "General informations"
+                "it-IT": "Non riesco ad accedere con SPID",
+                "en-EN": "Login with SPID"
               }
             },
             {
-              "value": "non_ho_ricevuto_nulla",
+              "value": "accesso_cie",
               "description": {
-                "it-IT": "Non ho ricevuto nulla",
-                "en-EN": "I have not received anything"
+                "it-IT": "Non riesco ad accedere con CIE",
+                "en-EN": "Login with CIE"
               }
             },
             {
-              "value": "problemi_tecnici_su_io",
+              "value": "ho_dimenticato_il_codice_di_sblocco",
               "description": {
-                "it-IT": "Problemi tecnici su IO",
-                "en-EN": "Technical problems on IO"
+                "it-IT": "Ho dimenticato il codice di sblocco",
+                "en-EN": "I forgot the unlock code"
               }
             }
           ]
-
-        }
-      },
-      {
-        "value": "accesso_cie",
-        "description": {
-          "it-IT": "Accesso tramite CIE",
-          "en-EN": "Access via CIE"
         }
       },
       {
         "value": "pagamenti_pagopa",
         "description": {
           "it-IT": "Pagamento pagoPA",
-          "en-EN": "PagoPA payment"
+          "en-EN": "pagoPA payment"
         }
       },
       {
@@ -59,31 +51,208 @@
         }
       },
       {
-        "value": "cashback",
+        "value": "messaggi",
         "description": {
-          "it-IT": "Cashback",
-          "en-EN": "Cashback"
+          "it-IT": "Messaggi",
+          "en-EN": "Messages"
+        },
+        "zendeskSubCategories": {
+          "id": "8086421779473",
+          "subCategories": [
+            {
+              "value": "non_riesco_a_pagare_un_avviso",
+              "description": {
+                "it-IT": "Non riesco a pagare un avviso",
+                "en-EN": "I have trouble paying a notice"
+              }
+            },
+            {
+              "value": "il_contenuto_di_un_messaggio_è_errato",
+              "description": {
+                "it-IT": "Il contenuto di un messaggio è errato",
+                "en-EN": "The content of a message is wrong"
+              }
+            },
+            {
+              "value": "il_contenuto_di_un_messaggio_è_offensivo",
+              "description": {
+                "it-IT": "Il contenuto di un messaggio è offensivo",
+                "en-EN": "The content of a message is offensive"
+              }
+            },
+            {
+              "value": "non_mi_è_arrivato_un_messaggio",
+              "description": {
+                "it-IT": "Non mi è arrivato un messaggio",
+                "en-EN": "I haven't received a message"
+              }
+            },
+            {
+              "value": "messaggi_ho_un_altro_problema",
+              "description": {
+                "it-IT": "Ho un altro problema",
+                "en-EN": "I have a different issue"
+              }
+            }
+          ]
         }
       },
       {
-        "value": "bonus_vacanze",
+        "value": "carta_giovani_nazionale",
         "description": {
-          "it-IT": "Bonus Vacanze",
-          "en-EN": "Bonus Vacanze"
+          "it-IT": "Carta Giovani Nazionale",
+          "en-EN": "Carta Giovani Nazionale"
+        },
+        "zendeskSubCategories": {
+          "id": "7840326533265",
+          "subCategories": [
+            {
+              "value": "carta_giovani_nazionale_info",
+              "description": {
+                "it-IT": "Vorrei più informazioni su come richiedere e utilizzare la Carta",
+                "en-EN": "I need more info on how to request or use the Card"
+              }
+            },
+            {
+              "value": "carta_giovani_nazionale_agevolazionespecifica",
+              "description": {
+                "it-IT": "Ho un problema con un'agevolazione specifica",
+                "en-EN": "I have an issue with a specific discount"
+              }
+            },
+            {
+              "value": "carta_giovani_nazionale_problema",
+              "description": {
+                "it-IT": "Ho un altro problema",
+                "en-EN": "I have a different issue"
+              }
+            }
+          ]
         }
       },
       {
-        "value": "accessibilità_/_usabilità",
+        "value": "firma_con_io",
         "description": {
-          "it-IT": "Accessibilità / Usabilità",
-          "en-EN": "Accessibility / Usability"
+          "it-IT": "Firma con IO",
+          "en-EN": "Firma con IO"
+        },
+        "zendeskSubCategories": {
+          "id": "14506152434193",
+          "subCategories": [
+            {
+              "value": "firma_problemi_tecnici_su_io",
+              "description": {
+                "it-IT": "Ho un problema con IO",
+                "en-EN": "I have an issue with IO"
+              }
+            },
+            {
+              "value": "firma_informazioni_generali",
+              "description": {
+                "it-IT": "Vorrei più informazioni",
+                "en-EN": "I'd like to have more information"
+              }
+            }
+          ]
         }
       },
       {
-        "value": "privacy",
+        "value": "certificazione_verde_covid-19",
         "description": {
-          "it-IT": "Privacy",
-          "en-EN": "Privacy"
+          "it-IT": "Certificazione Verde COVID-19",
+          "en-EN": "EU Digital COVID Certificate"
+        },
+        "zendeskSubCategories": {
+          "id": "360029178738",
+          "subCategories": [
+            {
+              "value": "non_ho_ricevuto_nulla",
+              "description": {
+                "it-IT": "Non ho ricevuto la Certificazione",
+                "en-EN": "I haven't received the Certificate"
+              }
+            },
+            {
+              "value": "problemi_tecnici_su_io",
+              "description": {
+                "it-IT": "Ho un problema con IO",
+                "en-EN": "I have a problem with IO"
+              }
+            },
+            {
+              "value": "informazioni_generali",
+              "description": {
+                "it-IT": "Vorrei più informazioni",
+                "en-EN": "I would like to have more information"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "value": "bonus_e_iniziative",
+        "description": {
+          "it-IT": "Bonus e iniziative",
+          "en-EN": "Bonuses and initiatives"
+        },
+        "zendeskSubCategories": {
+          "id": "8086481365265",
+          "subCategories": [
+            {
+              "value": "cashback",
+              "description": {
+                "it-IT": "Cashback",
+                "en-EN": "Cashback"
+              }
+            },
+            {
+              "value": "bonus_vacanze",
+              "description": {
+                "it-IT": "Bonus Vacanze",
+                "en-EN": "Bonus Vacanze"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "value": "nessuno_dei_precedenti",
+        "description": {
+          "it-IT": "Nessuno dei precedenti",
+          "en-EN": "None of the above"
+        },
+        "zendeskSubCategories": {
+          "id": "8086537475601",
+          "subCategories": [
+            {
+              "value": "privacy",
+              "description": {
+                "it-IT": "Privacy",
+                "en-EN": "Privacy"
+              }
+            },
+            {
+              "value": "accessibilità_/_usabilità",
+              "description": {
+                "it-IT": "Accessibilità e Usabilità",
+                "en-EN": "Accessibility and Usability"
+              }
+            },
+            {
+              "value": "suggerimento",
+              "description": {
+                "it-IT": "Vorrei dare un suggerimento",
+                "en-EN": "I'd like to make a suggestion"
+              }
+            },
+            {
+              "value": "nessuno_dei_precedenti_altro_problema",
+              "description": {
+                "it-IT": "Ho un altro problema",
+                "en-EN": "I have a different issue"
+              }
+            }
+          ]
         }
       }
     ]
