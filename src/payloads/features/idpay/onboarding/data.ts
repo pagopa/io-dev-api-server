@@ -33,7 +33,7 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   organizationName: faker.company.name(),
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
-  logoURL: faker.image.image()
+  logoURL: faker.image.image(480, 480, true)
 });
 
 const initiativeData: {

@@ -15,7 +15,6 @@ import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
 import { ibanList } from "../iban/data";
-import { getRandomEnumValue } from "../../../utils/random";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
