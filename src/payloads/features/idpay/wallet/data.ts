@@ -58,7 +58,7 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     lastCounterUpdate: faker.date.recent(1),
     iban: ibanList[0]?.iban || "",
     nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length,
-    logoURL: faker.image.image(),
+    logoURL: faker.image.image(480, 480, true),
     organizationName: faker.company.name()
   },
   [InitiativeId.UNSUBSCRIBED]: {
