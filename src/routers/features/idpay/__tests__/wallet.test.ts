@@ -1,4 +1,6 @@
+import { faker } from "@faker-js/faker";
 import supertest from "supertest";
+import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
 import { IDPayInitiativeID as InitiativeID } from "../../../../payloads/features/idpay/types";
 import { initiativeIdToString } from "../../../../payloads/features/idpay/utils";
 import {
@@ -8,7 +10,6 @@ import {
 } from "../../../../payloads/features/idpay/wallet/data";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
-import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
 
 const request = supertest(app);
 
@@ -82,7 +83,10 @@ describe("IDPay Wallet API", () => {
   describe("PUT enrollIban", () => {
     it("should return 200", async () => {
       const initiativeId = initiativeIdToString(InitiativeID.CONFIGURED);
-      const body: IbanPutDTO = { description: "A", iban: "123" };
+      const body: IbanPutDTO = {
+        description: "A",
+        iban: faker.finance.iban(false, "IT")
+      };
 
       const response = await request
         .put(addIdPayPrefix(`/wallet/${initiativeId}/iban`))
@@ -91,12 +95,24 @@ describe("IDPay Wallet API", () => {
     });
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
-      const body: IbanPutDTO = { description: "A", iban: "123" };
+      const body: IbanPutDTO = {
+        description: "A",
+        iban: faker.finance.iban(false, "IT")
+      };
 
       const response = await request
         .put(addIdPayPrefix(`/wallet/${initiativeId}/iban`))
         .send(body);
       expect(response.status).toBe(404);
+    });
+    it("should return 403 if invalid IBAN", async () => {
+      const initiativeId = initiativeIdToString(InitiativeID.CONFIGURED);
+      const body: IbanPutDTO = { description: "A", iban: "123" };
+
+      const response = await request
+        .put(addIdPayPrefix(`/wallet/${initiativeId}/iban`))
+        .send(body);
+      expect(response.status).toBe(403);
     });
     it("should return 400 if request body is malformed", async () => {
       const initiativeId = initiativeIdToString(InitiativeID.CONFIGURED);
