@@ -43,14 +43,16 @@ const rejectedRefund: RefundOperationDTO = {
   operationType: RefundOperationEnum.REJECTED_REFUND,
   operationDate: new Date(),
   operationId: ulid(),
-  amount: 10
+  amount: 10,
+  eventId: ulid()
 };
 
 const paidRefund: RefundOperationDTO = {
   operationType: RefundOperationEnum.PAID_REFUND,
   operationDate: new Date(),
   operationId: ulid(),
-  amount: 10
+  amount: 10,
+  eventId: ulid()
 };
 
 const paidRefundDetail: RefundOperationDTO = {

@@ -2,7 +2,11 @@ import { faker } from "@faker-js/faker/locale/it";
 import { ulid } from "ulid";
 import { InitiativeDataDTO } from "../../../../../generated/definitions/idpay/InitiativeDataDTO";
 import { StatusEnum as OnboardingStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { PDNDCriteriaDTO } from "../../../../../generated/definitions/idpay/PDNDCriteriaDTO";
+import {
+  AuthorityEnum,
+  CodeEnum,
+  PDNDCriteriaDTO
+} from "../../../../../generated/definitions/idpay/PDNDCriteriaDTO";
 import {
   DetailsEnum,
   PrerequisitesErrorDTO
@@ -131,8 +135,8 @@ const onboardingStatuses: {
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   {
-    code: ulid(),
-    authority: faker.random.words(1),
+    code: CodeEnum.BIRTHDATE,
+    authority: AuthorityEnum.INPS,
     description: "Data di nascita",
     value: faker.date
       .past(30)
@@ -140,8 +144,8 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
       .toString()
   },
   {
-    code: ulid(),
-    authority: faker.random.words(1),
+    code: CodeEnum.BIRTHDATE,
+    authority: AuthorityEnum.INPS,
     description: "Residenza",
     value: faker.address.country()
   }
