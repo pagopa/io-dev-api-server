@@ -42,7 +42,9 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 0,
     lastCounterUpdate: faker.date.recent(1),
     iban: undefined,
-    nInstr: 0
+    nInstr: 0,
+    logoURL: undefined,
+    organizationName: faker.company.name()
   },
   [InitiativeId.CONFIGURED]: {
     initiativeId: initiativeIdToString(InitiativeId.CONFIGURED),
@@ -54,7 +56,9 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
     iban: ibanList[0]?.iban || "",
-    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
+    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length,
+    logoURL: faker.image.image(480, 480, true),
+    organizationName: faker.company.name()
   },
   [InitiativeId.UNSUBSCRIBED]: {
     initiativeId: initiativeIdToString(InitiativeId.UNSUBSCRIBED),
@@ -66,7 +70,9 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
     iban: undefined,
-    nInstr: 0
+    nInstr: 0,
+    logoURL: undefined,
+    organizationName: faker.company.name()
   }
 };
 
