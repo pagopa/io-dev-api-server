@@ -15,6 +15,8 @@ import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
 import { ibanList } from "../iban/data";
+import { getRandomEnumValue } from "../../../utils/random";
+import { RewardValueTypeEnum } from "../../../../../generated/definitions/idpay/RewardValueDTO";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
@@ -84,7 +86,10 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   endDate: faker.date.future(1),
   rankingStartDate: faker.date.past(1),
   rankingEndDate: faker.date.future(1),
-  rewardRule: {},
+  rewardRule: {
+    rewardValueType: getRandomEnumValue(RewardValueTypeEnum),
+    rewardValue: faker.datatype.number(100)
+  },
   refundRule: {
     accumulatedAmount: {
       accumulatedType: AccumulatedTypeEnum.BUDGET_EXHAUSTED,
