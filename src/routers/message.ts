@@ -393,7 +393,8 @@ addHandler(
             getCategory,
             O.fromNullable,
             O.chainNullableK(category => category.tag),
-            // we must replace this check with a more generic one
+            // TODO: we must replace this check with a more generic one
+            // see https://pagopa.atlassian.net/browse/IOCOM-188
             O.map(tag => tag === PNCategoryTagEnum.PN),
             O.chain(O.fromPredicate(identity)),
             O.fold(
