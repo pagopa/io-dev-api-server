@@ -68,12 +68,12 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
-    const url = `${appUrlLoginScheme}://${req.headers.host}${loginWithToken}`
+    const url = `${appUrlLoginScheme}://${req.headers.host}${loginWithToken}`;
     res.redirect(url);
     return;
   }
   if (req.query.error) {
-    const url = `${appUrlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`
+    const url = `${appUrlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`;
     res.redirect(url);
     return;
   }
