@@ -302,3 +302,20 @@ describe("given the `/messages/:id` endpoint", () => {
     });
   });
 });
+
+describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
+  beforeAll(() => {
+    populatePersistence(customConfig);
+  });
+
+  afterAll(() => {
+    MessagesDB.dropAll();
+  });
+
+  it("should return 404 if the message is not found", async () => {
+    const response = await request.get(
+      `${basePath}/third-party-messages/NOT_FOUND/precondition`
+    );
+    expect(response.status).toBe(404);
+  });
+});

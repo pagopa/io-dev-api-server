@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import { identity, pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
 import { match, not, __ } from "ts-pattern";
@@ -10,13 +10,18 @@ import { PublicMessage } from "../../generated/definitions/backend/PublicMessage
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
-import { defaultContentType, getCategory } from "../payloads/message";
+import {
+  defaultContentType,
+  getCategory,
+  getThirdPartyMessagePrecondition
+} from "../payloads/message";
 import { addHandler } from "../payloads/response";
 import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
 import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { services } from "./service";
+import { pnServiceId } from "../payloads/services/special";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -39,7 +44,8 @@ const getPublicMessages = (
           category: getCategory(m),
           is_read: m.is_read,
           is_archived: m.is_archived,
-          has_attachments: m.has_attachments
+          has_attachments: m.has_attachments,
+          has_precondition: senderService?.service_id === pnServiceId
         }
       : {};
     const content = withContent
@@ -368,4 +374,39 @@ addHandler(
     sendFile(attachmentAbsolutePath, res);
   },
   3000
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id/precondition"),
+  (req, res) =>
+    pipe(
+      req.params.id,
+      MessagesDB.findOneById,
+      O.fromNullable,
+      O.fold(
+        () => res.status(404).json(getProblemJson(404, "message not found")),
+        message =>
+          pipe(
+            message,
+            getCategory,
+            O.fromNullable,
+            O.chainNullableK(category => category.tag),
+            // TODO: we must replace this check with a more generic one
+            // see https://pagopa.atlassian.net/browse/IOCOM-188
+            O.map(tag => tag === PNCategoryTagEnum.PN),
+            O.chain(O.fromPredicate(identity)),
+            O.fold(
+              () =>
+                res
+                  .status(500)
+                  .json(
+                    getProblemJson(500, "requested message is not of pn type")
+                  ),
+              () => res.status(200).json(getThirdPartyMessagePrecondition())
+            )
+          )
+      )
+    )
 );
