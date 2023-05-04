@@ -12,6 +12,7 @@ import * as zlib from "zlib";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { backendInfo } from "../payloads/backend";
 import {
+  appUrlLoginScheme,
   errorRedirectUrl,
   loginLolliPopRedirect,
   loginSessionToken,
@@ -67,11 +68,13 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
-    res.redirect(loginWithToken);
+    const url = `${appUrlLoginScheme}://${req.headers.host}${loginWithToken}`
+    res.redirect(url);
     return;
   }
   if (req.query.error) {
-    res.redirect(`${errorRedirectUrl}${req.query.error}`);
+    const url = `${appUrlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`
+    res.redirect(url);
     return;
   }
   sendFile("assets/html/login.html", res);
