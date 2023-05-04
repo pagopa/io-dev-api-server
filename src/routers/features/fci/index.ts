@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { isEqual } from "lodash";
-import { staticContentRootPath } from "../../../config";
+import { ioDevServerConfig, staticContentRootPath } from "../../../config";
 import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
 import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp-filled-document";
 import { mockSignatureDetailView } from "../../../payloads/features/fci/signature-detail-request";
@@ -21,8 +21,10 @@ import { addApiV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
 import { signatureRequestList } from "../../../payloads/features/fci/signature-requests";
+import { errorWithStatusCode } from "../../../payloads/features/fci/errors";
 
 export const fciRouter = Router();
+const configResponse = ioDevServerConfig.messages.fci.response;
 
 export const addFciPrefix = (path: string) => addApiV1Prefix(`/sign${path}`);
 
@@ -36,18 +38,28 @@ addHandler(
     pipe(
       O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
-        signatureReqId === SIGNATURE_REQUEST_ID ||
-        signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === REJECTED_SIGNATURE_REQUEST_ID
+        (signatureReqId === SIGNATURE_REQUEST_ID ||
+          signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
+          signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === REJECTED_SIGNATURE_REQUEST_ID) &&
+        configResponse.getFciResponseCode === 200
           ? O.some(signatureReqId)
           : O.none
       ),
       O.fold(
-        // No signatureRequestId was found return a 404
-        () => res.sendStatus(400),
+        // No signatureRequestId was found return an error based on response code
+        () =>
+          pipe(
+            configResponse.getFciResponseCode,
+            O.of,
+            O.filter(responseCode => responseCode !== 200),
+            O.map(responseCode =>
+              res.status(responseCode).json(errorWithStatusCode(responseCode))
+            ),
+            O.getOrElse(() => res.sendStatus(404)) // No response code was found return 404 as default
+          ),
         signatureReqId =>
           res.status(200).json(
             signatureReqId === SIGNATURE_REQUEST_ID
