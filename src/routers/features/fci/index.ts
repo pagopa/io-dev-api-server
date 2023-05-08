@@ -8,6 +8,7 @@ import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp-filled-d
 import { mockSignatureDetailView } from "../../../payloads/features/fci/signature-detail-request";
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
+  NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   signatureRequestDetailViewDoc,
@@ -41,7 +42,8 @@ addHandler(
         signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
         signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
         signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === REJECTED_SIGNATURE_REQUEST_ID
+        signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID
           ? O.some(signatureReqId)
           : O.none
       ),
@@ -78,6 +80,15 @@ addHandler(
                   id: REJECTED_SIGNATURE_REQUEST_ID,
                   updated_at: new Date(now.setDate(now.getDate() - 91)),
                   status: SignatureRequestStatusEnum.REJECTED
+                }
+              : signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID
+              ? {
+                  ...signatureRequestDetailViewDoc,
+                  status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
+                  documents: signatureRequestDetailViewDoc.documents.map(d => ({
+                    ...d,
+                    metadata: { ...d.metadata, signature_fields: [] }
+                  }))
                 }
               : {
                   ...signatureRequestDetailViewDoc,
