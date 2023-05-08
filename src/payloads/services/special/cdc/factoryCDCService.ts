@@ -6,10 +6,12 @@ import { OrganizationName } from "../../../../../generated/definitions/backend/O
 import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
 import { SpecialServiceCategoryEnum } from "../../../../../generated/definitions/backend/SpecialServiceCategory";
 import { SpecialServiceMetadata } from "../../../../../generated/definitions/backend/SpecialServiceMetadata";
+import { SpecialServiceGenerator } from "../../factory";
+import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
 
-const cdcServiceId = "01G2AFTME08TS0QD2P2S682CJ0";
+const cdcServiceId = "01G2AFTME08TS0QD2P2S682CJ0" as ServiceId;
 
-export const createCdcService = (
+export const createCdcService : SpecialServiceGenerator = (
   createService: ((serviceId: string) => ServicePublic),
   createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
   organizationFiscalCode: OrganizationFiscalCode

@@ -16,15 +16,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
 
 export const serviceRouter = Router();
-
 const configResponse = ioDevServerConfig.services.response;
-export const services = getServices(
-  ioDevServerConfig.services.national,
-  ioDevServerConfig.services.local
-);
-
-export const visibleServices = getServicesTuple(services);
-export const servicesPreferences = getServicesPreferences(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
   if (configResponse.getServicesResponseCode !== 200) {

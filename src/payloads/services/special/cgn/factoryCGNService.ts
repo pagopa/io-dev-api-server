@@ -6,10 +6,12 @@ import { OrganizationName } from "../../../../../generated/definitions/backend/O
 import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
 import { SpecialServiceCategoryEnum } from "../../../../../generated/definitions/backend/SpecialServiceCategory";
 import { SpecialServiceMetadata } from "../../../../../generated/definitions/backend/SpecialServiceMetadata";
+import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
+import { SpecialServiceGenerator } from "../../factory";
 
-const cgnServiceId = "serviceCgn";
+export const cgnServiceId = "serviceCgn" as ServiceId;
 
-export const createCgnService = (
+export const createCgnService : SpecialServiceGenerator = (
   createService: ((serviceId: string) => ServicePublic),
   createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
   organizationFiscalCode: OrganizationFiscalCode

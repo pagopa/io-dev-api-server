@@ -24,11 +24,11 @@ import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
-import { cgnServiceId } from "../../../payloads/services/special";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { servicesPreferences } from "../../service";
+import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
 
 export const cgnRouter = Router();
 
@@ -114,12 +114,12 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
           status: StatusEnum.COMPLETED
         };
         const currentPreference = servicesPreferences.get(
-          cgnServiceId as ServiceId
+          cgnServiceId
         );
 
         const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
-        servicesPreferences.set(cgnServiceId as ServiceId, {
+        servicesPreferences.set(cgnServiceId, {
           is_inbox_enabled: true,
           is_email_enabled:
             currentPreference?.is_email_enabled ??
@@ -276,12 +276,12 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
         }
         resetCgn();
         const currentPreference = servicesPreferences.get(
-          cgnServiceId as ServiceId
+          cgnServiceId
         );
 
         const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
-        servicesPreferences.set(cgnServiceId as ServiceId, {
+        servicesPreferences.set(cgnServiceId, {
           is_inbox_enabled: false,
           is_email_enabled: false,
           is_webhook_enabled: false,

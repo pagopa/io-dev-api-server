@@ -11,9 +11,7 @@ import { getRandomValue } from "../../utils/random";
 import { validatePayload } from "../../utils/validator";
 import { IOResponse } from "../response";
 
-
-
-export const getServicesTuple = (
+const getServicesTuple = (
   services: readonly ServicePublic[]
 ): IOResponse<PaginatedServiceTupleCollection> => {
   const items = services.map(s => {
@@ -35,7 +33,7 @@ const specialServicesPreferenceFactory: Map<string, () => boolean> = new Map<
   () => boolean
 >([["cgn", isCgnActivated]]);
 
-export const getServicesPreferences = (
+const getServicesPreferences = (
   services: ReadonlyArray<ServicePublic>
 ) =>
   new Map<ServiceId, ServicePreference>(

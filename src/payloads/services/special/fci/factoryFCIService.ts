@@ -4,10 +4,12 @@ import { ServicePublic } from "../../../../../generated/definitions/backend/Serv
 import { ServiceScopeEnum } from "../../../../../generated/definitions/backend/ServiceScope";
 import { OrganizationName } from "../../../../../generated/definitions/backend/OrganizationName";
 import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
+import { SpecialServiceGenerator } from "../../factory";
+import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
 
-const fciServiceId = "serviceFci";
+const fciServiceId = "serviceFci" as ServiceId;
 
-export const createFciService = (
+export const createFciService : SpecialServiceGenerator = (
   createService: ((serviceId: string) => ServicePublic),
   createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
   organizationFiscalCode: OrganizationFiscalCode

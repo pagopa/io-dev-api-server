@@ -21,10 +21,9 @@ import {
   withPNContent,
   withRemoteAttachments
 } from "./payloads/message";
-import { pnServiceId } from "./payloads/services/special";
 import MessagesDB from "./persistence/messages";
+import ServicesDB from "./persistence/services";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
-import { services } from "./routers/service";
 import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";
 import {
@@ -45,16 +44,19 @@ import {
   messageFciSignedMarkdown,
   messageMarkdown
 } from "./utils/variables";
+import { pnServiceId } from "./payloads/services/special/pn/factoryPn";
 
 const getServiceId = (): string => {
-  if (services.length === 0) {
+
+  const allServices = ServicesDB.allServices();
+  if (allServices.length === 0) {
     throw new Error(
       "to create messages, at least one sender service must exist!"
     );
   }
   return getRandomValue(
-    services[0].service_id,
-    faker.helpers.arrayElement(services).service_id,
+    allServices[0].service_id,
+    faker.helpers.arrayElement(allServices).service_id,
     "messages"
   );
 };
@@ -456,7 +458,7 @@ const createMessages = (
       output.push(withLegalContent(message, message.id, attachments, isOdd));
     });
 
-  ioDevServerConfig.services.includePn &&
+  customConfig.services.specialServices.pn &&
     customConfig.messages.pnCount > 0 &&
     range(1, customConfig.messages.pnCount).forEach(_ => {
       const sender = "Comune di Milano";
@@ -491,17 +493,19 @@ const createMessages = (
 };
 
 /**
- * Initialize the messages persistence layer.
+ * Initialize the services and messages persistence layer.
  * Default on config.json if custom config not defined.
  *
  * @param customConfig
  */
 export default function init(customConfig = ioDevServerConfig) {
+  
+  ServicesDB.createServices(customConfig);
   MessagesDB.persist(createMessages(customConfig) as any);
 
   if (customConfig.messages.archivedMessageCount > 0) {
     _.shuffle(MessagesDB.findAllInbox())
-      .slice(0, ioDevServerConfig.messages.archivedMessageCount)
+      .slice(0, customConfig.messages.archivedMessageCount)
       .forEach(({ id }) => MessagesDB.archive(id));
   }
 

@@ -4,8 +4,10 @@ import { ServiceName } from "../../../../../generated/definitions/backend/Servic
 import { ServicePublic } from "../../../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../../../generated/definitions/backend/ServiceScope";
 import { ServiceMetadata } from "../../../../../generated/definitions/backend/ServiceMetadata";
+import { SpecialServiceGenerator } from "../../factory";
+import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
 
-const siciliaVolaServiceId = "serviceSv";
+const siciliaVolaServiceId = "serviceSv" as ServiceId;
 
 const frontMatter1CTASiciliaVola = `---
 it:
@@ -24,7 +26,7 @@ en:
         action: "ioit://SV_VOUCHER_LIST"
 ---`;
 
-export const createSiciliaVolaService = (
+export const createSiciliaVolaService : SpecialServiceGenerator = (
   createService: ((serviceId: string) => ServicePublic),
   createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
   organizationFiscalCode: OrganizationFiscalCode

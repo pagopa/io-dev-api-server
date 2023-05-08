@@ -1,4 +1,3 @@
-import { range } from "lodash";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
 import { NonEmptyString, OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
@@ -10,55 +9,55 @@ import { faker } from "@faker-js/faker/locale/it";
 import { validatePayload } from "../../utils/validator";
 import { ServiceMetadata } from "../../../generated/definitions/backend/ServiceMetadata";
 import { StandardServiceCategoryEnum } from "../../../generated/definitions/backend/StandardServiceCategory";
-import { SpecialServicesConfig } from "../../types/config";
 import { frontMatter2CTA2 } from "../../utils/variables";
-import { createSiciliaVolaService } from "./special/siciliaVola/factorySiciliaVolaService";
-import { createCgnService } from "./special/cgn/factoryCGNService";
-import { createCdcService } from "./special/cdc/factoryCDCService";
-import { createPnService } from "./special/pn/factoryPn";
-import { createFciService } from "./special/fci/factoryFCIService";
 
-export const createServices = (
-  national: number,
-  local: number,
-  specialServicesConfig: SpecialServicesConfig
-): readonly ServicePublic[] => {
-  const aggregation = 3;
-  // services belong to the same organization for blocks of `aggregation` size
-  // tslint:disable-next-line: no-let
-  let organizationCount = 0;
-  // tslint:disable-next-line: no-let
-  let serviceIndex = 0;
-  const createServices = (scope: ServiceScopeEnum, count: number) =>
-    range(0, count - 1).map(_ => {
-      organizationCount =
-        serviceIndex !== 0 && serviceIndex % aggregation === 0
-          ? organizationCount + 1
-          : organizationCount;
-      serviceIndex++;
-      return {
-        ...createService(`service${serviceIndex}`),
-        organization_fiscal_code: `${organizationCount + 1}`.padStart(
-          11,
-          "0"
-        ) as OrganizationFiscalCode,
-        organization_name: `${faker.company.name()} [${organizationCount +
-          1}]` as OrganizationName,
-        service_metadata: {
-          ...createServiceMetadata(scope),
-          scope,
-          cta: frontMatter2CTA2 as NonEmptyString
-        }
-      };
-    });
+export const createLocalServices = (
+  count: number, 
+  serviceStartIndex: number, 
+  aggregationCount = 3
+) : ServicePublic[] => 
+  createServices(ServiceScopeEnum.LOCAL, count, serviceStartIndex, aggregationCount);
 
-  const nationalLocalServices: ReadonlyArray<ServicePublic> = [
-    ...createServices(ServiceScopeEnum.LOCAL, local),
-    ...createServices(ServiceScopeEnum.NATIONAL, national)
-  ];
-  // special service must be added at the end of services creation
-  return appendSpecialServices(specialServicesConfig, nationalLocalServices);
-};
+export const createNationalServices = (
+  count: number, 
+  serviceStartIndex: number, 
+  aggregationCount = 3
+) : ServicePublic[] => 
+  createServices(ServiceScopeEnum.NATIONAL, count, serviceStartIndex, aggregationCount);
+
+export const createSpecialServices = (
+  specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][], 
+  serviceStartIndex: number, 
+  aggregationCount = 3
+) : ServicePublic[] => 
+createSpecialServicesInternal(specialServiceGeneratorTuples, serviceStartIndex, aggregationCount);
+
+const createServices = (
+  scope: ServiceScopeEnum, 
+  count: number, 
+  serviceStartIndex: number, 
+  aggregationCount: number
+): ServicePublic[] => {
+  const services: ServicePublic[] = [];
+  for (let serviceIndex=serviceStartIndex; serviceIndex<count; serviceIndex++) {
+    const organizationIndex = getOrganizationIndex(serviceIndex, aggregationCount);
+    const service = {
+      ...createService(`service${serviceIndex}`),
+      organization_fiscal_code: `${organizationIndex}`.padStart(
+        11,
+        "0"
+      ) as OrganizationFiscalCode,
+      organization_name: `${faker.company.name()} [${organizationIndex}]` as OrganizationName,
+      service_metadata: {
+        ...createServiceMetadata(scope),
+        scope,
+        cta: frontMatter2CTA2 as NonEmptyString
+      }
+    };
+    services.push(service);
+  }
+  return services;
+}
 
 const createService = (serviceId: string): ServicePublic => {
   const service = {
@@ -95,42 +94,31 @@ const createServiceMetadata = (
   };
 };
 
+const createSpecialServicesInternal = (specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][], serviceStartIndex: number, aggregationCount: number): ServicePublic[] => {
+  
+  let specialServices: ServicePublic[] = [];
+  let organizationStartIndex = getOrganizationIndex(serviceStartIndex, aggregationCount);
+
+  specialServiceGeneratorTuples.forEach(specialServiceGeneratorTuple => {
+    const organizationFiscalCode = getOrganizationFiscalCode(organizationStartIndex);
+    const isSpecialServiceEnabled = specialServiceGeneratorTuple[0];
+    if (isSpecialServiceEnabled) {
+      const specialServiceGenerator = specialServiceGeneratorTuple[1];
+      const specialService = specialServiceGenerator(createService, createServiceMetadata, organizationFiscalCode);
+      specialServices.push(specialService);
+    }
+    organizationStartIndex++;
+  });
+  return specialServices;
+}
+
+const getOrganizationIndex = (serviceIndex: number, aggregationCount: number) => 1 + Math.floor(serviceIndex / aggregationCount);
+
 const getOrganizationFiscalCode = (organizationsCount: number) =>
   `${organizationsCount}`.padStart(11, "0") as OrganizationFiscalCode;
 
-// list of tuple where the first element is a flag indicating if the relative service should be included
-// the second element is the service factory
-const specialServicesFactory = (config: SpecialServicesConfig): ReadonlyArray<readonly [
-  boolean,
-  (
-    createService: ((serviceId: string) => ServicePublic),
-    createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata), 
-    organizationFiscalCode: OrganizationFiscalCode
-  ) => ServicePublic
-]> => [
-  [config.siciliaVola, createSiciliaVolaService],
-  [config.cgn, createCgnService],
-  [config.cdc, createCdcService],
-  [config.pn, createPnService],
-  [config.fci, createFciService]
-];
-
-// eventually add the special services based on config flags
-const appendSpecialServices = (
-  specialServicesConfig: SpecialServicesConfig,
-  services: ReadonlyArray<ServicePublic>
-): ReadonlyArray<ServicePublic> =>
-  specialServicesFactory(specialServicesConfig).reduce((acc, curr) => {
-    if (curr[0]) {
-      const organizationIds = new Set(acc.map(s => s.organization_fiscal_code));
-      // tslint:disable-next-line: no-let
-      let startId = organizationIds.size;
-      // to avoid organizations fiscal code clash
-      while (organizationIds.has(getOrganizationFiscalCode(startId))) {
-        startId++;
-      }
-      const newOrganizationId = getOrganizationFiscalCode(startId);
-      return [...acc, curr[1](createService, createServiceMetadata, newOrganizationId)];
-    }
-    return acc;
-  }, services);
+export type SpecialServiceGenerator = (
+  createService: ((serviceId: string) => ServicePublic),
+  createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata), 
+  organizationFiscalCode: OrganizationFiscalCode
+) => ServicePublic;
