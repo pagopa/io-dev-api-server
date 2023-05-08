@@ -15,6 +15,8 @@ import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
 import { initiativeIdToString } from "../utils";
 import { ibanList } from "../iban/data";
+import { getRandomEnumValue } from "../../../utils/random";
+import { RewardValueTypeEnum } from "../../../../../generated/definitions/idpay/RewardValueDTO";
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
@@ -42,7 +44,9 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 0,
     lastCounterUpdate: faker.date.recent(1),
     iban: undefined,
-    nInstr: 0
+    nInstr: 0,
+    logoURL: undefined,
+    organizationName: faker.company.name()
   },
   [InitiativeId.CONFIGURED]: {
     initiativeId: initiativeIdToString(InitiativeId.CONFIGURED),
@@ -54,7 +58,9 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
     iban: ibanList[0]?.iban || "",
-    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
+    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length,
+    logoURL: faker.image.image(480, 480, true),
+    organizationName: faker.company.name()
   },
   [InitiativeId.UNSUBSCRIBED]: {
     initiativeId: initiativeIdToString(InitiativeId.UNSUBSCRIBED),
@@ -66,7 +72,9 @@ let initiativeList: { [id: number]: InitiativeDTO } = {
     refunded: 45,
     lastCounterUpdate: faker.date.recent(1),
     iban: undefined,
-    nInstr: 0
+    nInstr: 0,
+    logoURL: undefined,
+    organizationName: faker.company.name()
   }
 };
 
@@ -78,7 +86,10 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   endDate: faker.date.future(1),
   rankingStartDate: faker.date.past(1),
   rankingEndDate: faker.date.future(1),
-  rewardRule: {},
+  rewardRule: {
+    rewardValueType: getRandomEnumValue(RewardValueTypeEnum),
+    rewardValue: faker.datatype.number(100)
+  },
   refundRule: {
     accumulatedAmount: {
       accumulatedType: AccumulatedTypeEnum.BUDGET_EXHAUSTED,

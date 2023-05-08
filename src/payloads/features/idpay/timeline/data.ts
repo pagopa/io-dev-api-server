@@ -35,6 +35,7 @@ import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { getWalletV2 } from "../../../../routers/walletsV2";
 import { ibanList } from "../iban/data";
 import { IDPayInitiativeID as InitiativeId } from "../types";
+import { RefundDetailDTO } from "../../../../../generated/definitions/idpay/RefundDetailDTO";
 
 const wallet: WalletV2 = getWalletV2()[0];
 const walletInfo: CardInfo = wallet.info as CardInfo;
@@ -43,18 +44,34 @@ const rejectedRefund: RefundOperationDTO = {
   operationType: RefundOperationEnum.REJECTED_REFUND,
   operationDate: new Date(),
   operationId: ulid(),
+  eventId: ulid(),
   amount: 10
+};
+
+const rejectedRefundDetail: RefundDetailDTO = {
+  ...rejectedRefund,
+  cro: ulid(),
+  iban: faker.finance.iban(false, "IT"),
+  startDate: faker.date.recent(),
+  endDate: faker.date.recent(),
+  transferDate: faker.date.recent()
 };
 
 const paidRefund: RefundOperationDTO = {
   operationType: RefundOperationEnum.PAID_REFUND,
   operationDate: new Date(),
   operationId: ulid(),
+  eventId: ulid(),
   amount: 10
 };
 
-const paidRefundDetail: RefundOperationDTO = {
-  ...paidRefund
+const paidRefundDetail: RefundDetailDTO = {
+  ...paidRefund,
+  cro: ulid(),
+  iban: faker.finance.iban(false, "IT"),
+  startDate: faker.date.recent(),
+  endDate: faker.date.recent(),
+  transferDate: faker.date.recent()
 };
 
 const reversal: TransactionOperationDTO = {
@@ -180,7 +197,7 @@ const timeline: { [id: number]: ReadonlyArray<OperationListDTO> } = {
 const timelineDetails: { [id: number]: ReadonlyArray<OperationDTO> } = {
   [InitiativeId.NOT_CONFIGURED]: [onboarding],
   [InitiativeId.CONFIGURED]: [
-    rejectedRefund,
+    rejectedRefundDetail,
     paidRefundDetail,
     reversalDetail,
     transactionDetail,
@@ -190,7 +207,7 @@ const timelineDetails: { [id: number]: ReadonlyArray<OperationDTO> } = {
     onboarding
   ],
   [InitiativeId.UNSUBSCRIBED]: [
-    rejectedRefund,
+    rejectedRefundDetail,
     paidRefundDetail,
     reversalDetail,
     transactionDetail,

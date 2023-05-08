@@ -3,6 +3,61 @@
   "it": {
     "screens": [
       {
+        "route_name": "MESSAGE_DETAIL_ATTACHMENT",
+        "title": "Anteprima del documento",
+        "content": "Qui puoi vedere l’anteprima del documento allegato al messaggio. Puoi anche salvarlo, condividerlo o aprirlo con un’app di lettura PDF installata sul tuo dispositivo."
+      },
+      {
+        "route_name": "FCI_DOCUMENTS",
+        "title": "Documento",
+        "content": "Qui puoi vedere l’anteprima del documento da firmare",
+        "faqs": [
+          {
+            "title": "Cosa posso fare se ci sono errori in un documento da firmare?",
+            "body": "Rivolgiti direttamente all’ente che ha inviato il documento. Trovi i contatti nel messaggio di richiesta di firma."
+          },
+          {
+            "title": "Cosa posso fare se si blocca l’app mentre sto firmando un documento?",
+            "body": "Controlla di aver installato l’ultima versione dell’app IO dallo store del tuo dispositivo. Se l’app non è aggiornata, scarica la sua ultima versione. Altrimenti, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          },
+          {
+            "title": "Ho un problema con la firma di un documento. Cosa posso fare?",
+            "body": "Vai alla pagina [stato delle firme](ioit://fci/signature-requests) per verificare se la richiesta è in corso o se hai già firmato un documento. Se hai bisogno di assistenza, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          }]
+      },
+      {
+        "route_name": "FCI_SIGNATURE_FIELDS",
+        "title": "Campi da firmare",
+        "content": "Qui puoi vedere l’elenco delle firme richieste nel documento e selezionare quelle da apporre. Le firme obbligatorie, in quanto tali, sono già selezionate",
+        "faqs": [
+          {
+            "title": "Perché devo firmare più volte?",
+            "body": "È possibile che per alcuni documenti siano richiesti diversi tipi di firme, ognuna con un diverso valore.\n Per far sì che un documento sia valido, le firme obbligatorie sono sempre necessarie.\n Alcuni documenti prevedono le  clausole vessatorie. Anche queste sono firme obbligatorie, se non le selezioni non puoi proseguire. Ti segnalano condizioni particolari a cui prestare attenzione. Devono essere per legge facilmente identificabili per far sì che chi firma sia informato del loro contenuto prima di apporre la firma.\n Le firme facoltative, invece, servono a confermare o accettare alcune condizioni; in questo caso, puoi scegliere se apporre o meno la tua firma."
+          },
+          {
+            "title": "Ho un problema con la firma di un documento. Cosa posso fare?",
+            "body": "Vai alla pagina [stato delle firme](ioit://fci/signature-requests) per verificare se la richiesta è in corso o se hai già firmato un documento. Se hai bisogno di assistenza, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          }]
+      },
+      {
+        "route_name": "FCI_USER_DATA_SHARE",
+        "title": "Condivisione dei dati",
+        "content": "Qui puoi visionare i dati che verranno condivisi con il fornitore della firma digitale.",
+        "faqs": [
+          {
+            "title": "Perché devo condividere i miei dati?",
+            "body": "I dati che condividi serviranno al fornitore della firma digitale per offrirti il servizio e certificare la tua firma."
+          },
+          {
+            "title": "Ho ricevuto il  messaggio con i documenti firmati ma non sono più disponibili. Come posso recuperarli?",
+            "body": "In questo caso dovrai contattare direttamente l’ente che ha emesso il documento. Puoi trovare i contatti nel messaggio di riepilogo dei documenti firmati, ricevuto in app IO."
+          },
+          {
+            "title": "Cosa posso fare se ho ricevuto una richiesta di firma ma è scaduto il termine?",
+            "body": "Puoi contattare l’ente che ha inviato il documento e chiedere di inviarti una nuova richiesta."
+          }]
+      },
+      {
         "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
         "title": "Notifiche push",
         "content": "Qui puoi personalizzare le notifiche push.",
@@ -13,7 +68,7 @@
           },
           {
             "title": "Cosa significa 'Consenti promemoria'?",
-            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+            "body": "Attivando l’opzione 'Consenti promemoria', su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
           }
         ]
       },
@@ -28,7 +83,7 @@
           },
           {
             "title": "Cosa significa 'Consenti promemoria'?",
-            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+            "body": "Attivando l’opzione 'Consenti promemoria', su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
           }
         ]
       },
@@ -43,7 +98,76 @@
           },
           {
             "title": "Cosa significa 'Consenti promemoria'?",
-            "body": "Attivando l’opzione “Consenti promemoria”, su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+            "body": "Attivando l’opzione 'Consenti promemoria', su richiesta dell’ente riceverai notifiche push in prossimità di scadenze o quando hai dei messaggi non letti."
+          }
+        ]
+      },
+      {
+        "route_name": "PN_ROUTES_MESSAGE_DETAILS",
+        "title": "Dettagli della notifica",
+        "content": "Questo messaggio contiene una notifica, ovvero una comunicazione a valore legale. Avendo aperto il messaggio, la notifica risulta legalmente recapitata a te. Qui puoi leggere il contenuto della notifica, visualizzare gli allegati e pagare eventuali spese.",
+        "faqs": [
+          {
+            "title": "Cos'è una notifica?",
+            "body": "Le notifiche sono comunicazioni a valore legale emesse in via ufficiale da un'amministrazione pubblica, come multe, avvisi di accertamento di tributi, esiti di pratiche amministrative o rimborsi, che fino ad ora hai ricevuto tramite raccomandata."
+          },
+          {
+            "title": "Cos'è Piattaforma Notifiche?",
+            "body": "È una piattaforma innovativa che digitalizza e semplifica la gestione delle notifiche: ti permette infatti di leggerle, scaricare i documenti allegati e pagare eventuali spese direttamente online o in app. In questo momento, la piattaforma è in fase di collaudo. Progressivamente, verrà adottata dalle Pubbliche Amministrazioni e utilizzata per inviare notifiche a tutti i cittadini. Per maggiori informazioni, visita [questo sito](https://www.notifichedigitali.pagopa.it/)."
+          },
+          {
+            "title": "Come funziona?",
+            "body": "Per inviare una comunicazione a valore legale, Piattaforma Notifiche dà la priorità ai tuoi recapiti digitali, ovvero PEC, app IO, email o numero di telefono. Anzitutto cerca nei suoi archivi e nei registri pubblici una PEC riconducibile a te e invia l’avviso di avvenuta ricezione. Poi, invia un avviso di cortesia agli altri tuoi recapiti digitali (app IO, email e numero di telefono). Se non hai indicato alcun recapito digitale e non hai accesso alla piattaforma, questa procede con la ricerca di un tuo indirizzo fisico, e quindi con l’invio tramite raccomandata cartacea. In ogni momento, puoi [accedere alla piattaforma](cittadini.notifichedigitali.it) con SPID e CIE per indicare o aggiornare le tue preferenze tra PEC, app IO, email o numero di telefono. Se non hai un recapito digitale né accesso alla piattaforma, continuerai a ricevere le notifiche tramite raccomandata cartacea."
+          },
+          {
+            "title": "Perché ricevo questo messaggio?",
+            "body": "In questo momento, alcune funzionalità di Piattaforma Notifiche sono in fase di collaudo da parte di alcuni enti pilota, che la stanno utilizzando per inviare notifiche a un numero limitato di utenti. Se hai ricevuto questo messaggio, significa che hai attivato il servizio ‘Notifiche digitali’ di Piattaforma Notifiche e che un ente che partecipa al collaudo ha una notifica per te. Aprire questo messaggio su IO e, di conseguenza, visualizzare il contenuto della notifica, equivale a firmare la ricevuta di ritorno di una raccomandata tradizionale."
+          },
+          {
+            "title": "Ho aperto il messaggio. Ora cosa devo fare?",
+            "body": "Avendo aperto il messaggio, la notifica risulta legalmente recapitata a te: è come se avessi firmato la ricevuta di ritorno di una raccomandata tradizionale. Puoi leggere il contenuto della notifica, visualizzare gli allegati e pagare eventuali spese direttamente in app."
+          },
+          {
+            "title": "Ho aperto il messaggio. Cosa succede se lo ignoro?",
+            "body": "Avendo aperto il messaggio, non pagare eventuali spese o ignorare il suo contenuto è come ignorare una raccomandata cartacea."
+          },
+          {
+            "title": "Ho un problema con questa notifica. Come posso fare?",
+            "body": "Se hai problemi o domande relative al contenuto di questa notifica, contatta l’ente che te l’ha inviata. Se hai problemi tecnici, come per esempio con la visualizzazione del messaggio e dei suoi allegati o con il pagamento delle spese, vai in fondo a questa pagina e seleziona Apri una richiesta > Messaggi > Ho un problema con un messaggio di Piattaforma Notifiche."
+          }
+        ]
+      },
+      {
+        "route_name": "PN_ROUTES_MESSAGE_ATTACHMENT",
+        "title": "Gli allegati della notifica",
+        "content": "Qui puoi visualizzare, salvare e condividere gli allegati della notifica.",
+        "faqs": [
+          {
+            "title": "Ho un problema con un allegato. Cosa posso fare?",
+            "body": "Se hai problemi o domande relative al contenuto degli allegati, contatta l’ente che ti ha inviato la notifica. Se hai problemi tecnici, per esempio non riesci ad aprire gli allegati, vai in fondo a questa pagina e seleziona Apri una richiesta > Messaggi > Ho un problema con un messaggio di Piattaforma Notifiche."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_IDP_LOGIN",
+        "title": "Le tue credenziali",
+        "content": "Per entrare in IO tramite SPID, devi inserire il tuo nome utente e password. Poi, conferma la richiesta di accesso tramite OTP o nell’app del tuo Identity Provider e tornare sull’app IO.",
+        "faqs": [
+          {
+            "title": "Qual è la mia password?",
+            "body": "È il codice alfanumerico che hai impostato quando hai attivato SPID."
+          },
+          {
+            "title": "Ho perso le mie credenziali SPID. Come posso fare?",
+            "body": "Non preoccuparti: puoi recuperarle in qualsiasi momento. Seleziona il tuo Identity Provider per sapere come procedere: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [EtnaID](https://etnaid.eht.eu/signup/forgotPassword), [Infocamere](https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryEmergencyCode),[Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in caso di password dimenticata](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste.it/recuperocredenziali.shtml), [Register, in caso di username dimenticato](https://spid.register.it/selfcare/recovery/username), [Register, in caso di password dimenticata](https://spid.register.it/selfcare/recovery/password), [Sielte, in caso di password dimenticata](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in caso di username dimenticata](https://login.id.tim.it/mps/fu.php), [Tim, in caso di password dimenticata](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp), [TeamSystem, in caso di username dimenticata](https://spid.teamsystem.com/it/auth/usernameLost), [TeamSystem, in caso di password dimenticata](https://spid.teamsystem.com/it/auth/passwordLost)."
+          },
+          {
+            "title": "Ho fatto tutto correttamente ma non riesco ad entrare. Cosa posso fare?",
+            "body": "In questo caso, vai in fondo a questa pagina e seleziona ‘Apri una richiesta’ per scriverci: la nostra Assistenza ti aiuterà a risolvere il problema."
+          },
+          {
+            "title": "Come viene tutelata la mia privacy?",
+            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti."
           }
         ]
       },
@@ -62,7 +186,7 @@
           },
           {
             "title": "Ho perso le mie credenziali SPID. Come posso fare?",
-            "body": "Non preoccuparti: puoi recuperarle in qualsiasi momento. Seleziona il tuo Identity Provider per sapere come procedere: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in caso di password dimenticata](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste.it/recuperocredenziali.shtml), [Register, in caso di username dimenticato](https://spid.register.it/selfcare/recovery/username), [Register, in caso di password dimenticata](https://spid.register.it/selfcare/recovery/password), [Sielte, in caso di password dimenticata](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in caso di username dimenticata](https://login.id.tim.it/mps/fu.php), [Tim, in caso di password dimenticata](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)."
+            "body": "Non preoccuparti: puoi recuperarle in qualsiasi momento. Seleziona il tuo Identity Provider per sapere come procedere: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [EtnaID](https://etnaid.eht.eu/signup/forgotPassword), [Infocamere](https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryEmergencyCode),[Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in caso di password dimenticata](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste.it/recuperocredenziali.shtml), [Register, in caso di username dimenticato](https://spid.register.it/selfcare/recovery/username), [Register, in caso di password dimenticata](https://spid.register.it/selfcare/recovery/password), [Sielte, in caso di password dimenticata](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in caso di username dimenticata](https://login.id.tim.it/mps/fu.php), [Tim, in caso di password dimenticata](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp), [TeamSystem, in caso di username dimenticata](https://spid.teamsystem.com/it/auth/usernameLost), [TeamSystem, in caso di password dimenticata](https://spid.teamsystem.com/it/auth/passwordLost)."
           },
           {
             "title": "Cos’è la CIE?",
@@ -150,7 +274,7 @@
         "faqs": [
           {
             "title": "Come viene tutelata la mia privacy?",
-            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti.\n\nPer maggiori informazioni, leggi l’Informativa sul trattamento dei dati personali che trovi in questa sezione alla voce 'Privacy e Condizioni d’uso'."
+            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti.\n\nPer maggiori informazioni, leggi l’Informativa sul trattamento dei dati personali che trovi alla voce 'Privacy e Condizioni d’uso'."
           },
           {
             "title": "A cosa serve la versione digitale del mio Codice Fiscale? ",
@@ -165,7 +289,7 @@
         "faqs": [
           {
             "title": "Come posso eliminare il mio account e cancellare i miei dati?",
-            "body": "Vai alla voce 'Privacy e Condizioni d’uso' che trovi in questa sezione e seleziona 'Elimina il tuo account'. Al termine dell'eliminazione, riceverai un messaggio di conferma all’indirizzo email associato all'app. Questo non significa che non potrai più utilizzare IO: se accedi di nuovo, si genererà un nuovo account."
+            "body": "Vai alla voce 'Privacy e Condizioni d’uso' e seleziona 'Elimina il tuo account'. Al termine dell'eliminazione, riceverai un messaggio di conferma all’indirizzo email associato all'app. Questo non significa che non potrai più utilizzare IO: se accedi di nuovo, si genererà un nuovo account."
           },
           {
             "title": "Come posso modificare il mio indirizzo email?",
@@ -187,7 +311,16 @@
         "route_name": "PROFILE_PREFERENCES_HOME",
         "title": "Le tue preferenze",
         "content": "Qui puoi visualizzare e modificare le impostazioni utilizzate da tutti i servizi presenti su IO. Puoi anche selezionare il calendario su cui vuoi salvare i promemoria, abilitare l’inoltro automatico dei messaggi che ricevi su IO al tuo indirizzo email, e modificare la lingua.",
-        "faqs": []
+        "faqs": [
+          {
+            "title": "Come viene tutelata la mia privacy?",
+            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti.\n\nPer maggiori informazioni, leggi l’Informativa sul trattamento dei dati personali alla voce 'Privacy e Condizioni d’uso'."
+          },
+          {
+            "title": "Come posso eliminare il mio account e cancellare i miei dati?",
+            "body": "Vai alla voce 'Privacy e Condizioni d’uso' e seleziona 'Elimina il tuo account'. Al termine dell'eliminazione, riceverai un messaggio di conferma all’indirizzo email associato all'app. Questo non significa che non potrai più utilizzare IO: se accedi di nuovo, si genererà un nuovo account."
+          }
+        ]
       },
       {
         "route_name": "PROFILE_PREFERENCES_SERVICES",
@@ -272,7 +405,12 @@
         "route_name": "PROFILE_PRIVACY",
         "title": "Privacy e Condizioni d’uso",
         "content": "Qui trovi la descrizione completa di come IO gestisce i tuoi dati personali e le condizioni di uso dell’app.",
-        "faqs": []
+        "faqs": [
+          {
+            "title": "Come viene tutelata la mia privacy?",
+            "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti. Per maggiori informazioni, leggi l’Informativa sul trattamento dei dati personali che trovi in questa sezione alla voce 'Privacy e Condizioni d’uso'."
+          }
+        ]
       },
       {
         "route_name": "WALLET_ONBOARDING_PRIVATIVE_CHOOSE_ISSUER",
@@ -574,7 +712,7 @@
         ]
       },
       {
-        "route_name": "MESSAGE_DETAIL",
+        "route_name": "MESSAGE_DETAIL_PAGINATED",
         "title": "Dettagli del messaggio",
         "content": "Qui puoi visualizzare il dettaglio della comunicazione ricevuta da un ente integrato all'app IO. Se hai dubbi o delle domande sul contenuto specifico del messaggio, puoi contattare l'ente utilizzando i recapiti che trovi in fondo a questo messaggio o nella sezione 'Servizi'.",
         "faqs": [
@@ -593,11 +731,47 @@
           {
             "title": "Vuoi contattare l'ente?",
             "body": "Dai dettagli del messaggio puoi visualizzare le informazioni relative allo specifico servizio e ente erogatore. Se segui il link al profilo del servizio trovi le informazioni estese, e i recapiti attraverso i quali puoi contattare l'ente erogatore del servizio. \nA seconda delle modalità di contatto gestite dal singolo ente e servizio, i recapiti possono includere: indirizzo dello sportello fisico, numero di telefono, indirizzo mail e/o PEC, sito web, assistenza online, mobile app. "
+          },
+          {
+            "title": "Cosa serve per firmare un documento tramite l’app IO?",
+            "body": "È sufficiente digitare il codice di sblocco dell’app o utilizzare il riconoscimento biometrico al momento della firma."
+          },
+          {
+            "title": "Cosa posso fare se ci sono errori in un documento da firmare?",
+            "body": "Rivolgiti direttamente all’ente che ha inviato il documento. Trovi i contatti nel messaggio di richiesta di firma."
+          },
+          {
+            "title": "Ho un problema con la firma di un documento. Cosa posso fare?",
+            "body": "Vai alla pagina [stato delle firme](ioit://fci/signature-requests) per verificare se la richiesta è in corso o se hai già firmato un documento. Se hai bisogno di assistenza, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          },
+          {
+            "title": "Dove trovo i documenti che ho firmato?",
+            "body": "Riceverai un messaggio in app con i documenti firmati. Potrai visualizzarli o scaricarli entro 90 giorni dalla ricezione del messaggio."
+          },
+          {
+            "title": "Non ho ricevuto il messaggio con il documento firmato. Cosa posso fare?",
+            "body": "Contatta l’assistenza. Per farlo, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          },
+          {
+            "title": "Posso firmare dei documenti per conto di un’altra persona?",
+            "body": "No. La persona a cui viene richiesta la firma deve coincidere con la persona che ha effettuato l’accesso in app."
+          },
+          {
+            "title": "Cosa posso fare se si blocca l’app mentre sto firmando un documento?",
+            "body": "Controlla di aver installato l’ultima versione dell’app IO dallo store del tuo dispositivo. Se l’app non è aggiornata, scarica la sua ultima versione. Altrimenti, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          },
+          {
+            "title": "Un documento è stato firmato con le mie credenziali ma senza il mio consenso. Cosa posso fare?",
+            "body": "Puoi segnalarlo all’assistenza. Vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
+          },
+          {
+            "title": "Ho ricevuto il  messaggio con i documenti firmati ma non sono più disponibili. Come posso recuperarli?",
+            "body": "Rivolgiti direttamente all’ente che ha emesso il documento. Puoi trovare i contatti nel messaggio di riepilogo dei documenti firmati, ricevuto in app IO."
           }
         ]
       },
       {
-        "route_name": "SERVICES_HOME",
+        "route_name": "SERVICES_NATIONAL",
         "title": "Cosa puoi fare nei Servizi",
         "content": "Qui puoi visualizzare la lista dei servizi nazionali e locali disponibili in app.\nPremi sul nome di un servizio per visualizzarne i dettagli. Dalla pagina di dettaglio del servizio, puoi anche gestire l'invio di notifiche push e l'inoltro dei messaggi al tuo indirizzo e-mail.",
         "faqs": [
@@ -1021,7 +1195,7 @@
         ]
       },
       {
-        "route_name": "MESSAGES_HOME",
+        "route_name": "MESSAGES_INBOX",
         "title": "Cosa puoi fare nei tuoi Messaggi",
         "content": "**Nella sezione Messaggi trovi le comunicazioni che ti inviano gli enti aderenti a IO**.\nTi scriveranno solo enti che hanno qualcosa da dirti, come informarti di un avviso di pagamento, ricordarti una scadenza, darti un’informazione o comunicarti un aggiornamento. I messaggi sono suddivisi in due schede: 'Ricevuti', che contiene i messaggi che ricevi, e 'Archiviati', che contiene i messaggi che archivi.",
         "faqs": [
@@ -1044,6 +1218,18 @@
           {
             "title": "Perché non vedo più la scheda 'In scadenza'?",
             "body": "In precedenza, su IO era possibile vedere i messaggi in scadenza in un scheda separata, chiamata 'In scadenza'. Questa scheda non è più disponibile dopo che sono state introdotte delle novità per migliorare la sezione Messaggi."
+          },
+          {
+            "title": "Posso firmare un documento tramite l’app IO?",
+            "body": "Sì. L’ente invia un messaggio direttamente in app con il documento da firmare. Segui le indicazioni ed utilizza il tuo codice di sblocco o il riconoscimento biometrico per firmare."
+          },
+          {
+            "title": "Cosa posso fare se ci sono errori in un documento da firmare?",
+            "body": "Rivolgiti direttamente all’ente che ha inviato il documento. Trovi i contatti nel messaggio di richiesta di firma."
+          },
+          {
+            "title": "Ho un problema con la firma di un documento. Cosa posso fare?",
+            "body": "Vai alla pagina [stato delle firme](ioit://fci/signature-requests) per verificare se la richiesta è in corso o se hai già firmato un documento. Se hai bisogno di assistenza, vai in fondo a questa pagina e seleziona Apri una richiesta > Firma con IO."
           },
           {
             "title": "Come funziona il Certificato Verde COVID-19 (Green Pass) su IO?",
@@ -1094,8 +1280,22 @@
         "recover_password": "https://selfcarespid.aruba.it/#/recovery-password",
         "recover_emergency_code": "https://selfcarespid.aruba.it/#/recovery-emergency-code"
       },
+      "ehtid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da EtnaHiTech selezionando una delle opzioni disponibili qui.\nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.etnaid.it/wp-content/uploads/2023/02/Guida-Utente-EtnaID.pdf).",
+        "helpdesk_form": "https://etnaid.eht.eu/signup/login?next=/signup/support",
+        "phone": "00390652978887",
+        "web_site": "https://www.etnaid.it",
+        "recover_password": "https://etnaid.eht.eu/signup/forgotPassword"
+      },
+      "infocamereid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Infocamere selezionando una delle opzioni disponibili qui di seguito. \n Inoltre, per ulteriori informazioni puoi consultare la [le FAQ e le guide](https://supporto.infocamere.it/aswsWeb/selectLanding?idProduct=DIIP&userRole=diipud) fornite dal tuo Identity Provider.",
+        "helpdesk_form": "https://supporto.infocamere.it/aswsWeb/contatti?idProduct=DIIP&userRole=diipud",
+        "web_site": "https://idspid.infocamere.it/idspWeb/portale/home",
+        "phone": "003906442851",
+        "recover_password": "https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryPassword"
+      },
       "infocertid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da InfoCert  selezionando una delle opzioni disponibili qui di seguito. \n Inoltre, per ulteriori informazioni puoi consultare la [le FAQ e le guide](https://help.infocert.it/Cerca?searchText=spid) fornite dal tuo Identity Provider.",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da InfoCert selezionando una delle opzioni disponibili qui di seguito. \n Inoltre, per ulteriori informazioni puoi consultare la [le FAQ e le guide](https://help.infocert.it/Cerca?searchText=spid) fornite dal tuo Identity Provider.",
         "helpdesk_form": "https://contatta.infocert.it/ticket/",
         "phone": "00390654641489",
         "web_site": "https://identitadigitale.infocert.it/",
@@ -1112,7 +1312,7 @@
         "recover_password": "https://spid.intesa.it/area-privata/recupera-password.aspx"
       },
       "lepidaid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Lepida selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://id.lepida.it/docs/manuale_utente.pdf) fornito da tuo Identity Provider.",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Lepida selezionando una delle opzioni disponibili qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://id.lepida.it/docs/manuale_utente.pdf) fornito da tuo Identity Provider.",
         "email": "helpdesk@lepida.it",
         "helpdesk_form": "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid",
         "phone": "800445500",
@@ -1121,15 +1321,15 @@
         "recover_password": "https://id.lepida.it/lepidaid/recuperapassword"
       },
       "namirialid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Namirial selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) fornite dal tuo Identity Provider.",
-        "helpdesk_form": "https://support.namirial.com/it/supporto-tecnico",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Namirial selezionando una delle opzioni disponibili qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) fornite dal tuo Identity Provider.",
+        "helpdesk_form": "https://servicedesk.namirial.com/hc/it",
         "phone": "003907163494",
         "web_site": "https://www.namirialtsp.com/spid/",
         "recover_username": "https://portal.namirialtsp.com/public/retrieveUsername.xhtml",
         "recover_password": "https://portal.namirialtsp.com/public/resetPassword.xhtml"
       },
       "posteid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Poste Italiane selezionando una delle opzioni disponibili qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.poste.it/faq-poste-id.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
         "helpdesk_form": "https://www.poste.it/scrivici.html",
         "phone": "800007777",
         "web_site": "https://posteid.poste.it",
@@ -1137,32 +1337,45 @@
         "recover_password": "https://posteid.poste.it/recuperocredenziali.shtml"
       },
       "sielteid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Sielte selezionando una delle opzioni disponibili qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.sielteid.it/faq.html) fornite dal tuo Identity Provider ed il [Manuale Utente](https://www.sielteid.it/documents/ManualeUtente.pdf).",
         "helpdesk_form": "https://www.sielteid.it/contact.html#blocco-contatti-form",
         "phone": "00390957171301",
         "web_site": "https://www.sielteid.it/che-cos-e-sielteid.html",
         "recover_password": "https://myid.sieltecloud.it/profile/forgotPassword"
       },
       "spiditalia": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Register mediante il bottone qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.register.it/spid#pgc-23051-10-0) fornite dal tuo Identity Provider ed il [Manuale Utente](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Register mediante il bottone qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare le [FAQ](https://www.register.it/spid#pgc-23051-10-0) fornite dal tuo Identity Provider ed il [Manuale Utente](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
         "phone": "+390355787979",
         "web_site": "https://www.register.it/spid/ ",
         "recover_username": "https://spid.register.it/selfcare/recovery/username ",
         "recover_password": "https://spid.register.it/selfcare/recovery/password"
       },
       "timid": {
-        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim selezionando una delle opzioni disponibili qui di seguito. \nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da Tim selezionando una delle opzioni disponibili qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf) fornito dal tuo Identity Provider.",
         "email": "supportotimid@telecomitalia.it",
         "helpdesk_form": "https://www.trusttechnologies.it/contatti/#form",
         "phone": "800405800",
         "web_site": "https://spid.tim.it/tim-id-portal",
         "recover_username": "https://login.id.tim.it/mps/fu.php",
         "recover_password": "https://login.id.tim.it/mps/fp.php"
+      },
+      "teamsystemid": {
+        "description": "Se riscontri altri problemi nella procedura di autenticazione, puoi contattare il servizio dedicato offerto da TeamSystem selezionando una delle opzioni disponibili qui di seguito.\nInoltre, per ulteriori informazioni puoi consultare il [Manuale Utente](https://www.agid.gov.it/sites/default/files/repository_files/teamsystem_id_-_manuale_utente_selfcare_v1.1.pdf) fornito da AgID.",
+        "helpdesk_form": "https://www.teamsystem.com/store/spid/contattaci/",
+        "phone": "00390516967001",
+        "web_site": "https://www.teamsystem.com/store/spid/",
+        "recover_username": "https://spid.teamsystem.com/it/auth/usernameLost",
+        "recover_password": "https://spid.teamsystem.com/it/auth/passwordLost"
       }
     }
   },
   "en": {
     "screens": [
+      {
+        "route_name": "MESSAGE_DETAIL_ATTACHMENT",
+        "title": "Document preview",
+        "content": "Here you can see a preview of the document attached to the message. You can also save it, share it, or open it with a PDF reader app installed on your device."
+      },
       {
         "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
         "title": "Push notifications",
@@ -1209,6 +1422,29 @@
         ]
       },
       {
+        "route_name": "AUTHENTICATION_IDP_LOGIN",
+        "title": "Your credentials",
+        "content": "To enter IO via SPID, you must enter your username and password. Then, confirm the request via OTP or in your Identity Provider's app and head back to IO.",
+        "faqs": [
+          {
+            "title": "What's my password?",
+            "body": "È il codice alfanumerico che hai impostato quando hai attivato SPID."
+          },
+          {
+            "title": "I forgot my SPID credentials. What can I do?",
+            "body": "Don't worry: you can recover them at any time. Select your Identity Provider to find out how to proceed: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [EtnaHiTech, in case of forgotten password](https://etnaid.eht.eu/signup/forgotPassword), [Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in case of forgotten password](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste. en/recuperocredenziali.shtml), [Register, in case of forgotten username](https://spid.register.it/selfcare/recovery/username), [Register, in case of forgotten password](https://spid.register.it/selfcare/recovery/password), [Sielte, in case of forgotten password](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in case of forgotten username](https://login.id.tim.it/mps/fu.php), [Tim, in case of forgotten password](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp), [TeamSystem, in case of forgotten username](https://spid.teamsystem.com/it/auth/usernameLost), [TeamSystem, in case of forgotten password](https://spid.teamsystem.com/it/auth/passwordLost)."
+          },
+          {
+            "title": "I did everything right but I can't log in. What can I do?",
+            "body": "In this case, go to the bottom of this page and select 'Open a request' to write to us: our Support will help you solve the problem."
+          },
+          {
+            "title": "How is my privacy protected?",
+            "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). It is therefore a secure tool that protects your information and your rights."
+          }
+        ]
+      },
+      {
         "route_name": "AUTHENTICATION_LANDING",
         "title": "How to access IO",
         "content": "To access IO, you must authenticate with either your SPID identity or Electronic Identity Card (CIE). To activate SPID, follow the information found [on this website](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/). To request your CIE, go to your Municipality's website.",
@@ -1223,7 +1459,7 @@
           },
           {
             "title": "I have lost my SPID credentials. What can I do?",
-            "body": "Don't worry: you can recover them at any time. Select your Identity Provider to find out how to proceed: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in case of forgotten password](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste. en/recuperocredenziali.shtml), [Register, in case of forgotten username](https://spid.register.it/selfcare/recovery/username), [Register, in case of forgotten password](https://spid.register.it/selfcare/recovery/password), [Sielte, in case of forgotten password](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in case of forgotten username](https://login.id.tim.it/mps/fu.php), [Tim, in case of forgotten password](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)."
+            "body": "Don't worry: you can recover them at any time. Select your Identity Provider to find out how to proceed: [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx), [EtnaHiTech, in case of forgotten password](https://etnaid.eht.eu/signup/forgotPassword), [Infocert](https://my.infocert.it/selfcare/#/recoveryPin), [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php), [Intesa, in case of forgotten password](https://spid.intesa.it/area-privata/forgot-password.aspx), [Poste](https://posteid.poste. en/recuperocredenziali.shtml), [Register, in case of forgotten username](https://spid.register.it/selfcare/recovery/username), [Register, in case of forgotten password](https://spid.register.it/selfcare/recovery/password), [Sielte, in case of forgotten password](https://myid.sieltecloud.it/profile/recovery/forgotPassword), [Tim, in case of forgotten username](https://login.id.tim.it/mps/fu.php), [Tim, in case of forgotten password](https://login.id.tim.it/mps/fp.php), [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp), [TeamSystem, in case of forgotten username](https://spid.teamsystem.com/it/auth/usernameLost), [TeamSystem, in case of forgotten password](https://spid.teamsystem.com/it/auth/passwordLost)."
           },
           {
             "title": "What is the CIE?",
@@ -1348,7 +1584,16 @@
         "route_name": "PROFILE_PREFERENCES_HOME",
         "title": "Your preferences",
         "content": "Here you can see and change the settings used by all services on IO. You can also select the default calendar for your reminders, turn on or off the automatic forward of your messages to an email address, and change the language.",
-        "faqs": []
+        "faqs": [
+          {
+            "title": "How is my privacy protected?",
+            "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). It is therefore a safe tool that protects your information and rights.\n\nFor more information, please read the Privacy Policy that you can find in this section under 'Privacy and Terms of Use.'"
+          },
+          {
+            "title": "How can I delete my account and data?",
+            "body": "Go to 'Privacy and Terms of Use' and select 'Delete your account.' When the deletion is complete, you will receive a confirmation message to the email address associated with the app. This does not mean that you will no longer be able to use IO: if you log in again, a new account will be generated."
+          }
+        ]
       },
       {
         "route_name": "PROFILE_PREFERENCES_SERVICES",
@@ -1433,7 +1678,12 @@
         "route_name": "PROFILE_PRIVACY",
         "title": " Privacy Policy and Terms of Service",
         "content": "Here you will find the full description of how IO handles your personal data and the terms of use of the app.",
-        "faqs": []
+        "faqs": [
+          {
+            "title": "How is my privacy protected?",
+            "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=)."
+          }
+        ]
       },
       {
         "route_name": "WALLET_ONBOARDING_PRIVATIVE_CHOOSE_ISSUER",
@@ -1719,7 +1969,7 @@
         ]
       },
       {
-        "route_name": "SERVICES_HOME",
+        "route_name": "SERVICES_NATIONAL",
         "title": "What you can do in Services",
         "content": "Here you can view a list of national and local services available in the app. Press on a service name to check its details. From the service detail page, you can also manage the settings for push notifications and message forwarding to your email address.",
         "faqs": [
@@ -1786,7 +2036,7 @@
     ],
     "idps": {
       "arubaid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Aruba by selecting  one of the options presented below.",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Aruba by selecting one of the options presented below.",
         "helpdesk_form": "https://selfcarespid.aruba.it/#/recovery-emergency-code",
         "phone": "003905750504",
         "web_site": "https://www.pec.it/richiedi-spid-aruba-id.aspx",
@@ -1794,8 +2044,22 @@
         "recover_password": "https://selfcarespid.aruba.it/#/recovery-password",
         "recover_emergency_code": "https://selfcarespid.aruba.it/#/recovery-emergency-code"
       },
+      "ehtid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of EtnaHiTech by selecting one of the options presented below.\nFor further details you can refer to the [FAQ](https://www.etnaid.it/wp-content/uploads/2023/02/Guida-Utente-EtnaID.pdf) gathered by your Identity Provider.",
+        "helpdesk_form": "https://etnaid.eht.eu/signup/login?next=/signup/support",
+        "phone": "00390652978887",
+        "web_site": "https://www.etnaid.it",
+        "recover_password": "https://etnaid.eht.eu/signup/forgotPassword"
+      },
+      "infocamereid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Infocamere by selecting one of the options presented below.\nFor further details you can refer to the [FAQ](https://supporto.infocamere.it/aswsWeb/selectLanding?idProduct=DIIP&userRole=diipud) gathered by your Identity Provider.",
+        "helpdesk_form": "https://supporto.infocamere.it/aswsWeb/contatti?idProduct=DIIP&userRole=diipud",
+        "web_site": "https://idspid.infocamere.it/idspWeb/portale/home",
+        "phone": "00390652978887",
+        "recover_password": "https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryPassword"
+      },
       "infocertid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of InfoCert by selecting  one of the options presented below. \n For further details you can refer to the [FAQ](https://help.infocert.it/Cerca?searchText=spid) gathered by your Identity Provider.",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of InfoCert by selecting one of the options presented below.\nFor further details you can refer to the [FAQ](https://help.infocert.it/Cerca?searchText=spid) gathered by your Identity Provider.",
         "helpdesk_form": "https://contatta.infocert.it/ticket/",
         "phone": "00390654641489",
         "web_site": "https://identitadigitale.infocert.it/",
@@ -1812,7 +2076,7 @@
         "recover_password": "https://spid.intesa.it/area-privata/recupera-password.aspx"
       },
       "lepidaid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Lepida by selecting one of the options presented below. \n For further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Lepida by selecting one of the options presented below.\nFor further details you can refer to the [User Guide](https://id.lepida.it/docs/manuale_utente.pdf).",
         "email": "helpdesk@lepida.it",
         "helpdesk_form": "https://www.lepida.net/assistenza/richiesta-assistenza-lepidaid",
         "phone": "800445500",
@@ -1821,15 +2085,15 @@
         "recover_password": "https://id.lepida.it/lepidaid/recuperapassword"
       },
       "namirialid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Namirial by selecting one of the options presented below. \n For further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
-        "helpdesk_form": "https://support.namirial.com/it/supporto-tecnico",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Namirial by selecting one of the options presented below.\nFor further details you can refer to the [FAQ](https://support.namirial.com/it/faq/faq-tsp/faq-tsp-spid) gathered by your Identity Provider.",
+        "helpdesk_form": "https://servicedesk.namirial.com/hc/it",
         "phone": "003907163494",
         "web_site": "https://www.namirialtsp.com/spid/",
         "recover_username": "https://portal.namirialtsp.com/public/retrieveUsername.xhtml",
         "recover_password": "https://portal.namirialtsp.com/public/resetPassword.xhtml"
       },
       "posteid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Poste Italiane by selecting one of the options presented below. \n For further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Poste Italiane by selecting one of the options presented below.\nFor further details you can refer to the [FAQ](https://www.poste.it/faq-poste-id.html) gathered by your Identity Provider and the [User Guide](https://posteid.poste.it/risorse/condivise/doc/manuale_operativo.pdf).",
         "helpdesk_form": "https://www.poste.it/scrivici.html",
         "phone": "800007777",
         "web_site": "https://posteid.poste.it",
@@ -1837,27 +2101,35 @@
         "recover_password": "https://posteid.poste.it/recuperocredenziali.shtml"
       },
       "sielteid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting one of the options presented below. \n For further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting one of the options presented below.\nFor further details you can refer to the [FAQ](https://www.sielteid.it/faq.html) gathered by your Identity Provider and the [User Guide](https://www.sielteid.it/faq.html).",
         "helpdesk_form": "https://www.sielteid.it/contact.html#blocco-contatti-form",
         "phone": "00390957171301",
         "web_site": "https://www.sielteid.it/che-cos-e-sielteid.html",
         "recover_password": "https://myid.sieltecloud.it/profile/forgotPassword"
       },
       "spiditalia": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting the button below. \n For further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Sielte by selecting the button below.\nFor further details you can refer to the [FAQ](https://www.register.it/spid#pgc-23051-10-0) gathered by your Identity Provider and the [User Guide](https://spid.register.it/doc/Guida_Utente_SPID.pdf).",
         "phone": "+390355787979",
         "web_site": "https://www.register.it/spid/ ",
         "recover_username": "https://spid.register.it/selfcare/recovery/username ",
         "recover_password": "https://spid.register.it/selfcare/recovery/password"
       },
       "timid": {
-        "description": "For problems encountered during the authentication process, you can reach the support desk of Tim by selecting one of the options presented below. \n For further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
+        "description": "For problems encountered during the authentication process, you can reach the support desk of Tim by selecting one of the options presented below.\nFor further details you can refer to the [User Guide](https://www.trusttechnologies.it/wp-content/uploads/SPIDPRIN.TT_.DPMU15000.03-Guida-Utente-al-servizio-TIM-ID.pdf).",
         "email": "supportotimid@telecomitalia.it",
         "helpdesk_form": "https://www.trusttechnologies.it/contatti/#form",
         "phone": "800405800",
         "web_site": "https://spid.tim.it/tim-id-portal",
         "recover_username": "https://login.id.tim.it/mps/fu.php",
         "recover_password": "https://login.id.tim.it/mps/fp.php"
+      },
+      "teamsystemid": {
+        "description": "For problems encountered during the authentication process, you can reach the support desk of TeamSystem by selecting one of the options presented below.\nFor further details you can refer to the [User Guide](https://www.agid.gov.it/sites/default/files/repository_files/teamsystem_id_-_manuale_utente_selfcare_v1.1.pdf).",
+        "helpdesk_form": "https://www.teamsystem.com/store/spid/contattaci/",
+        "phone": "00390516967001",
+        "web_site": "https://www.teamsystem.com/store/spid/",
+        "recover_username": "https://spid.teamsystem.com/it/auth/usernameLost",
+        "recover_password": "https://spid.teamsystem.com/it/auth/passwordLost"
       }
     }
   }
