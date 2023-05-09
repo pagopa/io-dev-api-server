@@ -6,7 +6,7 @@ import { PNActivation } from "../../../../generated/definitions/pn/PNActivation"
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { pnServiceId } from "../../../payloads/services/special/pn/factoryPn";
-import ServiceDB from "./../../../persistence/services";
+import ServicesDB from "./../../../persistence/services";
 
 export const pnRouter = Router();
 
@@ -18,25 +18,19 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const servicesPreferences = ServiceDB.getPreferences();
-  const currentPreference = servicesPreferences.get(pnServiceId);
+  const servicePreference = ServicesDB.getPreference(pnServiceId);
 
-  if (currentPreference === undefined) {
+  if (servicePreference === undefined) {
     res.sendStatus(404);
     return;
   }
 
-  const updatedPreference = {
-    ...currentPreference,
-    is_inbox_enabled: maybeActivation.right.activation_status
-  };
-
-  const increasedSettingsVersion = ((currentPreference.settings_version as number) +
+  const increasedSettingsVersion = ((servicePreference.settings_version as number) +
     1) as ServicePreference["settings_version"];
-  const servicePreference = {
-    ...updatedPreference,
+  const updatedPreference = {
+    is_inbox_enabled: maybeActivation.right.activation_status,
     settings_version: increasedSettingsVersion
-  };
-  servicesPreferences.set(pnServiceId as ServiceId, servicePreference);
+  } as ServicePreference;
+  ServicesDB.updatePreference(pnServiceId, updatedPreference);
   res.status(204).send();
 });

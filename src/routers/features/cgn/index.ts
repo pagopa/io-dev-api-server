@@ -27,7 +27,8 @@ import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
-import ServiceDB from "./../../../persistence/services";
+import ServicesDB from "./../../../persistence/services";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 
 export const cgnRouter = Router();
 
@@ -112,22 +113,22 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
           instance_id: { id },
           status: StatusEnum.COMPLETED
         };
-        const servicesPreferences = ServiceDB.getPreferences();
-        const currentPreference = servicesPreferences.get(cgnServiceId);
+        const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
+        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
-        servicesPreferences.set(cgnServiceId, {
+        const updatedPreference = {
           is_inbox_enabled: true,
           is_email_enabled:
-            currentPreference?.is_email_enabled ??
+            servicePreference?.is_email_enabled ??
             getRandomValue(false, faker.datatype.boolean(), "services"),
           is_webhook_enabled: faker.datatype.boolean(),
           can_access_message_read_status:
-            currentPreference?.can_access_message_read_status ??
+            servicePreference?.can_access_message_read_status ??
             getRandomValue(false, faker.datatype.boolean(), "services"),
           settings_version: increasedSettingsVersion
-        });
+        } as ServicePreference;
+        ServicesDB.updatePreference(cgnServiceId, updatedPreference);
 
         return res.status(200).json(response);
       }
@@ -273,18 +274,18 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
           return;
         }
         resetCgn();
-        const servicesPreferences = ServiceDB.getPreferences();
-        const currentPreference = servicesPreferences.get(cgnServiceId);
+        const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
+        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
-        servicesPreferences.set(cgnServiceId, {
+        const updatedPreference = {
           is_inbox_enabled: false,
           is_email_enabled: false,
           is_webhook_enabled: false,
           can_access_message_read_status: false,
           settings_version: increasedSettingsVersion
-        });
+        } as ServicePreference;
+        ServicesDB.updatePreference(cgnServiceId, updatedPreference);
         res.status(201).json({ id: getRandomStringId() });
       }
     )

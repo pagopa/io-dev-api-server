@@ -5,16 +5,16 @@ import { ServicePublic } from "../../../generated/definitions/backend/ServicePub
 import { ioDevServerConfig, staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
-import ServiceDB from "./../../persistence/services";
+import ServicesDB from "./../../persistence/services";
 
 const request = supertest(app);
 
 beforeAll(() => {
-  return ServiceDB.createServices(ioDevServerConfig);
+  return ServicesDB.createServices(ioDevServerConfig);
 });
 
 afterAll(() => {
-  return ServiceDB.deleteServices();
+  return ServicesDB.deleteServices();
 });
 
 it("services should return a valid services list", async () => {
@@ -23,14 +23,18 @@ it("services should return a valid services list", async () => {
   const list = PaginatedServiceTupleCollection.decode(response.body);
   expect(E.isRight(list)).toBeTruthy();
   if (E.isRight(list)) {
-    const visibleServices = ServiceDB.getVisibleServices();
-    expect(list.right).toEqual(visibleServices.payload);
+    const servicesSummaries = ServicesDB.getSummaries();
+    const paginatedServicesSummaries = {
+      items: servicesSummaries,
+      page_size: servicesSummaries.length
+    };
+    expect(list.right).toEqual(paginatedServicesSummaries);
   }
 });
 
 it("services should return a valid service with content", async () => {
-  const services = ServiceDB.getServices();
-  const serviceId = services[0].service_id;
+  const servicesSummaries = ServicesDB.getSummaries();
+  const serviceId = servicesSummaries[0].service_id;
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
   const service = ServicePublic.decode(response.body);

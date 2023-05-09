@@ -21,7 +21,7 @@ import {
   withPNContent,
   withRemoteAttachments
 } from "./payloads/message";
-import ServiceDB from "./persistence/services";
+import ServicesDB from "./persistence/services";
 import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { IoDevServerConfig } from "./types/config";
@@ -47,15 +47,15 @@ import {
 import { pnServiceId } from "./payloads/services/special/pn/factoryPn";
 
 const getServiceId = (): string => {
-  const services = ServiceDB.getServices();
-  if (services.length === 0) {
+  const servicesSummaries = ServicesDB.getSummaries();
+  if (servicesSummaries.length === 0) {
     throw new Error(
       "to create messages, at least one sender service must exist!"
     );
   }
   return getRandomValue(
-    services[0].service_id,
-    faker.helpers.arrayElement(services).service_id,
+    servicesSummaries[0].service_id,
+    faker.helpers.arrayElement(servicesSummaries).service_id,
     "messages"
   );
 };
@@ -498,7 +498,7 @@ const createMessages = (
  * @param customConfig
  */
 export default function init(customConfig = ioDevServerConfig) {
-  ServiceDB.createServices(customConfig);
+  ServicesDB.createServices(customConfig);
   MessagesDB.persist(createMessages(customConfig) as any);
 
   if (customConfig.messages.archivedMessageCount > 0) {

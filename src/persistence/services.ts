@@ -16,6 +16,7 @@ import { createSiciliaVolaService } from "../payloads/services/special/siciliaVo
 import { isCgnActivated } from "../routers/features/cgn";
 import { IoDevServerConfig } from "../types/config";
 import { validatePayload } from "../utils/validator";
+import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 
 let localServices: ServicePublic[] = [];
 let nationalServices: ServicePublic[] = [];
@@ -64,30 +65,29 @@ const createServices = (customConfig: IoDevServerConfig) => {
 };
 
 const getLocalServices = () => {
-  const clonedLocalServices: ServicePublic[] = [];
+  const clonedLocalServices: Readonly<ServicePublic>[] = [];
   localServices.forEach(localService =>
     clonedLocalServices.push(Object.assign({}, localService))
   );
   return clonedLocalServices;
 };
 
-const getPreferences = () => servicePreferences;
+const getSummaries = (): ReadonlyArray<ServiceSummary> => {
+  const services = localServices.concat(nationalServices, specialServices);
+  return services.map(
+    s =>
+      ({
+        service_id: s.service_id,
+        version: s.version,
+        scope: s.service_metadata?.scope
+      } as ServiceSummary)
+  );
+};
 
-const getServices = () =>
-  localServices.concat(nationalServices, specialServices);
-
-const getVisibleServices = () => {
-  const services = getServices();
-  const serviceSummary = services.map(s => ({
-    service_id: s.service_id,
-    version: s.version,
-    scope: s.service_metadata?.scope
-  }));
-  const payload = validatePayload(PaginatedServiceTupleCollection, {
-    items: serviceSummary,
-    page_size: serviceSummary.length
-  });
-  return { payload, isJson: true };
+export type ServiceSummary = {
+  service_id: ServiceId;
+  version: number;
+  scope?: ServiceScopeEnum;
 };
 
 const deleteServices = () => {
@@ -97,11 +97,50 @@ const deleteServices = () => {
   servicePreferences.clear();
 };
 
+const getService = (
+  serviceId: ServiceId
+): Readonly<ServicePublic> | undefined => {
+  const localService = localServices.find(
+    service => service.service_id === serviceId
+  );
+  if (localService) {
+    return localService;
+  }
+
+  const nationalService = nationalServices.find(
+    service => service.service_id === serviceId
+  );
+  if (nationalService) {
+    return nationalService;
+  }
+
+  return specialServices.find(service => service.service_id === serviceId);
+};
+
+const getPreference = (
+  serviceId: ServiceId
+): Readonly<ServicePreference> | undefined => servicePreferences.get(serviceId);
+
+const updatePreference = (
+  serviceId: ServiceId,
+  updatedPreference: ServicePreference
+): void => {
+  const servicePreference = servicePreferences.get(serviceId);
+  if (servicePreference) {
+    const mergedServicePreference: ServicePreference = {
+      ...servicePreference,
+      ...updatePreference
+    };
+    servicePreferences.set(serviceId, mergedServicePreference);
+  }
+};
+
 export default {
   createServices,
   deleteServices,
   getLocalServices,
-  getPreferences,
-  getServices,
-  getVisibleServices
+  getPreference,
+  getService,
+  getSummaries,
+  updatePreference
 };

@@ -34,7 +34,7 @@ import { validatePayload } from "../utils/validator";
 import { currentProfile } from "./profile";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import ServiceDB from "./../persistence/services";
+import ServicesDB from "./../persistence/services";
 import { pnServiceId } from "./services/special/pn/factoryPn";
 
 // tslint:disable-next-line: no-let
@@ -225,21 +225,20 @@ export const withPaymentData = (
   ),
   amount: number = getRandomIntInRange(1, 10000)
 ): CreatedMessageWithContent => {
-  const services = ServiceDB.getServices();
+  const serviceId = message.sender_service_id;
+  const service = ServicesDB.getService(serviceId);
   const data: PaymentDataWithRequiredPayee = {
     notice_number: noticeNumber as PaymentNoticeNumber,
     amount: amount as PaymentAmount,
     invalid_after_due_date: invalidAfterDueDate,
     payee: {
-      fiscal_code: services.find(
-        s => s.service_id === message.sender_service_id
-      )?.organization_fiscal_code!
+      fiscal_code: service?.organization_fiscal_code!
     }
   };
-  const paymementData = validatePayload(PaymentDataWithRequiredPayee, data);
+  const paymentData = validatePayload(PaymentDataWithRequiredPayee, data);
   return {
     ...message,
-    content: { ...message.content, payment_data: paymementData }
+    content: { ...message.content, payment_data: paymentData }
   };
 };
 
@@ -263,10 +262,8 @@ export const getCategory = (
   message: CreatedMessageWithContent
 ): MessageCategory => {
   const { eu_covid_cert, payment_data } = message.content;
-  const services = ServiceDB.getServices();
-  const senderService = services.find(
-    s => s.service_id === message.sender_service_id
-  )!;
+  const serviceId = message.sender_service_id;
+  const senderService = ServicesDB.getService(serviceId)!;
   if (
     ThirdPartyMessageWithContent.is(message) &&
     senderService.service_id === pnServiceId

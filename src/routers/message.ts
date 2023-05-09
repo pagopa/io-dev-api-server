@@ -32,11 +32,9 @@ const getPublicMessages = (
   enrichData: boolean,
   withContent: boolean
 ): ReadonlyArray<PublicMessage> => {
-  const allServices = ServicesDB.getServices();
   return items.map(m => {
-    const senderService = allServices.find(
-      s => s.service_id === m.sender_service_id
-    );
+    const serviceId = m.sender_service_id;
+    const senderService = ServicesDB.getService(serviceId);
     const extraData = enrichData
       ? {
           service_name: senderService!.service_name,

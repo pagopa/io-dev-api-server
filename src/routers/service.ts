@@ -2,14 +2,15 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { UpsertServicePreference } from "../../generated/definitions/backend/UpsertServicePreference";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
-import ServiceDB from "./../persistence/services";
+import ServicesDB from "./../persistence/services";
+import { validatePayload } from "../utils/validator";
+import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 
 export const serviceRouter = Router();
 const configResponse = ioDevServerConfig.services.response;
@@ -19,9 +20,15 @@ addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
     res.sendStatus(configResponse.getServicesResponseCode);
     return;
   }
-  const visibleServices = ServiceDB.getVisibleServices();
-  const visibleServicesPayload = visibleServices.payload;
-  res.json(visibleServicesPayload);
+  const serviceSummaries = ServicesDB.getSummaries();
+  const paginatedServiceSummaries = validatePayload(
+    PaginatedServiceTupleCollection,
+    {
+      items: serviceSummaries,
+      page_size: serviceSummaries.length
+    }
+  );
+  res.json(paginatedServiceSummaries);
 });
 
 addHandler(
@@ -33,10 +40,8 @@ addHandler(
       res.sendStatus(configResponse.getServiceResponseCode);
       return;
     }
-    const services = ServiceDB.getServices();
-    const service = services.find(
-      item => item.service_id === req.params.service_id
-    );
+    const serviceId = req.params.service_id as ServiceId;
+    const service = ServicesDB.getService(serviceId);
     if (service === undefined) {
       res.sendStatus(404);
       return;
@@ -54,10 +59,8 @@ addHandler(
       res.sendStatus(configResponse.getServicesPreference);
       return;
     }
-    const servicesPreferences = ServiceDB.getPreferences();
-    const servicePreference = servicesPreferences.get(
-      req.params.service_id as ServiceId
-    );
+    const serviceId = req.params.service_id as ServiceId;
+    const servicePreference = ServicesDB.getPreference(serviceId);
     if (servicePreference === undefined) {
       res.sendStatus(404);
       return;
@@ -82,33 +85,26 @@ addHandler(
     }
     const updatedPreference: ServicePreference = req.body;
 
-    const servicesPreferences = ServiceDB.getPreferences();
-    const currentPreference = servicesPreferences.get(
-      req.params.service_id as ServiceId
-    );
-
-    if (currentPreference === undefined) {
+    const serviceId = req.params.service_id as ServiceId;
+    const servicePreference = ServicesDB.getPreference(serviceId);
+    if (servicePreference === undefined) {
       res.sendStatus(404);
       return;
     }
 
     if (
-      currentPreference.settings_version !== updatedPreference.settings_version
+      servicePreference.settings_version !== updatedPreference.settings_version
     ) {
       res.sendStatus(409);
       return;
     }
-    const increasedSettingsVersion = ((currentPreference.settings_version as number) +
+    const increasedSettingsVersion = ((servicePreference.settings_version as number) +
       1) as ServicePreference["settings_version"];
-    const servicePreference = {
-      ...updatedPreference,
+    const updatedServicePreference = {
       settings_version: increasedSettingsVersion
-    };
-    servicesPreferences.set(
-      req.params.service_id as ServiceId,
-      servicePreference
-    );
-    res.json(servicePreference);
+    } as ServicePreference;
+    ServicesDB.updatePreference(serviceId, updatedServicePreference);
+    res.json(updatedServicePreference);
   }
 );
 
@@ -128,7 +124,7 @@ addHandler(
   "get",
   "/services_web_view/local_services",
   (_, res) => {
-    const localServices = ServiceDB.getLocalServices();
+    const localServices = ServicesDB.getLocalServices();
     res.json(localServices);
   }
 );
