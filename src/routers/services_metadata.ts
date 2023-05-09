@@ -23,7 +23,7 @@ import {
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import { services } from "./service";
+import ServiceDB from "./../persistence/services";
 
 export const servicesMetadataRouter = Router();
 
@@ -38,6 +38,7 @@ addHandler(
   addRoutePrefix(`/services/:service_id`),
   (req, res) => {
     const serviceId = req.params.service_id.split(".")[0];
+    const services = ServiceDB.getServices();
     const service = services.find(s => s.service_id === serviceId);
     if (service === undefined || service.service_metadata === undefined) {
       res.sendStatus(404);

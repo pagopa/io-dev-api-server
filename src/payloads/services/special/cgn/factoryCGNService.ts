@@ -11,9 +11,9 @@ import { SpecialServiceGenerator } from "../../factory";
 
 export const cgnServiceId = "serviceCgn" as ServiceId;
 
-export const createCgnService : SpecialServiceGenerator = (
-  createService: ((serviceId: string) => ServicePublic),
-  createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
+export const createCgnService: SpecialServiceGenerator = (
+  createService: (serviceId: string) => ServicePublic,
+  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
 ): ServicePublic => ({
   ...createService(cgnServiceId),

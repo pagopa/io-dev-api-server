@@ -130,7 +130,7 @@ const defaultConfig: IoDevServerConfig = {
       cgn: true,
       cdc: true,
       pn: false,
-      fci: true,
+      fci: true
     },
     // it has partially effect (pr welcome)
     allowRandomValues: true

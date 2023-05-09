@@ -20,8 +20,8 @@ import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
-import { services } from "./service";
 import { walletRouter } from "./wallet";
+import ServiceDB from "./../persistence/services";
 
 export const paymentRouter = Router();
 
@@ -53,6 +53,7 @@ addHandler(
   // success response: res.json(getPaymentRequestsGetResponse(faker.helpers.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
   (_, res) => {
+    const services = ServiceDB.getServices();
     pipe(
       O.fromNullable(ioDevServerConfig.wallet.verificaError),
       O.fold(

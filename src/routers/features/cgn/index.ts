@@ -6,7 +6,6 @@ import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -27,8 +26,8 @@ import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { servicesPreferences } from "../../service";
 import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
+import ServiceDB from "./../../../persistence/services";
 
 export const cgnRouter = Router();
 
@@ -113,9 +112,8 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
           instance_id: { id },
           status: StatusEnum.COMPLETED
         };
-        const currentPreference = servicesPreferences.get(
-          cgnServiceId
-        );
+        const servicesPreferences = ServiceDB.getPreferences();
+        const currentPreference = servicesPreferences.get(cgnServiceId);
 
         const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
@@ -275,9 +273,8 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
           return;
         }
         resetCgn();
-        const currentPreference = servicesPreferences.get(
-          cgnServiceId
-        );
+        const servicesPreferences = ServiceDB.getPreferences();
+        const currentPreference = servicesPreferences.get(cgnServiceId);
 
         const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;

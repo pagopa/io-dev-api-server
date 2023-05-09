@@ -9,9 +9,9 @@ import { ServiceId } from "../../../../../generated/definitions/backend/ServiceI
 
 const fciServiceId = "serviceFci" as ServiceId;
 
-export const createFciService : SpecialServiceGenerator = (
-  createService: ((serviceId: string) => ServicePublic),
-  createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
+export const createFciService: SpecialServiceGenerator = (
+  createService: (serviceId: string) => ServicePublic,
+  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
 ): ServicePublic => ({
   ...createService(fciServiceId),

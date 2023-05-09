@@ -5,8 +5,8 @@ import { ServicePreference } from "../../../\../generated/definitions/backend/Se
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { servicesPreferences } from "../../service";
 import { pnServiceId } from "../../../payloads/services/special/pn/factoryPn";
+import ServiceDB from "./../../../persistence/services";
 
 export const pnRouter = Router();
 
@@ -18,6 +18,7 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
     res.sendStatus(400);
     return;
   }
+  const servicesPreferences = ServiceDB.getPreferences();
   const currentPreference = servicesPreferences.get(pnServiceId);
 
   if (currentPreference === undefined) {

@@ -1,4 +1,7 @@
-import { NonEmptyString, OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
+import {
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "@pagopa/ts-commons/lib/strings";
 import { OrganizationName } from "../../../../../generated/definitions/backend/OrganizationName";
 import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
 import { ServicePublic } from "../../../../../generated/definitions/backend/ServicePublic";
@@ -26,9 +29,9 @@ en:
         action: "ioit://SV_VOUCHER_LIST"
 ---`;
 
-export const createSiciliaVolaService : SpecialServiceGenerator = (
-  createService: ((serviceId: string) => ServicePublic),
-  createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
+export const createSiciliaVolaService: SpecialServiceGenerator = (
+  createService: (serviceId: string) => ServicePublic,
+  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
 ): ServicePublic => ({
   ...createService(siciliaVolaServiceId),
@@ -38,5 +41,5 @@ export const createSiciliaVolaService : SpecialServiceGenerator = (
   service_metadata: {
     ...createServiceMetadata(ServiceScopeEnum.NATIONAL),
     cta: frontMatter1CTASiciliaVola as NonEmptyString
-  },
+  }
 });

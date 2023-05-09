@@ -1,6 +1,9 @@
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
-import { NonEmptyString, OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
+import {
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "@pagopa/ts-commons/lib/strings";
 import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
 import { DepartmentName } from "../../../generated/definitions/backend/DepartmentName";
 import { ServiceName } from "../../../generated/definitions/backend/ServiceName";
@@ -10,37 +13,98 @@ import { validatePayload } from "../../utils/validator";
 import { ServiceMetadata } from "../../../generated/definitions/backend/ServiceMetadata";
 import { StandardServiceCategoryEnum } from "../../../generated/definitions/backend/StandardServiceCategory";
 import { frontMatter2CTA2 } from "../../utils/variables";
+import { ServiceId } from "../../../generated/definitions/backend/ServiceId";
+import { ServicePreference } from "../../../generated/definitions/backend/ServicePreference";
+import { getRandomValue } from "../../utils/random";
 
-export const createLocalServices = (
-  count: number, 
-  serviceStartIndex: number, 
+const createLocalServices = (
+  count: number,
+  serviceStartIndex: number,
   aggregationCount = 3
-) : ServicePublic[] => 
-  createServices(ServiceScopeEnum.LOCAL, count, serviceStartIndex, aggregationCount);
+): ServicePublic[] =>
+  createServices(
+    ServiceScopeEnum.LOCAL,
+    count,
+    serviceStartIndex,
+    aggregationCount
+  );
 
-export const createNationalServices = (
-  count: number, 
-  serviceStartIndex: number, 
+const createNationalServices = (
+  count: number,
+  serviceStartIndex: number,
   aggregationCount = 3
-) : ServicePublic[] => 
-  createServices(ServiceScopeEnum.NATIONAL, count, serviceStartIndex, aggregationCount);
+): ServicePublic[] =>
+  createServices(
+    ServiceScopeEnum.NATIONAL,
+    count,
+    serviceStartIndex,
+    aggregationCount
+  );
 
-export const createSpecialServices = (
-  specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][], 
-  serviceStartIndex: number, 
+const createSpecialServices = (
+  specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][],
+  serviceStartIndex: number,
   aggregationCount = 3
-) : ServicePublic[] => 
-createSpecialServicesInternal(specialServiceGeneratorTuples, serviceStartIndex, aggregationCount);
+): ServicePublic[] =>
+  createSpecialServicesInternal(
+    specialServiceGeneratorTuples,
+    serviceStartIndex,
+    aggregationCount
+  );
+
+const createServicePreferences = (
+  serviceIds: ReadonlyArray<ServiceId>,
+  customPreferenceEnabledGenerators: Map<ServiceId, () => boolean>
+) => {
+  const servicePreferences = new Map<ServiceId, ServicePreference>();
+  serviceIds.forEach(serviceId => {
+    const serviceHasCustomPreferenceGenerator = customPreferenceEnabledGenerators.get(
+      serviceId
+    );
+    const isPreferenceEnabled = serviceHasCustomPreferenceGenerator
+      ? serviceHasCustomPreferenceGenerator()
+      : faker.datatype.boolean();
+    const preferenceGenerator = (
+      shouldUseServicesConfigForRandomValues: boolean
+    ) =>
+      shouldUseServicesConfigForRandomValues
+        ? getRandomValue(false, faker.datatype.boolean(), "services")
+        : faker.datatype.boolean();
+
+    servicePreferences.set(serviceId, {
+      is_inbox_enabled: isPreferenceEnabled,
+      is_email_enabled: isPreferenceEnabled
+        ? preferenceGenerator(serviceHasCustomPreferenceGenerator !== undefined)
+        : false,
+      is_webhook_enabled: isPreferenceEnabled
+        ? preferenceGenerator(serviceHasCustomPreferenceGenerator !== undefined)
+        : false,
+      can_access_message_read_status: isPreferenceEnabled
+        ? preferenceGenerator(serviceHasCustomPreferenceGenerator !== undefined)
+        : false,
+      settings_version: 0 as ServicePreference["settings_version"]
+    });
+  });
+
+  return servicePreferences;
+};
 
 const createServices = (
-  scope: ServiceScopeEnum, 
-  count: number, 
-  serviceStartIndex: number, 
+  scope: ServiceScopeEnum,
+  count: number,
+  serviceStartIndex: number,
   aggregationCount: number
 ): ServicePublic[] => {
   const services: ServicePublic[] = [];
-  for (let serviceIndex=serviceStartIndex; serviceIndex<count; serviceIndex++) {
-    const organizationIndex = getOrganizationIndex(serviceIndex, aggregationCount);
+  for (
+    let serviceIndex = serviceStartIndex;
+    serviceIndex < serviceStartIndex + count;
+    serviceIndex++
+  ) {
+    const organizationIndex = getOrganizationIndex(
+      serviceIndex,
+      aggregationCount
+    );
     const service = {
       ...createService(`service${serviceIndex}`),
       organization_fiscal_code: `${organizationIndex}`.padStart(
@@ -57,7 +121,7 @@ const createServices = (
     services.push(service);
   }
   return services;
-}
+};
 
 const createService = (serviceId: string): ServicePublic => {
   const service = {
@@ -75,9 +139,7 @@ const createService = (serviceId: string): ServicePublic => {
   return validatePayload(ServicePublic, service);
 };
 
-const createServiceMetadata = (
-  scope: ServiceScopeEnum
-): ServiceMetadata => {
+const createServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => {
   return {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
     scope,
@@ -94,31 +156,51 @@ const createServiceMetadata = (
   };
 };
 
-const createSpecialServicesInternal = (specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][], serviceStartIndex: number, aggregationCount: number): ServicePublic[] => {
-  
+const createSpecialServicesInternal = (
+  specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][],
+  serviceStartIndex: number,
+  aggregationCount: number
+): ServicePublic[] => {
   let specialServices: ServicePublic[] = [];
-  let organizationStartIndex = getOrganizationIndex(serviceStartIndex, aggregationCount);
+  let organizationStartIndex = getOrganizationIndex(
+    serviceStartIndex,
+    aggregationCount
+  );
 
   specialServiceGeneratorTuples.forEach(specialServiceGeneratorTuple => {
-    const organizationFiscalCode = getOrganizationFiscalCode(organizationStartIndex);
+    const organizationFiscalCode = getOrganizationFiscalCode(
+      organizationStartIndex
+    );
     const isSpecialServiceEnabled = specialServiceGeneratorTuple[0];
     if (isSpecialServiceEnabled) {
       const specialServiceGenerator = specialServiceGeneratorTuple[1];
-      const specialService = specialServiceGenerator(createService, createServiceMetadata, organizationFiscalCode);
+      const specialService = specialServiceGenerator(
+        createService,
+        createServiceMetadata,
+        organizationFiscalCode
+      );
       specialServices.push(specialService);
     }
     organizationStartIndex++;
   });
   return specialServices;
-}
+};
 
-const getOrganizationIndex = (serviceIndex: number, aggregationCount: number) => 1 + Math.floor(serviceIndex / aggregationCount);
+const getOrganizationIndex = (serviceIndex: number, aggregationCount: number) =>
+  1 + Math.floor(serviceIndex / aggregationCount);
 
 const getOrganizationFiscalCode = (organizationsCount: number) =>
   `${organizationsCount}`.padStart(11, "0") as OrganizationFiscalCode;
 
 export type SpecialServiceGenerator = (
-  createService: ((serviceId: string) => ServicePublic),
-  createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata), 
+  createService: (serviceId: string) => ServicePublic,
+  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
 ) => ServicePublic;
+
+export default {
+  createServicePreferences,
+  createLocalServices,
+  createNationalServices,
+  createSpecialServices
+};

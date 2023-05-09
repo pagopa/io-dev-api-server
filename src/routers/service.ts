@@ -6,14 +6,10 @@ import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceSco
 import { UpsertServicePreference } from "../../generated/definitions/backend/UpsertServicePreference";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
-import {
-  getServices,
-  getServicesPreferences,
-  getServicesTuple
-} from "../payloads/services";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
+import ServiceDB from "./../persistence/services";
 
 export const serviceRouter = Router();
 const configResponse = ioDevServerConfig.services.response;
@@ -23,7 +19,9 @@ addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
     res.sendStatus(configResponse.getServicesResponseCode);
     return;
   }
-  res.json(visibleServices.payload);
+  const visibleServices = ServiceDB.getVisibleServices();
+  const visibleServicesPayload = visibleServices.payload;
+  res.json(visibleServicesPayload);
 });
 
 addHandler(
@@ -35,6 +33,7 @@ addHandler(
       res.sendStatus(configResponse.getServiceResponseCode);
       return;
     }
+    const services = ServiceDB.getServices();
     const service = services.find(
       item => item.service_id === req.params.service_id
     );
@@ -55,6 +54,7 @@ addHandler(
       res.sendStatus(configResponse.getServicesPreference);
       return;
     }
+    const servicesPreferences = ServiceDB.getPreferences();
     const servicePreference = servicesPreferences.get(
       req.params.service_id as ServiceId
     );
@@ -82,6 +82,7 @@ addHandler(
     }
     const updatedPreference: ServicePreference = req.body;
 
+    const servicesPreferences = ServiceDB.getPreferences();
     const currentPreference = servicesPreferences.get(
       req.params.service_id as ServiceId
     );
@@ -127,9 +128,7 @@ addHandler(
   "get",
   "/services_web_view/local_services",
   (_, res) => {
-    const localServices = services.filter(
-      s => s.service_metadata?.scope === ServiceScopeEnum.LOCAL
-    );
+    const localServices = ServiceDB.getLocalServices();
     res.json(localServices);
   }
 );

@@ -24,7 +24,6 @@ import { PrescriptionData } from "../../generated/definitions/backend/Prescripti
 import { ThirdPartyAttachment } from "../../generated/definitions/backend/ThirdPartyAttachment";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../config";
-import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
@@ -33,9 +32,10 @@ import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { currentProfile } from "./profile";
-import { pnServiceId } from "./services/special";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import ServiceDB from "./../persistence/services";
+import { pnServiceId } from "./services/special/pn/factoryPn";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -225,6 +225,7 @@ export const withPaymentData = (
   ),
   amount: number = getRandomIntInRange(1, 10000)
 ): CreatedMessageWithContent => {
+  const services = ServiceDB.getServices();
   const data: PaymentDataWithRequiredPayee = {
     notice_number: noticeNumber as PaymentNoticeNumber,
     amount: amount as PaymentAmount,
@@ -262,6 +263,7 @@ export const getCategory = (
   message: CreatedMessageWithContent
 ): MessageCategory => {
   const { eu_covid_cert, payment_data } = message.content;
+  const services = ServiceDB.getServices();
   const senderService = services.find(
     s => s.service_id === message.sender_service_id
   )!;

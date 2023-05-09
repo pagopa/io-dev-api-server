@@ -11,9 +11,9 @@ import { ServiceId } from "../../../../../generated/definitions/backend/ServiceI
 
 const cdcServiceId = "01G2AFTME08TS0QD2P2S682CJ0" as ServiceId;
 
-export const createCdcService : SpecialServiceGenerator = (
-  createService: ((serviceId: string) => ServicePublic),
-  createServiceMetadata: ((scope: ServiceScopeEnum) => ServiceMetadata),
+export const createCdcService: SpecialServiceGenerator = (
+  createService: (serviceId: string) => ServicePublic,
+  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
 ): ServicePublic => ({
   ...createService(cdcServiceId),

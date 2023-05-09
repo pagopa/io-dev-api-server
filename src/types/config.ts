@@ -125,7 +125,7 @@ export const ServicesConfig = t.intersection([
     // number of services local
     local: t.number,
     // special services on/off
-    specialServices: SpecialServicesConfig,
+    specialServices: SpecialServicesConfig
   }),
   AllowRandomValue
 ]);

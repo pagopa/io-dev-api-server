@@ -2,25 +2,34 @@ import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PaginatedServiceTupleCollection } from "../../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
-import { staticContentRootPath } from "../../config";
+import { ioDevServerConfig, staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
-import { services, visibleServices } from "../service";
+import ServiceDB from "./../../persistence/services";
 
 const request = supertest(app);
+
+beforeAll(() => {
+  return ServiceDB.createServices(ioDevServerConfig);
+});
+
+afterAll(() => {
+  return ServiceDB.deleteServices();
+});
 
 it("services should return a valid services list", async () => {
   const response = await request.get(`${basePath}/services`);
   expect(response.status).toBe(200);
   const list = PaginatedServiceTupleCollection.decode(response.body);
-
   expect(E.isRight(list)).toBeTruthy();
   if (E.isRight(list)) {
+    const visibleServices = ServiceDB.getVisibleServices();
     expect(list.right).toEqual(visibleServices.payload);
   }
 });
 
 it("services should return a valid service with content", async () => {
+  const services = ServiceDB.getServices();
   const serviceId = services[0].service_id;
   const response = await request.get(`${basePath}/services/${serviceId}`);
   expect(response.status).toBe(200);
