@@ -70,8 +70,10 @@ addHandler(
             ioDevServerConfig.wallet.verificaError,
             O.fromNullable,
             O.fold(
-              () =>
-                pipe(getPaymentRequestsGetResponse(randomService), res.json),
+              () => {
+                const paymentRequestResponse = getPaymentRequestsGetResponse(randomService);
+                return res.json(paymentRequestResponse);
+              },
               (errorCode: Detail_v2Enum) => responseWithError(errorCode, res)
             )
           )

@@ -128,8 +128,11 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
             getRandomValue(false, faker.datatype.boolean(), "services"),
           settings_version: increasedSettingsVersion
         } as ServicePreference;
-        ServicesDB.updatePreference(cgnServiceId, updatedPreference);
-
+        const persistedServicePreference = ServicesDB.updatePreference(cgnServiceId, updatedPreference);
+        if (!persistedServicePreference) {
+          res.sendStatus(500);
+          return;
+        }
         return res.status(200).json(response);
       }
     )
@@ -285,7 +288,11 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
           can_access_message_read_status: false,
           settings_version: increasedSettingsVersion
         } as ServicePreference;
-        ServicesDB.updatePreference(cgnServiceId, updatedPreference);
+        const persistedServicePreference = ServicesDB.updatePreference(cgnServiceId, updatedPreference);
+        if (!persistedServicePreference) {
+          res.sendStatus(500);
+          return;
+        }
         res.status(201).json({ id: getRandomStringId() });
       }
     )

@@ -52,16 +52,22 @@ const createSpecialServices = (
     aggregationCount
   );
 
+const createServicePreferenceSource = (serviceId: ServiceId, isSpecialService: boolean = false) : ServicePreferenceSource => ({
+  serviceId,
+  isSpecialService
+} as ServicePreferenceSource);
+
 const createServicePreferences = (
-  serviceIds: ReadonlyArray<ServiceId>,
+  servicesSources: ReadonlyArray<ServicePreferenceSource>,
   customPreferenceEnabledGenerators: Map<ServiceId, () => boolean>
 ) => {
   const servicePreferences = new Map<ServiceId, ServicePreference>();
-  serviceIds.forEach(serviceId => {
+  servicesSources.forEach(serviceSource => {
+    const serviceId = serviceSource.serviceId;
     const serviceHasCustomPreferenceGenerator = customPreferenceEnabledGenerators.get(
       serviceId
     );
-    const isPreferenceEnabled = serviceHasCustomPreferenceGenerator
+    const isPreferenceEnabled = serviceSource.isSpecialService && serviceHasCustomPreferenceGenerator
       ? serviceHasCustomPreferenceGenerator()
       : faker.datatype.boolean();
     const preferenceGenerator = (
@@ -106,7 +112,7 @@ const createServices = (
       aggregationCount
     );
     const service = {
-      ...createService(`service${serviceIndex}`),
+      ...createService(`service${serviceIndex+1}`),
       organization_fiscal_code: `${organizationIndex}`.padStart(
         11,
         "0"
@@ -165,7 +171,7 @@ const createSpecialServicesInternal = (
   let organizationStartIndex = getOrganizationIndex(
     serviceStartIndex,
     aggregationCount
-  );
+  ) + (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);
 
   specialServiceGeneratorTuples.forEach(specialServiceGeneratorTuple => {
     const organizationFiscalCode = getOrganizationFiscalCode(
@@ -198,7 +204,13 @@ export type SpecialServiceGenerator = (
   organizationFiscalCode: OrganizationFiscalCode
 ) => ServicePublic;
 
+export type ServicePreferenceSource = {
+  serviceId: ServiceId;
+  isSpecialService: boolean;
+};
+
 export default {
+  createServicePreferenceSource,
   createServicePreferences,
   createLocalServices,
   createNationalServices,

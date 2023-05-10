@@ -3,7 +3,7 @@ import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import ServiceFactory, {
-  SpecialServiceGenerator
+  SpecialServiceGenerator, ServicePreferenceSource
 } from "../payloads/services/factory";
 import { createCdcService } from "../payloads/services/special/cdc/factoryCDCService";
 import {
@@ -15,7 +15,6 @@ import { createPnService } from "../payloads/services/special/pn/factoryPn";
 import { createSiciliaVolaService } from "../payloads/services/special/siciliaVola/factorySiciliaVolaService";
 import { isCgnActivated } from "../routers/features/cgn";
 import { IoDevServerConfig } from "../types/config";
-import { validatePayload } from "../utils/validator";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 
 let localServices: ServicePublic[] = [];
@@ -52,14 +51,14 @@ const createServices = (customConfig: IoDevServerConfig) => {
 
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
   customPreferenceEnabledGenerators.set(cgnServiceId, isCgnActivated);
-  const serviceIds = localServices
-    .map(localService => localService.service_id)
+  const servicePreferenceSources = localServices
+    .map(localService => ServiceFactory.createServicePreferenceSource(localService.service_id))
     .concat(
-      nationalServices.map(nationalService => nationalService.service_id),
-      specialServices.map(specialService => specialService.service_id)
+      nationalServices.map(nationalService => ServiceFactory.createServicePreferenceSource(nationalService.service_id)),
+      specialServices.map(specialService => ServiceFactory.createServicePreferenceSource(specialService.service_id, true))
     );
   servicePreferences = ServiceFactory.createServicePreferences(
-    serviceIds,
+    servicePreferenceSources,
     customPreferenceEnabledGenerators
   );
 };
@@ -124,15 +123,17 @@ const getPreference = (
 const updatePreference = (
   serviceId: ServiceId,
   updatedPreference: ServicePreference
-): void => {
+): ServicePreference | undefined => {
   const servicePreference = servicePreferences.get(serviceId);
-  if (servicePreference) {
-    const mergedServicePreference: ServicePreference = {
-      ...servicePreference,
-      ...updatePreference
-    };
-    servicePreferences.set(serviceId, mergedServicePreference);
+  if (!servicePreference) {
+    return undefined;
   }
+  const mergedServicePreference: ServicePreference = {
+    ...servicePreference,
+    ...updatedPreference
+  };
+  servicePreferences.set(serviceId, mergedServicePreference);
+  return mergedServicePreference;
 };
 
 export default {
