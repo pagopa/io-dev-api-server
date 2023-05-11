@@ -1,6 +1,5 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../\../generated/definitions/backend/ServicePreference";
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
 import { addHandler } from "../../../payloads/response";

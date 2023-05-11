@@ -74,9 +74,7 @@ addHandler(
             O.fromNullable,
             O.fold(
               () => {
-                paymentRequest = getPaymentRequestsGetResponse(
-                  randomService
-                );
+                paymentRequest = getPaymentRequestsGetResponse(randomService);
                 return res.json(paymentRequest);
               },
               (errorCode: Detail_v2Enum) => responseWithError(errorCode, res)

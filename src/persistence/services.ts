@@ -1,10 +1,8 @@
-import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import ServiceFactory, {
-  SpecialServiceGenerator,
-  ServicePreferenceSource
+  SpecialServiceGenerator
 } from "../payloads/services/factory";
 import { createCdcService } from "../payloads/services/special/cdc/factoryCDCService";
 import {
