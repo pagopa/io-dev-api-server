@@ -198,7 +198,8 @@ export const IoDevServerConfig = t.interface({
         expiredCount: t.number,
         expired90Count: t.number,
         waitForQtspCount: t.number,
-        signedCount: t.number
+        signedCount: t.number,
+        noSignatureFieldsCount: t.number
       }),
       // if true, messages (all available) with nested CTA will be included
       withCTA: t.boolean,

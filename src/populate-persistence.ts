@@ -36,6 +36,7 @@ import {
   frontMatterBonusVacanze,
   frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestExpired,
+  frontMatterCTAFCISignatureRequestNoFields,
   frontMatterCTAFCISignatureRequestRejected,
   frontMatterCTAFCISignatureRequestSigned,
   frontMatterCTAFCISignatureRequestSignedExpired,
@@ -307,6 +308,19 @@ const createMessages = (
         )
       );
     });
+
+  customConfig.messages.fci.noSignatureFieldsCount > 0 &&
+    range(1, customConfig.messages.fci.noSignatureFieldsCount).forEach(
+      count => {
+        output.push(
+          getNewMessage(
+            customConfig,
+            `Comune di Controguerra - Richiesta di Firma [WITH NO SIGNATURE FIELDS] - ${count} `,
+            frontMatterCTAFCISignatureRequestNoFields + messageFciMarkdown
+          )
+        );
+      }
+    );
 
   /* standard message */
   customConfig.messages.standardMessageCount > 0 &&

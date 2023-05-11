@@ -1,5 +1,6 @@
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
+  NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
@@ -244,6 +245,17 @@ en:
     cta_1: 
         text: "View documents"
         action: "ioit://fci/main?signatureRequestId=${SIGNED_EXPIRED_SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestNoFields = `---
+it:
+    cta_1: 
+        text: "Visualizza i documenti"
+        action: "ioit://fci/main?signatureRequestId=${NO_FIELDS_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "View documents"
+        action: "ioit://fci/main?signatureRequestId=${NO_FIELDS_SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const messageFciMarkdown = `
