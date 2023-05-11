@@ -12,6 +12,7 @@ import MessagesDB from "../../persistence/messages";
 import ServicesDB from "../../persistence/services";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
+import { pnServiceId } from "../../payloads/services/special/pn/factoryPn";
 
 const request = supertest(app);
 
@@ -324,10 +325,14 @@ describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
   });
 
   it("should return 200 with the remoted precondition", async () => {
-    const messageId = MessagesDB.findAllInbox()[0].id;
+    const inboxMessages = MessagesDB.findAllInbox();
+    const pnMessage = inboxMessages.find(message => message.sender_service_id === pnServiceId);
+    expect(pnMessage).toBeDefined();
+
+    const pnMessageId = pnMessage!.id;
 
     const response = await request.get(
-      `${basePath}/third-party-messages/${messageId}/precondition`
+      `${basePath}/third-party-messages/${pnMessageId}/precondition`
     );
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("title");
