@@ -114,7 +114,14 @@ const defaultConfig: IoDevServerConfig = {
     // success (0 outcome code)
     onboardingPaypalOutCode: 0,
     // success (0 outcome code)
-    paymentOutCode: 0
+    paymentOutCode: 0,
+    // IDPay initiatives show in wallet
+    idPay: {
+      showConfigured: true,
+      showNotConfigured: true,
+      showSuspended: false,
+      showUnsubscribed: false
+    }
   },
   services: {
     response: {
@@ -142,13 +149,7 @@ const defaultConfig: IoDevServerConfig = {
       }
     },
     idpay: {
-      ibanSize: 3,
-      wallet: {
-        showConfigured: true,
-        showNotConfigured: true,
-        showSuspended: false,
-        showUnsubscribed: false
-      }
+      ibanSize: 3
     },
     allowRandomValues: true
   }

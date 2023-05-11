@@ -4,7 +4,7 @@ import { ioDevServerConfig } from "../../../../config";
 import { InitiativeDTO } from "../../../../../generated/definitions/idpay/InitiativeDTO";
 import { IDPayInitiativeID } from "../types";
 
-const walletConfig = ioDevServerConfig.features.idpay.wallet;
+const walletConfig = ioDevServerConfig.wallet.idPay;
 
 export const getWalletResponse = (): WalletDTO => {
   let list: InitiativeDTO[] = [];

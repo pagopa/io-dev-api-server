@@ -99,6 +99,13 @@ const responseError = t.interface({
   codes: t.readonlyArray(ErrorCodes)
 });
 
+export const IDPayWalletConfig = t.interface({
+  showConfigured: t.boolean,
+  showNotConfigured: t.boolean,
+  showSuspended: t.boolean,
+  showUnsubscribed: t.boolean
+});
+
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
     t.interface({
@@ -215,7 +222,9 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean,
       methods: WalletMethodConfig,
-      shuffleAbi: t.boolean
+      shuffleAbi: t.boolean,
+      // configure IDPay initiatives in wallet
+      idPay: IDPayWalletConfig
     }),
     t.partial({
       // the outcode returned at the end of credit card onboarding
@@ -250,13 +259,7 @@ export const IoDevServerConfig = t.interface({
       }),
       idpay: t.interface({
         // The size of the IBAN list to generate
-        ibanSize: t.number,
-        wallet: t.interface({
-          showConfigured: t.boolean,
-          showNotConfigured: t.boolean,
-          showSuspended: t.boolean,
-          showUnsubscribed: t.boolean
-        })
+        ibanSize: t.number
       })
     }),
     AllowRandomValue
