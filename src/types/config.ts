@@ -168,6 +168,7 @@ export const IoDevServerConfig = t.interface({
         expired90Count: t.number,
         waitForQtspCount: t.number,
         signedCount: t.number,
+        noSignatureFieldsCount: t.number,
         response: t.interface({
           // 200 success with payload
           getFciResponseCode: HttpResponseCode
