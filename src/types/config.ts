@@ -99,13 +99,6 @@ const responseError = t.interface({
   codes: t.readonlyArray(ErrorCodes)
 });
 
-export const IDPayWalletConfig = t.interface({
-  showConfigured: t.boolean,
-  showNotConfigured: t.boolean,
-  showSuspended: t.boolean,
-  showUnsubscribed: t.boolean
-});
-
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
     t.interface({
@@ -224,7 +217,12 @@ export const IoDevServerConfig = t.interface({
       methods: WalletMethodConfig,
       shuffleAbi: t.boolean,
       // configure IDPay initiatives in wallet
-      idPay: IDPayWalletConfig
+      idPay: t.interface({
+        showConfigured: t.boolean,
+        showNotConfigured: t.boolean,
+        showSuspended: t.boolean,
+        showUnsubscribed: t.boolean
+      })
     }),
     t.partial({
       // the outcode returned at the end of credit card onboarding
