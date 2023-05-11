@@ -179,7 +179,6 @@ export const withPNContent = (
       ]
     }
   ];
-
   return {
     ...message,
     third_party_message: {

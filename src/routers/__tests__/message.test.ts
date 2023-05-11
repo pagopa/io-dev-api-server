@@ -46,7 +46,7 @@ const customConfig = _.merge(ioDevServerConfig, {
     standardMessageCount: 10,
     archivedMessageCount: 40,
     withRemoteAttachments: 0,
-    pnCount: 1,
+    pnCount: 1
   },
   services: {
     specialServices: {
@@ -326,11 +326,12 @@ describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
 
   it("should return 200 with the remoted precondition", async () => {
     const inboxMessages = MessagesDB.findAllInbox();
-    const pnMessage = inboxMessages.find(message => message.sender_service_id === pnServiceId);
+    const pnMessage = inboxMessages.find(
+      message => message.sender_service_id === pnServiceId
+    );
     expect(pnMessage).toBeDefined();
 
     const pnMessageId = pnMessage!.id;
-
     const response = await request.get(
       `${basePath}/third-party-messages/${pnMessageId}/precondition`
     );

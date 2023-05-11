@@ -47,7 +47,7 @@ import {
 import { pnServiceId } from "./payloads/services/special/pn/factoryPn";
 
 const getServiceId = (): string => {
-  const servicesSummaries = ServicesDB.getSummaries();
+  const servicesSummaries = ServicesDB.getSummaries(true);
   if (servicesSummaries.length === 0) {
     throw new Error(
       "to create messages, at least one sender service must exist!"
@@ -502,7 +502,11 @@ export default function init(customConfig = ioDevServerConfig) {
   MessagesDB.persist(createMessages(customConfig) as any);
 
   if (customConfig.messages.archivedMessageCount > 0) {
-    _.shuffle(MessagesDB.findAllInbox())
+    const allInboxMessages = MessagesDB.findAllInbox();
+    const archivableInboxMessages = allInboxMessages.filter(
+      message => !ServicesDB.isSpecialService(message.sender_service_id)
+    );
+    _.shuffle(archivableInboxMessages)
       .slice(0, customConfig.messages.archivedMessageCount)
       .forEach(({ id }) => MessagesDB.archive(id));
   }

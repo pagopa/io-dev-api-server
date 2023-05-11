@@ -52,10 +52,14 @@ const createSpecialServices = (
     aggregationCount
   );
 
-const createServicePreferenceSource = (serviceId: ServiceId, isSpecialService: boolean = false) : ServicePreferenceSource => ({
-  serviceId,
-  isSpecialService
-} as ServicePreferenceSource);
+const createServicePreferenceSource = (
+  serviceId: ServiceId,
+  isSpecialService: boolean = false
+): ServicePreferenceSource =>
+  ({
+    serviceId,
+    isSpecialService
+  } as ServicePreferenceSource);
 
 const createServicePreferences = (
   servicesSources: ReadonlyArray<ServicePreferenceSource>,
@@ -67,9 +71,10 @@ const createServicePreferences = (
     const serviceHasCustomPreferenceGenerator = customPreferenceEnabledGenerators.get(
       serviceId
     );
-    const isPreferenceEnabled = serviceSource.isSpecialService && serviceHasCustomPreferenceGenerator
-      ? serviceHasCustomPreferenceGenerator()
-      : faker.datatype.boolean();
+    const isPreferenceEnabled =
+      serviceSource.isSpecialService && serviceHasCustomPreferenceGenerator
+        ? serviceHasCustomPreferenceGenerator()
+        : faker.datatype.boolean();
     const preferenceGenerator = (
       shouldUseServicesConfigForRandomValues: boolean
     ) =>
@@ -112,7 +117,7 @@ const createServices = (
       aggregationCount
     );
     const service = {
-      ...createService(`service${serviceIndex+1}`),
+      ...createService(`service${serviceIndex + 1}`),
       organization_fiscal_code: `${organizationIndex}`.padStart(
         11,
         "0"
@@ -168,10 +173,9 @@ const createSpecialServicesInternal = (
   aggregationCount: number
 ): ServicePublic[] => {
   let specialServices: ServicePublic[] = [];
-  let organizationStartIndex = getOrganizationIndex(
-    serviceStartIndex,
-    aggregationCount
-  ) + (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);
+  let organizationStartIndex =
+    getOrganizationIndex(serviceStartIndex, aggregationCount) +
+    (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);
 
   specialServiceGeneratorTuples.forEach(specialServiceGeneratorTuple => {
     const organizationFiscalCode = getOrganizationFiscalCode(

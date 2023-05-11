@@ -3,7 +3,8 @@ import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import ServiceFactory, {
-  SpecialServiceGenerator, ServicePreferenceSource
+  SpecialServiceGenerator,
+  ServicePreferenceSource
 } from "../payloads/services/factory";
 import { createCdcService } from "../payloads/services/special/cdc/factoryCDCService";
 import {
@@ -16,6 +17,12 @@ import { createSiciliaVolaService } from "../payloads/services/special/siciliaVo
 import { isCgnActivated } from "../routers/features/cgn";
 import { IoDevServerConfig } from "../types/config";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
+
+export type ServiceSummary = {
+  service_id: ServiceId;
+  version: number;
+  scope?: ServiceScopeEnum;
+};
 
 let localServices: ServicePublic[] = [];
 let nationalServices: ServicePublic[] = [];
@@ -52,15 +59,31 @@ const createServices = (customConfig: IoDevServerConfig) => {
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
   customPreferenceEnabledGenerators.set(cgnServiceId, isCgnActivated);
   const servicePreferenceSources = localServices
-    .map(localService => ServiceFactory.createServicePreferenceSource(localService.service_id))
+    .map(localService =>
+      ServiceFactory.createServicePreferenceSource(localService.service_id)
+    )
     .concat(
-      nationalServices.map(nationalService => ServiceFactory.createServicePreferenceSource(nationalService.service_id)),
-      specialServices.map(specialService => ServiceFactory.createServicePreferenceSource(specialService.service_id, true))
+      nationalServices.map(nationalService =>
+        ServiceFactory.createServicePreferenceSource(nationalService.service_id)
+      ),
+      specialServices.map(specialService =>
+        ServiceFactory.createServicePreferenceSource(
+          specialService.service_id,
+          true
+        )
+      )
     );
   servicePreferences = ServiceFactory.createServicePreferences(
     servicePreferenceSources,
     customPreferenceEnabledGenerators
   );
+};
+
+const deleteServices = () => {
+  localServices = [];
+  nationalServices = [];
+  specialServices = [];
+  servicePreferences.clear();
 };
 
 const getLocalServices = () => {
@@ -71,30 +94,9 @@ const getLocalServices = () => {
   return clonedLocalServices;
 };
 
-const getSummaries = (): ReadonlyArray<ServiceSummary> => {
-  const services = localServices.concat(nationalServices, specialServices);
-  return services.map(
-    s =>
-      ({
-        service_id: s.service_id,
-        version: s.version,
-        scope: s.service_metadata?.scope
-      } as ServiceSummary)
-  );
-};
-
-export type ServiceSummary = {
-  service_id: ServiceId;
-  version: number;
-  scope?: ServiceScopeEnum;
-};
-
-const deleteServices = () => {
-  localServices = [];
-  nationalServices = [];
-  specialServices = [];
-  servicePreferences.clear();
-};
+const getPreference = (
+  serviceId: ServiceId
+): Readonly<ServicePreference> | undefined => servicePreferences.get(serviceId);
 
 const getService = (
   serviceId: ServiceId
@@ -116,9 +118,26 @@ const getService = (
   return specialServices.find(service => service.service_id === serviceId);
 };
 
-const getPreference = (
-  serviceId: ServiceId
-): Readonly<ServicePreference> | undefined => servicePreferences.get(serviceId);
+const getSummaries = (
+  excludeSpecialServices: boolean = false
+): ReadonlyArray<ServiceSummary> => {
+  const services = excludeSpecialServices
+    ? localServices.concat(nationalServices)
+    : localServices.concat(nationalServices, specialServices);
+  return services.map(
+    s =>
+      ({
+        service_id: s.service_id,
+        version: s.version,
+        scope: s.service_metadata?.scope
+      } as ServiceSummary)
+  );
+};
+
+const isSpecialService = (serviceId: ServiceId): boolean =>
+  specialServices.find(
+    specialService => specialService.service_id === serviceId
+  ) !== undefined;
 
 const updatePreference = (
   serviceId: ServiceId,
@@ -143,5 +162,6 @@ export default {
   getPreference,
   getService,
   getSummaries,
+  isSpecialService,
   updatePreference
 };

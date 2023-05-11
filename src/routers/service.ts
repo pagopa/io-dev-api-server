@@ -104,7 +104,10 @@ addHandler(
       ...updatedPreference,
       settings_version: increasedSettingsVersion
     } as ServicePreference;
-    const persistedServicePreference = ServicesDB.updatePreference(serviceId, updatedServicePreference);
+    const persistedServicePreference = ServicesDB.updatePreference(
+      serviceId,
+      updatedServicePreference
+    );
     if (!persistedServicePreference) {
       res.sendStatus(500);
       return;

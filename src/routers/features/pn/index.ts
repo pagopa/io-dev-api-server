@@ -31,7 +31,10 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
     is_inbox_enabled: maybeActivation.right.activation_status,
     settings_version: increasedSettingsVersion
   } as ServicePreference;
-  const persistedServicePreference = ServicesDB.updatePreference(pnServiceId, updatedPreference);
+  const persistedServicePreference = ServicesDB.updatePreference(
+    pnServiceId,
+    updatedPreference
+  );
   if (!persistedServicePreference) {
     res.sendStatus(500);
     return;
