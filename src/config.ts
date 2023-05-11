@@ -1,10 +1,10 @@
+import * as path from "path";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import chalk from "chalk";
 import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
-import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
@@ -158,6 +158,7 @@ const customConfigFile = "config.json";
 const customConfig =
   readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? undefined;
 if (customConfig !== undefined) {
+  // eslint-disable-next-line no-console
   console.log(
     chalk.bgGreenBright(
       `successfully loaded custom config file: ${customConfigFile}`

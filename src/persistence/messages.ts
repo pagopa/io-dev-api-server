@@ -4,9 +4,9 @@ type MessageFromBE = CreatedMessageWithContentAndEnrichedData;
 
 export type MessageOnDB = MessageFromBE;
 
-// tslint:disable-next-line: readonly-array no-let
+// eslint-disable-next-line: readonly-array no-let
 let inboxMessages: MessageOnDB[] = [];
-// tslint:disable-next-line: readonly-array no-let
+// eslint-disable-next-line: readonly-array no-let
 let archivedMessages: MessageOnDB[] = [];
 
 /**
@@ -22,7 +22,7 @@ function archive(id: string): boolean {
   const destinationIndex = archivedMessages.findIndex(
     message => message.id < id
   );
-  // tslint:disable-next-line: no-object-mutation
+  // eslint-disable-next-line: no-object-mutation
   toArchived.is_archived = true;
   archivedMessages.splice(destinationIndex, 0, toArchived);
   return true;
@@ -39,7 +39,7 @@ function unarchive(id: string): boolean {
   }
   const [toInbox] = archivedMessages.splice(index, 1);
   const destinationIndex = inboxMessages.findIndex(message => message.id < id);
-  // tslint:disable-next-line: no-object-mutation
+  // eslint-disable-next-line: no-object-mutation
   toInbox.is_archived = false;
   inboxMessages.splice(destinationIndex, 0, toInbox);
   return true;
@@ -49,7 +49,7 @@ function unarchive(id: string): boolean {
  * Persist a list of messages. The extra attributes is_read and is_archived will
  * be added.
  */
-// tslint:disable-next-line: readonly-array no-let
+// eslint-disable-next-line: readonly-array no-let
 function persist(messages: MessageFromBE[]): void {
   inboxMessages = inboxMessages
     .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
@@ -87,7 +87,7 @@ function dropAll(): void {
 function setReadMessage(id: string): boolean {
   const message = findOneById(id);
   if (message) {
-    // tslint:disable-next-line: no-object-mutation
+    // eslint-disable-next-line: no-object-mutation
     message.is_read = true;
     return true;
   }

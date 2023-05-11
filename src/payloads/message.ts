@@ -1,7 +1,7 @@
+import * as path from "path";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { faker } from "@faker-js/faker/locale/it";
 import { slice } from "lodash";
-import * as path from "path";
 import sha256 from "sha256";
 import { Attachment } from "../../generated/definitions/backend/Attachment";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
@@ -31,13 +31,13 @@ import { getRandomValue } from "../utils/random";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
-import { currentProfile } from "./profile";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { currentProfile } from "./profile";
 import ServicesDB from "./../persistence/services";
 import { pnServiceId } from "./services/special/pn/factoryPn";
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let messageIdIndex = 0;
 
 /**
@@ -65,9 +65,10 @@ export const createMessage = (
 export const withDueDate = (
   message: CreatedMessageWithContent,
   dueDate: Date
-): CreatedMessageWithContent => {
-  return { ...message, content: { ...message.content, due_date: dueDate } };
-};
+): CreatedMessageWithContent => ({
+  ...message,
+  content: { ...message.content, due_date: dueDate }
+});
 
 /**
  * Add the MVL payload to a generic message.
@@ -199,22 +200,20 @@ export const withPNContent = (
 export const withRemoteAttachments = (
   message: CreatedMessageWithContent,
   attachmentCount: number
-): ThirdPartyMessageWithContent => {
-  return {
-    ...message,
-    content: {
-      ...message.content,
-      third_party_data: {
-        ...message.content.third_party_data,
-        id: message.id as NonEmptyString,
-        has_attachments: true
-      }
-    },
-    third_party_message: {
-      attachments: getRemoteAttachments(attachmentCount)
+): ThirdPartyMessageWithContent => ({
+  ...message,
+  content: {
+    ...message.content,
+    third_party_data: {
+      ...message.content.third_party_data,
+      id: message.id as NonEmptyString,
+      has_attachments: true
     }
-  };
-};
+  },
+  third_party_message: {
+    attachments: getRemoteAttachments(attachmentCount)
+  }
+});
 
 export const withPaymentData = (
   message: CreatedMessageWithContent,
@@ -226,12 +225,17 @@ export const withPaymentData = (
 ): CreatedMessageWithContent => {
   const serviceId = message.sender_service_id;
   const service = ServicesDB.getService(serviceId);
+  if (!service) {
+    throw Error(
+      `message.withPaymentData: unabled to find service with id (${serviceId})`
+    );
+  }
   const data: PaymentDataWithRequiredPayee = {
     notice_number: noticeNumber as PaymentNoticeNumber,
     amount: amount as PaymentAmount,
     invalid_after_due_date: invalidAfterDueDate,
     payee: {
-      fiscal_code: service?.organization_fiscal_code!
+      fiscal_code: service.organization_fiscal_code
     }
   };
   const paymentData = validatePayload(PaymentDataWithRequiredPayee, data);
@@ -308,8 +312,8 @@ const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
 export const getMvlAttachments = (
   mvlMessageId: string,
   attachmentsTypes: ReadonlyArray<keyof typeof contentTypeMapping>
-): ReadonlyArray<Attachment> => {
-  return attachmentsTypes.map((type, idx) => {
+): ReadonlyArray<Attachment> =>
+  attachmentsTypes.map((type, idx) => {
     {
       const filename =
         mvlAttachmentsFiles.find(f => f.endsWith(type)) ??
@@ -330,7 +334,6 @@ export const getMvlAttachments = (
       };
     }
   });
-};
 
 function thirdPartyAttachmentFromAbsolutePathArray(
   absolutePaths: ReadonlyArray<string>

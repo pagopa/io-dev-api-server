@@ -22,5 +22,5 @@ const createRandomSignatureRequest = (): SignatureRequestListView => ({
 export const signatureRequestList: SignatureRequestList = {
   items: Array.from({ length: 5 }, () =>
     createRandomSignatureRequest()
-  ) as Array<SignatureRequestListView>
+  ) as SignatureRequestListView[]
 };

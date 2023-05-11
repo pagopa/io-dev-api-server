@@ -23,8 +23,8 @@ import {
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import ServicesDB from "./../persistence/services";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
+import ServicesDB from "./../persistence/services";
 
 export const servicesMetadataRouter = Router();
 

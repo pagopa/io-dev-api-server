@@ -20,7 +20,7 @@ import { RewardValueTypeEnum } from "../../../../../generated/definitions/idpay/
 
 const INSTRUMENT_STATUS_TIMEOUT = 10000;
 
-let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
+const instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
   [InitiativeId.NOT_CONFIGURED]: [],
   [InitiativeId.CONFIGURED]: [
     {
@@ -33,7 +33,7 @@ let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
   [InitiativeId.UNSUBSCRIBED]: []
 };
 
-let initiativeList: { [id: number]: InitiativeDTO } = {
+const initiativeList: { [id: number]: InitiativeDTO } = {
   [InitiativeId.NOT_CONFIGURED]: {
     initiativeId: initiativeIdToString(InitiativeId.NOT_CONFIGURED),
     initiativeName: "Iniziativa da configurare",

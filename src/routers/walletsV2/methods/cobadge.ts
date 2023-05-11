@@ -1,7 +1,7 @@
+import fs from "fs";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Request, Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import fs from "fs";
 import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { CobadegPaymentInstrumentsRequest } from "../../../../generated/definitions/pagopa/walletv2/CobadegPaymentInstrumentsRequest";
 import { CobadgeResponse } from "../../../../generated/definitions/pagopa/walletv2/CobadgeResponse";

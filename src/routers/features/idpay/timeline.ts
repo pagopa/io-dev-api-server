@@ -1,6 +1,6 @@
 import { sequenceT } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { getTimelineResponse } from "../../../payloads/features/idpay/timeline/get-timeline";
 import { getTimelineDetailResponse } from "../../../payloads/features/idpay/timeline/get-timeline-detail";

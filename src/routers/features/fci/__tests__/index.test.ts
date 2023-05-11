@@ -5,8 +5,6 @@ import { createFilledDocumentBody } from "../../../../payloads/features/fci/qtsp
 import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
-import { SignatureRequestListView } from "../../../../../generated/definitions/fci/SignatureRequestListView";
-import { SignatureRequestList } from "../../../../../generated/definitions/fci/SignatureRequestList";
 
 const request = supertest(app);
 

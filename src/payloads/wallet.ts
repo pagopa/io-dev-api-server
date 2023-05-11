@@ -27,6 +27,8 @@ export const sessionToken: SessionResponse = {
   }
 };
 
+const serviceDescription = "DESCRIZIONE servizio: CP mod1";
+const serviceAvailability = "DISPONIBILITA servizio 24/7";
 export const validPsp: Psp = {
   id: 40000,
   idPsp: "idPsp1",
@@ -46,8 +48,8 @@ export const validPsp: Psp = {
   },
   appChannel: false,
   tags: ["MAESTRO", "VISA"],
-  serviceDescription: "DESCRIZIONE servizio: CP mod1",
-  serviceAvailability: "DISPONIBILITA servizio 24/7",
+  serviceDescription,
+  serviceAvailability,
   paymentModel: 1,
   flagStamp: true,
   idCard: 91,
@@ -71,8 +73,8 @@ const validPsp2: Psp = {
   },
   appChannel: false,
   tags: ["AMEX"],
-  serviceDescription: "DESCRIZIONE servizio: CP mod1",
-  serviceAvailability: "DISPONIBILITA servizio 24/7",
+  serviceDescription,
+  serviceAvailability,
   paymentModel: 1,
   flagStamp: true,
   idCard: 91,
@@ -96,8 +98,8 @@ const validPsp3: Psp = {
   },
   appChannel: false,
   tags: ["MASTERCARD", "POSTE"],
-  serviceDescription: "DESCRIZIONE servizio: CP mod1",
-  serviceAvailability: "DISPONIBILITA servizio 24/7",
+  serviceDescription,
+  serviceAvailability,
   paymentModel: 1,
   flagStamp: true,
   idCard: 91,
@@ -122,9 +124,9 @@ export const pspListV1: ReadonlyArray<Psp> = [
   };
 });
 export const getWallets = (count: number = 4): WalletListResponse => {
-  // tslint:disable-next-line: no-let
+  // eslint-disable-next-line: no-let
   let walletId = 0;
-  // tslint:disable-next-line: no-let
+  // eslint-disable-next-line: no-let
   let creditCardId = 0;
   const generateCreditCard = (): CreditCard => {
     const ccBrand = getRandomValue(

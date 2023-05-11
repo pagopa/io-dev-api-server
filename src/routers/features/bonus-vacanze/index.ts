@@ -18,21 +18,17 @@ import { addApiV1Prefix, uuidv4 } from "../../../utils/strings";
 
 export const bonusVacanze = Router();
 
-// tslint:disable-next-line: no-let
-let firstBonusActivationRequestTime = 0;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let firstIseeRequestTime = 0;
-// server responses with the activate bonus after
-const responseBonusActivationAfter = 0 as Second;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let idEligibilityRequest: string | undefined;
 // server responses with the eligibility check after
 const responseIseeAfter = 0 as Second;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 const aLotOfBonus = range(1, faker.datatype.number({ min: 1, max: 3 })).map(
   idx => {
     faker.seed(new Date().getTime());
@@ -64,7 +60,6 @@ export const resetBonusVacanze = () => {
   idEligibilityRequest = undefined;
   firstIseeRequestTime = 0;
   idActivationBonus = undefined;
-  firstBonusActivationRequestTime = 0;
 };
 
 const addPrefix = (path: string) => addApiV1Prefix(`/bonus/vacanze${path}`);
@@ -75,7 +70,6 @@ addHandler(bonusVacanze, "get", addPrefix(`/activations`), (_, res) => {
   res.json({
     items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
   });
-  return;
 });
 
 // 202 -> Processing request.
@@ -109,7 +103,6 @@ addHandler(bonusVacanze, "post", addPrefix("/activations"), (_, res) => {
     O.fold(
       () => {
         idActivationBonus = activeBonus.id;
-        firstBonusActivationRequestTime = new Date().getTime();
         res.status(201).json({ id: idActivationBonus });
       },
       // Cannot activate a new bonus because another bonus related to this user was found.

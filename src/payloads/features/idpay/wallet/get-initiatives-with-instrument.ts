@@ -13,7 +13,7 @@ const initiativesByWalletId = (idWallet: string) => {
   const result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
 
   Object.entries(instrumentList).forEach(([id, instruments]) => {
-    const initiativeId = parseInt(id);
+    const initiativeId = parseInt(id, 10);
 
     instruments.forEach(instrument => {
       const walletId = instrument.idWallet || "";

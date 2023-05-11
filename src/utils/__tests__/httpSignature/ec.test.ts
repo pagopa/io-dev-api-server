@@ -1,14 +1,3 @@
-import {
-  isSignAlgorithmValid,
-  signAlgorithmToVerifierMap
-} from "./../../httpSignature";
-import {
-  getCustomContentChallenge,
-  getCustomContentSignatureBase,
-  getSignatureInfo,
-  toPem,
-  verifyCustomContentChallenge
-} from "../../httpSignature";
 import * as TE from "fp-ts/TaskEither";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
@@ -18,6 +7,17 @@ import {
   VerifySignatureHeaderOptions,
   verifySignatureHeader
 } from "@mattrglobal/http-signatures";
+import {
+  getCustomContentChallenge,
+  getCustomContentSignatureBase,
+  getSignatureInfo,
+  toPem,
+  verifyCustomContentChallenge
+} from "../../httpSignature";
+import {
+  isSignAlgorithmValid,
+  signAlgorithmToVerifierMap
+} from "./../../httpSignature";
 
 // Android EC Public Key
 const ecPublicKeyJwk = {

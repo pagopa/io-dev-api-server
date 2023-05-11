@@ -1,6 +1,6 @@
+import fs from "fs";
 import { faker } from "@faker-js/faker/locale/it";
 import { range } from "fp-ts/lib/NonEmptyArray";
-import fs from "fs";
 import _ from "lodash";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
@@ -114,12 +114,12 @@ const getNewRemoteAttachmentsMessage = (
 
 const createMessages = (
   customConfig: IoDevServerConfig
-  // tslint:disable-next-line: readonly-array
+  // eslint-disable-next-line: readonly-array
 ): Array<
   CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
-  // tslint:disable-next-line:no-big-function
+  // eslint-disable-next-line:no-big-function
 > => {
-  // tslint:disable-next-line: readonly-array
+  // eslint-disable-next-line: readonly-array
   const output: Array<
     CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
   > = [];
@@ -216,7 +216,7 @@ const createMessages = (
     .toString("base64");
 
   /* medical */
-  customConfig.messages.medicalCount > 0 &&
+  if (customConfig.messages.medicalCount > 0) {
     range(1, customConfig.messages.medicalCount).forEach(count => {
       const baseMessage = medicalMessage(count);
       const attachments: ReadonlyArray<MessageAttachment> = [
@@ -240,9 +240,10 @@ const createMessages = (
         }
       });
     });
+  }
 
   /* Firma con IO */
-  customConfig.messages.fci.waitForSignatureCount > 0 &&
+  if (customConfig.messages.fci.waitForSignatureCount > 0) {
     range(1, customConfig.messages.fci.waitForSignatureCount).forEach(count => {
       output.push(
         getNewMessage(
@@ -252,8 +253,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.fci.expiredCount > 0 &&
+  if (customConfig.messages.fci.expiredCount > 0) {
     range(1, customConfig.messages.fci.expiredCount).forEach(count => {
       output.push(
         getNewMessage(
@@ -263,8 +265,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.fci.waitForQtspCount > 0 &&
+  if (customConfig.messages.fci.waitForQtspCount > 0) {
     range(1, customConfig.messages.fci.waitForQtspCount).forEach(count => {
       output.push(
         getNewMessage(
@@ -274,8 +277,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.fci.expired90Count > 0 &&
+  if (customConfig.messages.fci.expired90Count > 0) {
     range(1, customConfig.messages.fci.expired90Count).forEach(count => {
       output.push(
         getNewMessage(
@@ -286,8 +290,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.fci.rejectedCount > 0 &&
+  if (customConfig.messages.fci.rejectedCount > 0) {
     range(1, customConfig.messages.fci.rejectedCount).forEach(count => {
       output.push(
         getNewMessage(
@@ -297,8 +302,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.fci.signedCount > 0 &&
+  if (customConfig.messages.fci.signedCount > 0) {
     range(1, customConfig.messages.fci.signedCount).forEach(count => {
       output.push(
         getNewMessage(
@@ -308,8 +314,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.fci.noSignatureFieldsCount > 0 &&
+  if (customConfig.messages.fci.noSignatureFieldsCount > 0) {
     range(1, customConfig.messages.fci.noSignatureFieldsCount).forEach(
       count => {
         output.push(
@@ -321,9 +328,10 @@ const createMessages = (
         );
       }
     );
+  }
 
   /* standard message */
-  customConfig.messages.standardMessageCount > 0 &&
+  if (customConfig.messages.standardMessageCount > 0) {
     range(1, customConfig.messages.standardMessageCount).forEach(count =>
       output.push(
         getNewMessage(
@@ -333,9 +341,10 @@ const createMessages = (
         )
       )
     );
+  }
 
   /* due date */
-  customConfig.messages.withValidDueDateCount > 0 &&
+  if (customConfig.messages.withValidDueDateCount > 0) {
     range(1, customConfig.messages.withValidDueDateCount).forEach(count =>
       output.push(
         withDueDate(
@@ -348,8 +357,9 @@ const createMessages = (
         )
       )
     );
+  }
 
-  customConfig.messages.withInValidDueDateCount > 0 &&
+  if (customConfig.messages.withInValidDueDateCount > 0) {
     range(1, customConfig.messages.withInValidDueDateCount).forEach(count =>
       output.push(
         withDueDate(
@@ -362,9 +372,11 @@ const createMessages = (
         )
       )
     );
-
+  }
   /* payments */
-  customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount > 0 &&
+  if (
+    customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount > 0
+  ) {
     range(
       1,
       customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount
@@ -383,8 +395,11 @@ const createMessages = (
         )
       )
     );
+  }
 
-  customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount > 0 &&
+  if (
+    customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount > 0
+  ) {
     range(
       1,
       customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount
@@ -403,8 +418,9 @@ const createMessages = (
         )
       )
     );
+  }
 
-  customConfig.messages.paymentWithExpiredDueDateCount > 0 &&
+  if (customConfig.messages.paymentWithExpiredDueDateCount > 0) {
     range(
       1,
       customConfig.messages.paymentWithExpiredDueDateCount
@@ -423,8 +439,9 @@ const createMessages = (
         )
       )
     );
+  }
 
-  customConfig.messages.paymentWithValidDueDateCount > 0 &&
+  if (customConfig.messages.paymentWithValidDueDateCount > 0) {
     range(
       1,
       customConfig.messages.paymentWithValidDueDateCount
@@ -443,8 +460,9 @@ const createMessages = (
         )
       )
     );
+  }
 
-  customConfig.messages.paymentsCount > 0 &&
+  if (customConfig.messages.paymentsCount > 0) {
     range(1, customConfig.messages.paymentsCount).forEach(count =>
       output.push(
         withPaymentData(
@@ -457,8 +475,9 @@ const createMessages = (
         )
       )
     );
+  }
 
-  customConfig.messages.legalCount > 0 &&
+  if (customConfig.messages.legalCount > 0) {
     range(1, customConfig.messages.legalCount).forEach(count => {
       const isOdd = count % 2 > 0;
       const message = getNewMessage(
@@ -470,9 +489,12 @@ const createMessages = (
       const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
       output.push(withLegalContent(message, message.id, attachments, isOdd));
     });
+  }
 
-  customConfig.services.specialServices.pn &&
-    customConfig.messages.pnCount > 0 &&
+  if (
+    customConfig.services.specialServices.pn &&
+    customConfig.messages.pnCount > 0
+  ) {
     range(1, customConfig.messages.pnCount).forEach(_ => {
       const sender = "Comune di Milano";
       const subject = "infrazione al codice della strada";
@@ -488,8 +510,9 @@ const createMessages = (
         )
       );
     });
+  }
 
-  customConfig.messages.withRemoteAttachments > 0 &&
+  if (customConfig.messages.withRemoteAttachments > 0) {
     range(1, customConfig.messages.withRemoteAttachments).forEach(index => {
       output.push(
         getNewRemoteAttachmentsMessage(
@@ -501,6 +524,7 @@ const createMessages = (
         )
       );
     });
+  }
 
   return output;
 };

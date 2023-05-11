@@ -1,10 +1,10 @@
 import * as O from "fp-ts/lib/Option";
-import { TimelineDTO } from "../../../../../generated/definitions/idpay/TimelineDTO";
-import { IDPayInitiativeID } from "../types";
-import { timeline } from "./data";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
 import { pipe } from "fp-ts/lib/function";
+import { TimelineDTO } from "../../../../../generated/definitions/idpay/TimelineDTO";
+import { IDPayInitiativeID } from "../types";
+import { timeline } from "./data";
 
 export const getTimelineResponse = (
   initiativeId: IDPayInitiativeID,

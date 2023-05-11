@@ -7,15 +7,13 @@ export const getProblemJson = (
   detail?: string,
   type?: string,
   instance?: string
-): ProblemJson => {
-  return {
-    type,
-    title,
-    instance,
-    detail,
-    status: status as ProblemJson["status"]
-  };
-};
+): ProblemJson => ({
+  type,
+  title,
+  instance,
+  detail,
+  status: status as ProblemJson["status"]
+});
 
 export const invalid: IOResponse<null> = {
   payload: null,

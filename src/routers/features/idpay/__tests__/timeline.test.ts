@@ -36,6 +36,7 @@ describe("IDPay Timeline API", () => {
       expect(response.body).toHaveProperty("pageSize", size);
       expect(response.body).toHaveProperty("totalPages", totalPages);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
 
@@ -56,6 +57,7 @@ describe("IDPay Timeline API", () => {
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("operationId", operationId);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
       const operationId = timeline[IDPayInitiativeID.CONFIGURED][0].operationId;
@@ -65,6 +67,7 @@ describe("IDPay Timeline API", () => {
       );
       expect(response.status).toBe(404);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
       const operationId = "ABC123";

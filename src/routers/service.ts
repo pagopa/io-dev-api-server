@@ -7,10 +7,10 @@ import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
-import { publicRouter } from "./public";
-import ServicesDB from "./../persistence/services";
 import { validatePayload } from "../utils/validator";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import { publicRouter } from "./public";
+import ServicesDB from "./../persistence/services";
 
 export const serviceRouter = Router();
 const configResponse = ioDevServerConfig.services.response;

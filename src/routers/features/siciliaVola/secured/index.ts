@@ -1,6 +1,6 @@
+import fs from "fs";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import fs from "fs";
 import * as t from "io-ts";
 import { AeroportiAmmessiInputBean } from "../../../../../generated/definitions/siciliaVola/AeroportiAmmessiInputBean";
 import { VoucherBeneficiarioInputBean } from "../../../../../generated/definitions/siciliaVola/VoucherBeneficiarioInputBean";
@@ -18,9 +18,9 @@ export const securedSvRouter = Router();
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/mitvoucher/data/rest/secured${path}`);
 
-// tslint:disable-next-line: no-let prefer-const
+// eslint-disable-next-line: no-let prefer-const
 let vouchersBeneficiary: ReadonlyArray<VoucherBeneficiarioOutputBean>;
-// tslint:disable-next-line: no-let prefer-const
+// eslint-disable-next-line: no-let prefer-const
 let lastId = 0;
 
 /**
@@ -128,7 +128,6 @@ addHandler(
       );
     }
     res.json({});
-    return;
   },
   2000
 );

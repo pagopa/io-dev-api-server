@@ -15,6 +15,5 @@ export const getRandomStringId = (chars: number = 26): string => {
 /**
  * generate a random int included in range [min,max]
  */
-export const getRandomIntInRange = (min: number, max: number) => {
-  return randomInt(min, max)().valueOf();
-};
+export const getRandomIntInRange = (min: number, max: number) =>
+  randomInt(min, max)().valueOf();

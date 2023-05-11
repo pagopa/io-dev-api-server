@@ -19,8 +19,8 @@ import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-w
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
 import { getWalletStatusResponse } from "../../../payloads/features/idpay/wallet/get-wallet-status";
 import { getWalletV2 } from "../../walletsV2";
-import { addIdPayHandler } from "./router";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
+import { addIdPayHandler } from "./router";
 
 const initiativeIdExists = (id: IDPayInitiativeID) =>
   pipe(
@@ -34,7 +34,7 @@ const getWalletInstrument = (id: string) =>
   pipe(
     id,
     O.some,
-    O.map(id => parseInt(id)),
+    O.map(id => parseInt(id, 10)),
     O.chain(id => O.fromNullable(getWalletV2().find(w => w.idWallet === id)))
   );
 

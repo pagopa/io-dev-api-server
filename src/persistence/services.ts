@@ -41,7 +41,7 @@ const createServices = (customConfig: IoDevServerConfig) => {
   );
 
   const specialServicesConfig = customConfig.services.specialServices;
-  const specialServiceGenerators: [boolean, SpecialServiceGenerator][] = [
+  const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
     [specialServicesConfig.siciliaVola, createSiciliaVolaService],
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],
@@ -85,7 +85,7 @@ const deleteServices = () => {
 };
 
 const getLocalServices = () => {
-  const clonedLocalServices: Readonly<ServicePublic>[] = [];
+  const clonedLocalServices: Array<Readonly<ServicePublic>> = [];
   localServices.forEach(localService =>
     clonedLocalServices.push(Object.assign({}, localService))
   );

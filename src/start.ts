@@ -1,5 +1,5 @@
-import chalk from "chalk";
 import child_process from "child_process";
+import chalk from "chalk";
 import { cli } from "cli-ux";
 import figlet from "figlet";
 import { pipe } from "fp-ts/lib/function";
@@ -30,16 +30,18 @@ app.listen(serverPort, serverHostname, async () => {
         get(row): string {
           return pipe(
             O.fromNullable(row.description),
-            // tslint:disable-next-line:no-nested-template-literals
+            // eslint-disable-next-line:no-nested-template-literals
             O.map(d => `(${d})`),
             O.getOrElse(() => "")
           );
         }
       }
     });
+    // eslint-disable-next-line no-console
     console.log(
       chalk.bgBlue(chalk.white(figlet.textSync(packageJson.pretty_name)))
     );
+    // eslint-disable-next-line no-console
     console.log(
       chalk.bgBlack(
         chalk.green(
@@ -48,11 +50,10 @@ app.listen(serverPort, serverHostname, async () => {
           } is running on\n- branch "${chalk.bgWhite(
             stdout.replace("\n", "")
           )}"\n${interfaces
-            .map(
-              ({ address }) =>
-                // tslint:disable-next-line:no-nested-template-literals
-                `- ${chalk.underline(`http://${address}:${serverPort}`)}`
-            )
+            .map(({ address }) => {
+              const fullUrl = `http://${address}:${serverPort}`;
+              return `- ${chalk.underline(fullUrl)}`;
+            })
             .join("\n")}`
         )
       )

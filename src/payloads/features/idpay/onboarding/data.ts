@@ -167,20 +167,22 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   }
 ];
 
+const criterionsArray = ["Criterio 1", "Criterio 2", "Criterio 3"];
+
 const selfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
   {
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
     description:
       "Testo dove viene descritto il criterio con opzioni di scelta multipla:",
-    value: ["Criterio 1", "Criterio 2", "Criterio 3"]
+    value: criterionsArray
   },
   {
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
     description:
       "Testo dove viene descritto il criterio con opzioni di scelta multipla, seconda pagina:",
-    value: ["Criterio 1", "Criterio 2", "Criterio 3"]
+    value: criterionsArray
   }
 ];
 
@@ -188,19 +190,19 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
   {
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: "Criterio 1",
+    description: criterionsArray[0],
     value: false
   },
   {
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: "Criterio 2",
+    description: criterionsArray[1],
     value: false
   },
   {
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: "Criterio 3",
+    description: criterionsArray[2],
     value: false
   }
 ];

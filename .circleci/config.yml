@@ -25,7 +25,7 @@ jobs:
           command: yarn tsc:noemit
       - run:
           name: Run linter
-          command: yarn tslint --config tslint.json -p tsconfig.json
+          command: yarn lint
       - run:
           name: Testing
           command: |

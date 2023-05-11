@@ -16,28 +16,26 @@ import { addHandler } from "../../../payloads/response";
 
 export const cdcBonusRequestRouter = Router();
 
-export const generateBonusAll = (): ListaStatoPerAnno => {
-  return {
-    listaStatoPerAnno: [
-      {
-        annoRiferimento: "2020" as Anno,
-        statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
-      },
-      {
-        annoRiferimento: "2021" as Anno,
-        statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
-      },
-      {
-        annoRiferimento: "2022" as Anno,
-        statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
-      }
-    ]
-  };
-};
+export const generateBonusAll = (): ListaStatoPerAnno => ({
+  listaStatoPerAnno: [
+    {
+      annoRiferimento: "2020" as Anno,
+      statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
+    },
+    {
+      annoRiferimento: "2021" as Anno,
+      statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
+    },
+    {
+      annoRiferimento: "2022" as Anno,
+      statoBeneficiario: StatoBeneficiarioEnum.ATTIVABILE
+    }
+  ]
+});
 
 const addPrefix = (path: string) => `/bonus/cdc${path}`;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let bonusAll: ListaStatoPerAnno = generateBonusAll();
 
 addHandler(
@@ -59,7 +57,7 @@ addHandler(
           res.sendStatus(500);
         },
         value => {
-          // tslint:disable-next-line:no-let
+          // eslint-disable-next-line:no-let
           let bonusStatusByYear: Record<
             Anno,
             StatoBeneficiario
@@ -77,8 +75,8 @@ addHandler(
           );
           const anniRiferimento = value.anniRif;
           const listaEsitoRichiestaPerAnno: ListaEsitoRichiestaPerAnno = {
-            listaEsitoRichiestaPerAnno: anniRiferimento.map(y => {
-              return match(bonusStatusByYear[y.anno])
+            listaEsitoRichiestaPerAnno: anniRiferimento.map(y =>
+              match(bonusStatusByYear[y.anno])
                 .when(
                   v => [undefined, StatoBeneficiarioEnum.INATTIVO].includes(v),
                   () => ({
@@ -110,8 +108,8 @@ addHandler(
                     annoRiferimento: y.anno,
                     esitoRichiesta: EsitoRichiestaEnum.OK
                   };
-                });
-            })
+                })
+            )
           };
           bonusAll = {
             listaStatoPerAnno: bonusAll.listaStatoPerAnno.map(s => ({

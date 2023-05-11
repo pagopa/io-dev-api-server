@@ -19,7 +19,7 @@ import { getRandomValue } from "../utils/random";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let currentProfile = { ...profile };
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
@@ -32,7 +32,7 @@ const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,
   DELETE: undefined
 };
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let userChoices = initialUserChoice;
 
 export const profileRouter = Router();

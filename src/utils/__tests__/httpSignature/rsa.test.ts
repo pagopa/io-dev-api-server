@@ -1,12 +1,3 @@
-import {
-  getCustomContentChallenge,
-  getCustomContentSignatureBase,
-  getSignatureInfo,
-  isSignAlgorithmValid,
-  signAlgorithmToVerifierMap,
-  toPem,
-  verifyCustomContentChallenge
-} from "../../httpSignature";
 import * as TE from "fp-ts/TaskEither";
 import * as O from "fp-ts/Option";
 import * as jose from "jose";
@@ -16,6 +7,15 @@ import {
   VerifySignatureHeaderOptions,
   verifySignatureHeader
 } from "@mattrglobal/http-signatures";
+import {
+  getCustomContentChallenge,
+  getCustomContentSignatureBase,
+  getSignatureInfo,
+  isSignAlgorithmValid,
+  signAlgorithmToVerifierMap,
+  toPem,
+  verifyCustomContentChallenge
+} from "../../httpSignature";
 
 // Android RSA Public Key
 const rsaPublicKeyJwk = {
