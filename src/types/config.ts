@@ -250,7 +250,13 @@ export const IoDevServerConfig = t.interface({
       }),
       idpay: t.interface({
         // The size of the IBAN list to generate
-        ibanSize: t.number
+        ibanSize: t.number,
+        wallet: t.interface({
+          showConfigured: t.boolean,
+          showNotConfigured: t.boolean,
+          showSuspended: t.boolean,
+          showUnsubscribed: t.boolean
+        })
       })
     }),
     AllowRandomValue

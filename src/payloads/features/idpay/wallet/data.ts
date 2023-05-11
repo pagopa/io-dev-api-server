@@ -33,52 +33,60 @@ let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
   [InitiativeId.UNSUBSCRIBED]: []
 };
 
-let initiativeList: { [id: number]: InitiativeDTO } = {
-  [InitiativeId.NOT_CONFIGURED]: {
-    initiativeId: initiativeIdToString(InitiativeId.NOT_CONFIGURED),
-    initiativeName: "Iniziativa da configurare",
-    status: InitiativeStatus.NOT_REFUNDABLE,
+const generateRandomInitiative = (): InitiativeDTO => {
+  const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
+  const accrued = faker.datatype.number({ max: 200, precision: 10 });
+  const refunded = faker.datatype.number({ max: accrued, precision: 10 });
+
+  return {
+    initiativeId: ulid(),
+    initiativeName: faker.company.catchPhrase(),
+    status: getRandomEnumValue(InitiativeStatus),
     endDate: faker.date.future(1),
-    amount: 100,
-    accrued: 0,
-    refunded: 0,
+    amount,
+    accrued,
+    refunded,
     lastCounterUpdate: faker.date.recent(1),
-    iban: undefined,
-    nInstr: 0,
-    logoURL: undefined,
+    iban: faker.helpers.arrayElement(ibanList)?.iban || "",
+    nInstr: faker.datatype.number(2),
+    logoURL: faker.helpers.maybe(() => faker.image.image(480, 480, true)),
     organizationName: faker.company.name()
-  },
+  };
+};
+
+let initiativeList: { [id: number]: InitiativeDTO } = {
   [InitiativeId.CONFIGURED]: {
+    ...generateRandomInitiative(),
     initiativeId: initiativeIdToString(InitiativeId.CONFIGURED),
     initiativeName: "Iniziativa di test",
     status: InitiativeStatus.REFUNDABLE,
-    endDate: faker.date.future(1),
-    amount: 30,
-    accrued: 70,
-    refunded: 45,
-    lastCounterUpdate: faker.date.recent(1),
-    iban: ibanList[0]?.iban || "",
-    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length,
-    logoURL: faker.image.image(480, 480, true),
-    organizationName: faker.company.name()
+    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
+  },
+  [InitiativeId.NOT_CONFIGURED]: {
+    ...generateRandomInitiative(),
+    initiativeId: initiativeIdToString(InitiativeId.NOT_CONFIGURED),
+    initiativeName: "Iniziativa da configurare",
+    status: InitiativeStatus.NOT_REFUNDABLE,
+    accrued: 0,
+    refunded: 0,
+    iban: undefined,
+    nInstr: 0
   },
   [InitiativeId.UNSUBSCRIBED]: {
+    ...generateRandomInitiative(),
     initiativeId: initiativeIdToString(InitiativeId.UNSUBSCRIBED),
     initiativeName: "Iniziativa disiscritta",
-    status: InitiativeStatus.UNSUBSCRIBED,
-    endDate: faker.date.future(1),
-    amount: 30,
-    accrued: 70,
-    refunded: 45,
-    lastCounterUpdate: faker.date.recent(1),
-    iban: undefined,
-    nInstr: 0,
-    logoURL: undefined,
-    organizationName: faker.company.name()
+    status: InitiativeStatus.UNSUBSCRIBED
+  },
+  [InitiativeId.SUSPENDED]: {
+    ...generateRandomInitiative(),
+    initiativeId: initiativeIdToString(InitiativeId.SUSPENDED),
+    initiativeName: "Iniziativa sospesa",
+    status: InitiativeStatus.SUSPENDED
   }
 };
 
-const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
+const generateRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   initiativeName: faker.company.name(),
   status: "",
   description: faker.lorem.paragraphs(6),
@@ -105,12 +113,16 @@ const createRandomInitiativeDetails = (): InitiativeDetailDTO => ({
 
 const initiativeDetailsList: { [id: number]: InitiativeDetailDTO } = {
   [InitiativeId.NOT_CONFIGURED]: {
-    ...createRandomInitiativeDetails(),
+    ...generateRandomInitiativeDetails(),
     initiativeName: "Iniziativa da configurare"
   },
   [InitiativeId.CONFIGURED]: {
-    ...createRandomInitiativeDetails(),
-    initiativeName: "Iniziativa di test"
+    ...generateRandomInitiativeDetails(),
+    initiativeName: "Iniziativa a rimborso"
+  },
+  [InitiativeId.SUSPENDED]: {
+    ...generateRandomInitiativeDetails(),
+    initiativeName: "Iniziativa sospesa"
   }
 };
 

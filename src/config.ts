@@ -142,7 +142,13 @@ const defaultConfig: IoDevServerConfig = {
       }
     },
     idpay: {
-      ibanSize: 3
+      ibanSize: 3,
+      wallet: {
+        showConfigured: true,
+        showNotConfigured: true,
+        showSuspended: false,
+        showUnsubscribed: false
+      }
     },
     allowRandomValues: true
   }
