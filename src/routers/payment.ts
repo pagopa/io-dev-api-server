@@ -74,10 +74,10 @@ addHandler(
             O.fromNullable,
             O.fold(
               () => {
-                const paymentRequestResponse = getPaymentRequestsGetResponse(
+                paymentRequest = getPaymentRequestsGetResponse(
                   randomService
                 );
-                return res.json(paymentRequestResponse);
+                return res.json(paymentRequest);
               },
               (errorCode: Detail_v2Enum) => responseWithError(errorCode, res)
             )
