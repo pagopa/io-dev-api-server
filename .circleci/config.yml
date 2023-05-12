@@ -25,7 +25,7 @@ jobs:
           command: yarn tsc:noemit
       - run:
           name: Run linter
-          command: yarn eslint . -c .eslintrc.js --ext .ts,.tsx
+          command: yarn eslint . -c ~/.eslintrc.js --ext .ts,.tsx
       - run:
           name: Testing
           command: |
