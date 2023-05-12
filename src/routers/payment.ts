@@ -54,8 +54,8 @@ addHandler(
   addApiV1Prefix("/payment-requests/:rptId"),
   // success response: res.json(getPaymentRequestsGetResponse(faker.helpers.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
-  (_, res) => {
-    return pipe(
+  (_, res) =>
+    pipe(
       ServicesDB.getSummaries(),
       faker.helpers.arrayElement,
       (randomServiceSummary: ServiceSummary) => randomServiceSummary.service_id,
@@ -81,8 +81,7 @@ addHandler(
             )
           )
       )
-    );
-  }
+    )
 );
 
 /**
