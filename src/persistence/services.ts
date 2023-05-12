@@ -22,9 +22,13 @@ export type ServiceSummary = {
   scope?: ServiceScopeEnum;
 };
 
+// eslint-disable-next-line functional/no-let
 let localServices: ServicePublic[] = [];
+// eslint-disable-next-line functional/no-let
 let nationalServices: ServicePublic[] = [];
+// eslint-disable-next-line functional/no-let
 let specialServices: ServicePublic[] = [];
+// eslint-disable-next-line functional/no-let
 let servicePreferences: Map<ServiceId, ServicePreference> = new Map<
   ServiceId,
   ServicePreference
@@ -84,13 +88,7 @@ const deleteServices = () => {
   servicePreferences.clear();
 };
 
-const getLocalServices = () => {
-  const clonedLocalServices: Array<Readonly<ServicePublic>> = [];
-  localServices.forEach(localService =>
-    clonedLocalServices.push(Object.assign({}, localService))
-  );
-  return clonedLocalServices;
-};
+const getLocalServices = () => localServices.map(ls => ({ ...ls }));
 
 const getPreference = (
   serviceId: ServiceId
@@ -119,9 +117,11 @@ const getService = (
 const getSummaries = (
   excludeSpecialServices: boolean = false
 ): ReadonlyArray<ServiceSummary> => {
-  const services = excludeSpecialServices
-    ? localServices.concat(nationalServices)
-    : localServices.concat(nationalServices, specialServices);
+  const services = [
+    ...localServices,
+    ...nationalServices,
+    ...(excludeSpecialServices ? [] : specialServices)
+  ];
   return services.map(
     s =>
       ({
