@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
-import { IDPayInitiativeID as InitiativeID } from "../../../../payloads/features/idpay/types";
+import { IDPayInitiativeID as InitiativeID } from "../../../../payloads/features/idpay/onboarding/types";
 import { initiativeIdToString } from "../../../../payloads/features/idpay/utils";
 import {
   initiativeDetailsList,

@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
-import { IDPayInitiativeID } from "../../../../payloads/features/idpay/types";
+import { IDPayInitiativeID } from "../../../../payloads/features/idpay/onboarding/types";
 import { initiativeIdToString } from "../../../../payloads/features/idpay/utils";
 import { timeline } from "../../../../payloads/features/idpay/timeline/data";
 

@@ -8,11 +8,12 @@ import {
 } from "../../../payloads/features/idpay/onboarding/check-prerequisites";
 import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/onboarding/get-initiative-data";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/onboarding-status";
+
+import { addIdPayHandler } from "./router";
 import {
   initiativeIdFromString,
   serviceIdFromString
-} from "../../../payloads/features/idpay/utils";
-import { addIdPayHandler } from "./router";
+} from "../../../payloads/features/idpay/onboarding/utils";
 
 /**
  * Retrieves the initiative ID starting from the corresponding service ID

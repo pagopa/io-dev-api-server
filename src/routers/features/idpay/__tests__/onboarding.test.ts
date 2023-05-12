@@ -10,7 +10,7 @@ import {
 import {
   IDPayInitiativeID,
   IDPayServiceID
-} from "../../../../payloads/features/idpay/types";
+} from "../../../../payloads/features/idpay/onboarding/types";
 import {
   initiativeIdToString,
   serviceIdToString

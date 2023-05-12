@@ -1,6 +1,6 @@
 import * as O from "fp-ts/lib/Option";
 import { OnboardingStatusDTO } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { IDPayInitiativeID } from "../types";
+import { IDPayInitiativeID } from "./types";
 import { onboardingStatuses } from "./data";
 import { pipe } from "fp-ts/lib/function";
 

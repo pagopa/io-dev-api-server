@@ -21,8 +21,8 @@ import {
   SelfDeclarationMultiDTO,
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
-import { IDPayInitiativeID, IDPayServiceID } from "../types";
-import { initiativeIdToString } from "../utils";
+import { IDPayInitiativeID, IDPayServiceID } from "./types";
+import { initiativeIdToString } from "./utils";
 import { getRandomEnumValue } from "../../../utils/random";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
