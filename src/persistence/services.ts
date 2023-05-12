@@ -84,13 +84,7 @@ const deleteServices = () => {
   servicePreferences.clear();
 };
 
-const getLocalServices = () => {
-  const clonedLocalServices: Readonly<ServicePublic>[] = [];
-  localServices.forEach(localService =>
-    clonedLocalServices.push(Object.assign({}, localService))
-  );
-  return clonedLocalServices;
-};
+const getLocalServices = () => localServices.map(ls => ({ ...ls }));
 
 const getPreference = (
   serviceId: ServiceId
@@ -119,9 +113,11 @@ const getService = (
 const getSummaries = (
   excludeSpecialServices: boolean = false
 ): ReadonlyArray<ServiceSummary> => {
-  const services = excludeSpecialServices
-    ? localServices.concat(nationalServices)
-    : localServices.concat(nationalServices, specialServices);
+  const services = [
+    ...localServices,
+    ...nationalServices,
+    ...(excludeSpecialServices ? [] : specialServices)
+  ];
   return services.map(
     s =>
       ({
