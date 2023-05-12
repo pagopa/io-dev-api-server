@@ -12,35 +12,28 @@ import {
 } from "../../../../../generated/definitions/idpay/InstrumentDTO";
 import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { IDPayInitiativeID, IDPayInitiativeID as InitiativeId } from "../types";
-import { initiativeIdToString } from "../utils";
 import { ibanList } from "../iban/data";
 import { getRandomEnumValue } from "../../../utils/random";
 import { RewardValueTypeEnum } from "../../../../../generated/definitions/idpay/RewardValueDTO";
+import { ioDevServerConfig } from "../../../../config";
+import { range } from "lodash";
+import { enrollInstrument } from "../instrument/data";
+import { getWalletV2 } from "../../../../routers/walletsV2";
+import { generateInitiativeTimeline } from "../timeline/data";
 
-const INSTRUMENT_STATUS_TIMEOUT = 10000;
+const config = ioDevServerConfig.wallet.idPay;
 
-let instrumentList: { [id: number]: ReadonlyArray<InstrumentDTO> } = {
-  [InitiativeId.NOT_CONFIGURED]: [],
-  [InitiativeId.CONFIGURED]: [
-    {
-      instrumentId: ulid(),
-      activationDate: faker.date.past(1),
-      idWallet: "2",
-      status: InstrumentStatus.ACTIVE
-    }
-  ],
-  [InitiativeId.UNSUBSCRIBED]: []
-};
+export let initiatives: { [id: string]: InitiativeDTO } = {};
+export let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
 
-const generateRandomInitiative = (): InitiativeDTO => {
+const generateRandomInitiativeDTO = (): InitiativeDTO => {
   const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
   const accrued = faker.datatype.number({ max: 200, precision: 10 });
   const refunded = faker.datatype.number({ max: accrued, precision: 10 });
 
   return {
     initiativeId: ulid(),
-    initiativeName: faker.company.catchPhrase(),
+    initiativeName: faker.company.name(),
     status: getRandomEnumValue(InitiativeStatus),
     endDate: faker.date.future(1),
     amount,
@@ -48,47 +41,15 @@ const generateRandomInitiative = (): InitiativeDTO => {
     refunded,
     lastCounterUpdate: faker.date.recent(1),
     iban: faker.helpers.arrayElement(ibanList)?.iban || "",
-    nInstr: faker.datatype.number(2),
-    logoURL: faker.helpers.maybe(() => faker.image.image(480, 480, true)),
+    nInstr: 1,
+    logoURL: faker.image.image(480, 480, true),
     organizationName: faker.company.name()
   };
 };
 
-let initiativeList: { [id: number]: InitiativeDTO } = {
-  [InitiativeId.CONFIGURED]: {
-    ...generateRandomInitiative(),
-    initiativeId: initiativeIdToString(InitiativeId.CONFIGURED),
-    initiativeName: "Iniziativa di test",
-    status: InitiativeStatus.REFUNDABLE,
-    nInstr: (instrumentList[InitiativeId.CONFIGURED] ?? []).length
-  },
-  [InitiativeId.NOT_CONFIGURED]: {
-    ...generateRandomInitiative(),
-    initiativeId: initiativeIdToString(InitiativeId.NOT_CONFIGURED),
-    initiativeName: "Iniziativa da configurare",
-    status: InitiativeStatus.NOT_REFUNDABLE,
-    accrued: 0,
-    refunded: 0,
-    iban: undefined,
-    nInstr: 0
-  },
-  [InitiativeId.UNSUBSCRIBED]: {
-    ...generateRandomInitiative(),
-    initiativeId: initiativeIdToString(InitiativeId.UNSUBSCRIBED),
-    initiativeName: "Iniziativa disiscritta",
-    status: InitiativeStatus.UNSUBSCRIBED
-  },
-  [InitiativeId.SUSPENDED]: {
-    ...generateRandomInitiative(),
-    initiativeId: initiativeIdToString(InitiativeId.SUSPENDED),
-    initiativeName: "Iniziativa sospesa",
-    status: InitiativeStatus.SUSPENDED
-  }
-};
-
-const generateRandomInitiativeDetails = (): InitiativeDetailDTO => ({
+const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
   initiativeName: faker.company.name(),
-  status: "",
+  status: getRandomEnumValue(InitiativeStatus),
   description: faker.lorem.paragraphs(6),
   ruleDescription: faker.lorem.paragraphs(4),
   endDate: faker.date.future(1),
@@ -100,10 +61,10 @@ const generateRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   },
   refundRule: {
     accumulatedAmount: {
-      accumulatedType: AccumulatedTypeEnum.BUDGET_EXHAUSTED,
-      refundThreshold: 10
+      accumulatedType: getRandomEnumValue(AccumulatedTypeEnum),
+      refundThreshold: faker.datatype.number({ min: 10, max: 50 })
     },
-    timeParameter: { timeType: TimeTypeEnum.MONTHLY }
+    timeParameter: { timeType: getRandomEnumValue(TimeTypeEnum) }
   },
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
@@ -111,124 +72,127 @@ const generateRandomInitiativeDetails = (): InitiativeDetailDTO => ({
   updateDate: faker.date.recent(1)
 });
 
-const initiativeDetailsList: { [id: number]: InitiativeDetailDTO } = {
-  [InitiativeId.NOT_CONFIGURED]: {
-    ...generateRandomInitiativeDetails(),
-    initiativeName: "Iniziativa da configurare"
-  },
-  [InitiativeId.CONFIGURED]: {
-    ...generateRandomInitiativeDetails(),
-    initiativeName: "Iniziativa a rimborso"
-  },
-  [InitiativeId.SUSPENDED]: {
-    ...generateRandomInitiativeDetails(),
-    initiativeName: "Iniziativa sospesa"
+range(0, config.configuredCount).forEach(() => {
+  const initiative: InitiativeDTO = {
+    ...generateRandomInitiativeDTO(),
+    status: InitiativeStatus.REFUNDABLE
+  };
+
+  const { initiativeId, initiativeName } = initiative;
+
+  const details: InitiativeDetailDTO = {
+    ...generateRandomInitiativeDetailDTO(),
+    initiativeName,
+    status: InitiativeStatus.REFUNDABLE
+  };
+
+  initiatives[initiativeId] = initiative;
+  initiativesDetails[initiativeId] = details;
+
+  generateInitiativeTimeline(initiativeId);
+
+  const pagoPaWallet = getWalletV2();
+  if (pagoPaWallet.length > 0) {
+    enrollInstrument(initiativeId, getWalletV2()[0]);
   }
-};
+});
 
-const addIbanToInitiative = (id: InitiativeId, iban: string) => {
-  initiativeList[id] = { ...initiativeList[id], iban };
-};
+range(0, config.notConfiguredCount).forEach(() => {
+  const initiativeName = `${faker.company.name()} [NC]`;
 
-const addInstrumentToInitiative = (
-  id: InitiativeId,
-  wallet: WalletV2
-): boolean => {
-  const exists = instrumentList[id].some(
-    i => i.idWallet === wallet.idWallet?.toString()
-  );
+  const initiative: InitiativeDTO = {
+    ...generateRandomInitiativeDTO(),
+    initiativeName,
+    status: InitiativeStatus.NOT_REFUNDABLE,
+    iban: undefined,
+    nInstr: 0
+  };
 
-  if (exists) {
-    return false;
+  const { initiativeId } = initiative;
+
+  const details: InitiativeDetailDTO = {
+    ...generateRandomInitiativeDetailDTO(),
+    initiativeName,
+    status: InitiativeStatus.NOT_REFUNDABLE
+  };
+
+  generateInitiativeTimeline(initiativeId, false);
+
+  initiatives[initiativeId] = initiative;
+  initiativesDetails[initiativeId] = details;
+});
+
+range(0, config.unsubscribedCount).forEach(() => {
+  const initiativeName = `${faker.company.name()} [U]`;
+
+  const initiative: InitiativeDTO = {
+    ...generateRandomInitiativeDTO(),
+    initiativeName,
+    status: InitiativeStatus.UNSUBSCRIBED
+  };
+
+  const { initiativeId } = initiative;
+
+  const details: InitiativeDetailDTO = {
+    ...generateRandomInitiativeDetailDTO(),
+    initiativeName,
+    status: InitiativeStatus.UNSUBSCRIBED
+  };
+
+  generateInitiativeTimeline(initiativeId);
+
+  initiatives[initiativeId] = initiative;
+  initiativesDetails[initiativeId] = details;
+
+  const pagoPaWallet = getWalletV2();
+  if (pagoPaWallet.length > 0) {
+    enrollInstrument(initiativeId, getWalletV2()[0]);
   }
+});
 
-  instrumentList[id] = [
-    ...instrumentList[id],
-    {
-      instrumentId: ulid(),
-      idWallet: wallet.idWallet?.toString(),
-      activationDate: new Date(),
-      status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST
-    }
-  ];
+range(0, config.suspendedCount).forEach(() => {
+  const initiativeName = `${faker.company.name()} [S]`;
 
-  setTimeout(() => {
-    const index = instrumentList[id].findIndex(
-      i => i.idWallet === wallet.idWallet?.toString()
-    );
+  const initiative: InitiativeDTO = {
+    ...generateRandomInitiativeDTO(),
+    initiativeName,
+    status: InitiativeStatus.SUSPENDED
+  };
 
-    instrumentList[id] = [
-      ...instrumentList[id].slice(0, index),
-      {
-        ...instrumentList[id][index],
-        status: InstrumentStatus.ACTIVE
-      },
-      ...instrumentList[id].slice(index + 1)
-    ];
-  }, INSTRUMENT_STATUS_TIMEOUT);
+  const { initiativeId } = initiative;
 
-  return true;
-};
+  const details: InitiativeDetailDTO = {
+    ...generateRandomInitiativeDetailDTO(),
+    initiativeName,
+    status: InitiativeStatus.SUSPENDED
+  };
 
-const removeInstrumentFromInitiative = (
-  id: InitiativeId,
-  instrumentId: string
-): boolean => {
-  const index = instrumentList[id].findIndex(
-    i => i.instrumentId === instrumentId
-  );
+  generateInitiativeTimeline(initiativeId);
 
-  if (
-    index < 0 ||
-    instrumentList[id][index].status !== InstrumentStatus.ACTIVE
-  ) {
-    return false;
+  initiatives[initiativeId] = initiative;
+  initiativesDetails[initiativeId] = details;
+
+  const pagoPaWallet = getWalletV2();
+  if (pagoPaWallet.length > 0) {
+    enrollInstrument(initiativeId, getWalletV2()[0]);
   }
+});
 
-  instrumentList[id] = [
-    ...instrumentList[id].slice(0, index),
-    {
-      ...instrumentList[id][index],
-      status: InstrumentStatus.PENDING_DEACTIVATION_REQUEST
-    },
-    ...instrumentList[id].slice(index + 1)
-  ];
-
-  setTimeout(() => {
-    const index = instrumentList[id].findIndex(
-      i => i.instrumentId === instrumentId
-    );
-
-    instrumentList[id] = [
-      ...instrumentList[id].slice(0, index),
-      ...instrumentList[id].slice(index + 1)
-    ];
-  }, INSTRUMENT_STATUS_TIMEOUT);
-
-  return true;
+export const addIbanToInitiative = (id: string, iban: string) => {
+  initiatives[id] = { ...initiatives[id], iban };
 };
 
-const unsubscribeFromInitiative = (id: IDPayInitiativeID) => {
-  const initiative = initiativeList[id];
+export const unsubscribeFromInitiative = (id: string) => {
+  const initiative = initiatives[id];
 
   if (!initiative || initiative.status === InitiativeStatus.UNSUBSCRIBED) {
     return false;
   }
 
-  initiativeList[id] = {
-    ...initiativeList[id],
+  initiatives[id] = {
+    ...initiatives[id],
     status: InitiativeStatus.UNSUBSCRIBED
   };
 
   return true;
-};
-
-export {
-  initiativeList,
-  instrumentList,
-  initiativeDetailsList,
-  addIbanToInitiative,
-  addInstrumentToInitiative,
-  removeInstrumentFromInitiative,
-  unsubscribeFromInitiative
 };

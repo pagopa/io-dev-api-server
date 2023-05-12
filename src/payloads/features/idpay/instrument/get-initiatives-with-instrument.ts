@@ -7,12 +7,13 @@ import {
 import { InitiativesWithInstrumentDTO } from "../../../../../generated/definitions/idpay/InitiativesWithInstrumentDTO";
 import { CardInfo } from "../../../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { getWalletV2 } from "../../../../routers/walletsV2";
-import { initiativeList, instrumentList } from "./data";
+import { initiativesInstrumentList } from "./data";
+import { initiatives } from "../wallet/data";
 
 const initiativesByWalletId = (idWallet: string) => {
   const result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
 
-  Object.entries(instrumentList).forEach(([id, instruments]) => {
+  Object.entries(initiativesInstrumentList).forEach(([id, instruments]) => {
     const initiativeId = parseInt(id);
 
     instruments.forEach(instrument => {
@@ -21,7 +22,7 @@ const initiativesByWalletId = (idWallet: string) => {
       if (walletId === idWallet) {
         const status: InitiativesStatusDTO = {
           initiativeId: id,
-          initiativeName: initiativeList[initiativeId].initiativeName || "",
+          initiativeName: initiatives[initiativeId].initiativeName || "",
           status: instrument.status || InitiativeStatusEnum.INACTIVE,
           idInstrument: instrument.instrumentId
         };

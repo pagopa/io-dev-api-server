@@ -1,9 +1,13 @@
 import * as O from "fp-ts/lib/Option";
 import { WalletStatusDTO } from "../../../../../generated/definitions/idpay/WalletStatusDTO";
-import { IDPayInitiativeID } from "../types";
-import { initiativeList } from "./data";
+import { initiatives } from "./data";
+import { pipe } from "fp-ts/lib/function";
 
 export const getWalletStatusResponse = (
-  id: IDPayInitiativeID
+  id: string
 ): O.Option<WalletStatusDTO> =>
-  O.fromNullable({ status: initiativeList[id].status });
+  pipe(
+    initiatives[id],
+    O.fromNullable,
+    O.map(({ status }) => ({ status }))
+  );

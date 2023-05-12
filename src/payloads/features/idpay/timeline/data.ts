@@ -166,56 +166,47 @@ const onboarding: OnboardingOperationDTO = {
   operationId: ulid()
 };
 
-const timeline: { [id: number]: ReadonlyArray<OperationListDTO> } = {
-  [InitiativeId.NOT_CONFIGURED]: [onboarding],
-  [InitiativeId.CONFIGURED]: [
-    rejectedRefund,
-    paidRefund,
-    reversal,
-    transaction,
-    rejectedDeleteInstrument,
-    rejectedAddInstrument,
-    addIban,
-    deleteInstrument,
-    addInstrument,
-    onboarding
-  ],
-  [InitiativeId.UNSUBSCRIBED]: [
-    rejectedRefund,
-    paidRefund,
-    reversal,
-    transaction,
-    rejectedDeleteInstrument,
-    rejectedAddInstrument,
-    addIban,
-    deleteInstrument,
-    addInstrument,
-    onboarding
-  ]
-};
+export let initiativeTimeline: {
+  [initiativeId: string]: ReadonlyArray<OperationListDTO>;
+} = {};
 
-const timelineDetails: { [id: number]: ReadonlyArray<OperationDTO> } = {
-  [InitiativeId.NOT_CONFIGURED]: [onboarding],
-  [InitiativeId.CONFIGURED]: [
-    rejectedRefundDetail,
-    paidRefundDetail,
-    reversalDetail,
-    transactionDetail,
-    addIban,
-    deleteInstrument,
-    addInstrument,
-    onboarding
-  ],
-  [InitiativeId.UNSUBSCRIBED]: [
-    rejectedRefundDetail,
-    paidRefundDetail,
-    reversalDetail,
-    transactionDetail,
-    addIban,
-    deleteInstrument,
-    addInstrument,
-    onboarding
-  ]
-};
+export let initiativeTimelineDetails: {
+  [initiativeId: string]: ReadonlyArray<OperationDTO>;
+} = {};
 
-export { timeline, timelineDetails };
+export const generateInitiativeTimeline = (
+  initiativeId: string,
+  fullTimeline: boolean = true
+) => {
+  initiativeTimeline[initiativeId] = [
+    ...(fullTimeline
+      ? [
+          rejectedRefund,
+          paidRefund,
+          reversal,
+          transaction,
+          rejectedDeleteInstrument,
+          rejectedAddInstrument,
+          addIban,
+          deleteInstrument,
+          addInstrument
+        ]
+      : []),
+    onboarding
+  ];
+
+  initiativeTimelineDetails[initiativeId] = [
+    ...(fullTimeline
+      ? [
+          rejectedRefundDetail,
+          paidRefundDetail,
+          reversalDetail,
+          transactionDetail,
+          addIban,
+          deleteInstrument,
+          addInstrument
+        ]
+      : []),
+    onboarding
+  ];
+};
