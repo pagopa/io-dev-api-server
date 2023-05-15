@@ -9,8 +9,10 @@ import { PaginatedPublicMessagesCollection } from "../../../generated/definition
 import { ioDevServerConfig } from "../../config";
 import { basePath } from "../../payloads/response";
 import MessagesDB from "../../persistence/messages";
+import ServicesDB from "../../persistence/services";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
+import { pnServiceId } from "../../payloads/services/special/pn/factoryPn";
 
 const request = supertest(app);
 
@@ -43,7 +45,13 @@ const customConfig = _.merge(ioDevServerConfig, {
     withInValidDueDateCount: 2,
     standardMessageCount: 10,
     archivedMessageCount: 40,
-    withRemoteAttachments: 0
+    withRemoteAttachments: 0,
+    pnCount: 1
+  },
+  services: {
+    specialServices: {
+      pn: true
+    }
   }
 });
 
@@ -54,6 +62,7 @@ describe("given the `/messages` endpoint", () => {
 
   afterAll(() => {
     MessagesDB.dropAll();
+    ServicesDB.deleteServices();
   });
 
   describe("when a valid request is sent", () => {
@@ -213,6 +222,7 @@ describe("given the `/messages/:id/message-status` endpoint", () => {
 
   afterAll(() => {
     MessagesDB.dropAll();
+    ServicesDB.deleteServices();
   });
 
   [
@@ -254,6 +264,7 @@ describe("given the `/messages/:id` endpoint", () => {
 
   afterAll(() => {
     MessagesDB.dropAll();
+    ServicesDB.deleteServices();
   });
 
   describe("when public_message is true", () => {
@@ -310,6 +321,23 @@ describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
 
   afterAll(() => {
     MessagesDB.dropAll();
+    ServicesDB.deleteServices();
+  });
+
+  it("should return 200 with the remoted precondition", async () => {
+    const inboxMessages = MessagesDB.findAllInbox();
+    const pnMessage = inboxMessages.find(
+      message => message.sender_service_id === pnServiceId
+    );
+    expect(pnMessage).toBeDefined();
+
+    const pnMessageId = pnMessage!.id;
+    const response = await request.get(
+      `${basePath}/third-party-messages/${pnMessageId}/precondition`
+    );
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("title");
+    expect(response.body).toHaveProperty("markdown");
   });
 
   it("should return 404 if the message is not found", async () => {

@@ -6,7 +6,6 @@ import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -24,11 +23,12 @@ import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
-import { cgnServiceId } from "../../../payloads/services/special";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { servicesPreferences } from "../../service";
+import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
+import ServicesDB from "./../../../persistence/services";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 
 export const cgnRouter = Router();
 
@@ -113,24 +113,29 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
           instance_id: { id },
           status: StatusEnum.COMPLETED
         };
-        const currentPreference = servicesPreferences.get(
-          cgnServiceId as ServiceId
-        );
+        const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
+        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
-        servicesPreferences.set(cgnServiceId as ServiceId, {
+        const updatedPreference = {
           is_inbox_enabled: true,
           is_email_enabled:
-            currentPreference?.is_email_enabled ??
+            servicePreference?.is_email_enabled ??
             getRandomValue(false, faker.datatype.boolean(), "services"),
           is_webhook_enabled: faker.datatype.boolean(),
           can_access_message_read_status:
-            currentPreference?.can_access_message_read_status ??
+            servicePreference?.can_access_message_read_status ??
             getRandomValue(false, faker.datatype.boolean(), "services"),
           settings_version: increasedSettingsVersion
-        });
-
+        } as ServicePreference;
+        const persistedServicePreference = ServicesDB.updatePreference(
+          cgnServiceId,
+          updatedPreference
+        );
+        if (!persistedServicePreference) {
+          res.sendStatus(500);
+          return;
+        }
         return res.status(200).json(response);
       }
     )
@@ -275,19 +280,25 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
           return;
         }
         resetCgn();
-        const currentPreference = servicesPreferences.get(
-          cgnServiceId as ServiceId
-        );
+        const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((currentPreference?.settings_version as number) ??
+        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
           -1) + 1) as NonNegativeInteger;
-        servicesPreferences.set(cgnServiceId as ServiceId, {
+        const updatedPreference = {
           is_inbox_enabled: false,
           is_email_enabled: false,
           is_webhook_enabled: false,
           can_access_message_read_status: false,
           settings_version: increasedSettingsVersion
-        });
+        } as ServicePreference;
+        const persistedServicePreference = ServicesDB.updatePreference(
+          cgnServiceId,
+          updatedPreference
+        );
+        if (!persistedServicePreference) {
+          res.sendStatus(500);
+          return;
+        }
         res.status(201).json({ id: getRandomStringId() });
       }
     )

@@ -23,7 +23,8 @@ import {
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import { services } from "./service";
+import ServicesDB from "./../persistence/services";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 
 export const servicesMetadataRouter = Router();
 
@@ -37,13 +38,14 @@ addHandler(
   "get",
   addRoutePrefix(`/services/:service_id`),
   (req, res) => {
-    const serviceId = req.params.service_id.split(".")[0];
-    const service = services.find(s => s.service_id === serviceId);
+    const serviceId = req.params.service_id.split(".")[0] as ServiceId;
+    const service = ServicesDB.getService(serviceId);
     if (service === undefined || service.service_metadata === undefined) {
       res.sendStatus(404);
       return;
     }
-    res.json(service.service_metadata);
+    const serviceMetadata = service.service_metadata;
+    res.json(serviceMetadata);
   }
 );
 

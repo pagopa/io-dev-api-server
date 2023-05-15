@@ -170,23 +170,6 @@ en:
         action: "ioit://cgn-details/categories-merchant/cultureAndEntertainment"
 ---`;
 
-export const frontMatter1CTASiciliaVola = `---
-it:
-    cta_1: 
-        text: "Generate voucher"
-        action: "ioit://SV_CHECK_STATUS"
-    cta_2: 
-        text: "Voucher List"
-        action: "ioit://SV_VOUCHER_LIST"
-en:
-    cta_1: 
-        text: "Generate voucher"
-        action: "ioit://SV_CHECK_STATUS"
-    cta_2: 
-        text: "Voucher List"
-        action: "ioit://SV_VOUCHER_LIST"
----`;
-
 export const frontMatter1CTAFims = `---
 it:
     cta_1: 
