@@ -2,36 +2,33 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
 import { UpsertServicePreference } from "../../generated/definitions/backend/UpsertServicePreference";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
-import {
-  getServices,
-  getServicesPreferences,
-  getServicesTuple
-} from "../payloads/services";
 import { sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { publicRouter } from "./public";
+import ServicesDB from "./../persistence/services";
+import { validatePayload } from "../utils/validator";
+import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 
 export const serviceRouter = Router();
-
 const configResponse = ioDevServerConfig.services.response;
-export const services = getServices(
-  ioDevServerConfig.services.national,
-  ioDevServerConfig.services.local
-);
-
-export const visibleServices = getServicesTuple(services);
-export const servicesPreferences = getServicesPreferences(services);
 
 addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
   if (configResponse.getServicesResponseCode !== 200) {
     res.sendStatus(configResponse.getServicesResponseCode);
     return;
   }
-  res.json(visibleServices.payload);
+  const serviceSummaries = ServicesDB.getSummaries();
+  const paginatedServiceSummaries = validatePayload(
+    PaginatedServiceTupleCollection,
+    {
+      items: serviceSummaries,
+      page_size: serviceSummaries.length
+    }
+  );
+  res.json(paginatedServiceSummaries);
 });
 
 addHandler(
@@ -43,9 +40,8 @@ addHandler(
       res.sendStatus(configResponse.getServiceResponseCode);
       return;
     }
-    const service = services.find(
-      item => item.service_id === req.params.service_id
-    );
+    const serviceId = req.params.service_id as ServiceId;
+    const service = ServicesDB.getService(serviceId);
     if (service === undefined) {
       res.sendStatus(404);
       return;
@@ -63,9 +59,8 @@ addHandler(
       res.sendStatus(configResponse.getServicesPreference);
       return;
     }
-    const servicePreference = servicesPreferences.get(
-      req.params.service_id as ServiceId
-    );
+    const serviceId = req.params.service_id as ServiceId;
+    const servicePreference = ServicesDB.getPreference(serviceId);
     if (servicePreference === undefined) {
       res.sendStatus(404);
       return;
@@ -90,32 +85,34 @@ addHandler(
     }
     const updatedPreference: ServicePreference = req.body;
 
-    const currentPreference = servicesPreferences.get(
-      req.params.service_id as ServiceId
-    );
-
-    if (currentPreference === undefined) {
+    const serviceId = req.params.service_id as ServiceId;
+    const servicePreference = ServicesDB.getPreference(serviceId);
+    if (servicePreference === undefined) {
       res.sendStatus(404);
       return;
     }
 
     if (
-      currentPreference.settings_version !== updatedPreference.settings_version
+      servicePreference.settings_version !== updatedPreference.settings_version
     ) {
       res.sendStatus(409);
       return;
     }
-    const increasedSettingsVersion = ((currentPreference.settings_version as number) +
+    const increasedSettingsVersion = ((servicePreference.settings_version as number) +
       1) as ServicePreference["settings_version"];
-    const servicePreference = {
+    const updatedServicePreference = {
       ...updatedPreference,
       settings_version: increasedSettingsVersion
-    };
-    servicesPreferences.set(
-      req.params.service_id as ServiceId,
-      servicePreference
+    } as ServicePreference;
+    const persistedServicePreference = ServicesDB.updatePreference(
+      serviceId,
+      updatedServicePreference
     );
-    res.json(servicePreference);
+    if (!persistedServicePreference) {
+      res.sendStatus(500);
+      return;
+    }
+    res.json(persistedServicePreference);
   }
 );
 
@@ -135,9 +132,7 @@ addHandler(
   "get",
   "/services_web_view/local_services",
   (_, res) => {
-    const localServices = services.filter(
-      s => s.service_metadata?.scope === ServiceScopeEnum.LOCAL
-    );
+    const localServices = ServicesDB.getLocalServices();
     res.json(localServices);
   }
 );

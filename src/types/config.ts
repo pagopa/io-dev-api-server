@@ -99,6 +99,37 @@ const responseError = t.interface({
   codes: t.readonlyArray(ErrorCodes)
 });
 
+export const SpecialServicesConfig = t.interface({
+  siciliaVola: t.boolean,
+  cgn: t.boolean,
+  cdc: t.boolean,
+  pn: t.boolean,
+  fci: t.boolean
+});
+
+export const ServicesConfig = t.intersection([
+  t.interface({
+    // configure some API response error code
+    response: t.interface({
+      // 200 success with payload
+      getServicesResponseCode: HttpResponseCode,
+      // 200 success with payload
+      getServiceResponseCode: HttpResponseCode,
+      // 200 success
+      postServicesPreference: HttpResponseCode,
+      // 200 success with payload
+      getServicesPreference: HttpResponseCode
+    }),
+    // number of services national
+    national: t.number,
+    // number of services local
+    local: t.number,
+    // special services on/off
+    specialServices: SpecialServicesConfig
+  }),
+  AllowRandomValue
+]);
+
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
     t.interface({
@@ -190,31 +221,7 @@ export const IoDevServerConfig = t.interface({
       liveMode: LiveModeMessages
     })
   ]),
-  services: t.intersection([
-    t.interface({
-      // configure some API response error code
-      response: t.interface({
-        // 200 success with payload
-        getServicesResponseCode: HttpResponseCode,
-        // 200 success with payload
-        getServiceResponseCode: HttpResponseCode,
-        // 200 success
-        postServicesPreference: HttpResponseCode,
-        // 200 success with payload
-        getServicesPreference: HttpResponseCode
-      }),
-      // number of services national
-      national: t.number,
-      // number of services local
-      local: t.number,
-      includeSiciliaVola: t.boolean,
-      includeCgn: t.boolean,
-      includeCdc: t.boolean,
-      includePn: t.boolean,
-      includeFci: t.boolean
-    }),
-    AllowRandomValue
-  ]),
+  services: ServicesConfig,
   wallet: t.intersection([
     t.interface({
       // if false fixed values will be used
@@ -262,4 +269,5 @@ export const IoDevServerConfig = t.interface({
   ])
 });
 export type AllorRandomValueKeys = keyof IoDevServerConfig;
+export type SpecialServicesConfig = t.TypeOf<typeof SpecialServicesConfig>;
 export type IoDevServerConfig = t.TypeOf<typeof IoDevServerConfig>;
