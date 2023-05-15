@@ -60,14 +60,15 @@ const handleCobadge = (req: Request, res: Response) => {
   }
   const queryAbi: string | undefined =
     typeof req.query.abiCode === "string" ? req.query.abiCode : undefined;
-  const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge
-    .filter(cb =>
-      // filter only the card that match the query abi if it is defined
-      queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
-    )
-    .map<PaymentInstrument>(cb =>
-      fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
-    );
+  const paymentInstruments: ReadonlyArray<PaymentInstrument> =
+    citizenCreditCardCoBadge
+      .filter(cb =>
+        // filter only the card that match the query abi if it is defined
+        queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
+      )
+      .map<PaymentInstrument>(cb =>
+        fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
+      );
   const cobadgeResponse = maybeResponse.right;
   const response = {
     ...cobadgeResponse,
@@ -95,12 +96,11 @@ const handlePrivative = (req: Request, res: Response) => {
     // filter only the card that match the query abi if it is defined
     queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
   );
-  const paymentInstruments: ReadonlyArray<PaymentInstrument> = foundPrivative.map<
-    PaymentInstrument
-  >(cp => ({
-    ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
-    productType: ProductTypeEnum.PRIVATIVE
-  }));
+  const paymentInstruments: ReadonlyArray<PaymentInstrument> =
+    foundPrivative.map<PaymentInstrument>(cp => ({
+      ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
+      productType: ProductTypeEnum.PRIVATIVE
+    }));
   const cobadgeResponse = maybeResponse.right;
   const response = {
     ...cobadgeResponse,
@@ -155,9 +155,10 @@ addHandler(
       res.status(400).send(readableReport(maybeResponse.left));
       return;
     }
-    const paymentInstruments: ReadonlyArray<PaymentInstrument> = citizenCreditCardCoBadge.map<
-      PaymentInstrument
-    >(cb => fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo));
+    const paymentInstruments: ReadonlyArray<PaymentInstrument> =
+      citizenCreditCardCoBadge.map<PaymentInstrument>(cb =>
+        fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
+      );
     const cobadgeResponse = maybeResponse.right;
     const response = {
       ...cobadgeResponse,
@@ -189,8 +190,8 @@ addHandler(
       return;
     }
     // assume the request includes only ONE card
-    const paymentInstrument = maybeData.right.data!.payload!
-      .paymentInstruments![0];
+    const paymentInstrument =
+      maybeData.right.data!.payload!.paymentInstruments![0];
     const cobadge = [...citizenCreditCardCoBadge, ...citizenPrivativeCard].find(
       cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
     );

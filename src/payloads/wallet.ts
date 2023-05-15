@@ -143,18 +143,12 @@ export const getWallets = (count: number = 4): WalletListResponse => {
       pan:
         "************" +
         getRandomValue(
-          faker.datatype
-            .number(9999)
-            .toString()
-            .padStart(4, "0"),
+          faker.datatype.number(9999).toString().padStart(4, "0"),
           creditCardId.toString().padStart(4, "0"),
           "wallet"
         ),
       expireMonth: (expDate.getMonth() + 1).toString().padStart(2, "0"),
-      expireYear: expDate
-        .getFullYear()
-        .toString()
-        .substr(2),
+      expireYear: expDate.getFullYear().toString().substr(2),
       brandLogo: getCreditCardLogo(ccBrand),
       flag3dsVerified: true
     };
@@ -212,8 +206,9 @@ export const getTransactions = (
           faker.finance.transactionDescription(),
           "wallet"
         );
-        const description = `/RFB/${transactionId}/${amount /
-          100}/TXT/${transactionDescription}`;
+        const description = `/RFB/${transactionId}/${
+          amount / 100
+        }/TXT/${transactionDescription}`;
         const delta = 1000 * 60 * 60;
         const now = new Date();
         const created = getRandomValue(

@@ -68,9 +68,8 @@ const createServicePreferences = (
   const servicePreferences = new Map<ServiceId, ServicePreference>();
   servicesSources.forEach(serviceSource => {
     const serviceId = serviceSource.serviceId;
-    const serviceHasCustomPreferenceGenerator = customPreferenceEnabledGenerators.get(
-      serviceId
-    );
+    const serviceHasCustomPreferenceGenerator =
+      customPreferenceEnabledGenerators.get(serviceId);
     const isPreferenceEnabled =
       serviceSource.isSpecialService && serviceHasCustomPreferenceGenerator
         ? serviceHasCustomPreferenceGenerator()
@@ -108,6 +107,7 @@ const createServices = (
 ): ServicePublic[] => {
   const services: ServicePublic[] = [];
   for (
+    // eslint-disable-next-line functional/no-let
     let serviceIndex = serviceStartIndex;
     serviceIndex < serviceStartIndex + count;
     serviceIndex++
@@ -122,7 +122,8 @@ const createServices = (
         11,
         "0"
       ) as OrganizationFiscalCode,
-      organization_name: `${faker.company.name()} [${organizationIndex}]` as OrganizationName,
+      organization_name:
+        `${faker.company.name()} [${organizationIndex}]` as OrganizationName,
       service_metadata: {
         ...createServiceMetadata(scope),
         scope,
@@ -151,7 +152,8 @@ const createService = (serviceId: string): ServicePublic => {
 };
 
 const createServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => ({
-  description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
+  description:
+    "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
   scope,
   address: faker.address.streetAddress() as NonEmptyString,
   email: faker.internet.email() as NonEmptyString,
@@ -171,6 +173,7 @@ const createSpecialServicesInternal = (
   aggregationCount: number
 ): ServicePublic[] => {
   const specialServices: ServicePublic[] = [];
+  // eslint-disable-next-line functional/no-let
   let organizationStartIndex =
     getOrganizationIndex(serviceStartIndex, aggregationCount) +
     (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);

@@ -197,8 +197,9 @@ export const handlePaymentPostAndRedirect = (
   const outcomeParamname = "outcome";
   const secondsToRedirect = 2;
   const redirectUrl = `"${serverUrl}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
-  const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
-    1000});</script>`;
+  const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${
+    secondsToRedirect * 1000
+  });</script>`;
   res.send(
     `<h1>${title}</h1><h1>wait ${secondsToRedirect} seconds to redirect to the exit point</h1><h3>received data</h3>${formData}<br/>${exitRedirect}`
   );

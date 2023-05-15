@@ -10,18 +10,18 @@ import { ioDevServerConfig } from "../config";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
 
-const optInOutputSelector = (reminderStatus: ReminderStatusEnum) => (
-  pushNotificationsContentType: PushNotificationsContentTypeEnum
-) => ({
-  reminder_status: reminderStatus,
-  push_notifications_content_type: pushNotificationsContentType
-});
-const remindersStatusInputSelector: O.Option<ReminderStatusEnum> = O.fromNullable(
-  ioDevServerConfig.profile.attrs.reminder_status
-);
-const pushNotificationContentTypeInputSelector: O.Option<PushNotificationsContentTypeEnum> = O.fromNullable(
-  ioDevServerConfig.profile.attrs.push_notifications_content_type
-);
+const optInOutputSelector =
+  (reminderStatus: ReminderStatusEnum) =>
+  (pushNotificationsContentType: PushNotificationsContentTypeEnum) => ({
+    reminder_status: reminderStatus,
+    push_notifications_content_type: pushNotificationsContentType
+  });
+const remindersStatusInputSelector: O.Option<ReminderStatusEnum> =
+  O.fromNullable(ioDevServerConfig.profile.attrs.reminder_status);
+const pushNotificationContentTypeInputSelector: O.Option<PushNotificationsContentTypeEnum> =
+  O.fromNullable(
+    ioDevServerConfig.profile.attrs.push_notifications_content_type
+  );
 
 type OptInProps = {
   reminder_status?: ReminderStatusEnum;

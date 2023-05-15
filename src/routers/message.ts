@@ -16,12 +16,13 @@ import {
   getThirdPartyMessagePrecondition
 } from "../payloads/message";
 import { addHandler } from "../payloads/response";
-import MessagesDB, { MessageOnDB } from "../persistence/messages";
+import MessagesDB from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
 import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { pnServiceId } from "../payloads/services/special/pn/factoryPn";
 import ServicesDB from "../persistence/services";
+import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -30,7 +31,7 @@ const messageNotFoundError = "message not found";
 
 /* helper function to build messages response */
 const getPublicMessages = (
-  items: ReadonlyArray<MessageOnDB>,
+  items: ReadonlyArray<CreatedMessageWithContentAndEnrichedData>,
   enrichData: boolean,
   withContent: boolean
 ): ReadonlyArray<PublicMessage> =>
@@ -70,6 +71,61 @@ const getPublicMessages = (
     };
   });
 
+const computeGetMessagesQueryIndexes = (
+  params: GetMessagesParameters,
+  orderedList: ReadonlyArray<CreatedMessageWithContentAndEnrichedData>
+) => {
+  const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
+  return match(toMatch)
+    .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
+      const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
+      const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
+      // if indexes are defined and in the expected order
+      if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
+        return {
+          startIndex: startIndex + 1,
+          endIndex,
+          backward: false
+        };
+      }
+    })
+    .with({ maximumId: not(__.nullish) }, () => {
+      const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
+      // index is defined and not at the end of the list
+      if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
+        const pageSize = params.pageSize;
+        if (!pageSize) {
+          throw new Error("Missing parameter 'pageSize' in request");
+        }
+        return {
+          startIndex: startIndex + 1,
+          endIndex: startIndex + 1 + pageSize,
+          backward: false
+        };
+      }
+    })
+    .with({ minimumId: not(__.nullish) }, () => {
+      const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
+      // index found and it isn't the first item (can't go back)
+      if (endIndex > 0) {
+        const pageSize = params.pageSize;
+        if (!pageSize) {
+          throw new Error("Missing parameter 'pageSize' in request");
+        }
+        return {
+          startIndex: Math.max(0, endIndex - (1 + pageSize)),
+          endIndex,
+          backward: true
+        };
+      }
+    })
+    .otherwise(() => ({
+      startIndex: 0,
+      endIndex: params.pageSize as number,
+      backward: false
+    }));
+};
+
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   if (configResponse.getMessagesResponseCode !== 200) {
     res.sendStatus(configResponse.getMessagesResponseCode);
@@ -100,57 +156,24 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
       ? MessagesDB.findAllArchived()
       : MessagesDB.findAllInbox();
 
-  const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
-  const indexes:
+  // eslint-disable-next-line functional/no-let, no-undef-init
+  let indexes:
     | { startIndex: number; endIndex: number; backward: boolean }
-    | undefined = match(toMatch)
-    .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
-      const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
-      const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
-      // if indexes are defined and in the expected order
-      if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
-        return {
-          startIndex: startIndex + 1,
-          endIndex,
-          backward: false
-        };
-      }
-    })
-    .with({ maximumId: not(__.nullish) }, () => {
-      const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
-      // index is defined and not at the end of the list
-      if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
-        return {
-          startIndex: startIndex + 1,
-          endIndex: startIndex + 1 + params.pageSize!,
-          backward: false
-        };
-      }
-    })
-    .with({ minimumId: not(__.nullish) }, () => {
-      const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-      // index found and it isn't the first item (can't go back)
-      if (endIndex > 0) {
-        return {
-          startIndex: Math.max(0, endIndex - (1 + params.pageSize!)),
-          endIndex,
-          backward: true
-        };
-      }
-    })
-    .otherwise(() => ({
-      startIndex: 0,
-      endIndex: params.pageSize as number,
-      backward: false
-    }));
+    | undefined = undefined;
+  try {
+    indexes = computeGetMessagesQueryIndexes(params, orderedList);
+  } catch (e) {
+    return res.sendStatus(400).json(getProblemJson(400, `${e}`));
+  }
 
   // either not enough parameters or out-of-bound
   if (indexes === undefined) {
     return res.json({ items: [] });
   }
 
+  const enrichResultData = params.enrichResultData ?? true;
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
-  const items = getPublicMessages(slice, params.enrichResultData!, false);
+  const items = getPublicMessages(slice, enrichResultData, false);
 
   // the API doesn't return 'next' for previous page
   if (indexes.backward) {
@@ -206,7 +229,7 @@ addHandler(
     if (is_archived === undefined && is_read === undefined) {
       return res.status(400).json(getProblemJson(400, "Invalid payload"));
     }
-    // eslint-disable-next-line: no-let
+    // eslint-disable-next-line functional/no-let
     let result = false;
 
     switch (change_type) {
@@ -338,9 +361,10 @@ addHandler(
       return;
     }
     // find the attachment by the given attachmentId
-    const attachment = thirdPartyMessage.right.third_party_message?.attachments?.find(
-      a => a.id === req.params.attachmentId
-    );
+    const attachment =
+      thirdPartyMessage.right.third_party_message?.attachments?.find(
+        a => a.id === req.params.attachmentId
+      );
     if (attachment === undefined) {
       res.status(404).json(getProblemJson(404, "attachment not found"));
       return;

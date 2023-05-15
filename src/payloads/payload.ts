@@ -74,7 +74,8 @@ export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,
   importoSingoloVersamento: 1 as ImportoEuroCents, // = 1 eurocent
-  codiceContestoPagamento: "03314e90321011eaa22f931313a0ec7c" as CodiceContestoPagamento,
+  codiceContestoPagamento:
+    "03314e90321011eaa22f931313a0ec7c" as CodiceContestoPagamento,
   ibanAccredito: "IT00V0000000000000000000000" as Iban,
   causaleVersamento: "Avviso di prova app IO",
   enteBeneficiario: {
@@ -82,7 +83,8 @@ export const paymentData = {
     denominazioneBeneficiario: responseMerchant
   },
   spezzoniCausaleVersamento: {
-    spezzoneCausaleVersamento: "causale versamento di prova" as SpezzoneStrutturatoCausaleVersamento
+    spezzoneCausaleVersamento:
+      "causale versamento di prova" as SpezzoneStrutturatoCausaleVersamento
   },
   idPagamento: "ca7d9be4-7da1-442d-92c6-d403d7361f65",
   origin: "CITTADINANZA_DIGITALE",
@@ -270,7 +272,8 @@ export const getPaymentRequestsGetResponse = (
   codiceContestoPagamento: faker.random.alphaNumeric(
     32
   ) as PaymentRequestsGetResponse["codiceContestoPagamento"],
-  ibanAccredito: faker.finance.iban() as PaymentRequestsGetResponse["ibanAccredito"],
+  ibanAccredito:
+    faker.finance.iban() as PaymentRequestsGetResponse["ibanAccredito"],
   causaleVersamento: faker.finance.transactionDescription(),
   enteBeneficiario: {
     identificativoUnivocoBeneficiario: senderService.organization_fiscal_code,
@@ -283,22 +286,24 @@ export const getPaymentRequestsGetResponse = (
   ]
 });
 
-export const getPaymentActivationsPostResponse = (): PaymentActivationsPostResponse => {
-  const data: PaymentActivationsPostResponse = {
-    importoSingoloVersamento: paymentData.importoSingoloVersamento,
-    ibanAccredito: paymentData.ibanAccredito,
-    causaleVersamento: paymentData.causaleVersamento,
-    enteBeneficiario: paymentData.enteBeneficiario
+export const getPaymentActivationsPostResponse =
+  (): PaymentActivationsPostResponse => {
+    const data: PaymentActivationsPostResponse = {
+      importoSingoloVersamento: paymentData.importoSingoloVersamento,
+      ibanAccredito: paymentData.ibanAccredito,
+      causaleVersamento: paymentData.causaleVersamento,
+      enteBeneficiario: paymentData.enteBeneficiario
+    };
+    return validatePayload(PaymentActivationsPostResponse, data);
   };
-  return validatePayload(PaymentActivationsPostResponse, data);
-};
 
-export const getPaymentActivationsGetResponse = (): PaymentActivationsGetResponse => {
-  const data = {
-    idPagamento: paymentData.idPagamento
+export const getPaymentActivationsGetResponse =
+  (): PaymentActivationsGetResponse => {
+    const data = {
+      idPagamento: paymentData.idPagamento
+    };
+    return validatePayload(PaymentActivationsGetResponse, data);
   };
-  return validatePayload(PaymentActivationsGetResponse, data);
-};
 
 export const getPaymentResponse = (): PaymentResponse => {
   const payment: Payment = {

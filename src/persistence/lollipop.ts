@@ -11,7 +11,8 @@ export function getAssertionRef() {
 }
 
 export function setAssertionRef(key: string | undefined) {
-  lollipopAssertionRef = `${DEFAULT_LOLLIPOP_HASH_ALGORITHM}-${key}` as AssertionRef;
+  lollipopAssertionRef =
+    `${DEFAULT_LOLLIPOP_HASH_ALGORITHM}-${key}` as AssertionRef;
 }
 
 export function getPublicKey() {

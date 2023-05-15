@@ -20,8 +20,7 @@ import {
 // Android RSA Public Key
 const rsaPublicKeyJwk = {
   e: "AQAB",
-  n:
-    "AOGUlxpUt6Cq4AuTg+XSWKs7JJepRhNvD/kNwK2jXnSxIcFGAFLj2A/t+tPltMgB6LKrkFXfbl6fBSxsy90R922il61e/mtpxiCEPg/Go4NPYNbXSopPYRdbGdidn8ai5itQn4h3Zx++p8aE4YM9JbqZN0CetBL27PHk9H6XpkpxW8W0Dn62o1gXsNbD5s6YSUb0+qeREuWuKxS/xf2D+9ujh/DEb2n7WpbChFOvyk0Ui2zjxo57ZXnKe/h7qGcbH3c4K7Z1jqdGqZ9Cor6a2Hcl7Kt6CP7jdpW3j2FE+av4XOigGg3IJK57XW6HsbcU+Vm0mydHGDYBPSXB8+MaFB8=",
+  n: "AOGUlxpUt6Cq4AuTg+XSWKs7JJepRhNvD/kNwK2jXnSxIcFGAFLj2A/t+tPltMgB6LKrkFXfbl6fBSxsy90R922il61e/mtpxiCEPg/Go4NPYNbXSopPYRdbGdidn8ai5itQn4h3Zx++p8aE4YM9JbqZN0CetBL27PHk9H6XpkpxW8W0Dn62o1gXsNbD5s6YSUb0+qeREuWuKxS/xf2D+9ujh/DEb2n7WpbChFOvyk0Ui2zjxo57ZXnKe/h7qGcbH3c4K7Z1jqdGqZ9Cor6a2Hcl7Kt6CP7jdpW3j2FE+av4XOigGg3IJK57XW6HsbcU+Vm0mydHGDYBPSXB8+MaFB8=",
   alg: "RS256",
   kty: "RSA"
 };
@@ -168,9 +167,8 @@ describe("Test the signature algorithms", () => {
 
 const MOCK_VERIFY_SIGNATURE_HEADER_OPTIONS: VerifySignatureHeaderOptions = {
   verifier: {
-    verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
-      rsaPublicKeyJwk
-    )
+    verify:
+      signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(rsaPublicKeyJwk)
   },
   url: "http://127.0.0.1:3000",
   method: "GET",

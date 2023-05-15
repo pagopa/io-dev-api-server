@@ -1,13 +1,9 @@
 import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 
-type MessageFromBE = CreatedMessageWithContentAndEnrichedData;
-
-export type MessageOnDB = MessageFromBE;
-
-// eslint-disable-next-line: readonly-array no-let
-let inboxMessages: MessageOnDB[] = [];
-// eslint-disable-next-line: readonly-array no-let
-let archivedMessages: MessageOnDB[] = [];
+// eslint-disable-next-line functional/no-let
+let inboxMessages: CreatedMessageWithContentAndEnrichedData[] = [];
+// eslint-disable-next-line functional/no-let
+let archivedMessages: CreatedMessageWithContentAndEnrichedData[] = [];
 
 /**
  * Move the message with ID to the archived collection.
@@ -50,24 +46,26 @@ function unarchive(id: string): boolean {
  * be added.
  */
 // eslint-disable-next-line: readonly-array no-let
-function persist(messages: MessageFromBE[]): void {
+function persist(messages: CreatedMessageWithContentAndEnrichedData[]): void {
   inboxMessages = inboxMessages
     .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
-function findAllInbox(): ReadonlyArray<MessageOnDB> {
+function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndEnrichedData> {
   return inboxMessages;
 }
 
-function findAllArchived(): ReadonlyArray<MessageOnDB> {
+function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndEnrichedData> {
   return archivedMessages;
 }
 
 /**
  * Find one message given its ID, whether it is in the inbox or archived.
  */
-function findOneById(id: string): MessageOnDB | null {
+function findOneById(
+  id: string
+): CreatedMessageWithContentAndEnrichedData | null {
   return (
     inboxMessages.find(message => message.id === id) ||
     archivedMessages.find(message => message.id === id) ||

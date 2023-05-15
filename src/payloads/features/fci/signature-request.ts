@@ -22,7 +22,8 @@ export const DOSSIER_ID = ulid() as NonEmptyString;
 export const SIGNATURE_ID = ulid() as NonEmptyString;
 
 const now = new Date();
-const mockQrCodeUrl = "https://gist.githubusercontent.com/lucacavallaro/a3b9d5305cc6e2c9bdfb6ec1dc28fd96/raw/26799f357ff712396cdbc4f862a13099758e89d3/qr-code.png" as NonEmptyString;
+const mockQrCodeUrl =
+  "https://gist.githubusercontent.com/lucacavallaro/a3b9d5305cc6e2c9bdfb6ec1dc28fd96/raw/26799f357ff712396cdbc4f862a13099758e89d3/qr-code.png" as NonEmptyString;
 const basePath = serverUrl;
 export const documents: ReadonlyArray<DocumentDetailView> = [
   {
@@ -38,7 +39,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             unique_name: "Signature1" as NonEmptyString
           },
           clause: {
-            title: "CLAUSOLA 1 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 1 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.REQUIRED
           }
         },
@@ -47,7 +49,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             unique_name: "Signature2" as NonEmptyString
           },
           clause: {
-            title: "CLAUSOLA 2 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 2 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.UNFAIR
           }
         },
@@ -56,7 +59,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             unique_name: "Signature3" as NonEmptyString
           },
           clause: {
-            title: "CLAUSOLA 3 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 3 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.OPTIONAL
           }
         },
@@ -65,7 +69,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             unique_name: "Signature4" as NonEmptyString
           },
           clause: {
-            title: "CLAUSOLA 4 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 4 DOC 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.OPTIONAL
           }
         }
@@ -85,7 +90,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             unique_name: "Signature1" as NonEmptyString
           },
           clause: {
-            title: "CLAUSOLA 1 DOC 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 1 DOC 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.REQUIRED
           }
         },
@@ -103,7 +109,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             unique_name: "Signature3" as NonEmptyString
           },
           clause: {
-            title: "CLAUSOLA 3 DOC 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 3 DOC 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.OPTIONAL
           }
         }
@@ -158,7 +165,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
-            title: "CLAUSOLA 4 DOC 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 4 DOC 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.UNFAIR
           }
         },
@@ -169,7 +177,8 @@ export const documents: ReadonlyArray<DocumentDetailView> = [
             page: 0
           } as SignatureFieldToBeCreatedAttrs,
           clause: {
-            title: "CLAUSOLA 5 DOC 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
+            title:
+              "CLAUSOLA 5 DOC 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta tortor a mattis eleifend." as NonEmptyString,
             type: ClausesTypeEnum.OPTIONAL
           }
         },

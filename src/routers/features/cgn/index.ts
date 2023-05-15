@@ -115,8 +115,9 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
         };
         const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
-          -1) + 1) as NonNegativeInteger;
+        const increasedSettingsVersion =
+          (((servicePreference?.settings_version as number) ?? -1) +
+            1) as NonNegativeInteger;
         const updatedPreference = {
           is_inbox_enabled: true,
           is_email_enabled:
@@ -282,8 +283,9 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
         resetCgn();
         const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
-          -1) + 1) as NonNegativeInteger;
+        const increasedSettingsVersion =
+          (((servicePreference?.settings_version as number) ?? -1) +
+            1) as NonNegativeInteger;
         const updatedPreference = {
           is_inbox_enabled: false,
           is_email_enabled: false,

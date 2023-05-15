@@ -58,21 +58,17 @@ addHandler(
         },
         value => {
           // eslint-disable-next-line:no-let
-          let bonusStatusByYear: Record<
-            Anno,
-            StatoBeneficiario
-          > = bonusAll.listaStatoPerAnno.reduce<
-            Record<Anno, StatoBeneficiario>
-          >(
-            (
-              acc: Record<Anno, StatoBeneficiario>,
-              curr: StatoBeneficiarioPerAnno
-            ) => ({
-              ...acc,
-              [curr.annoRiferimento]: curr.statoBeneficiario
-            }),
-            {}
-          );
+          let bonusStatusByYear: Record<Anno, StatoBeneficiario> =
+            bonusAll.listaStatoPerAnno.reduce<Record<Anno, StatoBeneficiario>>(
+              (
+                acc: Record<Anno, StatoBeneficiario>,
+                curr: StatoBeneficiarioPerAnno
+              ) => ({
+                ...acc,
+                [curr.annoRiferimento]: curr.statoBeneficiario
+              }),
+              {}
+            );
           const anniRiferimento = value.anniRif;
           const listaEsitoRichiestaPerAnno: ListaEsitoRichiestaPerAnno = {
             listaEsitoRichiestaPerAnno: anniRiferimento.map(y =>

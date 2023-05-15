@@ -21,6 +21,9 @@ jobs:
           name: Generate models
           command: yarn generate
       - run:
+          name: Prettier Check
+          command: yarn prettier:check
+      - run:
           name: Run compilation
           command: yarn tsc:noemit
       - run:

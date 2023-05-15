@@ -272,14 +272,14 @@ export const generateWalletV2FromCard = (
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format
-    createDate: (format(ed, dateFormat) as any) as Date,
+    createDate: format(ed, dateFormat) as any as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canMethodPay,
-    updateDate: (format(new Date(), dateFormat) as any) as Date
+    updateDate: format(new Date(), dateFormat) as any as Date
   };
 };
 
@@ -314,14 +314,14 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format
-    createDate: (format(ed, dateFormat) as any) as Date,
+    createDate: format(ed, dateFormat) as any as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canPay,
-    updateDate: (format(new Date(), dateFormat) as any) as Date
+    updateDate: format(new Date(), dateFormat) as any as Date
   };
 };
 
@@ -337,14 +337,14 @@ export const generateWalletV2FromPaypal = (
   return {
     walletType: WalletTypeEnum.PayPal,
     // force createDate to be a string because we need to force a specific date format
-    createDate: (format(ed, dateFormat) as any) as Date,
+    createDate: format(ed, dateFormat) as any as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: enableableFunctions.includes(EnableableFunctionsEnum.pagoPA),
-    updateDate: (format(new Date(), dateFormat) as any) as Date
+    updateDate: format(new Date(), dateFormat) as any as Date
   };
 };
 

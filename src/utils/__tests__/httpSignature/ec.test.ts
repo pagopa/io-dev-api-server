@@ -164,9 +164,8 @@ describe("Test the signature algorithms", () => {
 
 const MOCK_VERIFY_SIGNATURE_HEADER_OPTIONS: VerifySignatureHeaderOptions = {
   verifier: {
-    verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
-      ecPublicKeyJwk
-    )
+    verify:
+      signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(ecPublicKeyJwk)
   },
   url: "http://127.0.0.1:3000",
   method: "GET",

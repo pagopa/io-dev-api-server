@@ -98,8 +98,9 @@ addHandler(
       res.sendStatus(409);
       return;
     }
-    const increasedSettingsVersion = ((servicePreference.settings_version as number) +
-      1) as ServicePreference["settings_version"];
+    const increasedSettingsVersion =
+      ((servicePreference.settings_version as number) +
+        1) as ServicePreference["settings_version"];
     const updatedServicePreference = {
       ...updatedPreference,
       settings_version: increasedSettingsVersion

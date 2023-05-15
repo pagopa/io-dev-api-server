@@ -37,7 +37,7 @@ import { currentProfile } from "./profile";
 import ServicesDB from "./../persistence/services";
 import { pnServiceId } from "./services/special/pn/factoryPn";
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
 
 /**
@@ -266,7 +266,12 @@ export const getCategory = (
 ): MessageCategory => {
   const { eu_covid_cert, payment_data } = message.content;
   const serviceId = message.sender_service_id;
-  const senderService = ServicesDB.getService(serviceId)!;
+  const senderService = ServicesDB.getService(serviceId);
+  if (!senderService) {
+    throw Error(
+      `message.getCategory: unabled to find service with id (${serviceId})`
+    );
+  }
   if (
     ThirdPartyMessageWithContent.is(message) &&
     senderService.service_id === pnServiceId
@@ -379,8 +384,9 @@ export const getRemoteAttachments = (
   return thirdPartyAttachmentFromAbsolutePathArray(slicedRemoteAttachmentFiles);
 };
 
-export const getThirdPartyMessagePrecondition = (): ThirdPartyMessagePrecondition =>
-  validatePayload(ThirdPartyMessagePrecondition, {
-    title: "Questo messaggio contiene una comunicazione a valore legale",
-    markdown: thirdPartyMessagePreconditionMarkdown
-  });
+export const getThirdPartyMessagePrecondition =
+  (): ThirdPartyMessagePrecondition =>
+    validatePayload(ThirdPartyMessagePrecondition, {
+      title: "Questo messaggio contiene una comunicazione a valore legale",
+      markdown: thirdPartyMessagePreconditionMarkdown
+    });

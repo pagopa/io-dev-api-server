@@ -126,16 +126,18 @@ export const isSignAlgorithmValid = (
     )
   );
 
-export const signatureVerifier = (publicKey: JsonWebKey) => async (
-  _: { keyid: string; alg: AlgorithmTypes },
-  data: Uint8Array,
-  signature: Uint8Array
-): Promise<boolean> =>
-  await verifyCustomContentChallenge(
-    Buffer.from(data).toString("utf-8"),
-    Buffer.from(signature).toString("base64"),
-    publicKey as jose.JWK
-  )();
+export const signatureVerifier =
+  (publicKey: JsonWebKey) =>
+  async (
+    _: { keyid: string; alg: AlgorithmTypes },
+    data: Uint8Array,
+    signature: Uint8Array
+  ): Promise<boolean> =>
+    await verifyCustomContentChallenge(
+      Buffer.from(data).toString("utf-8"),
+      Buffer.from(signature).toString("base64"),
+      publicKey as jose.JWK
+    )();
 
 type VerifyFunctionWrapper = (privateKey: JsonWebKey) => VerifyFunction;
 
