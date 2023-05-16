@@ -3,20 +3,18 @@ import { pipe } from "fp-ts/lib/function";
 import {
   StatusEnum as InitiativeStatusEnum,
   InitiativesStatusDTO
-} from "../../../../../generated/definitions/idpay/InitiativesStatusDTO";
-import { InitiativesWithInstrumentDTO } from "../../../../../generated/definitions/idpay/InitiativesWithInstrumentDTO";
-import { CardInfo } from "../../../../../generated/definitions/pagopa/walletv2/CardInfo";
-import { getWalletV2 } from "../../../../routers/walletsV2";
-import { getInstruments } from "./data";
-import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { getInitiatives } from "../wallet/data";
+} from "../../../../generated/definitions/idpay/InitiativesStatusDTO";
+import { InitiativesWithInstrumentDTO } from "../../../../generated/definitions/idpay/InitiativesWithInstrumentDTO";
+import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
+import { getWalletV2 } from "../../../routers/walletsV2";
+import { WalletV2 } from "../../../../generated/definitions/pagopa/WalletV2";
+
+import { instruments, initiatives } from "../../../persistence/idpay";
 
 const initiativesByWalletId = (
   idWallet: string
 ): ReadonlyArray<InitiativesStatusDTO> => {
   const result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
-  const instruments = getInstruments();
-  const initiatives = getInitiatives();
 
   Object.entries(instruments).forEach(([id, instruments]) => {
     instruments.forEach(instrument => {

@@ -1,7 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { getIbanResponse } from "../../../payloads/features/idpay/iban/get-iban";
-import { getIbanListResponse } from "../../../payloads/features/idpay/iban/get-iban-list";
+import { getIbanResponse } from "../../../payloads/features/idpay/get-iban";
+import { getIbanListResponse } from "../../../payloads/features/idpay/get-iban-list";
 import { addIdPayHandler } from "./router";
 
 addIdPayHandler("get", "/iban", (_, res) =>

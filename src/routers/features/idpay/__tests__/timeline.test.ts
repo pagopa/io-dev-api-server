@@ -1,12 +1,14 @@
 import supertest from "supertest";
-import { getInitiatives } from "../../../../payloads/features/idpay/wallet/data";
+import {
+  initiatives as idPayInitiatives,
+  initiativeTimeline
+} from "../../../../persistence/idpay";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
-import { getInitiativeTimeline } from "../../../../payloads/features/idpay/timeline/data";
 
 const request = supertest(app);
 
-const initiatives = Object.values(getInitiatives());
+const initiatives = Object.values(idPayInitiatives);
 
 describe("IDPay Timeline API", () => {
   describe("GET getTimeline", () => {
@@ -23,7 +25,7 @@ describe("IDPay Timeline API", () => {
     it("should return 200 with correct pagination info", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
-      const timeline = getInitiativeTimeline(initiativeId) || [];
+      const timeline = initiativeTimeline[initiativeId] || [];
 
       const operationSize = timeline.length;
 
@@ -54,7 +56,7 @@ describe("IDPay Timeline API", () => {
     it("should return 200 with operation details", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
-      const timeline = getInitiativeTimeline(initiativeId) || [];
+      const timeline = initiativeTimeline[initiativeId] || [];
 
       const operationId = timeline[0].operationId;
 

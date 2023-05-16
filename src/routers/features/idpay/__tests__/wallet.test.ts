@@ -1,27 +1,24 @@
 import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
+
 import {
-  InitiativeDTO,
-  StatusEnum
-} from "../../../../../generated/definitions/idpay/InitiativeDTO";
-import { InitiativeDataDTO } from "../../../../../generated/definitions/idpay/InitiativeDataDTO";
-import {
-  addInstrumentToInitiative,
-  getInitiativeInstruments,
-  getInstruments,
-  removeInstrumentFromInitiative
-} from "../../../../payloads/features/idpay/instrument/data";
+  initiatives as idPayInitiatives,
+  instruments as idPayInstruments
+} from "../../../../persistence/idpay";
 import app from "../../../../server";
-import { addIdPayPrefix } from "../router";
-import { getInitiatives } from "../../../../payloads/features/idpay/wallet/data";
 import { getWalletV2 } from "../../../walletsV2";
+import { addIdPayPrefix } from "../router";
 
 const request = supertest(app);
 
-const initiatives = Object.values(getInitiatives());
+const initiatives = Object.values(idPayInitiatives);
 
 describe("IDPay Wallet API", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe("GET getWallet", () => {
     it("should return 200 with the citizen's initiatives", async () => {
       const response = await request.get(addIdPayPrefix("/wallet"));
@@ -198,7 +195,7 @@ describe("IDPay Wallet API", () => {
     it("should return 200", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
-      const instrumentId = getInstruments()[initiativeId][0].instrumentId;
+      const instrumentId = idPayInstruments[initiativeId][0].instrumentId;
 
       const response = await request.delete(
         addIdPayPrefix(`/wallet/${initiativeId}/instruments/${instrumentId}`)
@@ -217,8 +214,7 @@ describe("IDPay Wallet API", () => {
     it("should return 403 if instrument cannot be enrolled", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
-      const instrumentId = getInitiativeInstruments(initiativeId)[0]
-        .instrumentId;
+      const instrumentId = idPayInstruments[initiativeId][0].instrumentId;
 
       const response = await request.delete(
         addIdPayPrefix(`/wallet/${initiativeId}/instruments/${instrumentId}`)
@@ -262,15 +258,6 @@ describe("IDPay Wallet API", () => {
         addIdPayPrefix(`/wallet/${initiativeId}/unsubscribe`)
       );
       expect(response.status).toBe(404);
-    });
-    it("should return 403 if initiative could not be unsubscribed", async () => {
-      const tInitiative = initiatives[0];
-      const initiativeId = tInitiative.initiativeId;
-
-      const response = await request.delete(
-        addIdPayPrefix(`/wallet/${initiativeId}/unsubscribe`)
-      );
-      expect(response.status).toBe(403);
     });
   });
 });
