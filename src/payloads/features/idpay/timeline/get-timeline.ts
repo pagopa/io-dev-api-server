@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
 import { TimelineDTO } from "../../../../../generated/definitions/idpay/TimelineDTO";
-import { initiativeTimeline } from "./data";
+import { getInitiativeTimeline } from "./data";
 import { pipe } from "fp-ts/lib/function";
 
 export const getTimelineResponse = (
@@ -11,7 +11,7 @@ export const getTimelineResponse = (
   pageSize: number = 3
 ): O.Option<TimelineDTO> =>
   pipe(
-    initiativeTimeline[initiativeId],
+    getInitiativeTimeline(initiativeId),
     O.fromNullable,
     O.map(timeline => {
       const totalElements = timeline.length;

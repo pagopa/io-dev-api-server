@@ -11,12 +11,12 @@ import {
   IDPayInitiativeID,
   IDPayServiceID
 } from "../../../../payloads/features/idpay/onboarding/types";
+import { OnboardingPutDTO } from "../../../../../generated/definitions/idpay/OnboardingPutDTO";
+import { RequiredCriteriaDTO } from "../../../../../generated/definitions/idpay/RequiredCriteriaDTO";
 import {
   initiativeIdToString,
   serviceIdToString
-} from "../../../../payloads/features/idpay/utils";
-import { OnboardingPutDTO } from "../../../../../generated/definitions/idpay/OnboardingPutDTO";
-import { RequiredCriteriaDTO } from "../../../../../generated/definitions/idpay/RequiredCriteriaDTO";
+} from "../../../../payloads/features/idpay/onboarding/utils";
 
 const request = supertest(app);
 

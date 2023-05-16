@@ -2,7 +2,9 @@ import { faker } from "@faker-js/faker/locale/it";
 import { IbanDTO } from "../../../../../generated/definitions/idpay/IbanDTO";
 import { ioDevServerConfig } from "../../../../config";
 
-const createRandomIbanDTO = (): IbanDTO => ({
+const idPayConfig = ioDevServerConfig.features.idpay;
+
+const generateRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban(false, "IT"),
   checkIbanStatus: faker.datatype.string(),
   holderBank: faker.company.name(),
@@ -11,14 +13,14 @@ const createRandomIbanDTO = (): IbanDTO => ({
 });
 
 let ibanList: ReadonlyArray<IbanDTO> = Array.from(
-  { length: ioDevServerConfig.features.idpay.ibanSize },
-  () => createRandomIbanDTO()
+  { length: idPayConfig.ibanSize },
+  () => generateRandomIbanDTO()
 );
 
-const storeIban = (iban: string, description: string) => {
+export const getIbanList = () => ibanList;
+
+export const storeIban = (iban: string, description: string) => {
   if (!ibanList.some(i => i.iban === iban)) {
-    ibanList = [...ibanList, { ...createRandomIbanDTO(), iban, description }];
+    ibanList = [...ibanList, { ...generateRandomIbanDTO(), iban, description }];
   }
 };
-
-export { ibanList, storeIban };

@@ -7,13 +7,18 @@ import {
 import { InitiativesWithInstrumentDTO } from "../../../../../generated/definitions/idpay/InitiativesWithInstrumentDTO";
 import { CardInfo } from "../../../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { getWalletV2 } from "../../../../routers/walletsV2";
-import { initiativesInstrumentList } from "./data";
-import { initiatives } from "../wallet/data";
+import { getInstruments } from "./data";
+import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
+import { getInitiatives } from "../wallet/data";
 
-const initiativesByWalletId = (idWallet: string) => {
+const initiativesByWalletId = (
+  idWallet: string
+): ReadonlyArray<InitiativesStatusDTO> => {
   const result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
+  const instruments = getInstruments();
+  const initiatives = getInitiatives();
 
-  Object.entries(initiativesInstrumentList).forEach(([id, instruments]) => {
+  Object.entries(instruments).forEach(([id, instruments]) => {
     const initiativeId = parseInt(id);
 
     instruments.forEach(instrument => {
@@ -38,6 +43,9 @@ const initiativesByWalletId = (idWallet: string) => {
   return result[idWallet] || [];
 };
 
+const getWalletById = (id: number): O.Option<WalletV2> =>
+  O.fromNullable(getWalletV2().find(w => w.idWallet === id));
+
 export const getInitiativeWithInstrumentResponse = (
   idWallet: string
 ): O.Option<InitiativesWithInstrumentDTO> =>
@@ -45,7 +53,7 @@ export const getInitiativeWithInstrumentResponse = (
     idWallet,
     O.some,
     O.map(parseInt),
-    O.chain(id => O.fromNullable(getWalletV2().find(w => w.idWallet === id))),
+    O.chain(getWalletById),
     O.chain(wallet =>
       pipe(
         idWallet,

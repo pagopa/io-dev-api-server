@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker/locale/it";
+import { range } from "lodash";
 import { ulid } from "ulid";
 import { AccumulatedTypeEnum } from "../../../../../generated/definitions/idpay/AccumulatedAmountDTO";
 import {
@@ -6,30 +7,26 @@ import {
   StatusEnum as InitiativeStatus
 } from "../../../../../generated/definitions/idpay/InitiativeDTO";
 import { InitiativeDetailDTO } from "../../../../../generated/definitions/idpay/InitiativeDetailDTO";
-import {
-  InstrumentDTO,
-  StatusEnum as InstrumentStatus
-} from "../../../../../generated/definitions/idpay/InstrumentDTO";
-import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
-import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
-import { ibanList } from "../iban/data";
-import { getRandomEnumValue } from "../../../utils/random";
 import { RewardValueTypeEnum } from "../../../../../generated/definitions/idpay/RewardValueDTO";
+import { TimeTypeEnum } from "../../../../../generated/definitions/idpay/TimeParameterDTO";
 import { ioDevServerConfig } from "../../../../config";
-import { range } from "lodash";
-import { enrollInstrument } from "../instrument/data";
 import { getWalletV2 } from "../../../../routers/walletsV2";
+import { getRandomEnumValue } from "../../../utils/random";
+import { addInstrumentToInitiative } from "../instrument/data";
 import { generateInitiativeTimeline } from "../timeline/data";
+import { getIbanList } from "../iban/data";
 
 const config = ioDevServerConfig.wallet.idPay;
 
-export let initiatives: { [id: string]: InitiativeDTO } = {};
-export let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
+let initiatives: { [id: string]: InitiativeDTO } = {};
+let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
 
 const generateRandomInitiativeDTO = (): InitiativeDTO => {
   const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
   const accrued = faker.datatype.number({ max: 200, precision: 10 });
   const refunded = faker.datatype.number({ max: accrued, precision: 10 });
+
+  const ibanList = getIbanList();
 
   return {
     initiativeId: ulid(),
@@ -93,7 +90,7 @@ range(0, config.configuredCount).forEach(() => {
 
   const pagoPaWallet = getWalletV2();
   if (pagoPaWallet.length > 0) {
-    enrollInstrument(initiativeId, getWalletV2()[0]);
+    addInstrumentToInitiative(initiativeId, getWalletV2()[0]);
   }
 });
 
@@ -146,7 +143,7 @@ range(0, config.unsubscribedCount).forEach(() => {
 
   const pagoPaWallet = getWalletV2();
   if (pagoPaWallet.length > 0) {
-    enrollInstrument(initiativeId, getWalletV2()[0]);
+    addInstrumentToInitiative(initiativeId, getWalletV2()[0]);
   }
 });
 
@@ -174,9 +171,18 @@ range(0, config.suspendedCount).forEach(() => {
 
   const pagoPaWallet = getWalletV2();
   if (pagoPaWallet.length > 0) {
-    enrollInstrument(initiativeId, getWalletV2()[0]);
+    addInstrumentToInitiative(initiativeId, getWalletV2()[0]);
   }
 });
+
+export const getInitiatives = () => Object.values(initiatives);
+
+export const getInitiative = (id: string): InitiativeDTO | undefined =>
+  initiatives[id];
+
+export const getInitiativeDetails = (
+  id: string
+): InitiativeDetailDTO | undefined => initiativesDetails[id];
 
 export const addIbanToInitiative = (id: string, iban: string) => {
   initiatives[id] = { ...initiatives[id], iban };

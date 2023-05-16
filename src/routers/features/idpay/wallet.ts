@@ -226,6 +226,7 @@ addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
+    O.chain(initiativeIdExists),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
       initiativeId => {

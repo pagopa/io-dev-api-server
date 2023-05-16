@@ -33,8 +33,8 @@ import {
 import { CardInfo } from "../../../../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../../../../generated/definitions/pagopa/WalletV2";
 import { getWalletV2 } from "../../../../routers/walletsV2";
-import { ibanList } from "../iban/data";
 import { RefundDetailDTO } from "../../../../../generated/definitions/idpay/RefundDetailDTO";
+import { getIbanList } from "../iban/data";
 
 const wallet: WalletV2 = getWalletV2()[0];
 const walletInfo: CardInfo = wallet.info as CardInfo;
@@ -131,12 +131,14 @@ const rejectedAddInstrument: RejectedInstrumentOperationDTO = {
   maskedPan: walletInfo.blurredNumber || "0000"
 };
 
+const ibanList = getIbanList();
+
 const addIban: IbanOperationDTO = {
   operationType: IbanOperationEnum.ADD_IBAN,
   operationDate: new Date(),
   operationId: ulid(),
   channel: "",
-  iban: ibanList[0]?.iban || ""
+  iban: faker.helpers.arrayElement(ibanList)?.iban || ""
 };
 
 const deleteInstrument: InstrumentOperationDTO = {
@@ -165,13 +167,23 @@ const onboarding: OnboardingOperationDTO = {
   operationId: ulid()
 };
 
-export let initiativeTimeline: {
+let initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
 } = {};
 
-export let initiativeTimelineDetails: {
+let initiativeTimelineDetails: {
   [initiativeId: string]: ReadonlyArray<OperationDTO>;
 } = {};
+
+export const getInitiativeTimeline = (
+  initiativeId: string
+): ReadonlyArray<OperationListDTO> | undefined =>
+  initiativeTimeline[initiativeId];
+
+export const getInitiativeTimelineDetails = (
+  initiativeId: string
+): ReadonlyArray<OperationDTO> | undefined =>
+  initiativeTimelineDetails[initiativeId];
 
 export const generateInitiativeTimeline = (
   initiativeId: string,

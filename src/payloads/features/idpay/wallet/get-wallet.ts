@@ -1,6 +1,6 @@
 import { WalletDTO } from "../../../../../generated/definitions/idpay/WalletDTO";
-import { initiatives } from "./data";
+import { getInitiatives } from "./data";
 
 export const getWalletResponse = (): WalletDTO => ({
-  initiativeList: Object.values(initiatives)
+  initiativeList: getInitiatives()
 });
