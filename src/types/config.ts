@@ -226,10 +226,12 @@ export const IoDevServerConfig = t.interface({
       shuffleAbi: t.boolean,
       // IDPay initiatives in wallet
       idPay: t.interface({
-        configuredCount: t.number,
-        notConfiguredCount: t.number,
-        suspendedCount: t.number,
-        unsubscribedCount: t.number
+        refundConfiguredCount: t.number,
+        refundNotConfiguredCount: t.number,
+        refundSuspendedCount: t.number,
+        refundUnsubscribedCount: t.number,
+        discountCount: t.number,
+        discountEmptyCount: t.number
       })
     }),
     t.partial({
