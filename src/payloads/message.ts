@@ -24,7 +24,6 @@ import { PrescriptionData } from "../../generated/definitions/backend/Prescripti
 import { ThirdPartyAttachment } from "../../generated/definitions/backend/ThirdPartyAttachment";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../config";
-import { services } from "../routers/service";
 import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
@@ -33,9 +32,10 @@ import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { currentProfile } from "./profile";
-import { pnServiceId } from "./services/special";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import ServicesDB from "./../persistence/services";
+import { pnServiceId } from "./services/special/pn/factoryPn";
 
 // tslint:disable-next-line: no-let
 let messageIdIndex = 0;
@@ -179,7 +179,6 @@ export const withPNContent = (
       ]
     }
   ];
-
   return {
     ...message,
     third_party_message: {
@@ -225,20 +224,20 @@ export const withPaymentData = (
   ),
   amount: number = getRandomIntInRange(1, 10000)
 ): CreatedMessageWithContent => {
+  const serviceId = message.sender_service_id;
+  const service = ServicesDB.getService(serviceId);
   const data: PaymentDataWithRequiredPayee = {
     notice_number: noticeNumber as PaymentNoticeNumber,
     amount: amount as PaymentAmount,
     invalid_after_due_date: invalidAfterDueDate,
     payee: {
-      fiscal_code: services.find(
-        s => s.service_id === message.sender_service_id
-      )?.organization_fiscal_code!
+      fiscal_code: service?.organization_fiscal_code!
     }
   };
-  const paymementData = validatePayload(PaymentDataWithRequiredPayee, data);
+  const paymentData = validatePayload(PaymentDataWithRequiredPayee, data);
   return {
     ...message,
-    content: { ...message.content, payment_data: paymementData }
+    content: { ...message.content, payment_data: paymentData }
   };
 };
 
@@ -262,9 +261,8 @@ export const getCategory = (
   message: CreatedMessageWithContent
 ): MessageCategory => {
   const { eu_covid_cert, payment_data } = message.content;
-  const senderService = services.find(
-    s => s.service_id === message.sender_service_id
-  )!;
+  const serviceId = message.sender_service_id;
+  const senderService = ServicesDB.getService(serviceId)!;
   if (
     ThirdPartyMessageWithContent.is(message) &&
     senderService.service_id === pnServiceId
