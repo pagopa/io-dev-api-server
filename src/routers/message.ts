@@ -4,7 +4,6 @@ import { identity, pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
 import { match, not, __ } from "ts-pattern";
-import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { TagEnum as PNCategoryTagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
 import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
 import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
@@ -272,58 +271,6 @@ addHandler(
 addHandler(
   messageRouter,
   "get",
-  addApiV1Prefix("/legal-messages/:id"),
-  (req, res) => {
-    if (configResponse.getMVLMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getMVLMessageResponseCode);
-      return;
-    }
-    // retrieve the messageIndex from id
-    const message = MessagesDB.findOneById(req.params.id);
-    if (message === undefined) {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-      return;
-    }
-    if (!LegalMessageWithContent.is(message)) {
-      // act as the IO backend
-      res
-        .status(500)
-        .json(getProblemJson(500, "requested message is not of legal type"));
-      return;
-    }
-    res.json(message);
-  }
-);
-
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/legal-messages/:legalMessageId/attachments/:attachmentId"),
-  (req, res) => {
-    // find the message by the given legalMessageID
-    const message = MessagesDB.findOneById(req.params.legalMessageId);
-    const legalMessage = LegalMessageWithContent.decode(message);
-    // ensure message exists and it has a legal content
-    if (message === undefined || E.isLeft(legalMessage)) {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-      return;
-    }
-    // find the attachment by the given attachmentId
-    const attachment = legalMessage.right.legal_message.eml.attachments.find(
-      a => a.id === req.params.attachmentId
-    );
-    if (attachment === undefined) {
-      res.status(404).json(getProblemJson(404, "attachment not found"));
-      return;
-    }
-    res.setHeader("Content-Type", attachment.content_type);
-    sendFile(`assets/messages/mvl/attachments/${attachment.name}`, res);
-  }
-);
-
-addHandler(
-  messageRouter,
-  "get",
   addApiV1Prefix("/third-party-messages/:id"),
   (req, res) => {
     if (configResponse.getThirdPartyMessageResponseCode !== 200) {
@@ -355,7 +302,7 @@ addHandler(
     // find the message by the given messageId
     const message = MessagesDB.findOneById(req.params.messageId);
     const thirdPartyMessage = ThirdPartyMessageWithContent.decode(message);
-    // ensure message exists and it has a legal content
+    // ensure message exists and it has a valid content
     if (!message || E.isLeft(thirdPartyMessage)) {
       res.status(404).json(getProblemJson(404, messageNotFoundError));
       return;
