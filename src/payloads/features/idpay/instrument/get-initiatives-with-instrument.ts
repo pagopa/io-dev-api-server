@@ -19,15 +19,13 @@ const initiativesByWalletId = (
   const initiatives = getInitiatives();
 
   Object.entries(instruments).forEach(([id, instruments]) => {
-    const initiativeId = parseInt(id);
-
     instruments.forEach(instrument => {
       const walletId = instrument.idWallet || "";
 
       if (walletId === idWallet) {
         const status: InitiativesStatusDTO = {
           initiativeId: id,
-          initiativeName: initiatives[initiativeId].initiativeName || "",
+          initiativeName: initiatives[id].initiativeName || "",
           status: instrument.status || InitiativeStatusEnum.INACTIVE,
           idInstrument: instrument.instrumentId
         };

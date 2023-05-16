@@ -6,7 +6,7 @@ import { getInitiativeTimeline } from "../../../../payloads/features/idpay/timel
 
 const request = supertest(app);
 
-const initiatives = getInitiatives();
+const initiatives = Object.values(getInitiatives());
 
 describe("IDPay Timeline API", () => {
   describe("GET getTimeline", () => {

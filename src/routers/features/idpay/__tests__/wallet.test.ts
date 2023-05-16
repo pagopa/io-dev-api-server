@@ -19,7 +19,7 @@ import { getWalletV2 } from "../../../walletsV2";
 
 const request = supertest(app);
 
-const initiatives = getInitiatives();
+const initiatives = Object.values(getInitiatives());
 
 describe("IDPay Wallet API", () => {
   describe("GET getWallet", () => {

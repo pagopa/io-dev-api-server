@@ -175,7 +175,7 @@ range(0, config.suspendedCount).forEach(() => {
   }
 });
 
-export const getInitiatives = () => Object.values(initiatives);
+export const getInitiatives = () => initiatives;
 
 export const getInitiative = (id: string): InitiativeDTO | undefined =>
   initiatives[id];
