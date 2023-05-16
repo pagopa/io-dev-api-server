@@ -352,9 +352,10 @@ const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
   updateDate: faker.date.recent(1)
 });
 
-range(0, walletConfig.configuredCount).forEach(() => {
+range(0, walletConfig.refundConfiguredCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.REFUNDABLE
   };
 
@@ -396,12 +397,13 @@ range(0, walletConfig.configuredCount).forEach(() => {
   ];
 });
 
-range(0, walletConfig.notConfiguredCount).forEach(() => {
+range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [NC]`;
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.NOT_REFUNDABLE,
     iban: undefined,
     nInstr: 0
@@ -422,12 +424,13 @@ range(0, walletConfig.notConfiguredCount).forEach(() => {
   initiativeTimelineDetails[initiativeId] = [];
 });
 
-range(0, walletConfig.unsubscribedCount).forEach(() => {
+range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [U]`;
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.UNSUBSCRIBED
   };
 
@@ -470,12 +473,13 @@ range(0, walletConfig.unsubscribedCount).forEach(() => {
   ];
 });
 
-range(0, walletConfig.suspendedCount).forEach(() => {
+range(0, walletConfig.refundSuspendedCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [S]`;
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.SUSPENDED
   };
 
@@ -516,4 +520,30 @@ range(0, walletConfig.suspendedCount).forEach(() => {
     reversalOperationDetail,
     transactionOperationDetail
   ];
+});
+
+range(0, walletConfig.discountCount).forEach(() => {
+  const initiativeName = `${faker.company.name()} [D]`;
+
+  const initiative: InitiativeDTO = {
+    ...generateRandomInitiativeDTO(),
+    initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
+    iban: undefined,
+    nInstr: 0
+  };
+
+  const { initiativeId } = initiative;
+
+  const details: InitiativeDetailDTO = {
+    ...generateRandomInitiativeDetailDTO(),
+    initiativeName,
+    status: InitiativeStatus.SUSPENDED
+  };
+
+  initiatives[initiativeId] = initiative;
+  initiativesDetails[initiativeId] = details;
+  instruments[initiativeId] = [];
+  initiativeTimeline[initiativeId] = [onboardingOperation];
+  initiativeTimelineDetails[initiativeId] = [];
 });
