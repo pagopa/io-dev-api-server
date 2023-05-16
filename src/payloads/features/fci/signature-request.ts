@@ -18,6 +18,7 @@ export const WAIT_QTSP_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const SIGNED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const SIGNED_EXPIRED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const REJECTED_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
+export const NO_FIELDS_SIGNATURE_REQUEST_ID = ulid() as NonEmptyString;
 export const DOSSIER_ID = ulid() as NonEmptyString;
 export const SIGNATURE_ID = ulid() as NonEmptyString;
 

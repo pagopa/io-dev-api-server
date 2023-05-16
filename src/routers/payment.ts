@@ -20,8 +20,10 @@ import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
 import { profileRouter } from "./profile";
-import { services } from "./service";
 import { walletRouter } from "./wallet";
+import ServicesDB, { ServiceSummary } from "./../persistence/services";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { getProblemJson } from "../payloads/error";
 
 export const paymentRouter = Router();
 
@@ -52,20 +54,34 @@ addHandler(
   addApiV1Prefix("/payment-requests/:rptId"),
   // success response: res.json(getPaymentRequestsGetResponse(faker.helpers.arrayElement(services))))
   // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
-  (_, res) => {
+  (_, res) =>
     pipe(
-      O.fromNullable(ioDevServerConfig.wallet.verificaError),
+      ServicesDB.getSummaries(),
+      faker.helpers.arrayElement,
+      (randomServiceSummary: ServiceSummary) => randomServiceSummary.service_id,
+      ServicesDB.getService,
+      O.fromNullable,
       O.fold(
-        () => {
-          paymentRequest = getPaymentRequestsGetResponse(
-            faker.helpers.arrayElement(services)
-          );
-          res.json(paymentRequest);
-        },
-        error => responseWithError(error, res)
+        () =>
+          res
+            .sendStatus(500)
+            .json(
+              getProblemJson(500, "Unable to find auto-referenced service")
+            ),
+        (randomService: ServicePublic) =>
+          pipe(
+            ioDevServerConfig.wallet.verificaError,
+            O.fromNullable,
+            O.fold(
+              () => {
+                paymentRequest = getPaymentRequestsGetResponse(randomService);
+                return res.json(paymentRequest);
+              },
+              (errorCode: Detail_v2Enum) => responseWithError(errorCode, res)
+            )
+          )
       )
-    );
-  }
+    )
 );
 
 /**

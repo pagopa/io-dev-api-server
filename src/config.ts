@@ -89,7 +89,8 @@ const defaultConfig: IoDevServerConfig = {
       expiredCount: 0,
       expired90Count: 0,
       waitForQtspCount: 0,
-      signedCount: 0
+      signedCount: 0,
+      noSignatureFieldsCount: 0
     },
     withCTA: false,
     withEUCovidCert: false,
@@ -132,11 +133,13 @@ const defaultConfig: IoDevServerConfig = {
     },
     national: 5,
     local: 5,
-    includeSiciliaVola: true,
-    includeCgn: true,
-    includeCdc: true,
-    includePn: false,
-    includeFci: true,
+    specialServices: {
+      siciliaVola: true,
+      cgn: true,
+      cdc: true,
+      pn: false,
+      fci: true
+    },
     // it has partially effect (pr welcome)
     allowRandomValues: true
   },
