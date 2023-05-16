@@ -230,8 +230,7 @@ export const IoDevServerConfig = t.interface({
         refundNotConfiguredCount: t.number,
         refundSuspendedCount: t.number,
         refundUnsubscribedCount: t.number,
-        discountCount: t.number,
-        discountEmptyCount: t.number
+        discountCount: t.number
       })
     }),
     t.partial({
