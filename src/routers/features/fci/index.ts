@@ -22,7 +22,7 @@ import { addApiV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
 import { signatureRequestList } from "../../../payloads/features/fci/signature-requests";
-import { errorWithStatusCode } from "../../../payloads/features/fci/errors";
+import { getProblemJson } from "../../../payloads/error";
 
 export const fciRouter = Router();
 const configResponse = ioDevServerConfig.messages.fci.response;
@@ -39,13 +39,13 @@ addHandler(
     pipe(
       O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
-        signatureReqId === SIGNATURE_REQUEST_ID ||
-        signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID &&
+        (signatureReqId === SIGNATURE_REQUEST_ID ||
+          signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
+          signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID) &&
         configResponse.getFciResponseCode === 200
           ? O.some(signatureReqId)
           : O.none
@@ -58,7 +58,7 @@ addHandler(
             O.of,
             O.filter(responseCode => responseCode !== 200),
             O.map(responseCode =>
-              res.status(responseCode).json(errorWithStatusCode(responseCode))
+              res.status(responseCode).json(getProblemJson(responseCode))
             ),
             O.getOrElse(() => res.sendStatus(404)) // No response code was found return 404 as default
           ),
