@@ -355,6 +355,7 @@ const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
 range(0, walletConfig.configuredCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.REFUNDABLE
   };
 
@@ -402,6 +403,7 @@ range(0, walletConfig.notConfiguredCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.NOT_REFUNDABLE,
     iban: undefined,
     nInstr: 0
@@ -428,6 +430,7 @@ range(0, walletConfig.unsubscribedCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.UNSUBSCRIBED
   };
 
@@ -476,6 +479,7 @@ range(0, walletConfig.suspendedCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.SUSPENDED
   };
 
