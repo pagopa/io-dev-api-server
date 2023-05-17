@@ -1,5 +1,6 @@
 import {
   EXPIRED_SIGNATURE_REQUEST_ID,
+  NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
   SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
@@ -169,23 +170,6 @@ en:
         action: "ioit://cgn-details/categories-merchant/cultureAndEntertainment"
 ---`;
 
-export const frontMatter1CTASiciliaVola = `---
-it:
-    cta_1: 
-        text: "Generate voucher"
-        action: "ioit://SV_CHECK_STATUS"
-    cta_2: 
-        text: "Voucher List"
-        action: "ioit://SV_VOUCHER_LIST"
-en:
-    cta_1: 
-        text: "Generate voucher"
-        action: "ioit://SV_CHECK_STATUS"
-    cta_2: 
-        text: "Voucher List"
-        action: "ioit://SV_VOUCHER_LIST"
----`;
-
 export const frontMatter1CTAFims = `---
 it:
     cta_1: 
@@ -261,6 +245,17 @@ en:
     cta_1: 
         text: "View documents"
         action: "ioit://fci/main?signatureRequestId=${SIGNED_EXPIRED_SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestNoFields = `---
+it:
+    cta_1: 
+        text: "Visualizza i documenti"
+        action: "ioit://fci/main?signatureRequestId=${NO_FIELDS_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "View documents"
+        action: "ioit://fci/main?signatureRequestId=${NO_FIELDS_SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const messageFciMarkdown = `

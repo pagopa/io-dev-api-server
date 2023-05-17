@@ -20,8 +20,8 @@ import MessagesDB, { MessageOnDB } from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
 import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
-import { services } from "./service";
-import { pnServiceId } from "../payloads/services/special";
+import { pnServiceId } from "../payloads/services/special/pn/factoryPn";
+import ServicesDB from "../persistence/services";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -33,9 +33,8 @@ const getPublicMessages = (
   withContent: boolean
 ): ReadonlyArray<PublicMessage> => {
   return items.map(m => {
-    const senderService = services.find(
-      s => s.service_id === m.sender_service_id
-    );
+    const serviceId = m.sender_service_id;
+    const senderService = ServicesDB.getService(serviceId);
     const extraData = enrichData
       ? {
           service_name: senderService!.service_name,
