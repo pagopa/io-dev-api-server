@@ -20,12 +20,12 @@ describe("io-sign API", () => {
         expect(response.status).toBe(200);
       });
     });
-    describe("when the signer request a signature-request without signatureRequestId", () => {
-      it("should return 400", async () => {
+    describe("when the signer request a signature-request without a valid signatureRequestId", () => {
+      it("should return 404", async () => {
         const response = await request.get(
           addFciPrefix(`/signature-requests/${ulid()}`)
         );
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(404);
       });
     });
   });
