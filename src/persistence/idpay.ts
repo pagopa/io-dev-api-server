@@ -352,7 +352,7 @@ const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
   updateDate: faker.date.recent(1)
 });
 
-range(0, walletConfig.refundConfiguredCount).forEach(() => {
+range(0, walletConfig.refundCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
