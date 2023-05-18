@@ -529,6 +529,7 @@ range(0, walletConfig.discountCount).forEach(() => {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
+    status: InitiativeStatus.REFUNDABLE,
     iban: undefined,
     nInstr: 0
   };
@@ -538,7 +539,7 @@ range(0, walletConfig.discountCount).forEach(() => {
   const details: InitiativeDetailDTO = {
     ...generateRandomInitiativeDetailDTO(),
     initiativeName,
-    status: InitiativeStatus.SUSPENDED
+    status: InitiativeStatus.REFUNDABLE
   };
 
   initiatives[initiativeId] = initiative;
