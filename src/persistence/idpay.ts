@@ -66,6 +66,7 @@ const generateRandomIbanDTO = (): IbanDTO => ({
   channel: faker.datatype.string()
 });
 
+// eslint-disable-next-line functional/no-let
 export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
   { length: idPayConfig.ibanSize },
   () => generateRandomIbanDTO()
@@ -74,7 +75,7 @@ export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
 export const storeIban = (iban: string, description: string) =>
   (ibanList = [...ibanList, { ...generateRandomIbanDTO(), iban, description }]);
 
-export let instruments: {
+export const instruments: {
   [initiativeId: string]: ReadonlyArray<InstrumentDTO>;
 } = {};
 
@@ -290,17 +291,17 @@ const onboardingOperation: OnboardingOperationDTO = {
   operationId: ulid()
 };
 
-export let initiativeTimeline: {
+export const initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
 } = {};
 
-export let initiativeTimelineDetails: {
+export const initiativeTimelineDetails: {
   [initiativeId: string]: ReadonlyArray<OperationDTO>;
 } = {};
 
-export let initiatives: { [id: string]: InitiativeDTO } = {};
+export const initiatives: { [id: string]: InitiativeDTO } = {};
 
-export let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
+export const initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
 
 export const updateInitiative = (initiative: InitiativeDTO) =>
   (initiatives[initiative.initiativeId] = initiative);
