@@ -16,7 +16,6 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "eslint-plugin-react",
         "@typescript-eslint",
         "import",
         "functional",
