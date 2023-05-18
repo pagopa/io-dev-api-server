@@ -118,7 +118,14 @@ const defaultConfig: IoDevServerConfig = {
     // success (0 outcome code)
     onboardingPaypalOutCode: 0,
     // success (0 outcome code)
-    paymentOutCode: 0
+    paymentOutCode: 0,
+    // IDPay initiatives show in wallet
+    idPay: {
+      configuredCount: 1,
+      notConfiguredCount: 0,
+      unsubscribedCount: 0,
+      suspendedCount: 0
+    }
   },
   services: {
     response: {

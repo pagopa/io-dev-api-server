@@ -1,28 +1,28 @@
-import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
+import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { IbanPutDTO } from "../../../../generated/definitions/idpay/IbanPutDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
-import { storeIban } from "../../../payloads/features/idpay/iban/data";
-import { IDPayInitiativeID } from "../../../payloads/features/idpay/types";
-import { initiativeIdFromString } from "../../../payloads/features/idpay/utils";
+import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/get-initiatives-with-instrument";
+import { getInstrumentListResponse } from "../../../payloads/features/idpay/get-instrument-list";
+import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/get-initiative-beneficiary-detail";
+import { getWalletResponse } from "../../../payloads/features/idpay/get-wallet";
+import { getWalletDetailResponse } from "../../../payloads/features/idpay/get-wallet-detail";
+import { getWalletStatusResponse } from "../../../payloads/features/idpay/get-wallet-status";
 import {
-  addIbanToInitiative,
-  addInstrumentToInitiative,
-  removeInstrumentFromInitiative,
-  unsubscribeFromInitiative
-} from "../../../payloads/features/idpay/wallet/data";
-import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/wallet/get-initiative-beneficiary-detail";
-import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/wallet/get-initiatives-with-instrument";
-import { getInstrumentListResponse } from "../../../payloads/features/idpay/wallet/get-instrument-list";
-import { getWalletResponse } from "../../../payloads/features/idpay/wallet/get-wallet";
-import { getWalletDetailResponse } from "../../../payloads/features/idpay/wallet/get-wallet-detail";
-import { getWalletStatusResponse } from "../../../payloads/features/idpay/wallet/get-wallet-status";
+  deleteInstrumentFromInitiative,
+  enrollInstrumentToInitiative,
+  initiatives,
+  storeIban,
+  updateInitiative
+} from "../../../persistence/idpay";
 import { getWalletV2 } from "../../walletsV2";
-import { Iban } from "../../../../generated/definitions/backend/Iban";
+import { StatusEnum } from "../../../../generated/definitions/idpay/InitiativeDTO";
+import { StatusEnum as InitiativeStatusEnum } from "../../../../generated/definitions/idpay/InitiativeDTO";
 import { addIdPayHandler } from "./router";
 
-const initiativeIdExists = (id: IDPayInitiativeID) =>
+const initiativeIdExists = (id: string) =>
   pipe(
     id,
     O.some,
@@ -52,7 +52,6 @@ addIdPayHandler("get", "/wallet/:initiativeId", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
     O.chain(getWalletDetailResponse),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -68,7 +67,6 @@ addIdPayHandler("get", "/wallet/:initiativeId/detail", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
     O.chain(getInitiativeBeneficiaryDetailResponse),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -84,7 +82,6 @@ addIdPayHandler("get", "/wallet/:initiativeId/status", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
     O.chain(getWalletStatusResponse),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -100,7 +97,6 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
     O.chain(initiativeIdExists),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -116,7 +112,7 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
                 E.fold(
                   () => res.status(403).json(getIdPayError(403)),
                   () => {
-                    addIbanToInitiative(initiativeId, iban);
+                    updateInitiative({ ...initiatives[initiativeId], iban });
                     storeIban(iban, description);
                     return res.sendStatus(200);
                   }
@@ -135,7 +131,6 @@ addIdPayHandler("get", "/wallet/:initiativeId/instruments", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
     O.chain(initiativeIdExists),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
@@ -160,7 +155,6 @@ addIdPayHandler(
     pipe(
       req.params.initiativeId,
       O.fromNullable,
-      O.chain(initiativeIdFromString),
       O.chain(initiativeIdExists),
       O.fold(
         () => res.status(404).json(getIdPayError(404)),
@@ -172,7 +166,10 @@ addIdPayHandler(
             O.fold(
               () => res.status(404).json(getIdPayError(404)),
               wallet => {
-                const result = addInstrumentToInitiative(initiativeId, wallet);
+                const result = enrollInstrumentToInitiative(
+                  initiativeId,
+                  wallet
+                );
                 return res.sendStatus(result ? 200 : 403);
               }
             )
@@ -191,7 +188,6 @@ addIdPayHandler(
     pipe(
       req.params.initiativeId,
       O.fromNullable,
-      O.chain(initiativeIdFromString),
       O.chain(initiativeIdExists),
       O.fold(
         () => res.status(404).json(getIdPayError(404)),
@@ -202,7 +198,7 @@ addIdPayHandler(
             O.fold(
               () => res.status(400).json(getIdPayError(400)),
               instrumentId => {
-                const result = removeInstrumentFromInitiative(
+                const result = deleteInstrumentFromInitiative(
                   initiativeId,
                   instrumentId
                 );
@@ -236,13 +232,26 @@ addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
+    O.chain(initiativeIdExists),
+    O.map(initiativeId => initiatives[initiativeId]),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
-      initiativeId => {
-        const result = unsubscribeFromInitiative(initiativeId);
-        return res.sendStatus(result ? 200 : 403);
-      }
+      flow(
+        O.of,
+        O.filter(
+          initiative => initiative.status !== InitiativeStatusEnum.UNSUBSCRIBED
+        ),
+        O.fold(
+          () => res.status(403).json(getIdPayError(403)),
+          initiative => {
+            updateInitiative({
+              ...initiative,
+              status: StatusEnum.UNSUBSCRIBED
+            });
+            return res.sendStatus(200);
+          }
+        )
+      )
     )
   )
 );

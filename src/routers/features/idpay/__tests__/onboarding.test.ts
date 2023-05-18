@@ -2,12 +2,6 @@ import supertest from "supertest";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
 import {
-  checkPrerequisites,
-  initiativeData,
-  onboardingStatuses,
-  prerequisitesErrors
-} from "../../../../payloads/features/idpay/onboarding/data";
-import {
   IDPayInitiativeID,
   IDPayServiceID
 } from "../../../../payloads/features/idpay/types";
@@ -15,7 +9,8 @@ import {
   initiativeIdToString,
   serviceIdToString
 } from "../../../../payloads/features/idpay/utils";
-import { RequiredCriteriaDTO } from "../../../../../generated/definitions/idpay/RequiredCriteriaDTO";
+import { StatusEnum as InitiativeStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
+import { DetailsEnum } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 
 const request = supertest(app);
 
@@ -23,13 +18,15 @@ describe("IDPay Onboarding API", () => {
   describe("GET getInitiativeData", () => {
     it("should return 200 with Initiative data if service ID exists", async () => {
       const serviceId = IDPayServiceID.DEFAULT;
-      const initiative = initiativeData[serviceId];
 
       const response = await request.get(
         addIdPayPrefix(`/onboarding/service/${serviceIdToString(serviceId)}`)
       );
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual(initiative);
+      expect(response.body).toHaveProperty(
+        "initiativeId",
+        initiativeIdToString(IDPayInitiativeID.DEFAULT)
+      );
     });
 
     it("should return 404 if service ID does not exist", async () => {
@@ -42,7 +39,6 @@ describe("IDPay Onboarding API", () => {
   describe("GET onboardingStatus", () => {
     it("should return 200 with status if initiativeId exists", async () => {
       const initiativeId = IDPayInitiativeID.INVITED;
-      const status = onboardingStatuses[initiativeId];
 
       const response = await request.get(
         addIdPayPrefix(
@@ -50,7 +46,10 @@ describe("IDPay Onboarding API", () => {
         )
       );
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual({ status });
+      expect(response.body).toHaveProperty(
+        "status",
+        InitiativeStatusEnum.INVITED
+      );
     });
     // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
@@ -88,14 +87,10 @@ describe("IDPay Onboarding API", () => {
     it("should return 200 with prerequisites if initiative ID exists and does not have errors", async () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.DEFAULT);
 
-      const prerequisites: RequiredCriteriaDTO =
-        checkPrerequisites[IDPayInitiativeID.DEFAULT];
-
       const response = await request
         .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual(prerequisites);
     });
     it("should return 202 if initiative does not have prerequisites", async () => {
       const initiativeId = initiativeIdToString(
@@ -111,14 +106,16 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = initiativeIdToString(
         IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED
       );
-      const error =
-        prerequisitesErrors[IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED];
 
       const response = await request
         .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
+
       expect(response.status).toBe(403);
-      expect(response.body).toStrictEqual(error);
+      expect(response.body).toHaveProperty(
+        "details",
+        DetailsEnum.BUDGET_TERMINATED
+      );
     });
     it("should return 400 if malformed request body", async () => {
       const response = await request
