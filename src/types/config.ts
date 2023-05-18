@@ -227,7 +227,14 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean,
       methods: WalletMethodConfig,
-      shuffleAbi: t.boolean
+      shuffleAbi: t.boolean,
+      // IDPay initiatives in wallet
+      idPay: t.interface({
+        configuredCount: t.number,
+        notConfiguredCount: t.number,
+        suspendedCount: t.number,
+        unsubscribedCount: t.number
+      })
     }),
     t.partial({
       // the outcode returned at the end of credit card onboarding
