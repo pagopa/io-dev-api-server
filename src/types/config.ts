@@ -199,7 +199,11 @@ export const IoDevServerConfig = t.interface({
         expired90Count: t.number,
         waitForQtspCount: t.number,
         signedCount: t.number,
-        noSignatureFieldsCount: t.number
+        noSignatureFieldsCount: t.number,
+        response: t.interface({
+          // 200 success with payload
+          getFciResponseCode: HttpResponseCode
+        })
       }),
       // if true, messages (all available) with nested CTA will be included
       withCTA: t.boolean,
