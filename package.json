@@ -116,7 +116,6 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-functional": "^5.0.8",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-sonarjs": "^0.19.0",
     "jest": "^27.4.7",
     "nodemon": "^2.0.15",
