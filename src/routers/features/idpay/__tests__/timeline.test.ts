@@ -1,16 +1,20 @@
 import supertest from "supertest";
+import {
+  initiatives as idPayInitiatives,
+  initiativeTimeline
+} from "../../../../persistence/idpay";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
-import { IDPayInitiativeID } from "../../../../payloads/features/idpay/types";
-import { initiativeIdToString } from "../../../../payloads/features/idpay/utils";
-import { timeline } from "../../../../payloads/features/idpay/timeline/data";
 
 const request = supertest(app);
+
+const initiatives = Object.values(idPayInitiatives);
 
 describe("IDPay Timeline API", () => {
   describe("GET getTimeline", () => {
     it("should return 200 with timeline list", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
+      const tInitiative = initiatives[0];
+      const initiativeId = tInitiative.initiativeId;
 
       const response = await request.get(
         addIdPayPrefix(`/timeline/${initiativeId}`)
@@ -19,8 +23,11 @@ describe("IDPay Timeline API", () => {
       expect(response.body).toHaveProperty("operationList");
     });
     it("should return 200 with correct pagination info", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
-      const operationSize = timeline[IDPayInitiativeID.CONFIGURED].length;
+      const tInitiative = initiatives[0];
+      const initiativeId = tInitiative.initiativeId;
+      const timeline = initiativeTimeline[initiativeId] || [];
+
+      const operationSize = timeline.length;
 
       const page = 1;
       const size = 4;
@@ -48,8 +55,11 @@ describe("IDPay Timeline API", () => {
   });
   describe("GET getTimelineDetail", () => {
     it("should return 200 with operation details", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
-      const operationId = timeline[IDPayInitiativeID.CONFIGURED][0].operationId;
+      const tInitiative = initiatives[0];
+      const initiativeId = tInitiative.initiativeId;
+      const timeline = initiativeTimeline[initiativeId] || [];
+
+      const operationId = timeline[0].operationId;
 
       const response = await request.get(
         addIdPayPrefix(`/timeline/${initiativeId}/${operationId}`)
@@ -60,7 +70,7 @@ describe("IDPay Timeline API", () => {
     // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
-      const operationId = timeline[IDPayInitiativeID.CONFIGURED][0].operationId;
+      const operationId = "A";
 
       const response = await request.get(
         addIdPayPrefix(`/timeline/${initiativeId}/${operationId}`)
@@ -69,7 +79,9 @@ describe("IDPay Timeline API", () => {
     });
     // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.CONFIGURED);
+      const tInitiative = initiatives[0];
+      const initiativeId = tInitiative.initiativeId;
+
       const operationId = "ABC123";
 
       const response = await request.get(

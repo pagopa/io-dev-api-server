@@ -88,7 +88,10 @@ const defaultConfig: IoDevServerConfig = {
       expired90Count: 0,
       waitForQtspCount: 0,
       signedCount: 0,
-      noSignatureFieldsCount: 0
+      noSignatureFieldsCount: 0,
+      response: {
+        getFciResponseCode: 200
+      }
     },
     withCTA: false,
     withEUCovidCert: false,
@@ -113,7 +116,14 @@ const defaultConfig: IoDevServerConfig = {
     // success (0 outcome code)
     onboardingPaypalOutCode: 0,
     // success (0 outcome code)
-    paymentOutCode: 0
+    paymentOutCode: 0,
+    // IDPay initiatives show in wallet
+    idPay: {
+      configuredCount: 1,
+      notConfiguredCount: 0,
+      unsubscribedCount: 0,
+      suspendedCount: 0
+    }
   },
   services: {
     response: {
