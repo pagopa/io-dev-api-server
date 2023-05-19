@@ -1,11 +1,11 @@
-import { sequenceS, sequenceT } from "fp-ts/lib/Apply";
+import { sequenceT } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { getTimelineResponse } from "../../../payloads/features/idpay/get-timeline";
 import { getTimelineDetailResponse } from "../../../payloads/features/idpay/get-timeline-detail";
-import { addIdPayHandler } from "./router";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/get-wallet-detail";
+import { addIdPayHandler } from "./router";
 
 type Query = string | qs.ParsedQs | string[] | qs.ParsedQs[] | undefined;
 

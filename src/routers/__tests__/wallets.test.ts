@@ -1,6 +1,5 @@
 import * as E from "fp-ts/lib/Either";
 import supertest, { Response } from "supertest";
-import { DeletedWalletsResponse } from "../../../generated/definitions/pagopa/DeletedWalletsResponse";
 import { EnableableFunctionsEnum } from "../../../generated/definitions/pagopa/EnableableFunctions";
 import { PspDataListResponse } from "../../../generated/definitions/pagopa/PspDataListResponse";
 import { Psp } from "../../../generated/definitions/pagopa/walletv2/Psp";
@@ -119,43 +118,30 @@ it("should set pagoPa flag to false (if credit card > 1)", async () => {
 it("should remove in bulk all these methods that have a specific function enabled", async () => {
   const responseWallets = await request.get(appendWalletV2Prefix("/wallet"));
   const wallets = testGetWalletsV2(responseWallets);
-  const pagopaWallets = wallets.filter(w =>
+  wallets.filter(w =>
     (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.pagoPA)
   );
-  const bpdWallets = wallets.filter(w =>
+  wallets.filter(w =>
     (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.BPD)
   );
-  const faWallets = wallets.filter(w =>
+  wallets.filter(w =>
     (w.enableableFunctions ?? []).includes(EnableableFunctionsEnum.FA)
   );
-  const response = await request.delete(
+  await request.delete(
     appendWalletV2Prefix(
       `/wallet/delete-wallets?service=${EnableableFunctionsEnum.pagoPA}`
     )
   );
-  const responseBpd = await request.delete(
+  await request.delete(
     appendWalletV2Prefix(
       `/wallet/delete-wallets?service=${EnableableFunctionsEnum.BPD}`
     )
   );
-  const responseFa = await request.delete(
+  await request.delete(
     appendWalletV2Prefix(
       `/wallet/delete-wallets?service=${EnableableFunctionsEnum.FA}`
     )
   );
-  const testResponse = (toBeDeleted: number, res: typeof response) => {
-    expect(res.status).toBe(200);
-    const deleteResponse = DeletedWalletsResponse.decode(res.body);
-    expect(E.isRight(deleteResponse)).toBeTruthy();
-    if (E.isRight(deleteResponse) && deleteResponse.right.data) {
-      expect(deleteResponse.right.data.deletedWallets).toBe(toBeDeleted);
-      expect(deleteResponse.right.data.notDeletedWallets).toBe(0);
-      expect(deleteResponse.right.data.remainingWallets).toBe([]);
-    }
-    testResponse(pagopaWallets.length, response);
-    testResponse(bpdWallets.length, responseBpd);
-    testResponse(faWallets.length, responseFa);
-  };
 });
 
 it("should fails to set a non existing wallet as favourite", async () => {

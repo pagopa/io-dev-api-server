@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { IDPayInitiativeID, IDPayServiceID } from "./types";

@@ -1,7 +1,7 @@
+import os from "os";
 import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import os from "os";
 
 export const serverPort = 3000;
 export const serverHostname = "0.0.0.0"; // public

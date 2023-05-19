@@ -3,16 +3,16 @@ import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as T from "fp-ts/lib/Task";
 import * as B from "fp-ts/lib/boolean";
-import { getProblemJson } from "../../../payloads/error";
 import * as jose from "jose";
+import { Request, Response, Router } from "express";
+import { verifySignatureHeader } from "@mattrglobal/http-signatures";
+import { getProblemJson } from "../../../payloads/error";
 /**
  * this router serves lollipop API
  */
-import { Request, Response, Router } from "express";
 
 import { addHandler } from "../../../payloads/response";
 import { getAssertionRef, getPublicKey } from "../../../persistence/lollipop";
-import { verifySignatureHeader } from "@mattrglobal/http-signatures";
 import { signAlgorithmToVerifierMap } from "../../../utils/httpSignature";
 import { serverUrl } from "../../../utils/server";
 
@@ -29,7 +29,7 @@ const toRequestOption = (req: Request, publicKey: jose.JWK) => {
   return {
     verifier: {
       verify:
-        req.body["message"] === "BROKEN"
+        req.body.message === "BROKEN"
           ? brokenVerifier(publicKey)
           : publicKey.kty === "EC"
           ? signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(publicKey)
@@ -38,7 +38,7 @@ const toRequestOption = (req: Request, publicKey: jose.JWK) => {
     url: serverUrl,
     method: req.method,
     httpHeaders:
-      req.body["message"] === "INVALID"
+      req.body.message === "INVALID"
         ? { ...headers, "x-pagopa-lollipop-original-method": "xxx" }
         : headers,
     body: req.body,

@@ -12,7 +12,7 @@ export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
   readFileAsJSON(assetsFolder + "/bpd/award/periods/" + fileName);
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let awardPeriods: string = "default.json";
 
 // return the list of json file names to populate the web dashboard
@@ -39,6 +39,7 @@ addHandler(
         readPeriodPresetJson(file)
       );
       if (E.isLeft(maybeAwardPeriods)) {
+        // eslint-disable-next-line no-console
         console.log(chalk.red(`${file} is not a valid BpdAwardPeriods`));
         res.sendStatus(500);
       } else {

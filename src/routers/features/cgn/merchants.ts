@@ -151,6 +151,7 @@ addHandler(
  * the landing Page of a discount for merchant reading the referrer header
  */
 addHandler(publicRouter, "get", "/merchant_landing", (req, res) => {
+  // eslint-disable-next-line no-console
   console.log(
     "X-PagoPa-CGN-Referer header",
     req.header("X-PagoPa-CGN-Referer")
