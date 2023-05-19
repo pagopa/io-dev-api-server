@@ -165,17 +165,21 @@ const generateRandomOperationDTO = (
   }
 };
 
+// eslint-disable-next-line functional/no-let
 export let initiatives: { [id: string]: InitiativeDTO } = {};
 
+// eslint-disable-next-line functional/no-let
 export let initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
 } = {};
 
+// eslint-disable-next-line functional/no-let
 export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
   { length: idPayConfig.ibanSize },
   () => generateRandomIbanDTO()
 );
 
+// eslint-disable-next-line functional/no-let
 export let instruments: {
   [initiativeId: string]: ReadonlyArray<InstrumentDTO>;
 } = {};
