@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import { addHandler, SupportedMethod } from "../../../payloads/response";
-import { addApiV1Prefix } from "../../../utils/strings";
 
 export const idpayRouter = Router();
 

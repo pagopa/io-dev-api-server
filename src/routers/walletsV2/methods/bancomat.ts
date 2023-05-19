@@ -1,8 +1,8 @@
+import fs from "fs";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { constUndefined, pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import fs from "fs";
 import * as t from "io-ts";
 import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
 import { BancomatCardsRequest } from "../../../../generated/definitions/pagopa/walletv2/BancomatCardsRequest";
@@ -106,8 +106,8 @@ addHandler(
     const walletData = getWalletV2();
     const bancomatsToAdd = maybeData.right.data?.data ?? [];
     // check if a bancomat is already present in the wallet list
-    const findBancomat = (card: Card): Card | undefined => {
-      return walletData.find(nc =>
+    const findBancomat = (card: Card): Card | undefined =>
+      walletData.find(nc =>
         pipe(
           O.fromNullable(nc),
           O.map<typeof nc, any>(
@@ -116,7 +116,6 @@ addHandler(
           O.getOrElse(() => false)
         )
       );
-    };
     // don't add bancomat already present in wallet list (same hpan)
     const bancomatNotPresent = bancomatsToAdd.filter(
       c => findBancomat(c) === undefined

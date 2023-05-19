@@ -22,9 +22,13 @@ export type ServiceSummary = {
   scope?: ServiceScopeEnum;
 };
 
+// eslint-disable-next-line functional/no-let
 let localServices: ServicePublic[] = [];
+// eslint-disable-next-line functional/no-let
 let nationalServices: ServicePublic[] = [];
+// eslint-disable-next-line functional/no-let
 let specialServices: ServicePublic[] = [];
+// eslint-disable-next-line functional/no-let
 let servicePreferences: Map<ServiceId, ServicePreference> = new Map<
   ServiceId,
   ServicePreference
@@ -41,7 +45,7 @@ const createServices = (customConfig: IoDevServerConfig) => {
   );
 
   const specialServicesConfig = customConfig.services.specialServices;
-  const specialServiceGenerators: [boolean, SpecialServiceGenerator][] = [
+  const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
     [specialServicesConfig.siciliaVola, createSiciliaVolaService],
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],

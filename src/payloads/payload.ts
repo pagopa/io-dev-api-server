@@ -65,19 +65,26 @@ export const getRandomNoticeNumber = (): string => {
   return newStr + messageNumber;
 };
 
+const responseMerchant = "Comune di Milano";
+const responseDate = "2020-02-07T08:43:38Z";
+const responseDescription =
+  "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO";
+
 export const paymentData = {
   paymentNoticeNumber: getRandomNoticeNumber() as PaymentNoticeNumber,
   organizationFiscalCode: "01199250158" as OrganizationFiscalCode,
   importoSingoloVersamento: 1 as ImportoEuroCents, // = 1 eurocent
-  codiceContestoPagamento: "03314e90321011eaa22f931313a0ec7c" as CodiceContestoPagamento,
+  codiceContestoPagamento:
+    "03314e90321011eaa22f931313a0ec7c" as CodiceContestoPagamento,
   ibanAccredito: "IT00V0000000000000000000000" as Iban,
   causaleVersamento: "Avviso di prova app IO",
   enteBeneficiario: {
     identificativoUnivocoBeneficiario: "01199250158" as OrganizationFiscalCode,
-    denominazioneBeneficiario: "Comune di Milano"
+    denominazioneBeneficiario: responseMerchant
   },
   spezzoniCausaleVersamento: {
-    spezzoneCausaleVersamento: "causale versamento di prova" as SpezzoneStrutturatoCausaleVersamento
+    spezzoneCausaleVersamento:
+      "causale versamento di prova" as SpezzoneStrutturatoCausaleVersamento
   },
   idPagamento: "ca7d9be4-7da1-442d-92c6-d403d7361f65",
   origin: "CITTADINANZA_DIGITALE",
@@ -138,8 +145,8 @@ export const getValidPsp = (idPsp: number): PspResponse => {
 export const payResponse = {
   data: {
     id: 7090047996,
-    created: new Date("2020-02-07T08:43:38Z"),
-    updated: new Date("2020-02-07T08:43:38Z"),
+    created: new Date(responseDate),
+    updated: new Date(responseDate),
     amount: {
       currency: "EUR",
       amount: 1,
@@ -150,8 +157,8 @@ export const payResponse = {
       amount: 51,
       decimalDigits: 2
     },
-    description: "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO",
-    merchant: "Comune di Milano",
+    description: responseDescription,
+    merchant: responseMerchant,
     idStatus: 0,
     statusMessage: "Da autorizzare",
     error: false,
@@ -177,8 +184,8 @@ export const payResponse = {
 export const transactionIdResponseFirst = {
   data: {
     id: 7090047996,
-    created: new Date("2020-02-07T08:43:38Z"),
-    updated: new Date("2020-02-07T08:43:38Z"),
+    created: new Date(responseDate),
+    updated: new Date(responseDate),
     amount: {
       currency: "EUR",
       amount: 1,
@@ -189,8 +196,8 @@ export const transactionIdResponseFirst = {
       amount: 51,
       decimalDigits: 2
     },
-    description: "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO",
-    merchant: "Comune di Milano",
+    description: responseDescription,
+    merchant: responseMerchant,
     idStatus: 0,
     statusMessage: "Da autorizzare",
     error: false,
@@ -213,8 +220,8 @@ export const transactionIdResponseFirst = {
 export const transactionIdResponseSecond = {
   data: {
     id: 7090047996,
-    created: new Date("2020-02-07T08:43:38Z"),
-    updated: new Date("2020-02-07T08:43:38Z"),
+    created: new Date(responseDate),
+    updated: new Date(responseDate),
     amount: {
       currency: "EUR",
       amount: 1,
@@ -225,8 +232,8 @@ export const transactionIdResponseSecond = {
       amount: 51,
       decimalDigits: 2
     },
-    description: "/RFB/719094842555711/0.01/TXT/Avviso di prova app IO",
-    merchant: "Comune di Milano",
+    description: responseDescription,
+    merchant: responseMerchant,
     idStatus: 3,
     statusMessage: "Confermato",
     error: false,
@@ -265,7 +272,8 @@ export const getPaymentRequestsGetResponse = (
   codiceContestoPagamento: faker.random.alphaNumeric(
     32
   ) as PaymentRequestsGetResponse["codiceContestoPagamento"],
-  ibanAccredito: faker.finance.iban() as PaymentRequestsGetResponse["ibanAccredito"],
+  ibanAccredito:
+    faker.finance.iban() as PaymentRequestsGetResponse["ibanAccredito"],
   causaleVersamento: faker.finance.transactionDescription(),
   enteBeneficiario: {
     identificativoUnivocoBeneficiario: senderService.organization_fiscal_code,
@@ -278,22 +286,24 @@ export const getPaymentRequestsGetResponse = (
   ]
 });
 
-export const getPaymentActivationsPostResponse = (): PaymentActivationsPostResponse => {
-  const data: PaymentActivationsPostResponse = {
-    importoSingoloVersamento: paymentData.importoSingoloVersamento,
-    ibanAccredito: paymentData.ibanAccredito,
-    causaleVersamento: paymentData.causaleVersamento,
-    enteBeneficiario: paymentData.enteBeneficiario
+export const getPaymentActivationsPostResponse =
+  (): PaymentActivationsPostResponse => {
+    const data: PaymentActivationsPostResponse = {
+      importoSingoloVersamento: paymentData.importoSingoloVersamento,
+      ibanAccredito: paymentData.ibanAccredito,
+      causaleVersamento: paymentData.causaleVersamento,
+      enteBeneficiario: paymentData.enteBeneficiario
+    };
+    return validatePayload(PaymentActivationsPostResponse, data);
   };
-  return validatePayload(PaymentActivationsPostResponse, data);
-};
 
-export const getPaymentActivationsGetResponse = (): PaymentActivationsGetResponse => {
-  const data = {
-    idPagamento: paymentData.idPagamento
+export const getPaymentActivationsGetResponse =
+  (): PaymentActivationsGetResponse => {
+    const data = {
+      idPagamento: paymentData.idPagamento
+    };
+    return validatePayload(PaymentActivationsGetResponse, data);
   };
-  return validatePayload(PaymentActivationsGetResponse, data);
-};
 
 export const getPaymentResponse = (): PaymentResponse => {
   const payment: Payment = {
@@ -322,7 +332,7 @@ export const getPspList = () => {
   return validatePayload(PspListResponse, data);
 };
 
-// tslint:disable-next-line: readonly-array
+// eslint-disable-next-line: readonly-array
 export const getPaymentsArray = (): paymentItem[] => {
   const localStorage = {} as any;
   const paymentsStorage = localStorage.getItem("payments");
@@ -336,9 +346,7 @@ export const getPaymentStatus = (idTransaction: number | undefined): string => {
     return "";
   }
   const payments = getPaymentsArray();
-  const mPayment = payments.filter(p => {
-    return p.idTransaction === idTransaction;
-  });
+  const mPayment = payments.filter(p => p.idTransaction === idTransaction);
   return mPayment.length > 0
     ? mPayment[0].status !== undefined
       ? mPayment[0].status
@@ -356,9 +364,9 @@ export const setPayment = (
       idTransaction,
       status: status !== undefined ? status : ""
     };
-    const alreadyExist = payments.filter(p => {
-      return p.idTransaction === idTransaction;
-    });
+    const alreadyExist = payments.filter(
+      p => p.idTransaction === idTransaction
+    );
     if (alreadyExist[0] === undefined || alreadyExist.length < 1) {
       payments.push(payment);
       const localStorage = {} as any;

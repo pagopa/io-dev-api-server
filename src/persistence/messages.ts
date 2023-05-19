@@ -1,13 +1,9 @@
 import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 
-type MessageFromBE = CreatedMessageWithContentAndEnrichedData;
-
-export type MessageOnDB = MessageFromBE;
-
-// tslint:disable-next-line: readonly-array no-let
-let inboxMessages: MessageOnDB[] = [];
-// tslint:disable-next-line: readonly-array no-let
-let archivedMessages: MessageOnDB[] = [];
+// eslint-disable-next-line functional/no-let
+let inboxMessages: CreatedMessageWithContentAndEnrichedData[] = [];
+// eslint-disable-next-line functional/no-let
+let archivedMessages: CreatedMessageWithContentAndEnrichedData[] = [];
 
 /**
  * Move the message with ID to the archived collection.
@@ -22,7 +18,7 @@ function archive(id: string): boolean {
   const destinationIndex = archivedMessages.findIndex(
     message => message.id < id
   );
-  // tslint:disable-next-line: no-object-mutation
+  // eslint-disable-next-line: no-object-mutation
   toArchived.is_archived = true;
   archivedMessages.splice(destinationIndex, 0, toArchived);
   return true;
@@ -39,7 +35,7 @@ function unarchive(id: string): boolean {
   }
   const [toInbox] = archivedMessages.splice(index, 1);
   const destinationIndex = inboxMessages.findIndex(message => message.id < id);
-  // tslint:disable-next-line: no-object-mutation
+  // eslint-disable-next-line: no-object-mutation
   toInbox.is_archived = false;
   inboxMessages.splice(destinationIndex, 0, toInbox);
   return true;
@@ -49,25 +45,27 @@ function unarchive(id: string): boolean {
  * Persist a list of messages. The extra attributes is_read and is_archived will
  * be added.
  */
-// tslint:disable-next-line: readonly-array no-let
-function persist(messages: MessageFromBE[]): void {
+// eslint-disable-next-line: readonly-array no-let
+function persist(messages: CreatedMessageWithContentAndEnrichedData[]): void {
   inboxMessages = inboxMessages
     .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
-function findAllInbox(): ReadonlyArray<MessageOnDB> {
+function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndEnrichedData> {
   return inboxMessages;
 }
 
-function findAllArchived(): ReadonlyArray<MessageOnDB> {
+function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndEnrichedData> {
   return archivedMessages;
 }
 
 /**
  * Find one message given its ID, whether it is in the inbox or archived.
  */
-function findOneById(id: string): MessageOnDB | null {
+function findOneById(
+  id: string
+): CreatedMessageWithContentAndEnrichedData | null {
   return (
     inboxMessages.find(message => message.id === id) ||
     archivedMessages.find(message => message.id === id) ||
@@ -87,7 +85,7 @@ function dropAll(): void {
 function setReadMessage(id: string): boolean {
   const message = findOneById(id);
   if (message) {
-    // tslint:disable-next-line: no-object-mutation
+    // eslint-disable-next-line: no-object-mutation
     message.is_read = true;
     return true;
   }

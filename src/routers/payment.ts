@@ -19,11 +19,11 @@ import { addHandler, addNewRoute } from "../payloads/response";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { getProblemJson } from "../payloads/error";
 import { profileRouter } from "./profile";
 import { walletRouter } from "./wallet";
 import ServicesDB, { ServiceSummary } from "./../persistence/services";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { getProblemJson } from "../payloads/error";
 
 export const paymentRouter = Router();
 
@@ -34,9 +34,9 @@ const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
     detail_v2: detailV2
   });
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let idPagamento: string | undefined;
 /**
  * user wants to pay (VERIFICA)
@@ -197,8 +197,9 @@ export const handlePaymentPostAndRedirect = (
   const outcomeParamname = "outcome";
   const secondsToRedirect = 2;
   const redirectUrl = `"${serverUrl}${exitPathName}?${outcomeParamname}=${outcomeValue}"`;
-  const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${secondsToRedirect *
-    1000});</script>`;
+  const exitRedirect = `<script type="application/javascript">setTimeout(() => {window.location.replace(${redirectUrl});},${
+    secondsToRedirect * 1000
+  });</script>`;
   res.send(
     `<h1>${title}</h1><h1>wait ${secondsToRedirect} seconds to redirect to the exit point</h1><h3>received data</h3>${formData}<br/>${exitRedirect}`
   );

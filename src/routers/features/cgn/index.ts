@@ -27,32 +27,32 @@ import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
-import ServicesDB from "./../../../persistence/services";
 import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import ServicesDB from "./../../../persistence/services";
 
 export const cgnRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let idActivationCgn: string | undefined;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let firstCgnActivationRequestTime = 0;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let currentCGN: Card = {
   status: PendingStatusEnum.PENDING
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let idActivationEyca: string | undefined;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let firstEycaActivationRequestTime = 0;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let currentEyca: EycaCard | undefined;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let eycaActivationStatus: EycaActivationDetail = {
   status: EycaStatusEnum.UNKNOWN
 };
@@ -115,8 +115,9 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
         };
         const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
-          -1) + 1) as NonNegativeInteger;
+        const increasedSettingsVersion =
+          (((servicePreference?.settings_version as number) ?? -1) +
+            1) as NonNegativeInteger;
         const updatedPreference = {
           is_inbox_enabled: true,
           is_email_enabled:
@@ -282,8 +283,9 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
         resetCgn();
         const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
-          -1) + 1) as NonNegativeInteger;
+        const increasedSettingsVersion =
+          (((servicePreference?.settings_version as number) ?? -1) +
+            1) as NonNegativeInteger;
         const updatedPreference = {
           is_inbox_enabled: false,
           is_email_enabled: false,

@@ -11,7 +11,7 @@ export type IOResponse<T> = {
 };
 
 type Route = { path: string; method: SupportedMethod; description?: string };
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let routes: ReadonlyArray<Route> = [];
 export const addNewRoute = (
   method: SupportedMethod,
@@ -37,6 +37,7 @@ export const addHandler = (
   router[method](path, (req, res) => {
     setTimeout(() => {
       if ((delay ?? 0) > 0) {
+        // eslint-disable-next-line no-console
         console.log(
           chalk.red(`${path} response has a delayed of ${delay} milliseconds`)
         );

@@ -27,3 +27,8 @@ npm-debug.log
 
 # Exclude local files
 local.*
+
+# Include .eslintrc.js
+!.eslintrc.js
+# Include .prettierrc.js
+!.prettierrc.js

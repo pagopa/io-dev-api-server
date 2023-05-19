@@ -5,7 +5,7 @@ import { addHandler } from "../../../../payloads/response";
 import { listDir, readFileAsJSON } from "../../../../utils/file";
 import { addBPDPrefix } from "../index";
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let rankingJsonFile: string = "default.json";
 export const bpdRankingV2 = Router();
 addHandler(

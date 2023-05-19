@@ -5,17 +5,11 @@ import {
   IDPayInitiativeID,
   IDPayServiceID
 } from "../../../../payloads/features/idpay/types";
-import { OnboardingPutDTO } from "../../../../../generated/definitions/idpay/OnboardingPutDTO";
-import { RequiredCriteriaDTO } from "../../../../../generated/definitions/idpay/RequiredCriteriaDTO";
 import {
   initiativeIdToString,
   serviceIdToString
 } from "../../../../payloads/features/idpay/utils";
-import { StatusEnum } from "../../../../../generated/definitions/bonus_vacanze/EligibilityCheckSuccessConflict";
-import {
-  OnboardingStatusDTO,
-  StatusEnum as InitiativeStatusEnum
-} from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
+import { StatusEnum as InitiativeStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
 import { DetailsEnum } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 
 const request = supertest(app);
@@ -57,7 +51,7 @@ describe("IDPay Onboarding API", () => {
         InitiativeStatusEnum.INVITED
       );
     });
-
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const response = await request.get(
         addIdPayPrefix(`/onboarding/ABC/status`)
@@ -70,7 +64,7 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.INVITED);
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding"))
+        .put(addIdPayPrefix("/onboarding")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(204);
     });
@@ -78,13 +72,13 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = "ABC";
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding"))
+        .put(addIdPayPrefix("/onboarding")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(404);
     });
     it("should return 400 if request body is not correct", async () => {
       const response = await request
-        .put(addIdPayPrefix("/onboarding"))
+        .put(addIdPayPrefix("/onboarding")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({});
       expect(response.status).toBe(400);
     });
@@ -94,7 +88,7 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.DEFAULT);
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding/initiative"))
+        .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(200);
     });
@@ -104,7 +98,7 @@ describe("IDPay Onboarding API", () => {
       );
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding/initiative"))
+        .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(202);
     });
@@ -114,7 +108,7 @@ describe("IDPay Onboarding API", () => {
       );
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding/initiative"))
+        .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
 
       expect(response.status).toBe(403);
@@ -125,7 +119,7 @@ describe("IDPay Onboarding API", () => {
     });
     it("should return 400 if malformed request body", async () => {
       const response = await request
-        .put(addIdPayPrefix("/onboarding/initiative"))
+        .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({});
       expect(response.status).toBe(400);
     });
@@ -133,7 +127,7 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = "ABC";
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding/initiative"))
+        .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(404);
     });
@@ -143,7 +137,7 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = initiativeIdToString(IDPayInitiativeID.INVITED);
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding/consent"))
+        .put(addIdPayPrefix("/onboarding/consent")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(202);
     });
@@ -151,13 +145,13 @@ describe("IDPay Onboarding API", () => {
       const initiativeId = "ABC";
 
       const response = await request
-        .put(addIdPayPrefix("/onboarding/consent"))
+        .put(addIdPayPrefix("/onboarding/consent")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({ initiativeId });
       expect(response.status).toBe(404);
     });
     it("should return 400 if request body is not correct", async () => {
       const response = await request
-        .put(addIdPayPrefix("/onboarding/consent"))
+        .put(addIdPayPrefix("/onboarding/consent")) // eslint-disable-line sonarjs/no-duplicate-string
         .send({});
       expect(response.status).toBe(400);
     });

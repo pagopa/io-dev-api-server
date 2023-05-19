@@ -32,8 +32,8 @@ addHandler(
   satispayRouter,
   "post",
   appendWalletV1Prefix("/satispay/add-wallet"),
-  (req, res) => {
-    return pipe(
+  (req, res) =>
+    pipe(
       req.body.data,
       Satispay.decode,
       E.fold(
@@ -51,6 +51,5 @@ addHandler(
           return res.json({ data: w2Satispay });
         }
       )
-    );
-  }
+    )
 );
