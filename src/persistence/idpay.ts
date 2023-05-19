@@ -3,10 +3,7 @@ import { range } from "lodash";
 import { ulid } from "ulid";
 import { AccumulatedTypeEnum } from "../../generated/definitions/idpay/AccumulatedAmountDTO";
 import { IbanDTO } from "../../generated/definitions/idpay/IbanDTO";
-import {
-  IbanOperationDTO,
-  OperationTypeEnum as IbanOperationEnum
-} from "../../generated/definitions/idpay/IbanOperationDTO";
+import { OperationTypeEnum as IbanOperationEnum } from "../../generated/definitions/idpay/IbanOperationDTO";
 import {
   InitiativeDTO,
   InitiativeRewardTypeEnum,
@@ -17,35 +14,14 @@ import {
   InstrumentDTO,
   StatusEnum as InstrumentStatus
 } from "../../generated/definitions/idpay/InstrumentDTO";
-import {
-  InstrumentOperationDTO,
-  OperationTypeEnum as InstrumentOperationEnum
-} from "../../generated/definitions/idpay/InstrumentOperationDTO";
-import {
-  OnboardingOperationDTO,
-  OperationTypeEnum as OnboardingOperationEnum
-} from "../../generated/definitions/idpay/OnboardingOperationDTO";
-import { OperationDTO } from "../../generated/definitions/idpay/OperationDTO";
+import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
+import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
 import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
-import { RefundDetailDTO } from "../../generated/definitions/idpay/RefundDetailDTO";
-import {
-  RefundOperationDTO,
-  OperationTypeEnum as RefundOperationEnum
-} from "../../generated/definitions/idpay/RefundOperationDTO";
-import {
-  RejectedInstrumentOperationDTO,
-  OperationTypeEnum as RejectedInstrumentOperationEnum
-} from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
+import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
+import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import { RewardValueTypeEnum } from "../../generated/definitions/idpay/RewardValueDTO";
 import { TimeTypeEnum } from "../../generated/definitions/idpay/TimeParameterDTO";
-import {
-  TransactionDetailDTO,
-  OperationTypeEnum as TransactionDetailEnum
-} from "../../generated/definitions/idpay/TransactionDetailDTO";
-import {
-  TransactionOperationDTO,
-  OperationTypeEnum as TransactionOperationEnum
-} from "../../generated/definitions/idpay/TransactionOperationDTO";
+import { OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
@@ -53,10 +29,57 @@ import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
-const walletConfig = ioDevServerConfig.wallet.idPay;
+const { idPay: walletConfig } = ioDevServerConfig.wallet;
 
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
 const pagoPaWalletInfo: CardInfo = pagoPaWallet.info as CardInfo;
+
+const generateRandomInitiativeDTO = (): InitiativeDTO => {
+  const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
+  const accrued = faker.datatype.number({ max: 200, precision: 10 });
+  const refunded = faker.datatype.number({ max: accrued, precision: 10 });
+
+  return {
+    initiativeId: ulid(),
+    initiativeName: faker.company.name(),
+    status: getRandomEnumValue(InitiativeStatus),
+    endDate: faker.date.future(1),
+    amount,
+    accrued,
+    initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
+    refunded,
+    lastCounterUpdate: faker.date.recent(1),
+    iban: faker.helpers.arrayElement(ibanList)?.iban || "",
+    nInstr: 1,
+    logoURL: faker.image.image(480, 480, true),
+    organizationName: faker.company.name()
+  };
+};
+
+const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
+  initiativeName: faker.company.name(),
+  status: getRandomEnumValue(InitiativeStatus),
+  description: faker.lorem.paragraphs(6),
+  ruleDescription: faker.lorem.paragraphs(4),
+  endDate: faker.date.future(1),
+  rankingStartDate: faker.date.past(1),
+  rankingEndDate: faker.date.future(1),
+  rewardRule: {
+    rewardValueType: getRandomEnumValue(RewardValueTypeEnum),
+    rewardValue: faker.datatype.number(100)
+  },
+  refundRule: {
+    accumulatedAmount: {
+      accumulatedType: getRandomEnumValue(AccumulatedTypeEnum),
+      refundThreshold: faker.datatype.number({ min: 10, max: 50 })
+    },
+    timeParameter: { timeType: getRandomEnumValue(TimeTypeEnum) }
+  },
+  privacyLink: faker.internet.url(),
+  tcLink: faker.internet.url(),
+  logoURL: faker.image.avatar(),
+  updateDate: faker.date.recent(1)
+});
 
 const generateRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban(false, "IT"),
@@ -66,17 +89,128 @@ const generateRandomIbanDTO = (): IbanDTO => ({
   channel: faker.datatype.string()
 });
 
+const generateRandomOperationDTO = (
+  type: OperationListDTO["operationType"]
+): OperationListDTO => {
+  switch (type) {
+    case "PAID_REFUND":
+      return {
+        operationType: RefundOperationEnum.PAID_REFUND,
+        operationDate: new Date(),
+        operationId: ulid(),
+        eventId: ulid(),
+        amount: faker.datatype.number({ min: 5, max: 100 })
+      };
+    case "REJECTED_REFUND":
+      return {
+        operationType: RefundOperationEnum.REJECTED_REFUND,
+        operationDate: new Date(),
+        operationId: ulid(),
+        eventId: ulid(),
+        amount: faker.datatype.number({ min: 5, max: 100 })
+      };
+    case "TRANSACTION":
+      return {
+        operationType: TransactionOperationEnum.TRANSACTION,
+        operationDate: new Date(),
+        operationId: ulid(),
+        accrued: faker.datatype.number({ min: 5, max: 25 }),
+        amount: faker.datatype.number({ min: 50, max: 100 }),
+        brand: pagoPaWalletInfo.brand || "VISA",
+        circuitType: "01",
+        brandLogo: pagoPaWalletInfo.brandLogo || "",
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+      };
+    case "REVERSAL":
+      return {
+        operationType: TransactionOperationEnum.REVERSAL,
+        operationDate: new Date(),
+        operationId: ulid(),
+        accrued: faker.datatype.number({ min: 5, max: 25 }),
+        amount: faker.datatype.number({ min: 50, max: 100 }),
+        brand: pagoPaWalletInfo.brand || "VISA",
+        circuitType: "01",
+        brandLogo: pagoPaWalletInfo.brandLogo || "",
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+      };
+    case "ADD_IBAN":
+      return {
+        operationType: IbanOperationEnum.ADD_IBAN,
+        operationDate: new Date(),
+        operationId: ulid(),
+        channel: "",
+        iban: faker.helpers.arrayElement(ibanList)?.iban || ""
+      };
+    case "ADD_INSTRUMENT":
+      return {
+        operationType: InstrumentOperationEnum.ADD_INSTRUMENT,
+        operationDate: new Date(),
+        operationId: ulid(),
+        brand: pagoPaWalletInfo.brand || "VISA",
+        brandLogo: pagoPaWalletInfo.brandLogo || "",
+        channel: faker.datatype.string(),
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+      };
+    case "REJECTED_ADD_INSTRUMENT":
+      return {
+        operationType: RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT,
+        operationDate: new Date(),
+        operationId: ulid(),
+        brand: pagoPaWalletInfo.brand || "VISA",
+        brandLogo: pagoPaWalletInfo.brandLogo || "",
+        channel: faker.datatype.string(),
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+      };
+    case "DELETE_INSTRUMENT":
+      return {
+        operationType: InstrumentOperationEnum.DELETE_INSTRUMENT,
+        operationDate: new Date(),
+        operationId: ulid(),
+        brand: pagoPaWalletInfo.brand || "VISA",
+        brandLogo: pagoPaWalletInfo.brandLogo || "",
+        channel: faker.datatype.string(),
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+      };
+    case "REJECTED_DELETE_INSTRUMENT":
+      return {
+        operationType:
+          RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT,
+        operationDate: new Date(),
+        operationId: ulid(),
+        brand: pagoPaWalletInfo.brand || "VISA",
+        brandLogo: pagoPaWalletInfo.brandLogo || "",
+        channel: faker.datatype.string(),
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+      };
+    case "ONBOARDING":
+    default:
+      return {
+        operationType: OnboardingOperationEnum.ONBOARDING,
+        operationDate: new Date(),
+        operationId: ulid()
+      };
+  }
+};
+
+export let initiatives: { [id: string]: InitiativeDTO } = {};
+
+export let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
+
+export let initiativeTimeline: {
+  [initiativeId: string]: ReadonlyArray<OperationListDTO>;
+} = {};
+
 export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
   { length: idPayConfig.ibanSize },
   () => generateRandomIbanDTO()
 );
 
-export const storeIban = (iban: string, description: string) =>
-  (ibanList = [...ibanList, { ...generateRandomIbanDTO(), iban, description }]);
-
 export let instruments: {
   [initiativeId: string]: ReadonlyArray<InstrumentDTO>;
 } = {};
+
+export const storeIban = (iban: string, description: string) =>
+  (ibanList = [...ibanList, { ...generateRandomIbanDTO(), iban, description }]);
 
 export const enrollInstrumentToInitiative = (
   initiativeId: string,
@@ -164,193 +298,8 @@ export const deleteInstrumentFromInitiative = (
   return true;
 };
 
-const rejectedRefundOperation: RefundOperationDTO = {
-  operationType: RefundOperationEnum.REJECTED_REFUND,
-  operationDate: new Date(),
-  operationId: ulid(),
-  eventId: ulid(),
-  amount: 10
-};
-
-const rejectedRefundOperationDetail: RefundDetailDTO = {
-  ...rejectedRefundOperation,
-  cro: ulid(),
-  iban: faker.finance.iban(false, "IT"),
-  startDate: faker.date.recent(),
-  endDate: faker.date.recent(),
-  transferDate: faker.date.recent()
-};
-
-const paidRefundOperation: RefundOperationDTO = {
-  operationType: RefundOperationEnum.PAID_REFUND,
-  operationDate: new Date(),
-  operationId: ulid(),
-  eventId: ulid(),
-  amount: 10
-};
-
-const paidRefundOperationDetail: RefundDetailDTO = {
-  ...paidRefundOperation,
-  cro: ulid(),
-  iban: faker.finance.iban(false, "IT"),
-  startDate: faker.date.recent(),
-  endDate: faker.date.recent(),
-  transferDate: faker.date.recent()
-};
-
-const reversalOperation: TransactionOperationDTO = {
-  operationType: TransactionOperationEnum.REVERSAL,
-  operationDate: new Date(),
-  operationId: ulid(),
-  accrued: 10,
-  amount: 100,
-  brand: pagoPaWalletInfo.brand || "VISA",
-  circuitType: "01",
-  brandLogo: pagoPaWalletInfo.brandLogo || "",
-  maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-};
-
-const reversalOperationDetail: TransactionDetailDTO = {
-  ...reversalOperation,
-  operationType: TransactionDetailEnum.REVERSAL,
-  idTrxAcquirer: ulid(),
-  idTrxIssuer: ulid()
-};
-
-const transactionOperation: TransactionOperationDTO = {
-  operationType: TransactionOperationEnum.TRANSACTION,
-  operationDate: new Date(),
-  operationId: ulid(),
-  accrued: 10,
-  amount: 100,
-  brand: pagoPaWalletInfo.brand || "VISA",
-  circuitType: "01",
-  brandLogo: pagoPaWalletInfo.brandLogo || "",
-  maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-};
-
-const transactionOperationDetail: TransactionDetailDTO = {
-  ...transactionOperation,
-  operationType: TransactionDetailEnum.TRANSACTION,
-  idTrxAcquirer: ulid(),
-  idTrxIssuer: ulid()
-};
-
-const rejectedDeleteInstrument: RejectedInstrumentOperationDTO = {
-  operationType: RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT,
-  operationDate: new Date(),
-  operationId: ulid(),
-  brand: pagoPaWalletInfo.brand || "VISA",
-  brandLogo: pagoPaWalletInfo.brandLogo || "",
-  channel: faker.datatype.string(),
-  maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-};
-
-const rejectedAddInstrument: RejectedInstrumentOperationDTO = {
-  operationType: RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT,
-  operationDate: new Date(),
-  operationId: ulid(),
-  brand: pagoPaWalletInfo.brand || "VISA",
-  brandLogo: pagoPaWalletInfo.brandLogo || "",
-  channel: faker.datatype.string(),
-  maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-};
-
-const addIbanOperation: IbanOperationDTO = {
-  operationType: IbanOperationEnum.ADD_IBAN,
-  operationDate: new Date(),
-  operationId: ulid(),
-  channel: "",
-  iban: faker.helpers.arrayElement(ibanList)?.iban || ""
-};
-
-const deleteInstrumentOperation: InstrumentOperationDTO = {
-  operationType: InstrumentOperationEnum.DELETE_INSTRUMENT,
-  operationDate: new Date(),
-  operationId: ulid(),
-  brand: pagoPaWalletInfo.brand || "VISA",
-  brandLogo: pagoPaWalletInfo.brandLogo || "",
-  channel: faker.datatype.string(),
-  maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-};
-
-const addInstrumentOperation: InstrumentOperationDTO = {
-  operationType: InstrumentOperationEnum.ADD_INSTRUMENT,
-  operationDate: new Date(),
-  operationId: ulid(),
-  brand: pagoPaWalletInfo.brand || "VISA",
-  brandLogo: pagoPaWalletInfo.brandLogo || "",
-  channel: faker.datatype.string(),
-  maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-};
-
-const onboardingOperation: OnboardingOperationDTO = {
-  operationType: OnboardingOperationEnum.ONBOARDING,
-  operationDate: new Date(),
-  operationId: ulid()
-};
-
-export let initiativeTimeline: {
-  [initiativeId: string]: ReadonlyArray<OperationListDTO>;
-} = {};
-
-export let initiativeTimelineDetails: {
-  [initiativeId: string]: ReadonlyArray<OperationDTO>;
-} = {};
-
-export let initiatives: { [id: string]: InitiativeDTO } = {};
-
-export let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
-
 export const updateInitiative = (initiative: InitiativeDTO) =>
   (initiatives[initiative.initiativeId] = initiative);
-
-const generateRandomInitiativeDTO = (): InitiativeDTO => {
-  const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
-  const accrued = faker.datatype.number({ max: 200, precision: 10 });
-  const refunded = faker.datatype.number({ max: accrued, precision: 10 });
-
-  return {
-    initiativeId: ulid(),
-    initiativeName: faker.company.name(),
-    status: getRandomEnumValue(InitiativeStatus),
-    endDate: faker.date.future(1),
-    amount,
-    accrued,
-    initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
-    refunded,
-    lastCounterUpdate: faker.date.recent(1),
-    iban: faker.helpers.arrayElement(ibanList)?.iban || "",
-    nInstr: 1,
-    logoURL: faker.image.image(480, 480, true),
-    organizationName: faker.company.name()
-  };
-};
-
-const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
-  initiativeName: faker.company.name(),
-  status: getRandomEnumValue(InitiativeStatus),
-  description: faker.lorem.paragraphs(6),
-  ruleDescription: faker.lorem.paragraphs(4),
-  endDate: faker.date.future(1),
-  rankingStartDate: faker.date.past(1),
-  rankingEndDate: faker.date.future(1),
-  rewardRule: {
-    rewardValueType: getRandomEnumValue(RewardValueTypeEnum),
-    rewardValue: faker.datatype.number(100)
-  },
-  refundRule: {
-    accumulatedAmount: {
-      accumulatedType: getRandomEnumValue(AccumulatedTypeEnum),
-      refundThreshold: faker.datatype.number({ min: 10, max: 50 })
-    },
-    timeParameter: { timeType: getRandomEnumValue(TimeTypeEnum) }
-  },
-  privacyLink: faker.internet.url(),
-  tcLink: faker.internet.url(),
-  logoURL: faker.image.avatar(),
-  updateDate: faker.date.recent(1)
-});
 
 range(0, walletConfig.refundCount).forEach(() => {
   const initiative: InitiativeDTO = {
@@ -378,22 +327,20 @@ range(0, walletConfig.refundCount).forEach(() => {
     }
   ];
   initiativeTimeline[initiativeId] = [
-    rejectedRefundOperation,
-    paidRefundOperation,
-    reversalOperation,
-    transactionOperation,
-    rejectedDeleteInstrument,
-    rejectedAddInstrument,
-    addIbanOperation,
-    deleteInstrumentOperation,
-    addInstrumentOperation,
-    onboardingOperation
-  ];
-  initiativeTimelineDetails[initiativeId] = [
-    rejectedRefundOperationDetail,
-    paidRefundOperationDetail,
-    reversalOperationDetail,
-    transactionOperationDetail
+    generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
+    generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
+    generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
+    generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+    generateRandomOperationDTO(
+      RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
+    ),
+    generateRandomOperationDTO(
+      RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
+    ),
+    generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
+    generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
+    generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
   ];
 });
 
@@ -420,8 +367,9 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
   initiatives[initiativeId] = initiative;
   initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [];
-  initiativeTimeline[initiativeId] = [onboardingOperation];
-  initiativeTimelineDetails[initiativeId] = [];
+  initiativeTimeline[initiativeId] = [
+    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+  ];
 });
 
 range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
@@ -454,22 +402,20 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
     }
   ];
   initiativeTimeline[initiativeId] = [
-    rejectedRefundOperation,
-    paidRefundOperation,
-    reversalOperation,
-    transactionOperation,
-    rejectedDeleteInstrument,
-    rejectedAddInstrument,
-    addIbanOperation,
-    deleteInstrumentOperation,
-    addInstrumentOperation,
-    onboardingOperation
-  ];
-  initiativeTimelineDetails[initiativeId] = [
-    rejectedRefundOperationDetail,
-    paidRefundOperationDetail,
-    reversalOperationDetail,
-    transactionOperationDetail
+    generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
+    generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
+    generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
+    generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+    generateRandomOperationDTO(
+      RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
+    ),
+    generateRandomOperationDTO(
+      RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
+    ),
+    generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
+    generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
+    generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
   ];
 });
 
@@ -503,22 +449,20 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
     }
   ];
   initiativeTimeline[initiativeId] = [
-    rejectedRefundOperation,
-    paidRefundOperation,
-    reversalOperation,
-    transactionOperation,
-    rejectedDeleteInstrument,
-    rejectedAddInstrument,
-    addIbanOperation,
-    deleteInstrumentOperation,
-    addInstrumentOperation,
-    onboardingOperation
-  ];
-  initiativeTimelineDetails[initiativeId] = [
-    rejectedRefundOperationDetail,
-    paidRefundOperationDetail,
-    reversalOperationDetail,
-    transactionOperationDetail
+    generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
+    generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
+    generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
+    generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+    generateRandomOperationDTO(
+      RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
+    ),
+    generateRandomOperationDTO(
+      RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
+    ),
+    generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
+    generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
+    generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
   ];
 });
 
@@ -545,6 +489,7 @@ range(0, walletConfig.discountCount).forEach(() => {
   initiatives[initiativeId] = initiative;
   initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [];
-  initiativeTimeline[initiativeId] = [onboardingOperation];
-  initiativeTimelineDetails[initiativeId] = [];
+  initiativeTimeline[initiativeId] = [
+    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+  ];
 });
