@@ -68,7 +68,7 @@ const addPrefix = (path: string) => addApiV1Prefix(`/bonus/vacanze${path}`);
 // the authenticated user or by any between his family member
 addHandler(bonusVacanze, "get", addPrefix(`/activations`), (_, res) => {
   res.json({
-    items: aLotOfBonus.map(b => ({ id: b.id, is_applicant: true }))
+    items: []
   });
 });
 
