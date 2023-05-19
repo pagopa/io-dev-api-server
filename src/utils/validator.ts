@@ -10,7 +10,7 @@ import { IOResponse } from "../payloads/response";
  */
 export const validatePayload = <T, O, I>(
   codec: t.Type<T, O, I>,
-  payload: any
+  payload: I
 ) => {
   const maybeValidPayload = codec.decode(payload);
   if (E.isLeft(maybeValidPayload)) {
@@ -21,7 +21,7 @@ export const validatePayload = <T, O, I>(
 
 export const validateAndCreatePayload = <T, O, I>(
   codec: t.Type<T, O, I>,
-  payload: any,
+  payload: I,
   statusCode: number = 200
 ): IOResponse<T> => {
   const maybeValidPayload = codec.decode(payload);

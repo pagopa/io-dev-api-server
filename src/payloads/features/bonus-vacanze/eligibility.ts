@@ -72,27 +72,32 @@ export const dsuData: Dsu = {
   max_tax_benefit: 100
 };
 
-export const eligibilityCheckSuccessEligible: EligibilityCheckSuccessEligible = {
-  id: "d296cf6a-11f8-412b-972a-ede34d629680" as NonEmptyString,
-  valid_before: new Date("2020-07-04T12:20:00.000Z"),
-  dsu_request: dsuData,
-  status: EnumEligible.ELIGIBLE
-};
+const eligibilityCheckId =
+  "d296cf6a-11f8-412b-972a-ede34d629680" as NonEmptyString;
 
-export const eligibilityCheckSuccessIneligible: EligibilityCheckSuccessIneligible = {
-  id: "d296cf6a-11f8-412b-972a-ede34d629680" as NonEmptyString,
-  status: EnumIneligible.INELIGIBLE
-};
+export const eligibilityCheckSuccessEligible: EligibilityCheckSuccessEligible =
+  {
+    id: eligibilityCheckId,
+    valid_before: new Date("2020-07-04T12:20:00.000Z"),
+    dsu_request: dsuData,
+    status: EnumEligible.ELIGIBLE
+  };
+
+export const eligibilityCheckSuccessIneligible: EligibilityCheckSuccessIneligible =
+  {
+    id: eligibilityCheckId,
+    status: EnumIneligible.INELIGIBLE
+  };
 
 export const eligibilityCheckFailure: EligibilityCheckFailure = {
-  id: "d296cf6a-11f8-412b-972a-ede34d629680" as NonEmptyString,
+  id: eligibilityCheckId,
   error: ErrorEnum.DATA_NOT_FOUND,
   error_description: "error_description",
   status: EnumFailure.FAILURE
 };
 
 export const eligibilityCheckConflict: EligibilityCheckSuccessConflict = {
-  id: "d296cf6a-11f8-412b-972a-ede34d629680" as NonEmptyString,
+  id: eligibilityCheckId,
   status: EnumConflict.CONFLICT,
   dsu_request: dsuData
 };

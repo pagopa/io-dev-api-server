@@ -4,9 +4,7 @@ import { IOResponse } from "./response";
 
 export const getSuccessResponse = (
   message?: string
-): IOResponse<SuccessResponse> => {
-  return {
-    payload: validatePayload(SuccessResponse, { message }),
-    isJson: true
-  };
-};
+): IOResponse<SuccessResponse> => ({
+  payload: validatePayload(SuccessResponse, { message }),
+  isJson: true
+});

@@ -1,14 +1,14 @@
-import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
 import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
+import { faker } from "@faker-js/faker/locale/it";
+import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
 import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
 import { DepartmentName } from "../../../generated/definitions/backend/DepartmentName";
 import { ServiceName } from "../../../generated/definitions/backend/ServiceName";
 import { NotificationChannelEnum } from "../../../generated/definitions/backend/NotificationChannel";
-import { faker } from "@faker-js/faker/locale/it";
 import { validatePayload } from "../../utils/validator";
 import { ServiceMetadata } from "../../../generated/definitions/backend/ServiceMetadata";
 import { StandardServiceCategoryEnum } from "../../../generated/definitions/backend/StandardServiceCategory";
@@ -42,7 +42,7 @@ const createNationalServices = (
   );
 
 const createSpecialServices = (
-  specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][],
+  specialServiceGeneratorTuples: Array<[boolean, SpecialServiceGenerator]>,
   serviceStartIndex: number,
   aggregationCount = 3
 ): ServicePublic[] =>
@@ -68,9 +68,8 @@ const createServicePreferences = (
   const servicePreferences = new Map<ServiceId, ServicePreference>();
   servicesSources.forEach(serviceSource => {
     const serviceId = serviceSource.serviceId;
-    const serviceHasCustomPreferenceGenerator = customPreferenceEnabledGenerators.get(
-      serviceId
-    );
+    const serviceHasCustomPreferenceGenerator =
+      customPreferenceEnabledGenerators.get(serviceId);
     const isPreferenceEnabled =
       serviceSource.isSpecialService && serviceHasCustomPreferenceGenerator
         ? serviceHasCustomPreferenceGenerator()
@@ -108,6 +107,7 @@ const createServices = (
 ): ServicePublic[] => {
   const services: ServicePublic[] = [];
   for (
+    // eslint-disable-next-line functional/no-let
     let serviceIndex = serviceStartIndex;
     serviceIndex < serviceStartIndex + count;
     serviceIndex++
@@ -122,7 +122,8 @@ const createServices = (
         11,
         "0"
       ) as OrganizationFiscalCode,
-      organization_name: `${faker.company.name()} [${organizationIndex}]` as OrganizationName,
+      organization_name:
+        `${faker.company.name()} [${organizationIndex}]` as OrganizationName,
       service_metadata: {
         ...createServiceMetadata(scope),
         scope,
@@ -150,29 +151,29 @@ const createService = (serviceId: string): ServicePublic => {
   return validatePayload(ServicePublic, service);
 };
 
-const createServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => {
-  return {
-    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
-    scope,
-    address: faker.address.streetAddress() as NonEmptyString,
-    email: faker.internet.email() as NonEmptyString,
-    pec: faker.internet.email() as NonEmptyString,
-    phone: faker.phone.number() as NonEmptyString,
-    web_url: faker.internet.url() as NonEmptyString,
-    app_android: faker.internet.url() as NonEmptyString,
-    app_ios: faker.internet.url() as NonEmptyString,
-    tos_url: faker.internet.url() as NonEmptyString,
-    privacy_url: faker.internet.url() as NonEmptyString,
-    category: StandardServiceCategoryEnum.STANDARD
-  };
-};
+const createServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => ({
+  description:
+    "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
+  scope,
+  address: faker.address.streetAddress() as NonEmptyString,
+  email: faker.internet.email() as NonEmptyString,
+  pec: faker.internet.email() as NonEmptyString,
+  phone: faker.phone.number() as NonEmptyString,
+  web_url: faker.internet.url() as NonEmptyString,
+  app_android: faker.internet.url() as NonEmptyString,
+  app_ios: faker.internet.url() as NonEmptyString,
+  tos_url: faker.internet.url() as NonEmptyString,
+  privacy_url: faker.internet.url() as NonEmptyString,
+  category: StandardServiceCategoryEnum.STANDARD
+});
 
 const createSpecialServicesInternal = (
-  specialServiceGeneratorTuples: [boolean, SpecialServiceGenerator][],
+  specialServiceGeneratorTuples: Array<[boolean, SpecialServiceGenerator]>,
   serviceStartIndex: number,
   aggregationCount: number
 ): ServicePublic[] => {
-  let specialServices: ServicePublic[] = [];
+  const specialServices: ServicePublic[] = [];
+  // eslint-disable-next-line functional/no-let
   let organizationStartIndex =
     getOrganizationIndex(serviceStartIndex, aggregationCount) +
     (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);

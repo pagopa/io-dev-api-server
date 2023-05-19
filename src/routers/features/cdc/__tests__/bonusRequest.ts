@@ -24,12 +24,13 @@ describe("GET beneficiario/stato", () => {
 });
 
 describe("POST /beneficiario/registrazione", () => {
+  // eslint-disable-line sonarjs/no-duplicate-string
   it("should return 500 if the received body is not correct", async () => {
     const wrongPayload = {
       anniRiferimento: {}
     };
     const response = await request
-      .post("/bonus/cdc/beneficiario/registrazione")
+      .post("/bonus/cdc/beneficiario/registrazione") // eslint-disable-line sonarjs/no-duplicate-string
       .set(wrongPayload);
 
     expect(response.status).toBe(500);
@@ -43,7 +44,7 @@ describe("POST /beneficiario/registrazione", () => {
       ]
     };
     const responseRegistered = await request
-      .post("/bonus/cdc/beneficiario/registrazione")
+      .post("/bonus/cdc/beneficiario/registrazione") // eslint-disable-line sonarjs/no-duplicate-string
       .send(payload);
 
     const requestRegisteredOutcome = ListaEsitoRichiestaPerAnno.decode(
@@ -75,7 +76,7 @@ describe("POST /beneficiario/registrazione", () => {
       );
     }
     const responsePending = await request
-      .post("/bonus/cdc/beneficiario/registrazione")
+      .post("/bonus/cdc/beneficiario/registrazione") // eslint-disable-line sonarjs/no-duplicate-string
       .send(payload);
 
     const requestPendingOutcome = ListaEsitoRichiestaPerAnno.decode(

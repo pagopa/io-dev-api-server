@@ -9,13 +9,9 @@ import ServicesDB from "./../../persistence/services";
 
 const request = supertest(app);
 
-beforeAll(() => {
-  return ServicesDB.createServices(ioDevServerConfig);
-});
+beforeAll(() => ServicesDB.createServices(ioDevServerConfig));
 
-afterAll(() => {
-  return ServicesDB.deleteServices();
-});
+afterAll(() => ServicesDB.deleteServices());
 
 it("services should return a valid services list", async () => {
   const response = await request.get(`${basePath}/services`);

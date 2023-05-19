@@ -37,6 +37,7 @@ describe("IDPay Wallet API", () => {
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("status", tInitiative.status);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const response = await request.get(addIdPayPrefix(`/wallet/ABC123`));
       expect(response.status).toBe(404);
@@ -56,6 +57,7 @@ describe("IDPay Wallet API", () => {
         details.initiativeName
       );
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "A";
 
@@ -76,6 +78,7 @@ describe("IDPay Wallet API", () => {
       expect(response.status).toBe(200);
       expect(response.body).toStrictEqual({ status: tInitiative.status });
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
 
@@ -86,6 +89,7 @@ describe("IDPay Wallet API", () => {
     });
   });
   describe("PUT enrollIban", () => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 200", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
@@ -99,6 +103,7 @@ describe("IDPay Wallet API", () => {
         .send(body);
       expect(response.status).toBe(200);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
       const body: IbanPutDTO = {
@@ -141,6 +146,7 @@ describe("IDPay Wallet API", () => {
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("instrumentList");
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
 
@@ -151,6 +157,7 @@ describe("IDPay Wallet API", () => {
     });
   });
   describe("PUT enrollInstrument", () => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 200", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
@@ -161,6 +168,7 @@ describe("IDPay Wallet API", () => {
       );
       expect(response.status).toBe(200);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
       const walletId = 2;
@@ -192,6 +200,7 @@ describe("IDPay Wallet API", () => {
     });
   });
   describe("DELETE deleteInstrument", () => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 200", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
@@ -202,6 +211,7 @@ describe("IDPay Wallet API", () => {
       );
       expect(response.status).toBe(200);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
       const instrumentId = "ABC";
@@ -242,6 +252,7 @@ describe("IDPay Wallet API", () => {
     });
   });
   describe("DELETE unsubscribe", () => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 200", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
@@ -251,6 +262,7 @@ describe("IDPay Wallet API", () => {
       );
       expect(response.status).toBe(200);
     });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
 

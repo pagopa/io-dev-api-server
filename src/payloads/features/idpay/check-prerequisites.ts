@@ -20,8 +20,8 @@ import {
   SelfDeclarationMultiDTO,
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
-import { IDPayInitiativeID } from "./types";
 import { getRandomEnumValue } from "../../utils/random";
+import { IDPayInitiativeID } from "./types";
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   {
@@ -55,20 +55,21 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   }
 ];
 
+const criterionArray = ["Criterio 1", "Criterio 2", "Criterio 3"];
 const selfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
   {
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
     description:
       "Testo dove viene descritto il criterio con opzioni di scelta multipla:",
-    value: ["Criterio 1", "Criterio 2", "Criterio 3"]
+    value: criterionArray
   },
   {
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
     description:
       "Testo dove viene descritto il criterio con opzioni di scelta multipla, seconda pagina:",
-    value: ["Criterio 1", "Criterio 2", "Criterio 3"]
+    value: criterionArray
   }
 ];
 
@@ -76,19 +77,19 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
   {
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: "Criterio 1",
+    description: criterionArray[0],
     value: false
   },
   {
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: "Criterio 2",
+    description: criterionArray[1],
     value: false
   },
   {
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: "Criterio 3",
+    description: criterionArray[2],
     value: false
   }
 ];
