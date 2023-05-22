@@ -192,14 +192,11 @@ const generateRandomOperationDTO = (
   }
 };
 
-// eslint-disable-next-line functional/no-let
-export let initiatives: { [id: string]: InitiativeDTO } = {};
+export const initiatives: { [id: string]: InitiativeDTO } = {};
 
-// eslint-disable-next-line functional/no-let
-export let initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
+export const initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
 
-// eslint-disable-next-line functional/no-let
-export let initiativeTimeline: {
+export const initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
 } = {};
 
@@ -209,8 +206,7 @@ export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
   () => generateRandomIbanDTO()
 );
 
-// eslint-disable-next-line functional/no-let
-export let instruments: {
+export const instruments: {
   [initiativeId: string]: ReadonlyArray<InstrumentDTO>;
 } = {};
 
