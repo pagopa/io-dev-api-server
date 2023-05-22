@@ -71,10 +71,8 @@ const defaultConfig: IoDevServerConfig = {
     response: {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200,
-      getMVLMessageResponseCode: 200,
       getThirdPartyMessageResponseCode: 200
     },
-    legalCount: 0,
     pnCount: 0,
     withRemoteAttachments: 0,
     paymentsCount: 1,
@@ -102,7 +100,7 @@ const defaultConfig: IoDevServerConfig = {
     // sending 2 messages at minimum to allow for basic pagination
     standardMessageCount: 2,
     archivedMessageCount: 1,
-    // atm it has effect only on legal message flow (pr welcome)
+    // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
   },
   wallet: {

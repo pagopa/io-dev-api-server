@@ -170,12 +170,9 @@ export const IoDevServerConfig = t.interface({
         // 200 success with payload
         getMessageResponseCode: HttpResponseCode,
         // 200 success with payload
-        getMVLMessageResponseCode: HttpResponseCode,
-        // 200 success with payload
         getThirdPartyMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
-      legalCount: t.number,
       // number of messages coming from PN (aka Piattaforma Notifiche)
       pnCount: t.number,
       // number of messages with remote attachments
