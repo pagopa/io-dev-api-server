@@ -45,7 +45,7 @@ export const getTimelineDetailResponse = (
   pipe(
     initiativeTimeline[initiativeId],
     O.fromNullable,
-    O.map(timeline => timeline.find(o => o.operationType === operationId)),
+    O.map(timeline => timeline.find(o => o.operationId === operationId)),
     O.chain(O.fromNullable),
     O.map(generateRandomOperationDetailDTO),
     O.chain(O.fromNullable)
