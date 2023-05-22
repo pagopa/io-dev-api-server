@@ -12,14 +12,6 @@ const generateRandomOperationDetailDTO = (
 ): OperationDTO | undefined => {
   switch (operation.operationType) {
     case "PAID_REFUND":
-      return {
-        ...operation,
-        cro: ulid(),
-        iban: faker.finance.iban(false, "IT"),
-        startDate: faker.date.recent(),
-        endDate: faker.date.recent(),
-        transferDate: faker.date.recent()
-      };
     case "REJECTED_REFUND":
       return {
         ...operation,
@@ -53,7 +45,7 @@ export const getTimelineDetailResponse = (
   pipe(
     initiativeTimeline[initiativeId],
     O.fromNullable,
-    O.map(timeline => timeline.find(o => o.operationType === operationId)),
+    O.map(timeline => timeline.find(o => o.operationId === operationId)),
     O.chain(O.fromNullable),
     O.map(generateRandomOperationDetailDTO),
     O.chain(O.fromNullable)

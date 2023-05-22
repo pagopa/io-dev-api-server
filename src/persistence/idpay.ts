@@ -65,37 +65,18 @@ const generateRandomOperationDTO = (
 ): OperationListDTO => {
   switch (type) {
     case "PAID_REFUND":
-      return {
-        operationType: RefundOperationEnum.PAID_REFUND,
-        operationDate: new Date(),
-        operationId: ulid(),
-        eventId: ulid(),
-        amount: faker.datatype.number({ min: 5, max: 100 })
-      };
     case "REJECTED_REFUND":
       return {
-        operationType: RefundOperationEnum.REJECTED_REFUND,
+        operationType: type,
         operationDate: new Date(),
         operationId: ulid(),
         eventId: ulid(),
         amount: faker.datatype.number({ min: 5, max: 100 })
       };
+    case "REVERSAL":
     case "TRANSACTION":
       return {
-        operationType: TransactionOperationEnum.TRANSACTION,
-        operationDate: new Date(),
-        operationId: ulid(),
-        accrued: faker.datatype.number({ min: 5, max: 25 }),
-        amount: faker.datatype.number({ min: 50, max: 100 }),
-        brand: pagoPaWalletInfo.brand || "VISA",
-        circuitType: "01",
-        brandLogo: pagoPaWalletInfo.brandLogo || "",
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: "" // TODO add correct status when API definitions are ready
-      };
-    case "REVERSAL":
-      return {
-        operationType: TransactionOperationEnum.REVERSAL,
+        operationType: type,
         operationDate: new Date(),
         operationId: ulid(),
         accrued: faker.datatype.number({ min: 5, max: 25 }),
@@ -115,39 +96,11 @@ const generateRandomOperationDTO = (
         iban: faker.helpers.arrayElement(ibanList)?.iban || ""
       };
     case "ADD_INSTRUMENT":
-      return {
-        operationType: InstrumentOperationEnum.ADD_INSTRUMENT,
-        operationDate: new Date(),
-        operationId: ulid(),
-        brand: pagoPaWalletInfo.brand || "VISA",
-        brandLogo: pagoPaWalletInfo.brandLogo || "",
-        channel: faker.datatype.string(),
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-      };
     case "REJECTED_ADD_INSTRUMENT":
-      return {
-        operationType: RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT,
-        operationDate: new Date(),
-        operationId: ulid(),
-        brand: pagoPaWalletInfo.brand || "VISA",
-        brandLogo: pagoPaWalletInfo.brandLogo || "",
-        channel: faker.datatype.string(),
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-      };
     case "DELETE_INSTRUMENT":
-      return {
-        operationType: InstrumentOperationEnum.DELETE_INSTRUMENT,
-        operationDate: new Date(),
-        operationId: ulid(),
-        brand: pagoPaWalletInfo.brand || "VISA",
-        brandLogo: pagoPaWalletInfo.brandLogo || "",
-        channel: faker.datatype.string(),
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
-      };
     case "REJECTED_DELETE_INSTRUMENT":
       return {
-        operationType:
-          RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT,
+        operationType: type,
         operationDate: new Date(),
         operationId: ulid(),
         brand: pagoPaWalletInfo.brand || "VISA",
@@ -165,11 +118,9 @@ const generateRandomOperationDTO = (
   }
 };
 
-// eslint-disable-next-line functional/no-let
-export let initiatives: { [id: string]: InitiativeDTO } = {};
+export const initiatives: { [id: string]: InitiativeDTO } = {};
 
-// eslint-disable-next-line functional/no-let
-export let initiativeTimeline: {
+export const initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
 } = {};
 
@@ -179,8 +130,7 @@ export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
   () => generateRandomIbanDTO()
 );
 
-// eslint-disable-next-line functional/no-let
-export let instruments: {
+export const instruments: {
   [initiativeId: string]: ReadonlyArray<InstrumentDTO>;
 } = {};
 
@@ -422,7 +372,9 @@ range(0, walletConfig.discountCount).forEach(() => {
     initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
     status: InitiativeStatus.REFUNDABLE,
     iban: undefined,
-    nInstr: 0
+    nInstr: 0,
+    accrued: 0,
+    refunded: 0
   };
 
   const { initiativeId } = initiative;
