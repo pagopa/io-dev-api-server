@@ -432,7 +432,7 @@ range(0, walletConfig.discountCount).forEach(() => {
     iban: undefined,
     nInstr: 0,
     accrued: 0,
-    refunded: 0,
+    refunded: 0
   };
 
   const { initiativeId } = initiative;
