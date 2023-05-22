@@ -12,14 +12,6 @@ const generateRandomOperationDetailDTO = (
 ): OperationDTO | undefined => {
   switch (operation.operationType) {
     case "PAID_REFUND":
-      return {
-        ...operation,
-        cro: ulid(),
-        iban: faker.finance.iban(false, "IT"),
-        startDate: faker.date.recent(),
-        endDate: faker.date.recent(),
-        transferDate: faker.date.recent()
-      };
     case "REJECTED_REFUND":
       return {
         ...operation,
