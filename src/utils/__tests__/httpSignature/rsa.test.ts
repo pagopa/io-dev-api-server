@@ -138,12 +138,12 @@ describe("Test custom content TOS and Sign Challenges", () => {
       );
 
       expect(customContentSignatureBase).not.toBe(undefined);
-      if (customContentSignatureBase) {             
+      if (customContentSignatureBase) {
         const customContentChallenge = getCustomContentChallenge(
           customContentSignatureBase.signatureLabel,
           SIGNATURE
-        );      
-        
+        );
+
         expect(customContentChallenge).not.toBe(undefined);
         if (customContentChallenge) {
           const result = await verifyCustomContentChallenge(
