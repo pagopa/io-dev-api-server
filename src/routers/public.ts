@@ -138,7 +138,7 @@ addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {
 });
 
 const handleLollipopLoginRedirect = (
-  res: Response<any, Record<string, any>>,
+  res: Response,
   samlRequest: string,
   thumbprint?: string
 ) => {
