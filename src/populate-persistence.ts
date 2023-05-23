@@ -13,11 +13,9 @@ import { CreatedMessageWithContentAndEnrichedData } from "../generated/definitio
 import { ioDevServerConfig } from "./config";
 import {
   createMessage,
-  getMvlAttachments,
   remoteAttachmentFileCount,
   withContent,
   withDueDate,
-  withLegalContent,
   withPaymentData,
   withPNContent,
   withRemoteAttachments
@@ -587,27 +585,6 @@ const createMessagesWithPayments = (
   }
 };
 
-const createMessagesWithLegal = (
-  customConfig: IoDevServerConfig,
-  output: Array<
-    CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
-  >
-) => {
-  if (customConfig.messages.legalCount > 0) {
-    range(1, customConfig.messages.legalCount).forEach(count => {
-      const isOdd = count % 2 > 0;
-      const message = getNewMessage(
-        customConfig,
-        `⚖️ Legal -${isOdd ? "" : "without HTML"} ${count}`,
-        messageMarkdown
-      );
-      const mvlMsgId = message.id;
-      const attachments = getMvlAttachments(mvlMsgId, ["pdf", "png", "jpg"]);
-      output.push(withLegalContent(message, message.id, attachments, isOdd));
-    });
-  }
-};
-
 const createMessagesWithPN = (
   customConfig: IoDevServerConfig,
   output: Array<
@@ -702,8 +679,6 @@ const createMessages = (
   createMessagesWithPaymentWithExpiredDueDateCount(customConfig, now, output);
   createMessagesWithPaymentWithValidDueDate(customConfig, now, output);
   createMessagesWithPayments(customConfig, output);
-
-  createMessagesWithLegal(customConfig, output);
 
   createMessagesWithPN(customConfig, output);
 

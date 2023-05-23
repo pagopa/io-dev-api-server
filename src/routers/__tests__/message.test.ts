@@ -31,7 +31,6 @@ function assertResponseIsRight<T>(body: T): PaginatedPublicMessagesCollection {
 const customConfig = _.merge(ioDevServerConfig, {
   // testing messages with a heavily populated DB
   messages: {
-    legalCount: 10,
     paymentsCount: 10,
     paymentInvalidAfterDueDateWithValidDueDateCount: 10,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 10,
