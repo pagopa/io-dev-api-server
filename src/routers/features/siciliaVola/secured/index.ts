@@ -1,4 +1,3 @@
-
 import fs from "fs";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
@@ -18,7 +17,6 @@ export const securedSvRouter = Router();
 
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/mitvoucher/data/rest/secured${path}`);
-
 
 // eslint-disable-next-line functional/no-let
 let vouchersBeneficiary: ReadonlyArray<VoucherBeneficiarioOutputBean>;

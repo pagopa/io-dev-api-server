@@ -24,7 +24,6 @@ const readWinningTransactions = (directoryName: string, fileName: string) =>
     `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
   );
 
-
 // eslint-disable-next-line functional/no-let
 let totalCashback: Map<number, string>;
 

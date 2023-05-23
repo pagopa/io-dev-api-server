@@ -30,7 +30,7 @@ const initiativesByWalletId = (
         };
 
         if (!result[idWallet]) {
-          result = {...result, [idWallet]: []};
+          result = { ...result, [idWallet]: [] };
         }
         result = { ...result, [idWallet]: [...result[idWallet], status] };
       }

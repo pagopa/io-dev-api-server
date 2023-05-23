@@ -34,7 +34,6 @@ const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
     detail_v2: detailV2
   });
 
-
 // eslint-disable-next-line functional/no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
 

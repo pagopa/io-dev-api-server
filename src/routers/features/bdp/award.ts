@@ -12,7 +12,6 @@ export const bpdAward = Router();
 const readPeriodPresetJson = (fileName: string) =>
   readFileAsJSON(assetsFolder + "/bpd/award/periods/" + fileName);
 
-
 // eslint-disable-next-line functional/no-let
 let awardPeriods: string = "default.json";
 

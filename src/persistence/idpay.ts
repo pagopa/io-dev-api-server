@@ -174,17 +174,17 @@ export const enrollInstrumentToInitiative = (
       i => i.idWallet === wallet.idWallet?.toString()
     );
 
-     instruments = {
-       ...instruments,
-       [initiativeId]: [
-         ...initiativeInstruments.slice(0, index),
-         {
-           ...initiativeInstruments[index],
-           status: InstrumentStatus.ACTIVE
-         },
-         ...initiativeInstruments.slice(index + 1)
-       ]
-     };
+    instruments = {
+      ...instruments,
+      [initiativeId]: [
+        ...initiativeInstruments.slice(0, index),
+        {
+          ...initiativeInstruments[index],
+          status: InstrumentStatus.ACTIVE
+        },
+        ...initiativeInstruments.slice(index + 1)
+      ]
+    };
   }, 5000);
 
   return true;
@@ -207,18 +207,17 @@ export const deleteInstrumentFromInitiative = (
     return false;
   }
 
-   instruments = {
-     ...instruments,
-     [initiativeId]: [
-       ...initiativeInstruments.slice(0, index),
-       {
-         ...initiativeInstruments[index],
-         status: InstrumentStatus.PENDING_DEACTIVATION_REQUEST
-       },
-       ...initiativeInstruments.slice(index + 1)
-     ]
-   };
-
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      ...initiativeInstruments.slice(0, index),
+      {
+        ...initiativeInstruments[index],
+        status: InstrumentStatus.PENDING_DEACTIVATION_REQUEST
+      },
+      ...initiativeInstruments.slice(index + 1)
+    ]
+  };
 
   setTimeout(() => {
     const initiativeInstruments = instruments[initiativeId] || [];
@@ -227,20 +226,20 @@ export const deleteInstrumentFromInitiative = (
       i => i.instrumentId === instrumentId
     );
 
-     instruments = {
-       ...instruments,
-       [initiativeId]: [
-         ...initiativeInstruments.slice(0, index),
-         ...initiativeInstruments.slice(index + 1)
-       ]
-     };
-
+    instruments = {
+      ...instruments,
+      [initiativeId]: [
+        ...initiativeInstruments.slice(0, index),
+        ...initiativeInstruments.slice(index + 1)
+      ]
+    };
   }, 5000);
 
   return true;
 };
 
-export const updateInitiative = (initiative: InitiativeDTO) => (initiatives = {...initiatives, [initiative.initiativeId]: initiative});
+export const updateInitiative = (initiative: InitiativeDTO) =>
+  (initiatives = { ...initiatives, [initiative.initiativeId]: initiative });
 
 range(0, walletConfig.refundCount).forEach(() => {
   const initiative: InitiativeDTO = {
@@ -300,13 +299,12 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
 
   initiatives = { ...initiatives, [initiativeId]: initiative };
   instruments = { ...instruments, [initiativeId]: [] };
-   initiativeTimeline = {
-     ...initiativeTimeline,
-     [initiativeId]: [
-       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-     ]
-   };
-
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+    ]
+  };
 });
 
 range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
@@ -322,17 +320,17 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
   const { initiativeId } = initiative;
 
   initiatives = { ...initiatives, [initiativeId]: initiative };
- instruments = {
-   ...instruments,
-   [initiativeId]: [
-     {
-       instrumentId: ulid(),
-       idWallet: pagoPaWallet.idWallet?.toString(),
-       activationDate: new Date(),
-       status: InstrumentStatus.ACTIVE
-     }
-   ]
- };
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        idWallet: pagoPaWallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE
+      }
+    ]
+  };
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
@@ -366,18 +364,18 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-   initiatives = { ...initiatives, [initiativeId]: initiative };
-   instruments = {
-     ...instruments,
-     [initiativeId]: [
-       {
-         instrumentId: ulid(),
-         idWallet: pagoPaWallet.idWallet?.toString(),
-         activationDate: new Date(),
-         status: InstrumentStatus.ACTIVE
-       }
-     ]
-   };
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        idWallet: pagoPaWallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE
+      }
+    ]
+  };
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
@@ -418,14 +416,11 @@ range(0, walletConfig.discountCount).forEach(() => {
   initiatives = { ...initiatives, [initiativeId]: initiative };
   instruments = {
     ...instruments,
-    [initiativeId]: [
-     
-    ]
+    [initiativeId]: []
   };
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
-
       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
     ]
   };
