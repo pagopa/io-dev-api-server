@@ -2,8 +2,9 @@ import * as jose from "jose";
 import { AssertionRef } from "../../generated/definitions/backend/AssertionRef";
 import { DEFAULT_LOLLIPOP_HASH_ALGORITHM } from "../routers/public";
 
+// eslint-disable-next-line functional/no-let
 let lollipopAssertionRef: AssertionRef | undefined;
-
+// eslint-disable-next-line functional/no-let
 let lollipopPublicKey: jose.JWK | undefined;
 
 export function getAssertionRef() {
