@@ -14,7 +14,6 @@ import {
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
-import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import { OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
@@ -23,6 +22,7 @@ import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
+import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
