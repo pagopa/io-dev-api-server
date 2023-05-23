@@ -2,9 +2,7 @@ import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { AccumulatedTypeEnum } from "../../../../generated/definitions/idpay/AccumulatedAmountDTO";
-import {
-  InitiativeDTO
-} from "../../../../generated/definitions/idpay/InitiativeDTO";
+import { InitiativeDTO } from "../../../../generated/definitions/idpay/InitiativeDTO";
 import { InitiativeDetailDTO } from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
 import { RewardValueTypeEnum } from "../../../../generated/definitions/idpay/RewardValueDTO";
 import { TimeTypeEnum } from "../../../../generated/definitions/idpay/TimeParameterDTO";
