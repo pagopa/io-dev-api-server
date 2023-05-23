@@ -117,9 +117,12 @@ describe("Test custom content TOS and Sign Challenges", () => {
         content.challenge,
         content.header
       );
-      expect(customContentSignatureBase!.signatureBase).toBe(
-        content.signatureBase
-      );
+      expect(customContentSignatureBase).not.toBe(undefined);
+      if (customContentSignatureBase) {
+        expect(customContentSignatureBase.signatureBase).toBe(
+          content.signatureBase
+        );
+      }
     });
   });
 
@@ -131,18 +134,24 @@ describe("Test custom content TOS and Sign Challenges", () => {
         content.header
       );
 
-      const customContentChallenge = getCustomContentChallenge(
-        customContentSignatureBase!.signatureLabel!,
-        SIGNATURE
-      );
+      expect(customContentSignatureBase).not.toBe(undefined);
+      if (customContentSignatureBase) {
+        const customContentChallenge = getCustomContentChallenge(
+          customContentSignatureBase.signatureLabel,
+          SIGNATURE
+        );
 
-      const result = await verifyCustomContentChallenge(
-        customContentSignatureBase!.signatureBase,
-        customContentChallenge!,
-        ecPublicKeyJwk
-      )();
+        expect(customContentChallenge).not.toBe(undefined);
+        if (customContentChallenge) {
+          const result = await verifyCustomContentChallenge(
+            customContentSignatureBase.signatureBase,
+            customContentChallenge,
+            ecPublicKeyJwk
+          )();
 
-      expect(result).toBeTruthy();
+          expect(result).toBeTruthy();
+        }
+      }
     });
   });
 });
