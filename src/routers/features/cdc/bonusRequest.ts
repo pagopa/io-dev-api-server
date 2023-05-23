@@ -35,7 +35,7 @@ export const generateBonusAll = (): ListaStatoPerAnno => ({
 
 const addPrefix = (path: string) => `/bonus/cdc${path}`;
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 export let bonusAll: ListaStatoPerAnno = generateBonusAll();
 
 addHandler(
@@ -57,7 +57,7 @@ addHandler(
           res.sendStatus(500);
         },
         value => {
-          // eslint-disable-next-line:no-let
+          // eslint-disable-next-line functional/no-let
           let bonusStatusByYear: Record<Anno, StatoBeneficiario> =
             bonusAll.listaStatoPerAnno.reduce<Record<Anno, StatoBeneficiario>>(
               (

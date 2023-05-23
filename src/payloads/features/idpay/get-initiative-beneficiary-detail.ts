@@ -1,17 +1,13 @@
 import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
-import { InitiativeDetailDTO } from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
-import { getRandomEnumValue } from "../../utils/random";
-import {
-  InitiativeDTO,
-  InitiativeRewardTypeEnum,
-  StatusEnum as InitiativeStatus
-} from "../../../../generated/definitions/idpay/InitiativeDTO";
-import { RewardValueTypeEnum } from "../../../../generated/definitions/idpay/RewardValueDTO";
-import { AccumulatedTypeEnum } from "../../../../generated/definitions/idpay/AccumulatedAmountDTO";
-import { TimeTypeEnum } from "../../../../generated/definitions/idpay/TimeParameterDTO";
 import { pipe } from "fp-ts/lib/function";
+import { AccumulatedTypeEnum } from "../../../../generated/definitions/idpay/AccumulatedAmountDTO";
+import { InitiativeDTO } from "../../../../generated/definitions/idpay/InitiativeDTO";
+import { InitiativeDetailDTO } from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
+import { RewardValueTypeEnum } from "../../../../generated/definitions/idpay/RewardValueDTO";
+import { TimeTypeEnum } from "../../../../generated/definitions/idpay/TimeParameterDTO";
 import { initiatives } from "../../../persistence/idpay";
+import { getRandomEnumValue } from "../../utils/random";
 
 import ServicesDB from "./../../../persistence/services";
 

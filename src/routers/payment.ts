@@ -1,8 +1,8 @@
-import { Request, Response, Router } from "express";
 import { faker } from "@faker-js/faker/locale/it";
+import { Request, Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -12,18 +12,18 @@ import {
   Detail_v2Enum
 } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { ioDevServerConfig } from "../config";
+import { getProblemJson } from "../payloads/error";
 import { getPaymentRequestsGetResponse } from "../payloads/payload";
 import { addHandler, addNewRoute } from "../payloads/response";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { getProblemJson } from "../payloads/error";
+import ServicesDB, { ServiceSummary } from "./../persistence/services";
 import { profileRouter } from "./profile";
 import { walletRouter } from "./wallet";
-import ServicesDB, { ServiceSummary } from "./../persistence/services";
 
 export const paymentRouter = Router();
 
@@ -34,9 +34,11 @@ const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
     detail_v2: detailV2
   });
 
-// eslint-disable-next-line: no-let
+
+// eslint-disable-next-line functional/no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
-// eslint-disable-next-line: no-let
+
+// eslint-disable-next-line functional/no-let
 let idPagamento: string | undefined;
 /**
  * user wants to pay (VERIFICA)

@@ -14,7 +14,8 @@ import { instruments, initiatives } from "../../../persistence/idpay";
 const initiativesByWalletId = (
   idWallet: string
 ): ReadonlyArray<InitiativesStatusDTO> => {
-  const result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
+  // eslint-disable-next-line functional/no-let
+  let result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
 
   Object.entries(instruments).forEach(([id, instruments]) => {
     instruments.forEach(instrument => {
@@ -29,9 +30,9 @@ const initiativesByWalletId = (
         };
 
         if (!result[idWallet]) {
-          result[idWallet] = [];
+          result = {...result, [idWallet]: []};
         }
-        result[idWallet] = [...result[idWallet], status];
+        result = { ...result, [idWallet]: [...result[idWallet], status] };
       }
     });
   });

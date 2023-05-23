@@ -2,8 +2,8 @@ import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import chalk from "chalk";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { assetsFolder } from "../../../../config";
 import { addHandler } from "../../../../payloads/response";
@@ -24,7 +24,8 @@ const readWinningTransactions = (directoryName: string, fileName: string) =>
     `${assetsFolder}/bpd/award/winning_transactions/${directoryName}/${fileName}`
   );
 
-// eslint-disable-next-line: no-let
+
+// eslint-disable-next-line functional/no-let
 let totalCashback: Map<number, string>;
 
 const totalCashbackFile = "default.json";
@@ -70,7 +71,7 @@ addHandler(
   }
 );
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let winningTransactions: Map<number, string> = new Map<number, string>();
 
 const initWinningTransaction = () => {
@@ -117,6 +118,7 @@ addHandler(
       res.sendStatus(404);
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const jsonFile = winningTransactions.get(awardPeriodId)!;
     response(awardPeriodId, jsonFile);
   }

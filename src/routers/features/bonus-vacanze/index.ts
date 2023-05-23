@@ -1,9 +1,9 @@
+import { faker } from "@faker-js/faker/locale/it";
 import { Second } from "@pagopa/ts-commons/lib/units";
 import { Router } from "express";
-import { faker } from "@faker-js/faker/locale/it";
-import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { BonusActivationStatusEnum } from "../../../../generated/definitions/bonus_vacanze/BonusActivationStatus";
 import {
   activeBonus,
@@ -18,14 +18,15 @@ import { addApiV1Prefix, uuidv4 } from "../../../utils/strings";
 
 export const bonusVacanze = Router();
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let firstIseeRequestTime = 0;
-// eslint-disable-next-line: no-let
+
+// eslint-disable-next-line functional/no-let
 let idEligibilityRequest: string | undefined;
 // server responses with the eligibility check after
 const responseIseeAfter = 0 as Second;
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let idActivationBonus: string | undefined;
 // generate clones of activeBonus but with different id
 // eslint-disable-next-line: no-let

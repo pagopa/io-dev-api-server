@@ -1,11 +1,12 @@
+import { faker } from "@faker-js/faker/locale/it";
 import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import { Router } from "express";
-import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -23,36 +24,35 @@ import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
+import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import ServicesDB from "./../../../persistence/services";
 
 export const cgnRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let idActivationCgn: string | undefined;
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let firstCgnActivationRequestTime = 0;
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let currentCGN: Card = {
   status: PendingStatusEnum.PENDING
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let idActivationEyca: string | undefined;
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let firstEycaActivationRequestTime = 0;
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let currentEyca: EycaCard | undefined;
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let eycaActivationStatus: EycaActivationDetail = {
   status: EycaStatusEnum.UNKNOWN
 };

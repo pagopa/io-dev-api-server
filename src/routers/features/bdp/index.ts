@@ -29,7 +29,7 @@ export const citizenV2: CitizenResourceV2 = {
   optInStatus: CitizenOptInStatusEnum.NOREQ
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let currentCitizenV2: CitizenResourceV2 | undefined;
 
 /**
@@ -197,6 +197,7 @@ addHandler(bpd, "get", addBPDPrefix(paymentInstrumentsPath), (req, res) => {
     fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
     activationDate: new Date().toISOString(),
     deactivationDate: new Date().toISOString(),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Status: status!
   };
   res.json(result);
