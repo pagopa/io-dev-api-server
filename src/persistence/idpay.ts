@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker/locale/it";
 import { range } from "lodash";
 import { ulid } from "ulid";
-import { AccumulatedTypeEnum } from "../../generated/definitions/idpay/AccumulatedAmountDTO";
 import { IbanDTO } from "../../generated/definitions/idpay/IbanDTO";
 import { OperationTypeEnum as IbanOperationEnum } from "../../generated/definitions/idpay/IbanOperationDTO";
 import {
@@ -9,24 +8,21 @@ import {
   InitiativeRewardTypeEnum,
   StatusEnum as InitiativeStatus
 } from "../../generated/definitions/idpay/InitiativeDTO";
-import { InitiativeDetailDTO } from "../../generated/definitions/idpay/InitiativeDetailDTO";
 import {
   InstrumentDTO,
   StatusEnum as InstrumentStatus
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
-import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
-import { RewardValueTypeEnum } from "../../generated/definitions/idpay/RewardValueDTO";
-import { TimeTypeEnum } from "../../generated/definitions/idpay/TimeParameterDTO";
 import { OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
+import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -55,31 +51,6 @@ const generateRandomInitiativeDTO = (): InitiativeDTO => {
     organizationName: faker.company.name()
   };
 };
-
-const generateRandomInitiativeDetailDTO = (): InitiativeDetailDTO => ({
-  initiativeName: faker.company.name(),
-  status: getRandomEnumValue(InitiativeStatus),
-  description: faker.lorem.paragraphs(6),
-  ruleDescription: faker.lorem.paragraphs(4),
-  endDate: faker.date.future(1),
-  rankingStartDate: faker.date.past(1),
-  rankingEndDate: faker.date.future(1),
-  rewardRule: {
-    rewardValueType: getRandomEnumValue(RewardValueTypeEnum),
-    rewardValue: faker.datatype.number(100)
-  },
-  refundRule: {
-    accumulatedAmount: {
-      accumulatedType: getRandomEnumValue(AccumulatedTypeEnum),
-      refundThreshold: faker.datatype.number({ min: 10, max: 50 })
-    },
-    timeParameter: { timeType: getRandomEnumValue(TimeTypeEnum) }
-  },
-  privacyLink: faker.internet.url(),
-  tcLink: faker.internet.url(),
-  logoURL: faker.image.avatar(),
-  updateDate: faker.date.recent(1)
-});
 
 const generateRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban(false, "IT"),
@@ -113,7 +84,8 @@ const generateRandomOperationDTO = (
         brand: pagoPaWalletInfo.brand || "VISA",
         circuitType: "01",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
+        status: "" // TODO add correct status when API definitions are ready
       };
     case "ADD_IBAN":
       return {
@@ -147,8 +119,6 @@ const generateRandomOperationDTO = (
 };
 
 export const initiatives: { [id: string]: InitiativeDTO } = {};
-
-export const initiativesDetails: { [id: string]: InitiativeDetailDTO } = {};
 
 export const initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
@@ -263,16 +233,9 @@ range(0, walletConfig.refundCount).forEach(() => {
     status: InitiativeStatus.REFUNDABLE
   };
 
-  const { initiativeId, initiativeName } = initiative;
-
-  const details: InitiativeDetailDTO = {
-    ...generateRandomInitiativeDetailDTO(),
-    initiativeName,
-    status: InitiativeStatus.REFUNDABLE
-  };
+  const { initiativeId } = initiative;
 
   initiatives[initiativeId] = initiative;
-  initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [
     {
       instrumentId: ulid(),
@@ -313,14 +276,7 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  const details: InitiativeDetailDTO = {
-    ...generateRandomInitiativeDetailDTO(),
-    initiativeName,
-    status: InitiativeStatus.NOT_REFUNDABLE
-  };
-
   initiatives[initiativeId] = initiative;
-  initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [];
   initiativeTimeline[initiativeId] = [
     generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
@@ -339,14 +295,7 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  const details: InitiativeDetailDTO = {
-    ...generateRandomInitiativeDetailDTO(),
-    initiativeName,
-    status: InitiativeStatus.UNSUBSCRIBED
-  };
-
   initiatives[initiativeId] = initiative;
-  initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [
     ...(instruments[initiativeId] || []),
     {
@@ -386,14 +335,7 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  const details: InitiativeDetailDTO = {
-    ...generateRandomInitiativeDetailDTO(),
-    initiativeName,
-    status: InitiativeStatus.SUSPENDED
-  };
-
   initiatives[initiativeId] = initiative;
-  initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [
     ...(instruments[initiativeId] || []),
     {
@@ -437,14 +379,7 @@ range(0, walletConfig.discountCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  const details: InitiativeDetailDTO = {
-    ...generateRandomInitiativeDetailDTO(),
-    initiativeName,
-    status: InitiativeStatus.REFUNDABLE
-  };
-
   initiatives[initiativeId] = initiative;
-  initiativesDetails[initiativeId] = details;
   instruments[initiativeId] = [];
   initiativeTimeline[initiativeId] = [
     generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
