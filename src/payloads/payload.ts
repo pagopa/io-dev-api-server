@@ -334,7 +334,6 @@ export const getPspList = () => {
 
 // eslint-disable-next-line: readonly-array
 export const getPaymentsArray = (): paymentItem[] => {
-  // eslint-disable-next-line
   const localStorage = {} as Storage;
   const paymentsStorage = localStorage.getItem("payments");
   const paymentsArray =
@@ -371,7 +370,6 @@ export const setPayment = (
     );
     if (alreadyExist[0] === undefined || alreadyExist.length < 1) {
       payments = [...payments, payment];
-      // eslint-disable-next-line
       const localStorage = {} as Storage;
       localStorage.setItem("payments", JSON.stringify({ payments }));
     }
