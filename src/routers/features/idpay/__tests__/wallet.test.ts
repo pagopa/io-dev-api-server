@@ -14,6 +14,7 @@ const request = supertest(app);
 
 const initiatives = Object.values(idPayInitiatives);
 
+// eslint-disable-next-line max-lines-per-function
 describe("IDPay Wallet API", () => {
   beforeEach(() => {
     jest.clearAllMocks();

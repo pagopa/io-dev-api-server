@@ -334,7 +334,7 @@ export const getPspList = () => {
 
 // eslint-disable-next-line: readonly-array
 export const getPaymentsArray = (): paymentItem[] => {
-  const localStorage = {} as any;
+  const localStorage = {} as Storage;
   const paymentsStorage = localStorage.getItem("payments");
   const paymentsArray =
     paymentsStorage !== null ? JSON.parse(paymentsStorage) : { payments: [] };
@@ -359,7 +359,8 @@ export const setPayment = (
   status: string | undefined
 ) => {
   if (idTransaction !== undefined) {
-    const payments = getPaymentsArray();
+    // eslint-disable-next-line functional/no-let
+    let payments = getPaymentsArray();
     const payment: paymentItem = {
       idTransaction,
       status: status !== undefined ? status : ""
@@ -368,8 +369,8 @@ export const setPayment = (
       p => p.idTransaction === idTransaction
     );
     if (alreadyExist[0] === undefined || alreadyExist.length < 1) {
-      payments.push(payment);
-      const localStorage = {} as any;
+      payments = [...payments, payment];
+      const localStorage = {} as Storage;
       localStorage.setItem("payments", JSON.stringify({ payments }));
     }
   }

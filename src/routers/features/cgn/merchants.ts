@@ -1,11 +1,11 @@
+import { faker } from "@faker-js/faker/locale/it";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Router } from "express";
-import { faker } from "@faker-js/faker/locale/it";
 import { reverse, sortBy } from "fp-ts/lib/Array";
-import { Ord } from "fp-ts/lib/boolean";
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import { contramap } from "fp-ts/lib/Ord";
+import { Ord } from "fp-ts/lib/boolean";
+import { pipe } from "fp-ts/lib/function";
 import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
 import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
 import { OfflineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OfflineMerchantSearchRequest";

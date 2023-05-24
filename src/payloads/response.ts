@@ -11,7 +11,8 @@ export type IOResponse<T> = {
 };
 
 type Route = { path: string; method: SupportedMethod; description?: string };
-// eslint-disable-next-line: no-let
+
+// eslint-disable-next-line functional/no-let
 export let routes: ReadonlyArray<Route> = [];
 export const addNewRoute = (
   method: SupportedMethod,

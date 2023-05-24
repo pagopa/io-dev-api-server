@@ -118,9 +118,11 @@ const generateRandomOperationDTO = (
   }
 };
 
-export const initiatives: { [id: string]: InitiativeDTO } = {};
+// eslint-disable-next-line functional/no-let
+export let initiatives: { [id: string]: InitiativeDTO } = {};
 
-export const initiativeTimeline: {
+// eslint-disable-next-line functional/no-let
+export let initiativeTimeline: {
   [initiativeId: string]: ReadonlyArray<OperationListDTO>;
 } = {};
 
@@ -130,7 +132,8 @@ export let ibanList: ReadonlyArray<IbanDTO> = Array.from(
   () => generateRandomIbanDTO()
 );
 
-export const instruments: {
+// eslint-disable-next-line functional/no-let
+export let instruments: {
   [initiativeId: string]: ReadonlyArray<InstrumentDTO>;
 } = {};
 
@@ -151,15 +154,18 @@ export const enrollInstrumentToInitiative = (
     return false;
   }
 
-  instruments[initiativeId] = [
-    ...initiativeInstruments,
-    {
-      instrumentId: ulid(),
-      idWallet: wallet.idWallet?.toString(),
-      activationDate: new Date(),
-      status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST
-    }
-  ];
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      ...initiativeInstruments,
+      {
+        instrumentId: ulid(),
+        idWallet: wallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST
+      }
+    ]
+  };
 
   setTimeout(() => {
     const initiativeInstruments = instruments[initiativeId] || [];
@@ -168,14 +174,17 @@ export const enrollInstrumentToInitiative = (
       i => i.idWallet === wallet.idWallet?.toString()
     );
 
-    instruments[initiativeId] = [
-      ...initiativeInstruments.slice(0, index),
-      {
-        ...initiativeInstruments[index],
-        status: InstrumentStatus.ACTIVE
-      },
-      ...initiativeInstruments.slice(index + 1)
-    ];
+    instruments = {
+      ...instruments,
+      [initiativeId]: [
+        ...initiativeInstruments.slice(0, index),
+        {
+          ...initiativeInstruments[index],
+          status: InstrumentStatus.ACTIVE
+        },
+        ...initiativeInstruments.slice(index + 1)
+      ]
+    };
   }, 5000);
 
   return true;
@@ -198,14 +207,17 @@ export const deleteInstrumentFromInitiative = (
     return false;
   }
 
-  instruments[initiativeId] = [
-    ...initiativeInstruments.slice(0, index),
-    {
-      ...initiativeInstruments[index],
-      status: InstrumentStatus.PENDING_DEACTIVATION_REQUEST
-    },
-    ...initiativeInstruments.slice(index + 1)
-  ];
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      ...initiativeInstruments.slice(0, index),
+      {
+        ...initiativeInstruments[index],
+        status: InstrumentStatus.PENDING_DEACTIVATION_REQUEST
+      },
+      ...initiativeInstruments.slice(index + 1)
+    ]
+  };
 
   setTimeout(() => {
     const initiativeInstruments = instruments[initiativeId] || [];
@@ -214,17 +226,20 @@ export const deleteInstrumentFromInitiative = (
       i => i.instrumentId === instrumentId
     );
 
-    instruments[initiativeId] = [
-      ...initiativeInstruments.slice(0, index),
-      ...initiativeInstruments.slice(index + 1)
-    ];
+    instruments = {
+      ...instruments,
+      [initiativeId]: [
+        ...initiativeInstruments.slice(0, index),
+        ...initiativeInstruments.slice(index + 1)
+      ]
+    };
   }, 5000);
 
   return true;
 };
 
 export const updateInitiative = (initiative: InitiativeDTO) =>
-  (initiatives[initiative.initiativeId] = initiative);
+  (initiatives = { ...initiatives, [initiative.initiativeId]: initiative });
 
 range(0, walletConfig.refundCount).forEach(() => {
   const initiative: InitiativeDTO = {
@@ -235,31 +250,37 @@ range(0, walletConfig.refundCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  initiatives[initiativeId] = initiative;
-  instruments[initiativeId] = [
-    {
-      instrumentId: ulid(),
-      idWallet: pagoPaWallet.idWallet?.toString(),
-      activationDate: new Date(),
-      status: InstrumentStatus.ACTIVE
-    }
-  ];
-  initiativeTimeline[initiativeId] = [
-    generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
-    generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
-    generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
-    generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-    generateRandomOperationDTO(
-      RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
-    ),
-    generateRandomOperationDTO(
-      RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
-    ),
-    generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
-    generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
-    generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-  ];
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        idWallet: pagoPaWallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE
+      }
+    ]
+  };
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
+      generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
+      generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
+      generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+      generateRandomOperationDTO(
+        RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
+      ),
+      generateRandomOperationDTO(
+        RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
+      ),
+      generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
+      generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
+      generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+    ]
+  };
 });
 
 range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
@@ -276,11 +297,14 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  initiatives[initiativeId] = initiative;
-  instruments[initiativeId] = [];
-  initiativeTimeline[initiativeId] = [
-    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-  ];
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = { ...instruments, [initiativeId]: [] };
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+    ]
+  };
 });
 
 range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
@@ -295,32 +319,37 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  initiatives[initiativeId] = initiative;
-  instruments[initiativeId] = [
-    ...(instruments[initiativeId] || []),
-    {
-      instrumentId: ulid(),
-      idWallet: pagoPaWallet.idWallet?.toString(),
-      activationDate: new Date(),
-      status: InstrumentStatus.ACTIVE
-    }
-  ];
-  initiativeTimeline[initiativeId] = [
-    generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
-    generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
-    generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
-    generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-    generateRandomOperationDTO(
-      RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
-    ),
-    generateRandomOperationDTO(
-      RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
-    ),
-    generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
-    generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
-    generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-  ];
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        idWallet: pagoPaWallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE
+      }
+    ]
+  };
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
+      generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
+      generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
+      generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+      generateRandomOperationDTO(
+        RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
+      ),
+      generateRandomOperationDTO(
+        RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
+      ),
+      generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
+      generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
+      generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+    ]
+  };
 });
 
 range(0, walletConfig.refundSuspendedCount).forEach(() => {
@@ -335,32 +364,37 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  initiatives[initiativeId] = initiative;
-  instruments[initiativeId] = [
-    ...(instruments[initiativeId] || []),
-    {
-      instrumentId: ulid(),
-      idWallet: pagoPaWallet.idWallet?.toString(),
-      activationDate: new Date(),
-      status: InstrumentStatus.ACTIVE
-    }
-  ];
-  initiativeTimeline[initiativeId] = [
-    generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
-    generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
-    generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
-    generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-    generateRandomOperationDTO(
-      RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
-    ),
-    generateRandomOperationDTO(
-      RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
-    ),
-    generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
-    generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
-    generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-  ];
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        idWallet: pagoPaWallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE
+      }
+    ]
+  };
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
+      generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
+      generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
+      generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+      generateRandomOperationDTO(
+        RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
+      ),
+      generateRandomOperationDTO(
+        RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
+      ),
+      generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
+      generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
+      generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+    ]
+  };
 });
 
 range(0, walletConfig.discountCount).forEach(() => {
@@ -379,9 +413,15 @@ range(0, walletConfig.discountCount).forEach(() => {
 
   const { initiativeId } = initiative;
 
-  initiatives[initiativeId] = initiative;
-  instruments[initiativeId] = [];
-  initiativeTimeline[initiativeId] = [
-    generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-  ];
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = {
+    ...instruments,
+    [initiativeId]: []
+  };
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+    ]
+  };
 });

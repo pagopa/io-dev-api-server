@@ -18,9 +18,10 @@ export const securedSvRouter = Router();
 const addPrefix = (path: string) =>
   addApiV1Prefix(`/mitvoucher/data/rest/secured${path}`);
 
-// eslint-disable-next-line: no-let prefer-const
+// eslint-disable-next-line functional/no-let
 let vouchersBeneficiary: ReadonlyArray<VoucherBeneficiarioOutputBean>;
-// eslint-disable-next-line: no-let prefer-const
+
+// eslint-disable-next-line functional/no-let
 let lastId = 0;
 
 /**

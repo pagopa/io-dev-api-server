@@ -40,7 +40,7 @@ const discountTypes: ReadonlyArray<DiscountCodeType> = [
   DiscountCodeTypeEnum.landingpage
 ];
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let millis = new Date().getTime();
 
 const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
