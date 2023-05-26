@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
 import { OperationDTO } from "../../../../generated/definitions/idpay/OperationDTO";
 import { OperationListDTO } from "../../../../generated/definitions/idpay/OperationListDTO";
-import { OperationTypeEnum as TransactionDetailEnum } from "../../../../generated/definitions/idpay/TransactionDetailDTO";
+import { StatusEnum } from "../../../../generated/definitions/idpay/TransactionDetailDTO";
 import { initiativeTimeline } from "../../../persistence/idpay";
 
 const generateRandomOperationDetailDTO = (
@@ -20,20 +20,14 @@ const generateRandomOperationDetailDTO = (
         startDate: faker.date.recent(),
         endDate: faker.date.recent(),
         transferDate: faker.date.recent()
-      };
+      };    
+    case "REVERSAL":
     case "TRANSACTION":
       return {
         ...operation,
-        operationType: TransactionDetailEnum.TRANSACTION,
         idTrxAcquirer: ulid(),
-        idTrxIssuer: ulid()
-      };
-    case "REVERSAL":
-      return {
-        ...operation,
-        operationType: TransactionDetailEnum.REVERSAL,
-        idTrxAcquirer: ulid(),
-        idTrxIssuer: ulid()
+        idTrxIssuer: ulid(),
+        status: (operation.status as unknown) as StatusEnum // OperationListDTO[StatusEnum] to OperationDTO[StatusEnum] conversion
       };
   }
 };
