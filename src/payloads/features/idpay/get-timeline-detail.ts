@@ -20,14 +20,14 @@ const generateRandomOperationDetailDTO = (
         startDate: faker.date.recent(),
         endDate: faker.date.recent(),
         transferDate: faker.date.recent()
-      };    
+      };
     case "REVERSAL":
     case "TRANSACTION":
       return {
         ...operation,
         idTrxAcquirer: ulid(),
         idTrxIssuer: ulid(),
-        status: (operation.status as unknown) as StatusEnum // OperationListDTO[StatusEnum] to OperationDTO[StatusEnum] conversion
+        status: operation.status as unknown as StatusEnum // OperationListDTO[StatusEnum] to OperationDTO[StatusEnum] conversion
       };
   }
 };

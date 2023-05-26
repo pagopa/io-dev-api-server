@@ -17,7 +17,11 @@ import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/de
 import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
-import { ChannelEnum as TransactionChannelEnum, OperationTypeEnum as TransactionOperationEnum, StatusEnum as TransactionStatusEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
+import {
+  ChannelEnum as TransactionChannelEnum,
+  OperationTypeEnum as TransactionOperationEnum,
+  StatusEnum as TransactionStatusEnum
+} from "../../generated/definitions/idpay/TransactionOperationDTO";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
@@ -85,7 +89,7 @@ const generateRandomOperationDTO = (
         circuitType: "01",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: getRandomEnumValue(TransactionStatusEnum),
+        status: getRandomEnumValue(TransactionStatusEnum)
       };
     case "ADD_IBAN":
       return {
