@@ -18,6 +18,7 @@ import { OperationListDTO } from "../../generated/definitions/idpay/OperationLis
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import {
+  ChannelEnum,
   ChannelEnum as TransactionChannelEnum,
   OperationTypeEnum as TransactionOperationEnum,
   StatusEnum as TransactionStatusEnum
@@ -89,7 +90,8 @@ const generateRandomOperationDTO = (
         circuitType: "01",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: getRandomEnumValue(TransactionStatusEnum)
+        status: getRandomEnumValue(TransactionStatusEnum),
+        channel: ChannelEnum.RTD,
       };
     case "ADD_IBAN":
       return {
@@ -426,21 +428,6 @@ range(0, walletConfig.discountCount).forEach(() => {
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
-      {
-        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-        status: TransactionStatusEnum.AUTHORIZED,
-        channel: TransactionChannelEnum.RTD
-      } as OperationListDTO,
-      {
-        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-        status: TransactionStatusEnum.REWARDED,
-        channel: TransactionChannelEnum.RTD
-      } as OperationListDTO,
-      {
-        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-        status: TransactionStatusEnum.CANCELED,
-        channel: TransactionChannelEnum.RTD
-      } as OperationListDTO,
       {
         ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
         status: TransactionStatusEnum.AUTHORIZED,
