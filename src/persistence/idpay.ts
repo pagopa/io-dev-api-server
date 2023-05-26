@@ -18,7 +18,6 @@ import { OperationListDTO } from "../../generated/definitions/idpay/OperationLis
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import {
-  ChannelEnum,
   ChannelEnum as TransactionChannelEnum,
   OperationTypeEnum as TransactionOperationEnum,
   StatusEnum as TransactionStatusEnum
@@ -91,7 +90,7 @@ const generateRandomOperationDTO = (
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
         status: getRandomEnumValue(TransactionStatusEnum),
-        channel: ChannelEnum.RTD,
+        channel: TransactionChannelEnum.RTD
       };
     case "ADD_IBAN":
       return {
