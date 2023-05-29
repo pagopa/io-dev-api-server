@@ -40,6 +40,7 @@ import {
   frontMatterCTAFCISignatureRequestSigned,
   frontMatterCTAFCISignatureRequestSignedExpired,
   frontMatterCTAFCISignatureRequestWaitQtsp,
+  frontMatterCTAFCISignatureRequestCanceled,
   messageFciMarkdown,
   messageFciSignedMarkdown,
   messageMarkdown
@@ -237,8 +238,7 @@ const createMessagesWithObsoleteMedicalPrescriptions = (
         ...baseMessage,
         content: {
           ...baseMessage.content,
-          subject:
-            `💊 medical prescription with attachments - ${count}` as MessageSubject,
+          subject: `💊 medical prescription with attachments - ${count}` as MessageSubject,
           attachments
         }
       });
@@ -317,6 +317,25 @@ const createMessagesWithFirmaConIOExpired90 = (
           `Comune di Controguerra - Richiesta di Firma [90 days expired] ${count} `,
           frontMatterCTAFCISignatureRequestSignedExpired +
             messageFciSignedMarkdown
+        )
+      );
+    });
+  }
+};
+
+const createMessagesWithFirmaConIOCanceled = (
+  customConfig: IoDevServerConfig,
+  output: Array<
+    CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
+  >
+) => {
+  if (customConfig.messages.fci.canceledCount > 0) {
+    range(1, customConfig.messages.fci.canceledCount).forEach(count => {
+      output.push(
+        getNewMessage(
+          customConfig,
+          `Comune di Controguerra - Richiesta di Firma [CANCELED] ${count} `,
+          frontMatterCTAFCISignatureRequestCanceled + messageFciSignedMarkdown
         )
       );
     });
@@ -517,21 +536,23 @@ const createMessagesWithPaymentWithExpiredDueDateCount = (
   >
 ) => {
   if (customConfig.messages.paymentWithExpiredDueDateCount > 0) {
-    range(1, customConfig.messages.paymentWithExpiredDueDateCount).forEach(
-      count =>
-        output.push(
-          withDueDate(
-            withPaymentData(
-              getNewMessage(
-                customConfig,
-                `💰🕙 payment - expired - ${count}`,
-                messageMarkdown
-              ),
-              false
+    range(
+      1,
+      customConfig.messages.paymentWithExpiredDueDateCount
+    ).forEach(count =>
+      output.push(
+        withDueDate(
+          withPaymentData(
+            getNewMessage(
+              customConfig,
+              `💰🕙 payment - expired - ${count}`,
+              messageMarkdown
             ),
-            new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
-          )
+            false
+          ),
+          new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
         )
+      )
     );
   }
 };
@@ -544,21 +565,23 @@ const createMessagesWithPaymentWithValidDueDate = (
   >
 ) => {
   if (customConfig.messages.paymentWithValidDueDateCount > 0) {
-    range(1, customConfig.messages.paymentWithValidDueDateCount).forEach(
-      count =>
-        output.push(
-          withDueDate(
-            withPaymentData(
-              getNewMessage(
-                customConfig,
-                `💰🕙✅ payment message - ${count}`,
-                messageMarkdown
-              ),
-              true
+    range(
+      1,
+      customConfig.messages.paymentWithValidDueDateCount
+    ).forEach(count =>
+      output.push(
+        withDueDate(
+          withPaymentData(
+            getNewMessage(
+              customConfig,
+              `💰🕙✅ payment message - ${count}`,
+              messageMarkdown
             ),
-            new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
-          )
+            true
+          ),
+          new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
         )
+      )
     );
   }
 };
@@ -657,6 +680,7 @@ const createMessages = (
   createMessagesWithFirmaConIOSigned(customConfig, output);
   createMessagesWithFirmaConIORejected(customConfig, output);
   createMessagesWithFirmaConIONoSignatureFields(customConfig, output);
+  createMessagesWithFirmaConIOCanceled(customConfig, output);
 
   /* standard message */
   createMessagesWithStandard(customConfig, output);

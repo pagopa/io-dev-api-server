@@ -7,6 +7,7 @@ import { qtspClauses } from "../../../payloads/features/fci/qtsp-clauses";
 import { qtspFilledDocument } from "../../../payloads/features/fci/qtsp-filled-document";
 import { mockSignatureDetailView } from "../../../payloads/features/fci/signature-detail-request";
 import {
+  CANCELED_SIGNATURE_REQUEST_ID,
   EXPIRED_SIGNATURE_REQUEST_ID,
   NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
@@ -39,14 +40,15 @@ addHandler(
     pipe(
       O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
-        (signatureReqId === SIGNATURE_REQUEST_ID ||
-          signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
-          signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
-          signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
-          signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
-          signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
-          signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID) &&
-        configResponse.getFciResponseCode === 200
+        signatureReqId === SIGNATURE_REQUEST_ID ||
+        signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
+        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
+        signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID ||
+        (signatureReqId === CANCELED_SIGNATURE_REQUEST_ID &&
+          configResponse.getFciResponseCode === 200)
           ? O.some(signatureReqId)
           : O.none
       ),
@@ -101,6 +103,13 @@ addHandler(
                     ...d,
                     metadata: { ...d.metadata, signature_fields: [] }
                   }))
+                }
+              : signatureReqId === CANCELED_SIGNATURE_REQUEST_ID
+              ? {
+                  ...signatureRequestDetailViewDoc,
+                  id: CANCELED_SIGNATURE_REQUEST_ID,
+                  updated_at: new Date(now.setDate(now.getDate() - 91)),
+                  status: SignatureRequestStatusEnum.CANCELLED
                 }
               : {
                   ...signatureRequestDetailViewDoc,
