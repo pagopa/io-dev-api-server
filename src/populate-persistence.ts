@@ -238,7 +238,8 @@ const createMessagesWithObsoleteMedicalPrescriptions = (
         ...baseMessage,
         content: {
           ...baseMessage.content,
-          subject: `💊 medical prescription with attachments - ${count}` as MessageSubject,
+          subject:
+            `💊 medical prescription with attachments - ${count}` as MessageSubject,
           attachments
         }
       });
@@ -536,23 +537,21 @@ const createMessagesWithPaymentWithExpiredDueDateCount = (
   >
 ) => {
   if (customConfig.messages.paymentWithExpiredDueDateCount > 0) {
-    range(
-      1,
-      customConfig.messages.paymentWithExpiredDueDateCount
-    ).forEach(count =>
-      output.push(
-        withDueDate(
-          withPaymentData(
-            getNewMessage(
-              customConfig,
-              `💰🕙 payment - expired - ${count}`,
-              messageMarkdown
+    range(1, customConfig.messages.paymentWithExpiredDueDateCount).forEach(
+      count =>
+        output.push(
+          withDueDate(
+            withPaymentData(
+              getNewMessage(
+                customConfig,
+                `💰🕙 payment - expired - ${count}`,
+                messageMarkdown
+              ),
+              false
             ),
-            false
-          ),
-          new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+            new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+          )
         )
-      )
     );
   }
 };
@@ -565,23 +564,21 @@ const createMessagesWithPaymentWithValidDueDate = (
   >
 ) => {
   if (customConfig.messages.paymentWithValidDueDateCount > 0) {
-    range(
-      1,
-      customConfig.messages.paymentWithValidDueDateCount
-    ).forEach(count =>
-      output.push(
-        withDueDate(
-          withPaymentData(
-            getNewMessage(
-              customConfig,
-              `💰🕙✅ payment message - ${count}`,
-              messageMarkdown
+    range(1, customConfig.messages.paymentWithValidDueDateCount).forEach(
+      count =>
+        output.push(
+          withDueDate(
+            withPaymentData(
+              getNewMessage(
+                customConfig,
+                `💰🕙✅ payment message - ${count}`,
+                messageMarkdown
+              ),
+              true
             ),
-            true
-          ),
-          new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+            new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+          )
         )
-      )
     );
   }
 };
