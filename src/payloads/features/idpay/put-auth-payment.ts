@@ -1,23 +1,12 @@
-import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
-import { ulid } from "ulid";
-import { getRandomEnumValue } from "../../utils/random";
-import { AuthPaymentResponseDTO, StatusEnum } from "../../../../generated/definitions/idpay/AuthPaymentResponseDTO";
-
-const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => ({
-  amountCents: faker.datatype.number(1000),
-  id: ulid(),
-  initiativeId: ulid(),
-  rejectionReasons: [],
-  status: getRandomEnumValue(StatusEnum),
-  trxCode: faker.datatype.string(),
-  reward: 0,
-  businessName: faker.company.name(),
-  initiativeName: faker.commerce.productName(),
-  trxDate: faker.date.recent()
-});
+import { pipe } from "fp-ts/lib/function";
+import { AuthPaymentResponseDTO } from "../../../../generated/definitions/idpay/AuthPaymentResponseDTO";
+import { payments } from "../../../persistence/idpay";
 
 export const putAuthPaymentResponse = (
-  _trxCode: string
+  trxCode: string
 ): O.Option<AuthPaymentResponseDTO> =>
-  O.some(generateRandomAuthPaymentResponseDTO());
+  pipe(
+    payments.find(p => p.trxCode === trxCode),
+    O.fromNullable
+  );
