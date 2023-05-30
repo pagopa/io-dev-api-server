@@ -14,15 +14,19 @@ import {
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
+import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
-import { StatusEnum, OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
+import {
+  ChannelEnum as TransactionChannelEnum,
+  OperationTypeEnum as TransactionOperationEnum,
+  StatusEnum as TransactionStatusEnum
+} from "../../generated/definitions/idpay/TransactionOperationDTO";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
-import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -85,14 +89,15 @@ const generateRandomOperationDTO = (
         circuitType: "01",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: StatusEnum.AUTHORIZED
+        status: getRandomEnumValue(TransactionStatusEnum),
+        channel: TransactionChannelEnum.RTD
       };
     case "ADD_IBAN":
       return {
         operationType: IbanOperationEnum.ADD_IBAN,
         operationDate: new Date(),
         operationId: ulid(),
-        channel: "",
+        channel: faker.datatype.string(),
         iban: faker.helpers.arrayElement(ibanList)?.iban || ""
       };
     case "ADD_INSTRUMENT":
@@ -418,9 +423,25 @@ range(0, walletConfig.discountCount).forEach(() => {
     ...instruments,
     [initiativeId]: []
   };
+
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
+      {
+        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        status: TransactionStatusEnum.AUTHORIZED,
+        channel: TransactionChannelEnum.QRCODE
+      } as OperationListDTO,
+      {
+        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        status: TransactionStatusEnum.REWARDED,
+        channel: TransactionChannelEnum.QRCODE
+      } as OperationListDTO,
+      {
+        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        status: TransactionStatusEnum.CANCELED,
+        channel: TransactionChannelEnum.QRCODE
+      } as OperationListDTO,
       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
     ]
   };
