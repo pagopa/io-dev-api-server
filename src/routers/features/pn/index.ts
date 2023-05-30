@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { ServicePreference } from "../../../\../generated/definitions/backend/ServicePreference";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
@@ -24,8 +24,9 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
     return;
   }
 
-  const increasedSettingsVersion = ((servicePreference.settings_version as number) +
-    1) as ServicePreference["settings_version"];
+  const increasedSettingsVersion =
+    ((servicePreference.settings_version as number) +
+      1) as ServicePreference["settings_version"];
   const updatedPreference = {
     is_inbox_enabled: maybeActivation.right.activation_status,
     settings_version: increasedSettingsVersion

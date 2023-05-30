@@ -1,14 +1,10 @@
+import * as path from "path";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { faker } from "@faker-js/faker/locale/it";
 import { slice } from "lodash";
-import * as path from "path";
-import sha256 from "sha256";
-import { Attachment } from "../../generated/definitions/backend/Attachment";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
-import { LegalMessage } from "../../generated/definitions/backend/LegalMessage";
-import { LegalMessageWithContent } from "../../generated/definitions/backend/LegalMessageWithContent";
 import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
 import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
 import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
@@ -27,17 +23,14 @@ import { assetsFolder } from "../config";
 import { contentTypeMapping, listDir } from "../utils/file";
 import { getRandomIntInRange } from "../utils/id";
 import { getRptID } from "../utils/messages";
-import { getRandomValue } from "../utils/random";
-import { serverUrl } from "../utils/server";
-import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
-import { currentProfile } from "./profile";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { currentProfile } from "./profile";
 import ServicesDB from "./../persistence/services";
 import { pnServiceId } from "./services/special/pn/factoryPn";
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
 
 /**
@@ -65,63 +58,10 @@ export const createMessage = (
 export const withDueDate = (
   message: CreatedMessageWithContent,
   dueDate: Date
-): CreatedMessageWithContent => {
-  return { ...message, content: { ...message.content, due_date: dueDate } };
-};
-
-/**
- * Add the MVL payload to a generic message.
- */
-export const withLegalContent = (
-  message: CreatedMessageWithContent,
-  mvlMsgId: string,
-  attachments: ReadonlyArray<Attachment> = [],
-  hasHtml: boolean = true
-): LegalMessageWithContent => {
-  // helper functions
-  const getEmail = (hardCodedEmail: string) =>
-    getRandomValue(hardCodedEmail, faker.internet.email(), "messages");
-  const getWords = (hardCodedWords: string) =>
-    getRandomValue(hardCodedWords, faker.random.words(), "messages");
-  const getWord = (hardCodedWord: string) =>
-    getRandomValue(hardCodedWord, faker.random.word(), "messages");
-  const sender = getEmail("dear.leader@yourworld.hell") as NonEmptyString;
-  const legalMessage: LegalMessage = {
-    eml: {
-      subject: getWords("You're fired"),
-      plain_text_content: getWords("lol I'm joking!"),
-      html_content: hasHtml ? getWords("<p>or <b>am I?</b></p>") : "",
-      attachments
-    },
-    cert_data: {
-      header: {
-        sender,
-        recipients: getEmail("slave@yourworld.hell") as NonEmptyString,
-        replies: getEmail("down.the.john@theshitIgive.hell") as NonEmptyString,
-        object: getWords("I told you already: you're fired") as NonEmptyString
-      },
-      data: {
-        sender_provider: getWord("apocalypse knights") as NonEmptyString,
-        timestamp: getRandomValue(new Date(), faker.date.past(), "messages"),
-        envelope_id: getWord("abcde") as NonEmptyString,
-        msg_id: mvlMsgId as NonEmptyString,
-        receipt_type: getWord("what's that?")
-      }
-    }
-  };
-  return {
-    ...message,
-    content: {
-      ...message.content,
-      legal_data: {
-        sender_mail_from: sender,
-        has_attachment: attachments.length > 0,
-        message_unique_id: mvlMsgId as NonEmptyString
-      }
-    },
-    legal_message: legalMessage
-  };
-};
+): CreatedMessageWithContent => ({
+  ...message,
+  content: { ...message.content, due_date: dueDate }
+});
 
 export const withPNContent = (
   message: CreatedMessageWithContent,
@@ -199,22 +139,20 @@ export const withPNContent = (
 export const withRemoteAttachments = (
   message: CreatedMessageWithContent,
   attachmentCount: number
-): ThirdPartyMessageWithContent => {
-  return {
-    ...message,
-    content: {
-      ...message.content,
-      third_party_data: {
-        ...message.content.third_party_data,
-        id: message.id as NonEmptyString,
-        has_attachments: true
-      }
-    },
-    third_party_message: {
-      attachments: getRemoteAttachments(attachmentCount)
+): ThirdPartyMessageWithContent => ({
+  ...message,
+  content: {
+    ...message.content,
+    third_party_data: {
+      ...message.content.third_party_data,
+      id: message.id as NonEmptyString,
+      has_attachments: true
     }
-  };
-};
+  },
+  third_party_message: {
+    attachments: getRemoteAttachments(attachmentCount)
+  }
+});
 
 export const withPaymentData = (
   message: CreatedMessageWithContent,
@@ -226,12 +164,17 @@ export const withPaymentData = (
 ): CreatedMessageWithContent => {
   const serviceId = message.sender_service_id;
   const service = ServicesDB.getService(serviceId);
+  if (!service) {
+    throw Error(
+      `message.withPaymentData: unabled to find service with id (${serviceId})`
+    );
+  }
   const data: PaymentDataWithRequiredPayee = {
     notice_number: noticeNumber as PaymentNoticeNumber,
     amount: amount as PaymentAmount,
     invalid_after_due_date: invalidAfterDueDate,
     payee: {
-      fiscal_code: service?.organization_fiscal_code!
+      fiscal_code: service.organization_fiscal_code
     }
   };
   const paymentData = validatePayload(PaymentDataWithRequiredPayee, data);
@@ -262,7 +205,12 @@ export const getCategory = (
 ): MessageCategory => {
   const { eu_covid_cert, payment_data } = message.content;
   const serviceId = message.sender_service_id;
-  const senderService = ServicesDB.getService(serviceId)!;
+  const senderService = ServicesDB.getService(serviceId);
+  if (!senderService) {
+    throw Error(
+      `message.getCategory: unabled to find service with id (${serviceId})`
+    );
+  }
   if (
     ThirdPartyMessageWithContent.is(message) &&
     senderService.service_id === pnServiceId
@@ -274,11 +222,6 @@ export const getCategory = (
       original_receipt_date: message.third_party_message.details?.sentAt,
       summary: message.third_party_message.details?.subject
     } as MessageCategoryPN;
-  }
-  if (LegalMessageWithContent.is(message)) {
-    return {
-      tag: TagEnumBase.LEGAL_MESSAGE
-    };
   }
   if (eu_covid_cert?.auth_code) {
     return {
@@ -297,40 +240,6 @@ export const getCategory = (
 };
 
 export const defaultContentType = "application/octet-stream";
-// list all files available as mvl attachments
-const mvlAttachmentsFiles = listDir(assetsFolder + "/messages/mvl/attachments");
-/**
- * create an array of attachments following the given types {@param attachmentsTypes}
- * i.e: getMvlAttachments("aMessageID",["png","zip"]) -> return 2 attachments: png + zip
- * @param mvlMessageId
- * @param attachmentsTypes
- */
-export const getMvlAttachments = (
-  mvlMessageId: string,
-  attachmentsTypes: ReadonlyArray<keyof typeof contentTypeMapping>
-): ReadonlyArray<Attachment> => {
-  return attachmentsTypes.map((type, idx) => {
-    {
-      const filename =
-        mvlAttachmentsFiles.find(f => f.endsWith(type)) ??
-        mvlAttachmentsFiles[0];
-      const parsedFile = path.parse(filename);
-      const attachmentId = sha256(parsedFile.name);
-      const resource = addApiV1Prefix(
-        `/legal-messages/${mvlMessageId}/attachments/${attachmentId}`
-      );
-      const attachmentUrl = `${serverUrl}${resource}`;
-      return {
-        id: attachmentId,
-        name: parsedFile.base,
-        content_type:
-          contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
-        url: attachmentUrl,
-        size: idx > 0 ? idx * 100000 : undefined
-      };
-    }
-  });
-};
 
 function thirdPartyAttachmentFromAbsolutePathArray(
   absolutePaths: ReadonlyArray<string>
@@ -376,8 +285,9 @@ export const getRemoteAttachments = (
   return thirdPartyAttachmentFromAbsolutePathArray(slicedRemoteAttachmentFiles);
 };
 
-export const getThirdPartyMessagePrecondition = (): ThirdPartyMessagePrecondition =>
-  validatePayload(ThirdPartyMessagePrecondition, {
-    title: "Questo messaggio contiene una comunicazione a valore legale",
-    markdown: thirdPartyMessagePreconditionMarkdown
-  });
+export const getThirdPartyMessagePrecondition =
+  (): ThirdPartyMessagePrecondition =>
+    validatePayload(ThirdPartyMessagePrecondition, {
+      title: "Questo messaggio contiene una comunicazione a valore legale",
+      markdown: thirdPartyMessagePreconditionMarkdown
+    });

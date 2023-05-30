@@ -2,7 +2,6 @@ import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import _ from "lodash";
 import supertest from "supertest";
-
 import { CreatedMessageWithoutContent } from "../../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EnrichedMessage } from "../../../generated/definitions/backend/EnrichedMessage";
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
@@ -17,7 +16,7 @@ import { pnServiceId } from "../../payloads/services/special/pn/factoryPn";
 const request = supertest(app);
 
 // Dummy helper to improve readability in the individual test
-function assertResponseIsRight(body: any): PaginatedPublicMessagesCollection {
+function assertResponseIsRight<T>(body: T): PaginatedPublicMessagesCollection {
   const { items, next, prev } = pipe(
     body,
     PaginatedPublicMessagesCollection.decode,
@@ -32,7 +31,6 @@ function assertResponseIsRight(body: any): PaginatedPublicMessagesCollection {
 const customConfig = _.merge(ioDevServerConfig, {
   // testing messages with a heavily populated DB
   messages: {
-    legalCount: 10,
     paymentsCount: 10,
     paymentInvalidAfterDueDateWithValidDueDateCount: 10,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 10,
@@ -331,6 +329,7 @@ describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
     );
     expect(pnMessage).toBeDefined();
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pnMessageId = pnMessage!.id;
     const response = await request.get(
       `${basePath}/third-party-messages/${pnMessageId}/precondition`

@@ -1,18 +1,17 @@
-import * as O from "fp-ts/lib/Option";
-import { TimelineDTO } from "../../../../../generated/definitions/idpay/TimelineDTO";
-import { IDPayInitiativeID } from "../types";
-import { timeline } from "./data";
 import { faker } from "@faker-js/faker/locale/it";
-import _ from "lodash";
+import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
+import _ from "lodash";
+import { TimelineDTO } from "../../../../generated/definitions/idpay/TimelineDTO";
+import { initiativeTimeline } from "../../../persistence/idpay";
 
 export const getTimelineResponse = (
-  initiativeId: IDPayInitiativeID,
+  initiativeId: string,
   pageNo: number = 0,
   pageSize: number = 3
 ): O.Option<TimelineDTO> =>
   pipe(
-    timeline[initiativeId],
+    initiativeTimeline[initiativeId],
     O.fromNullable,
     O.map(timeline => {
       const totalElements = timeline.length;

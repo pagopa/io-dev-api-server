@@ -1,6 +1,8 @@
-import MessagesDB, { MessageOnDB } from "../messages";
+import { CreatedMessageWithContentAndEnrichedData } from "../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
+import MessagesDB from "../messages";
 
-const buildMessage = (id: string) => (({ id } as unknown) as MessageOnDB);
+const buildMessage = (id: string) =>
+  ({ id } as unknown as CreatedMessageWithContentAndEnrichedData);
 
 describe("the Message persistence", () => {
   beforeEach(() => {

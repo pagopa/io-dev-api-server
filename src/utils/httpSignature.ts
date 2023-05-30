@@ -1,7 +1,7 @@
+import * as crypto from "crypto";
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
-import * as crypto from "crypto";
 import * as jose from "jose";
 import * as TE from "fp-ts/TaskEither";
 import * as T from "fp-ts/lib/Task";
@@ -17,21 +17,29 @@ export const verifyCustomContentChallenge = (
     TE.fold(
       _ => T.of(false),
       pemKey =>
-        T.of(
-          crypto
-            .createVerify("sha256")
-            .update(signatureBase!)
-            .verify(
-              {
-                key: pemKey,
-                padding:
-                  publicKey.kty == "RSA"
-                    ? crypto.constants.RSA_PKCS1_PSS_PADDING
-                    : undefined
-              },
-              signatureToVerify,
-              "base64"
-            )
+        pipe(
+          signatureBase,
+          O.fromNullable,
+          O.fold(
+            () => T.of(false),
+            signatureBase =>
+              T.of(
+                crypto
+                  .createVerify("sha256")
+                  .update(signatureBase)
+                  .verify(
+                    {
+                      key: pemKey,
+                      padding:
+                        publicKey.kty === "RSA"
+                          ? crypto.constants.RSA_PKCS1_PSS_PADDING
+                          : undefined
+                    },
+                    signatureToVerify,
+                    "base64"
+                  )
+              )
+          )
         )
     )
   );
@@ -47,7 +55,7 @@ export const toPem = (jwk: jose.JWK) =>
     ),
     TE.chain(publicKey =>
       TE.tryCatch(
-        () => jose.exportSPKI(<jose.KeyLike>publicKey),
+        () => jose.exportSPKI(publicKey as jose.KeyLike),
         e => new Error(String(e))
       )
     ),
@@ -71,22 +79,20 @@ export const getCustomContentSignatureBase = (
     ),
     O.fold(
       () => undefined,
-      sigInput => {
-        return {
-          signatureBase: `"${headerName}": ${challengeHex}\n"@signature-params": ${sigInput.replace(
-            /^sig\d+=/,
-            ""
-          )}`,
-          signatureLabel: pipe(
-            sigInput.match(/^sig(\d+)/),
-            O.fromNullable,
-            O.fold(
-              () => "",
-              v => v[0]
-            )
+      sigInput => ({
+        signatureBase: `"${headerName}": ${challengeHex}\n"@signature-params": ${sigInput.replace(
+          /^sig\d+=/,
+          ""
+        )}`,
+        signatureLabel: pipe(
+          sigInput.match(/^sig(\d+)/),
+          O.fromNullable,
+          O.fold(
+            () => "",
+            v => v[0]
           )
-        };
-      }
+        )
+      })
     )
   );
 
@@ -109,12 +115,13 @@ export type SignatureAlgorithm = "ecdsa-p256-sha256" | "rsa-pss-sha256";
 
 export const getSignatureInfo = (
   signatureBase: string
-): O.Option<SignatureAlgorithm> => <O.Option<SignatureAlgorithm>>pipe(
+): O.Option<SignatureAlgorithm> =>
+  pipe(
     signatureBase,
     s => new RegExp(`alg="(.+?)"`).exec(s),
     O.fromNullable,
     O.map(match => match[1])
-  );
+  ) as O.Option<SignatureAlgorithm>;
 
 export const isSignAlgorithmValid = (
   signAlghorithm: O.Option<SignatureAlgorithm>
@@ -127,17 +134,18 @@ export const isSignAlgorithmValid = (
     )
   );
 
-export const signatureVerifier = (publicKey: JsonWebKey) => async (
-  _: { keyid: string; alg: AlgorithmTypes },
-  data: Uint8Array,
-  signature: Uint8Array
-): Promise<boolean> => {
-  return await verifyCustomContentChallenge(
-    Buffer.from(data).toString("utf-8"),
-    Buffer.from(signature).toString("base64"),
-    <jose.JWK>publicKey
-  )();
-};
+export const signatureVerifier =
+  (publicKey: JsonWebKey) =>
+  async (
+    _: { keyid: string; alg: AlgorithmTypes },
+    data: Uint8Array,
+    signature: Uint8Array
+  ): Promise<boolean> =>
+    await verifyCustomContentChallenge(
+      Buffer.from(data).toString("utf-8"),
+      Buffer.from(signature).toString("base64"),
+      publicKey as jose.JWK
+    )();
 
 type VerifyFunctionWrapper = (privateKey: JsonWebKey) => VerifyFunction;
 

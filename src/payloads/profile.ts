@@ -10,18 +10,18 @@ import { ioDevServerConfig } from "../config";
 
 const profileAttrConfig = ioDevServerConfig.profile.attrs;
 
-const optInOutputSelector = (reminderStatus: ReminderStatusEnum) => (
-  pushNotificationsContentType: PushNotificationsContentTypeEnum
-) => ({
-  reminder_status: reminderStatus,
-  push_notifications_content_type: pushNotificationsContentType
-});
-const remindersStatusInputSelector: O.Option<ReminderStatusEnum> = O.fromNullable(
-  ioDevServerConfig.profile.attrs.reminder_status
-);
-const pushNotificationContentTypeInputSelector: O.Option<PushNotificationsContentTypeEnum> = O.fromNullable(
-  ioDevServerConfig.profile.attrs.push_notifications_content_type
-);
+const optInOutputSelector =
+  (reminderStatus: ReminderStatusEnum) =>
+  (pushNotificationsContentType: PushNotificationsContentTypeEnum) => ({
+    reminder_status: reminderStatus,
+    push_notifications_content_type: pushNotificationsContentType
+  });
+const remindersStatusInputSelector: O.Option<ReminderStatusEnum> =
+  O.fromNullable(ioDevServerConfig.profile.attrs.reminder_status);
+const pushNotificationContentTypeInputSelector: O.Option<PushNotificationsContentTypeEnum> =
+  O.fromNullable(
+    ioDevServerConfig.profile.attrs.push_notifications_content_type
+  );
 
 type OptInProps = {
   reminder_status?: ReminderStatusEnum;
@@ -35,6 +35,7 @@ const optInNotificationPreferences = pipe(
   O.getOrElse((): OptInProps => ({}))
 );
 
+const birthDate = "1991-01-06";
 const spidProfile: InitializedProfile = {
   service_preferences_settings: {
     mode: ServicesPreferencesModeEnum.AUTO
@@ -50,7 +51,7 @@ const spidProfile: InitializedProfile = {
   name: profileAttrConfig.name,
   version: 1,
   date_of_birth: pipe(
-    "1991-01-06",
+    birthDate,
     DateFromString.decode,
     E.getOrElseW(() => new Date())
   ),
@@ -74,7 +75,7 @@ const spidProfileFirstOnboarding: InitializedProfile = {
   name: profileAttrConfig.name,
   version: 0,
   date_of_birth: pipe(
-    "1991-01-06",
+    birthDate,
     DateFromString.decode,
     E.getOrElseW(() => new Date())
   ),
@@ -96,7 +97,7 @@ const cieProfile: InitializedProfile = {
   name: profileAttrConfig.name,
   version: 1,
   date_of_birth: pipe(
-    "1991-01-06",
+    birthDate,
     DateFromString.decode,
     E.getOrElseW(() => new Date())
   ),
@@ -119,7 +120,7 @@ const cieProfileFirstOnboarding: InitializedProfile = {
   name: profileAttrConfig.name,
   version: 0,
   date_of_birth: pipe(
-    "1991-01-06",
+    birthDate,
     DateFromString.decode,
     E.getOrElseW(() => new Date())
   ),

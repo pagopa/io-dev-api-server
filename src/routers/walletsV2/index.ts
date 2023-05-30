@@ -33,17 +33,17 @@ export const abiResponse: AbiListResponse = {
   data: abiData
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let bPayResponse: RestBPayResponse = {
   data: []
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletV2Response: WalletV2ListResponse = {
   data: []
 };
@@ -72,25 +72,25 @@ export const findWalletById = (idWallet: number): WalletV2 | undefined => {
   return wallets.find(w => w.idWallet === idWallet);
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletBancomat: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletCreditCards: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let citizenCreditCardCoBadge: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let citizenPrivativeCard: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let privativeCards: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletPaypal: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 export let walletV2Config: WalletMethodConfig =
   ioDevServerConfig.wallet.methods;
 
@@ -261,7 +261,7 @@ addHandler(
   appendWalletV2Prefix("/wallet/delete-wallets"),
   (req, res) => {
     const service = req.query.service as EnableableFunctionsEnum;
-    // tslint:disable-next-line: readonly-array
+    // eslint-disable-next-line: readonly-array
     const deletedWallets: number[] = [];
     const walletsToDelete = getWalletV2().filter(w =>
       (w.enableableFunctions ?? []).includes(service)

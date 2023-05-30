@@ -170,12 +170,9 @@ export const IoDevServerConfig = t.interface({
         // 200 success with payload
         getMessageResponseCode: HttpResponseCode,
         // 200 success with payload
-        getMVLMessageResponseCode: HttpResponseCode,
-        // 200 success with payload
         getThirdPartyMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
-      legalCount: t.number,
       // number of messages coming from PN (aka Piattaforma Notifiche)
       pnCount: t.number,
       // number of messages with remote attachments
@@ -199,7 +196,11 @@ export const IoDevServerConfig = t.interface({
         expired90Count: t.number,
         waitForQtspCount: t.number,
         signedCount: t.number,
-        noSignatureFieldsCount: t.number
+        noSignatureFieldsCount: t.number,
+        response: t.interface({
+          // 200 success with payload
+          getFciResponseCode: HttpResponseCode
+        })
       }),
       // if true, messages (all available) with nested CTA will be included
       withCTA: t.boolean,
@@ -223,7 +224,15 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean,
       methods: WalletMethodConfig,
-      shuffleAbi: t.boolean
+      shuffleAbi: t.boolean,
+      // IDPay initiatives in wallet
+      idPay: t.interface({
+        refundCount: t.number,
+        refundNotConfiguredCount: t.number,
+        refundSuspendedCount: t.number,
+        refundUnsubscribedCount: t.number,
+        discountCount: t.number
+      })
     }),
     t.partial({
       // the outcode returned at the end of credit card onboarding

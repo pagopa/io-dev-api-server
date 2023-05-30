@@ -90,6 +90,18 @@ export const backendStatus: BackendStatus = {
         ios: "1.2.3",
         android: "1.2.3"
       }
+    },
+    fastLogin: {
+      min_app_version: {
+        ios: "0.0.0",
+        android: "0.0.0"
+      }
+    },
+    nativeLogin: {
+      min_app_version: {
+        ios: "0.0.0",
+        android: "0.0.0"
+      }
     }
   },
   sections: {

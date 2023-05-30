@@ -32,12 +32,9 @@ validatePayload(Certificate, expiredCertificate);
  * status code
  * response payload
  */
-export const eucovidCertAuthResponses: ReadonlyArray<readonly [
-  string,
-  string,
-  number,
-  Certificate | undefined
-]> = [
+export const eucovidCertAuthResponses: ReadonlyArray<
+  readonly [string, string, number, Certificate | undefined]
+> = [
   ["auth8", "gateway timeout", 504, undefined],
   ["auth7", "generic error", 500, undefined],
   ["auth6", "endpoint no longer valid", 410, undefined],

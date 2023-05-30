@@ -1,10 +1,10 @@
+import * as path from "path";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import chalk from "chalk";
 import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
-import * as path from "path";
 import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
@@ -71,10 +71,8 @@ const defaultConfig: IoDevServerConfig = {
     response: {
       getMessagesResponseCode: 200,
       getMessageResponseCode: 200,
-      getMVLMessageResponseCode: 200,
       getThirdPartyMessageResponseCode: 200
     },
-    legalCount: 0,
     pnCount: 0,
     withRemoteAttachments: 0,
     paymentsCount: 1,
@@ -90,7 +88,10 @@ const defaultConfig: IoDevServerConfig = {
       expired90Count: 0,
       waitForQtspCount: 0,
       signedCount: 0,
-      noSignatureFieldsCount: 0
+      noSignatureFieldsCount: 0,
+      response: {
+        getFciResponseCode: 200
+      }
     },
     withCTA: false,
     withEUCovidCert: false,
@@ -99,7 +100,7 @@ const defaultConfig: IoDevServerConfig = {
     // sending 2 messages at minimum to allow for basic pagination
     standardMessageCount: 2,
     archivedMessageCount: 1,
-    // atm it has effect only on legal message flow (pr welcome)
+    // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
   },
   wallet: {
@@ -115,7 +116,15 @@ const defaultConfig: IoDevServerConfig = {
     // success (0 outcome code)
     onboardingPaypalOutCode: 0,
     // success (0 outcome code)
-    paymentOutCode: 0
+    paymentOutCode: 0,
+    // IDPay initiatives show in wallet
+    idPay: {
+      refundCount: 1,
+      refundNotConfiguredCount: 0,
+      refundUnsubscribedCount: 0,
+      refundSuspendedCount: 0,
+      discountCount: 1
+    }
   },
   services: {
     response: {
@@ -158,6 +167,7 @@ const customConfigFile = "config.json";
 const customConfig =
   readFileAsJSON(`${configFolder}/${customConfigFile}`) ?? undefined;
 if (customConfig !== undefined) {
+  // eslint-disable-next-line no-console
   console.log(
     chalk.bgGreenBright(
       `successfully loaded custom config file: ${customConfigFile}`

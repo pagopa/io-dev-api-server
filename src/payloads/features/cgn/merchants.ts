@@ -40,7 +40,7 @@ const discountTypes: ReadonlyArray<DiscountCodeType> = [
   DiscountCodeTypeEnum.landingpage
 ];
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let millis = new Date().getTime();
 
 const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
@@ -62,9 +62,10 @@ const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
 };
 
 export const onlineMerchants: OnlineMerchants = {
-  items: range(0, faker.datatype.number({ min: 1, max: 15 })).map<
-    OnlineMerchant
-  >(_ => {
+  items: range(
+    0,
+    faker.datatype.number({ min: 1, max: 15 })
+  ).map<OnlineMerchant>(_ => {
     faker.seed(millis++);
     const discountType =
       discountTypes[
@@ -82,9 +83,10 @@ export const onlineMerchants: OnlineMerchants = {
 };
 
 export const offlineMerchants: OfflineMerchants = {
-  items: range(0, faker.datatype.number({ min: 1, max: 15 })).map<
-    OfflineMerchant
-  >(_ => {
+  items: range(
+    0,
+    faker.datatype.number({ min: 1, max: 15 })
+  ).map<OfflineMerchant>(_ => {
     faker.seed(millis++);
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
@@ -104,7 +106,8 @@ export const offlineMerchants: OfflineMerchants = {
   })
 };
 
-const discountUrl = `http://${serverUrl}/merchant_landing` as Discount["discountUrl"];
+const discountUrl =
+  `http://${serverUrl}/merchant_landing` as Discount["discountUrl"];
 
 const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
   switch (discountCodeType) {
@@ -186,9 +189,10 @@ export const generateMerchantDetail = (
       imageUrl: faker.image.imageUrl() as NonEmptyString,
       description: faker.lorem.paragraphs(2) as NonEmptyString,
       discountCodeType: merchant.discountCodeType,
-      discounts: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
-        Discount
-      >(_ =>
+      discounts: range(
+        0,
+        faker.datatype.number({ min: 1, max: 4 })
+      ).map<Discount>(_ =>
         generateDiscount(merchant.productCategories, merchant.discountCodeType)
       )
     };
@@ -196,16 +200,18 @@ export const generateMerchantDetail = (
     return {
       id: merchant.id,
       name: merchant.name,
-      addresses: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
-        Address
-      >(_ => ({
+      addresses: range(
+        0,
+        faker.datatype.number({ min: 1, max: 4 })
+      ).map<Address>(_ => ({
         full_address: faker.address.streetAddress(true) as NonEmptyString
       })),
       imageUrl: faker.image.imageUrl() as NonEmptyString,
       description: faker.lorem.paragraphs(2) as NonEmptyString,
-      discounts: range(0, faker.datatype.number({ min: 1, max: 4 })).map<
-        Discount
-      >(_ => generateDiscount(merchant.productCategories)),
+      discounts: range(
+        0,
+        faker.datatype.number({ min: 1, max: 4 })
+      ).map<Discount>(_ => generateDiscount(merchant.productCategories)),
       websiteUrl: faker.internet.url() as NonEmptyString
     };
   }

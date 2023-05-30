@@ -1,8 +1,8 @@
+import fs from "fs";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Response } from "express";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
-import fs from "fs";
 import { Validation } from "io-ts";
 
 export const sendFile = (filePath: string, res: Response) => {
@@ -51,7 +51,7 @@ export const listDir = (filePath: string): ReadonlyArray<string> => {
  * @param decode
  * @param res
  */
-export const readFileAndDecode = <I, T>(
+export const readFileAndDecode = <T>(
   filename: string,
   decode: (i: T) => Validation<T>,
   res: Response

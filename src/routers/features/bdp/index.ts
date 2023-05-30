@@ -29,23 +29,24 @@ export const citizenV2: CitizenResourceV2 = {
   optInStatus: CitizenOptInStatusEnum.NOREQ
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let currentCitizenV2: CitizenResourceV2 | undefined;
 
 /**
  * return the citizen
  * can return these codes: 200, 401, 404, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
- * TODO: remove GET '/io/citizen' when technical account and remove tslint:disable to GET '/io/citizen/v2'
+ * TODO: remove GET '/io/citizen' when technical account and remove eslint-disable to GET '/io/citizen/v2'
  */
-addHandler(bpd, "get", addBPDPrefix("/io/citizen"), (_, res) => {
+const ioCitizenServicePath = "/io/citizen";
+addHandler(bpd, "get", addBPDPrefix(ioCitizenServicePath), (_, res) => {
   if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
   }
   res.json(currentCitizenV2);
 });
-// tslint:disable-next-line:no-identical-functions
+// eslint-disable-next-line:no-identical-functions
 addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
   if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
@@ -54,7 +55,7 @@ addHandler(bpd, "get", addBPDPrefix("/io/citizen/v2"), (_, res) => {
   res.json(currentCitizenV2);
 });
 
-addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
+addHandler(bpd, "delete", addBPDPrefix(ioCitizenServicePath), (_, res) => {
   if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
     return;
@@ -67,9 +68,9 @@ addHandler(bpd, "delete", addBPDPrefix("/io/citizen"), (_, res) => {
  * update the citizen
  * can return these codes: 200, 401, 500
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
- * TODO: remove PUT '/io/citizen' when technical account and remove tslint:disable to PUT '/io/citizen/v2'
+ * TODO: remove PUT '/io/citizen' when technical account and remove eslint-disable to PUT '/io/citizen/v2'
  */
-addHandler(bpd, "put", addBPDPrefix("/io/citizen"), (_, res) => {
+addHandler(bpd, "put", addBPDPrefix(ioCitizenServicePath), (_, res) => {
   currentCitizenV2 = {
     ...citizenV2,
     enabled: true
@@ -81,7 +82,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
   pipe(
     CitizenOptInStatus.decode(req.body.optInStatus),
     E.fold(
-      // tslint:disable-next-line:no-identical-functions
+      // eslint-disable-next-line:no-identical-functions
       () => {
         currentCitizenV2 = {
           ...citizenV2,
@@ -115,7 +116,7 @@ addHandler(bpd, "put", addBPDPrefix("/io/citizen/v2"), (req, res) => {
  * see https://bpd-dev.portal.azure-api.net/docs/services/bpd-ms-citizen/export?DocumentFormat=Swagger
  * see https://docs.google.com/document/d/1GuFOu24IeWK3W4pGlZ8PUnnMJi-oDr5xAQEjTxC0hfc/edit#heading=h.gr9fx7vug165
  */
-addHandler(bpd, "patch", addBPDPrefix("/io/citizen"), (req, res) => {
+addHandler(bpd, "patch", addBPDPrefix(ioCitizenServicePath), (req, res) => {
   // citizen not found
   if (currentCitizenV2 === undefined) {
     res.sendStatus(404);
@@ -182,60 +183,47 @@ addHandler(
 
 const activeHashPan: Map<string, StatusEnum> = new Map<string, StatusEnum>();
 
+const paymentInstrumentsPath = "/io/payment-instruments/:hashPan";
 // get info about the given payment instrument
-addHandler(
-  bpd,
-  "get",
-  addBPDPrefix("/io/payment-instruments/:hashPan"),
-  (req, res) => {
-    const hpan = req.params.hashPan;
-    if (!activeHashPan.has(hpan)) {
-      res.sendStatus(404);
-      return;
-    }
-    const status = activeHashPan.get(hpan);
-    const result: PaymentInstrumentResource = {
-      hpan,
-      fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
-      activationDate: new Date().toISOString(),
-      deactivationDate: new Date().toISOString(),
-      Status: status!
-    };
-    res.json(result);
+addHandler(bpd, "get", addBPDPrefix(paymentInstrumentsPath), (req, res) => {
+  const hpan = req.params.hashPan;
+  if (!activeHashPan.has(hpan)) {
+    res.sendStatus(404);
+    return;
   }
-);
+  const status = activeHashPan.get(hpan);
+  const result: PaymentInstrumentResource = {
+    hpan,
+    fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
+    activationDate: new Date().toISOString(),
+    deactivationDate: new Date().toISOString(),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    Status: status!
+  };
+  res.json(result);
+});
 
 // active the given payment instrument to the BPD program
-addHandler(
-  bpd,
-  "put",
-  addBPDPrefix("/io/payment-instruments/:hashPan"),
-  (req, res) => {
-    const hpan = req.params.hashPan;
-    activeHashPan.set(hpan, StatusEnum.ACTIVE);
-    const result: PaymentInstrumentDTO = {
-      fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
-      activationDate: new Date()
-    };
-    res.json(result);
-  }
-);
+addHandler(bpd, "put", addBPDPrefix(paymentInstrumentsPath), (req, res) => {
+  const hpan = req.params.hashPan;
+  activeHashPan.set(hpan, StatusEnum.ACTIVE);
+  const result: PaymentInstrumentDTO = {
+    fiscalCode: ioDevServerConfig.profile.attrs.fiscal_code,
+    activationDate: new Date()
+  };
+  res.json(result);
+});
 
 // remove the given payment instrument from the BPD program
-addHandler(
-  bpd,
-  "delete",
-  addBPDPrefix("/io/payment-instruments/:hashPan"),
-  (req, res) => {
-    const hpan = req.params.hashPan;
-    if (!activeHashPan.has(hpan)) {
-      res.sendStatus(404);
-      return;
-    }
-    activeHashPan.set(hpan, StatusEnum.INACTIVE);
-    res.sendStatus(204);
+addHandler(bpd, "delete", addBPDPrefix(paymentInstrumentsPath), (req, res) => {
+  const hpan = req.params.hashPan;
+  if (!activeHashPan.has(hpan)) {
+    res.sendStatus(404);
+    return;
   }
-);
+  activeHashPan.set(hpan, StatusEnum.INACTIVE);
+  res.sendStatus(204);
+});
 
 export const resetBpd = () => {
   currentCitizenV2 = undefined;

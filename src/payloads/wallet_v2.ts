@@ -48,9 +48,9 @@ type CardConfig = {
   index: number;
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let defaultCardConfig: CardConfig = { prefix: "00000000000", index: 0 };
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let incrementalIdWallet = 1;
 export const getNextIdWallet = (): number => {
   incrementalIdWallet++;
@@ -74,8 +74,8 @@ export const resetCardConfig = () => {
 
 export const generateSatispayInfo = (
   count: number
-): ReadonlyArray<SatispayInfo> => {
-  return count > 0
+): ReadonlyArray<SatispayInfo> =>
+  count > 0
     ? range(1, count).map(_ => {
         const config = pipe(
           O.fromNullable(cardConfigMap.get(WalletTypeEnum.Satispay)),
@@ -93,12 +93,9 @@ export const generateSatispayInfo = (
         };
       })
     : [];
-};
 
-export const generatePaypalInfo = (
-  count: number
-): ReadonlyArray<PayPalInfo> => {
-  return count > 0
+export const generatePaypalInfo = (count: number): ReadonlyArray<PayPalInfo> =>
+  count > 0
     ? range(1, count).map(_ => {
         const config = pipe(
           O.fromNullable(cardConfigMap.get(WalletTypeEnum.PayPal)),
@@ -119,7 +116,6 @@ export const generatePaypalInfo = (
         };
       })
     : [];
-};
 
 export const satispay = {
   hasMore: false,
@@ -213,7 +209,7 @@ if (E.isLeft(maybeAbiList)) {
 const abiCodes = (maybeAbiList.right ?? [])
   .map((a: Abi) => a.abi)
   .filter(isDefined);
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line: no-let
 let millis = new Date().getTime();
 export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   faker.seed(millis++);
@@ -225,9 +221,9 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   };
 });
 
-export const convertWalletV2toV1 = (wallet: WalletV2): Wallet | undefined => {
+export const convertWalletV2toV1 = (wallet: WalletV2): Wallet | undefined =>
   // a favourite method can be only a CreditCard, PayPal or BancomatPay
-  return match(wallet.walletType)
+  match(wallet.walletType)
     .with(WalletTypeEnum.Card, () =>
       generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
     )
@@ -238,7 +234,8 @@ export const convertWalletV2toV1 = (wallet: WalletV2): Wallet | undefined => {
       generateWalletV1FromBPay(wallet.idWallet!, wallet.info)
     )
     .otherwise(() => undefined);
-};
+
+const dateFormat = "yyyy-MM-dd";
 
 export const generateWalletV2FromCard = (
   card: Card,
@@ -275,14 +272,14 @@ export const generateWalletV2FromCard = (
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format
-    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
+    createDate: format(ed, dateFormat) as any as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canMethodPay,
-    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
+    updateDate: format(new Date(), dateFormat) as any as Date
   };
 };
 
@@ -317,14 +314,14 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format
-    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
+    createDate: format(ed, dateFormat) as any as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canPay,
-    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
+    updateDate: format(new Date(), dateFormat) as any as Date
   };
 };
 
@@ -340,14 +337,14 @@ export const generateWalletV2FromPaypal = (
   return {
     walletType: WalletTypeEnum.PayPal,
     // force createDate to be a string because we need to force a specific date format
-    createDate: (format(ed, "yyyy-MM-dd") as any) as Date,
+    createDate: format(ed, dateFormat) as any as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: enableableFunctions.includes(EnableableFunctionsEnum.pagoPA),
-    updateDate: (format(new Date(), "yyyy-MM-dd") as any) as Date
+    updateDate: format(new Date(), dateFormat) as any as Date
   };
 };
 

@@ -1,11 +1,12 @@
+import { faker } from "@faker-js/faker/locale/it";
 import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import { Router } from "express";
-import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -23,36 +24,35 @@ import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
 import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
 import { addHandler } from "../../../payloads/response";
+import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
 import ServicesDB from "./../../../persistence/services";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 
 export const cgnRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let idActivationCgn: string | undefined;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let firstCgnActivationRequestTime = 0;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let currentCGN: Card = {
   status: PendingStatusEnum.PENDING
 };
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let idActivationEyca: string | undefined;
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let firstEycaActivationRequestTime = 0;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let currentEyca: EycaCard | undefined;
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let eycaActivationStatus: EycaActivationDetail = {
   status: EycaStatusEnum.UNKNOWN
 };
@@ -115,8 +115,9 @@ addHandler(cgnRouter, "get", addPrefix("/activation"), (_, res) =>
         };
         const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
-          -1) + 1) as NonNegativeInteger;
+        const increasedSettingsVersion =
+          (((servicePreference?.settings_version as number) ?? -1) +
+            1) as NonNegativeInteger;
         const updatedPreference = {
           is_inbox_enabled: true,
           is_email_enabled:
@@ -282,8 +283,9 @@ addHandler(cgnRouter, "post", addPrefix("/delete"), (_, res) => {
         resetCgn();
         const servicePreference = ServicesDB.getPreference(cgnServiceId);
 
-        const increasedSettingsVersion = (((servicePreference?.settings_version as number) ??
-          -1) + 1) as NonNegativeInteger;
+        const increasedSettingsVersion =
+          (((servicePreference?.settings_version as number) ?? -1) +
+            1) as NonNegativeInteger;
         const updatedPreference = {
           is_inbox_enabled: false,
           is_email_enabled: false,

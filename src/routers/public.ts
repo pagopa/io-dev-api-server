@@ -1,14 +1,13 @@
-import { getProblemJson } from "./../payloads/error";
 /**
  * this router serves all public API (those ones don't need session)
  */
+import * as zlib from "zlib";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
 import { Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
-import * as zlib from "zlib";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { backendInfo } from "../payloads/backend";
 import {
@@ -21,12 +20,12 @@ import {
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
+import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
-import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
 
 export const publicRouter = Router();
 
@@ -95,7 +94,7 @@ addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 
 // test login
 addHandler(publicRouter, "post", "/test-login", (req, res) => {
-  const { _, password } = req.body;
+  const { password } = req.body;
   if (password === "error") {
     res.status(500).json({ token: loginSessionToken });
   } else if (password === "delay") {
@@ -142,7 +141,7 @@ addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {
 });
 
 const handleLollipopLoginRedirect = (
-  res: Response<any, Record<string, any>>,
+  res: Response,
   samlRequest: string,
   thumbprint?: string
 ) => {
@@ -171,12 +170,14 @@ const debugSamlRequestIfNeeded = async (
     .inflateRawSync(Buffer.from(decoded, "base64"))
     .toString();
 
+  // eslint-disable-next-line no-console
   console.log(chalk.bgBlack(chalk.green(`Deflated samlReq: ${deflated}`)));
 
   const xmlToJson = await parseStringPromise(deflated);
 
   const authnRequest = xmlToJson["samlp:AuthnRequest"];
   if (authnRequest) {
+    // eslint-disable-next-line no-console
     console.log(
       chalk.bgBlack(
         chalk.green(`Authn Request Algorithm-Id: ${authnRequest.$.ID}`)
@@ -184,6 +185,7 @@ const debugSamlRequestIfNeeded = async (
     );
   }
   if (thumbprint) {
+    // eslint-disable-next-line no-console
     console.log(chalk.bgBlack(chalk.green(`Stored Thumbprint: ${thumbprint}`)));
   }
 };

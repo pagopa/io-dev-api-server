@@ -2,8 +2,8 @@ import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import chalk from "chalk";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import { TotalCashbackResource } from "../../../../../generated/definitions/bpd/winning_transactions/TotalCashbackResource";
 import { TrxCountByDayResourceArray } from "../../../../../generated/definitions/bpd/winning_transactions/v2/TrxCountByDayResourceArray";
 import { WinningTransactionPageResource } from "../../../../../generated/definitions/bpd/winning_transactions/v2/WinningTransactionPageResource";
@@ -30,16 +30,17 @@ const readCountByDayJson = (directoryName: string, fileName: string) =>
     `${assetsFolder}/bpd/award/winning_transactions/v2/countByDay/${directoryName}/${fileName}`
   );
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let totalCashback: Map<number, string>;
 
+const totalCashbackFile = "default.json";
 const initTotalCashback = () => {
   totalCashback = new Map<number, string>([
-    [0, "default.json"],
-    [1, "default.json"],
-    [2, "default.json"],
-    [3, "default.json"],
-    [4, "default.json"]
+    [0, totalCashbackFile],
+    [1, totalCashbackFile],
+    [2, totalCashbackFile],
+    [3, totalCashbackFile],
+    [4, totalCashbackFile]
   ]);
 };
 initTotalCashback();
@@ -63,6 +64,7 @@ addHandler(
           );
 
           if (E.isLeft(maybeTotalCashBack)) {
+            // eslint-disable-next-line no-console
             console.log(chalk.red(`${p} is not a valid TotalCashbackResource`));
             res.sendStatus(500);
           } else {
@@ -74,16 +76,17 @@ addHandler(
   }
 );
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let winningTransactions: Map<number, string> = new Map<number, string>();
 
+const winningTransactionFile = "default_.json";
 const initWinningTransaction = () => {
   winningTransactions = new Map<number, string>([
-    [0, "default_.json"],
-    [1, "default_.json"],
-    [2, "default_.json"],
-    [3, "default_.json"],
-    [4, "default_.json"]
+    [0, winningTransactionFile],
+    [1, winningTransactionFile],
+    [2, winningTransactionFile],
+    [3, winningTransactionFile],
+    [4, winningTransactionFile]
   ]);
 };
 initWinningTransaction();
@@ -110,6 +113,7 @@ addHandler(
           readWinningTransactions(period.toString(), file)
         );
         if (E.isLeft(maybeTransactions)) {
+          // eslint-disable-next-line no-console
           console.log(
             chalk.red(
               `${period.toString()}/${file} is not a valid WinningTransactionPageResource\n${readableReport(
@@ -126,6 +130,7 @@ addHandler(
           e instanceof Error &&
           e.message.includes("no such file or directory")
         ) {
+          // eslint-disable-next-line no-console
           console.log(chalk.red(e.message));
           res.sendStatus(404);
           return;
@@ -137,22 +142,23 @@ addHandler(
       res.sendStatus(404);
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const jsonFile = winningTransactions.get(awardPeriodId)!.split(".");
     const jsonFileWithPage = `${jsonFile[0]}${cursor}.${jsonFile[1]}`;
     response(awardPeriodId, jsonFileWithPage);
   }
 );
 
-// tslint:disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let countByDay: Map<number, string>;
 
 const initCountByDay = () => {
   countByDay = new Map<number, string>([
-    [0, "default.json"],
-    [1, "default.json"],
-    [2, "default.json"],
-    [3, "default.json"],
-    [4, "default.json"]
+    [0, totalCashbackFile],
+    [1, totalCashbackFile],
+    [2, totalCashbackFile],
+    [3, totalCashbackFile],
+    [4, totalCashbackFile]
   ]);
 };
 initCountByDay();
@@ -176,6 +182,7 @@ addHandler(
           );
 
           if (E.isLeft(maybeCountByDay)) {
+            // eslint-disable-next-line no-console
             console.log(
               chalk.red(`${p} is not a valid TrxCountByDayResourceArray`)
             );
@@ -201,6 +208,7 @@ addHandler(
       readWinningTransactions(payload.period, payload.file)
     );
     if (E.isLeft(maybeTransactions)) {
+      // eslint-disable-next-line no-console
       console.log(
         chalk.red(
           `${payload.file} is not a valid WinningTransactionPageResource`
@@ -266,6 +274,7 @@ addHandler(
       readTotalCashbackJson(payload.directory, payload.file)
     );
     if (E.isLeft(maybeTotalCashBack)) {
+      // eslint-disable-next-line no-console
       console.log(
         chalk.red(`${payload.file} is not a valid TotalCashbackResource`)
       );

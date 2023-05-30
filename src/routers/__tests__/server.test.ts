@@ -11,7 +11,6 @@ const testForPng = async (url: string) => {
   const response = await request.get(url);
   expect(response.status).toBe(200);
   expect(response.get("content-type")).toBe("image/png");
-  return;
 };
 
 it("login should response with a welcome page", async () => {

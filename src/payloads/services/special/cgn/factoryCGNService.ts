@@ -17,7 +17,8 @@ export const createCgnService: SpecialServiceGenerator = (
   organizationFiscalCode: OrganizationFiscalCode
 ): ServicePublic => ({
   ...createService(cgnServiceId),
-  organization_name: "PCM - Dipartimento per le Politche Giovanili e il Servizio Civile Universale" as OrganizationName,
+  organization_name:
+    "PCM - Dipartimento per le Politche Giovanili e il Servizio Civile Universale" as OrganizationName,
   service_name: "Carta Giovani Nazionale" as ServiceName,
   service_metadata: {
     ...createServiceMetadata(ServiceScopeEnum.NATIONAL),

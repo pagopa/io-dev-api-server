@@ -5,9 +5,9 @@ import { getIdPayError } from "../../../payloads/features/idpay/error";
 import {
   getCheckPrerequisitesResponseByInitiativeId,
   getPrerequisitesErrorByInitiativeId
-} from "../../../payloads/features/idpay/onboarding/check-prerequisites";
-import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/onboarding/get-initiative-data";
-import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding/onboarding-status";
+} from "../../../payloads/features/idpay/check-prerequisites";
+import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/get-initiative-data";
+import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding-status";
 import {
   initiativeIdFromString,
   serviceIdFromString

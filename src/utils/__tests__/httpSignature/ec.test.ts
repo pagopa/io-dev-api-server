@@ -1,14 +1,3 @@
-import {
-  isSignAlgorithmValid,
-  signAlgorithmToVerifierMap
-} from "./../../httpSignature";
-import {
-  getCustomContentChallenge,
-  getCustomContentSignatureBase,
-  getSignatureInfo,
-  toPem,
-  verifyCustomContentChallenge
-} from "../../httpSignature";
 import * as TE from "fp-ts/TaskEither";
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
@@ -18,6 +7,17 @@ import {
   VerifySignatureHeaderOptions,
   verifySignatureHeader
 } from "@mattrglobal/http-signatures";
+import {
+  getCustomContentChallenge,
+  getCustomContentSignatureBase,
+  getSignatureInfo,
+  toPem,
+  verifyCustomContentChallenge
+} from "../../httpSignature";
+import {
+  isSignAlgorithmValid,
+  signAlgorithmToVerifierMap
+} from "./../../httpSignature";
 
 // Android EC Public Key
 const ecPublicKeyJwk = {
@@ -117,9 +117,12 @@ describe("Test custom content TOS and Sign Challenges", () => {
         content.challenge,
         content.header
       );
-      expect(customContentSignatureBase!.signatureBase).toBe(
-        content.signatureBase
-      );
+      expect(customContentSignatureBase).not.toBe(undefined);
+      if (customContentSignatureBase) {
+        expect(customContentSignatureBase.signatureBase).toBe(
+          content.signatureBase
+        );
+      }
     });
   });
 
@@ -131,18 +134,24 @@ describe("Test custom content TOS and Sign Challenges", () => {
         content.header
       );
 
-      const customContentChallenge = getCustomContentChallenge(
-        customContentSignatureBase!.signatureLabel!,
-        SIGNATURE
-      );
+      expect(customContentSignatureBase).not.toBe(undefined);
+      if (customContentSignatureBase) {
+        const customContentChallenge = getCustomContentChallenge(
+          customContentSignatureBase.signatureLabel,
+          SIGNATURE
+        );
 
-      const result = await verifyCustomContentChallenge(
-        customContentSignatureBase!.signatureBase,
-        customContentChallenge!,
-        ecPublicKeyJwk
-      )();
+        expect(customContentChallenge).not.toBe(undefined);
+        if (customContentChallenge) {
+          const result = await verifyCustomContentChallenge(
+            customContentSignatureBase.signatureBase,
+            customContentChallenge,
+            ecPublicKeyJwk
+          )();
 
-      expect(result).toBeTruthy();
+          expect(result).toBeTruthy();
+        }
+      }
     });
   });
 });
@@ -164,9 +173,8 @@ describe("Test the signature algorithms", () => {
 
 const MOCK_VERIFY_SIGNATURE_HEADER_OPTIONS: VerifySignatureHeaderOptions = {
   verifier: {
-    verify: signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(
-      ecPublicKeyJwk
-    )
+    verify:
+      signAlgorithmToVerifierMap["ecdsa-p256-sha256"].verify(ecPublicKeyJwk)
   },
   url: "http://127.0.0.1:3000",
   method: "GET",

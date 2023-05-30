@@ -33,12 +33,11 @@ export const getVouchersBeneficiary = (
 
 export const getAereoportiSede = (
   size: number
-): ReadonlyArray<AeroportoSedeBean> => {
-  return size > 0
+): ReadonlyArray<AeroportoSedeBean> =>
+  size > 0
     ? range(0, size - 1).map(_ => ({
         codIATA: faker.lorem.word(3),
         denominazione: faker.address.city(),
         sigla: faker.random.words(1)
       }))
     : [];
-};
