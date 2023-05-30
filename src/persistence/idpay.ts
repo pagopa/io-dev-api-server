@@ -16,7 +16,7 @@ import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/de
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
-import { OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
+import { StatusEnum, OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
@@ -85,7 +85,7 @@ const generateRandomOperationDTO = (
         circuitType: "01",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: "" // TODO add correct status when API definitions are ready
+        status: StatusEnum.AUTHORIZED
       };
     case "ADD_IBAN":
       return {

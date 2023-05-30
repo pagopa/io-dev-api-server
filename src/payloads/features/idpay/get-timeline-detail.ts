@@ -4,7 +4,10 @@ import { pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
 import { OperationDTO } from "../../../../generated/definitions/idpay/OperationDTO";
 import { OperationListDTO } from "../../../../generated/definitions/idpay/OperationListDTO";
-import { OperationTypeEnum as TransactionDetailEnum } from "../../../../generated/definitions/idpay/TransactionDetailDTO";
+import {
+  OperationTypeEnum as TransactionDetailEnum,
+  StatusEnum
+} from "../../../../generated/definitions/idpay/TransactionDetailDTO";
 import { initiativeTimeline } from "../../../persistence/idpay";
 
 const generateRandomOperationDetailDTO = (
@@ -26,14 +29,16 @@ const generateRandomOperationDetailDTO = (
         ...operation,
         operationType: TransactionDetailEnum.TRANSACTION,
         idTrxAcquirer: ulid(),
-        idTrxIssuer: ulid()
+        idTrxIssuer: ulid(),
+        status: StatusEnum.AUTHORIZED,
       };
     case "REVERSAL":
       return {
         ...operation,
         operationType: TransactionDetailEnum.REVERSAL,
         idTrxAcquirer: ulid(),
-        idTrxIssuer: ulid()
+        idTrxIssuer: ulid(),
+        status: StatusEnum.AUTHORIZED
       };
   }
 };
