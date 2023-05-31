@@ -467,22 +467,22 @@ range(0, walletConfig.discountCount).forEach(() => {
 export const payments: ReadonlyArray<AuthPaymentResponseDTO> = [
   {
     ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.CREATED,
-    trxCode: "000001"
-  },
-  {
-    ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.IDENTIFIED,
-    trxCode: "000002"
+    status: PaymentStatusEnum.AUTHORIZED,
+    trxCode: "00000001"
   },
   {
     ...generateRandomAuthPaymentResponseDTO(),
     status: PaymentStatusEnum.REJECTED,
-    trxCode: "000003"
+    trxCode: "00000002"
   },
   {
     ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.AUTHORIZED,
-    trxCode: "000004"
+    status: PaymentStatusEnum.IDENTIFIED,
+    trxCode: "00000003"
+  },
+  {
+    ...generateRandomAuthPaymentResponseDTO(),
+    status: PaymentStatusEnum.CREATED,
+    trxCode: "00000004"
   }
 ];
