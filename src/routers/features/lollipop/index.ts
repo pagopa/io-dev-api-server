@@ -55,54 +55,41 @@ const toTaskError = (
 
 addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) =>
   pipe(
-    req.headers.signature !== "",
+    req.headers["signature-input"] !== "",
     B.foldW(
-      () => toTaskError(res, 500, "signature header is empty"),
+      () => toTaskError(res, 500, "signature-input header is empty"),
       () =>
         pipe(
-          req.headers["signature-input"] !== "",
-          B.foldW(
-            () => toTaskError(res, 500, "signature-input header is empty"),
-            () =>
+          getPublicKey(),
+          O.fromNullable,
+          O.foldW(
+            () => toTaskError(res, 500, "Public key not found"),
+            publicKey =>
               pipe(
-                getPublicKey(),
-                O.fromNullable,
-                O.foldW(
-                  () => toTaskError(res, 500, "Public key not found"),
-                  publicKey =>
+                TE.tryCatch(
+                  () =>
+                    verifySignatureHeader(
+                      toRequestOption(req, publicKey)
+                    ).unwrapOr({
+                      verified: false
+                    }),
+                  e => e as Error
+                ),
+                TE.foldW(
+                  e =>
+                    toTaskError(res, 500, e.message, JSON.stringify(e.stack)),
+                  verificationResult =>
                     pipe(
-                      TE.tryCatch(
+                      verificationResult.verified,
+                      B.fold(
                         () =>
-                          verifySignatureHeader(
-                            toRequestOption(req, publicKey)
-                          ).unwrapOr({
-                            verified: false
-                          }),
-                        e => e as Error
-                      ),
-                      TE.foldW(
-                        e =>
                           toTaskError(
                             res,
-                            500,
-                            e.message,
-                            JSON.stringify(e.stack)
+                            400,
+                            "Invalid signature",
+                            JSON.stringify(verificationResult)
                           ),
-                        verificationResult =>
-                          pipe(
-                            verificationResult.verified,
-                            B.fold(
-                              () =>
-                                toTaskError(
-                                  res,
-                                  400,
-                                  "Invalid signature",
-                                  JSON.stringify(verificationResult)
-                                ),
-                              () =>
-                                T.of(res.send({ response: getAssertionRef() }))
-                            )
-                          )
+                        () => T.of(res.send({ response: getAssertionRef() }))
                       )
                     )
                 )
