@@ -55,17 +55,15 @@ const toTaskError = (
 
 addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) =>
   pipe(
-    req.headers.signature,
-    O.fromNullable,
-    O.foldW(
-      () => toTaskError(res, 500, "signature header not found"),
-      _ =>
+    req.headers.signature !== "",
+    B.foldW(
+      () => toTaskError(res, 500, "signature header is empty"),
+      () =>
         pipe(
-          req.headers["signature-input"],
-          O.fromNullable,
-          O.foldW(
-            () => toTaskError(res, 500, "signature-input header not found"),
-            _ =>
+          req.headers["signature-input"] !== "",
+          B.foldW(
+            () => toTaskError(res, 500, "signature-input header is empty"),
+            () =>
               pipe(
                 getPublicKey(),
                 O.fromNullable,
