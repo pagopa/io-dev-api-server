@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
@@ -22,6 +22,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { pnServiceId } from "../payloads/services/special/pn/factoryPn";
 import ServicesDB from "../persistence/services";
 import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
+import { lollipopMiddleware } from "../middleware/lollipopMiddleware";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -272,7 +273,7 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:id"),
-  (req, res) => {
+  lollipopMiddleware((req, res) => {
     if (configResponse.getThirdPartyMessageResponseCode !== 200) {
       res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
       return;
@@ -291,14 +292,14 @@ addHandler(
     } else {
       res.status(404).json(getProblemJson(404, messageNotFoundError));
     }
-  }
+  })
 );
 
 addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:messageId/attachments/:attachmentId"),
-  (req, res) => {
+  lollipopMiddleware((req, res) => {
     // find the message by the given messageId
     const message = MessagesDB.findOneById(req.params.messageId);
     const thirdPartyMessage = ThirdPartyMessageWithContent.decode(message);
@@ -350,7 +351,7 @@ addHandler(
       attachment.content_type ?? defaultContentType
     );
     sendFile(attachmentAbsolutePath, res);
-  },
+  }),
   3000
 );
 
@@ -358,7 +359,7 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:id/precondition"),
-  (req, res) =>
+  lollipopMiddleware((req, res) =>
     pipe(
       req.params.id,
       MessagesDB.findOneById,
@@ -387,4 +388,5 @@ addHandler(
           )
       )
     )
+  )
 );
