@@ -26,7 +26,6 @@ export const isLollipopConfigEnabled = () =>
 export const lollipopMiddleware =
   (nextMiddleware: (embeddedRequest: Request, _: Response) => void) =>
   async (request: Request, response: Response) => {
-    console.log(`MIDDLEWARE`);
     pipe(
       isLollipopConfigEnabled(),
       B.fold(
