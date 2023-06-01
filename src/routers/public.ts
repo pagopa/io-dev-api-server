@@ -11,7 +11,7 @@ import { parseStringPromise } from "xml2js";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { backendInfo } from "../payloads/backend";
 import {
-  appUrlLoginScheme,
+  AppUrlLoginScheme,
   errorRedirectUrl,
   loginLolliPopRedirect,
   loginSessionToken,
@@ -26,6 +26,7 @@ import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
+import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 
 export const publicRouter = Router();
 
@@ -66,13 +67,20 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
+  const urlLoginScheme = isFeatureFlagWithMinVersionEnabled(
+    "nativeLogin",
+    req.headers
+  )
+    ? AppUrlLoginScheme.native
+    : AppUrlLoginScheme.webview;
+
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
-    const url = `${appUrlLoginScheme}://${req.headers.host}${loginWithToken}`;
+    const url = `${urlLoginScheme}://${req.headers.host}${loginWithToken}`;
     res.redirect(url);
     return;
   }
   if (req.query.error) {
-    const url = `${appUrlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`;
+    const url = `${urlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`;
     res.redirect(url);
     return;
   }

@@ -1,7 +1,7 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
-import { appUrlLoginScheme, loginSessionToken } from "../../payloads/login";
+import { AppUrlLoginScheme, loginSessionToken } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 
@@ -23,7 +23,7 @@ it("login with auth should response with a redirect and the token as param", asy
   const hostAndPort = response.text.match(/\/\/(.*?)\//);
   expect(response.status).toBe(302);
   expect(response.text).toBe(
-    `Found. Redirecting to ${appUrlLoginScheme}://${
+    `Found. Redirecting to ${AppUrlLoginScheme.webview}://${
       hostAndPort ? hostAndPort[1] : ""
     }/profile.html?token=` + loginSessionToken
   );
