@@ -4,9 +4,11 @@ import * as O from "fp-ts/lib/Option";
 import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import { PatternString } from "@pagopa/ts-commons/lib/strings";
+import { compare } from "compare-versions";
 import { backendStatus } from "../../payloads/backend";
 import { VersionPerPlatform } from "../../../generated/definitions/content/VersionPerPlatform";
 import { BackendStatus } from "../../../generated/definitions/content/BackendStatus";
+import { getAppVersion } from "../../persistence/appInfo";
 
 type DeviceOS = {
   iPhone: keyof VersionPerPlatform;
@@ -18,24 +20,32 @@ const osPerDevice: DeviceOS = {
   Android: "android"
 };
 
-type FeatureFlagWithMinAppVersion = Extract<
-  keyof BackendStatus["config"],
+type FeatureFlagWithMinAppVersion<T> = Extract<
+  keyof T,
   {
-    [K in keyof BackendStatus["config"]]: BackendStatus["config"][K] extends
+    [K in keyof T]: T[K] extends
       | { min_app_version?: VersionPerPlatform }
       | undefined
       ? K
       : never;
-  }[keyof BackendStatus["config"]]
+  }[keyof T]
 >;
 
-export const isVersionValidAndActive = (version: string) =>
+export const isVersionValidAndActive = (version: string | undefined) =>
   pipe(
     version,
     PatternString(`^(?!0(.0)*$)\\d+(\\.\\d+)*$`).decode,
     E.fold(
       _ => false,
-      _ => true
+      minAppVersion =>
+        pipe(
+          getAppVersion(),
+          PatternString(`^(?!0(.0)*$)\\d+(\\.\\d+)*$`).decode,
+          E.fold(
+            _ => false,
+            userAppVersion => compare(minAppVersion, userAppVersion, "<=")
+          )
+        )
     )
   );
 
@@ -55,7 +65,7 @@ export const getOsFromUserAgent = (reqHeaders: IncomingHttpHeaders) =>
   );
 
 export const isFeatureFlagWithMinVersionEnabled = (
-  featureFlag: FeatureFlagWithMinAppVersion,
+  featureFlag: FeatureFlagWithMinAppVersion<BackendStatus["config"]>,
   reqHeaders: IncomingHttpHeaders
 ) =>
   pipe(

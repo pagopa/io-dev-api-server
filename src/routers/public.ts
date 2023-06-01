@@ -21,6 +21,7 @@ import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
 import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
+import { setAppVersion } from "../persistence/appInfo";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -34,6 +35,9 @@ export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
+  const userAppVersion = req.get("x-pagopa-app-version");
+  setAppVersion(userAppVersion);
+
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
   const lollipopHashAlgorithmHeaderValue = req.get(
     "x-pagopa-lollipop-pub-key-hash-algo"
