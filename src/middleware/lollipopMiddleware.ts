@@ -26,19 +26,27 @@ export const isLollipopConfigEnabled = () =>
 
 export const lollipopMiddleware =
   (nextMiddleware: (embeddedRequest: Request, _: Response) => void) =>
-  async (request: Request, response: Response) => {
+  (request: Request, response: Response) => {
     pipe(
       isLollipopConfigEnabled(),
       B.fold(
         () => nextMiddleware(request, response),
-        async () =>
+        () =>
           pipe(
-            await verifyLollipopSignatureHeader(request, response),
-            E.foldW(
-              error => response.status(error.code).send(error.problemJson),
-              _ => nextMiddleware(request, response)
+            TE.tryCatch(
+              () => verifyLollipopSignatureHeader(request, response),
+              _ => _ as Error
+            ),
+            TE.map(verificationResult =>
+              pipe(
+                verificationResult,
+                E.foldW(
+                  error => response.status(error.code).send(error.problemJson),
+                  _ => nextMiddleware(request, response)
+                )
+              )
             )
-          )
+          )()
       )
     );
   };
