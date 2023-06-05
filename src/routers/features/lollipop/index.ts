@@ -1,16 +1,14 @@
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as E from "fp-ts/lib/Either";
 import * as T from "fp-ts/lib/Task";
 import * as B from "fp-ts/lib/boolean";
 import * as jose from "jose";
 import { Request, Response, Router } from "express";
 import { verifySignatureHeader } from "@mattrglobal/http-signatures";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { getProblemJson } from "../../../payloads/error";
-/**
- * this router serves lollipop API
- */
-
 import { addHandler } from "../../../payloads/response";
 import { getAssertionRef, getPublicKey } from "../../../persistence/lollipop";
 import { signAlgorithmToVerifierMap } from "../../../utils/httpSignature";
@@ -55,9 +53,10 @@ const toTaskError = (
 
 addHandler(lollipopRouter, "post", "/first-lollipop/sign", async (req, res) =>
   pipe(
-    req.headers["signature-input"] !== "",
-    B.foldW(
-      () => toTaskError(res, 500, "signature-input header is empty"),
+    req.headers["signature-input"],
+    NonEmptyString.decode,
+    E.foldW(
+      _ => toTaskError(res, 500, "signature-input header is empty"),
       () =>
         pipe(
           getPublicKey(),
