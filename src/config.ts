@@ -156,6 +156,9 @@ const defaultConfig: IoDevServerConfig = {
     idpay: {
       ibanSize: 3
     },
+    lollipop: {
+      enabled: true
+    },
     allowRandomValues: true
   }
 };
