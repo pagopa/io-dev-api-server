@@ -34,6 +34,7 @@
     "dev": "nodemon",
     "test": "jest",
     "test-watch": "jest --watch",
+    "test:ci": "jest --ci --maxWorkers=2 --silent",
     "test:dev": "jest --detectOpenHandles --coverage=false",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
