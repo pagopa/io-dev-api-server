@@ -96,3 +96,30 @@ $ cp .env.local .env
 # Run the app on iOS or Android
 $ yarn run-ios (or yarn-run-android)
 ```
+
+## Lollipop
+Server is able to verify lollipop header's signatures on incoming requests, provided a previously valid login that set both public key and public assertion (`GET /login` endpoint).
+
+In order to enable lollipop on an endpoint, just wrap the middleware function that handles such endpoint with the `lollipopMiddleware` function (`src/middleware/lollipopMiddleware.ts`).
+```
+// Handler without lollipop
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id/precondition"),
+  (req, res) => {...}
+)
+
+// Handler with lollipop
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id/precondition"),
+  lollipopMiddleware((req, res) => {...})
+)
+```
+
+The lollipop middleware runs before the wrapped function and automatically rejects-and-block any request that is not lollipop compliant (so the wrapped function is not executed in such case).
+Public key and Assertion Ref can be retrieved using `getPublicKey` and `getAssertionRef` (`src/persistence/lollipop.ts` - provided a previously valid login on the GET /login endpoint).
+
+Regardless of how many endpoints have been wrapped, the lollipop middleware can be globally disabled using the `config.feature.lollipop.enabled` flag (default true).

@@ -268,6 +268,9 @@ export const IoDevServerConfig = t.interface({
       idpay: t.interface({
         // The size of the IBAN list to generate
         ibanSize: t.number
+      }),
+      lollipop: t.interface({
+        enabled: t.boolean
       })
     }),
     AllowRandomValue
