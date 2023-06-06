@@ -51,8 +51,8 @@ export const lollipopMiddleware =
     );
   };
 
-const verifyLollipopSignatureHeader = async (req: Request, _: Response) =>
-  await pipe(
+const verifyLollipopSignatureHeader = (req: Request, _: Response) =>
+  pipe(
     req.headers["signature-input"],
     NonEmptyString.decode,
     E.foldW(
