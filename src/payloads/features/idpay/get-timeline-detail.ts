@@ -4,7 +4,6 @@ import { pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
 import { OperationDTO } from "../../../../generated/definitions/idpay/OperationDTO";
 import { OperationListDTO } from "../../../../generated/definitions/idpay/OperationListDTO";
-import { StatusEnum } from "../../../../generated/definitions/idpay/TransactionDetailDTO";
 import { initiativeTimeline } from "../../../persistence/idpay";
 
 const generateRandomOperationDetailDTO = (
@@ -26,8 +25,7 @@ const generateRandomOperationDetailDTO = (
       return {
         ...operation,
         idTrxAcquirer: ulid(),
-        idTrxIssuer: ulid(),
-        status: operation.status as unknown as StatusEnum // OperationListDTO[StatusEnum] to OperationDTO[StatusEnum] conversion
+        idTrxIssuer: ulid()
       };
   }
 };
