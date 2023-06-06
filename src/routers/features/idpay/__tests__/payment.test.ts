@@ -7,7 +7,7 @@ const request = supertest(app);
 describe("IDPay Payment API", () => {
   describe("PUT putPreAuthPayment", () => {
     it("should return 200 with payment data", async () => {
-      const trxCode = "000001";
+      const trxCode = "00000001";
 
       const response = await request.put(
         addIdPayPrefix(`/payment/qr-code/${trxCode}/relate-user`)
@@ -26,7 +26,7 @@ describe("IDPay Payment API", () => {
   });
   describe("PUT putAuthPayment", () => {
     it("should return 200 with payment data", async () => {
-      const trxCode = "000001";
+      const trxCode = "00000001";
 
       const response = await request.put(
         addIdPayPrefix(`/payment/qr-code/${trxCode}/authorize`)
