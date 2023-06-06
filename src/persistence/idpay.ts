@@ -439,7 +439,7 @@ range(0, walletConfig.discountCount).forEach(() => {
       } as OperationListDTO,
       {
         ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-        status: TransactionStatusEnum.CANCELED,
+        status: TransactionStatusEnum.CANCELLED,
         channel: TransactionChannelEnum.QRCODE
       } as OperationListDTO,
       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
