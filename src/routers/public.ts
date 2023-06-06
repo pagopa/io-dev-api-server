@@ -11,6 +11,7 @@ import { parseStringPromise } from "xml2js";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { backendInfo } from "../payloads/backend";
 import {
+  AppUrlLoginScheme,
   errorRedirectUrl,
   loginLolliPopRedirect,
   loginSessionToken,
@@ -20,11 +21,13 @@ import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
 import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
+import { setAppVersion } from "../persistence/appInfo";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
+import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 
 export const publicRouter = Router();
 
@@ -32,6 +35,9 @@ export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
+  const userAppVersion = req.get("x-pagopa-app-version");
+  setAppVersion(userAppVersion);
+
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
   const lollipopHashAlgorithmHeaderValue = req.get(
     "x-pagopa-lollipop-pub-key-hash-algo"
@@ -65,12 +71,21 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
+  const urlLoginScheme = isFeatureFlagWithMinVersionEnabled(
+    "nativeLogin",
+    req.headers
+  )
+    ? AppUrlLoginScheme.native
+    : AppUrlLoginScheme.webview;
+
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
-    res.redirect(loginWithToken);
+    const url = `${urlLoginScheme}://${req.headers.host}${loginWithToken}`;
+    res.redirect(url);
     return;
   }
   if (req.query.error) {
-    res.redirect(`${errorRedirectUrl}${req.query.error}`);
+    const url = `${urlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`;
+    res.redirect(url);
     return;
   }
   sendFile("assets/html/login.html", res);
