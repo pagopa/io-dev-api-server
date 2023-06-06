@@ -21,7 +21,7 @@ import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { pnServiceId } from "../payloads/services/special/pn/factoryPn";
 import ServicesDB from "../persistence/services";
-import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
+import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { lollipopMiddleware } from "../middleware/lollipopMiddleware";
 
 export const messageRouter = Router();
@@ -31,12 +31,12 @@ const messageNotFoundError = "message not found";
 
 /* helper function to build messages response */
 const getPublicMessages = (
-  items: ReadonlyArray<CreatedMessageWithContentAndEnrichedData>,
+  messages: ReadonlyArray<CreatedMessageWithContentAndAttachments>,
   enrichData: boolean,
   withContent: boolean
 ): ReadonlyArray<PublicMessage> =>
-  items.map(m => {
-    const serviceId = m.sender_service_id;
+  messages.map(message => {
+    const serviceId = message.sender_service_id;
     const senderService = ServicesDB.getService(serviceId);
     if (!senderService) {
       throw Error(
@@ -45,27 +45,25 @@ const getPublicMessages = (
     }
     const extraData = enrichData
       ? {
+          ...message,
           service_name: senderService.service_name,
           organization_name: senderService.organization_name,
-          message_title: m.content.subject,
-          category: getCategory(m),
-          is_read: m.is_read,
-          is_archived: m.is_archived,
-          has_attachments: m.has_attachments,
+          message_title: message.content.subject,
+          category: getCategory(message),
           has_precondition: senderService.service_id === pnServiceId
         }
       : {};
     const content = withContent
       ? {
-          content: m.content
+          content: message.content
         }
       : {};
     return {
-      id: m.id,
+      id: message.id,
       fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
-      created_at: m.created_at,
-      sender_service_id: m.sender_service_id,
-      time_to_live: m.time_to_live,
+      created_at: message.created_at,
+      sender_service_id: message.sender_service_id,
+      time_to_live: message.time_to_live,
       ...extraData,
       ...content
     };
@@ -73,7 +71,7 @@ const getPublicMessages = (
 
 const computeGetMessagesQueryIndexes = (
   params: GetMessagesParameters,
-  orderedList: ReadonlyArray<CreatedMessageWithContentAndEnrichedData>
+  orderedList: ReadonlyArray<CreatedMessageWithContentAndAttachments>
 ) => {
   const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
   return match(toMatch)

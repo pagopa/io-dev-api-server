@@ -1,3 +1,5 @@
+import { pipe } from "fp-ts/lib/function";
+import * as A from "fp-ts/lib/Array";
 import {
   NonEmptyString,
   OrganizationFiscalCode
@@ -104,19 +106,16 @@ const createServices = (
   count: number,
   serviceStartIndex: number,
   aggregationCount: number
-): ServicePublic[] => {
-  const services: ServicePublic[] = [];
-  for (
-    // eslint-disable-next-line functional/no-let
-    let serviceIndex = serviceStartIndex;
-    serviceIndex < serviceStartIndex + count;
-    serviceIndex++
-  ) {
+): ServicePublic[] =>
+  A.makeBy(count, count => {
+    const serviceIndex = count + serviceStartIndex;
+
     const organizationIndex = getOrganizationIndex(
       serviceIndex,
       aggregationCount
     );
-    const service = {
+
+    return {
       ...createService(`service${serviceIndex + 1}`),
       organization_fiscal_code: `${organizationIndex}`.padStart(
         11,
@@ -130,10 +129,7 @@ const createServices = (
         cta: frontMatter2CTA2 as NonEmptyString
       }
     };
-    services.push(service);
-  }
-  return services;
-};
+  });
 
 const createService = (serviceId: string): ServicePublic => {
   const service = {
@@ -172,29 +168,27 @@ const createSpecialServicesInternal = (
   serviceStartIndex: number,
   aggregationCount: number
 ): ServicePublic[] => {
-  const specialServices: ServicePublic[] = [];
   // eslint-disable-next-line functional/no-let
   let organizationStartIndex =
     getOrganizationIndex(serviceStartIndex, aggregationCount) +
     (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);
 
-  specialServiceGeneratorTuples.forEach(specialServiceGeneratorTuple => {
-    const organizationFiscalCode = getOrganizationFiscalCode(
-      organizationStartIndex
-    );
-    const isSpecialServiceEnabled = specialServiceGeneratorTuple[0];
-    if (isSpecialServiceEnabled) {
-      const specialServiceGenerator = specialServiceGeneratorTuple[1];
-      const specialService = specialServiceGenerator(
+  return pipe(
+    specialServiceGeneratorTuples,
+    A.filter(([isSpecialServiceEnabled, _]) => isSpecialServiceEnabled),
+    A.map(([_, specialServiceGenerator]) => {
+      const organizationFiscalCode = getOrganizationFiscalCode(
+        organizationStartIndex
+      );
+      organizationStartIndex++;
+
+      return specialServiceGenerator(
         createService,
         createServiceMetadata,
         organizationFiscalCode
       );
-      specialServices.push(specialService);
-    }
-    organizationStartIndex++;
-  });
-  return specialServices;
+    })
+  );
 };
 
 const getOrganizationIndex = (serviceIndex: number, aggregationCount: number) =>
