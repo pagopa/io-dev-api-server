@@ -1,4 +1,3 @@
-import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import {
   NonEmptyString,
@@ -168,26 +167,34 @@ const createSpecialServicesInternal = (
   serviceStartIndex: number,
   aggregationCount: number
 ): ServicePublic[] => {
-  // eslint-disable-next-line functional/no-let
-  let organizationStartIndex =
+  const organizationStartIndex =
     getOrganizationIndex(serviceStartIndex, aggregationCount) +
     (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);
 
-  return pipe(
-    specialServiceGeneratorTuples,
-    A.filter(([isSpecialServiceEnabled, _]) => isSpecialServiceEnabled),
-    A.map(([_, specialServiceGenerator]) => {
-      const organizationFiscalCode = getOrganizationFiscalCode(
-        organizationStartIndex
-      );
-      organizationStartIndex++;
+  return specialServiceGeneratorTuples.reduce(
+    (
+      acc: ServicePublic[],
+      [isSpecialServiceEnabled, specialServiceGenerator],
+      index
+    ) => {
+      if (isSpecialServiceEnabled) {
+        const organizationFiscalCode = getOrganizationFiscalCode(
+          organizationStartIndex + index
+        );
 
-      return specialServiceGenerator(
-        createService,
-        createServiceMetadata,
-        organizationFiscalCode
-      );
-    })
+        return [
+          ...acc,
+          specialServiceGenerator(
+            createService,
+            createServiceMetadata,
+            organizationFiscalCode
+          )
+        ];
+      }
+
+      return acc;
+    },
+    []
   );
 };
 
