@@ -107,8 +107,8 @@ const createServices = (
   serviceStartIndex: number,
   aggregationCount: number
 ): ServicePublic[] =>
-  A.makeBy(count, count => {
-    const serviceIndex = count + serviceStartIndex;
+  A.makeBy(count, index => {
+    const serviceIndex = index + serviceStartIndex;
 
     const organizationIndex = getOrganizationIndex(
       serviceIndex,

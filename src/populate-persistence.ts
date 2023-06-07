@@ -216,8 +216,8 @@ const createMessagesWithObsoleteMedicalPrescriptions = (
           .readFileSync("assets/messages/barcodeReceipt.svg")
           .toString("base64");
 
-        return A.makeBy(count, count => {
-          const baseMessage = medicalMessage(count);
+        return A.makeBy(count, index => {
+          const baseMessage = medicalMessage(index);
           const attachments: ReadonlyArray<MessageAttachment> = [
             {
               name: "prescription A",
@@ -236,7 +236,7 @@ const createMessagesWithObsoleteMedicalPrescriptions = (
             content: {
               ...baseMessage.content,
               subject:
-                `💊 medical prescription with attachments - ${count}` as MessageSubject,
+                `💊 medical prescription with attachments - ${index}` as MessageSubject,
               attachments
             }
           };
@@ -254,10 +254,10 @@ const createMessagesWithFirmaConIOWaitForSignature = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_SIGNATURE] - ${count}`,
+            `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_SIGNATURE] - ${index}`,
             frontMatterCTAFCISignatureRequest + messageFciMarkdown
           )
         )
@@ -273,10 +273,10 @@ const createMessagesWithFirmaConIOExpired = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [EXPIRED] - ${count}`,
+            `Comune di Controguerra - Richiesta di Firma [EXPIRED] - ${index}`,
             frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
           )
         )
@@ -292,10 +292,10 @@ const createMessagesWithFirmaConIOQTSP = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_QTSP] - ${count} `,
+            `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_QTSP] - ${index} `,
             frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
           )
         )
@@ -311,10 +311,10 @@ const createMessagesWithFirmaConIOExpired90 = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [90 days expired] ${count} `,
+            `Comune di Controguerra - Richiesta di Firma [90 days expired] ${index} `,
             frontMatterCTAFCISignatureRequestSignedExpired +
               messageFciSignedMarkdown
           )
@@ -331,10 +331,10 @@ const createMessagesWithFirmaConIOSigned = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [SIGNED] - ${count} `,
+            `Comune di Controguerra - Richiesta di Firma [SIGNED] - ${index} `,
             frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
           )
         )
@@ -350,10 +350,10 @@ const createMessagesWithFirmaConIORejected = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${count} `,
+            `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${index} `,
             frontMatterCTAFCISignatureRequestRejected + messageFciSignedMarkdown
           )
         )
@@ -369,10 +369,10 @@ const createMessagesWithFirmaConIONoSignatureFields = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `Comune di Controguerra - Richiesta di Firma [WITH NO SIGNATURE FIELDS] - ${count} `,
+            `Comune di Controguerra - Richiesta di Firma [WITH NO SIGNATURE FIELDS] - ${index} `,
             frontMatterCTAFCISignatureRequestNoFields + messageFciMarkdown
           )
         )
@@ -388,10 +388,10 @@ const createMessagesWithStandard = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewMessage(
             customConfig,
-            `standard message - ${count}`,
+            `standard message - ${index}`,
             messageMarkdown
           )
         )
@@ -408,11 +408,11 @@ const createMessagesWithValidDueDate = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withDueDate(
             getNewMessage(
               customConfig,
-              `🕙✅ due date valid - ${count}`,
+              `🕙✅ due date valid - ${index}`,
               messageMarkdown
             ),
             new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
@@ -431,11 +431,11 @@ const createMessagesWithInvalidDueDateCount = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withDueDate(
             getNewMessage(
               customConfig,
-              `🕙❌ due date invalid - ${count}`,
+              `🕙❌ due date invalid - ${index}`,
               messageMarkdown
             ),
             new Date(date.getTime() - 60 * 1000 * 60 * 24 * 8)
@@ -454,12 +454,12 @@ const createMessagesWithPaymentInvalidAfterDueDateWithExpiredDueDate = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withDueDate(
             withPaymentData(
               getNewMessage(
                 customConfig,
-                `💰🕙❌ payment - expired - invalid after due date - ${count}`,
+                `💰🕙❌ payment - expired - invalid after due date - ${index}`,
                 messageMarkdown
               ),
               true
@@ -480,12 +480,12 @@ const createMessagesWithPaymentInvalidAfterDueDateWithValidDueDate = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withDueDate(
             withPaymentData(
               getNewMessage(
                 customConfig,
-                `💰🕙✅ payment - valid - invalid after due date - ${count}`,
+                `💰🕙✅ payment - valid - invalid after due date - ${index}`,
                 messageMarkdown
               ),
               true
@@ -506,12 +506,12 @@ const createMessagesWithPaymentWithExpiredDueDateCount = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withDueDate(
             withPaymentData(
               getNewMessage(
                 customConfig,
-                `💰🕙 payment - expired - ${count}`,
+                `💰🕙 payment - expired - ${index}`,
                 messageMarkdown
               ),
               false
@@ -532,12 +532,12 @@ const createMessagesWithPaymentWithValidDueDate = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withDueDate(
             withPaymentData(
               getNewMessage(
                 customConfig,
-                `💰🕙✅ payment message - ${count}`,
+                `💰🕙✅ payment message - ${index}`,
                 messageMarkdown
               ),
               true
@@ -557,11 +557,11 @@ const createMessagesWithPayments = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           withPaymentData(
             getNewMessage(
               customConfig,
-              `💰✅ payment - ${count} `,
+              `💰✅ payment - ${index} `,
               messageMarkdown
             ),
             true
@@ -584,8 +584,8 @@ const createMessagesWithPN = (
           O.fold(
             () => [],
             count =>
-              A.makeBy(count, count => {
-                const sender = `"Comune di Milano - ${count} `;
+              A.makeBy(count, index => {
+                const sender = `"Comune di Milano - ${index} `;
                 const subject = "infrazione al codice della strada";
                 const abstract =
                   "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
@@ -612,13 +612,13 @@ const createMessagesWithRemoteAttachments = (
     O.fold(
       () => [],
       count =>
-        A.makeBy(count, count =>
+        A.makeBy(count, index =>
           getNewRemoteAttachmentsMessage(
             customConfig,
-            `Sender ${count}`,
-            `Subject ${count}: remote attachments`,
+            `Sender ${index}`,
+            `Subject ${index}: remote attachments`,
             messageMarkdown,
-            1 + (count % remoteAttachmentFileCount)
+            1 + (index % remoteAttachmentFileCount)
           )
         )
     )
