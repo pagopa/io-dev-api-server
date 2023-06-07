@@ -191,233 +191,145 @@ const createMessagesWithEUCovidCert = (
 
 const createMessagesWithObsoleteMedicalPrescriptions = (
   customConfig: IoDevServerConfig
-): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.medicalCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count => {
-        const medicalPrescription: PrescriptionData = {
-          nre: "050A00854698121",
-          iup: "0000X0NFM",
-          prescriber_fiscal_code: customConfig.profile.attrs.fiscal_code
-        };
+): CreatedMessageWithContentAndAttachments[] => {
+  const medicalPrescription: PrescriptionData = {
+    nre: "050A00854698121",
+    iup: "0000X0NFM",
+    prescriber_fiscal_code: customConfig.profile.attrs.fiscal_code
+  };
 
-        const medicalMessage = (count: number) =>
-          getNewMessage(
-            customConfig,
-            `💊 medical prescription - ${count}`,
-            messageMarkdown,
-            medicalPrescription
-          );
+  const barcodeReceipt = fs
+    .readFileSync("assets/messages/barcodeReceipt.svg")
+    .toString("base64");
 
-        const barcodeReceipt = fs
-          .readFileSync("assets/messages/barcodeReceipt.svg")
-          .toString("base64");
-
-        return A.makeBy(count, index => {
-          const baseMessage = medicalMessage(index);
-          const attachments: ReadonlyArray<MessageAttachment> = [
-            {
-              name: "prescription A",
-              content: "up, down, strange, charm, bottom, top",
-              mime_type: "text/plain"
-            },
-            {
-              name: "prescription B",
-              content: barcodeReceipt,
-              mime_type: "image/svg+xml"
-            }
-          ];
-
-          return {
-            ...baseMessage,
-            content: {
-              ...baseMessage.content,
-              subject:
-                `💊 medical prescription with attachments - ${index}` as MessageSubject,
-              attachments
-            }
-          };
-        });
+  return A.makeBy(customConfig.messages.medicalCount, index => {
+    const baseMessage = getNewMessage(
+      customConfig,
+      `💊 medical prescription - ${index}`,
+      messageMarkdown,
+      medicalPrescription
+    );
+    const attachments: ReadonlyArray<MessageAttachment> = [
+      {
+        name: "prescription A",
+        content: "up, down, strange, charm, bottom, top",
+        mime_type: "text/plain"
+      },
+      {
+        name: "prescription B",
+        content: barcodeReceipt,
+        mime_type: "image/svg+xml"
       }
-    )
-  );
+    ];
+
+    return {
+      ...baseMessage,
+      content: {
+        ...baseMessage.content,
+        subject:
+          `💊 medical prescription with attachments - ${index}` as MessageSubject,
+        attachments
+      }
+    };
+  });
+};
 
 const createMessagesWithFirmaConIOWaitForSignature = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.waitForSignatureCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_SIGNATURE] - ${index}`,
-            frontMatterCTAFCISignatureRequest + messageFciMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.waitForSignatureCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_SIGNATURE] - ${index}`,
+      frontMatterCTAFCISignatureRequest + messageFciMarkdown
     )
   );
 
 const createMessagesWithFirmaConIOExpired = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.expiredCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [EXPIRED] - ${index}`,
-            frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.expiredCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [EXPIRED] - ${index}`,
+      frontMatterCTAFCISignatureRequestExpired + messageFciMarkdown
     )
   );
 
 const createMessagesWithFirmaConIOQTSP = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.waitForQtspCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_QTSP] - ${index} `,
-            frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.waitForQtspCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [WAIT_FOR_QTSP] - ${index} `,
+      frontMatterCTAFCISignatureRequestWaitQtsp + messageFciMarkdown
     )
   );
 
 const createMessagesWithFirmaConIOExpired90 = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.expired90Count,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [90 days expired] ${index} `,
-            frontMatterCTAFCISignatureRequestSignedExpired +
-              messageFciSignedMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.expired90Count, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [90 days expired] ${index} `,
+      frontMatterCTAFCISignatureRequestSignedExpired + messageFciSignedMarkdown
     )
   );
 
 const createMessagesWithFirmaConIOSigned = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.signedCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [SIGNED] - ${index} `,
-            frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.signedCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [SIGNED] - ${index} `,
+      frontMatterCTAFCISignatureRequestSigned + messageFciSignedMarkdown
     )
   );
 
 const createMessagesWithFirmaConIORejected = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.rejectedCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${index} `,
-            frontMatterCTAFCISignatureRequestRejected + messageFciSignedMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.rejectedCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [REJECTED] - ${index} `,
+      frontMatterCTAFCISignatureRequestRejected + messageFciSignedMarkdown
     )
   );
 
 const createMessagesWithFirmaConIONoSignatureFields = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.fci.noSignatureFieldsCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `Comune di Controguerra - Richiesta di Firma [WITH NO SIGNATURE FIELDS] - ${index} `,
-            frontMatterCTAFCISignatureRequestNoFields + messageFciMarkdown
-          )
-        )
+  A.makeBy(customConfig.messages.fci.noSignatureFieldsCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [WITH NO SIGNATURE FIELDS] - ${index} `,
+      frontMatterCTAFCISignatureRequestNoFields + messageFciMarkdown
     )
   );
 
 const createMessagesWithStandard = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.standardMessageCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewMessage(
-            customConfig,
-            `standard message - ${index}`,
-            messageMarkdown
-          )
-        )
-    )
+  A.makeBy(customConfig.messages.standardMessageCount, index =>
+    getNewMessage(customConfig, `standard message - ${index}`, messageMarkdown)
   );
 
 const createMessagesWithValidDueDate = (
   customConfig: IoDevServerConfig,
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.withValidDueDateCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withDueDate(
-            getNewMessage(
-              customConfig,
-              `🕙✅ due date valid - ${index}`,
-              messageMarkdown
-            ),
-            new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
-          )
-        )
+  A.makeBy(customConfig.messages.withValidDueDateCount, index =>
+    withDueDate(
+      getNewMessage(
+        customConfig,
+        `🕙✅ due date valid - ${index}`,
+        messageMarkdown
+      ),
+      new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
     )
   );
 
@@ -425,22 +337,14 @@ const createMessagesWithInvalidDueDateCount = (
   customConfig: IoDevServerConfig,
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.withInValidDueDateCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withDueDate(
-            getNewMessage(
-              customConfig,
-              `🕙❌ due date invalid - ${index}`,
-              messageMarkdown
-            ),
-            new Date(date.getTime() - 60 * 1000 * 60 * 24 * 8)
-          )
-        )
+  A.makeBy(customConfig.messages.withInValidDueDateCount, index =>
+    withDueDate(
+      getNewMessage(
+        customConfig,
+        `🕙❌ due date invalid - ${index}`,
+        messageMarkdown
+      ),
+      new Date(date.getTime() - 60 * 1000 * 60 * 24 * 8)
     )
   );
 
@@ -448,77 +352,57 @@ const createMessagesWithPaymentInvalidAfterDueDateWithExpiredDueDate = (
   customConfig: IoDevServerConfig,
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
+  A.makeBy(
     customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withDueDate(
-            withPaymentData(
-              getNewMessage(
-                customConfig,
-                `💰🕙❌ payment - expired - invalid after due date - ${index}`,
-                messageMarkdown
-              ),
-              true
-            ),
-            new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
-          )
-        )
-    )
+    index =>
+      withDueDate(
+        withPaymentData(
+          getNewMessage(
+            customConfig,
+            `💰🕙❌ payment - expired - invalid after due date - ${index}`,
+            messageMarkdown
+          ),
+          true
+        ),
+        new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+      )
   );
 
 const createMessagesWithPaymentInvalidAfterDueDateWithValidDueDate = (
   customConfig: IoDevServerConfig,
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
+  A.makeBy(
     customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withDueDate(
-            withPaymentData(
-              getNewMessage(
-                customConfig,
-                `💰🕙✅ payment - valid - invalid after due date - ${index}`,
-                messageMarkdown
-              ),
-              true
-            ),
-            new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
-          )
-        )
-    )
+    index =>
+      withDueDate(
+        withPaymentData(
+          getNewMessage(
+            customConfig,
+            `💰🕙✅ payment - valid - invalid after due date - ${index}`,
+            messageMarkdown
+          ),
+          true
+        ),
+        new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+      )
   );
 
 const createMessagesWithPaymentWithExpiredDueDateCount = (
   customConfig: IoDevServerConfig,
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.paymentWithExpiredDueDateCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withDueDate(
-            withPaymentData(
-              getNewMessage(
-                customConfig,
-                `💰🕙 payment - expired - ${index}`,
-                messageMarkdown
-              ),
-              false
-            ),
-            new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
-          )
-        )
+  A.makeBy(customConfig.messages.paymentWithExpiredDueDateCount, index =>
+    withDueDate(
+      withPaymentData(
+        getNewMessage(
+          customConfig,
+          `💰🕙 payment - expired - ${index}`,
+          messageMarkdown
+        ),
+        false
+      ),
+      new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
     )
   );
 
@@ -526,47 +410,27 @@ const createMessagesWithPaymentWithValidDueDate = (
   customConfig: IoDevServerConfig,
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.paymentWithValidDueDateCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withDueDate(
-            withPaymentData(
-              getNewMessage(
-                customConfig,
-                `💰🕙✅ payment message - ${index}`,
-                messageMarkdown
-              ),
-              true
-            ),
-            new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
-          )
-        )
+  A.makeBy(customConfig.messages.paymentWithValidDueDateCount, index =>
+    withDueDate(
+      withPaymentData(
+        getNewMessage(
+          customConfig,
+          `💰🕙✅ payment message - ${index}`,
+          messageMarkdown
+        ),
+        true
+      ),
+      new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
     )
   );
 
 const createMessagesWithPayments = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.paymentsCount,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          withPaymentData(
-            getNewMessage(
-              customConfig,
-              `💰✅ payment - ${index} `,
-              messageMarkdown
-            ),
-            true
-          )
-        )
+  A.makeBy(customConfig.messages.paymentsCount, index =>
+    withPaymentData(
+      getNewMessage(customConfig, `💰✅ payment - ${index} `, messageMarkdown),
+      true
     )
   );
 
@@ -578,49 +442,33 @@ const createMessagesWithPN = (
     B.fold(
       () => [],
       () =>
-        pipe(
-          customConfig.messages.pnCount,
-          O.fromPredicate(count => count > 0),
-          O.fold(
-            () => [],
-            count =>
-              A.makeBy(count, index => {
-                const sender = `"Comune di Milano - ${index} `;
-                const subject = "infrazione al codice della strada";
-                const abstract =
-                  "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
+        A.makeBy(customConfig.messages.pnCount, index => {
+          const sender = `"Comune di Milano - ${index} `;
+          const subject = "infrazione al codice della strada";
+          const abstract =
+            "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
 
-                return getNewPnMessage(
-                  customConfig,
-                  sender,
-                  subject,
-                  abstract,
-                  messageMarkdown
-                );
-              })
-          )
-        )
+          return getNewPnMessage(
+            customConfig,
+            sender,
+            subject,
+            abstract,
+            messageMarkdown
+          );
+        })
     )
   );
 
 const createMessagesWithRemoteAttachments = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.withRemoteAttachments,
-    O.fromPredicate(count => count > 0),
-    O.fold(
-      () => [],
-      count =>
-        A.makeBy(count, index =>
-          getNewRemoteAttachmentsMessage(
-            customConfig,
-            `Sender ${index}`,
-            `Subject ${index}: remote attachments`,
-            messageMarkdown,
-            1 + (index % remoteAttachmentFileCount)
-          )
-        )
+  A.makeBy(customConfig.messages.withRemoteAttachments, index =>
+    getNewRemoteAttachmentsMessage(
+      customConfig,
+      `Sender ${index}`,
+      `Subject ${index}: remote attachments`,
+      messageMarkdown,
+      1 + (index % remoteAttachmentFileCount)
     )
   );
 
