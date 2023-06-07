@@ -2,7 +2,6 @@ import fs from "fs";
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as B from "fp-ts/lib/boolean";
-import * as O from "fp-ts/lib/Option";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
