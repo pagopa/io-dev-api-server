@@ -8,7 +8,10 @@ import * as jose from "jose";
 import { Request, Response } from "express-serve-static-core";
 import { verifySignatureHeader } from "@mattrglobal/http-signatures";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { getPublicKey } from "../persistence/lollipop";
+import {
+  getPublicKey,
+  isAssertionRefStillValid
+} from "../persistence/lollipop";
 import { ioDevServerConfig } from "../config";
 import { signAlgorithmToVerifierMap } from "../utils/httpSignature";
 import { serverUrl } from "../utils/server";
@@ -53,43 +56,54 @@ export const lollipopMiddleware =
 
 const verifyLollipopSignatureHeader = (req: Request, _: Response) =>
   pipe(
-    req.headers["signature-input"],
-    NonEmptyString.decode,
-    E.foldW(
-      _ => T.of(toFailureEither(400, "signature-input header is empty")),
+    isAssertionRefStillValid(),
+    B.fold(
+      () => T.of(toFailureEither(403, "AssertionRef Invalid or Expired")),
       () =>
         pipe(
-          getPublicKey(),
-          O.fromNullable,
-          O.foldW(
-            () => T.of(toFailureEither(500, "Public key not found")),
-            publicKey =>
+          req.headers["signature-input"],
+          NonEmptyString.decode,
+          E.foldW(
+            _ => T.of(toFailureEither(400, "signature-input header is empty")),
+            () =>
               pipe(
-                TE.tryCatch(
-                  () =>
-                    verifySignatureHeader(
-                      toVerifySignatureHeaderOptions(req, publicKey)
-                    ).unwrapOr({ verified: false }),
-                  e => e as Error
-                ),
-                TE.foldW(
-                  e =>
-                    T.of(
-                      toFailureEither(500, e.message, JSON.stringify(e.stack))
-                    ),
-                  verificationResult =>
+                getPublicKey(),
+                O.fromNullable,
+                O.foldW(
+                  () => T.of(toFailureEither(500, "Public key not found")),
+                  publicKey =>
                     pipe(
-                      verificationResult.verified,
-                      B.fold(
+                      TE.tryCatch(
                         () =>
+                          verifySignatureHeader(
+                            toVerifySignatureHeaderOptions(req, publicKey)
+                          ).unwrapOr({ verified: false }),
+                        e => e as Error
+                      ),
+                      TE.foldW(
+                        e =>
                           T.of(
                             toFailureEither(
-                              400,
-                              "Invalid signature",
-                              JSON.stringify(verificationResult)
+                              500,
+                              e.message,
+                              JSON.stringify(e.stack)
                             )
                           ),
-                        () => T.of(toSuccessEither())
+                        verificationResult =>
+                          pipe(
+                            verificationResult.verified,
+                            B.fold(
+                              () =>
+                                T.of(
+                                  toFailureEither(
+                                    400,
+                                    "Invalid signature",
+                                    JSON.stringify(verificationResult)
+                                  )
+                                ),
+                              () => T.of(toSuccessEither())
+                            )
+                          )
                       )
                     )
                 )

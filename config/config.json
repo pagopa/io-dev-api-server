@@ -3,5 +3,14 @@
     "attrs": {
       "name": "Gian Maria"
     }
+    
+  },
+  "features": {
+    "lollipop": {
+      "assertionRefValidityMS": 60000
+    },
+    "fastLogin":{
+      "sessionTTLinMS": 20000
+    }
   }
 }

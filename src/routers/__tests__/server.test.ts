@@ -1,9 +1,10 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
-import { AppUrlLoginScheme, loginSessionToken } from "../../payloads/login";
+import { AppUrlLoginScheme } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
+import { getLoginSessionToken } from "../../persistence/sessionInfo";
 
 const request = supertest(app);
 
@@ -25,7 +26,7 @@ it("login with auth should response with a redirect and the token as param", asy
   expect(response.text).toBe(
     `Found. Redirecting to ${AppUrlLoginScheme.webview}://${
       hostAndPort ? hostAndPort[1] : ""
-    }/profile.html?token=` + loginSessionToken
+    }/profile.html?token=` + getLoginSessionToken()
   );
 });
 
@@ -45,7 +46,7 @@ it("test-login /test-login should always return sessionToken", async () => {
   const result = await request.post("/test-login");
 
   expect(result.status).toBe(200);
-  expect(result.body).toStrictEqual({ token: loginSessionToken });
+  expect(result.body).toStrictEqual({ token: getLoginSessionToken() });
 });
 
 it("Pay webview route should always response 200", async () => {

@@ -93,7 +93,7 @@ export const backendStatus: BackendStatus = {
     },
     fastLogin: {
       min_app_version: {
-        ios: "0.0.0",
+        ios: "1.2.3",
         android: "0.0.0"
       }
     },
