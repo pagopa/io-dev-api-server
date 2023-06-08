@@ -1,6 +1,7 @@
 import { Router } from "express";
-import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
+import * as B from "fp-ts/lib/boolean";
+import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
 import { match, not, __ } from "ts-pattern";
@@ -22,6 +23,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { pnServiceId } from "../payloads/services/special/pn/factoryPn";
 import ServicesDB from "../persistence/services";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 import { lollipopMiddleware } from "../middleware/lollipopMiddleware";
 
 export const messageRouter = Router();
@@ -32,9 +34,9 @@ const messageNotFoundError = "message not found";
 /* helper function to build messages response */
 const getPublicMessages = (
   messages: ReadonlyArray<CreatedMessageWithContentAndAttachments>,
-  enrichData: boolean,
+  withEnrichedData: boolean,
   withContent: boolean
-): ReadonlyArray<PublicMessage> =>
+): ReadonlyArray<PublicMessage | CreatedMessageWithContentAndAttachments> =>
   messages.map(message => {
     const serviceId = message.sender_service_id;
     const senderService = ServicesDB.getService(serviceId);
@@ -43,28 +45,46 @@ const getPublicMessages = (
         `message.getPublicMessages: unabled to find service with id (${serviceId})`
       );
     }
-    const extraData = enrichData
-      ? {
-          ...message,
-          service_name: senderService.service_name,
-          organization_name: senderService.organization_name,
-          message_title: message.content.subject,
-          category: getCategory(message),
-          has_precondition: senderService.service_id === pnServiceId
+
+    const enrichedData = pipe(
+      withEnrichedData,
+      B.fold(
+        () => ({}),
+        () => {
+          const { content, is_read, is_archived, has_attachments } =
+            message as CreatedMessageWithContentAndEnrichedData;
+
+          return {
+            service_name: senderService.service_name,
+            organization_name: senderService.organization_name,
+            message_title: content.subject,
+            category: getCategory(message),
+            is_read,
+            is_archived,
+            has_attachments,
+            has_precondition: senderService.service_id === pnServiceId
+          };
         }
-      : {};
-    const content = withContent
-      ? {
+      )
+    );
+
+    const content = pipe(
+      withContent,
+      B.fold(
+        () => ({}),
+        () => ({
           content: message.content
-        }
-      : {};
+        })
+      )
+    );
+
     return {
       id: message.id,
       fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
       created_at: message.created_at,
       sender_service_id: message.sender_service_id,
       time_to_live: message.time_to_live,
-      ...extraData,
+      ...enrichedData,
       ...content
     };
   });
