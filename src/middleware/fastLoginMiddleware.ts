@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import { isSessionTokenValid } from "../persistence/sessionInfo";
 
-
 /**
  * if the response error is defined as a global config
  * this middleware returns an error from those ones defined
@@ -18,8 +17,6 @@ export const fastLoginMiddleware = (
   if (isSessionTokenValid()) {
     next();
     return;
-  } 
+  }
   res.sendStatus(401);
- 
-  
 };

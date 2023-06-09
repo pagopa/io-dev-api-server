@@ -21,7 +21,7 @@ type AppInfo = {
 
 const appInfo: AppInfo = {
   appVersion: undefined,
-  appOs: O.none,
+  appOs: O.none
 };
 
 export function getAppVersion() {
@@ -30,7 +30,6 @@ export function getAppVersion() {
 
 export const getAppOs = () => appInfo.appOs;
 
-
 export function setAppInfo(req: Request) {
   const version = req.get("x-pagopa-app-version");
   const os = getOsFromUserAgent(req);
@@ -38,7 +37,6 @@ export function setAppInfo(req: Request) {
   appInfo.appVersion = version;
   appInfo.appOs = os;
 }
-
 
 const getOsFromUserAgent = (req: Request) =>
   pipe(
@@ -54,4 +52,3 @@ const getOsFromUserAgent = (req: Request) =>
         )
     )
   );
-

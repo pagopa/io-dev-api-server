@@ -284,7 +284,6 @@ export const IoDevServerConfig = t.interface({
       })
     }),
     AllowRandomValue
-    
   ])
 });
 export type AllorRandomValueKeys = keyof IoDevServerConfig;

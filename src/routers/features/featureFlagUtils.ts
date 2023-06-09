@@ -8,8 +8,6 @@ import { VersionPerPlatform } from "../../../generated/definitions/content/Versi
 import { BackendStatus } from "../../../generated/definitions/content/BackendStatus";
 import { getAppVersion, getAppOs } from "../../persistence/appInfo";
 
-
-
 type FeatureFlagWithMinAppVersion<T> = Extract<
   keyof T,
   {
@@ -39,9 +37,8 @@ export const isVersionValidAndActive = (version: string | undefined) =>
     )
   );
 
-
 export const isFeatureFlagWithMinVersionEnabled = (
-  featureFlag: FeatureFlagWithMinAppVersion<BackendStatus["config"]>,
+  featureFlag: FeatureFlagWithMinAppVersion<BackendStatus["config"]>
 ) =>
   pipe(
     O.fromNullable(backendStatus.config[featureFlag]?.min_app_version),

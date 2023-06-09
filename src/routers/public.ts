@@ -21,7 +21,11 @@ import { readFileAsJSON, sendFile } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
 import { setLollipopInfo } from "../persistence/lollipop";
 import { setAppInfo } from "../persistence/appInfo";
-import { createOrRefreshSessionToken, getLoginSessionToken, setSessionLoginType } from "../persistence/sessionInfo";
+import {
+  createOrRefreshSessionToken,
+  getLoginSessionToken,
+  setSessionLoginType
+} from "../persistence/sessionInfo";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -60,7 +64,7 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     DEFAULT_LOLLIPOP_HASH_ALGORITHM
   );
 
-  setLollipopInfo(thumbprint,jwkPK.right);
+  setLollipopInfo(thumbprint, jwkPK.right);
 
   const samlRequest = getSamlRequest(
     DEFAULT_LOLLIPOP_HASH_ALGORITHM,
@@ -70,15 +74,15 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
-  const urlLoginScheme = isFeatureFlagWithMinVersionEnabled(
-    "nativeLogin"
-  )
+  const urlLoginScheme = isFeatureFlagWithMinVersionEnabled("nativeLogin")
     ? AppUrlLoginScheme.native
     : AppUrlLoginScheme.webview;
 
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     createOrRefreshSessionToken();
-    const url = `${urlLoginScheme}://${req.headers.host}${redirectUrl}${getLoginSessionToken()}`;
+    const url = `${urlLoginScheme}://${
+      req.headers.host
+    }${redirectUrl}${getLoginSessionToken()}`;
     res.redirect(url);
     return;
   }

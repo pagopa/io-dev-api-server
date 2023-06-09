@@ -26,7 +26,7 @@ it("login with auth should response with a redirect and the token as param", asy
   expect(response.text).toBe(
     `Found. Redirecting to ${AppUrlLoginScheme.webview}://${
       hostAndPort ? hostAndPort[1] : ""
-    }/profile.html?token=` + getLoginSessionToken()
+    }/profile.html?token=${getLoginSessionToken()}`
   );
 });
 

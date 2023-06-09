@@ -1,14 +1,14 @@
-import { randomBytes } from 'crypto';
-import { pipe } from 'fp-ts/lib/function';
+import { randomBytes } from "crypto";
+import { pipe } from "fp-ts/lib/function";
 import { Request } from "express";
 import * as O from "fp-ts/lib/Option";
-import { getDateMsDifference } from '../../utils/date';
+import { getDateMsDifference } from "../../utils/date";
 
 export const NONCE_EXPYRING_MS = 30000;
 
 export type NonceInfo = {
-    nonce: string;
-    instantiationDate: Date;
+  nonce: string;
+  instantiationDate: Date;
 };
 
 // eslint-disable-next-line functional/no-let
@@ -16,18 +16,19 @@ let nonceInfo: NonceInfo;
 
 export const getNonceInfo = () => nonceInfo;
 
-const setNonceInfo = (nonce:string,instantiationDate:Date) => {
-    nonceInfo = {
-        nonce,
-        instantiationDate
-    };
+const setNonceInfo = (nonce: string, instantiationDate: Date) => {
+  nonceInfo = {
+    nonce,
+    instantiationDate
+  };
 };
 
-export const generateNewNonce = () => pipe(
+export const generateNewNonce = () =>
+  pipe(
     randomBytes(16),
-    (str) => str.toString('hex'),
-    (base64) => setNonceInfo(base64,new Date())
-);
+    str => str.toString("hex"),
+    base64 => setNonceInfo(base64, new Date())
+  );
 
 const extractNonceFromRequest = (request: Request): O.Option<string> =>
   pipe(
@@ -50,8 +51,7 @@ export const checkNonceFromRequest = (request: Request, nonceInfo: NonceInfo) =>
     O.fold(
       () => false,
       requestNonce =>
-        getDateMsDifference(new Date(), nonceInfo.instantiationDate) < NONCE_EXPYRING_MS &&
-        nonceInfo.nonce === requestNonce
+        getDateMsDifference(new Date(), nonceInfo.instantiationDate) <
+          NONCE_EXPYRING_MS && nonceInfo.nonce === requestNonce
     )
   );
-

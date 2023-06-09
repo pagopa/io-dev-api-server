@@ -9,7 +9,7 @@ import { getDateMsDifference } from "../utils/date";
 type LollipopInfo = {
   lollipopAssertionRef: AssertionRef | undefined;
   lollipopPublicKey: jose.JWK | undefined;
-  instantiationDate: Date  | undefined;
+  instantiationDate: Date | undefined;
 };
 
 const lollipopInfo: LollipopInfo = {
@@ -37,15 +37,15 @@ export function setLollipopInfo(
 }
 
 // if is a ttl is defined in config for assertion ref, it checks its expiration, otherwise it is considered infinite
-export const isAssertionRefStillValid = () => pipe(
-  ioDevServerConfig.features.lollipop.assertionRefValidityMS,
-  O.fromNullable,
-  O.fold(
-    () => true,
-    (validity) => 
-      (!!lollipopInfo.instantiationDate &&
-      getDateMsDifference(new Date(),lollipopInfo.instantiationDate) < validity
-  )
-  )
-);
-
+export const isAssertionRefStillValid = () =>
+  pipe(
+    ioDevServerConfig.features.lollipop.assertionRefValidityMS,
+    O.fromNullable,
+    O.fold(
+      () => true,
+      validity =>
+        !!lollipopInfo.instantiationDate &&
+        getDateMsDifference(new Date(), lollipopInfo.instantiationDate) <
+          validity
+    )
+  );
