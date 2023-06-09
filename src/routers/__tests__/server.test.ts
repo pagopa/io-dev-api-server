@@ -30,11 +30,6 @@ it("login with auth should response with a redirect and the token as param", asy
   );
 });
 
-it("logout should response 200", async () => {
-  const response = await request.post("/logout");
-  expect(response.status).toBe(200);
-});
-
 it("session should return a valid session", async () => {
   const response = await request.get(`${basePath}/session`);
   expect(response.status).toBe(200);
@@ -61,4 +56,9 @@ it("Reset route should response 200 and contain reset text", async () => {
   const response = await request.get("/reset");
   expect(response.status).toBe(200);
   expect(response.text).toContain("<h2>reset:</h2>");
+});
+
+it("logout should response 200", async () => {
+  const response = await request.post("/logout");
+  expect(response.status).toBe(200);
 });

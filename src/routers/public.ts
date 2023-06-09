@@ -19,9 +19,10 @@ import {
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
-import { setLollipopInfo } from "../persistence/lollipop";
-import { setAppInfo } from "../persistence/appInfo";
+import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
+import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
 import {
+  clearLoginSessionTokenInfo,
   createOrRefreshSessionToken,
   getLoginSessionToken,
   setSessionLoginType
@@ -99,6 +100,9 @@ addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
 });
 
 addHandler(publicRouter, "post", "/logout", (_, res) => {
+  clearAppInfo();
+  clearLollipopInfo();
+  clearLoginSessionTokenInfo();
   res.status(200).send({ message: "ok" });
 });
 

@@ -25,6 +25,11 @@ const loginSessionTokenInfo: LoginSessionTokenInfo = {
 export const getLoginSessionToken = () =>
   loginSessionTokenInfo.loginSessionToken;
 
+export const clearLoginSessionTokenInfo = () =>
+  Object.keys(loginSessionTokenInfo).forEach(key => {
+    loginSessionTokenInfo[key as keyof LoginSessionTokenInfo] = undefined;
+  });
+
 const setLoginSessionToken = (newToken: string) => {
   loginSessionTokenInfo.loginSessionToken = newToken;
   loginSessionTokenInfo.instantiationDate = new Date();

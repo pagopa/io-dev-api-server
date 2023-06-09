@@ -26,6 +26,11 @@ export function getPublicKey() {
   return lollipopInfo.lollipopPublicKey;
 }
 
+export const clearLollipopInfo = () =>
+  Object.keys(lollipopInfo).forEach(key => {
+    lollipopInfo[key as keyof LollipopInfo] = undefined;
+  });
+
 export function setLollipopInfo(
   assertionRef: string | undefined,
   publicKey: jose.JWK | undefined

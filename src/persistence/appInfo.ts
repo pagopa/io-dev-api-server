@@ -27,8 +27,12 @@ const appInfo: AppInfo = {
 export function getAppVersion() {
   return appInfo.appVersion;
 }
-
 export const getAppOs = () => appInfo.appOs;
+
+export const clearAppInfo = () => {
+  appInfo.appVersion = undefined;
+  appInfo.appOs = O.none;
+};
 
 export function setAppInfo(req: Request) {
   const version = req.get("x-pagopa-app-version");
