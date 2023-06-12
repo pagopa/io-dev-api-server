@@ -2,12 +2,14 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreateFilledDocument } from "../../../../generated/definitions/fci/CreateFilledDocument";
 import { FilledDocumentDetailView } from "../../../../generated/definitions/fci/FilledDocumentDetailView";
 
+export const templateUrl = "http://127.0.0.1:3000/static_contents/fci/template";
+
 export const createFilledDocumentBody: CreateFilledDocument = {
   document_url:
-    "https://pagopa.demo.bit4id.org/static/docs/modulo_richiesta_V1.pdf" as NonEmptyString
+    templateUrl as NonEmptyString
 };
 
 export const qtspFilledDocument: FilledDocumentDetailView = {
   filled_document_url:
-    "https://pagopa.demo.bit4id.org/static/docs/modulo_richiesta_V1.pdf"
+    templateUrl
 };
