@@ -1,27 +1,41 @@
-import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
+import { identity, pipe } from "fp-ts/lib/function";
+import { sequenceT } from "fp-ts/lib/Apply";
+import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
+import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 
 // eslint-disable-next-line functional/no-let
-let inboxMessages: CreatedMessageWithContentAndEnrichedData[] = [];
+let inboxMessages: CreatedMessageWithContentAndAttachments[] = [];
 // eslint-disable-next-line functional/no-let
-let archivedMessages: CreatedMessageWithContentAndEnrichedData[] = [];
+let archivedMessages: CreatedMessageWithContentAndAttachments[] = [];
 
 /**
  * Move the message with ID to the archived collection.
  * Return false if message ID is not in the Inbox.
  */
 function archive(id: string): boolean {
-  const index = inboxMessages.findIndex(message => message.id === id);
-  if (index < 0) {
-    return false;
-  }
-  const [toArchived] = inboxMessages.splice(index, 1);
-  const destinationIndex = archivedMessages.findIndex(
-    message => message.id < id
+  return pipe(
+    inboxMessages,
+    A.findFirst(message => message.id === id),
+    O.fold(
+      () => false,
+      message => {
+        // remove item from inboxMessages
+        inboxMessages = inboxMessages.filter(m => m.id !== message.id);
+        // add item to archivedMessages
+        const destinationIndex = archivedMessages.findIndex(
+          m => m.id < message.id
+        );
+        archivedMessages = A.unsafeInsertAt(
+          destinationIndex,
+          { ...message, is_archived: true },
+          archivedMessages
+        );
+
+        return true;
+      }
+    )
   );
-  // eslint-disable-next-line: no-object-mutation
-  toArchived.is_archived = true;
-  archivedMessages.splice(destinationIndex, 0, toArchived);
-  return true;
 }
 
 /**
@@ -29,16 +43,28 @@ function archive(id: string): boolean {
  * Return false if message ID is not in the Archive.
  */
 function unarchive(id: string): boolean {
-  const index = archivedMessages.findIndex(message => message.id === id);
-  if (index < 0) {
-    return false;
-  }
-  const [toInbox] = archivedMessages.splice(index, 1);
-  const destinationIndex = inboxMessages.findIndex(message => message.id < id);
-  // eslint-disable-next-line: no-object-mutation
-  toInbox.is_archived = false;
-  inboxMessages.splice(destinationIndex, 0, toInbox);
-  return true;
+  return pipe(
+    archivedMessages,
+    A.findFirst(message => message.id === id),
+    O.fold(
+      () => false,
+      message => {
+        // remove item from archivedMessages
+        archivedMessages = archivedMessages.filter(m => m.id !== message.id);
+        // add item to inboxMessages
+        const destinationIndex = inboxMessages.findIndex(
+          m => m.id < message.id
+        );
+        inboxMessages = A.unsafeInsertAt(
+          destinationIndex,
+          { ...message, is_archived: true },
+          inboxMessages
+        );
+
+        return true;
+      }
+    )
+  );
 }
 
 /**
@@ -46,17 +72,17 @@ function unarchive(id: string): boolean {
  * be added.
  */
 // eslint-disable-next-line: readonly-array no-let
-function persist(messages: CreatedMessageWithContentAndEnrichedData[]): void {
+function persist(messages: CreatedMessageWithContentAndAttachments[]): void {
   inboxMessages = inboxMessages
     .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
-function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndEnrichedData> {
+function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndAttachments> {
   return inboxMessages;
 }
 
-function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndEnrichedData> {
+function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndAttachments> {
   return archivedMessages;
 }
 
@@ -65,7 +91,7 @@ function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndEnrichedDa
  */
 function findOneById(
   id: string
-): CreatedMessageWithContentAndEnrichedData | null {
+): CreatedMessageWithContentAndAttachments | null {
   return (
     inboxMessages.find(message => message.id === id) ||
     archivedMessages.find(message => message.id === id) ||
@@ -78,18 +104,48 @@ function dropAll(): void {
   archivedMessages = [];
 }
 
+function updateMessages(
+  id: string,
+  messages: CreatedMessageWithContentAndAttachments[]
+) {
+  return pipe(
+    messages,
+    A.findIndex(message => message.id === id),
+    O.map(index =>
+      A.unsafeUpdateAt(index, { ...messages[index], is_read: true }, messages)
+    )
+  );
+}
+
 /**
  * Set the message `isRead` status to true. The operation cannot be undone.
  * Return false is the message was not found.
  */
-function setReadMessage(id: string): boolean {
-  const message = findOneById(id);
-  if (message) {
-    // eslint-disable-next-line: no-object-mutation
-    message.is_read = true;
-    return true;
-  }
-  return false;
+function setReadMessage(id: string) {
+  return pipe(
+    sequenceT(O.Monad)(
+      pipe(
+        updateMessages(id, inboxMessages),
+        O.map(messages => {
+          inboxMessages = messages;
+          return true;
+        }),
+        O.getOrElse(() => false),
+        O.of
+      ),
+      pipe(
+        updateMessages(id, archivedMessages),
+        O.map(messages => {
+          archivedMessages = messages;
+          return true;
+        }),
+        O.getOrElse(() => false),
+        O.of
+      )
+    ),
+    O.map(args => pipe(args, A.some(identity))),
+    O.getOrElse(() => false)
+  );
 }
 
 export default {
