@@ -23,6 +23,6 @@ it("services should return a valid public session", async () => {
   expect(E.isRight(publicSession)).toBeTruthy();
   if (E.isRight(publicSession)) {
     const customSession = getCustomSession();
-      expect(publicSession.right).toEqual(customSession?.payload);
+    expect(publicSession.right).toEqual(customSession?.payload);
   }
 });
