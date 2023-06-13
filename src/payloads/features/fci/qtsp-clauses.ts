@@ -17,6 +17,5 @@ export const qtspClauses: QtspClausesMetadataDetailView = {
   privacy_url: templateUrl,
   privacy_text:
     "Confermo di aver letto l’[informativa sul trattamento dei dati personali](@PRIVACY_URL)" as NonEmptyString,
-  terms_and_conditions_url:
-  templateUrl
+  terms_and_conditions_url: templateUrl
 };

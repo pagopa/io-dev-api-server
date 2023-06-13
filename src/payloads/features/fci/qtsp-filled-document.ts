@@ -5,11 +5,9 @@ import { FilledDocumentDetailView } from "../../../../generated/definitions/fci/
 export const templateUrl = "http://127.0.0.1:3000/static_contents/fci/template";
 
 export const createFilledDocumentBody: CreateFilledDocument = {
-  document_url:
-    templateUrl as NonEmptyString
+  document_url: templateUrl as NonEmptyString
 };
 
 export const qtspFilledDocument: FilledDocumentDetailView = {
-  filled_document_url:
-    templateUrl
+  filled_document_url: templateUrl
 };
