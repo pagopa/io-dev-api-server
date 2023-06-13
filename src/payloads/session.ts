@@ -28,7 +28,10 @@ export const createOrRefreshSessionTokens = () => {
   customSession = generateSessionTokens();
 };
 
-export const getCustomSession = (): IOResponse<PublicSession> => ({
-  payload: validatePayload(PublicSession, customSession),
-  isJson: true
-});
+export const getCustomSession = (): IOResponse<PublicSession> | undefined =>
+  customSession
+    ? {
+        payload: validatePayload(PublicSession, customSession),
+        isJson: true
+      }
+    : undefined;
