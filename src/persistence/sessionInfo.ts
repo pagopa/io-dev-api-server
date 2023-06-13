@@ -4,6 +4,7 @@ import { Request } from "express";
 import { ioDevServerConfig } from "../config";
 import { isFeatureFlagWithMinVersionEnabled } from "../routers/features/featureFlagUtils";
 import { getDateMsDifference } from "../utils/date";
+import { createOrRefreshSessionTokens } from "../payloads/session";
 
 enum LoginEnum {
   standard = "STANDARD",
@@ -37,8 +38,9 @@ const setLoginSessionToken = (newToken: string) => {
 
 const generateNewLoginToken = () => faker.random.alphaNumeric(11).toUpperCase();
 
-export const createOrRefreshSessionToken = () => {
+export const createOrRefreshEverySessionToken = () => {
   setLoginSessionToken(generateNewLoginToken());
+  createOrRefreshSessionTokens();
   return loginSessionTokenInfo.loginSessionToken;
 };
 

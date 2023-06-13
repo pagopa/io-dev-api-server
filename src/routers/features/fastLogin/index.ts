@@ -12,13 +12,14 @@ import {
 } from "../../../features/fastLogin/nonceHandler";
 import { refreshTokenWithFastLogin } from "../../../features/fastLogin/fastLoginHandler";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
+import { addApiV1Prefix } from "../../../utils/strings";
 
 export const fastLoginRouter = Router();
 
 addHandler(
   fastLoginRouter,
   "post",
-  "/v1/fast-login/generate-nonce",
+  addApiV1Prefix("/fast-login/generate-nonce"),
   (_, res) => {
     generateNewNonce();
     const nonce = getNonceInfo().nonce;
@@ -29,7 +30,7 @@ addHandler(
 addHandler(
   fastLoginRouter,
   "post",
-  "/v1/fast-login",
+  addApiV1Prefix("/fast-login"),
   lollipopMiddleware((req, res) =>
     pipe(
       refreshTokenWithFastLogin(req),

@@ -23,7 +23,7 @@ import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
 import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
 import {
   clearLoginSessionTokenInfo,
-  createOrRefreshSessionToken,
+  createOrRefreshEverySessionToken,
   getLoginSessionToken,
   setSessionLoginType
 } from "../persistence/sessionInfo";
@@ -80,7 +80,7 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     : AppUrlLoginScheme.webview;
 
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
-    createOrRefreshSessionToken();
+    createOrRefreshEverySessionToken();
     const url = `${urlLoginScheme}://${
       req.headers.host
     }${redirectUrl}${getLoginSessionToken()}`;
