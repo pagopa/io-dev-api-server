@@ -30,4 +30,4 @@ export const DateFromISOString: DateFromISOStringType =
   new DateFromISOStringType();
 
 export const getDateMsDifference = (firstDate: Date, secondDate: Date) =>
-  firstDate.getTime() - secondDate.getTime();
+  Math.abs(firstDate.getTime() - secondDate.getTime());
