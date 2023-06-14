@@ -22,10 +22,14 @@ const generateSessionTokens = (): PublicSession => ({
 });
 
 // eslint-disable-next-line functional/no-let
-let customSession: PublicSession;
+let customSession: PublicSession | undefined;
 
 export const createOrRefreshSessionTokens = () => {
   customSession = generateSessionTokens();
+};
+
+export const clearSessionTokens = () => {
+  customSession = undefined;
 };
 
 export const getCustomSession = (): IOResponse<PublicSession> | undefined =>

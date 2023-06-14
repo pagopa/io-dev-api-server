@@ -27,6 +27,7 @@ import {
   getLoginSessionToken,
   setSessionLoginType
 } from "../persistence/sessionInfo";
+import { clearSessionTokens } from "../payloads/session";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -103,6 +104,7 @@ addHandler(publicRouter, "post", "/logout", (_, res) => {
   clearAppInfo();
   clearLollipopInfo();
   clearLoginSessionTokenInfo();
+  clearSessionTokens();
   res.status(200).send({ message: "ok" });
 });
 
