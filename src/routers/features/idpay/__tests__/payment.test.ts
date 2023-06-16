@@ -2,7 +2,6 @@ import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
-import { CodeEnum } from "../../../../../generated/definitions/idpay/TransactionErrorDTO";
 import { codeToFailure } from "../payment";
 
 const request = supertest(app);
