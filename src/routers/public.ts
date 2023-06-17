@@ -14,14 +14,20 @@ import {
   AppUrlLoginScheme,
   errorRedirectUrl,
   loginLolliPopRedirect,
-  loginSessionToken,
-  loginWithToken
+  redirectUrl
 } from "../payloads/login";
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFile } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
-import { setAssertionRef, setPublicKey } from "../persistence/lollipop";
-import { setAppVersion } from "../persistence/appInfo";
+import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
+import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
+import {
+  clearLoginSessionTokenInfo,
+  createOrRefreshEverySessionToken,
+  getLoginSessionToken,
+  setSessionLoginType
+} from "../persistence/sessionInfo";
+import { clearSessionTokens } from "../payloads/session";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -35,8 +41,8 @@ export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 
 addHandler(publicRouter, "get", "/login", async (req, res) => {
-  const userAppVersion = req.get("x-pagopa-app-version");
-  setAppVersion(userAppVersion);
+  setAppInfo(req);
+  setSessionLoginType(req);
 
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
   const lollipopHashAlgorithmHeaderValue = req.get(
@@ -60,8 +66,7 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     DEFAULT_LOLLIPOP_HASH_ALGORITHM
   );
 
-  setAssertionRef(thumbprint);
-  setPublicKey(jwkPK.right);
+  setLollipopInfo(thumbprint, jwkPK.right);
 
   const samlRequest = getSamlRequest(
     DEFAULT_LOLLIPOP_HASH_ALGORITHM,
@@ -71,15 +76,15 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
 });
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
-  const urlLoginScheme = isFeatureFlagWithMinVersionEnabled(
-    "nativeLogin",
-    req.headers
-  )
+  const urlLoginScheme = isFeatureFlagWithMinVersionEnabled("nativeLogin")
     ? AppUrlLoginScheme.native
     : AppUrlLoginScheme.webview;
 
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
-    const url = `${urlLoginScheme}://${req.headers.host}${loginWithToken}`;
+    createOrRefreshEverySessionToken();
+    const url = `${urlLoginScheme}://${
+      req.headers.host
+    }${redirectUrl}${getLoginSessionToken()}`;
     res.redirect(url);
     return;
   }
@@ -96,6 +101,10 @@ addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
 });
 
 addHandler(publicRouter, "post", "/logout", (_, res) => {
+  clearAppInfo();
+  clearLollipopInfo();
+  clearLoginSessionTokenInfo();
+  clearSessionTokens();
   res.status(200).send({ message: "ok" });
 });
 
@@ -108,13 +117,13 @@ addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 addHandler(publicRouter, "post", "/test-login", (req, res) => {
   const { password } = req.body;
   if (password === "error") {
-    res.status(500).json({ token: loginSessionToken });
+    res.status(500).json({ token: getLoginSessionToken() });
   } else if (password === "delay") {
     setTimeout(() => {
-      res.json({ token: loginSessionToken });
+      res.json({ token: getLoginSessionToken() });
     }, 3000);
   } else {
-    res.json({ token: loginSessionToken });
+    res.json({ token: getLoginSessionToken() });
   }
 });
 

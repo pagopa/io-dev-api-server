@@ -38,6 +38,8 @@ import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { idpayRouter } from "./routers/features/idpay";
 import { lollipopRouter } from "./routers/features/lollipop";
+import { fastLoginRouter } from "./routers/features/fastLogin";
+import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -53,6 +55,7 @@ app.use(
   )
 );
 app.use(errorMiddleware);
+app.use(fastLoginMiddleware);
 
 [
   publicRouter,
@@ -87,7 +90,8 @@ app.use(errorMiddleware);
   fciRouter,
   pnRouter,
   idpayRouter,
-  lollipopRouter
+  lollipopRouter,
+  fastLoginRouter
 ].forEach(r => app.use(r));
 
 export default app;
