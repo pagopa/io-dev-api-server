@@ -67,7 +67,11 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/relate-user", (req, res) =>
     O.filter(code => code <= 7),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
-      () => res.status(200).json(generateRandomAuthPaymentResponseDTO()),
+      () =>
+        res.status(200).json({
+          ...generateRandomAuthPaymentResponseDTO(),
+          trxCode: req.params.trxCode
+        }),
       ({ status, code }) =>
         res.status(status).json(generateRandomTransactionError(code))
     )
@@ -86,7 +90,13 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/authorize", (req, res) =>
     O.filter(code => code <= 7),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
-      () => res.status(200).json(generateRandomAuthPaymentResponseDTO()),
+      () =>
+        res
+          .status(200)
+          .json({
+            ...generateRandomAuthPaymentResponseDTO(),
+            trxCode: req.params.trxCode
+          }),
       ({ status, code }) =>
         res.status(status).json(generateRandomTransactionError(code))
     )
