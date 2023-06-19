@@ -40,7 +40,6 @@ import {
   frontMatterCTAFCISignatureRequestSigned,
   frontMatterCTAFCISignatureRequestSignedExpired,
   frontMatterCTAFCISignatureRequestWaitQtsp,
-  frontMatterCTAFCISignatureRequestCanceled,
   messageFciMarkdown,
   messageFciSignedMarkdown,
   messageMarkdown
@@ -277,25 +276,6 @@ const createMessagesWithFirmaConIOExpired90 = (
       frontMatterCTAFCISignatureRequestSignedExpired + messageFciSignedMarkdown
     )
   );
-
-const createMessagesWithFirmaConIOCanceled = (
-  customConfig: IoDevServerConfig,
-  output: Array<
-    CreatedMessageWithContentAndAttachments | CreatedMessageWithContent
-  >
-) => {
-  if (customConfig.messages.fci.canceledCount > 0) {
-    range(1, customConfig.messages.fci.canceledCount).forEach(count => {
-      output.push(
-        getNewMessage(
-          customConfig,
-          `Comune di Controguerra - Richiesta di Firma [CANCELED] ${count} `,
-          frontMatterCTAFCISignatureRequestCanceled + messageFciSignedMarkdown
-        )
-      );
-    });
-  }
-};
 
 const createMessagesWithFirmaConIOSigned = (
   customConfig: IoDevServerConfig
