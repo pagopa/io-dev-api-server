@@ -57,4 +57,27 @@ describe("IDPay Payment API", () => {
       });
     });
   });
+  describe("DELETE deletePayment", () => {
+    it("should return 200", async () => {
+      const trxCode = faker.random.alphaNumeric(8, { bannedChars: "1234567" });
+
+      const response = await request.delete(
+        addIdPayPrefix(`/payment/qr-code/${trxCode}`)
+      );
+      expect(response.status).toBe(200);
+    });
+    Object.keys(codeToFailure).forEach(key => {
+      const { status, code } = codeToFailure[parseInt(key, 10)];
+      it(`should return ${status} with ${code}`, async () => {
+        const trxCode = `${faker.random.alphaNumeric(7)}${key}`;
+
+        const response = await request.delete(
+          addIdPayPrefix(`/payment/qr-code/${trxCode}`)
+        );
+
+        expect(response.status).toBe(status);
+        expect(response.body).toHaveProperty("code", code);
+      });
+    });
+  });
 });
