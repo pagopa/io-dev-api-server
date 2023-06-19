@@ -91,12 +91,26 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/authorize", (req, res) =>
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () =>
-        res
-          .status(200)
-          .json({
-            ...generateRandomAuthPaymentResponseDTO(),
-            trxCode: req.params.trxCode
-          }),
+        res.status(200).json({
+          ...generateRandomAuthPaymentResponseDTO(),
+          trxCode: req.params.trxCode
+        }),
+      ({ status, code }) =>
+        res.status(status).json(generateRandomTransactionError(code))
+    )
+  )
+);
+
+addIdPayHandler("delete", "/payment/qr-code/:trxCode", (req, res) =>
+  pipe(
+    req.params.trxCode,
+    O.fromNullable,
+    O.map(trxCode => trxCode[trxCode.length - 1]),
+    O.map(parseInt),
+    O.filter(code => code <= 7),
+    O.chain(code => O.fromNullable(codeToFailure[code])),
+    O.fold(
+      () => res.sendStatus(200),
       ({ status, code }) =>
         res.status(status).json(generateRandomTransactionError(code))
     )
