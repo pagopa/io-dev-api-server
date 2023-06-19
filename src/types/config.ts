@@ -269,6 +269,19 @@ export const IoDevServerConfig = t.interface({
       idpay: t.interface({
         // The size of the IBAN list to generate
         ibanSize: t.number
+      }),
+      lollipop: t.intersection([
+        t.interface({
+          enabled: t.boolean
+        }),
+        t.partial({
+          assertionRefValidityMS: t.number
+        })
+      ])
+    }),
+    t.partial({
+      fastLogin: t.interface({
+        sessionTTLinMS: t.number
       })
     }),
     AllowRandomValue

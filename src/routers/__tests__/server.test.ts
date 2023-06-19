@@ -1,9 +1,10 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
-import { loginSessionToken } from "../../payloads/login";
+import { AppUrlLoginScheme } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
+import { getLoginSessionToken } from "../../persistence/sessionInfo";
 
 const request = supertest(app);
 
@@ -20,15 +21,13 @@ it("login should response with a welcome page", async () => {
 
 it("login with auth should response with a redirect and the token as param", async () => {
   const response = await request.get("/idp-login?authorized=1");
+  const hostAndPort = response.text.match(/\/\/(.*?)\//);
   expect(response.status).toBe(302);
   expect(response.text).toBe(
-    "Found. Redirecting to /profile.html?token=" + loginSessionToken
+    `Found. Redirecting to ${AppUrlLoginScheme.webview}://${
+      hostAndPort ? hostAndPort[1] : ""
+    }/profile.html?token=${getLoginSessionToken()}`
   );
-});
-
-it("logout should response 200", async () => {
-  const response = await request.post("/logout");
-  expect(response.status).toBe(200);
 });
 
 it("session should return a valid session", async () => {
@@ -42,7 +41,7 @@ it("test-login /test-login should always return sessionToken", async () => {
   const result = await request.post("/test-login");
 
   expect(result.status).toBe(200);
-  expect(result.body).toStrictEqual({ token: loginSessionToken });
+  expect(result.body).toStrictEqual({ token: getLoginSessionToken() });
 });
 
 it("Pay webview route should always response 200", async () => {
@@ -57,4 +56,9 @@ it("Reset route should response 200 and contain reset text", async () => {
   const response = await request.get("/reset");
   expect(response.status).toBe(200);
   expect(response.text).toContain("<h2>reset:</h2>");
+});
+
+it("logout should response 200", async () => {
+  const response = await request.post("/logout");
+  expect(response.status).toBe(200);
 });

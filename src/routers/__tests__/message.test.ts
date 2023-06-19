@@ -12,6 +12,7 @@ import ServicesDB from "../../persistence/services";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
 import { pnServiceId } from "../../payloads/services/special/pn/factoryPn";
+import * as lollipopMid from "../../middleware/lollipopMiddleware";
 
 const request = supertest(app);
 
@@ -314,12 +315,15 @@ describe("given the `/messages/:id` endpoint", () => {
 
 describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
   beforeAll(() => {
+    jest.spyOn(lollipopMid, "isLollipopConfigEnabled").mockReturnValue(false);
     populatePersistence(customConfig);
   });
 
   afterAll(() => {
     MessagesDB.dropAll();
     ServicesDB.deleteServices();
+    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it("should return 200 with the remoted precondition", async () => {

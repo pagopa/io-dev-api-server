@@ -12,15 +12,30 @@ const getToken = (defaultValue: string) =>
     "global"
   );
 
-export const customSession: PublicSession = {
+const generateSessionTokens = (): PublicSession => ({
   spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
   walletToken: getToken("AAAAAAAAAAAAA1"),
   myPortalToken: getToken("AAAAAAAAAAAAA2"),
   bpdToken: getToken("AAAAAAAAAAAAA3"),
   zendeskToken: getToken("AAAAAAAAAAAAA4"),
   fimsToken: getToken("AAAAAAAAAAAAA5")
+});
+
+// eslint-disable-next-line functional/no-let
+let customSession: PublicSession | undefined;
+
+export const createOrRefreshSessionTokens = () => {
+  customSession = generateSessionTokens();
 };
-export const session: IOResponse<PublicSession> = {
-  payload: validatePayload(PublicSession, customSession),
-  isJson: true
+
+export const clearSessionTokens = () => {
+  customSession = undefined;
 };
+
+export const getCustomSession = (): IOResponse<PublicSession> | undefined =>
+  customSession
+    ? {
+        payload: validatePayload(PublicSession, customSession),
+        isJson: true
+      }
+    : undefined;

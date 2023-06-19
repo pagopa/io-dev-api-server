@@ -14,15 +14,23 @@ import {
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
+import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
 import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
-import { OperationTypeEnum as TransactionOperationEnum } from "../../generated/definitions/idpay/TransactionOperationDTO";
+import {
+  ChannelEnum as TransactionChannelEnum,
+  OperationTypeEnum as TransactionOperationEnum,
+  StatusEnum as TransactionStatusEnum
+} from "../../generated/definitions/idpay/TransactionOperationDTO";
 import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
-import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
+import {
+  AuthPaymentResponseDTO,
+  StatusEnum as PaymentStatusEnum
+} from "../../generated/definitions/idpay/AuthPaymentResponseDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -85,14 +93,15 @@ const generateRandomOperationDTO = (
         circuitType: "01",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: "" // TODO add correct status when API definitions are ready
+        status: getRandomEnumValue(TransactionStatusEnum),
+        channel: TransactionChannelEnum.RTD
       };
     case "ADD_IBAN":
       return {
         operationType: IbanOperationEnum.ADD_IBAN,
         operationDate: new Date(),
         operationId: ulid(),
-        channel: "",
+        channel: faker.datatype.string(),
         iban: faker.helpers.arrayElement(ibanList)?.iban || ""
       };
     case "ADD_INSTRUMENT":
@@ -117,6 +126,19 @@ const generateRandomOperationDTO = (
       };
   }
 };
+
+const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => ({
+  id: ulid(),
+  initiativeId: ulid(),
+  rejectionReasons: [],
+  status: getRandomEnumValue(PaymentStatusEnum),
+  trxCode: faker.datatype.string(),
+  reward: 0,
+  amountCents: faker.datatype.number(1000),
+  businessName: faker.commerce.productName(),
+  initiativeName: faker.company.name(),
+  trxDate: faker.date.recent(0)
+});
 
 // eslint-disable-next-line functional/no-let
 export let initiatives: { [id: string]: InitiativeDTO } = {};
@@ -418,10 +440,49 @@ range(0, walletConfig.discountCount).forEach(() => {
     ...instruments,
     [initiativeId]: []
   };
+
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
+      {
+        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        status: TransactionStatusEnum.AUTHORIZED,
+        channel: TransactionChannelEnum.QRCODE
+      } as OperationListDTO,
+      {
+        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        status: TransactionStatusEnum.REWARDED,
+        channel: TransactionChannelEnum.QRCODE
+      } as OperationListDTO,
+      {
+        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        status: TransactionStatusEnum.CANCELLED,
+        channel: TransactionChannelEnum.QRCODE
+      } as OperationListDTO,
       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
     ]
   };
 });
+
+export const payments: ReadonlyArray<AuthPaymentResponseDTO> = [
+  {
+    ...generateRandomAuthPaymentResponseDTO(),
+    status: PaymentStatusEnum.AUTHORIZED,
+    trxCode: "00000001"
+  },
+  {
+    ...generateRandomAuthPaymentResponseDTO(),
+    status: PaymentStatusEnum.REJECTED,
+    trxCode: "00000002"
+  },
+  {
+    ...generateRandomAuthPaymentResponseDTO(),
+    status: PaymentStatusEnum.IDENTIFIED,
+    trxCode: "00000003"
+  },
+  {
+    ...generateRandomAuthPaymentResponseDTO(),
+    status: PaymentStatusEnum.CREATED,
+    trxCode: "00000004"
+  }
+];
