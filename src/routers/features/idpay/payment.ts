@@ -91,12 +91,10 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/authorize", (req, res) =>
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () =>
-        res
-          .status(200)
-          .json({
-            ...generateRandomAuthPaymentResponseDTO(),
-            trxCode: req.params.trxCode
-          }),
+        res.status(200).json({
+          ...generateRandomAuthPaymentResponseDTO(),
+          trxCode: req.params.trxCode
+        }),
       ({ status, code }) =>
         res.status(status).json(generateRandomTransactionError(code))
     )
