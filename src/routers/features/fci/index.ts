@@ -40,15 +40,15 @@ addHandler(
     pipe(
       O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
-        signatureReqId === SIGNATURE_REQUEST_ID ||
-        signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
-        signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID ||
-        (signatureReqId === CANCELED_SIGNATURE_REQUEST_ID &&
-          configResponse.getFciResponseCode === 200)
+        (signatureReqId === SIGNATURE_REQUEST_ID ||
+          signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID ||
+          signatureReqId === SIGNED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === REJECTED_SIGNATURE_REQUEST_ID ||
+          signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID ||
+          signatureReqId === CANCELED_SIGNATURE_REQUEST_ID) &&
+        configResponse.getFciResponseCode === 200
           ? O.some(signatureReqId)
           : O.none
       ),
