@@ -259,7 +259,7 @@ en:
         action: "ioit://fci/main?signatureRequestId=${NO_FIELDS_SIGNATURE_REQUEST_ID}"
 ---`;
 
-export const frontMatterCTAFCISignatureRequestCanceled = `---
+export const frontMatterCTAFCISignatureRequestCancelled = `---
 it:
     cta_1: 
         text: "Vai ai documenti"
