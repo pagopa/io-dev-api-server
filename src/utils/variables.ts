@@ -1,4 +1,5 @@
 import {
+  CANCELED_SIGNATURE_REQUEST_ID,
   EXPIRED_SIGNATURE_REQUEST_ID,
   NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
@@ -256,6 +257,17 @@ en:
     cta_1: 
         text: "View documents"
         action: "ioit://fci/main?signatureRequestId=${NO_FIELDS_SIGNATURE_REQUEST_ID}"
+---`;
+
+export const frontMatterCTAFCISignatureRequestCancelled = `---
+it:
+    cta_1: 
+        text: "Vai ai documenti"
+        action: "ioit://fci/main?signatureRequestId=${CANCELED_SIGNATURE_REQUEST_ID}"
+en:
+    cta_1: 
+        text: "Go to the documents"
+        action: "ioit://fci/main?signatureRequestId=${CANCELED_SIGNATURE_REQUEST_ID}"
 ---`;
 
 export const messageFciMarkdown = `
