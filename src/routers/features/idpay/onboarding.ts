@@ -60,8 +60,15 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
         O.map(({ initiativeId }) => initiativeId),
         O.chain(initiativeIdFromString),
         O.fold(
-          () => res.status(404).json(getIdPayError(404)),
-          _ => res.sendStatus(204)
+          () => res.status(404).json(getIdPayError(404)), // Initiative not found
+          flow(
+            O.some,
+            O.chain(getPrerequisitesErrorByInitiativeId),
+            O.fold(
+              () => res.sendStatus(204),
+              prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
+            )
+          )
         )
       )
     )
