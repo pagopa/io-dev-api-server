@@ -27,10 +27,6 @@ import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
-import {
-  AuthPaymentResponseDTO,
-  StatusEnum as PaymentStatusEnum
-} from "../../generated/definitions/idpay/AuthPaymentResponseDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -126,19 +122,6 @@ const generateRandomOperationDTO = (
       };
   }
 };
-
-const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => ({
-  id: ulid(),
-  initiativeId: ulid(),
-  rejectionReasons: [],
-  status: getRandomEnumValue(PaymentStatusEnum),
-  trxCode: faker.datatype.string(),
-  reward: 0,
-  amountCents: faker.datatype.number(1000),
-  businessName: faker.commerce.productName(),
-  initiativeName: faker.company.name(),
-  trxDate: faker.date.recent(0)
-});
 
 // eslint-disable-next-line functional/no-let
 export let initiatives: { [id: string]: InitiativeDTO } = {};
@@ -463,26 +446,3 @@ range(0, walletConfig.discountCount).forEach(() => {
     ]
   };
 });
-
-export const payments: ReadonlyArray<AuthPaymentResponseDTO> = [
-  {
-    ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.AUTHORIZED,
-    trxCode: "00000001"
-  },
-  {
-    ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.REJECTED,
-    trxCode: "00000002"
-  },
-  {
-    ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.IDENTIFIED,
-    trxCode: "00000003"
-  },
-  {
-    ...generateRandomAuthPaymentResponseDTO(),
-    status: PaymentStatusEnum.CREATED,
-    trxCode: "00000004"
-  }
-];
