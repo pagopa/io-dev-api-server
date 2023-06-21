@@ -132,4 +132,4 @@ It will be possible to renew the session via the `fastlogin` endpoint until the 
 
 You can configure the duration of the session by associating a value in MS to `sessionTTLinMS` in the `config.ts` file > `features/fastlogin`.
 
-In the same file it is possible to configure the duration of the `assertionRef`, giving a value in MS to the key `lollipop/assertionRefValidityMS`.
+In the same file it is possible to configure the duration of the `assertionRef`, giving a value in MS to the key `lollipop/assertionRefValidityMS`. If no value is specified for this key, `assertionRef` gets infinite validity.
