@@ -34,6 +34,7 @@ import {
   frontMatter2CTA2,
   frontMatterBonusVacanze,
   frontMatterCTAFCISignatureRequest,
+  frontMatterCTAFCISignatureRequestCancelled,
   frontMatterCTAFCISignatureRequestExpired,
   frontMatterCTAFCISignatureRequestNoFields,
   frontMatterCTAFCISignatureRequestRejected,
@@ -310,6 +311,17 @@ const createMessagesWithFirmaConIONoSignatureFields = (
     )
   );
 
+const createMessagesWithFirmaConIONCancelled = (
+  customConfig: IoDevServerConfig
+): CreatedMessageWithContentAndAttachments[] =>
+  A.makeBy(customConfig.messages.fci.canceledCount, index =>
+    getNewMessage(
+      customConfig,
+      `Comune di Controguerra - Richiesta di Firma [CANCELLED] - ${index} `,
+      frontMatterCTAFCISignatureRequestCancelled + messageFciMarkdown
+    )
+  );
+
 const createMessagesWithStandard = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
@@ -494,6 +506,7 @@ const createMessages = (
     ...createMessagesWithFirmaConIOSigned(customConfig),
     ...createMessagesWithFirmaConIORejected(customConfig),
     ...createMessagesWithFirmaConIONoSignatureFields(customConfig),
+    ...createMessagesWithFirmaConIONCancelled(customConfig),
 
     /* standard message */
     ...createMessagesWithStandard(customConfig),
