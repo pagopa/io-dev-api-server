@@ -125,8 +125,20 @@ Public key and Assertion Ref can be retrieved using `getPublicKey` and `getAsser
 Regardless of how many endpoints have been wrapped, the lollipop middleware can be globally disabled using the `config.feature.lollipop.enabled` flag (default true).
 
 ## FastLogin
-Server is able to perform a FastLogin. 
+Server is able to perform a FastLogin.
 A FastLogin is a type of login that provides a very short session which is automatically renewed by calling the `fastlogin` endpoint. 
+
+To enable this feature, you must set the FeatureFlag to a minimum version higher than 0.0.0 in `src/payloads/backend.ts`
+```
+fastLogin: {
+      min_app_version: {
+        ios: "0.0.0",
+        android: "0.0.0"
+      }
+    }
+
+```
+If you want, you can specify a different minimum supported version for ios and android.
 
 It will be possible to renew the session via the `fastlogin` endpoint until the expiration date of the `assertionRef`.
 
