@@ -81,9 +81,11 @@ export const isSessionTokenValid = (req: Request) => {
     return false;
   }
 
+  // TODO: Add equality check between received and stored token
+  // Jira: https://pagopa.atlassian.net/browse/IOPID-357
+
   return (
     getDateMsDifference(new Date(), loginSessionTokenInfo.instantiationDate) <
-      ioDevServerConfig.features.fastLogin.sessionTTLinMS &&
-    bearerToken === `Bearer ${loginSessionTokenInfo.loginSessionToken}`
+    ioDevServerConfig.features.fastLogin.sessionTTLinMS
   );
 };
