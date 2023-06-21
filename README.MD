@@ -123,3 +123,14 @@ The lollipop middleware runs before the wrapped function and automatically rejec
 Public key and Assertion Ref can be retrieved using `getPublicKey` and `getAssertionRef` (`src/persistence/lollipop.ts` - provided a previously valid login on the GET /login endpoint).
 
 Regardless of how many endpoints have been wrapped, the lollipop middleware can be globally disabled using the `config.feature.lollipop.enabled` flag (default true).
+
+## FastLogin
+Server is able to perform a FastLogin. 
+A FastLogin is a type of login that provides a very short session which is automatically renewed by calling the `fastlogin` endpoint. 
+
+It will be possible to renew the session via the `fastlogin` endpoint until the expiration date of the `assertionRef`.
+
+```
+You can configure the duration of the session by associating a value in MS to `sessionTTLinMS` in the `config.ts` file > `features/fastlogin`.
+
+In the same file it is possible to configure the duration of the `assertionRef`, giving a value in MS to the key `lollipop/assertionRefValidityMS`.

@@ -76,6 +76,8 @@ export const isSessionTokenValid = (req: Request) => {
     !loginSessionTokenInfo.instantiationDate ||
     !loginSessionTokenInfo.loginSessionToken
   ) {
+    // eslint-disable-next-line no-console
+    console.error("ERROR!!! Missing session info");
     return false;
   }
 

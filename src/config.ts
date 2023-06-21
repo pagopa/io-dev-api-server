@@ -160,6 +160,9 @@ const defaultConfig: IoDevServerConfig = {
     lollipop: {
       enabled: true
     },
+    fastLogin: {
+      sessionTTLinMS: 60000
+    },
     allowRandomValues: true
   }
 };
