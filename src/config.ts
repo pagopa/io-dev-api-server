@@ -88,6 +88,7 @@ const defaultConfig: IoDevServerConfig = {
       expired90Count: 0,
       waitForQtspCount: 0,
       signedCount: 0,
+      canceledCount: 0,
       noSignatureFieldsCount: 0,
       response: {
         getFciResponseCode: 200
