@@ -33,6 +33,7 @@ describe("IDPay Payment API", () => {
       });
     });
   });
+
   describe("PUT putAuthPayment", () => {
     it("should return 200 with payment data", async () => {
       const trxCode = faker.random.alphaNumeric(8, { bannedChars: "1234567" });
@@ -57,6 +58,7 @@ describe("IDPay Payment API", () => {
       });
     });
   });
+
   describe("DELETE deletePayment", () => {
     it("should return 200", async () => {
       const trxCode = faker.random.alphaNumeric(8, { bannedChars: "1234567" });
