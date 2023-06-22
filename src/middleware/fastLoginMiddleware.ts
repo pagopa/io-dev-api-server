@@ -14,7 +14,7 @@ export const fastLoginMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  if (isSessionTokenValid()) {
+  if (isSessionTokenValid(req)) {
     next();
     return;
   }

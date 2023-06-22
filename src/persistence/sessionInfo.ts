@@ -50,9 +50,11 @@ export const setSessionLoginType = (req: Request) => {
     | undefined;
 };
 
-export const isSessionTokenValid = () => {
-  // user not authenticated yet
-  if (!loginSessionTokenInfo.instantiationDate) {
+export const isSessionTokenValid = (req: Request) => {
+  const bearerToken = req.get("authorization");
+
+  // if there is no bearer token , we assume the call does not require verification
+  if (!bearerToken) {
     return true;
   }
 
@@ -68,8 +70,20 @@ export const isSessionTokenValid = () => {
   if (!ioDevServerConfig.features.fastLogin) {
     return false;
   }
+
+  // if loginSessionTokenInfo is not correctly defined, the user cannot be authenticated
+  if (
+    !loginSessionTokenInfo.instantiationDate ||
+    !loginSessionTokenInfo.loginSessionToken
+  ) {
+    // eslint-disable-next-line no-console
+    console.error("ERROR!!! Missing session info");
+    return false;
+  }
+
   return (
     getDateMsDifference(new Date(), loginSessionTokenInfo.instantiationDate) <
-    ioDevServerConfig.features.fastLogin.sessionTTLinMS
+      ioDevServerConfig.features.fastLogin.sessionTTLinMS &&
+    bearerToken === `Bearer ${loginSessionTokenInfo.loginSessionToken}`
   );
 };
