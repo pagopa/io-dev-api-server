@@ -48,9 +48,10 @@ type CardConfig = {
   index: number;
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let defaultCardConfig: CardConfig = { prefix: "00000000000", index: 0 };
-// eslint-disable-next-line: no-let
+
+// eslint-disable-next-line functional/no-let
 let incrementalIdWallet = 1;
 export const getNextIdWallet = (): number => {
   incrementalIdWallet++;
@@ -209,7 +210,7 @@ if (E.isLeft(maybeAbiList)) {
 const abiCodes = (maybeAbiList.right ?? [])
   .map((a: Abi) => a.abi)
   .filter(isDefined);
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let millis = new Date().getTime();
 export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   faker.seed(millis++);
@@ -272,14 +273,14 @@ export const generateWalletV2FromCard = (
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format
-    createDate: format(ed, dateFormat) as any as Date,
+    createDate: format(ed, dateFormat) as unknown as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canMethodPay,
-    updateDate: format(new Date(), dateFormat) as any as Date
+    updateDate: format(new Date(), dateFormat) as unknown as Date
   };
 };
 
@@ -314,14 +315,14 @@ export const generateWalletV2FromSatispayOrBancomatPay = (
   return {
     walletType,
     // force createDate to be a string because we need to force a specific date format
-    createDate: format(ed, dateFormat) as any as Date,
+    createDate: format(ed, dateFormat) as unknown as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: canPay,
-    updateDate: format(new Date(), dateFormat) as any as Date
+    updateDate: format(new Date(), dateFormat) as unknown as Date
   };
 };
 
@@ -337,14 +338,14 @@ export const generateWalletV2FromPaypal = (
   return {
     walletType: WalletTypeEnum.PayPal,
     // force createDate to be a string because we need to force a specific date format
-    createDate: format(ed, dateFormat) as any as Date,
+    createDate: format(ed, dateFormat) as unknown as Date,
     enableableFunctions,
     favourite: false,
     idWallet: getNextIdWallet(),
     info,
     onboardingChannel: "IO",
     pagoPA: enableableFunctions.includes(EnableableFunctionsEnum.pagoPA),
-    updateDate: format(new Date(), dateFormat) as any as Date
+    updateDate: format(new Date(), dateFormat) as unknown as Date
   };
 };
 

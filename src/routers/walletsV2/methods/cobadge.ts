@@ -187,32 +187,38 @@ addHandler(
     // cant decode the body
     if (E.isLeft(maybeData)) {
       res.status(400).send(readableReport(maybeData.left));
-      return;
+    } else if (
+      E.isRight(maybeData) &&
+      maybeData.right.data?.payload?.paymentInstruments
+    ) {
+      // assume the request includes only ONE card
+      const paymentInstrument =
+        maybeData.right.data.payload.paymentInstruments[0];
+      const cobadge = [
+        ...citizenCreditCardCoBadge,
+        ...citizenPrivativeCard
+      ].find(
+        cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
+      );
+      if (cobadge === undefined) {
+        res.sendStatus(400);
+        return;
+      }
+      const walletData = getWalletV2();
+      const walletV2 = walletData.find(
+        w =>
+          w.info &&
+          w.walletType === WalletTypeEnum.Card &&
+          (w.info as CardInfo).hashPan === paymentInstrument.hpan
+      );
+      // already present
+      if (walletV2) {
+        res.json({ data: [walletV2] });
+        return;
+      }
+      addWalletV2([cobadge], true);
+      res.json({ data: [cobadge] });
     }
-    // assume the request includes only ONE card
-    const paymentInstrument =
-      maybeData.right.data!.payload!.paymentInstruments![0];
-    const cobadge = [...citizenCreditCardCoBadge, ...citizenPrivativeCard].find(
-      cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
-    );
-    if (cobadge === undefined) {
-      res.sendStatus(400);
-      return;
-    }
-    const walletData = getWalletV2();
-    const walletV2 = walletData.find(
-      w =>
-        w.info &&
-        w.walletType === WalletTypeEnum.Card &&
-        (w.info as CardInfo).hashPan === paymentInstrument.hpan
-    );
-    // already present
-    if (walletV2) {
-      res.json({ data: [walletV2] });
-      return;
-    }
-    addWalletV2([cobadge], true);
-    res.json({ data: [cobadge] });
   },
   0
 );

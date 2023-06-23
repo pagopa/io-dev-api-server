@@ -64,59 +64,61 @@ addHandler(
             ),
             O.getOrElse(() => res.sendStatus(404)) // No response code was found return 404 as default
           ),
-        signatureReqId =>
-          res.status(200).json(
-            signatureReqId === SIGNATURE_REQUEST_ID
-              ? signatureRequestDetailViewDoc
-              : signatureReqId === EXPIRED_SIGNATURE_REQUEST_ID
-              ? {
-                  ...signatureRequestDetailViewDoc,
-                  id: EXPIRED_SIGNATURE_REQUEST_ID,
-                  expires_at: new Date(now.setDate(now.getDate() - 30)),
-                  status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE
-                }
-              : signatureReqId === WAIT_QTSP_SIGNATURE_REQUEST_ID
-              ? {
-                  ...signatureRequestDetailViewDoc,
-                  id: WAIT_QTSP_SIGNATURE_REQUEST_ID,
-                  status: SignatureRequestStatusEnum.WAIT_FOR_QTSP
-                }
-              : signatureReqId === SIGNED_EXPIRED_SIGNATURE_REQUEST_ID
-              ? {
-                  ...signatureRequestDetailViewDoc,
-                  id: SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
-                  updated_at: new Date(now.setDate(now.getDate() - 91)),
-                  status: SignatureRequestStatusEnum.SIGNED
-                }
-              : signatureReqId === REJECTED_SIGNATURE_REQUEST_ID
-              ? {
-                  ...signatureRequestDetailViewDoc,
-                  id: REJECTED_SIGNATURE_REQUEST_ID,
-                  updated_at: new Date(now.setDate(now.getDate() - 91)),
-                  status: SignatureRequestStatusEnum.REJECTED
-                }
-              : signatureReqId === NO_FIELDS_SIGNATURE_REQUEST_ID
-              ? {
-                  ...signatureRequestDetailViewDoc,
-                  status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
-                  documents: signatureRequestDetailViewDoc.documents.map(d => ({
-                    ...d,
-                    metadata: { ...d.metadata, signature_fields: [] }
-                  }))
-                }
-              : signatureReqId === CANCELED_SIGNATURE_REQUEST_ID
-              ? {
-                  ...signatureRequestDetailViewDoc,
-                  id: CANCELED_SIGNATURE_REQUEST_ID,
-                  updated_at: new Date(now.setDate(now.getDate() - 91)),
-                  status: SignatureRequestStatusEnum.CANCELLED
-                }
-              : {
-                  ...signatureRequestDetailViewDoc,
-                  id: SIGNED_SIGNATURE_REQUEST_ID,
-                  status: SignatureRequestStatusEnum.SIGNED
-                }
-          )
+        signatureReqId => {
+          switch (signatureReqId) {
+            case SIGNATURE_REQUEST_ID:
+              return res.status(200).json(signatureRequestDetailViewDoc);
+            case EXPIRED_SIGNATURE_REQUEST_ID:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                id: EXPIRED_SIGNATURE_REQUEST_ID,
+                expires_at: new Date(now.setDate(now.getDate() - 30)),
+                status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE
+              });
+            case WAIT_QTSP_SIGNATURE_REQUEST_ID:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                id: WAIT_QTSP_SIGNATURE_REQUEST_ID,
+                status: SignatureRequestStatusEnum.WAIT_FOR_QTSP
+              });
+            case SIGNED_EXPIRED_SIGNATURE_REQUEST_ID:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                id: SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
+                updated_at: new Date(now.setDate(now.getDate() - 91)),
+                status: SignatureRequestStatusEnum.SIGNED
+              });
+            case REJECTED_SIGNATURE_REQUEST_ID:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                id: REJECTED_SIGNATURE_REQUEST_ID,
+                updated_at: new Date(now.setDate(now.getDate() - 91)),
+                status: SignatureRequestStatusEnum.REJECTED
+              });
+            case NO_FIELDS_SIGNATURE_REQUEST_ID:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
+                documents: signatureRequestDetailViewDoc.documents.map(d => ({
+                  ...d,
+                  metadata: { ...d.metadata, signature_fields: [] }
+                }))
+              });
+            case CANCELED_SIGNATURE_REQUEST_ID:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                id: CANCELED_SIGNATURE_REQUEST_ID,
+                updated_at: new Date(now.setDate(now.getDate() - 91)),
+                status: SignatureRequestStatusEnum.CANCELLED
+              });
+            default:
+              return res.status(200).json({
+                ...signatureRequestDetailViewDoc,
+                id: SIGNED_SIGNATURE_REQUEST_ID,
+                status: SignatureRequestStatusEnum.SIGNED
+              });
+          }
+        }
       )
     );
   }
