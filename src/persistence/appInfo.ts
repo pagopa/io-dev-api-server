@@ -30,7 +30,9 @@ export function getAppVersion() {
 export const getAppOs = () => appInfo.appOs;
 
 export const clearAppInfo = () => {
+  // eslint-disable-next-line functional/immutable-data
   appInfo.appVersion = undefined;
+  // eslint-disable-next-line functional/immutable-data
   appInfo.appOs = O.none;
 };
 
@@ -38,7 +40,9 @@ export function setAppInfo(req: Request) {
   const version = req.get("x-pagopa-app-version");
   const os = getOsFromUserAgent(req);
 
+  // eslint-disable-next-line functional/immutable-data
   appInfo.appVersion = version;
+  // eslint-disable-next-line functional/immutable-data
   appInfo.appOs = os;
 }
 

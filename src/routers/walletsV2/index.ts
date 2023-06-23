@@ -269,6 +269,7 @@ addHandler(
     walletsToDelete.forEach(w => {
       const idWallet = w.idWallet ?? -1;
       if (removeWalletV2(idWallet)) {
+        // eslint-disable-next-line functional/immutable-data
         deletedWallets.push(idWallet);
       }
     });

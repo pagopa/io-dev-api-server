@@ -226,12 +226,15 @@ export const convertWalletV2toV1 = (wallet: WalletV2): Wallet | undefined =>
   // a favourite method can be only a CreditCard, PayPal or BancomatPay
   match(wallet.walletType)
     .with(WalletTypeEnum.Card, () =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       generateWalletV1FromCardInfo(wallet.idWallet!, wallet.info as CardInfo)
     )
     .with(WalletTypeEnum.PayPal, () =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       generateWalletV1FromPayPal(wallet.idWallet!)
     )
     .with(WalletTypeEnum.BPay, () =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       generateWalletV1FromBPay(wallet.idWallet!, wallet.info)
     )
     .otherwise(() => undefined);
@@ -370,7 +373,9 @@ export const generateWalletV1FromCardInfo = (
     id: idWallet,
     holder: info.holder,
     pan: "*".repeat(12) + (info.blurredNumber ?? ""),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expireMonth: info.expireMonth!.padStart(2, "0"),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expireYear: info.expireYear!.slice(-2),
     brandLogo: info.brandLogo,
     flag3dsVerified: false,
