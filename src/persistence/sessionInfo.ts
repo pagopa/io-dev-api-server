@@ -28,11 +28,14 @@ export const getLoginSessionToken = () =>
 
 export const clearLoginSessionTokenInfo = () =>
   Object.keys(loginSessionTokenInfo).forEach(key => {
+    // eslint-disable-next-line functional/immutable-data
     loginSessionTokenInfo[key as keyof LoginSessionTokenInfo] = undefined;
   });
 
 const setLoginSessionToken = (newToken: string) => {
+  // eslint-disable-next-line functional/immutable-data
   loginSessionTokenInfo.loginSessionToken = newToken;
+  // eslint-disable-next-line functional/immutable-data
   loginSessionTokenInfo.instantiationDate = new Date();
 };
 
@@ -45,6 +48,7 @@ export const createOrRefreshEverySessionToken = () => {
 };
 
 export const setSessionLoginType = (req: Request) => {
+  // eslint-disable-next-line functional/immutable-data
   loginSessionTokenInfo.loginType = req.get("x-pagopa-login-type") as
     | LoginEnum
     | undefined;

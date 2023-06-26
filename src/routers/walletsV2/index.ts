@@ -33,17 +33,17 @@ export const abiResponse: AbiListResponse = {
   data: abiData
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 export let pansResponse: RestPanResponse = {
   data: { data: [], messages: [] } // card array
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 export let bPayResponse: RestBPayResponse = {
   data: []
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletV2Response: WalletV2ListResponse = {
   data: []
 };
@@ -72,25 +72,25 @@ export const findWalletById = (idWallet: number): WalletV2 | undefined => {
   return wallets.find(w => w.idWallet === idWallet);
 };
 
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletBancomat: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletCreditCards: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletCreditCardsCoBadges: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 export let citizenCreditCardCoBadge: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 export let citizenPrivativeCard: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let privativeCards: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletSatispay: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletPaypal: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 let walletBancomatPay: ReadonlyArray<WalletV2> = [];
-// eslint-disable-next-line: no-let
+// eslint-disable-next-line functional/no-let
 export let walletV2Config: WalletMethodConfig =
   ioDevServerConfig.wallet.methods;
 
@@ -269,6 +269,7 @@ addHandler(
     walletsToDelete.forEach(w => {
       const idWallet = w.idWallet ?? -1;
       if (removeWalletV2(idWallet)) {
+        // eslint-disable-next-line functional/immutable-data
         deletedWallets.push(idWallet);
       }
     });

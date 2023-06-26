@@ -86,6 +86,7 @@ it("should set pagoPa flag to false (if credit card > 1)", async () => {
   expect(firstWallet).toBeDefined();
   const response = await request
     .put(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       appendWalletV2Prefix(`/wallet/${firstWallet!.idWallet}/payment-status`)
     )
     .send({ data: { pagoPA: false } });
@@ -100,6 +101,7 @@ it("should set pagoPa flag to false (if credit card > 1)", async () => {
   // invert
   const responseInvert = await request
     .put(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       appendWalletV2Prefix(`/wallet/${firstWallet!.idWallet}/payment-status`)
     )
     .send({ data: { pagoPA: true } });
