@@ -11,11 +11,11 @@ addHandler(miscRouter, "get", "/myportal_playground.html", (_, res) => {
 
 addHandler(miscRouter, "get", "/fims-permissions.html", (_, res) => {
   sendFile("assets/html/fims-permissions.html", res);
-});
+}, 3000);
 
 addHandler(miscRouter, "get", "/fims-relying-party.html", (_, res) => {
   sendFile("assets/html/fims-relying-party.html", res);
-});
+}, 3000);
 
 /**
  * API dedicated to dev- server
