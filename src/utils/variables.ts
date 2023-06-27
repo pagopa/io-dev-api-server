@@ -175,11 +175,11 @@ export const frontMatter1CTAFims = `---
 it:
     cta_1: 
         text: "Fims SSO"
-        action: "iosso://http://localhost:3000/myportal_playground.html"
+        action: "iosso://http://localhost:3000/fims-permissions.html"
 en:
     cta_1: 
         text: "Fims SSO"
-        action: "iosso://http://localhost:3000/myportal_playground.html"
+        action: "iosso://http://localhost:3000/fims-permissions.html"
 ---`;
 
 export const frontMatterCTAFCISignatureRequest = `---

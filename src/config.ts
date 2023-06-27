@@ -94,7 +94,7 @@ const defaultConfig: IoDevServerConfig = {
         getFciResponseCode: 200
       }
     },
-    withCTA: false,
+    withCTA: true,
     withEUCovidCert: false,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,

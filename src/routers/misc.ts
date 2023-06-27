@@ -9,6 +9,14 @@ addHandler(miscRouter, "get", "/myportal_playground.html", (_, res) => {
   sendFile("assets/html/myportal_playground.html", res);
 });
 
+addHandler(miscRouter, "get", "/fims-permissions.html", (_, res) => {
+  sendFile("assets/html/fims-permissions.html", res);
+});
+
+addHandler(miscRouter, "get", "/fims-relying-party.html", (_, res) => {
+  sendFile("assets/html/fims-relying-party.html", res);
+});
+
 /**
  * API dedicated to dev- server
  * return the current dev-server configuration

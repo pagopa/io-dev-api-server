@@ -42,8 +42,8 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     fims: {
-      enabled: false,
-      domain: "https://fims-dev-app-provider.azurewebsites.net/"
+      enabled: true,
+      domain: "http://localhost:3000/"
     },
     uaDonations: {
       enabled: true,
