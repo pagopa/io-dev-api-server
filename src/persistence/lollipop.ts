@@ -28,6 +28,7 @@ export function getPublicKey() {
 
 export const clearLollipopInfo = () =>
   Object.keys(lollipopInfo).forEach(key => {
+    // eslint-disable-next-line functional/immutable-data
     lollipopInfo[key as keyof LollipopInfo] = undefined;
   });
 
@@ -35,9 +36,12 @@ export function setLollipopInfo(
   assertionRef: string | undefined,
   publicKey: jose.JWK | undefined
 ) {
+  // eslint-disable-next-line functional/immutable-data
   lollipopInfo.lollipopAssertionRef =
     `${DEFAULT_LOLLIPOP_HASH_ALGORITHM}-${assertionRef}` as AssertionRef;
+  // eslint-disable-next-line functional/immutable-data
   lollipopInfo.lollipopPublicKey = publicKey;
+  // eslint-disable-next-line functional/immutable-data
   lollipopInfo.instantiationDate = new Date();
 }
 

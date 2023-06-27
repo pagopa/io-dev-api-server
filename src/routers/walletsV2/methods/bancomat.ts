@@ -35,7 +35,9 @@ addHandler(
           ...abiResponse,
           data: (abiResponse.data ?? []).filter(
             a =>
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               a.name!.toLowerCase().indexOf(s) !== -1 ||
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               a.abi!.toLowerCase().indexOf(s) !== -1
           )
         }
@@ -110,7 +112,9 @@ addHandler(
       walletData.find(nc =>
         pipe(
           O.fromNullable(nc),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           O.map<typeof nc, any>(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             v => v.info !== undefined && card.hpan === (v.info as any).hashPan
           ),
           O.getOrElse(() => false)
