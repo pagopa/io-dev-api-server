@@ -14,6 +14,7 @@ export class DateFromISOStringType extends t.Type<Date, string, unknown> {
       (u, c) => {
         const validation = t.string.validate(u, c);
         if (E.isLeft(validation)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return validation as any;
         } else {
           const s = validation.right;

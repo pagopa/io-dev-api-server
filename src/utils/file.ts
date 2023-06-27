@@ -30,6 +30,7 @@ export const isPDFFile = (fileName: string): boolean => {
   return header === "%PDF";
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const readFileAsJSON = (fileName: string): any =>
   fs.existsSync(fileName)
     ? JSON.parse(fs.readFileSync(fileName).toString())

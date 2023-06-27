@@ -175,7 +175,9 @@ addHandler(
           id: walletV2.idWallet,
           holder: info.holder,
           pan: "*".repeat(12) + (info.blurredNumber ?? ""),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           expireMonth: info.expireMonth!.padStart(2, "0"),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           expireYear: info.expireYear!.slice(-2),
           brandLogo:
             "https://wisp2.pagopa.gov.it/wallet/assets/img/creditcard/generic.png",
@@ -329,6 +331,7 @@ addHandler(
       // remove favourite if pagoPA===false
       favourite: !payload.right.data.pagoPA ? false : wallet.favourite
     };
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     removeWalletV2(updatedWallet.idWallet!);
     addWalletV2([updatedWallet], true);
     res.json({ data: updatedWallet });

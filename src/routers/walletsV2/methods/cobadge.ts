@@ -35,7 +35,9 @@ const fromCardInfoToCardBadge = (
 ): PaymentInstrument => ({
   abiCode: card.issuerAbiCode,
   expiringDate: new Date(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     parseInt(card.expireYear!, 10),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     parseInt(card.expireMonth!, 10) - 1,
     1
   ),
@@ -67,6 +69,7 @@ const handleCobadge = (req: Request, res: Response) => {
         queryAbi ? queryAbi === (cb.info as CardInfo).issuerAbiCode : true
       )
       .map<PaymentInstrument>(cb =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
       );
   const cobadgeResponse = maybeResponse.right;
@@ -98,6 +101,7 @@ const handlePrivative = (req: Request, res: Response) => {
   );
   const paymentInstruments: ReadonlyArray<PaymentInstrument> =
     foundPrivative.map<PaymentInstrument>(cp => ({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ...fromCardInfoToCardBadge(cp.idWallet!, cp.info as CardInfo),
       productType: ProductTypeEnum.PRIVATIVE
     }));
@@ -157,6 +161,7 @@ addHandler(
     }
     const paymentInstruments: ReadonlyArray<PaymentInstrument> =
       citizenCreditCardCoBadge.map<PaymentInstrument>(cb =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         fromCardInfoToCardBadge(cb.idWallet!, cb.info as CardInfo)
       );
     const cobadgeResponse = maybeResponse.right;
@@ -191,6 +196,7 @@ addHandler(
     }
     // assume the request includes only ONE card
     const paymentInstrument =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       maybeData.right.data!.payload!.paymentInstruments![0];
     const cobadge = [...citizenCreditCardCoBadge, ...citizenPrivativeCard].find(
       cc => (cc.info as CardInfo).issuerAbiCode === paymentInstrument.abiCode
