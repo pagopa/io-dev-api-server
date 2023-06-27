@@ -6,6 +6,6 @@ export const getIdPayError = (
   code: ErrorCodes,
   message: string = ""
 ): ErrorDTO => ({
-  code: code.toString(),
+  code,
   message
 });
