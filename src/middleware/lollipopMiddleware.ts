@@ -70,7 +70,7 @@ const verifyLollipopSignatureHeader = (req: Request, _: Response) =>
                 getPublicKey(),
                 O.fromNullable,
                 O.foldW(
-                  () => T.of(toFailureEither(500, "Public key not found")),
+                  () => T.of(toFailureEither(403, "Public key not found")),
                   publicKey =>
                     pipe(
                       TE.tryCatch(
