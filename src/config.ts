@@ -161,7 +161,7 @@ const defaultConfig: IoDevServerConfig = {
       enabled: true
     },
     fastLogin: {
-      sessionTTLinMS: 60000
+      sessionTTLinMS: 6000000
     },
     allowRandomValues: true
   }

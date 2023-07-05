@@ -2,6 +2,8 @@ import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import bodyParser from "body-parser";
 import express, { Application } from "express";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import { NextHandleFunction } from 'connect';
 import { ioDevServerConfig } from "./config";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { bpd } from "./routers/features/bdp";
@@ -40,8 +42,12 @@ import { idpayRouter } from "./routers/features/idpay";
 import { lollipopRouter } from "./routers/features/lollipop";
 import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
+import { fimsRelyingPartyRouter } from "./features/fims/relyingParty/fimsRelyingPartyRouter";
+import { fimsProviderRouter } from "./features/fims/provider/fimsProviderRouter";
+
 // create express server
 const app: Application = express();
+app.use(cookieParser() as NextHandleFunction);
 // parse body request as json
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -91,7 +97,9 @@ app.use(fastLoginMiddleware);
   pnRouter,
   idpayRouter,
   lollipopRouter,
-  fastLoginRouter
+  fastLoginRouter,
+  fimsProviderRouter,
+  fimsRelyingPartyRouter
 ].forEach(r => app.use(r));
 
 export default app;

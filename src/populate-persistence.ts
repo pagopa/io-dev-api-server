@@ -21,6 +21,7 @@ import {
   withRemoteAttachments
 } from "./payloads/message";
 import ServicesDB from "./persistence/services";
+import FIMSDB from "./features/fims/persistence/fimsProvider";
 import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { IoDevServerConfig } from "./types/config";
@@ -542,6 +543,7 @@ const createMessages = (
  */
 export default function init(customConfig = ioDevServerConfig) {
   ServicesDB.createServices(customConfig);
+  FIMSDB.createFIMSClient(customConfig);
 
   const messages = createMessages(customConfig);
   MessagesDB.persist(messages);
