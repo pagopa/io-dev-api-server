@@ -40,6 +40,22 @@
             showAlertBox(payload);
         }
 
+        function sendToast() {
+            const payload = {
+                "it": {
+                    "text": "Attenzione",
+                    "type": "warning",
+                    "position": "bottom"
+                },
+                "en": {
+                    "text": "Warning",
+                    "type": "warning",
+                    "position": "bottom"
+                }
+            };
+            showToast(payload);
+        }
+
         function sendWasteData() {
             const payload = {
                 "a": 1,
@@ -110,6 +126,10 @@
 <div class="item">
     <button onclick="sendTitle()">SEND TITLE</button>
     <div>send title to the app</div>
+</div>
+<div class="item">
+    <button onclick="sendToast()">SEND TOAST</button>
+    <div>show an toast message</div>
 </div>
 </body>
 </html>
