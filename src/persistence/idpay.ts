@@ -90,7 +90,9 @@ const generateRandomOperationDTO = (
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
         status: getRandomEnumValue(TransactionStatusEnum),
-        channel: TransactionChannelEnum.RTD
+        channel: TransactionChannelEnum.RTD,
+        businessName: faker.company.name(),
+        eventId: ulid()
       };
     case "ADD_IBAN":
       return {
