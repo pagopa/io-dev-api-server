@@ -2,6 +2,14 @@
 <html lang="it">
 <head>
     <script>
+        function sendTitle() {
+            const payload = {
+                "it": "Titolo",
+                "en": "Title"
+            };
+            setTitle(payload);
+        }
+
         function sendSuccess() {
             const payload = {
                 "it": "Richiesta avvenuta con successo",
@@ -32,7 +40,21 @@
             showAlertBox(payload);
         }
 
-        function sendWasteData(){
+        function sendToast() {
+            const payload = {
+                "it": {
+                    "text": "Attenzione",
+                    "type": "warning"
+                },
+                "en": {
+                    "text": "Warning",
+                    "type": "warning"
+                }
+            };
+            showToast(payload);
+        }
+
+        function sendWasteData() {
             const payload = {
                 "a": 1,
                 "b": null
@@ -47,11 +69,11 @@
           }, 3000)
         }
 
-        function printCookies(){
+        function printCookies() {
             document.getElementById("cookies").innerText = document.cookie;
         }
 
-        function onInjectionCompleted(){
+        function onInjectionCompleted() {
           document.getElementById("paragraph-to-remove").remove();
         }
     </script>
@@ -98,6 +120,14 @@
 <div class="item">
     <button onclick="sendWasteData()">SEND WASTE</button>
     <div>send invalid data to the app</div>
+</div>
+<div class="item">
+    <button onclick="sendTitle()">SEND TITLE</button>
+    <div>send title to the app</div>
+</div>
+<div class="item">
+    <button onclick="sendToast()">SEND TOAST</button>
+    <div>show an toast message</div>
 </div>
 </body>
 </html>
