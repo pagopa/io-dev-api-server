@@ -42,8 +42,8 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     fims: {
-      enabled: false,
-      domain: "https://fims-dev-app-provider.azurewebsites.net/"
+      enabled: true,
+      domain: "http://localhost:3000/"
     },
     uaDonations: {
       enabled: true,
@@ -83,7 +83,8 @@ export const backendStatus: BackendStatus = {
     },
     pn: {
       enabled: true,
-      frontend_url: "https://notifichedigitali.it"
+      frontend_url: "https://cittadini.notifichedigitali.it",
+      optInServiceId: "01G74SW1PSM6XY2HM5EGZHZZET"
     },
     idPay: {
       min_app_version: {
