@@ -74,6 +74,7 @@ const defaultConfig: IoDevServerConfig = {
       getThirdPartyMessageResponseCode: 200
     },
     pnCount: 0,
+    pnOptInMessage: false,
     withRemoteAttachments: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
