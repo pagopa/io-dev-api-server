@@ -47,9 +47,9 @@ export const backendStatus: BackendStatus = {
       domain: "http://localhost:3000/"
     },
     uaDonations: {
-      enabled: true,
+      enabled: false,
       banner: {
-        visible: true,
+        visible: false,
         description: {
           "it-IT":
             "Fai una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina",
