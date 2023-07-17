@@ -45,7 +45,11 @@ import {
   messageFciSignedMarkdown,
   messageMarkdown
 } from "./utils/variables";
-import { pnServiceId } from "./payloads/services/special/pn/factoryPn";
+import {
+  pnOptInCTA,
+  pnOptInServiceId,
+  pnServiceId
+} from "./payloads/services/special/pn/factoryPn";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -66,10 +70,14 @@ const getNewMessage = (
   subject: string,
   markdown: string,
   prescriptionData?: PrescriptionData,
-  euCovidCert?: EUCovidCert
+  euCovidCert?: EUCovidCert,
+  serviceId?: string
 ): CreatedMessageWithContentAndAttachments =>
   withContent(
-    createMessage(customConfig.profile.attrs.fiscal_code, getServiceId()),
+    createMessage(
+      customConfig.profile.attrs.fiscal_code,
+      serviceId ?? getServiceId()
+    ),
     subject,
     markdown,
     prescriptionData,
@@ -445,6 +453,26 @@ const createMessagesWithPayments = (
     )
   );
 
+const createPNOptInMessage = (
+  customConfig: IoDevServerConfig
+): CreatedMessageWithContentAndAttachments[] =>
+  pipe(
+    customConfig.messages.pnOptInMessage,
+    B.fold(
+      () => [],
+      () => [
+        getNewMessage(
+          customConfig,
+          `PN OptIn CTA`,
+          pnOptInCTA + messageMarkdown,
+          undefined,
+          undefined,
+          pnOptInServiceId
+        )
+      ]
+    )
+  );
+
 const createMessagesWithPN = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
@@ -528,6 +556,7 @@ const createMessages = (
     ...createMessagesWithPaymentWithValidDueDate(customConfig, now),
     ...createMessagesWithPayments(customConfig),
 
+    ...createPNOptInMessage(customConfig),
     ...createMessagesWithPN(customConfig),
 
     ...createMessagesWithRemoteAttachments(customConfig)

@@ -1,6 +1,7 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
+import { pnOptInServiceId } from "./services/special/pn/factoryPn";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -42,13 +43,13 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     fims: {
-      enabled: false,
-      domain: "https://fims-dev-app-provider.azurewebsites.net/"
+      enabled: true,
+      domain: "http://localhost:3000/"
     },
     uaDonations: {
-      enabled: true,
+      enabled: false,
       banner: {
-        visible: true,
+        visible: false,
         description: {
           "it-IT":
             "Fai una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina",
@@ -83,7 +84,8 @@ export const backendStatus: BackendStatus = {
     },
     pn: {
       enabled: true,
-      frontend_url: "https://notifichedigitali.it"
+      frontend_url: "https://cittadini.notifichedigitali.it",
+      optInServiceId: pnOptInServiceId
     },
     idPay: {
       min_app_version: {
