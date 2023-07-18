@@ -1,5 +1,5 @@
+import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/function";
 import {
   OnboardingStatusDTO,
   StatusEnum as OnboardingStatusEnum
@@ -7,25 +7,36 @@ import {
 import { IDPayInitiativeID } from "./types";
 
 const onboardingStatuses: {
-  [id: number]: OnboardingStatusEnum;
+  [id: number]: OnboardingStatusDTO;
 } = {
-  [IDPayInitiativeID.INVITED]: OnboardingStatusEnum.INVITED,
-  [IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE]: OnboardingStatusEnum.ELIGIBLE_KO,
-  [IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS]:
-    OnboardingStatusEnum.ONBOARDING_KO,
-  [IDPayInitiativeID.ERR_STATUS_ONBOARDED]: OnboardingStatusEnum.ONBOARDING_OK,
-  [IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED]:
-    OnboardingStatusEnum.UNSUBSCRIBED,
-  [IDPayInitiativeID.ERR_STATUS_ON_EVALUATION]:
-    OnboardingStatusEnum.ON_EVALUATION
+  [IDPayInitiativeID.INVITED]: {
+    status: OnboardingStatusEnum.INVITED,
+    statusDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE]: {
+    status: OnboardingStatusEnum.ELIGIBLE_KO,
+    statusDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS]: {
+    status: OnboardingStatusEnum.ONBOARDING_KO,
+    statusDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.ERR_STATUS_ONBOARDED]: {
+    status: OnboardingStatusEnum.ONBOARDING_OK,
+    statusDate: faker.date.recent(1),
+    onboardingOkDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED]: {
+    status: OnboardingStatusEnum.UNSUBSCRIBED,
+    statusDate: faker.date.recent(1),
+    onboardingOkDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.ERR_STATUS_ON_EVALUATION]: {
+    status: OnboardingStatusEnum.ON_EVALUATION,
+    statusDate: faker.date.recent(1)
+  }
 };
 
 export const getOnboardingStatusResponseByInitiativeId = (
   id: IDPayInitiativeID
-): O.Option<OnboardingStatusDTO> =>
-  pipe(
-    id,
-    O.some,
-    O.chain(id => O.fromNullable(onboardingStatuses[id])),
-    O.map(status => ({ status }))
-  );
+): O.Option<OnboardingStatusDTO> => O.fromNullable(onboardingStatuses[id]);
