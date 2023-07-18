@@ -1,10 +1,12 @@
 import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/function";
 import {
   OnboardingStatusDTO,
   StatusEnum as OnboardingStatusEnum
 } from "../../../../generated/definitions/idpay/OnboardingStatusDTO";
 import { IDPayInitiativeID } from "./types";
+import { initiativeIdFromString } from "./utils";
 
 const onboardingStatuses: {
   [id: number]: OnboardingStatusDTO;
@@ -37,6 +39,18 @@ const onboardingStatuses: {
   }
 };
 
+const generateRandomOnboardingStatusDTO = (): OnboardingStatusDTO => ({
+  status: OnboardingStatusEnum.ONBOARDING_OK,
+  statusDate: faker.date.recent(1),
+  onboardingOkDate: faker.date.recent(1)
+});
+
 export const getOnboardingStatusResponseByInitiativeId = (
-  id: IDPayInitiativeID
-): O.Option<OnboardingStatusDTO> => O.fromNullable(onboardingStatuses[id]);
+  id: string
+): OnboardingStatusDTO =>
+  pipe(
+    O.some(id),
+    O.chain(initiativeIdFromString),
+    O.chain(id => O.fromNullable(onboardingStatuses[id])),
+    O.getOrElse(generateRandomOnboardingStatusDTO)
+  );
