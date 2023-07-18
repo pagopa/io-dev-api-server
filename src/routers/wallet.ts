@@ -342,6 +342,9 @@ addHandler(
   }
 );
 
+/**
+ * This API is used to start an onboarding process for a new method of payment
+ */
 addHandler(walletRouter, "post", "/wallets", (req, res) => {
   pipe(
     req.body.walletToken,
