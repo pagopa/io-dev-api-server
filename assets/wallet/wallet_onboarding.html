@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="application/javascript">
+        const outcomeList = [
+            ["0", "SUCCESS"],
+            ["1", "ERROR"]
+        ];
+
+        const simulateOutcome = () => {
+            const container = document.getElementById("outcomeSelect");
+            window.location.href = `/outcomeView?outcome=${container.value}`;
+        }
+
+        function onLoad() {
+            const options = outcomeList.map(v => `<option value="${v[0]}">${v[1]}</option>`).join();
+            const select = `<select id="outcomeSelect" style="width: 400px;height: 60px;font-size: 32px">${options}</select>`;
+            const container = document.getElementById("select_container");
+            container.innerHTML = `<div>${select}</div>`;
+        }
+
+    </script>
+  <meta charset="UTF-8">
+  <title>Wallet - Onboarding</title>
+</head>
+<body onload="onLoad()">
+
+<div align="center" style="width: 100%; height:100%;margin: auto; margin-top: 20%;">
+  <h1 style="font-size: 62px;">WALLET ONBOARDING</h1>
+  <div style="width: 100%; margin-top: 20px">
+    <div style="margin-top: 40px; font-size: 42px; margin-bottom: 20px;">
+        Select outcome
+    </div>
+    <div id="select_container">
+    </div>
+    <div style="margin-top: 60px; ">
+      <div
+         onclick="simulateOutcome()"
+         style="padding: 16px; width: 350px; font-size: 30px; color: white; background-color: #e67f00; text-decoration: none;">
+        SIMULATE OUTCOME
+			</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
