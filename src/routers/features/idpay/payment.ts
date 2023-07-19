@@ -11,6 +11,7 @@ import {
   TransactionErrorDTO
 } from "../../../../generated/definitions/idpay/TransactionErrorDTO";
 import { getRandomEnumValue } from "../../../payloads/utils/random";
+import { initiatives } from "../../../persistence/idpay";
 import { addIdPayHandler } from "./router";
 
 const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
@@ -21,7 +22,7 @@ const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
 
   return {
     id: ulid(),
-    initiativeId: ulid(),
+    initiativeId: Object.values(initiatives)[0]?.initiativeId ?? ulid(),
     status: getRandomEnumValue(PaymentStatusEnum),
     trxCode: faker.datatype.string(),
     reward: amount,
