@@ -19,6 +19,9 @@ import {
 } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
 import { getRandomValue } from "../../../utils/random";
 import { serverUrl } from "../../../utils/server";
+import { SupportTypeEnum } from "../../../../generated/definitions/cgn/merchants/SupportType";
+import { getRandomEnumValue } from "../../utils/random";
+import { ALL_NATIONAL_ADDRESSES_TEXT, getSupportValueFromType } from "./utils";
 
 const availableCategories: ReadonlyArray<ProductCategory> = [
   ProductCategoryEnum.cultureAndEntertainment,
@@ -181,6 +184,7 @@ const generateDiscount = (
 export const generateMerchantDetail = (
   merchant: OnlineMerchant | OfflineMerchant
 ): Merchant => {
+  const supportType = getRandomEnumValue(SupportTypeEnum);
   if (OnlineMerchant.is(merchant)) {
     return {
       id: merchant.id,
@@ -194,17 +198,21 @@ export const generateMerchantDetail = (
         faker.datatype.number({ min: 1, max: 4 })
       ).map<Discount>(_ =>
         generateDiscount(merchant.productCategories, merchant.discountCodeType)
-      )
+      ),
+      allNationalAddresses: true,
+      supportType,
+      supportValue: getSupportValueFromType(supportType)
     };
   } else {
+    const addresses = range(0, faker.datatype.number({ min: 0, max: 3 }));
     return {
       id: merchant.id,
       name: merchant.name,
-      addresses: range(
-        0,
-        faker.datatype.number({ min: 1, max: 4 })
-      ).map<Address>(_ => ({
-        full_address: faker.address.streetAddress(true) as NonEmptyString
+      addresses: addresses.map<Address>(_ => ({
+        full_address:
+          addresses.length === 1
+            ? (ALL_NATIONAL_ADDRESSES_TEXT as NonEmptyString)
+            : (faker.address.streetAddress(true) as NonEmptyString)
       })),
       imageUrl: faker.image.imageUrl() as NonEmptyString,
       description: faker.lorem.paragraphs(2) as NonEmptyString,
@@ -212,7 +220,10 @@ export const generateMerchantDetail = (
         0,
         faker.datatype.number({ min: 1, max: 4 })
       ).map<Discount>(_ => generateDiscount(merchant.productCategories)),
-      websiteUrl: faker.internet.url() as NonEmptyString
+      websiteUrl: faker.internet.url() as NonEmptyString,
+      allNationalAddresses: addresses.length === 1,
+      supportType,
+      supportValue: getSupportValueFromType(supportType)
     };
   }
 };
