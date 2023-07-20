@@ -10,7 +10,10 @@ import {
   createCgnService
 } from "../payloads/services/special/cgn/factoryCGNService";
 import { createFciService } from "../payloads/services/special/fci/factoryFCIService";
-import { createPnService } from "../payloads/services/special/pn/factoryPn";
+import {
+  createPnService,
+  createPnOptInService
+} from "../payloads/services/special/pn/factoryPn";
 import { createSiciliaVolaService } from "../payloads/services/special/siciliaVola/factorySiciliaVolaService";
 import { isCgnActivated } from "../routers/features/cgn";
 import { IoDevServerConfig } from "../types/config";
@@ -49,6 +52,7 @@ const createServices = (customConfig: IoDevServerConfig) => {
     [specialServicesConfig.siciliaVola, createSiciliaVolaService],
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],
+    [specialServicesConfig.pn, createPnOptInService],
     [specialServicesConfig.pn, createPnService],
     [specialServicesConfig.fci, createFciService]
   ];
