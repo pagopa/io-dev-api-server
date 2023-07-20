@@ -21,9 +21,10 @@ const generateRandomInitiativeDetailDTO = (
     status: initiative.status,
     description: faker.lorem.paragraphs(6),
     ruleDescription: faker.lorem.paragraphs(4),
-    endDate: initiative.endDate,
-    rankingStartDate: faker.date.past(1),
-    rankingEndDate: faker.date.future(1),
+    onboardingStartDate: faker.date.past(6),
+    onboardingEndDate: faker.date.future(2),
+    fruitionStartDate: faker.date.past(6),
+    fruitionEndDate: faker.date.future(2),
     rewardRule: {
       rewardValueType: getRandomEnumValue(RewardValueTypeEnum),
       rewardValue: faker.datatype.number(100)

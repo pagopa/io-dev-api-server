@@ -37,8 +37,7 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdFromString),
-    O.chain(getOnboardingStatusResponseByInitiativeId),
+    O.map(getOnboardingStatusResponseByInitiativeId),
     O.fold(
       () => res.status(404).json(getIdPayError(404)),
       status => res.status(200).json(status)

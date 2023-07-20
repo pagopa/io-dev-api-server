@@ -51,12 +51,11 @@ describe("IDPay Onboarding API", () => {
         InitiativeStatusEnum.INVITED
       );
     });
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    it("should return 404 if initiative ID does not exist", async () => {
+    it("should return 200 if initiative ID does not exist", async () => {
       const response = await request.get(
         addIdPayPrefix(`/onboarding/ABC/status`)
       );
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(200);
     });
   });
   describe("PUT onboardingCitizen", () => {
