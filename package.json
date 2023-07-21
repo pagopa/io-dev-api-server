@@ -26,7 +26,7 @@
   "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
   "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v12.3.1-RELEASE/api_io_sign.yaml",
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v12.6.1-RELEASE/api_pn.yaml",
-  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/IDP-1393-5-sp-adeguamento-date-iniziative-periodo-di-spesa-e-adesione-per-io/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
+  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v2.114.1/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
   "api_fast_login": "https://raw.githubusercontent.com/pagopa/io-backend/v12.6.1-RELEASE/openapi/generated/api_fast_login.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
