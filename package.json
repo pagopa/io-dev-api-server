@@ -26,7 +26,7 @@
   "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
   "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v12.3.1-RELEASE/api_io_sign.yaml",
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v12.6.1-RELEASE/api_pn.yaml",
-  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v2.107.3/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
+  "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v2.114.1/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
   "api_fast_login": "https://raw.githubusercontent.com/pagopa/io-backend/v12.6.1-RELEASE/openapi/generated/api_fast_login.yaml",
   "api_pagopa_walletv3": "https://raw.githubusercontent.com/pagopa/pagopa-infra/8b97dd5bd88591e6eb400ef06adfdc8a4925c93a/src/domains/wallet-app/api/wallet-service/v1/_openapi.json.tpl",
   "author": "Matteo Boschi",
