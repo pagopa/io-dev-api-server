@@ -35,11 +35,7 @@ import {
 import { isOutcomeCodeSuccessfully } from "../utils/payment";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import {
-  appendWalletV1Prefix,
-  appendWalletV2Prefix,
-  generateOnboardingWalletData
-} from "../utils/wallet";
+import { appendWalletV1Prefix, appendWalletV2Prefix } from "../utils/wallet";
 import {
   addWalletV2,
   findWalletById,
@@ -341,20 +337,3 @@ addHandler(
     res.json({ data: updatedWallet });
   }
 );
-
-/**
- * This API is used to start an onboarding process for a new method of payment
- */
-addHandler(walletRouter, "post", "/wallets", (req, res) => {
-  pipe(
-    req.body.walletToken,
-    O.fromNullable,
-    O.fold(
-      () => res.sendStatus(400),
-      () =>
-        res.json({
-          data: generateOnboardingWalletData()
-        })
-    )
-  );
-});
