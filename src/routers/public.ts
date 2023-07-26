@@ -28,6 +28,7 @@ import {
   setSessionLoginType
 } from "../persistence/sessionInfo";
 import { clearSessionTokens } from "../payloads/session";
+import { WALLET_ONBOARDING_PATH } from "../utils/wallet";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -94,6 +95,10 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     return;
   }
   sendFile("assets/html/login.html", res);
+});
+
+addHandler(publicRouter, "get", WALLET_ONBOARDING_PATH, (req, res) => {
+  sendFile("assets/wallet/wallet_onboarding.html", res);
 });
 
 addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
