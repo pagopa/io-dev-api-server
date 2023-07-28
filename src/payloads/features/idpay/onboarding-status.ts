@@ -6,7 +6,7 @@ import {
   StatusEnum as OnboardingStatusEnum
 } from "../../../../generated/definitions/idpay/OnboardingStatusDTO";
 import { IDPayInitiativeID } from "./types";
-import { initiativeIdFromString } from "./utils";
+import { serviceIdFromString } from "./utils";
 
 const onboardingStatuses: {
   [id: number]: OnboardingStatusDTO;
@@ -50,7 +50,7 @@ export const getOnboardingStatusResponseByInitiativeId = (
 ): OnboardingStatusDTO =>
   pipe(
     O.some(id),
-    O.chain(initiativeIdFromString),
+    O.chain(serviceIdFromString),
     O.chain(id => O.fromNullable(onboardingStatuses[id])),
     O.getOrElse(generateRandomOnboardingStatusDTO)
   );
