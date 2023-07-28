@@ -11,10 +11,6 @@ import { initiativeIdFromString } from "./utils";
 const onboardingStatuses: {
   [id: number]: OnboardingStatusDTO;
 } = {
-  [IDPayInitiativeID.DEFAULT]: {
-    status: OnboardingStatusEnum.INVITED,
-    statusDate: faker.date.recent(1)
-  },
   [IDPayInitiativeID.INVITED]: {
     status: OnboardingStatusEnum.INVITED,
     statusDate: faker.date.recent(1)
