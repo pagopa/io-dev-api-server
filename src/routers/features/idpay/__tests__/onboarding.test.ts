@@ -1,6 +1,6 @@
 import supertest from "supertest";
-import app from "../../../../server";
-import { addIdPayPrefix } from "../router";
+import { StatusEnum as InitiativeStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
+import { DetailsEnum } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 import {
   IDPayInitiativeID,
   IDPayServiceID
@@ -9,8 +9,8 @@ import {
   initiativeIdToString,
   serviceIdToString
 } from "../../../../payloads/features/idpay/utils";
-import { StatusEnum as InitiativeStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { DetailsEnum } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
+import app from "../../../../server";
+import { addIdPayPrefix } from "../router";
 
 const request = supertest(app);
 
@@ -51,11 +51,21 @@ describe("IDPay Onboarding API", () => {
         InitiativeStatusEnum.INVITED
       );
     });
-    it("should return 200 if initiative ID does not exist", async () => {
+    it("should return 404 if initiative does not exist", async () => {
       const response = await request.get(
         addIdPayPrefix(`/onboarding/ABC/status`)
       );
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(404);
+    });
+    it("should return 404 if initiative ID is not in the list", async () => {
+      const response = await request.get(
+        addIdPayPrefix(
+          `/onboarding/${initiativeIdToString(
+            IDPayInitiativeID.DEFAULT
+          )}/status`
+        )
+      );
+      expect(response.status).toBe(404);
     });
   });
   describe("PUT onboardingCitizen", () => {

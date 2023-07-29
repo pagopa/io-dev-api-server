@@ -39,18 +39,11 @@ const onboardingStatuses: {
   }
 };
 
-const generateRandomOnboardingStatusDTO = (): OnboardingStatusDTO => ({
-  status: OnboardingStatusEnum.ONBOARDING_OK,
-  statusDate: faker.date.recent(1),
-  onboardingOkDate: faker.date.recent(1)
-});
-
 export const getOnboardingStatusResponseByInitiativeId = (
   id: string
-): OnboardingStatusDTO =>
+): O.Option<OnboardingStatusDTO> =>
   pipe(
     O.some(id),
     O.chain(initiativeIdFromString),
-    O.chain(id => O.fromNullable(onboardingStatuses[id])),
-    O.getOrElse(generateRandomOnboardingStatusDTO)
+    O.chain(id => O.fromNullable(onboardingStatuses[id]))
   );
