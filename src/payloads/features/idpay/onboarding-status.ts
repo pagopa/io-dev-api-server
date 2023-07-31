@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import {
   OnboardingStatusDTO,
   StatusEnum as OnboardingStatusEnum
@@ -9,8 +9,9 @@ import { IDPayInitiativeID } from "./types";
 import { initiativeIdFromString } from "./utils";
 
 const onboardingStatuses: {
-  [id: number]: OnboardingStatusDTO;
+  [id: number]: OnboardingStatusDTO | undefined;
 } = {
+  [IDPayInitiativeID.DEFAULT]: undefined,
   [IDPayInitiativeID.INVITED]: {
     status: OnboardingStatusEnum.INVITED,
     statusDate: faker.date.recent(1)
@@ -44,6 +45,12 @@ export const getOnboardingStatusResponseByInitiativeId = (
 ): O.Option<OnboardingStatusDTO> =>
   pipe(
     O.some(id),
-    O.chain(initiativeIdFromString),
+    O.map(
+      // In case of randomly generated ulid, the status returned is ONBOARDING_OK
+      flow(
+        initiativeIdFromString,
+        O.getOrElse(() => IDPayInitiativeID.ERR_STATUS_ONBOARDED)
+      )
+    ),
     O.chain(id => O.fromNullable(onboardingStatuses[id]))
   );
