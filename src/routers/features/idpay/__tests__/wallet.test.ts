@@ -254,14 +254,14 @@ describe("IDPay Wallet API", () => {
   });
   describe("DELETE unsubscribe", () => {
     // eslint-disable-next-line sonarjs/no-duplicate-string
-    it("should return 200", async () => {
+    it("should return 204", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
 
       const response = await request.delete(
         addIdPayPrefix(`/wallet/${initiativeId}/unsubscribe`)
       );
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(204);
     });
     // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {

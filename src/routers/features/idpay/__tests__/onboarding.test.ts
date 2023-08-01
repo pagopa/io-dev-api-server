@@ -51,9 +51,13 @@ describe("IDPay Onboarding API", () => {
         InitiativeStatusEnum.INVITED
       );
     });
-    it("should return 404 if initiative does not exist", async () => {
+    it("should return 404 if initiative status does not exists", async () => {
+      const initiativeId = IDPayInitiativeID.DEFAULT;
+
       const response = await request.get(
-        addIdPayPrefix(`/onboarding/ABC/status`)
+        addIdPayPrefix(
+          `/onboarding/${initiativeIdToString(initiativeId)}/status`
+        )
       );
       expect(response.status).toBe(404);
     });

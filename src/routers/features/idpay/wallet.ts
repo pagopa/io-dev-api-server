@@ -248,7 +248,7 @@ addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
               ...initiative,
               status: StatusEnum.UNSUBSCRIBED
             });
-            return res.sendStatus(200);
+            return res.sendStatus(204);
           }
         )
       )
