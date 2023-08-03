@@ -54,7 +54,7 @@ export const codeToFailure: {
   5: { status: 403, code: CodeEnum.PAYMENT_GENERIC_REJECTED },
   6: { status: 429, code: CodeEnum.PAYMENT_TOO_MANY_REQUESTS },
   7: { status: 500, code: CodeEnum.PAYMENT_GENERIC_ERROR },
-  8: { status: 400, code: CodeEnum.PAYMENT_ALREADY_AUTHORIZED }
+  8: { status: 403, code: CodeEnum.PAYMENT_ALREADY_AUTHORIZED }
 };
 
 /**
