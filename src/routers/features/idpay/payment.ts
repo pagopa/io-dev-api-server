@@ -53,7 +53,8 @@ export const codeToFailure: {
   4: { status: 403, code: CodeEnum.PAYMENT_BUDGET_EXHAUSTED },
   5: { status: 403, code: CodeEnum.PAYMENT_GENERIC_REJECTED },
   6: { status: 429, code: CodeEnum.PAYMENT_TOO_MANY_REQUESTS },
-  7: { status: 500, code: CodeEnum.PAYMENT_GENERIC_ERROR }
+  7: { status: 500, code: CodeEnum.PAYMENT_GENERIC_ERROR },
+  8: { status: 403, code: CodeEnum.PAYMENT_ALREADY_AUTHORIZED }
 };
 
 /**
@@ -65,7 +66,6 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/relate-user", (req, res) =>
     O.fromNullable,
     O.map(trxCode => trxCode[trxCode.length - 2]),
     O.map(parseInt),
-    O.filter(code => code <= 7),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () =>
@@ -88,7 +88,6 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/authorize", (req, res) =>
     O.fromNullable,
     O.map(trxCode => trxCode[trxCode.length - 1]),
     O.map(parseInt),
-    O.filter(code => code <= 7),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () =>
@@ -108,7 +107,6 @@ addIdPayHandler("delete", "/payment/qr-code/:trxCode", (req, res) =>
     O.fromNullable,
     O.map(trxCode => trxCode[trxCode.length - 1]),
     O.map(parseInt),
-    O.filter(code => code <= 7),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () => res.sendStatus(200),
