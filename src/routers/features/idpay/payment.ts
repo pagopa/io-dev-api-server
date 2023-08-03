@@ -66,7 +66,6 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/relate-user", (req, res) =>
     O.fromNullable,
     O.map(trxCode => trxCode[trxCode.length - 2]),
     O.map(parseInt),
-    O.filter(code => Object.keys(codeToFailure).includes(code.toString())),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () =>
@@ -89,7 +88,6 @@ addIdPayHandler("put", "/payment/qr-code/:trxCode/authorize", (req, res) =>
     O.fromNullable,
     O.map(trxCode => trxCode[trxCode.length - 1]),
     O.map(parseInt),
-    O.filter(code => Object.keys(codeToFailure).includes(code.toString())),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () =>
@@ -109,7 +107,6 @@ addIdPayHandler("delete", "/payment/qr-code/:trxCode", (req, res) =>
     O.fromNullable,
     O.map(trxCode => trxCode[trxCode.length - 1]),
     O.map(parseInt),
-    O.filter(code => code <= 7),
     O.chain(code => O.fromNullable(codeToFailure[code])),
     O.fold(
       () => res.sendStatus(200),
