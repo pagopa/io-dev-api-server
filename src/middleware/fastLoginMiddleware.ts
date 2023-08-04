@@ -3,6 +3,12 @@ import { ProblemJson } from "@pagopa/ts-commons/lib/responses";
 import { isSessionTokenValid } from "../persistence/sessionInfo";
 import { ErrorDTO } from "../../generated/definitions/idpay/ErrorDTO";
 
+type FastLoginMiddleware401Response = ErrorDTO & ProblemJson;
+const responseFor401: FastLoginMiddleware401Response = {
+  code: 401,
+  message: "Unauthorized"
+};
+
 /**
  * if the response error is defined as a global config
  * this middleware returns an error from those ones defined
@@ -20,8 +26,5 @@ export const fastLoginMiddleware = (
     next();
     return;
   }
-  res.status(401).send({
-    code: 401,
-    message: "Unauthorized"
-  } as ErrorDTO & ProblemJson);
+  res.status(401).send(responseFor401);
 };
