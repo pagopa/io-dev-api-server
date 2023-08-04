@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
+import { ProblemJson } from "@pagopa/ts-commons/lib/responses";
 import { isSessionTokenValid } from "../persistence/sessionInfo";
+import { ErrorDTO } from "../../generated/definitions/idpay/ErrorDTO";
 
 /**
  * if the response error is defined as a global config
@@ -18,5 +20,8 @@ export const fastLoginMiddleware = (
     next();
     return;
   }
-  res.sendStatus(401);
+  res.status(401).send({
+    code: 401,
+    message: "Unauthorized"
+  } as ErrorDTO & ProblemJson);
 };
