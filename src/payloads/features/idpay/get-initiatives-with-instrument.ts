@@ -5,40 +5,30 @@ import {
   InitiativesStatusDTO
 } from "../../../../generated/definitions/idpay/InitiativesStatusDTO";
 import { InitiativesWithInstrumentDTO } from "../../../../generated/definitions/idpay/InitiativesWithInstrumentDTO";
-import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
-import { getWalletV2 } from "../../../routers/walletsV2";
 import { WalletV2 } from "../../../../generated/definitions/pagopa/WalletV2";
+import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
+import { initiatives, instruments } from "../../../persistence/idpay";
+import { getWalletV2 } from "../../../routers/walletsV2";
 
-import { instruments, initiatives } from "../../../persistence/idpay";
-
-const initiativesByWalletId = (
+const initiativesStatusByWalletId = (
   idWallet: string
-): ReadonlyArray<InitiativesStatusDTO> => {
-  // eslint-disable-next-line functional/no-let
-  let result: { [id: string]: ReadonlyArray<InitiativesStatusDTO> } = {};
+): ReadonlyArray<InitiativesStatusDTO> =>
+  Object.entries(initiatives).reduce((acc, [id]) => {
+    const initiativeInstruments = instruments[id] || [];
 
-  Object.entries(instruments).forEach(([id, instruments]) => {
-    instruments.forEach(instrument => {
-      const walletId = instrument.idWallet || "";
+    const instrument = initiativeInstruments.find(
+      instrument => instrument.idWallet === idWallet
+    );
 
-      if (walletId === idWallet) {
-        const status: InitiativesStatusDTO = {
-          initiativeId: id,
-          initiativeName: initiatives[id].initiativeName || "",
-          status: instrument.status || InitiativeStatusEnum.INACTIVE,
-          idInstrument: instrument.instrumentId
-        };
+    const status: InitiativesStatusDTO = {
+      initiativeId: id,
+      initiativeName: initiatives[id].initiativeName || "",
+      status: instrument?.status || InitiativeStatusEnum.INACTIVE,
+      idInstrument: instrument?.instrumentId
+    };
 
-        if (!result[idWallet]) {
-          result = { ...result, [idWallet]: [] };
-        }
-        result = { ...result, [idWallet]: [...result[idWallet], status] };
-      }
-    });
-  });
-
-  return result[idWallet] || [];
-};
+    return [...acc, status];
+  }, [] as ReadonlyArray<InitiativesStatusDTO>);
 
 const getWalletById = (id: number): O.Option<WalletV2> =>
   O.fromNullable(getWalletV2().find(w => w.idWallet === id));
@@ -55,7 +45,7 @@ export const getInitiativeWithInstrumentResponse = (
       pipe(
         idWallet,
         O.some,
-        O.map(initiativesByWalletId),
+        O.map(initiativesStatusByWalletId),
         O.map(initiativeList => {
           const info = wallet.info as CardInfo;
           return {
