@@ -9,6 +9,7 @@ import { WalletV2 } from "../../../../generated/definitions/pagopa/WalletV2";
 import { CardInfo } from "../../../../generated/definitions/pagopa/walletv2/CardInfo";
 import { initiatives, instruments } from "../../../persistence/idpay";
 import { getWalletV2 } from "../../../routers/walletsV2";
+import { EnableableFunctionsEnum } from "../../../../generated/definitions/pagopa/EnableableFunctions";
 
 const initiativesStatusByWalletId = (
   idWallet: string
@@ -31,7 +32,13 @@ const initiativesStatusByWalletId = (
   }, [] as ReadonlyArray<InitiativesStatusDTO>);
 
 const getWalletById = (id: number): O.Option<WalletV2> =>
-  O.fromNullable(getWalletV2().find(w => w.idWallet === id));
+  O.fromNullable(
+    getWalletV2().find(
+      w =>
+        w.idWallet === id &&
+        w.enableableFunctions?.includes(EnableableFunctionsEnum.BPD)
+    )
+  );
 
 export const getInitiativeWithInstrumentResponse = (
   idWallet: string
