@@ -1,3 +1,6 @@
+import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
+import { RptId } from "../../generated/definitions/backend/RptId";
+
 export const enum CreditCardBrandEnum {
   "VISAELECTRON" = "VISAELECTRON",
   "MAESTRO" = "MAESTRO",
@@ -49,3 +52,8 @@ export const getCreditCardLogo = (cc: CreditCardBrandEnum) =>
 export const isOutcomeCodeSuccessfully = (
   outcome: number | undefined
 ): boolean => (outcome ?? 0) === 0;
+
+export const rptId = (
+  paymentDataWithRequiredPayee: PaymentDataWithRequiredPayee
+): RptId =>
+  `${paymentDataWithRequiredPayee.notice_number}${paymentDataWithRequiredPayee.payee.fiscal_code}`;

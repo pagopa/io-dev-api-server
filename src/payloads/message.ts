@@ -1,5 +1,12 @@
 import * as path from "path";
-import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import {
+  FiscalCode,
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "@pagopa/ts-commons/lib/strings";
 import { faker } from "@faker-js/faker/locale/it";
 import { slice } from "lodash";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
@@ -26,6 +33,14 @@ import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { PNMessageTemplate } from "../types/config";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import PaymentDB from "../persistence/payments";
+import { rptId } from "../utils/payment";
+import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
+import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
+import { eitherMakeBy } from "../utils/array";
+import { PaymentStatus } from "../types/PaymentStatus";
 import { currentProfile } from "./profile";
 import ServicesDB from "./../persistence/services";
 import { pnServiceId } from "./services/special/pn/factoryPn";
@@ -63,78 +78,201 @@ export const withDueDate = (
   content: { ...message.content, due_date: dueDate }
 });
 
+const generateRecipientsAndAccumulate = (
+  accumulator: NotificationRecipient[],
+  count: number,
+  paymentDataGenerator: () => E.Either<string[], PaymentDataWithRequiredPayee>,
+  maybePaymentStatusGenerator: O.Option<
+    (input: PaymentDataWithRequiredPayee) => PaymentStatus
+  >,
+  fiscalCode: FiscalCode = currentProfile.fiscal_code
+) =>
+  pipe(
+    eitherMakeBy(count, _ =>
+      generateNotificationRecipient(
+        pipe(
+          paymentDataGenerator(),
+          E.map(paymentDataWithRequiredPayee =>
+            pipe(
+              maybePaymentStatusGenerator,
+              O.map(paymentStatusGenerator =>
+                paymentStatusGenerator(paymentDataWithRequiredPayee)
+              ),
+              _ => paymentDataWithRequiredPayee
+            )
+          )
+        ),
+        fiscalCode
+      )
+    ),
+    accumulate(accumulator)
+  );
+
+const accumulate =
+  <E, A>(accumulator: A[]) =>
+  (input: E.Either<E, A[]>): E.Either<E, A[]> =>
+    E.map((notificationRecipients: A[]) => [
+      ...accumulator,
+      ...notificationRecipients
+    ])(input);
+
+const generatePNRecipients = (
+  organizationFiscalCode: OrganizationFiscalCode,
+  organizationName: OrganizationName,
+  template: PNMessageTemplate
+): E.Either<string[], NotificationRecipient[]> =>
+  pipe(
+    E.right([] as NotificationRecipient[]),
+    E.chain(accumulator =>
+      generateRecipientsAndAccumulate(
+        accumulator,
+        template.unrelatedPayments,
+        () => PaymentDB.createPaymentData(organizationFiscalCode),
+        O.none,
+        "VLRCMD74S01B655P" as FiscalCode
+      )
+    ),
+    E.chain(accumulator =>
+      generateRecipientsAndAccumulate(
+        accumulator,
+        template.unpaidValidPayments,
+        () => PaymentDB.createPaymentData(organizationFiscalCode),
+        O.some(paymentDataWithRequiredPayee =>
+          PaymentDB.createProcessablePayment(
+            rptId(paymentDataWithRequiredPayee),
+            paymentDataWithRequiredPayee.amount,
+            paymentDataWithRequiredPayee.payee.fiscal_code,
+            organizationName
+          )
+        )
+      )
+    ),
+    E.chain(accumulator =>
+      generateRecipientsAndAccumulate(
+        accumulator,
+        template.unpaidExpiredPayments,
+        () => PaymentDB.createPaymentData(organizationFiscalCode, true),
+        O.some(paymentDataWithRequiredPayee =>
+          PaymentDB.createProcessedPayment(
+            rptId(paymentDataWithRequiredPayee),
+            Detail_v2Enum.PAA_PAGAMENTO_SCADUTO
+          )
+        )
+      )
+    ),
+    E.chain(accumulator =>
+      generateRecipientsAndAccumulate(
+        accumulator,
+        template.failedPayments,
+        () => PaymentDB.createPaymentData(organizationFiscalCode),
+        O.some(paymentDataWithRequiredPayee =>
+          PaymentDB.createProcessedPayment(
+            rptId(paymentDataWithRequiredPayee),
+            Detail_v2Enum.PPT_IBAN_NON_CENSITO
+          )
+        )
+      )
+    ),
+    E.chain(accumulator =>
+      generateRecipientsAndAccumulate(
+        accumulator,
+        template.paidPayments,
+        () => PaymentDB.createPaymentData(organizationFiscalCode),
+        O.some(paymentDataWithRequiredPayee =>
+          PaymentDB.createProcessedPayment(
+            rptId(paymentDataWithRequiredPayee),
+            Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
+          )
+        )
+      )
+    )
+  );
+
+export type NotificationPaymentInfo = {
+  noticeCode: PaymentNoticeNumber;
+  creditorTaxId: OrganizationFiscalCode;
+};
+
+export type NotificationRecipient = {
+  taxId: string;
+  denomination: string;
+  payment: NotificationPaymentInfo;
+};
+
+const generateNotificationRecipient = (
+  paymentDataWithRequiredPayee: E.Either<
+    string[],
+    PaymentDataWithRequiredPayee
+  >,
+  fiscalCode: FiscalCode
+): E.Either<string[], NotificationRecipient> =>
+  pipe(
+    paymentDataWithRequiredPayee,
+    E.map(paymentDataWithRequiredPayee => ({
+      taxId: fiscalCode,
+      denomination: `${currentProfile.name} ${currentProfile.family_name}`,
+      payment: {
+        noticeCode: paymentDataWithRequiredPayee.notice_number,
+        creditorTaxId: paymentDataWithRequiredPayee.payee.fiscal_code
+      }
+    }))
+  );
+
+const generatePNTimeline = () => [
+  {
+    status: "ACCEPTED",
+    activeFrom: "2022-07-07T13:26:59.494+00:00",
+    relatedTimelineElements: [
+      "TPAK-PJUT-RALE-202207-X-1_request_accepted",
+      "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
+      "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
+      "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
+    ]
+  },
+  {
+    status: "DELIVERING",
+    activeFrom: "2022-07-07T13:27:15.913+00:00",
+    relatedTimelineElements: [
+      "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
+      "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
+    ]
+  },
+  {
+    status: "VIEWED",
+    activeFrom: "2022-07-07T14:26:22.669+00:00",
+    relatedTimelineElements: ["TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"]
+  }
+];
+
 export const withPNContent = (
+  template: PNMessageTemplate,
   message: CreatedMessageWithContent,
+  organization_fiscal_code: OrganizationFiscalCode,
+  organizationName: OrganizationName,
   iun: string,
   senderDenomination: string | undefined,
   subject: string,
   abstract: string | undefined,
   sentAt: Date
-): ThirdPartyMessageWithContent => {
-  const paymentData = withPaymentData(message).content.payment_data;
-  const recipients = paymentData
-    ? {
-        recipients: [
-          {
-            recipientType: "PF",
-            taxId: `${currentProfile.fiscal_code}`,
-            denomination: `${currentProfile.name} ${currentProfile.family_name}`,
-            payment: {
-              noticeCode: paymentData.notice_number,
-              creditorTaxId: paymentData.payee.fiscal_code
-            }
-          }
-        ]
+): E.Either<string[], ThirdPartyMessageWithContent> =>
+  pipe(
+    generatePNRecipients(organization_fiscal_code, organizationName, template),
+    E.map(pnRecipients => ({
+      ...message,
+      third_party_message: {
+        attachments: getPnAttachments(),
+        details: {
+          iun,
+          senderDenomination,
+          subject,
+          abstract,
+          sentAt,
+          notificationStatusHistory: generatePNTimeline(),
+          recipients: pnRecipients
+        }
       }
-    : {};
-
-  const notificationStatusHistory: ReadonlyArray<{
-    status: string;
-    activeFrom: string;
-    relatedTimelineElements: ReadonlyArray<string>;
-  }> = [
-    {
-      status: "ACCEPTED",
-      activeFrom: "2022-07-07T13:26:59.494+00:00",
-      relatedTimelineElements: [
-        "TPAK-PJUT-RALE-202207-X-1_request_accepted",
-        "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
-        "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
-        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
-      ]
-    },
-    {
-      status: "DELIVERING",
-      activeFrom: "2022-07-07T13:27:15.913+00:00",
-      relatedTimelineElements: [
-        "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
-        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
-      ]
-    },
-    {
-      status: "VIEWED",
-      activeFrom: "2022-07-07T14:26:22.669+00:00",
-      relatedTimelineElements: [
-        "TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"
-      ]
-    }
-  ];
-  return {
-    ...message,
-    third_party_message: {
-      attachments: getPnAttachments(),
-      details: {
-        iun,
-        senderDenomination,
-        subject,
-        abstract,
-        sentAt,
-        notificationStatusHistory,
-        ...recipients
-      }
-    }
-  };
-};
+    }))
+  );
 
 export const withRemoteAttachments = (
   message: CreatedMessageWithContent,
@@ -154,35 +292,64 @@ export const withRemoteAttachments = (
   }
 });
 
+export const generatePaymentData = (
+  organizationFiscalCode: OrganizationFiscalCode,
+  invalidAfterDueDate: boolean = false,
+  noticeNumber: string = `0${faker.random.numeric(17)}`,
+  amount: number = getRandomIntInRange(1, 10000)
+) =>
+  pipe(
+    {
+      notice_number: noticeNumber as PaymentNoticeNumber,
+      amount: amount as PaymentAmount,
+      invalid_after_due_date: invalidAfterDueDate,
+      payee: {
+        fiscal_code: organizationFiscalCode
+      }
+    },
+    (data: PaymentDataWithRequiredPayee) =>
+      validatePayload(PaymentDataWithRequiredPayee, data)
+  );
+
+const serviceFromMessage = (
+  message: CreatedMessageWithContent
+): E.Either<Error, Readonly<ServicePublic>> =>
+  pipe(message.sender_service_id, serviceId =>
+    pipe(
+      serviceId,
+      ServicesDB.getService,
+      E.fromNullable(
+        Error(
+          `serviceFromMessage: unabled to find service with id (${serviceId})`
+        )
+      )
+    )
+  );
+
 export const withPaymentData = (
   message: CreatedMessageWithContent,
   invalidAfterDueDate: boolean = false,
-  noticeNumber: string = faker.helpers.replaceSymbolWithNumber(
-    "0#################"
-  ),
+  noticeNumber: string = `0${faker.random.numeric(17)}`,
   amount: number = getRandomIntInRange(1, 10000)
-): CreatedMessageWithContent => {
-  const serviceId = message.sender_service_id;
-  const service = ServicesDB.getService(serviceId);
-  if (!service) {
-    throw Error(
-      `message.withPaymentData: unabled to find service with id (${serviceId})`
-    );
-  }
-  const data: PaymentDataWithRequiredPayee = {
-    notice_number: noticeNumber as PaymentNoticeNumber,
-    amount: amount as PaymentAmount,
-    invalid_after_due_date: invalidAfterDueDate,
-    payee: {
-      fiscal_code: service.organization_fiscal_code
-    }
-  };
-  const paymentData = validatePayload(PaymentDataWithRequiredPayee, data);
-  return {
-    ...message,
-    content: { ...message.content, payment_data: paymentData }
-  };
-};
+): E.Either<Error, CreatedMessageWithContent> =>
+  pipe(
+    message,
+    serviceFromMessage,
+    E.map(service =>
+      pipe(
+        generatePaymentData(
+          service.organization_fiscal_code,
+          invalidAfterDueDate,
+          noticeNumber,
+          amount
+        ),
+        payment_data => ({
+          ...message,
+          content: { ...message.content, payment_data }
+        })
+      )
+    )
+  );
 
 export const withContent = (
   message: CreatedMessageWithoutContent,

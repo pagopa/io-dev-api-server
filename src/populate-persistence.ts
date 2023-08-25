@@ -1,9 +1,12 @@
 import fs from "fs";
-import { pipe } from "fp-ts/lib/function";
+import { identity, pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as B from "fp-ts/lib/boolean";
+import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../generated/definitions/backend/EUCovidCert";
 import { MessageAttachment } from "../generated/definitions/backend/MessageAttachment";
@@ -23,7 +26,11 @@ import {
 import ServicesDB from "./persistence/services";
 import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
-import { IoDevServerConfig } from "./types/config";
+import {
+  IoDevServerConfig,
+  PNMessageTemplateWrapper,
+  PNMessageTemplate
+} from "./types/config";
 import { getRandomValue } from "./utils/random";
 import {
   frontMatter1CTABonusBpd,
@@ -85,23 +92,59 @@ const getNewMessage = (
   );
 
 const getNewPnMessage = (
-  customConfig: IoDevServerConfig,
-  sender: string,
-  subject: string,
-  abstract: string,
+  template: PNMessageTemplate,
+  fiscalCode: FiscalCode,
+  templateIndex: number,
+  messageIndex: number,
   markdown: string
-): CreatedMessageWithContentAndAttachments =>
-  withPNContent(
-    withContent(
-      createMessage(customConfig.profile.attrs.fiscal_code, pnServiceId),
-      `${sender}: ${subject}`,
-      markdown
-    ),
-    faker.helpers.replaceSymbols("######-#-####-####-#"),
-    sender,
-    subject,
-    abstract,
-    getRandomValue(new Date(), faker.date.past(), "messages")
+): ThirdPartyMessageWithContent =>
+  pipe(
+    ServicesDB.getService(pnServiceId),
+    O.fromNullable,
+    O.fold(
+      () => {
+        throw Error(
+          `getNewPnMessage: unable to find service PN service with id (${pnServiceId})`
+        );
+      },
+      pnService =>
+        pipe(
+          {
+            sender: `Comune di Milano - ${templateIndex} / ${messageIndex}`,
+            subject: "infrazione al codice della strada"
+          },
+          sharedData =>
+            pipe(
+              createMessage(fiscalCode, pnServiceId),
+              createdMessageWithoutContent =>
+                withContent(
+                  createdMessageWithoutContent,
+                  `${sharedData.sender}: ${sharedData.subject}`,
+                  markdown
+                ),
+              createdMessageWithContent =>
+                pipe(
+                  withPNContent(
+                    template,
+                    createdMessageWithContent,
+                    pnService.organization_fiscal_code,
+                    pnService.organization_name,
+                    faker.helpers.replaceSymbols("######-#-####-####-#"),
+                    sharedData.sender,
+                    sharedData.subject,
+                    "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.",
+                    getRandomValue(new Date(), faker.date.past(), "messages")
+                  ),
+                  E.fold(
+                    errors => {
+                      throw Error(errors.toString());
+                    },
+                    _ => _
+                  )
+                )
+            )
+        )
+    )
   );
 
 const getNewRemoteAttachmentsMessage = (
@@ -374,16 +417,24 @@ const createMessagesWithPaymentInvalidAfterDueDateWithExpiredDueDate = (
   A.makeBy(
     customConfig.messages.paymentInvalidAfterDueDateWithExpiredDueDateCount,
     index =>
-      withDueDate(
-        withPaymentData(
-          getNewMessage(
-            customConfig,
-            `💰🕙❌ payment - expired - invalid after due date - ${index}`,
-            messageMarkdown
-          ),
-          true
+      pipe(
+        getNewMessage(
+          customConfig,
+          `💰🕙❌ payment - expired - invalid after due date - ${index}`,
+          messageMarkdown
         ),
-        new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+        createdMessageWithContentAndAttachments =>
+          withPaymentData(createdMessageWithContentAndAttachments, true),
+        E.fold(
+          error => {
+            throw error;
+          },
+          createdMessageWithContent =>
+            withDueDate(
+              createdMessageWithContent,
+              new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+            )
+        )
       )
   );
 
@@ -394,16 +445,24 @@ const createMessagesWithPaymentInvalidAfterDueDateWithValidDueDate = (
   A.makeBy(
     customConfig.messages.paymentInvalidAfterDueDateWithValidDueDateCount,
     index =>
-      withDueDate(
-        withPaymentData(
-          getNewMessage(
-            customConfig,
-            `💰🕙✅ payment - valid - invalid after due date - ${index}`,
-            messageMarkdown
-          ),
-          true
+      pipe(
+        getNewMessage(
+          customConfig,
+          `💰🕙✅ payment - valid - invalid after due date - ${index}`,
+          messageMarkdown
         ),
-        new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+        createdMessageWithContentAndAttachments =>
+          withPaymentData(createdMessageWithContentAndAttachments, true),
+        E.fold(
+          error => {
+            throw error;
+          },
+          createdMessageWithContent =>
+            withDueDate(
+              createdMessageWithContent,
+              new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+            )
+        )
       )
   );
 
@@ -412,16 +471,24 @@ const createMessagesWithPaymentWithExpiredDueDateCount = (
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
   A.makeBy(customConfig.messages.paymentWithExpiredDueDateCount, index =>
-    withDueDate(
-      withPaymentData(
-        getNewMessage(
-          customConfig,
-          `💰🕙 payment - expired - ${index}`,
-          messageMarkdown
-        ),
-        false
+    pipe(
+      getNewMessage(
+        customConfig,
+        `💰🕙 payment - expired - ${index}`,
+        messageMarkdown
       ),
-      new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+      createdMessageWithContentAndAttachments =>
+        withPaymentData(createdMessageWithContentAndAttachments, false),
+      E.fold(
+        error => {
+          throw error;
+        },
+        createdMessageWithContent =>
+          withDueDate(
+            createdMessageWithContent,
+            new Date(date.getTime() - 60 * 1000 * 60 * 24 * 3)
+          )
+      )
     )
   );
 
@@ -430,16 +497,24 @@ const createMessagesWithPaymentWithValidDueDate = (
   date: Date
 ): CreatedMessageWithContentAndAttachments[] =>
   A.makeBy(customConfig.messages.paymentWithValidDueDateCount, index =>
-    withDueDate(
-      withPaymentData(
-        getNewMessage(
-          customConfig,
-          `💰🕙✅ payment message - ${index}`,
-          messageMarkdown
-        ),
-        true
+    pipe(
+      getNewMessage(
+        customConfig,
+        `💰🕙✅ payment message - ${index}`,
+        messageMarkdown
       ),
-      new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+      createdMessageWithContentAndAttachments =>
+        withPaymentData(createdMessageWithContentAndAttachments, true),
+      E.fold(
+        error => {
+          throw error;
+        },
+        createdMessageWithContent =>
+          withDueDate(
+            createdMessageWithContent,
+            new Date(date.getTime() + 60 * 1000 * 60 * 24 * 8)
+          )
+      )
     )
   );
 
@@ -447,9 +522,16 @@ const createMessagesWithPayments = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
   A.makeBy(customConfig.messages.paymentsCount, index =>
-    withPaymentData(
+    pipe(
       getNewMessage(customConfig, `💰✅ payment - ${index} `, messageMarkdown),
-      true
+      createdMessageWithContentAndAttachments =>
+        withPaymentData(createdMessageWithContentAndAttachments, true),
+      E.fold(
+        error => {
+          throw error;
+        },
+        _ => _
+      )
     )
   );
 
@@ -457,7 +539,7 @@ const createPNOptInMessage = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
   pipe(
-    customConfig.messages.pnOptInMessage,
+    customConfig.messages.pnOptInMessage ?? false,
     B.fold(
       () => [],
       () => [
@@ -478,24 +560,32 @@ const createMessagesWithPN = (
 ): CreatedMessageWithContentAndAttachments[] =>
   pipe(
     customConfig.services.specialServices.pn,
-    B.fold(
-      () => [],
-      () =>
-        A.makeBy(customConfig.messages.pnCount, index => {
-          const sender = `"Comune di Milano - ${index} `;
-          const subject = "infrazione al codice della strada";
-          const abstract =
-            "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.";
-
-          return getNewPnMessage(
-            customConfig,
-            sender,
-            subject,
-            abstract,
-            messageMarkdown
-          );
-        })
-    )
+    O.fromPredicate(identity),
+    O.chain(_ =>
+      pipe(
+        customConfig.messages.pnMessageTemplateWrappers,
+        O.fromNullable,
+        O.map(pnMessageTemplateWrappers =>
+          A.flatten(
+            pipe(
+              pnMessageTemplateWrappers as PNMessageTemplateWrapper[],
+              A.mapWithIndex((templateIndex, pnMessageTemplateWrapper) =>
+                A.makeBy(pnMessageTemplateWrapper.count, messageIndex =>
+                  getNewPnMessage(
+                    pnMessageTemplateWrapper.template,
+                    customConfig.profile.attrs.fiscal_code,
+                    templateIndex,
+                    messageIndex,
+                    messageMarkdown
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    ),
+    O.getOrElse(() => [] as CreatedMessageWithContentAndAttachments[])
   );
 
 const createMessagesWithRemoteAttachments = (
