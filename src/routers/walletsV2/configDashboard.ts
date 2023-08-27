@@ -25,7 +25,7 @@ addHandler(
   "get",
   "/",
   (_, res) => sendFile("assets/html/wallet2_config.html", res),
-  0,
+  () => 0,
   { description: "WalletV2 config dashboard" }
 );
 

@@ -1,12 +1,10 @@
 import fs from "fs";
-import { identity, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as B from "fp-ts/lib/boolean";
-import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../generated/definitions/backend/EUCovidCert";
 import { MessageAttachment } from "../generated/definitions/backend/MessageAttachment";
@@ -20,17 +18,12 @@ import {
   withContent,
   withDueDate,
   withPaymentData,
-  withPNContent,
   withRemoteAttachments
 } from "./payloads/message";
 import ServicesDB from "./persistence/services";
 import MessagesDB from "./persistence/messages";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
-import {
-  IoDevServerConfig,
-  PNMessageTemplateWrapper,
-  PNMessageTemplate
-} from "./types/config";
+import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";
 import {
   frontMatter1CTABonusBpd,
@@ -53,10 +46,9 @@ import {
   messageMarkdown
 } from "./utils/variables";
 import {
-  pnOptInCTA,
-  pnOptInServiceId,
-  pnServiceId
-} from "./payloads/services/special/pn/factoryPn";
+  createPNMessages,
+  createPNOptInMessage
+} from "./features/pn/payloads/messages";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -72,7 +64,7 @@ const getServiceId = (): string => {
   );
 };
 
-const getNewMessage = (
+export const getNewMessage = (
   customConfig: IoDevServerConfig,
   subject: string,
   markdown: string,
@@ -89,62 +81,6 @@ const getNewMessage = (
     markdown,
     prescriptionData,
     euCovidCert
-  );
-
-const getNewPnMessage = (
-  template: PNMessageTemplate,
-  fiscalCode: FiscalCode,
-  templateIndex: number,
-  messageIndex: number,
-  markdown: string
-): ThirdPartyMessageWithContent =>
-  pipe(
-    ServicesDB.getService(pnServiceId),
-    O.fromNullable,
-    O.fold(
-      () => {
-        throw Error(
-          `getNewPnMessage: unable to find service PN service with id (${pnServiceId})`
-        );
-      },
-      pnService =>
-        pipe(
-          {
-            sender: `Comune di Milano - ${templateIndex} / ${messageIndex}`,
-            subject: "infrazione al codice della strada"
-          },
-          sharedData =>
-            pipe(
-              createMessage(fiscalCode, pnServiceId),
-              createdMessageWithoutContent =>
-                withContent(
-                  createdMessageWithoutContent,
-                  `${sharedData.sender}: ${sharedData.subject}`,
-                  markdown
-                ),
-              createdMessageWithContent =>
-                pipe(
-                  withPNContent(
-                    template,
-                    createdMessageWithContent,
-                    pnService.organization_fiscal_code,
-                    pnService.organization_name,
-                    faker.helpers.replaceSymbols("######-#-####-####-#"),
-                    sharedData.sender,
-                    sharedData.subject,
-                    "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.",
-                    getRandomValue(new Date(), faker.date.past(), "messages")
-                  ),
-                  E.fold(
-                    errors => {
-                      throw Error(errors.toString());
-                    },
-                    _ => _
-                  )
-                )
-            )
-        )
-    )
   );
 
 const getNewRemoteAttachmentsMessage = (
@@ -535,59 +471,6 @@ const createMessagesWithPayments = (
     )
   );
 
-const createPNOptInMessage = (
-  customConfig: IoDevServerConfig
-): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.messages.pnOptInMessage ?? false,
-    B.fold(
-      () => [],
-      () => [
-        getNewMessage(
-          customConfig,
-          `PN OptIn CTA`,
-          pnOptInCTA + messageMarkdown,
-          undefined,
-          undefined,
-          pnOptInServiceId
-        )
-      ]
-    )
-  );
-
-const createMessagesWithPN = (
-  customConfig: IoDevServerConfig
-): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.services.specialServices.pn,
-    O.fromPredicate(identity),
-    O.chain(_ =>
-      pipe(
-        customConfig.messages.pnMessageTemplateWrappers,
-        O.fromNullable,
-        O.map(pnMessageTemplateWrappers =>
-          A.flatten(
-            pipe(
-              pnMessageTemplateWrappers as PNMessageTemplateWrapper[],
-              A.mapWithIndex((templateIndex, pnMessageTemplateWrapper) =>
-                A.makeBy(pnMessageTemplateWrapper.count, messageIndex =>
-                  getNewPnMessage(
-                    pnMessageTemplateWrapper.template,
-                    customConfig.profile.attrs.fiscal_code,
-                    templateIndex,
-                    messageIndex,
-                    messageMarkdown
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    ),
-    O.getOrElse(() => [] as CreatedMessageWithContentAndAttachments[])
-  );
-
 const createMessagesWithRemoteAttachments = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
@@ -647,7 +530,7 @@ const createMessages = (
     ...createMessagesWithPayments(customConfig),
 
     ...createPNOptInMessage(customConfig),
-    ...createMessagesWithPN(customConfig),
+    ...createPNMessages(customConfig),
 
     ...createMessagesWithRemoteAttachments(customConfig)
   ];

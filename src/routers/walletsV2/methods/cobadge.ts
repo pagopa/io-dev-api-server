@@ -134,8 +134,7 @@ addHandler(
     } else {
       handleCobadge(req, res);
     }
-  },
-  0
+  }
 );
 
 /**
@@ -175,8 +174,7 @@ addHandler(
       return;
     }
     res.status(200).json(validResponse.right);
-  },
-  0
+  }
 );
 
 /**
@@ -219,6 +217,5 @@ addHandler(
     }
     addWalletV2([cobadge], true);
     res.json({ data: [cobadge] });
-  },
-  0
+  }
 );

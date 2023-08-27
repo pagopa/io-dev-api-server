@@ -57,9 +57,8 @@ addHandler(
       O.filter(identity),
       O.fold(
         () =>
-          pipe(
-            req.params.rptId as RptId,
-            (rptId) => pipe(
+          pipe(req.params.rptId as RptId, rptId =>
+            pipe(
               rptId,
               PaymentsDB.getProcessedPayment,
               O.fold(
@@ -116,7 +115,10 @@ addHandler(
             )
           )
       )
-    )
+    ),
+  ioDevServerConfig.wallet.useLegacyRptIdVerificationSystem
+    ? () => 0
+    : () => Math.trunc(3000 * Math.random())
 );
 
 /**

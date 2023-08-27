@@ -1,14 +1,9 @@
 import * as path from "path";
 import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
-import {
-  FiscalCode,
-  NonEmptyString,
-  OrganizationFiscalCode
-} from "@pagopa/ts-commons/lib/strings";
 import { faker } from "@faker-js/faker/locale/it";
 import { slice } from "lodash";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
@@ -33,17 +28,11 @@ import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import { PNMessageTemplate } from "../types/config";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import PaymentDB from "../persistence/payments";
-import { rptId } from "../utils/payment";
-import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
-import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
-import { eitherMakeBy } from "../utils/array";
-import { PaymentStatus } from "../types/PaymentStatus";
-import { currentProfile } from "./profile";
+import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
+import { OrganizationFiscalCode } from "../../generated/definitions/backend/OrganizationFiscalCode";
+import { pnServiceId } from "../features/pn/services/services";
 import ServicesDB from "./../persistence/services";
-import { pnServiceId } from "./services/special/pn/factoryPn";
 
 // eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
@@ -77,209 +66,6 @@ export const withDueDate = (
   ...message,
   content: { ...message.content, due_date: dueDate }
 });
-
-const generateRecipientsAndAccumulate = (
-  accumulator: NotificationRecipient[],
-  count: number,
-  paymentDataGenerator: () => E.Either<string[], PaymentDataWithRequiredPayee>,
-  maybePaymentStatusGenerator: O.Option<
-    (input: PaymentDataWithRequiredPayee) => PaymentStatus
-  >,
-  fiscalCode: FiscalCode = currentProfile.fiscal_code
-) =>
-  pipe(
-    eitherMakeBy(count, _ =>
-      generateNotificationRecipient(
-        pipe(
-          paymentDataGenerator(),
-          E.map(paymentDataWithRequiredPayee =>
-            pipe(
-              maybePaymentStatusGenerator,
-              O.map(paymentStatusGenerator =>
-                paymentStatusGenerator(paymentDataWithRequiredPayee)
-              ),
-              _ => paymentDataWithRequiredPayee
-            )
-          )
-        ),
-        fiscalCode
-      )
-    ),
-    accumulate(accumulator)
-  );
-
-const accumulate =
-  <E, A>(accumulator: A[]) =>
-  (input: E.Either<E, A[]>): E.Either<E, A[]> =>
-    E.map((notificationRecipients: A[]) => [
-      ...accumulator,
-      ...notificationRecipients
-    ])(input);
-
-const generatePNRecipients = (
-  organizationFiscalCode: OrganizationFiscalCode,
-  organizationName: OrganizationName,
-  template: PNMessageTemplate
-): E.Either<string[], NotificationRecipient[]> =>
-  pipe(
-    E.right([] as NotificationRecipient[]),
-    E.chain(accumulator =>
-      generateRecipientsAndAccumulate(
-        accumulator,
-        template.unrelatedPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessablePayment(
-            rptId(paymentDataWithRequiredPayee),
-            paymentDataWithRequiredPayee.amount,
-            paymentDataWithRequiredPayee.payee.fiscal_code,
-            organizationName
-          )
-        ),
-        "VLRCMD74S01B655P" as FiscalCode
-      )
-    ),
-    E.chain(accumulator =>
-      generateRecipientsAndAccumulate(
-        accumulator,
-        template.unpaidValidPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessablePayment(
-            rptId(paymentDataWithRequiredPayee),
-            paymentDataWithRequiredPayee.amount,
-            paymentDataWithRequiredPayee.payee.fiscal_code,
-            organizationName
-          )
-        )
-      )
-    ),
-    E.chain(accumulator =>
-      generateRecipientsAndAccumulate(
-        accumulator,
-        template.unpaidExpiredPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode, true),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessedPayment(
-            rptId(paymentDataWithRequiredPayee),
-            Detail_v2Enum.PAA_PAGAMENTO_SCADUTO
-          )
-        )
-      )
-    ),
-    E.chain(accumulator =>
-      generateRecipientsAndAccumulate(
-        accumulator,
-        template.failedPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessedPayment(
-            rptId(paymentDataWithRequiredPayee),
-            Detail_v2Enum.PPT_IBAN_NON_CENSITO
-          )
-        )
-      )
-    ),
-    E.chain(accumulator =>
-      generateRecipientsAndAccumulate(
-        accumulator,
-        template.paidPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessedPayment(
-            rptId(paymentDataWithRequiredPayee),
-            Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
-          )
-        )
-      )
-    )
-  );
-
-export type NotificationPaymentInfo = {
-  noticeCode: PaymentNoticeNumber;
-  creditorTaxId: OrganizationFiscalCode;
-};
-
-export type NotificationRecipient = {
-  taxId: string;
-  denomination: string;
-  payment: NotificationPaymentInfo;
-};
-
-const generateNotificationRecipient = (
-  paymentDataWithRequiredPayee: E.Either<
-    string[],
-    PaymentDataWithRequiredPayee
-  >,
-  fiscalCode: FiscalCode
-): E.Either<string[], NotificationRecipient> =>
-  pipe(
-    paymentDataWithRequiredPayee,
-    E.map(paymentDataWithRequiredPayee => ({
-      taxId: fiscalCode,
-      denomination: `${currentProfile.name} ${currentProfile.family_name}`,
-      payment: {
-        noticeCode: paymentDataWithRequiredPayee.notice_number,
-        creditorTaxId: paymentDataWithRequiredPayee.payee.fiscal_code
-      }
-    }))
-  );
-
-const generatePNTimeline = () => [
-  {
-    status: "ACCEPTED",
-    activeFrom: "2022-07-07T13:26:59.494+00:00",
-    relatedTimelineElements: [
-      "TPAK-PJUT-RALE-202207-X-1_request_accepted",
-      "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
-      "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
-      "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
-    ]
-  },
-  {
-    status: "DELIVERING",
-    activeFrom: "2022-07-07T13:27:15.913+00:00",
-    relatedTimelineElements: [
-      "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
-      "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
-    ]
-  },
-  {
-    status: "VIEWED",
-    activeFrom: "2022-07-07T14:26:22.669+00:00",
-    relatedTimelineElements: ["TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"]
-  }
-];
-
-export const withPNContent = (
-  template: PNMessageTemplate,
-  message: CreatedMessageWithContent,
-  organization_fiscal_code: OrganizationFiscalCode,
-  organizationName: OrganizationName,
-  iun: string,
-  senderDenomination: string | undefined,
-  subject: string,
-  abstract: string | undefined,
-  sentAt: Date
-): E.Either<string[], ThirdPartyMessageWithContent> =>
-  pipe(
-    generatePNRecipients(organization_fiscal_code, organizationName, template),
-    E.map(pnRecipients => ({
-      ...message,
-      third_party_message: {
-        attachments: getPnAttachments(),
-        details: {
-          iun,
-          senderDenomination,
-          subject,
-          abstract,
-          sentAt,
-          notificationStatusHistory: generatePNTimeline(),
-          recipients: pnRecipients
-        }
-      }
-    }))
-  );
 
 export const withRemoteAttachments = (
   message: CreatedMessageWithContent,
@@ -415,7 +201,7 @@ export const getCategory = (
 
 export const defaultContentType = "application/octet-stream";
 
-function thirdPartyAttachmentFromAbsolutePathArray(
+export function thirdPartyAttachmentFromAbsolutePathArray(
   absolutePaths: ReadonlyArray<string>
 ) {
   return absolutePaths
@@ -433,11 +219,6 @@ function thirdPartyAttachmentFromAbsolutePathArray(
       } as ThirdPartyAttachment;
     });
 }
-
-const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
-
-export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> =>
-  thirdPartyAttachmentFromAbsolutePathArray(pnAttachmentsFiles);
 
 const remoteAttachmentFiles = listDir(
   assetsFolder + "/messages/remote/attachments"

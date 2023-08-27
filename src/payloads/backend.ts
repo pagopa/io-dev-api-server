@@ -1,7 +1,7 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
-import { pnOptInServiceId } from "./services/special/pn/factoryPn";
+import { pnOptInServiceId } from "../features/pn/services/services";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },

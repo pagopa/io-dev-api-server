@@ -203,8 +203,7 @@ addHandler(
       return;
     }
     res.json(decoded.right);
-  },
-  0
+  }
 );
 
 addHandler(
@@ -220,8 +219,7 @@ addHandler(
       return;
     }
     res.json(decoded.right);
-  },
-  0
+  }
 );
 
 addHandler(

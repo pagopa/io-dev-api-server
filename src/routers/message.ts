@@ -20,11 +20,11 @@ import MessagesDB from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
 import { fileExists, isPDFFile, sendFile } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
-import { pnServiceId } from "../payloads/services/special/pn/factoryPn";
 import ServicesDB from "../persistence/services";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 import { lollipopMiddleware } from "../middleware/lollipopMiddleware";
+import { pnServiceId } from "../features/pn/services/services";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -370,7 +370,7 @@ addHandler(
     );
     sendFile(attachmentAbsolutePath, res);
   }),
-  3000
+  () => 3000
 );
 
 addHandler(
