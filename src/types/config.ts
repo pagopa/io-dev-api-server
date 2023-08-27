@@ -265,6 +265,9 @@ export const IoDevServerConfig = t.interface({
       paymentOutCode: t.number,
       // if defined attiva will serve the given error
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      // it truthy, 'payment-requests/:rptId' endpoint will fake the payment
+      // status response instead of checking the in-memory database
+      useLegacyRptIdVerificationSystem: t.boolean,
       // if verifica attiva will serve the given error
       verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // configure the dummy payment

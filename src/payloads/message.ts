@@ -128,7 +128,14 @@ const generatePNRecipients = (
         accumulator,
         template.unrelatedPayments,
         () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.none,
+        O.some(paymentDataWithRequiredPayee =>
+          PaymentDB.createProcessablePayment(
+            rptId(paymentDataWithRequiredPayee),
+            paymentDataWithRequiredPayee.amount,
+            paymentDataWithRequiredPayee.payee.fiscal_code,
+            organizationName
+          )
+        ),
         "VLRCMD74S01B655P" as FiscalCode
       )
     ),

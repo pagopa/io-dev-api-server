@@ -3,6 +3,7 @@ import { Request, Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
+import { identity } from "lodash";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
@@ -21,18 +22,14 @@ import { addHandler, addNewRoute } from "../payloads/response";
 import { serverUrl } from "../utils/server";
 import { addApiV1Prefix } from "../utils/strings";
 import { appendWalletV1Prefix } from "../utils/wallet";
+import PaymentsDB from "../persistence/payments";
+import { RptId } from "../../generated/definitions/backend/RptId";
+import { fold } from "../types/PaymentStatus";
 import ServicesDB, { ServiceSummary } from "./../persistence/services";
 import { profileRouter } from "./profile";
 import { walletRouter } from "./wallet";
 
 export const paymentRouter = Router();
-
-const responseWithError = (detailV2: Detail_v2Enum, res: Response) =>
-  res.status(500).json({
-    // deprecated, it is just a placeholder
-    detail: DetailEnum.PAYMENT_UNKNOWN,
-    detail_v2: detailV2
-  });
 
 // eslint-disable-next-line functional/no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
@@ -53,32 +50,69 @@ addHandler(
   profileRouter,
   "get",
   addApiV1Prefix("/payment-requests/:rptId"),
-  // success response: res.json(getPaymentRequestsGetResponse(faker.helpers.arrayElement(services))))
-  // error response: responseWithError(DetailEnum.PAYMENT_DUPLICATED, res)
-  (_, res) =>
+  (req, res) =>
     pipe(
-      ServicesDB.getSummaries(),
-      faker.helpers.arrayElement,
-      (randomServiceSummary: ServiceSummary) => randomServiceSummary.service_id,
-      ServicesDB.getService,
+      ioDevServerConfig.wallet.useLegacyRptIdVerificationSystem,
       O.fromNullable,
+      O.filter(identity),
       O.fold(
         () =>
-          res
-            .sendStatus(500)
-            .json(
-              getProblemJson(500, "Unable to find auto-referenced service")
-            ),
-        (randomService: ServicePublic) =>
           pipe(
-            ioDevServerConfig.wallet.verificaError,
+            req.params.rptId as RptId,
+            (rptId) => pipe(
+              rptId,
+              PaymentsDB.getProcessedPayment,
+              O.fold(
+                () =>
+                  res
+                    .status(404)
+                    .json(
+                      getProblemJson(
+                        404,
+                        `Payment with rptdId (${rptId}) not found`
+                      )
+                    ),
+                fold(
+                  processedPayment =>
+                    res.status(500).json(processedPayment.status),
+                  processablePayment =>
+                    res.status(200).json(processablePayment.data)
+                )
+              )
+            )
+          ),
+        () =>
+          pipe(
+            ServicesDB.getSummaries(),
+            faker.helpers.arrayElement,
+            (randomServiceSummary: ServiceSummary) =>
+              randomServiceSummary.service_id,
+            ServicesDB.getService,
             O.fromNullable,
             O.fold(
-              () => {
-                paymentRequest = getPaymentRequestsGetResponse(randomService);
-                return res.json(paymentRequest);
-              },
-              (errorCode: Detail_v2Enum) => responseWithError(errorCode, res)
+              () =>
+                res
+                  .status(500)
+                  .json(
+                    getProblemJson(
+                      500,
+                      "Unable to find auto-referenced service"
+                    )
+                  ),
+              (randomService: ServicePublic) =>
+                pipe(
+                  ioDevServerConfig.wallet.verificaError,
+                  O.fromNullable,
+                  O.fold(
+                    () => {
+                      paymentRequest =
+                        getPaymentRequestsGetResponse(randomService);
+                      return res.json(paymentRequest);
+                    },
+                    (errorCode: Detail_v2Enum) =>
+                      legacyResponseWithError(errorCode, res)
+                  )
+                )
             )
           )
       )
@@ -122,7 +156,7 @@ addHandler(
             )
           );
         },
-        error => responseWithError(error, res)
+        error => legacyResponseWithError(error, res)
       )
     );
   }
@@ -253,3 +287,10 @@ addHandler(
 
 // only for stats displaying purposes
 addNewRoute("post", "/wallet/v3/webview/transactions/pay");
+
+const legacyResponseWithError = (detailV2: Detail_v2Enum, res: Response) =>
+  res.status(500).json({
+    // deprecated, it is just a placeholder
+    detail: DetailEnum.PAYMENT_UNKNOWN,
+    detail_v2: detailV2
+  });
