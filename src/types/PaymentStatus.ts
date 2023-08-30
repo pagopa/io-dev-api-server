@@ -1,13 +1,7 @@
 import {
-  DetailEnum,
-  Detail_v2Enum
+  PaymentProblemJson
 } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
-
-export type PaymentStatusDetails = {
-  readonly detail: DetailEnum.PAYMENT_UNKNOWN;
-  readonly detail_v2: Detail_v2Enum;
-};
 
 export interface ProcessablePayment {
   readonly type: "processable";
@@ -16,7 +10,7 @@ export interface ProcessablePayment {
 
 export interface ProcessedPayment {
   readonly type: "processed";
-  readonly status: PaymentStatusDetails;
+  readonly status: PaymentProblemJson;
 }
 
 export declare type PaymentStatus = ProcessablePayment | ProcessedPayment;
@@ -35,7 +29,7 @@ export const processablePayment = (
   data: paymentRequestsGetResponse
 });
 export const processedPayment = (
-  status: PaymentStatusDetails
+  status: PaymentProblemJson
 ): ProcessedPayment => ({
   type: "processed",
   status
