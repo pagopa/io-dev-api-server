@@ -1,6 +1,4 @@
-import {
-  PaymentProblemJson
-} from "../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentProblemJson } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 
 export interface ProcessablePayment {
