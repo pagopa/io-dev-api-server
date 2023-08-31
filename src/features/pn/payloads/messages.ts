@@ -26,10 +26,14 @@ import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode
 import { OrganizationFiscalCode } from "../../../../generated/definitions/backend/OrganizationFiscalCode";
 import { NotificationRecipient } from "../types/notificationRecipient";
 import { PaymentDataWithRequiredPayee } from "../../../../generated/definitions/backend/PaymentDataWithRequiredPayee";
-import { PaymentStatus } from "../../../types/PaymentStatus";
+import { PaymentStatus, fold } from "../../../types/PaymentStatus";
 import { currentProfile } from "../../../payloads/profile";
 import { eitherMakeBy } from "../../../utils/array";
-import { rptId } from "../../../utils/payment";
+import {
+  isPaid,
+  rptIdFromNotificationPaymentInfo,
+  rptIdFromPaymentDataWithRequiredPayee
+} from "../../../utils/payment";
 import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
 import { listDir } from "../../../utils/file";
 import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
@@ -40,6 +44,7 @@ import {
   pnServiceId
 } from "../services/services";
 import { getNewMessage } from "../../../populate-persistence";
+import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
 
 export const createPNOptInMessage = (
   customConfig: IoDevServerConfig
@@ -173,7 +178,12 @@ const createPNMessageWithContent = (
           subject,
           abstract,
           sentAt,
-          notificationStatusHistory: createPNTimeline(),
+          status: template.isCancelled ? "CaNCeLlED" : undefined,
+          notificationStatusHistory: pipe(
+            pnRecipients,
+            noticeCodesFromNotificationRecipients,
+            createPNTimeline(template.isCancelled)
+          ),
           recipients: pnRecipients
         }
       }
@@ -194,7 +204,7 @@ const createPNRecipients = (
         () => PaymentDB.createPaymentData(organizationFiscalCode),
         O.some(paymentDataWithRequiredPayee =>
           PaymentDB.createProcessablePayment(
-            rptId(paymentDataWithRequiredPayee),
+            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             paymentDataWithRequiredPayee.amount,
             paymentDataWithRequiredPayee.payee.fiscal_code,
             organizationName
@@ -210,7 +220,7 @@ const createPNRecipients = (
         () => PaymentDB.createPaymentData(organizationFiscalCode),
         O.some(paymentDataWithRequiredPayee =>
           PaymentDB.createProcessablePayment(
-            rptId(paymentDataWithRequiredPayee),
+            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             paymentDataWithRequiredPayee.amount,
             paymentDataWithRequiredPayee.payee.fiscal_code,
             organizationName
@@ -225,7 +235,7 @@ const createPNRecipients = (
         () => PaymentDB.createPaymentData(organizationFiscalCode, true),
         O.some(paymentDataWithRequiredPayee =>
           PaymentDB.createProcessedPayment(
-            rptId(paymentDataWithRequiredPayee),
+            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             Detail_v2Enum.PAA_PAGAMENTO_SCADUTO
           )
         )
@@ -238,7 +248,7 @@ const createPNRecipients = (
         () => PaymentDB.createPaymentData(organizationFiscalCode),
         O.some(paymentDataWithRequiredPayee =>
           PaymentDB.createProcessedPayment(
-            rptId(paymentDataWithRequiredPayee),
+            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             Detail_v2Enum.PPT_IBAN_NON_CENSITO
           )
         )
@@ -251,7 +261,7 @@ const createPNRecipients = (
         () => PaymentDB.createPaymentData(organizationFiscalCode),
         O.some(paymentDataWithRequiredPayee =>
           PaymentDB.createProcessedPayment(
-            rptId(paymentDataWithRequiredPayee),
+            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
           )
         )
@@ -314,28 +324,107 @@ const createPNAttachments = (): ReadonlyArray<ThirdPartyAttachment> =>
     thirdPartyAttachmentFromAbsolutePathArray
   );
 
-const createPNTimeline = () => [
-  {
-    status: "ACCEPTED",
-    activeFrom: "2022-07-07T13:26:59.494+00:00",
-    relatedTimelineElements: [
-      "TPAK-PJUT-RALE-202207-X-1_request_accepted",
-      "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
-      "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
-      "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
-    ]
-  },
-  {
-    status: "DELIVERING",
-    activeFrom: "2022-07-07T13:27:15.913+00:00",
-    relatedTimelineElements: [
-      "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
-      "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
-    ]
-  },
-  {
-    status: "VIEWED",
-    activeFrom: "2022-07-07T14:26:22.669+00:00",
-    relatedTimelineElements: ["TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"]
-  }
-];
+const createPNTimeline =
+  (isCancelled: boolean = false) =>
+  (paidNoticeCodes: string[] = []): NotificationStatusHistoryElement[] =>
+    pipe(
+      [] as NotificationStatusHistoryElement[],
+      addPNTimelineEvent({
+        status: "ACCEPTED",
+        activeFrom: "2022-07-07T13:26:59.494+00:00",
+        relatedTimelineElements: [
+          "TPAK-PJUT-RALE-202207-X-1_request_accepted",
+          "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
+          "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
+          "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
+        ]
+      }),
+      addPNTimelineEvent({
+        status: "DELIVERING",
+        activeFrom: "2022-07-07T13:27:15.913+00:00",
+        relatedTimelineElements: [
+          "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
+          "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
+        ]
+      }),
+      addPNTimelineEvent({
+        status: "VIEWED",
+        activeFrom: "2022-07-07T14:26:22.669+00:00",
+        relatedTimelineElements: [
+          "TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"
+        ]
+      }),
+      addMultiplePNTimelineEvent(
+        "PAID",
+        paidNoticeCodes,
+        "2022-07-07T14:27:22.669+00:00"
+      ),
+      accumulator =>
+        isCancelled
+          ? addPNTimelineEvent({
+              status: "CANCELLED",
+              activeFrom: "2023-08-31T23:59:59.999+00:00",
+              relatedTimelineElements: [
+                "TPAK-PJUT-RALE-202207-X-1_notification_cancelled_0"
+              ]
+            })(accumulator)
+          : accumulator
+    );
+
+const addPNTimelineEvent =
+  (timelineEvent: NotificationStatusHistoryElement) =>
+  (
+    accumulator: NotificationStatusHistoryElement[]
+  ): NotificationStatusHistoryElement[] =>
+    [...accumulator, timelineEvent];
+
+const addMultiplePNTimelineEvent =
+  (status: string, paidNoticeCodes: string[], utcStartDateString: string) =>
+  (
+    accumulator: NotificationStatusHistoryElement[]
+  ): NotificationStatusHistoryElement[] =>
+    [
+      ...accumulator,
+      ...A.makeBy(
+        paidNoticeCodes.length,
+        index =>
+          ({
+            status,
+            activeFrom: pipe(
+              new Date(Date.parse(utcStartDateString) + index * 60000),
+              utcDate => `${utcDate.toISOString().slice(0, -1)}+00:00`
+            ),
+            relatedTimelineElements: [
+              "TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_0",
+              `TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_${paidNoticeCodes[index]}`
+            ]
+          } as NotificationStatusHistoryElement)
+      )
+    ];
+
+const noticeCodesFromNotificationRecipients = (
+  notificationRecipients: NotificationRecipient[]
+) =>
+  pipe(
+    notificationRecipients,
+    A.filterMap(notificationRecipient =>
+      pipe(
+        notificationRecipient.payment,
+        rptIdFromNotificationPaymentInfo,
+        PaymentDB.getPaymentStatus,
+        O.map(paymentStatus =>
+          pipe(
+            paymentStatus,
+            fold(
+              processedPayment =>
+                isPaid(processedPayment.status)
+                  ? O.some(notificationRecipient.payment.noticeCode)
+                  : O.none,
+              _ => O.none
+            )
+          )
+        ),
+        O.flatten
+      )
+    )
+  );

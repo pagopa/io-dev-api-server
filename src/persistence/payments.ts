@@ -27,7 +27,7 @@ import {
   processablePayment,
   processedPayment
 } from "../types/PaymentStatus";
-import { rptId } from "../utils/payment";
+import { rptIdFromPaymentDataWithRequiredPayee } from "../utils/payment";
 
 const paymentData = new Map<string, PaymentDataWithRequiredPayee>();
 const paymentStatuses = new Map<string, PaymentStatus>();
@@ -36,7 +36,7 @@ const addOrUpdatePayment = (
   paymentDataWithRequiredPayee: PaymentDataWithRequiredPayee
 ): PaymentDataWithRequiredPayee =>
   pipe(
-    rptId(paymentDataWithRequiredPayee),
+    rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
     rptId => paymentData.set(rptId, paymentDataWithRequiredPayee),
     _ => paymentDataWithRequiredPayee
   );
@@ -120,12 +120,12 @@ const createProcessedPayment = (
     processedPayment => addOrUpdatePaymentStatus(rptId, processedPayment)
   );
 
-const getProcessedPayment = (rptId: RptId): O.Option<PaymentStatus> =>
+const getPaymentStatus = (rptId: RptId): O.Option<PaymentStatus> =>
   pipe(paymentStatuses.get(rptId), O.fromNullable);
 
 export default {
   createPaymentData,
   createProcessablePayment,
   createProcessedPayment,
-  getProcessedPayment
+  getPaymentStatus
 };
