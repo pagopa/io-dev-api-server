@@ -59,12 +59,12 @@ export const isOutcomeCodeSuccessfully = (
 export const rptIdFromPaymentDataWithRequiredPayee = (
   paymentDataWithRequiredPayee: PaymentDataWithRequiredPayee
 ): RptId =>
-  `${paymentDataWithRequiredPayee.notice_number}${paymentDataWithRequiredPayee.payee.fiscal_code}`;
+  `${paymentDataWithRequiredPayee.payee.fiscal_code}${paymentDataWithRequiredPayee.notice_number}`;
 
 export const rptIdFromNotificationPaymentInfo = (
   notificationPaymentInfo: NotificationPaymentInfo
 ): RptId =>
-  `${notificationPaymentInfo.noticeCode}${notificationPaymentInfo.creditorTaxId}`;
+  `${notificationPaymentInfo.creditorTaxId}${notificationPaymentInfo.noticeCode}`;
 
 export const isPaid = (paymentProblemJSON: PaymentProblemJson) =>
   pipe(
