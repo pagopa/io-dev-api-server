@@ -74,8 +74,10 @@ addHandler(
                 fold(
                   processedPayment =>
                     res.status(500).json(processedPayment.status),
-                  processablePayment =>
-                    res.status(200).json(processablePayment.data)
+                  processablePayment => {
+                    paymentRequest = processablePayment.data;
+                    return res.status(200).json(processablePayment.data);
+                  }
                 )
               )
             )
