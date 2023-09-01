@@ -76,7 +76,10 @@ addHandler(
       B.fold(
         // ignoring organization id and send always the same image
         () =>
-          sendFileFromRootPath("assets/imgs/logos/organizations/organization_1.png", res),
+          sendFileFromRootPath(
+            "assets/imgs/logos/organizations/organization_1.png",
+            res
+          ),
         // we send a 404 for the service number 4 to check missing image values
         () => res.sendStatus(404)
       )
@@ -107,7 +110,10 @@ addHandler(
   "get",
   addRoutePrefix("/logos/privative/gdo/:logo_id"),
   (req, res) => {
-    sendFileFromRootPath(`assets/imgs/logos/privative/gdo/${req.params.logo_id}`, res);
+    sendFileFromRootPath(
+      `assets/imgs/logos/privative/gdo/${req.params.logo_id}`,
+      res
+    );
   }
 );
 
@@ -116,7 +122,10 @@ addHandler(
   "get",
   addRoutePrefix("/logos/privative/loyalty/:logo_id"),
   (req, res) => {
-    sendFileFromRootPath(`assets/imgs/logos/privative/loyalty/${req.params.logo_id}`, res);
+    sendFileFromRootPath(
+      `assets/imgs/logos/privative/loyalty/${req.params.logo_id}`,
+      res
+    );
   }
 );
 

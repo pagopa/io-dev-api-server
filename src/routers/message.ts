@@ -298,22 +298,22 @@ addHandler(
       configResponse.getThirdPartyMessageResponseCode === 200,
       B.fold(
         () => res.sendStatus(configResponse.getThirdPartyMessageResponseCode),
-        () => 
+        () =>
           pipe(
             MessagesDB.getMessageById(req.params.id),
-            O.chain(message => 
-              pipe(
-                ThirdPartyMessageWithContent.decode(message),
-                O.fromEither
-              )
+            O.chain(message =>
+              pipe(ThirdPartyMessageWithContent.decode(message), O.fromEither)
             ),
             O.fold(
-              () => res.status(404).json(getProblemJson(404, messageNotFoundError)),
-              (message) => res.json(message)
+              () =>
+                res.status(404).json(getProblemJson(404, messageNotFoundError)),
+              message => res.json(message)
             )
           )
       )
-    )));
+    )
+  )
+);
 
 addHandler(
   messageRouter,
@@ -417,7 +417,11 @@ addHandler(
                                             attachment.content_type ??
                                               defaultContentType
                                           ),
-                                          resWithHeaders => sendFileFromRootPath(attachment.url, resWithHeaders)
+                                          resWithHeaders =>
+                                            sendFileFromRootPath(
+                                              attachment.url,
+                                              resWithHeaders
+                                            )
                                         )
                                     )
                                   )
