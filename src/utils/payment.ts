@@ -56,4 +56,4 @@ export const isOutcomeCodeSuccessfully = (
 export const rptId = (
   paymentDataWithRequiredPayee: PaymentDataWithRequiredPayee
 ): RptId =>
-  `${paymentDataWithRequiredPayee.notice_number}${paymentDataWithRequiredPayee.payee.fiscal_code}`;
+  `${paymentDataWithRequiredPayee.payee.fiscal_code}${paymentDataWithRequiredPayee.notice_number}`;
