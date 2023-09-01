@@ -25,6 +25,7 @@ import {
   clearLoginSessionTokenInfo,
   createOrRefreshEverySessionToken,
   getLoginSessionToken,
+  setSessionAuthenticationProvider,
   setSessionLoginType
 } from "../persistence/sessionInfo";
 import { clearSessionTokens } from "../payloads/session";
@@ -44,6 +45,7 @@ const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 addHandler(publicRouter, "get", "/login", async (req, res) => {
   setAppInfo(req);
   setSessionLoginType(req);
+  setSessionAuthenticationProvider(req);
 
   const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
   const lollipopHashAlgorithmHeaderValue = req.get(

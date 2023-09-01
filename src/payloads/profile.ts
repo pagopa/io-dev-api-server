@@ -136,6 +136,13 @@ const spidCie = {
     existing: cieProfile
   }
 };
-export const currentProfile = ioDevServerConfig.profile.firstOnboarding
-  ? spidCie[ioDevServerConfig.profile.authenticationProvider].first
-  : spidCie[ioDevServerConfig.profile.authenticationProvider].existing;
+
+export type AuthenticationProvider =
+  typeof ioDevServerConfig.profile.authenticationProvider;
+
+export const getCurrentProfile = (
+  authenticationProvider: AuthenticationProvider
+) =>
+  ioDevServerConfig.profile.firstOnboarding
+    ? spidCie[authenticationProvider].first
+    : spidCie[authenticationProvider].existing;

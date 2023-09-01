@@ -26,7 +26,8 @@ import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import { currentProfile } from "./profile";
+import { getAuthenticationProvider } from "../persistence/sessionInfo";
+import { getCurrentProfile } from "./profile";
 import ServicesDB from "./../persistence/services";
 import { pnServiceId } from "./services/special/pn/factoryPn";
 
@@ -72,6 +73,7 @@ export const withPNContent = (
   sentAt: Date
 ): ThirdPartyMessageWithContent => {
   const paymentData = withPaymentData(message).content.payment_data;
+  const currentProfile = getCurrentProfile(getAuthenticationProvider());
   const recipients = paymentData
     ? {
         recipients: [

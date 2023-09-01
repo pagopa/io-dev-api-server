@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { faker } from "@faker-js/faker/locale/it";
 import * as E from "fp-ts/lib/Either";
+import * as R from "fp-ts/lib/Record";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import { Profile } from "../../generated/definitions/backend/Profile";
@@ -12,15 +13,17 @@ import {
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { getProblemJson } from "../payloads/error";
-import { currentProfile as profile } from "../payloads/profile";
+import { getCurrentProfile } from "../payloads/profile";
 import { addHandler } from "../payloads/response";
 import { mockUserMetadata } from "../payloads/userMetadata";
 import { getRandomValue } from "../utils/random";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
+import { getAuthenticationProvider } from "../persistence/sessionInfo";
+import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 
 // eslint-disable-next-line functional/no-let
-export let currentProfile = { ...profile };
+export let currentProfile: InitializedProfile = {} as InitializedProfile;
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
 type UserDeleteDownloadData = {
@@ -48,24 +51,26 @@ addHandler(
 // if profile section allows random values, generate random name, family_name and email
 // 0 -> male, 1 -> female
 const gender = faker.name.sexType();
-currentProfile = {
-  ...currentProfile,
-  ...getRandomValue(
-    {
-      name: currentProfile.name,
-      family_name: currentProfile.family_name
-    },
-    {
-      name: faker.name.firstName(gender),
-      family_name: faker.name.lastName(gender)
-    },
-    "profile"
-  )
-};
 // get profile
-addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) =>
-  res.json(currentProfile)
-);
+addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) => {
+  if (R.isEmpty(currentProfile)) {
+    currentProfile = {
+      ...getCurrentProfile(getAuthenticationProvider()),
+      ...getRandomValue(
+        {
+          name: currentProfile.name,
+          family_name: currentProfile.family_name
+        },
+        {
+          name: faker.name.firstName(gender),
+          family_name: faker.name.lastName(gender)
+        },
+        "profile"
+      )
+    };
+  }
+  return res.json(currentProfile);
+});
 
 // update profile
 addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
@@ -203,5 +208,5 @@ addHandler(
 // reset function
 export const resetProfile = () => {
   userChoices = initialUserChoice;
-  currentProfile = { ...profile };
+  currentProfile = { ...getCurrentProfile(getAuthenticationProvider()) };
 };
