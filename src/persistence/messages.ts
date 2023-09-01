@@ -89,15 +89,19 @@ function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndAttachment
 /**
  * Find one message given its ID, whether it is in the inbox or archived.
  */
-function findOneById(
+const getMessageById = (
   id: string
-): CreatedMessageWithContentAndAttachments | null {
-  return (
-    inboxMessages.find(message => message.id === id) ||
-    archivedMessages.find(message => message.id === id) ||
-    null
+): O.Option<CreatedMessageWithContentAndAttachments> =>
+  pipe(
+    inboxMessages,
+    A.findFirst(message => message.id === id),
+    O.orElse(() =>
+      pipe(
+        archivedMessages,
+        A.findFirst(message => message.id === id)
+      )
+    )
   );
-}
 
 function dropAll(): void {
   inboxMessages = [];
@@ -153,7 +157,7 @@ export default {
   dropAll,
   findAllArchived,
   findAllInbox,
-  findOneById,
+  getMessageById,
   persist,
   setReadMessage,
   unarchive

@@ -19,7 +19,7 @@ import {
   fileExists,
   readFileAndDecode,
   readFileAsJSON,
-  sendFile
+  sendFileFromRootPath
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
@@ -76,7 +76,7 @@ addHandler(
       B.fold(
         // ignoring organization id and send always the same image
         () =>
-          sendFile("assets/imgs/logos/organizations/organization_1.png", res),
+          sendFileFromRootPath("assets/imgs/logos/organizations/organization_1.png", res),
         // we send a 404 for the service number 4 to check missing image values
         () => res.sendStatus(404)
       )
@@ -89,7 +89,7 @@ addHandler(
   addRoutePrefix("/logos/services/:service_id"),
   (_, res) => {
     // ignoring service id and send always the same image
-    sendFile("assets/imgs/logos/services/service_1.png", res);
+    sendFileFromRootPath("assets/imgs/logos/services/service_1.png", res);
   }
 );
 
@@ -98,7 +98,7 @@ addHandler(
   "get",
   addRoutePrefix("/logos/abi/:logo_id"),
   (req, res) => {
-    sendFile(`assets/imgs/logos/abi/${req.params.logo_id}`, res);
+    sendFileFromRootPath(`assets/imgs/logos/abi/${req.params.logo_id}`, res);
   }
 );
 
@@ -107,7 +107,7 @@ addHandler(
   "get",
   addRoutePrefix("/logos/privative/gdo/:logo_id"),
   (req, res) => {
-    sendFile(`assets/imgs/logos/privative/gdo/${req.params.logo_id}`, res);
+    sendFileFromRootPath(`assets/imgs/logos/privative/gdo/${req.params.logo_id}`, res);
   }
 );
 
@@ -116,7 +116,7 @@ addHandler(
   "get",
   addRoutePrefix("/logos/privative/loyalty/:logo_id"),
   (req, res) => {
-    sendFile(`assets/imgs/logos/privative/loyalty/${req.params.logo_id}`, res);
+    sendFileFromRootPath(`assets/imgs/logos/privative/loyalty/${req.params.logo_id}`, res);
   }
 );
 
@@ -253,7 +253,7 @@ addHandler(
   (req, res) => {
     const logoPath = `assets/spid/idps/${req.params.spid_logo}`;
     if (fileExists(logoPath)) {
-      sendFile(logoPath, res);
+      sendFileFromRootPath(logoPath, res);
       return;
     }
     res.sendStatus(404);

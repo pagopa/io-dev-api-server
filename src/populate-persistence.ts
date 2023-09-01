@@ -14,7 +14,6 @@ import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/T
 import { ioDevServerConfig } from "./config";
 import {
   createMessage,
-  remoteAttachmentFileCount,
   withContent,
   withDueDate,
   withPaymentData,
@@ -480,7 +479,7 @@ const createMessagesWithRemoteAttachments = (
       `Sender ${index}`,
       `Subject ${index}: remote attachments`,
       messageMarkdown,
-      1 + (index % remoteAttachmentFileCount)
+      1 + index
     )
   );
 

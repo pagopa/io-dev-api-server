@@ -4,7 +4,7 @@ import * as t from "io-ts";
 import { Certificate } from "../../../../generated/definitions/eu_covid_cert/Certificate";
 import { assetsFolder, staticContentRootPath } from "../../../config";
 import { addHandler } from "../../../payloads/response";
-import { readFileAsJSON, sendFile } from "../../../utils/file";
+import { readFileAsJSON, sendFileFromRootPath } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { validatePayload } from "../../../utils/validator";
 
@@ -81,6 +81,6 @@ addHandler(
   "get",
   `${staticContentRootPath}/logos/eucovidcert/:logoId`,
   (req, res) => {
-    sendFile(`assets/eu_covid_cert/logo/${req.params.logoId}`, res);
+    sendFileFromRootPath(`assets/eu_covid_cert/logo/${req.params.logoId}`, res);
   }
 );

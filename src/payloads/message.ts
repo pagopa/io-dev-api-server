@@ -1,8 +1,10 @@
 import * as path from "path";
 import { pipe } from "fp-ts/lib/function";
+import * as S from "fp-ts/lib/string";
+import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { faker } from "@faker-js/faker/locale/it";
-import { slice } from "lodash";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
@@ -201,44 +203,62 @@ export const getCategory = (
 
 export const defaultContentType = "application/octet-stream";
 
-export function thirdPartyAttachmentFromAbsolutePathArray(
-  absolutePaths: ReadonlyArray<string>
-) {
-  return absolutePaths
-    .filter(f => f.endsWith("pdf"))
-    .map((filename, index) => {
-      const parsedFile = path.parse(filename);
-      const attachmentId = `${index}`;
-      const attachmentUrl = attachmentId;
-      return {
-        id: attachmentId,
-        name: parsedFile.base,
-        content_type:
-          contentTypeMapping[parsedFile.ext.substr(1)] ?? defaultContentType,
-        url: attachmentUrl
-      } as ThirdPartyAttachment;
-    });
-}
+export const thirdPartyAttachmentFromAbsolutePathArray =
+  (count: number, idOffset: number = 0) =>
+  (absolutePaths: string[]) =>
+    pipe(
+      absolutePaths,
+      A.filter(absolutePath => absolutePath.endsWith("pdf")),
+      pdfAbsolutePaths =>
+        A.makeBy(count, attachmentIndex =>
+          pipe(
+            attachmentIndex % pdfAbsolutePaths.length,
+            pdfIndex => pdfAbsolutePaths[pdfIndex],
+            pdfAbsolutePath =>
+              pipe(
+                pdfAbsolutePath,
+                path.parse,
+                parsedPDFFile =>
+                  ({
+                    id: `${idOffset + attachmentIndex}`,
+                    name: parsedPDFFile.name,
+                    content_type: contentTypeFromParsedFile(parsedPDFFile),
+                    url: attachmentUrlFromAbsolutePath(pdfAbsolutePath)
+                  } as ThirdPartyAttachment)
+              )
+          )
+        )
+    );
 
-const remoteAttachmentFiles = listDir(
-  assetsFolder + "/messages/remote/attachments"
-);
-export const remoteAttachmentFileCount = remoteAttachmentFiles.length;
+const contentTypeFromParsedFile = (parsedFile: path.ParsedPath) =>
+  pipe(
+    parsedFile.ext,
+    extensionWithDot => extensionWithDot.slice(1),
+    extension => contentTypeMapping[extension],
+    O.fromNullable,
+    O.getOrElse(() => defaultContentType)
+  );
+
+const attachmentUrlFromAbsolutePath = (absolutePath: string) =>
+  pipe(path.resolve("."), executionDirectoryAbsolutePath =>
+    pipe(absolutePath, S.replace(executionDirectoryAbsolutePath, ""))
+  );
 
 export const getRemoteAttachments = (
   attachmentCount: number
-): ReadonlyArray<ThirdPartyAttachment> => {
-  const safeAttachmentCount = Math.min(
-    attachmentCount,
-    remoteAttachmentFileCount
+): ReadonlyArray<ThirdPartyAttachment> =>
+  pipe(
+    path.join(assetsFolder, "messages", "remote", "attachments"),
+    remoteAttachmentFolderAbsolutePath =>
+      pipe(
+        remoteAttachmentFolderAbsolutePath,
+        listDir,
+        A.map(fileNameWithExtension =>
+          path.join(remoteAttachmentFolderAbsolutePath, fileNameWithExtension)
+        ),
+        thirdPartyAttachmentFromAbsolutePathArray(attachmentCount)
+      )
   );
-  const slicedRemoteAttachmentFiles = slice(
-    remoteAttachmentFiles,
-    0,
-    safeAttachmentCount
-  );
-  return thirdPartyAttachmentFromAbsolutePathArray(slicedRemoteAttachmentFiles);
-};
 
 export const getThirdPartyMessagePrecondition =
   (): ThirdPartyMessagePrecondition =>

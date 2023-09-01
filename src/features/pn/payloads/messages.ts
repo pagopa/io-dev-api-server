@@ -1,3 +1,4 @@
+import * as path from "path";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
 import * as A from "fp-ts/lib/Array";
@@ -5,11 +6,7 @@ import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { faker } from "@faker-js/faker/locale/it";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import {
-  IoDevServerConfig,
-  PNMessageTemplate,
-  PNMessageTemplateWrapper
-} from "../../../types/config";
+import { IoDevServerConfig } from "../../../types/config";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import ServicesDB from "../../../persistence/services";
 import PaymentDB from "../../../persistence/payments";
@@ -45,6 +42,8 @@ import {
 } from "../services/services";
 import { getNewMessage } from "../../../populate-persistence";
 import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
+import { PNMessageTemplate } from "../types/messageTemplate";
+import { PNMessageTemplateWrapper } from "../types/messageTemplateWrapper";
 
 export const createPNOptInMessage = (
   customConfig: IoDevServerConfig
@@ -171,7 +170,10 @@ const createPNMessageWithContent = (
     E.map(pnRecipients => ({
       ...message,
       third_party_message: {
-        attachments: createPNAttachments(),
+        attachments: createPNAttachmentsAndF24s(
+          template.attachmentCount,
+          template.f24Count
+        ),
         details: {
           iun,
           senderDenomination,
@@ -318,10 +320,38 @@ const createPNMessageRecipient = (
     }))
   );
 
-const createPNAttachments = (): ReadonlyArray<ThirdPartyAttachment> =>
+const createPNAttachmentsAndF24s = (
+  attachmentCount: number,
+  f24Count: number
+): ReadonlyArray<ThirdPartyAttachment> =>
   pipe(
-    listDir(assetsFolder + "/messages/pn/attachments"),
-    thirdPartyAttachmentFromAbsolutePathArray
+    path.join(assetsFolder, "messages", "pn", "attachments"),
+    attachmentFolderAbsolutePath =>
+      pipe(
+        attachmentFolderAbsolutePath,
+        listDir,
+        A.map(fileNameWithExtension =>
+          path.join(attachmentFolderAbsolutePath, fileNameWithExtension)
+        ),
+        thirdPartyAttachmentFromAbsolutePathArray(attachmentCount),
+        pnAttachments =>
+          pipe(
+            path.join(assetsFolder, "messages", "pn", "f24"),
+            f24FolderAbsolutePath =>
+              pipe(
+                f24FolderAbsolutePath,
+                listDir,
+                A.map(fileNameWithExtension =>
+                  path.join(f24FolderAbsolutePath, fileNameWithExtension)
+                ),
+                thirdPartyAttachmentFromAbsolutePathArray(
+                  f24Count,
+                  attachmentCount
+                ),
+                pnF24s => [...pnAttachments, ...pnF24s]
+              )
+          )
+      )
   );
 
 const createPNTimeline =

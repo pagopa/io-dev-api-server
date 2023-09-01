@@ -1,6 +1,8 @@
+import * as path from "path";
 import { Router } from "express";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
+import * as A from "fp-ts/lib/ReadonlyArray";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
@@ -18,7 +20,7 @@ import {
 import { addHandler } from "../payloads/response";
 import MessagesDB from "../persistence/messages";
 import { GetMessagesParameters } from "../types/parameters";
-import { fileExists, isPDFFile, sendFile } from "../utils/file";
+import { fileExists, isPDFFile, sendFileFromRootPath } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import ServicesDB from "../persistence/services";
 import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
@@ -220,13 +222,13 @@ addHandler(
       return;
     }
     // retrieve the messageIndex from id
-    const message = MessagesDB.findOneById(req.params.id);
-    if (message === null) {
+    const message = MessagesDB.getMessageById(req.params.id);
+    if (O.isNone(message)) {
       res.status(404).json(getProblemJson(404, messageNotFoundError));
       return;
     }
     const response = getPublicMessages(
-      [message],
+      [message.value],
       req.query.public_message === "true",
       true
     )[0];
@@ -291,86 +293,145 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:id"),
-  lollipopMiddleware((req, res) => {
-    if (configResponse.getThirdPartyMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
-      return;
-    }
-
-    const message = MessagesDB.findOneById(req.params.id);
-
-    const thirdPartyMessage = pipe(
-      ThirdPartyMessageWithContent.decode(message),
-      O.fromEither,
-      O.toUndefined
-    );
-
-    if (thirdPartyMessage) {
-      res.json(thirdPartyMessage);
-    } else {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-    }
-  })
-);
+  lollipopMiddleware((req, res) =>
+    pipe(
+      configResponse.getThirdPartyMessageResponseCode === 200,
+      B.fold(
+        () => res.sendStatus(configResponse.getThirdPartyMessageResponseCode),
+        () => 
+          pipe(
+            MessagesDB.getMessageById(req.params.id),
+            O.chain(message => 
+              pipe(
+                ThirdPartyMessageWithContent.decode(message),
+                O.fromEither
+              )
+            ),
+            O.fold(
+              () => res.status(404).json(getProblemJson(404, messageNotFoundError)),
+              (message) => res.json(message)
+            )
+          )
+      )
+    )));
 
 addHandler(
   messageRouter,
   "get",
-  addApiV1Prefix("/third-party-messages/:messageId/attachments/:attachmentId"),
-  lollipopMiddleware((req, res) => {
-    // find the message by the given messageId
-    const message = MessagesDB.findOneById(req.params.messageId);
-    const thirdPartyMessage = ThirdPartyMessageWithContent.decode(message);
-    // ensure message exists and it has a valid content
-    if (!message || E.isLeft(thirdPartyMessage)) {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-      return;
-    }
-    // find the attachment by the given attachmentId
-    const attachment =
-      thirdPartyMessage.right.third_party_message?.attachments?.find(
-        a => a.id === req.params.attachmentId
-      );
-    if (attachment === undefined) {
-      res.status(404).json(getProblemJson(404, "attachment not found"));
-      return;
-    }
-    const messageCategory = getCategory(message);
-    const categoryTag = messageCategory?.tag;
-    const attachmentFolderName =
-      categoryTag === PNCategoryTagEnum.PN ? "pn" : "remote";
-    const attachmentAbsolutePath = `assets/messages/${attachmentFolderName}/attachments/${attachment.name}`;
-    if (!fileExists(attachmentAbsolutePath)) {
-      // The real IO-backend replies with a 500 if the attachment is not found so we must replicate the same behaviour
-      res.status(500).json(getProblemJson(500, "attachment gone"));
-      return;
-    }
-    try {
-      const isAttachmentASupportedPDF = isPDFFile(attachmentAbsolutePath);
-      if (!isAttachmentASupportedPDF) {
-        res
-          .status(415)
-          .json(getProblemJson(415, "Not a supported PDF attachment"));
-        return;
-      }
-    } catch (e) {
-      res
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            `Unable to check requested attachment (${(e as Error).message})`
+  addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
+  lollipopMiddleware((req, res) =>
+    pipe(
+      req.params.messageId,
+      MessagesDB.getMessageById,
+      O.fold(
+        () => res.status(404).json(getProblemJson(404, messageNotFoundError)),
+        message =>
+          pipe(
+            ThirdPartyMessageWithContent.decode(message),
+            E.fold(
+              errors =>
+                res
+                  .status(500)
+                  .json(
+                    getProblemJson(
+                      500,
+                      `Decode failed for message with id (${req.params.messageId})`,
+                      JSON.stringify(errors)
+                    )
+                  ),
+              thirdPartyMessageWithContent =>
+                pipe(
+                  thirdPartyMessageWithContent.third_party_message,
+                  O.fromNullable,
+                  O.chainNullableK(
+                    thirdPartyMessage => thirdPartyMessage.attachments
+                  ),
+                  O.map(attachments =>
+                    pipe(
+                      attachments,
+                      A.findFirst(attachment =>
+                        attachment.url.endsWith(req.params[0])
+                      )
+                    )
+                  ),
+                  O.flatten,
+                  O.fold(
+                    () =>
+                      res
+                        .status(404)
+                        .json(
+                          getProblemJson(
+                            404,
+                            `Attachment not found for url (${req.params[0]})`
+                          )
+                        ),
+                    attachment =>
+                      pipe(
+                        path.resolve("."),
+                        executionFolderAbsolutePath =>
+                          path.join(
+                            executionFolderAbsolutePath,
+                            attachment.url
+                          ),
+                        attachmentAbsolutePath =>
+                          pipe(
+                            fileExists(attachmentAbsolutePath),
+                            B.fold(
+                              () =>
+                                res
+                                  .status(500)
+                                  .json(
+                                    getProblemJson(
+                                      500,
+                                      `Attachment file does not exist (${attachmentAbsolutePath})`
+                                    )
+                                  ),
+                              () =>
+                                pipe(
+                                  isPDFFile(attachmentAbsolutePath),
+                                  E.fold(
+                                    error =>
+                                      res
+                                        .status(500)
+                                        .json(
+                                          getProblemJson(
+                                            500,
+                                            `Unable to check requested attachment (${attachmentAbsolutePath})`,
+                                            JSON.stringify(error)
+                                          )
+                                        ),
+                                    B.foldW(
+                                      () =>
+                                        res
+                                          .status(415)
+                                          .json(
+                                            getProblemJson(
+                                              415,
+                                              "Not a supported PDF attachment"
+                                            )
+                                          ),
+                                      () =>
+                                        pipe(
+                                          res.setHeader(
+                                            "Content-Type",
+                                            attachment.content_type ??
+                                              defaultContentType
+                                          ),
+                                          resWithHeaders => sendFileFromRootPath(attachment.url, resWithHeaders)
+                                        )
+                                    )
+                                  )
+                                )
+                            )
+                          )
+                      )
+                  )
+                )
+            )
           )
-        );
-      return;
-    }
-    res.setHeader(
-      "Content-Type",
-      attachment.content_type ?? defaultContentType
-    );
-    sendFile(attachmentAbsolutePath, res);
-  }),
-  () => 3000
+      )
+    )
+  )
 );
 
 addHandler(
@@ -380,8 +441,7 @@ addHandler(
   lollipopMiddleware((req, res) =>
     pipe(
       req.params.id,
-      MessagesDB.findOneById,
-      O.fromNullable,
+      MessagesDB.getMessageById,
       O.fold(
         () => res.status(404).json(getProblemJson(404, messageNotFoundError)),
         message =>
