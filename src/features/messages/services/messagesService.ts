@@ -254,7 +254,7 @@ const getPollingAndExpirationTuple = (
       pollingAndExpirationTuple =>
         pipe(
           pollingAndExpirationTuple[1],
-          expirationDate => expirationDate < new Date(),
+          expirationDate => new Date() < expirationDate,
           B.fold(
             () =>
               generateAndSavePollingAndExpirationTuple(

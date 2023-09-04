@@ -323,7 +323,7 @@ addHandler(
                                             ),
                                           retryAfterSeconds =>
                                             res
-                                              .setHeader("retry-after", 3)
+                                              .setHeader("retry-after", retryAfterSeconds)
                                               .status(503)
                                               .json(
                                                 getProblemJson(
