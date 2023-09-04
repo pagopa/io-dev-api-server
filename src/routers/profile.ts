@@ -54,12 +54,15 @@ const gender = faker.name.sexType();
 // get profile
 addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) => {
   if (R.isEmpty(currentProfile)) {
+    const profileFromAuthenticationProvider = getCurrentProfile(
+      getAuthenticationProvider()
+    );
     currentProfile = {
-      ...getCurrentProfile(getAuthenticationProvider()),
+      ...profileFromAuthenticationProvider,
       ...getRandomValue(
         {
-          name: currentProfile.name,
-          family_name: currentProfile.family_name
+          name: profileFromAuthenticationProvider.name,
+          family_name: profileFromAuthenticationProvider.family_name
         },
         {
           name: faker.name.firstName(gender),
