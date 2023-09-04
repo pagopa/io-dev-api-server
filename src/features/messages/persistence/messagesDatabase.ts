@@ -2,7 +2,7 @@ import { identity, pipe } from "fp-ts/lib/function";
 import { sequenceT } from "fp-ts/lib/Apply";
 import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
-import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 
 // eslint-disable-next-line functional/no-let
 let inboxMessages: CreatedMessageWithContentAndAttachments[] = [];

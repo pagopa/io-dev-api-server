@@ -13,7 +13,9 @@ import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProble
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
-import { PNMessageTemplateWrapper } from "../features/pn/types/messageTemplateWrapper";
+import { MessagesConfig } from "../features/messages/types/messagesConfig";
+import { HttpResponseCode } from "./httpResponseCode";
+import { AllowRandomValue } from "./allowRandomValue";
 
 /* profile */
 export const ProfileAttrs = t.intersection([
@@ -71,25 +73,6 @@ export const PaymentConfig = t.interface({
   pspFeeAmount: t.number
 });
 export type PaymentConfig = t.TypeOf<typeof PaymentConfig>;
-
-/* general http response codes */
-const HttpResponseCode = t.union([
-  t.literal(200),
-  t.literal(400),
-  t.literal(401),
-  t.literal(404),
-  t.literal(429),
-  t.literal(500)
-]);
-
-const AllowRandomValue = t.interface({ allowRandomValues: t.boolean });
-
-const LiveModeMessages = t.interface({
-  // interval between updates in millis
-  interval: t.number,
-  // number of new messages
-  count: t.number
-});
 
 const ErrorCodes = WithinRangeInteger(400, 600);
 export type ErrorCodes = t.TypeOf<typeof ErrorCodes>;
@@ -162,66 +145,7 @@ export const IoDevServerConfig = t.interface({
     }),
     AllowRandomValue
   ]),
-  messages: t.intersection([
-    t.interface({
-      // configure some API response error code
-      response: t.interface({
-        // 200 success with payload
-        getMessagesResponseCode: HttpResponseCode,
-        // 200 success with payload
-        getMessageResponseCode: HttpResponseCode,
-        // 200 success with payload
-        getThirdPartyMessageResponseCode: HttpResponseCode
-      }),
-      paymentsCount: t.number,
-      // number of messages with remote attachments
-      withRemoteAttachments: t.number,
-      // number of message - invalid after due date - containing a payment and a valid (not expired) due date
-      paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
-      // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
-      paymentInvalidAfterDueDateWithExpiredDueDateCount: t.number,
-      // number of message containing a payment and a valid (not expired) due date
-      paymentWithValidDueDateCount: t.number,
-      // number of message containing a payment and a not valid (expired) due date
-      paymentWithExpiredDueDateCount: t.number,
-      // whether we dynamically create new messages or not
-      // number of medical messages
-      medicalCount: t.number,
-      // number of fci messages
-      fci: t.interface({
-        waitForSignatureCount: t.number,
-        rejectedCount: t.number,
-        expiredCount: t.number,
-        expired90Count: t.number,
-        waitForQtspCount: t.number,
-        signedCount: t.number,
-        canceledCount: t.number,
-        noSignatureFieldsCount: t.number,
-        response: t.interface({
-          // 200 success with payload
-          getFciResponseCode: HttpResponseCode
-        })
-      }),
-      // if true, messages (all available) with nested CTA will be included
-      withCTA: t.boolean,
-      // if true, messages (all available) with EUCovidCert will be included
-      withEUCovidCert: t.boolean,
-      // with valid due date
-      withValidDueDateCount: t.number,
-      // with invalid (expired) due date
-      withInValidDueDateCount: t.number,
-      standardMessageCount: t.number,
-      archivedMessageCount: t.number
-    }),
-    AllowRandomValue,
-    t.partial({
-      liveMode: LiveModeMessages,
-      // number of messages coming from PN (aka Piattaforma Notifiche)
-      pnMessageTemplateWrappers: t.readonlyArray(PNMessageTemplateWrapper),
-      // PN Opt In message
-      pnOptInMessage: t.boolean
-    })
-  ]),
+  messages: MessagesConfig,
   services: ServicesConfig,
   wallet: t.intersection([
     t.interface({

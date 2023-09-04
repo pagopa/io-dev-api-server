@@ -6,35 +6,26 @@ import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { faker } from "@faker-js/faker/locale/it";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
-import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
-import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
-import { MessageCategory } from "../../generated/definitions/backend/MessageCategory";
-import { TagEnum as TagEnumBase } from "../../generated/definitions/backend/MessageCategoryBase";
-import { TagEnum as TagEnumPayment } from "../../generated/definitions/backend/MessageCategoryPayment";
-import {
-  MessageCategoryPN,
-  TagEnum as TagEnumPN
-} from "../../generated/definitions/backend/MessageCategoryPN";
-import { NewMessageContent } from "../../generated/definitions/backend/NewMessageContent";
-import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
-import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
-import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
-import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
-import { ThirdPartyAttachment } from "../../generated/definitions/backend/ThirdPartyAttachment";
-import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
-import { assetsFolder } from "../config";
-import { contentTypeMapping, listDir } from "../utils/file";
-import { getRandomIntInRange } from "../utils/id";
-import { getRptID } from "../utils/messages";
-import { validatePayload } from "../utils/validator";
-import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
-import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
-import { OrganizationFiscalCode } from "../../generated/definitions/backend/OrganizationFiscalCode";
-import { pnServiceId } from "../features/pn/services/services";
-import ServicesDB from "./../persistence/services";
+import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
+import { CreatedMessageWithoutContent } from "../../../../generated/definitions/backend/CreatedMessageWithoutContent";
+import { EUCovidCert } from "../../../../generated/definitions/backend/EUCovidCert";
+import { NewMessageContent } from "../../../../generated/definitions/backend/NewMessageContent";
+import { PaymentAmount } from "../../../../generated/definitions/backend/PaymentAmount";
+import { PaymentDataWithRequiredPayee } from "../../../../generated/definitions/backend/PaymentDataWithRequiredPayee";
+import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
+import { PrescriptionData } from "../../../../generated/definitions/backend/PrescriptionData";
+import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
+import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
+import { assetsFolder } from "../../../config";
+import { contentTypeMapping, listDir } from "../../../utils/file";
+import { getRandomIntInRange } from "../../../utils/id";
+import { validatePayload } from "../../../utils/validator";
+import { thirdPartyMessagePreconditionMarkdown } from "../../../utils/variables";
+import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode";
+import { OrganizationFiscalCode } from "../../../../generated/definitions/backend/OrganizationFiscalCode";
+import ServicesDB from "../../../persistence/services";
 
 // eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
@@ -160,45 +151,6 @@ export const withContent = (
     eu_covid_cert: euCovidCert
   });
   return { ...message, content };
-};
-
-export const getCategory = (
-  message: CreatedMessageWithContent
-): MessageCategory => {
-  const { eu_covid_cert, payment_data } = message.content;
-  const serviceId = message.sender_service_id;
-  const senderService = ServicesDB.getService(serviceId);
-  if (!senderService) {
-    throw Error(
-      `message.getCategory: unabled to find service with id (${serviceId})`
-    );
-  }
-  if (
-    ThirdPartyMessageWithContent.is(message) &&
-    senderService.service_id === pnServiceId
-  ) {
-    return {
-      tag: TagEnumPN.PN,
-      original_sender: message.third_party_message.details?.senderDenomination,
-      id: message.third_party_message.details?.iun,
-      original_receipt_date: message.third_party_message.details?.sentAt,
-      summary: message.third_party_message.details?.subject
-    } as MessageCategoryPN;
-  }
-  if (eu_covid_cert?.auth_code) {
-    return {
-      tag: TagEnumBase.EU_COVID_CERT
-    };
-  }
-  if (payment_data) {
-    return {
-      tag: TagEnumPayment.PAYMENT,
-      rptId: getRptID(senderService, payment_data)
-    };
-  }
-  return {
-    tag: TagEnumBase.GENERIC
-  };
 };
 
 export const defaultContentType = "application/octet-stream";

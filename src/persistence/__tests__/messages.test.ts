@@ -1,5 +1,5 @@
 import { CreatedMessageWithContentAndEnrichedData } from "../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
-import MessagesDB from "../messages";
+import MessagesDB from "../../features/messages/persistence/messagesDatabase";
 
 const buildMessage = (id: string) =>
   ({ id } as unknown as CreatedMessageWithContentAndEnrichedData);

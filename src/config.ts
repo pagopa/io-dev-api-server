@@ -101,6 +101,9 @@ const defaultConfig: IoDevServerConfig = {
         }
       }
     ],
+    attachmentAvailableAfterSeconds: 5,
+    attachmentExpiredAfterSeconds: 10,
+    attachmentRetryAfterSeconds: 2,
     pnOptInMessage: true,
     withRemoteAttachments: 0,
     paymentsCount: 1,

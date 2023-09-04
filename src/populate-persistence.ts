@@ -18,9 +18,9 @@ import {
   withDueDate,
   withPaymentData,
   withRemoteAttachments
-} from "./payloads/message";
+} from "./features/messages/persistence/messagesPayload";
 import ServicesDB from "./persistence/services";
-import MessagesDB from "./persistence/messages";
+import MessagesDB from "./features/messages/persistence/messagesDatabase";
 import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";

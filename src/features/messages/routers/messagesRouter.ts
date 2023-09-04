@@ -6,145 +6,30 @@ import * as A from "fp-ts/lib/ReadonlyArray";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import _ from "lodash";
-import { match, not, __ } from "ts-pattern";
-import { TagEnum as PNCategoryTagEnum } from "../../generated/definitions/backend/MessageCategoryPN";
-import { PublicMessage } from "../../generated/definitions/backend/PublicMessage";
-import { ThirdPartyMessageWithContent } from "../../generated/definitions/backend/ThirdPartyMessageWithContent";
-import { ioDevServerConfig } from "../config";
-import { getProblemJson } from "../payloads/error";
+import { TagEnum as PNCategoryTagEnum } from "../../../../generated/definitions/backend/MessageCategoryPN";
+import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
+import { ioDevServerConfig } from "../../../config";
+import { getProblemJson } from "../../../payloads/error";
+import { getThirdPartyMessagePrecondition } from "../persistence/messagesPayload";
+import { addHandler } from "../../../payloads/response";
+import MessagesDB from "../persistence/messagesDatabase";
+import { GetMessagesParameters } from "../../../types/parameters";
 import {
-  defaultContentType,
-  getCategory,
-  getThirdPartyMessagePrecondition
-} from "../payloads/message";
-import { addHandler } from "../payloads/response";
-import MessagesDB from "../persistence/messages";
-import { GetMessagesParameters } from "../types/parameters";
-import { fileExists, isPDFFile, sendFileFromRootPath } from "../utils/file";
-import { addApiV1Prefix } from "../utils/strings";
-import ServicesDB from "../persistence/services";
-import { CreatedMessageWithContentAndAttachments } from "../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import { CreatedMessageWithContentAndEnrichedData } from "../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
-import { lollipopMiddleware } from "../middleware/lollipopMiddleware";
-import { pnServiceId } from "../features/pn/services/services";
+  fileExists,
+  isPDFFile,
+  sendFileFromRootPath
+} from "../../../utils/file";
+import { addApiV1Prefix } from "../../../utils/strings";
+import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
+import MessagesService, {
+  getMessageCategory
+} from "../services/messagesService";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
 
 const messageNotFoundError = "message not found";
-
-/* helper function to build messages response */
-const getPublicMessages = (
-  messages: ReadonlyArray<CreatedMessageWithContentAndAttachments>,
-  withEnrichedData: boolean,
-  withContent: boolean
-): ReadonlyArray<PublicMessage | CreatedMessageWithContentAndAttachments> =>
-  messages.map(message => {
-    const serviceId = message.sender_service_id;
-    const senderService = ServicesDB.getService(serviceId);
-    if (!senderService) {
-      throw Error(
-        `message.getPublicMessages: unabled to find service with id (${serviceId})`
-      );
-    }
-
-    const enrichedData = pipe(
-      withEnrichedData,
-      B.fold(
-        () => ({}),
-        () => {
-          const { content, is_read, is_archived, has_attachments } =
-            message as CreatedMessageWithContentAndEnrichedData;
-
-          return {
-            service_name: senderService.service_name,
-            organization_name: senderService.organization_name,
-            message_title: content.subject,
-            category: getCategory(message),
-            is_read,
-            is_archived,
-            has_attachments,
-            has_precondition: senderService.service_id === pnServiceId
-          };
-        }
-      )
-    );
-
-    const content = pipe(
-      withContent,
-      B.fold(
-        () => ({}),
-        () => ({
-          content: message.content
-        })
-      )
-    );
-
-    return {
-      id: message.id,
-      fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
-      created_at: message.created_at,
-      sender_service_id: message.sender_service_id,
-      time_to_live: message.time_to_live,
-      ...enrichedData,
-      ...content
-    };
-  });
-
-const computeGetMessagesQueryIndexes = (
-  params: GetMessagesParameters,
-  orderedList: ReadonlyArray<CreatedMessageWithContentAndAttachments>
-) => {
-  const toMatch = { maximumId: params.maximumId, minimumId: params.minimumId };
-  return match(toMatch)
-    .with({ maximumId: not(__.nullish), minimumId: not(__.nullish) }, () => {
-      const endIndex = orderedList.findIndex(m => m.id === params.maximumId);
-      const startIndex = orderedList.findIndex(m => m.id === params.minimumId);
-      // if indexes are defined and in the expected order
-      if (![startIndex, endIndex].includes(-1) && startIndex < endIndex) {
-        return {
-          startIndex: startIndex + 1,
-          endIndex,
-          backward: false
-        };
-      }
-    })
-    .with({ maximumId: not(__.nullish) }, () => {
-      const startIndex = orderedList.findIndex(m => m.id === params.maximumId);
-      // index is defined and not at the end of the list
-      if (startIndex !== -1 && startIndex + 1 < orderedList.length) {
-        const pageSize = params.pageSize;
-        if (!pageSize) {
-          throw new Error("Missing parameter 'pageSize' in request");
-        }
-        return {
-          startIndex: startIndex + 1,
-          endIndex: startIndex + 1 + pageSize,
-          backward: false
-        };
-      }
-    })
-    .with({ minimumId: not(__.nullish) }, () => {
-      const endIndex = orderedList.findIndex(m => m.id === params.minimumId);
-      // index found and it isn't the first item (can't go back)
-      if (endIndex > 0) {
-        const pageSize = params.pageSize;
-        if (!pageSize) {
-          throw new Error("Missing parameter 'pageSize' in request");
-        }
-        return {
-          startIndex: Math.max(0, endIndex - (1 + pageSize)),
-          endIndex,
-          backward: true
-        };
-      }
-    })
-    .otherwise(() => ({
-      startIndex: 0,
-      endIndex: params.pageSize as number,
-      backward: false
-    }));
-};
+const attachmentPollingData = new Map<string, [Date, Date]>();
 
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   if (configResponse.getMessagesResponseCode !== 200) {
@@ -181,7 +66,10 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
     | { startIndex: number; endIndex: number; backward: boolean }
     | undefined = undefined;
   try {
-    indexes = computeGetMessagesQueryIndexes(params, orderedList);
+    indexes = MessagesService.computeGetMessagesQueryIndexes(
+      params,
+      orderedList
+    );
   } catch (e) {
     return res.sendStatus(400).json(getProblemJson(400, `${e}`));
   }
@@ -193,7 +81,12 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
 
   const enrichResultData = params.enrichResultData ?? true;
   const slice = _.slice(orderedList, indexes.startIndex, indexes.endIndex);
-  const items = getPublicMessages(slice, enrichResultData, false);
+  const items = MessagesService.getPublicMessages(
+    slice,
+    enrichResultData,
+    false,
+    ioDevServerConfig
+  );
 
   // the API doesn't return 'next' for previous page
   if (indexes.backward) {
@@ -227,10 +120,11 @@ addHandler(
       res.status(404).json(getProblemJson(404, messageNotFoundError));
       return;
     }
-    const response = getPublicMessages(
+    const response = MessagesService.getPublicMessages(
       [message.value],
       req.query.public_message === "true",
-      true
+      true,
+      ioDevServerConfig
     )[0];
     res.json(response);
   }
@@ -411,17 +305,32 @@ addHandler(
                                             )
                                           ),
                                       () =>
-                                        pipe(
-                                          res.setHeader(
-                                            "Content-Type",
-                                            attachment.content_type ??
-                                              defaultContentType
-                                          ),
-                                          resWithHeaders =>
-                                            sendFileFromRootPath(
-                                              attachment.url,
-                                              resWithHeaders
-                                            )
+                                        MessagesService.handleAttachment(
+                                          attachment,
+                                          attachmentPollingData,
+                                          ioDevServerConfig,
+                                          (contentType, fileRelativePath) =>
+                                            pipe(
+                                              res.setHeader(
+                                                "Content-Type",
+                                                contentType
+                                              ),
+                                              resWithHeaders =>
+                                                sendFileFromRootPath(
+                                                  fileRelativePath,
+                                                  resWithHeaders
+                                                )
+                                            ),
+                                          retryAfterSeconds =>
+                                            res
+                                              .setHeader("retry-after", 3)
+                                              .status(503)
+                                              .json(
+                                                getProblemJson(
+                                                  503,
+                                                  `Retry-after: ${retryAfterSeconds}s`
+                                                )
+                                              )
                                         )
                                     )
                                   )
@@ -451,7 +360,7 @@ addHandler(
         message =>
           pipe(
             message,
-            getCategory,
+            getMessageCategory,
             O.fromNullable,
             O.chainNullableK(category => category.tag),
             // TODO: we must replace this check with a more generic one
