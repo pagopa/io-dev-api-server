@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function";
+import { identity, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { failure, PathReporter } from "io-ts/lib/PathReporter";
@@ -16,7 +16,7 @@ export const validatePayload = <T, O, I>(codec: t.Type<T, O, I>, payload: I) =>
       validationErrorArray => {
         throw Error(validationErrorArray.toString());
       },
-      _ => _
+      identity
     )
   );
 

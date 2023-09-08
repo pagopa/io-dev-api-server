@@ -66,9 +66,7 @@ const createPaymentData = (
     },
     rawPaymentData =>
       decodePayload(PaymentDataWithRequiredPayee, rawPaymentData),
-    E.map(paymentDataWithRequiredPayee =>
-      addOrUpdatePayment(paymentDataWithRequiredPayee)
-    )
+    E.map(addOrUpdatePayment)
   );
 
 const createProcessablePayment = (
@@ -102,8 +100,7 @@ const createProcessablePayment = (
         }
       ]
     } as PaymentRequestsGetResponse,
-    paymentRequestsGetResponse =>
-      processablePayment(paymentRequestsGetResponse),
+    processablePayment,
     processablePayment => addOrUpdatePaymentStatus(rptId, processablePayment)
   );
 
@@ -116,7 +113,7 @@ const createProcessedPayment = (
       detail: "PAYMENT_UNKNOWN", // Legacy, it is the default value provided
       detail_v2: details
     } as PaymentProblemJson,
-    paymentStatusDetails => processedPayment(paymentStatusDetails),
+    processedPayment,
     processedPayment => addOrUpdatePaymentStatus(rptId, processedPayment)
   );
 
