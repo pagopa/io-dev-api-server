@@ -425,26 +425,22 @@ const addMultiplePNTimelineEvent =
   ): NotificationStatusHistoryElement[] =>
     [
       ...accumulator,
-      ...A.makeBy(
-        paidNoticeCodes.length,
-        index =>
-          ({
-            status,
-            activeFrom: pipe(
-              new Date(Date.parse(utcStartDateString) + index * 60000),
-              utcDate => `${utcDate.toISOString().slice(0, -1)}+00:00`
-            ),
-            relatedTimelineElements: [
-              "TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_0",
-              `TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_${paidNoticeCodes[index]}`
-            ]
-          } as NotificationStatusHistoryElement)
-      )
+      ...A.makeBy(paidNoticeCodes.length, index => ({
+        status,
+        activeFrom: pipe(
+          new Date(Date.parse(utcStartDateString) + index * 60000),
+          utcDate => `${utcDate.toISOString().slice(0, -1)}+00:00`
+        ),
+        relatedTimelineElements: [
+          "TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_0",
+          `TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_${paidNoticeCodes[index]}`
+        ]
+      }))
     ];
 
 const noticeCodesFromNotificationRecipients = (
   notificationRecipients: NotificationRecipient[]
-) =>
+): PaymentNoticeNumber[] =>
   pipe(
     notificationRecipients,
     A.filterMap(notificationRecipient =>
@@ -452,7 +448,7 @@ const noticeCodesFromNotificationRecipients = (
         notificationRecipient.payment,
         rptIdFromNotificationPaymentInfo,
         PaymentDB.getPaymentStatus,
-        O.map(paymentStatus =>
+        O.chain(paymentStatus =>
           pipe(
             paymentStatus,
             fold(
@@ -463,8 +459,7 @@ const noticeCodesFromNotificationRecipients = (
               _ => O.none
             )
           )
-        ),
-        O.flatten
+        )
       )
     )
   );
