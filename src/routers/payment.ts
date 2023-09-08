@@ -60,7 +60,7 @@ addHandler(
           pipe(req.params.rptId as RptId, rptId =>
             pipe(
               rptId,
-              PaymentsDB.getProcessedPayment,
+              PaymentsDB.getPaymentStatus,
               O.fold(
                 () =>
                   res
