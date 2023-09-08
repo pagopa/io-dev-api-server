@@ -44,6 +44,7 @@ import { getNewMessage } from "../../../populate-persistence";
 import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
 import { PNMessageTemplate } from "../types/messageTemplate";
 import { PNMessageTemplateWrapper } from "../types/messageTemplateWrapper";
+import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
 
 export const createPNOptInMessage = (
   customConfig: IoDevServerConfig
@@ -180,7 +181,11 @@ const createPNMessageWithContent = (
           subject,
           abstract,
           sentAt,
-          status: template.isCancelled ? "CaNCeLlED" : undefined,
+          isCancelled: template.isCancelled,
+          completedPayments: createPNCompletedPayments(
+            template.isCancelled,
+            pnRecipients
+          ),
           notificationStatusHistory: pipe(
             pnRecipients,
             noticeCodesFromNotificationRecipients,
@@ -318,6 +323,41 @@ const createPNMessageRecipient = (
         creditorTaxId: paymentDataWithRequiredPayee.payee.fiscal_code
       }
     }))
+  );
+
+const createPNCompletedPayments = (
+  isCancelled: boolean | undefined,
+  recipients: NotificationRecipient[]
+): PaymentNoticeNumber[] | undefined =>
+  pipe(
+    isCancelled,
+    O.fromPredicate(undefinedBoolean => !!undefinedBoolean),
+    O.fold(
+      () => undefined,
+      () =>
+        pipe(
+          recipients,
+          A.filterMap(recipient =>
+            pipe(
+              recipient.payment,
+              rptIdFromNotificationPaymentInfo,
+              PaymentDB.getPaymentStatus,
+              O.chain(paymentStatus =>
+                pipe(
+                  paymentStatus,
+                  fold(
+                    processedPayment =>
+                      isPaid(processedPayment.status)
+                        ? O.some(recipient.payment.noticeCode)
+                        : O.none,
+                    _ => O.none
+                  )
+                )
+              )
+            )
+          )
+        )
+    )
   );
 
 const createPNAttachmentsAndF24s = (
