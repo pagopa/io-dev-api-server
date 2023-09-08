@@ -1,11 +1,12 @@
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
-import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
-import { addHandler } from "../../../payloads/response";
+import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { pnServiceId } from "../../../payloads/services/special/pn/factoryPn";
-import ServicesDB from "./../../../persistence/services";
+import { addHandler } from "../../../payloads/response";
+import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
+import ServicesDB from "../../../persistence/services";
+import { pnServiceId } from "../services/services";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 
 export const pnRouter = Router();
 
@@ -25,8 +26,7 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
   }
 
   const increasedSettingsVersion =
-    ((servicePreference.settings_version as number) +
-      1) as ServicePreference["settings_version"];
+    ((servicePreference.settings_version as number) + 1) as NonNegativeInteger;
   const updatedPreference = {
     is_inbox_enabled: maybeActivation.right.activation_status,
     settings_version: increasedSettingsVersion

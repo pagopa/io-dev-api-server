@@ -1,6 +1,7 @@
+import { identity, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
-import { PathReporter } from "io-ts/lib/PathReporter";
+import { failure, PathReporter } from "io-ts/lib/PathReporter";
 import { IOResponse } from "../payloads/response";
 
 /**
@@ -8,16 +9,16 @@ import { IOResponse } from "../payloads/response";
  * if it is not, an exception will be raised, otherwise an object of type T
  * will be returned
  */
-export const validatePayload = <T, O, I>(
-  codec: t.Type<T, O, I>,
-  payload: I
-) => {
-  const maybeValidPayload = codec.decode(payload);
-  if (E.isLeft(maybeValidPayload)) {
-    throw Error(PathReporter.report(maybeValidPayload).toString());
-  }
-  return maybeValidPayload.right;
-};
+export const validatePayload = <T, O, I>(codec: t.Type<T, O, I>, payload: I) =>
+  pipe(
+    decodePayload(codec, payload),
+    E.fold(validationErrorArray => {
+      throw Error(validationErrorArray.toString());
+    }, identity)
+  );
+
+export const decodePayload = <T, O, I>(codec: t.Type<T, O, I>, payload: I) =>
+  pipe(codec.decode(payload), E.mapLeft(failure));
 
 export const validateAndCreatePayload = <T, O, I>(
   codec: t.Type<T, O, I>,

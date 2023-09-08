@@ -31,19 +31,22 @@ export const addHandler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void,
-  delay?: number,
+  delay: () => number = () => 0,
   options?: HandlerOptions
 ) => {
   addNewRoute(method, path, options?.description);
   router[method](path, (req, res) => {
+    const delayMilliseconds = delay();
     setTimeout(() => {
-      if ((delay ?? 0) > 0) {
+      if (delayMilliseconds > 0) {
         // eslint-disable-next-line no-console
         console.log(
-          chalk.red(`${path} response has a delayed of ${delay} milliseconds`)
+          chalk.red(
+            `${path} response has a delayed of ${delayMilliseconds} milliseconds`
+          )
         );
       }
       handleRequest(req, res);
-    }, delay ?? 0);
+    }, delayMilliseconds);
   });
 };

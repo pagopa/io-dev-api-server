@@ -1,7 +1,9 @@
 import * as path from "path";
-import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
 import { faker } from "@faker-js/faker/locale/it";
 import { slice } from "lodash";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../generated/definitions/backend/CreatedMessageWithoutContent";
 import { EUCovidCert } from "../../generated/definitions/backend/EUCovidCert";
@@ -26,9 +28,11 @@ import { getRptID } from "../utils/messages";
 import { validatePayload } from "../utils/validator";
 import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import { currentProfile } from "./profile";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
+import { OrganizationFiscalCode } from "../../generated/definitions/backend/OrganizationFiscalCode";
+import { pnServiceId } from "../features/pn/services/services";
 import ServicesDB from "./../persistence/services";
-import { pnServiceId } from "./services/special/pn/factoryPn";
 
 // eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
@@ -63,79 +67,6 @@ export const withDueDate = (
   content: { ...message.content, due_date: dueDate }
 });
 
-export const withPNContent = (
-  message: CreatedMessageWithContent,
-  iun: string,
-  senderDenomination: string | undefined,
-  subject: string,
-  abstract: string | undefined,
-  sentAt: Date
-): ThirdPartyMessageWithContent => {
-  const paymentData = withPaymentData(message).content.payment_data;
-  const recipients = paymentData
-    ? {
-        recipients: [
-          {
-            recipientType: "PF",
-            taxId: `${currentProfile.fiscal_code}`,
-            denomination: `${currentProfile.name} ${currentProfile.family_name}`,
-            payment: {
-              noticeCode: paymentData.notice_number,
-              creditorTaxId: paymentData.payee.fiscal_code
-            }
-          }
-        ]
-      }
-    : {};
-
-  const notificationStatusHistory: ReadonlyArray<{
-    status: string;
-    activeFrom: string;
-    relatedTimelineElements: ReadonlyArray<string>;
-  }> = [
-    {
-      status: "ACCEPTED",
-      activeFrom: "2022-07-07T13:26:59.494+00:00",
-      relatedTimelineElements: [
-        "TPAK-PJUT-RALE-202207-X-1_request_accepted",
-        "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
-        "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
-        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
-      ]
-    },
-    {
-      status: "DELIVERING",
-      activeFrom: "2022-07-07T13:27:15.913+00:00",
-      relatedTimelineElements: [
-        "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
-        "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
-      ]
-    },
-    {
-      status: "VIEWED",
-      activeFrom: "2022-07-07T14:26:22.669+00:00",
-      relatedTimelineElements: [
-        "TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"
-      ]
-    }
-  ];
-  return {
-    ...message,
-    third_party_message: {
-      attachments: getPnAttachments(),
-      details: {
-        iun,
-        senderDenomination,
-        subject,
-        abstract,
-        sentAt,
-        notificationStatusHistory,
-        ...recipients
-      }
-    }
-  };
-};
-
 export const withRemoteAttachments = (
   message: CreatedMessageWithContent,
   attachmentCount: number
@@ -154,35 +85,64 @@ export const withRemoteAttachments = (
   }
 });
 
+export const generatePaymentData = (
+  organizationFiscalCode: OrganizationFiscalCode,
+  invalidAfterDueDate: boolean = false,
+  noticeNumber: string = `0${faker.random.numeric(17)}`,
+  amount: number = getRandomIntInRange(1, 10000)
+) =>
+  pipe(
+    {
+      notice_number: noticeNumber as PaymentNoticeNumber,
+      amount: amount as PaymentAmount,
+      invalid_after_due_date: invalidAfterDueDate,
+      payee: {
+        fiscal_code: organizationFiscalCode
+      }
+    },
+    (data: PaymentDataWithRequiredPayee) =>
+      validatePayload(PaymentDataWithRequiredPayee, data)
+  );
+
+const serviceFromMessage = (
+  message: CreatedMessageWithContent
+): E.Either<Error, Readonly<ServicePublic>> =>
+  pipe(message.sender_service_id, serviceId =>
+    pipe(
+      serviceId,
+      ServicesDB.getService,
+      E.fromNullable(
+        Error(
+          `serviceFromMessage: unabled to find service with id (${serviceId})`
+        )
+      )
+    )
+  );
+
 export const withPaymentData = (
   message: CreatedMessageWithContent,
   invalidAfterDueDate: boolean = false,
-  noticeNumber: string = faker.helpers.replaceSymbolWithNumber(
-    "0#################"
-  ),
+  noticeNumber: string = `0${faker.random.numeric(17)}`,
   amount: number = getRandomIntInRange(1, 10000)
-): CreatedMessageWithContent => {
-  const serviceId = message.sender_service_id;
-  const service = ServicesDB.getService(serviceId);
-  if (!service) {
-    throw Error(
-      `message.withPaymentData: unabled to find service with id (${serviceId})`
-    );
-  }
-  const data: PaymentDataWithRequiredPayee = {
-    notice_number: noticeNumber as PaymentNoticeNumber,
-    amount: amount as PaymentAmount,
-    invalid_after_due_date: invalidAfterDueDate,
-    payee: {
-      fiscal_code: service.organization_fiscal_code
-    }
-  };
-  const paymentData = validatePayload(PaymentDataWithRequiredPayee, data);
-  return {
-    ...message,
-    content: { ...message.content, payment_data: paymentData }
-  };
-};
+): E.Either<Error, CreatedMessageWithContent> =>
+  pipe(
+    message,
+    serviceFromMessage,
+    E.map(service =>
+      pipe(
+        generatePaymentData(
+          service.organization_fiscal_code,
+          invalidAfterDueDate,
+          noticeNumber,
+          amount
+        ),
+        payment_data => ({
+          ...message,
+          content: { ...message.content, payment_data }
+        })
+      )
+    )
+  );
 
 export const withContent = (
   message: CreatedMessageWithoutContent,
@@ -241,7 +201,7 @@ export const getCategory = (
 
 export const defaultContentType = "application/octet-stream";
 
-function thirdPartyAttachmentFromAbsolutePathArray(
+export function thirdPartyAttachmentFromAbsolutePathArray(
   absolutePaths: ReadonlyArray<string>
 ) {
   return absolutePaths
@@ -259,11 +219,6 @@ function thirdPartyAttachmentFromAbsolutePathArray(
       } as ThirdPartyAttachment;
     });
 }
-
-const pnAttachmentsFiles = listDir(assetsFolder + "/messages/pn/attachments");
-
-export const getPnAttachments = (): ReadonlyArray<ThirdPartyAttachment> =>
-  thirdPartyAttachmentFromAbsolutePathArray(pnAttachmentsFiles);
 
 const remoteAttachmentFiles = listDir(
   assetsFolder + "/messages/remote/attachments"

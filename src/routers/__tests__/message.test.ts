@@ -11,8 +11,8 @@ import MessagesDB from "../../persistence/messages";
 import ServicesDB from "../../persistence/services";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
-import { pnServiceId } from "../../payloads/services/special/pn/factoryPn";
 import * as lollipopMid from "../../middleware/lollipopMiddleware";
+import { pnServiceId } from "../../features/pn/services/services";
 
 const request = supertest(app);
 

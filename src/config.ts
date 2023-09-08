@@ -73,8 +73,33 @@ const defaultConfig: IoDevServerConfig = {
       getMessageResponseCode: 200,
       getThirdPartyMessageResponseCode: 200
     },
-    pnCount: 0,
-    pnOptInMessage: false,
+    pnMessageTemplateWrappers: [
+      {
+        count: 1,
+        template: {
+          unpaidValidPayments: 360,
+          unpaidExpiredPayments: 5,
+          paidPayments: 12,
+          failedPayments: 7,
+          unrelatedPayments: 20,
+          isCancelled: false,
+          f24Count: 7
+        }
+      },
+      {
+        count: 1,
+        template: {
+          unpaidValidPayments: 1,
+          unpaidExpiredPayments: 1,
+          paidPayments: 1,
+          failedPayments: 1,
+          unrelatedPayments: 1,
+          isCancelled: false,
+          f24Count: 7
+        }
+      }
+    ],
+    pnOptInMessage: true,
     withRemoteAttachments: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
@@ -108,6 +133,7 @@ const defaultConfig: IoDevServerConfig = {
   wallet: {
     methods: paymentMethods,
     shuffleAbi: true,
+    useLegacyRptIdVerificationSystem: false,
     verificaError: undefined,
     attivaError: undefined,
     // atm it has no effect (pr welcome)
@@ -141,7 +167,7 @@ const defaultConfig: IoDevServerConfig = {
       siciliaVola: true,
       cgn: true,
       cdc: true,
-      pn: false,
+      pn: true,
       fci: true
     },
     // it has partially effect (pr welcome)
@@ -159,7 +185,7 @@ const defaultConfig: IoDevServerConfig = {
       ibanSize: 3
     },
     lollipop: {
-      enabled: true
+      enabled: false
     },
     fastLogin: {
       sessionTTLinMS: 60000

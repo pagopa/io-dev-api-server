@@ -130,6 +130,25 @@ export const ServicesConfig = t.intersection([
   AllowRandomValue
 ]);
 
+export const PNMessageTemplate = t.type({
+  unpaidValidPayments: t.number,
+  unpaidExpiredPayments: t.number,
+  paidPayments: t.number,
+  failedPayments: t.number,
+  unrelatedPayments: t.number,
+  isCancelled: t.boolean,
+  f24Count: t.number
+});
+export type PNMessageTemplate = t.TypeOf<typeof PNMessageTemplate>;
+
+export const PNMessageTemplateWrapper = t.type({
+  template: PNMessageTemplate,
+  count: t.number
+});
+export type PNMessageTemplateWrapper = t.TypeOf<
+  typeof PNMessageTemplateWrapper
+>;
+
 export const IoDevServerConfig = t.interface({
   global: t.intersection([
     t.interface({
@@ -173,10 +192,6 @@ export const IoDevServerConfig = t.interface({
         getThirdPartyMessageResponseCode: HttpResponseCode
       }),
       paymentsCount: t.number,
-      // number of messages coming from PN (aka Piattaforma Notifiche)
-      pnCount: t.number,
-      // PN Opt In message
-      pnOptInMessage: t.boolean,
       // number of messages with remote attachments
       withRemoteAttachments: t.number,
       // number of message - invalid after due date - containing a payment and a valid (not expired) due date
@@ -218,7 +233,11 @@ export const IoDevServerConfig = t.interface({
     }),
     AllowRandomValue,
     t.partial({
-      liveMode: LiveModeMessages
+      liveMode: LiveModeMessages,
+      // number of messages coming from PN (aka Piattaforma Notifiche)
+      pnMessageTemplateWrappers: t.readonlyArray(PNMessageTemplateWrapper),
+      // PN Opt In message
+      pnOptInMessage: t.boolean
     })
   ]),
   services: ServicesConfig,
@@ -246,6 +265,9 @@ export const IoDevServerConfig = t.interface({
       paymentOutCode: t.number,
       // if defined attiva will serve the given error
       attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      // it truthy, 'payment-requests/:rptId' endpoint will fake the payment
+      // status response instead of checking the in-memory database
+      useLegacyRptIdVerificationSystem: t.boolean,
       // if verifica attiva will serve the given error
       verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
       // configure the dummy payment

@@ -1,13 +1,13 @@
-import { OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { ServiceMetadata } from "../../../../../generated/definitions/backend/ServiceMetadata";
-import { ServicePublic } from "../../../../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../../../../generated/definitions/backend/ServiceScope";
-import { OrganizationName } from "../../../../../generated/definitions/backend/OrganizationName";
-import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
-import { SpecialServiceCategoryEnum } from "../../../../../generated/definitions/backend/SpecialServiceCategory";
-import { SpecialServiceMetadata } from "../../../../../generated/definitions/backend/SpecialServiceMetadata";
-import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
-import { SpecialServiceGenerator } from "../../factory";
+import { OrganizationFiscalCode } from "../../../../generated/definitions/backend/OrganizationFiscalCode";
+import { OrganizationName } from "../../../../generated/definitions/backend/OrganizationName";
+import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
+import { ServiceMetadata } from "../../../../generated/definitions/backend/ServiceMetadata";
+import { ServiceName } from "../../../../generated/definitions/backend/ServiceName";
+import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
+import { SpecialServiceCategoryEnum } from "../../../../generated/definitions/backend/SpecialServiceCategory";
+import { SpecialServiceMetadata } from "../../../../generated/definitions/backend/SpecialServiceMetadata";
+import { SpecialServiceGenerator } from "../../../payloads/services/factory";
 
 export const pnServiceId = "servicePN" as ServiceId;
 export const pnOptInServiceId = "01G74SW1PSM6XY2HM5EGZHZZET" as ServiceId;
