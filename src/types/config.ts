@@ -130,15 +130,19 @@ export const ServicesConfig = t.intersection([
   AllowRandomValue
 ]);
 
-export const PNMessageTemplate = t.type({
-  unpaidValidPayments: t.number,
-  unpaidExpiredPayments: t.number,
-  paidPayments: t.number,
-  failedPayments: t.number,
-  unrelatedPayments: t.number,
-  isCancelled: t.boolean,
-  f24Count: t.number
-});
+export const PNMessageTemplate = t.intersection([
+  t.type({
+    unpaidValidPayments: t.number,
+    unpaidExpiredPayments: t.number,
+    paidPayments: t.number,
+    failedPayments: t.number,
+    unrelatedPayments: t.number,
+    f24Count: t.number
+  }),
+  t.partial({
+    isCancelled: t.boolean
+  })
+]);
 export type PNMessageTemplate = t.TypeOf<typeof PNMessageTemplate>;
 
 export const PNMessageTemplateWrapper = t.type({
