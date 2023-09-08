@@ -12,12 +12,9 @@ import { IOResponse } from "../payloads/response";
 export const validatePayload = <T, O, I>(codec: t.Type<T, O, I>, payload: I) =>
   pipe(
     decodePayload(codec, payload),
-    E.fold(
-      validationErrorArray => {
-        throw Error(validationErrorArray.toString());
-      },
-      identity
-    )
+    E.fold(validationErrorArray => {
+      throw Error(validationErrorArray.toString());
+    }, identity)
   );
 
 export const decodePayload = <T, O, I>(codec: t.Type<T, O, I>, payload: I) =>
