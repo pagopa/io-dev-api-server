@@ -84,6 +84,10 @@ export const backendStatus: BackendStatus = {
     },
     pn: {
       enabled: true,
+      min_app_version: {
+        ios: "1.2.3",
+        android: "1.2.3"
+      },
       frontend_url: "https://cittadini.notifichedigitali.it",
       optInServiceId: pnOptInServiceId
     },
