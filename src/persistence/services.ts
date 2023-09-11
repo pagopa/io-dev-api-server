@@ -10,14 +10,14 @@ import {
   createCgnService
 } from "../payloads/services/special/cgn/factoryCGNService";
 import { createFciService } from "../payloads/services/special/fci/factoryFCIService";
-import {
-  createPnService,
-  createPnOptInService
-} from "../payloads/services/special/pn/factoryPn";
 import { createSiciliaVolaService } from "../payloads/services/special/siciliaVola/factorySiciliaVolaService";
 import { isCgnActivated } from "../routers/features/cgn";
 import { IoDevServerConfig } from "../types/config";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
+import {
+  createPnOptInService,
+  createPnService
+} from "../features/pn/services/services";
 
 export type ServiceSummary = {
   service_id: ServiceId;

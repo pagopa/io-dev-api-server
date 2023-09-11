@@ -1,3 +1,9 @@
+import { pipe } from "fp-ts/lib/function";
+import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
+import { PaymentProblemJson } from "../../generated/definitions/backend/PaymentProblemJson";
+import { RptId } from "../../generated/definitions/backend/RptId";
+import { NotificationPaymentInfo } from "../features/pn/types/notificationPaymentInfo";
+
 export const enum CreditCardBrandEnum {
   "VISAELECTRON" = "VISAELECTRON",
   "MAESTRO" = "MAESTRO",
@@ -49,3 +55,21 @@ export const getCreditCardLogo = (cc: CreditCardBrandEnum) =>
 export const isOutcomeCodeSuccessfully = (
   outcome: number | undefined
 ): boolean => (outcome ?? 0) === 0;
+
+export const rptIdFromPaymentDataWithRequiredPayee = (
+  paymentDataWithRequiredPayee: PaymentDataWithRequiredPayee
+): RptId =>
+  `${paymentDataWithRequiredPayee.payee.fiscal_code}${paymentDataWithRequiredPayee.notice_number}`;
+
+export const rptIdFromNotificationPaymentInfo = (
+  notificationPaymentInfo: NotificationPaymentInfo
+): RptId =>
+  `${notificationPaymentInfo.creditorTaxId}${notificationPaymentInfo.noticeCode}`;
+
+export const isPaid = (paymentProblemJSON: PaymentProblemJson) =>
+  pipe(
+    paymentProblemJSON.detail_v2,
+    detail =>
+      detail === "PAA_PAGAMENTO_DUPLICATO" ||
+      detail === "PPT_PAGAMENTO_DUPLICATO"
+  );

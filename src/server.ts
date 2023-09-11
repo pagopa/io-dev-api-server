@@ -17,7 +17,6 @@ import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
 import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
 import { fciRouter } from "./routers/features/fci";
-import { pnRouter } from "./routers/features/pn";
 import { svRouter } from "./routers/features/siciliaVola";
 import { messageRouter } from "./routers/message";
 import { miscRouter } from "./routers/misc";
@@ -41,6 +40,7 @@ import { lollipopRouter } from "./routers/features/lollipop";
 import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { walletV3Router } from "./routers/features/walletV3";
+import { pnRouter } from "./features/pn/routers/routers";
 // create express server
 const app: Application = express();
 // parse body request as json
