@@ -32,7 +32,6 @@ import { ServicePublic } from "../../generated/definitions/backend/ServicePublic
 import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
 import { OrganizationFiscalCode } from "../../generated/definitions/backend/OrganizationFiscalCode";
 import { pnServiceId } from "../features/pn/services/services";
-
 import ServicesDB from "./../persistence/services";
 
 // eslint-disable-next-line functional/no-let
