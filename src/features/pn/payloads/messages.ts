@@ -27,7 +27,6 @@ import { OrganizationFiscalCode } from "../../../../generated/definitions/backen
 import { NotificationRecipient } from "../types/notificationRecipient";
 import { PaymentDataWithRequiredPayee } from "../../../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentStatus, fold } from "../../../types/PaymentStatus";
-import { currentProfile } from "../../../payloads/profile";
 import { eitherMakeBy } from "../../../utils/array";
 import {
   isPaid,
@@ -46,6 +45,9 @@ import {
 import { getNewMessage } from "../../../populate-persistence";
 import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
 import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
+import { getAuthenticationProvider } from "../../../persistence/sessionInfo";
+import { getProfileInitialData } from "../../../payloads/profile";
+import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
 
 export const createPNOptInMessage = (
   customConfig: IoDevServerConfig
@@ -167,37 +169,45 @@ const createPNMessageWithContent = (
   abstract: string | undefined,
   sentAt: Date
 ): E.Either<string[], ThirdPartyMessageWithContent> =>
-  pipe(
-    createPNRecipients(organization_fiscal_code, organizationName, template),
-    E.map(pnRecipients => ({
-      ...message,
-      third_party_message: {
-        attachments: createPNAttachments(),
-        details: {
-          iun,
-          senderDenomination,
-          subject,
-          abstract,
-          sentAt,
-          isCancelled: template.isCancelled,
-          completedPayments: createPNCompletedPayments(
-            template.isCancelled,
-            pnRecipients
-          ),
-          notificationStatusHistory: pipe(
-            pnRecipients,
-            noticeCodesFromNotificationRecipients,
-            createPNTimeline(template.isCancelled)
-          ),
-          recipients: pnRecipients
+  pipe(getAuthenticationProvider(), getProfileInitialData, currentProfile =>
+    pipe(
+      createPNRecipients(
+        organization_fiscal_code,
+        organizationName,
+        currentProfile,
+        template
+      ),
+      E.map(pnRecipients => ({
+        ...message,
+        third_party_message: {
+          attachments: createPNAttachments(),
+          details: {
+            iun,
+            senderDenomination,
+            subject,
+            abstract,
+            sentAt,
+            isCancelled: template.isCancelled,
+            completedPayments: createPNCompletedPayments(
+              template.isCancelled,
+              pnRecipients
+            ),
+            notificationStatusHistory: pipe(
+              pnRecipients,
+              noticeCodesFromNotificationRecipients,
+              createPNTimeline(template.isCancelled)
+            ),
+            recipients: pnRecipients
+          }
         }
-      }
-    }))
+      }))
+    )
   );
 
 const createPNRecipients = (
   organizationFiscalCode: OrganizationFiscalCode,
   organizationName: OrganizationName,
+  profile: InitializedProfile,
   template: PNMessageTemplate
 ): E.Either<string[], NotificationRecipient[]> =>
   pipe(
@@ -215,6 +225,7 @@ const createPNRecipients = (
             organizationName
           )
         ),
+        `Valoroso Cosimo Damiano`,
         "VLRCMD74S01B655P" as FiscalCode
       )
     ),
@@ -230,7 +241,9 @@ const createPNRecipients = (
             paymentDataWithRequiredPayee.payee.fiscal_code,
             organizationName
           )
-        )
+        ),
+        `${profile.name} ${profile.family_name}`,
+        profile.fiscal_code
       )
     ),
     E.chain(accumulator =>
@@ -243,7 +256,9 @@ const createPNRecipients = (
             rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             Detail_v2Enum.PAA_PAGAMENTO_SCADUTO
           )
-        )
+        ),
+        `${profile.name} ${profile.family_name}`,
+        profile.fiscal_code
       )
     ),
     E.chain(accumulator =>
@@ -256,7 +271,9 @@ const createPNRecipients = (
             rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             Detail_v2Enum.PPT_IBAN_NON_CENSITO
           )
-        )
+        ),
+        `${profile.name} ${profile.family_name}`,
+        profile.fiscal_code
       )
     ),
     E.chain(accumulator =>
@@ -269,7 +286,9 @@ const createPNRecipients = (
             rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
             Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
           )
-        )
+        ),
+        `${profile.name} ${profile.family_name}`,
+        profile.fiscal_code
       )
     )
   );
@@ -281,7 +300,8 @@ const createPNRecipientsAndAccumulate = (
   maybePaymentStatusGenerator: O.Option<
     (input: PaymentDataWithRequiredPayee) => PaymentStatus
   >,
-  fiscalCode: FiscalCode = currentProfile.fiscal_code
+  denomination: string,
+  fiscalCode: FiscalCode
 ) =>
   pipe(
     eitherMakeBy(count, _ =>
@@ -298,6 +318,7 @@ const createPNRecipientsAndAccumulate = (
             )
           )
         ),
+        denomination,
         fiscalCode
       )
     ),
@@ -309,13 +330,14 @@ const createPNMessageRecipient = (
     string[],
     PaymentDataWithRequiredPayee
   >,
+  denomination: string,
   fiscalCode: FiscalCode
 ): E.Either<string[], NotificationRecipient> =>
   pipe(
     paymentDataWithRequiredPayee,
     E.map(paymentDataWithRequiredPayee => ({
       taxId: fiscalCode,
-      denomination: `${currentProfile.name} ${currentProfile.family_name}`,
+      denomination,
       payment: {
         noticeCode: paymentDataWithRequiredPayee.notice_number,
         creditorTaxId: paymentDataWithRequiredPayee.payee.fiscal_code
