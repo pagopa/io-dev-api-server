@@ -23,7 +23,7 @@ import { getAuthenticationProvider } from "../persistence/sessionInfo";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
 
 // eslint-disable-next-line functional/no-let
-export let currentProfile: InitializedProfile = {} as InitializedProfile;
+let currentProfile: InitializedProfile = {} as InitializedProfile;
 // define user UserDataProcessing (download / delete)
 // to handle and remember user choice
 type UserDeleteDownloadData = {
