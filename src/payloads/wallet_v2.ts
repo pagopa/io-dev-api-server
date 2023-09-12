@@ -42,7 +42,7 @@ import {
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 import { getAuthenticationProvider } from "../persistence/sessionInfo";
-import { getCurrentProfile } from "./profile";
+import { getProfileInitialData } from "./profile";
 
 type CardConfig = {
   prefix: string;
@@ -268,8 +268,8 @@ export const generateWalletV2FromCard = (
     expireMonth: (ed.getMonth() + 1).toString().padStart(2, "0"),
     expireYear: ed.getFullYear().toString(),
     hashPan: card.hpan,
-    holder: `${getCurrentProfile(getAuthenticationProvider()).name} ${
-      getCurrentProfile(getAuthenticationProvider()).family_name
+    holder: `${getProfileInitialData(getAuthenticationProvider()).name} ${
+      getProfileInitialData(getAuthenticationProvider()).family_name
     }`,
     htokenList: card.tokens,
     issuerAbiCode: canMethodPay ? undefined : card.abi,

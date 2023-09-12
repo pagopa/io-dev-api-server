@@ -46,7 +46,7 @@ import { getNewMessage } from "../../../populate-persistence";
 import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
 import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
 import { getAuthenticationProvider } from "../../../persistence/sessionInfo";
-import { getCurrentProfile } from "../../../payloads/profile";
+import { getProfileInitialData } from "../../../payloads/profile";
 import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
 
 export const createPNOptInMessage = (
@@ -169,7 +169,7 @@ const createPNMessageWithContent = (
   abstract: string | undefined,
   sentAt: Date
 ): E.Either<string[], ThirdPartyMessageWithContent> =>
-  pipe(getAuthenticationProvider(), getCurrentProfile, currentProfile =>
+  pipe(getAuthenticationProvider(), getProfileInitialData, currentProfile =>
     pipe(
       createPNRecipients(
         organization_fiscal_code,

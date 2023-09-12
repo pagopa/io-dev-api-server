@@ -140,7 +140,7 @@ const spidCie = {
 export type AuthenticationProvider =
   typeof ioDevServerConfig.profile.authenticationProvider;
 
-export const getCurrentProfile = (
+export const getProfileInitialData = (
   authenticationProvider: AuthenticationProvider
 ) =>
   ioDevServerConfig.profile.firstOnboarding

@@ -13,7 +13,7 @@ import {
 import { UserDataProcessingChoiceRequest } from "../../generated/definitions/backend/UserDataProcessingChoiceRequest";
 import { UserDataProcessingStatusEnum } from "../../generated/definitions/backend/UserDataProcessingStatus";
 import { getProblemJson } from "../payloads/error";
-import { getCurrentProfile } from "../payloads/profile";
+import { getProfileInitialData } from "../payloads/profile";
 import { addHandler } from "../payloads/response";
 import { mockUserMetadata } from "../payloads/userMetadata";
 import { getRandomValue } from "../utils/random";
@@ -54,7 +54,7 @@ const gender = faker.name.sexType();
 // get profile
 addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) => {
   if (R.isEmpty(currentProfile)) {
-    const profileFromAuthenticationProvider = getCurrentProfile(
+    const profileFromAuthenticationProvider = getProfileInitialData(
       getAuthenticationProvider()
     );
     currentProfile = {
@@ -211,5 +211,5 @@ addHandler(
 // reset function
 export const resetProfile = () => {
   userChoices = initialUserChoice;
-  currentProfile = { ...getCurrentProfile(getAuthenticationProvider()) };
+  currentProfile = { ...getProfileInitialData(getAuthenticationProvider()) };
 };
