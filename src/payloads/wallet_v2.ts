@@ -261,6 +261,7 @@ export const generateWalletV2FromCard = (
     "wallet"
   );
 
+  const currentProfile = getProfileInitialData(getAuthenticationProvider());
   const info = {
     blurredNumber: card.cardPartialNumber,
     brand: ccBrand,
@@ -268,9 +269,7 @@ export const generateWalletV2FromCard = (
     expireMonth: (ed.getMonth() + 1).toString().padStart(2, "0"),
     expireYear: ed.getFullYear().toString(),
     hashPan: card.hpan,
-    holder: `${getProfileInitialData(getAuthenticationProvider()).name} ${
-      getProfileInitialData(getAuthenticationProvider()).family_name
-    }`,
+    holder: `${currentProfile.name} ${currentProfile.family_name}`,
     htokenList: card.tokens,
     issuerAbiCode: canMethodPay ? undefined : card.abi,
     type: TypeEnum.PP
