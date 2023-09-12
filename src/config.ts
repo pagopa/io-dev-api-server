@@ -75,7 +75,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     pnMessageTemplateWrappers: [
       {
-        count: 1,
+        count: 0,
         template: {
           unpaidValidPayments: 360,
           unpaidExpiredPayments: 5,
@@ -87,7 +87,7 @@ const defaultConfig: IoDevServerConfig = {
         }
       },
       {
-        count: 1,
+        count: 0,
         template: {
           unpaidValidPayments: 1,
           unpaidExpiredPayments: 1,
@@ -99,7 +99,7 @@ const defaultConfig: IoDevServerConfig = {
         }
       }
     ],
-    pnOptInMessage: true,
+    pnOptInMessage: false,
     withRemoteAttachments: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
@@ -167,7 +167,7 @@ const defaultConfig: IoDevServerConfig = {
       siciliaVola: true,
       cgn: true,
       cdc: true,
-      pn: true,
+      pn: false,
       fci: true
     },
     // it has partially effect (pr welcome)
