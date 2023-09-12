@@ -45,7 +45,19 @@ const customConfig = _.merge(ioDevServerConfig, {
     standardMessageCount: 10,
     archivedMessageCount: 40,
     withRemoteAttachments: 0,
-    pnCount: 1
+    pnMessageTemplateWrappers: [
+      {
+        count: 1,
+        template: {
+          unpaidValidPayments: 1,
+          unpaidExpiredPayments: 0,
+          paidPayments: 0,
+          failedPayments: 0,
+          unrelatedPayments: 0,
+          f24Count: 0
+        }
+      }
+    ]
   },
   services: {
     specialServices: {

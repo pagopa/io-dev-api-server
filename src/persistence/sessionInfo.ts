@@ -5,6 +5,7 @@ import { ioDevServerConfig } from "../config";
 import { isFeatureFlagWithMinVersionEnabled } from "../routers/features/featureFlagUtils";
 import { getDateMsDifference } from "../utils/date";
 import { createOrRefreshSessionTokens } from "../payloads/session";
+import { AuthenticationProvider } from "../payloads/profile";
 
 enum LoginEnum {
   standard = "STANDARD",
@@ -15,13 +16,18 @@ type LoginSessionTokenInfo = {
   loginSessionToken: string | undefined;
   instantiationDate: Date | undefined;
   loginType: LoginEnum | undefined;
+  authenticationProvider: AuthenticationProvider | undefined;
 };
 
 const loginSessionTokenInfo: LoginSessionTokenInfo = {
   loginSessionToken: undefined,
   instantiationDate: undefined,
-  loginType: undefined
+  loginType: undefined,
+  authenticationProvider: undefined
 };
+
+export const getAuthenticationProvider = () =>
+  loginSessionTokenInfo.authenticationProvider ?? "spid";
 
 export const getLoginSessionToken = () =>
   loginSessionTokenInfo.loginSessionToken;
@@ -51,6 +57,15 @@ export const setSessionLoginType = (req: Request) => {
   // eslint-disable-next-line functional/immutable-data
   loginSessionTokenInfo.loginType = req.get("x-pagopa-login-type") as
     | LoginEnum
+    | undefined;
+};
+
+export const setSessionAuthenticationProvider = (req: Request) => {
+  // eslint-disable-next-line functional/immutable-data
+  const idpId = req.get("x-pagopa-idp-id") === "cie" ? "cie" : "spid";
+  // eslint-disable-next-line functional/immutable-data
+  loginSessionTokenInfo.authenticationProvider = idpId as
+    | AuthenticationProvider
     | undefined;
 };
 
