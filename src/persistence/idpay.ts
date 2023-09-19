@@ -10,7 +10,8 @@ import {
 } from "../../generated/definitions/idpay/InitiativeDTO";
 import {
   InstrumentDTO,
-  StatusEnum as InstrumentStatus
+  StatusEnum as InstrumentStatus,
+  InstrumentTypeEnum
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
@@ -161,15 +162,18 @@ export const enrollInstrumentToInitiative = (
     return false;
   }
 
+  const instrumentId = ulid();
+
   instruments = {
     ...instruments,
     [initiativeId]: [
       ...initiativeInstruments,
       {
-        instrumentId: ulid(),
+        instrumentId,
         idWallet: wallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST
+        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -178,7 +182,7 @@ export const enrollInstrumentToInitiative = (
     const initiativeInstruments = instruments[initiativeId] || [];
 
     const index = initiativeInstruments.findIndex(
-      i => i.idWallet === wallet.idWallet?.toString()
+      i => i.instrumentId === instrumentId
     );
 
     instruments = {
@@ -265,7 +269,8 @@ range(0, walletConfig.refundCount).forEach(() => {
         instrumentId: ulid(),
         idWallet: pagoPaWallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.ACTIVE
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -334,7 +339,8 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
         instrumentId: ulid(),
         idWallet: pagoPaWallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.ACTIVE
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -379,7 +385,8 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
         instrumentId: ulid(),
         idWallet: pagoPaWallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.ACTIVE
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -448,3 +455,59 @@ range(0, walletConfig.discountCount).forEach(() => {
     ]
   };
 });
+
+// eslint-disable-next-line functional/no-let
+export let idPayCode: string | undefined;
+
+export const generateIdPayCode = () => {
+  idPayCode = faker.random.numeric(5);
+};
+
+export const enrollCodeToInitiative = (initiativeId: string): boolean => {
+  const initiativeInstruments = instruments[initiativeId] || [];
+
+  const isAlreadyEnrolled = initiativeInstruments.some(
+    i => i.instrumentType === InstrumentTypeEnum.IDPAYCODE
+  );
+
+  if (isAlreadyEnrolled) {
+    return false;
+  }
+
+  const instrumentId = ulid();
+
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      ...initiativeInstruments,
+      {
+        instrumentId,
+        activationDate: new Date(),
+        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST,
+        instrumentType: InstrumentTypeEnum.IDPAYCODE
+      }
+    ]
+  };
+
+  setTimeout(() => {
+    const initiativeInstruments = instruments[initiativeId] || [];
+
+    const index = initiativeInstruments.findIndex(
+      i => i.instrumentId === instrumentId
+    );
+
+    instruments = {
+      ...instruments,
+      [initiativeId]: [
+        ...initiativeInstruments.slice(0, index),
+        {
+          ...initiativeInstruments[index],
+          status: InstrumentStatus.ACTIVE
+        },
+        ...initiativeInstruments.slice(index + 1)
+      ]
+    };
+  }, 5000);
+
+  return true;
+};
