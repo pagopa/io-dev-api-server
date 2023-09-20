@@ -143,6 +143,37 @@ addIdPayHandler("get", "/wallet/:initiativeId/status", (req, res) =>
 );
 
 /**
+ *   Unsubscribe to an initiative
+ */
+addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
+  pipe(
+    req.params.initiativeId,
+    O.fromNullable,
+    O.chain(initiativeIdExists),
+    O.map(initiativeId => initiatives[initiativeId]),
+    O.fold(
+      () => res.status(404).json(getIdPayError(404)),
+      flow(
+        O.of,
+        O.filter(
+          initiative => initiative.status !== InitiativeStatusEnum.UNSUBSCRIBED
+        ),
+        O.fold(
+          () => res.status(403).json(getIdPayError(403)),
+          initiative => {
+            updateInitiative({
+              ...initiative,
+              status: StatusEnum.UNSUBSCRIBED
+            });
+            return res.sendStatus(204);
+          }
+        )
+      )
+    )
+  )
+);
+
+/**
  *  Association of an IBAN to an initiative
  */
 addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
@@ -193,6 +224,24 @@ addIdPayHandler("get", "/wallet/:initiativeId/instruments", (req, res) =>
           data => res.status(200).json(data)
         )
       )
+    )
+  )
+);
+
+/**
+ * Enroll code to an initiative
+ */
+addIdPayHandler("put", "/wallet/:initiativeId/code/instruments", (req, res) =>
+  pipe(
+    req.params.initiativeId,
+    O.fromNullable,
+    O.chain(initiativeIdExists),
+    O.fold(
+      () => res.status(404).json(getIdPayError(404)),
+      initiativeId => {
+        const result = enrollCodeToInitiative(initiativeId);
+        return res.sendStatus(result ? 200 : 403);
+      }
     )
   )
 );
@@ -260,53 +309,4 @@ addIdPayHandler(
           )
       )
     )
-);
-
-/**
- *   Unsubscribe to an initiative
- */
-addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
-  pipe(
-    req.params.initiativeId,
-    O.fromNullable,
-    O.chain(initiativeIdExists),
-    O.map(initiativeId => initiatives[initiativeId]),
-    O.fold(
-      () => res.status(404).json(getIdPayError(404)),
-      flow(
-        O.of,
-        O.filter(
-          initiative => initiative.status !== InitiativeStatusEnum.UNSUBSCRIBED
-        ),
-        O.fold(
-          () => res.status(403).json(getIdPayError(403)),
-          initiative => {
-            updateInitiative({
-              ...initiative,
-              status: StatusEnum.UNSUBSCRIBED
-            });
-            return res.sendStatus(204);
-          }
-        )
-      )
-    )
-  )
-);
-
-/**
- * Enroll code to an initiative
- */
-addIdPayHandler("put", "/wallet/:initiativeId/instruments/code", (req, res) =>
-  pipe(
-    req.params.initiativeId,
-    O.fromNullable,
-    O.chain(initiativeIdExists),
-    O.fold(
-      () => res.status(404).json(getIdPayError(404)),
-      initiativeId => {
-        const result = enrollCodeToInitiative(initiativeId);
-        return res.sendStatus(result ? 200 : 403);
-      }
-    )
-  )
 );

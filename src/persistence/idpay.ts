@@ -470,7 +470,7 @@ export const enrollCodeToInitiative = (initiativeId: string): boolean => {
     i => i.instrumentType === InstrumentTypeEnum.IDPAYCODE
   );
 
-  if (isAlreadyEnrolled) {
+  if (isAlreadyEnrolled || idPayCode === undefined) {
     return false;
   }
 
