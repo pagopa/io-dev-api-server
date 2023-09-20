@@ -49,6 +49,55 @@ addIdPayHandler("get", "/wallet/", (req, res) =>
 );
 
 /**
+ *   Get code onboarding status
+ */
+addIdPayHandler("get", "/wallet/code/status", (req, res) =>
+  res.status(200).json({ isIdPayCodeEnabled: idPayCode !== undefined })
+);
+
+/**
+ * Generates a new IdPay code and (optionially) enrolls it to an initiative
+ */
+addIdPayHandler("post", "/wallet/code/generate", (req, res) => {
+  if (req.body.initiativeId) {
+    return pipe(
+      req.body.initiativeId,
+      O.fromNullable,
+      O.chain(initiativeIdExists),
+      O.fold(
+        () => res.status(404).json(getIdPayError(404)),
+        initiativeId => {
+          generateIdPayCode();
+          const result = enrollCodeToInitiative(initiativeId);
+          return res
+            .status(result ? 200 : 403)
+            .json(result ? { idpayCode: idPayCode } : undefined);
+        }
+      )
+    );
+  }
+
+  generateIdPayCode();
+
+  return res.status(200).json({ idpayCode: idPayCode });
+});
+
+/**
+ *   Returns the initiatives list associated to a payment instrument
+ */
+addIdPayHandler("get", "/wallet/instrument/:walletId/initiatives", (req, res) =>
+  pipe(
+    req.params.walletId,
+    O.fromNullable,
+    O.chain(getInitiativeWithInstrumentResponse),
+    O.fold(
+      () => res.status(404).json(getIdPayError(404)),
+      data => res.status(200).json(data)
+    )
+  )
+);
+
+/**
  * Returns the detail of an active initiative of a citizen
  */
 addIdPayHandler("get", "/wallet/:initiativeId", (req, res) =>
@@ -214,21 +263,6 @@ addIdPayHandler(
 );
 
 /**
- *   Returns the initiatives list associated to a payment instrument
- */
-addIdPayHandler("get", "/wallet/instrument/:walletId/initiatives", (req, res) =>
-  pipe(
-    req.params.walletId,
-    O.fromNullable,
-    O.chain(getInitiativeWithInstrumentResponse),
-    O.fold(
-      () => res.status(404).json(getIdPayError(404)),
-      data => res.status(200).json(data)
-    )
-  )
-);
-
-/**
  *   Unsubscribe to an initiative
  */
 addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
@@ -260,37 +294,9 @@ addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
 );
 
 /**
- *   Get code onboarding status
+ * Enroll code to an initiative
  */
-addIdPayHandler("get", "/wallet/code/status", (req, res) =>
-  res.status(200).json({ isIdPayCodeEnabled: idPayCode !== undefined })
-);
-
-/**
- * Generates a new IdPay code and (optionially) enrolls it to an initiative
- */
-addIdPayHandler("post", "/wallet/code/generate", (req, res) => {
-  generateIdPayCode();
-
-  if (req.body.initiativeId) {
-    return pipe(
-      req.body.initiativeId,
-      O.fromNullable,
-      O.chain(initiativeIdExists),
-      O.fold(
-        () => res.status(404).json(getIdPayError(404)),
-        initiativeId => {
-          const result = enrollCodeToInitiative(initiativeId);
-          return res.sendStatus(result ? 200 : 403);
-        }
-      )
-    );
-  }
-
-  return res.sendStatus(200);
-});
-
-addIdPayHandler("put", "/wallet/:initiativeId/instruments/code", (req, res) => {
+addIdPayHandler("put", "/wallet/:initiativeId/instruments/code", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
@@ -302,5 +308,5 @@ addIdPayHandler("put", "/wallet/:initiativeId/instruments/code", (req, res) => {
         return res.sendStatus(result ? 200 : 403);
       }
     )
-  );
-});
+  )
+);
