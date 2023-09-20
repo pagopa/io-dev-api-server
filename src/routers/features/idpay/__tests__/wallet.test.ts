@@ -19,9 +19,6 @@ const initiatives = Object.values(idPayInitiatives);
 describe("IDPay Wallet API", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    if (global.gc) {
-      global.gc();
-    }
   });
 
   describe("GET getWallet", () => {
