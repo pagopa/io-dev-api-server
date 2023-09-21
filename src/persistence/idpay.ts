@@ -430,7 +430,14 @@ range(0, walletConfig.discountCount).forEach(() => {
   initiatives = { ...initiatives, [initiativeId]: initiative };
   instruments = {
     ...instruments,
-    [initiativeId]: []
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.QRCODE
+      }
+    ]
   };
 
   initiativeTimeline = {
