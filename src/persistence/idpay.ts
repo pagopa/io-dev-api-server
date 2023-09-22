@@ -17,7 +17,10 @@ import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/de
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
 import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
-import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
+import {
+  InstrumentTypeEnum as OperationInstrumentTypeEnum,
+  OperationTypeEnum as RejectedInstrumentOperationEnum
+} from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import {
   ChannelEnum as TransactionChannelEnum,
   OperationTypeEnum as TransactionOperationEnum,
@@ -114,7 +117,8 @@ const generateRandomOperationDTO = (
         brand: pagoPaWalletInfo.brand || "VISA",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         channel: faker.datatype.string(),
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
+        instrumentType: OperationInstrumentTypeEnum.CARD
       };
     case "ONBOARDING":
     default:
@@ -458,6 +462,10 @@ range(0, walletConfig.discountCount).forEach(() => {
         status: TransactionStatusEnum.CANCELLED,
         channel: TransactionChannelEnum.QRCODE
       } as OperationListDTO,
+      {
+        ...generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+        instrumentType: OperationInstrumentTypeEnum.IDPAYCODE
+      },
       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
     ]
   };
