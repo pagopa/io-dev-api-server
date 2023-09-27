@@ -15,10 +15,7 @@ import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/
 import { EnteBeneficiario } from "../../generated/definitions/backend/EnteBeneficiario";
 import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
 import { RptId } from "../../generated/definitions/backend/RptId";
-import {
-  Detail_v2Enum,
-  PaymentProblemJson
-} from "../../generated/definitions/backend/PaymentProblemJson";
+import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
 import { Iban } from "../../generated/definitions/backend/Iban";
 import { SpezzoniCausaleVersamentoItem } from "../../generated/definitions/backend/SpezzoniCausaleVersamentoItem";
@@ -27,7 +24,10 @@ import {
   processablePayment,
   processedPayment
 } from "../types/PaymentStatus";
-import { rptIdFromPaymentDataWithRequiredPayee } from "../utils/payment";
+import {
+  detailV2EnumToPaymentProblemJSON,
+  rptIdFromPaymentDataWithRequiredPayee
+} from "../utils/payment";
 
 const paymentData = new Map<string, PaymentDataWithRequiredPayee>();
 const paymentStatuses = new Map<string, PaymentStatus>();
@@ -111,10 +111,8 @@ const createProcessedPayment = (
   details: Detail_v2Enum
 ): PaymentStatus =>
   pipe(
-    {
-      detail: "PAYMENT_UNKNOWN", // Legacy, it is the default value provided
-      detail_v2: details
-    } as PaymentProblemJson,
+    details,
+    detailV2EnumToPaymentProblemJSON,
     processedPayment,
     processedPayment => addOrUpdatePaymentStatus(rptId, processedPayment)
   );
