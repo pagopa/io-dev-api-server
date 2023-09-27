@@ -338,6 +338,7 @@ const createPNMessageRecipient = (
   pipe(
     paymentDataWithRequiredPayee,
     E.map(paymentDataWithRequiredPayee => ({
+      recipientType: "unknownContent",
       taxId: fiscalCode,
       denomination,
       payment: {
