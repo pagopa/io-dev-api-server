@@ -74,6 +74,7 @@ const createProcessablePayment = (
   amount: PaymentAmount,
   organizationFiscalCode: OrganizationFiscalCode,
   organizationName: OrganizationName,
+  dueDate: Date = faker.date.soon(),
   organizationUnitName: NonEmptyString = faker.random.alphaNumeric(
     3
   ) as NonEmptyString,
@@ -98,7 +99,8 @@ const createProcessablePayment = (
         {
           spezzoneCausaleVersamento: paymentShortReason
         }
-      ]
+      ],
+      dueDate
     } as PaymentRequestsGetResponse,
     processablePayment,
     processablePayment => addOrUpdatePaymentStatus(rptId, processablePayment)
