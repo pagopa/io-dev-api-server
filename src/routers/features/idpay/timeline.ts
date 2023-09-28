@@ -17,14 +17,6 @@ const extractQuery = (query: Query) =>
     O.toUndefined
   );
 
-const initiativeIdExists = (id: string) =>
-  pipe(
-    id,
-    O.some,
-    O.chain(getWalletDetailResponse),
-    O.map(_ => id)
-  );
-
 /**
  *  Returns the list of transactions and operations of an initiative of a
  *  citizen sorted by date (newest->oldest)
@@ -33,8 +25,8 @@ addIdPayHandler("get", "/timeline/:initiativeId", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(initiativeIdExists),
-    O.chain(initiativeId =>
+    O.chain(getWalletDetailResponse),
+    O.chain(({ initiativeId }) =>
       pipe(
         sequenceT(O.Monad)(
           O.of(initiativeId),
@@ -60,7 +52,8 @@ addIdPayHandler("get", "/timeline/:initiativeId/:operationId", (req, res) =>
       pipe(
         req.params.initiativeId,
         O.fromNullable,
-        O.chain(initiativeIdExists)
+        O.chain(getWalletDetailResponse),
+        O.map(({ initiativeId }) => initiativeId)
       ),
       pipe(req.params.operationId, O.fromNullable)
     ),
