@@ -31,9 +31,11 @@ export const paymentRouter = Router();
 
 // eslint-disable-next-line functional/no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
-
+// eslint-disable-next-line functional/no-let
+let paymentRptId: O.Option<RptId> = O.none;
 // eslint-disable-next-line functional/no-let
 let idPagamento: string | undefined;
+
 /**
  * user wants to pay (VERIFICA)
  * this API return the current status of the payment
@@ -73,6 +75,7 @@ addHandler(
                   processedPayment =>
                     res.status(500).json(processedPayment.status),
                   processablePayment => {
+                    paymentRptId = O.some(rptId);
                     paymentRequest = processablePayment.data;
                     return res.status(200).json(processablePayment.data);
                   }
@@ -104,6 +107,7 @@ addHandler(
                   O.fromNullable,
                   O.fold(
                     () => {
+                      paymentRptId = O.some(req.params.rptId as RptId);
                       paymentRequest =
                         getPaymentRequestsGetResponse(randomService);
                       return res.json(paymentRequest);
@@ -131,7 +135,7 @@ addHandler(
   "post",
   addApiV1Prefix("/payment-activations"),
   (req, res) => {
-    if (paymentRequest === undefined) {
+    if (paymentRequest === undefined || O.isNone(paymentRptId)) {
       res.sendStatus(404);
       return;
     }
@@ -192,7 +196,7 @@ addHandler(
   "get",
   appendWalletV1Prefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
-    if (idPagamento === undefined || paymentRequest === undefined) {
+    if (idPagamento === undefined || paymentRequest === undefined || O.isNone(paymentRptId)) {
       res.sendStatus(404);
       return;
     }
@@ -261,11 +265,20 @@ addHandler(
   walletRouter,
   "post",
   "/wallet/v3/webview/transactions/pay",
-  (req, res) =>
-    handlePaymentPostAndRedirect(
-      req,
-      res,
-      ioDevServerConfig.wallet.paymentOutCode
+  (req, res) => 
+    pipe(
+      ioDevServerConfig.wallet.paymentOutCode,
+      paymentOutCode => 
+        pipe(
+          paymentRptId,
+          O.filter(_ => paymentOutCode === 0 && !ioDevServerConfig.wallet.useLegacyRptIdVerificationSystem),
+          O.map(rptId => PaymentsDB.createProcessedPayment(rptId, Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO)),
+          _ => handlePaymentPostAndRedirect(
+            req,
+            res,
+            paymentOutCode
+          )
+        )
     )
 );
 
