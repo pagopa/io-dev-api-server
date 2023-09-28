@@ -8,10 +8,7 @@ import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
-import {
-  DetailEnum,
-  Detail_v2Enum
-} from "../../generated/definitions/backend/PaymentProblemJson";
+import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
@@ -25,6 +22,7 @@ import { appendWalletV1Prefix } from "../utils/wallet";
 import PaymentsDB from "../persistence/payments";
 import { RptId } from "../../generated/definitions/backend/RptId";
 import { fold } from "../types/PaymentStatus";
+import { detailV2EnumToPaymentProblemJSON } from "../utils/payment";
 import ServicesDB, { ServiceSummary } from "./../persistence/services";
 import { profileRouter } from "./profile";
 import { walletRouter } from "./wallet";
@@ -293,8 +291,4 @@ addHandler(
 addNewRoute("post", "/wallet/v3/webview/transactions/pay");
 
 const legacyResponseWithError = (detailV2: Detail_v2Enum, res: Response) =>
-  res.status(500).json({
-    // deprecated, it is just a placeholder
-    detail: DetailEnum.PAYMENT_UNKNOWN,
-    detail_v2: detailV2
-  });
+  res.status(500).json(detailV2EnumToPaymentProblemJSON(detailV2));
