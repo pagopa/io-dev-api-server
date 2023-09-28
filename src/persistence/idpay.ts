@@ -10,13 +10,17 @@ import {
 } from "../../generated/definitions/idpay/InitiativeDTO";
 import {
   InstrumentDTO,
-  StatusEnum as InstrumentStatus
+  StatusEnum as InstrumentStatus,
+  InstrumentTypeEnum
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
 import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
 import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
-import { OperationTypeEnum as RejectedInstrumentOperationEnum } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
+import {
+  InstrumentTypeEnum as OperationInstrumentTypeEnum,
+  OperationTypeEnum as RejectedInstrumentOperationEnum
+} from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import {
   ChannelEnum as TransactionChannelEnum,
   OperationTypeEnum as TransactionOperationEnum,
@@ -113,7 +117,8 @@ const generateRandomOperationDTO = (
         brand: pagoPaWalletInfo.brand || "VISA",
         brandLogo: pagoPaWalletInfo.brandLogo || "",
         channel: faker.datatype.string(),
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000"
+        maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
+        instrumentType: OperationInstrumentTypeEnum.CARD
       };
     case "ONBOARDING":
     default:
@@ -161,15 +166,18 @@ export const enrollInstrumentToInitiative = (
     return false;
   }
 
+  const instrumentId = ulid();
+
   instruments = {
     ...instruments,
     [initiativeId]: [
       ...initiativeInstruments,
       {
-        instrumentId: ulid(),
+        instrumentId,
         idWallet: wallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST
+        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -178,7 +186,7 @@ export const enrollInstrumentToInitiative = (
     const initiativeInstruments = instruments[initiativeId] || [];
 
     const index = initiativeInstruments.findIndex(
-      i => i.idWallet === wallet.idWallet?.toString()
+      i => i.instrumentId === instrumentId
     );
 
     instruments = {
@@ -265,7 +273,8 @@ range(0, walletConfig.refundCount).forEach(() => {
         instrumentId: ulid(),
         idWallet: pagoPaWallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.ACTIVE
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -334,7 +343,8 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
         instrumentId: ulid(),
         idWallet: pagoPaWallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.ACTIVE
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -379,7 +389,8 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
         instrumentId: ulid(),
         idWallet: pagoPaWallet.idWallet?.toString(),
         activationDate: new Date(),
-        status: InstrumentStatus.ACTIVE
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
       }
     ]
   };
@@ -423,7 +434,14 @@ range(0, walletConfig.discountCount).forEach(() => {
   initiatives = { ...initiatives, [initiativeId]: initiative };
   instruments = {
     ...instruments,
-    [initiativeId]: []
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.QRCODE
+      }
+    ]
   };
 
   initiativeTimeline = {
@@ -444,7 +462,67 @@ range(0, walletConfig.discountCount).forEach(() => {
         status: TransactionStatusEnum.CANCELLED,
         channel: TransactionChannelEnum.QRCODE
       } as OperationListDTO,
+      {
+        ...generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
+        instrumentType: OperationInstrumentTypeEnum.IDPAYCODE
+      },
       generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
     ]
   };
 });
+
+// eslint-disable-next-line functional/no-let
+export let idPayCode: string | undefined;
+
+export const generateIdPayCode = () => {
+  idPayCode = faker.random.numeric(5);
+};
+
+export const enrollCodeToInitiative = (initiativeId: string): boolean => {
+  const initiativeInstruments = instruments[initiativeId] || [];
+
+  const isAlreadyEnrolled = initiativeInstruments.some(
+    i => i.instrumentType === InstrumentTypeEnum.IDPAYCODE
+  );
+
+  if (isAlreadyEnrolled || idPayCode === undefined) {
+    return false;
+  }
+
+  const instrumentId = ulid();
+
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      ...initiativeInstruments,
+      {
+        instrumentId,
+        activationDate: new Date(),
+        status: InstrumentStatus.PENDING_ENROLLMENT_REQUEST,
+        instrumentType: InstrumentTypeEnum.IDPAYCODE
+      }
+    ]
+  };
+
+  setTimeout(() => {
+    const initiativeInstruments = instruments[initiativeId] || [];
+
+    const index = initiativeInstruments.findIndex(
+      i => i.instrumentId === instrumentId
+    );
+
+    instruments = {
+      ...instruments,
+      [initiativeId]: [
+        ...initiativeInstruments.slice(0, index),
+        {
+          ...initiativeInstruments[index],
+          status: InstrumentStatus.ACTIVE
+        },
+        ...initiativeInstruments.slice(index + 1)
+      ]
+    };
+  }, 5000);
+
+  return true;
+};

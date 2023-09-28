@@ -3,6 +3,7 @@ import supertest from "supertest";
 import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
 
 import {
+  generateIdPayCode,
   initiatives as idPayInitiatives,
   instruments as idPayInstruments
 } from "../../../../persistence/idpay";
@@ -269,6 +270,61 @@ describe("IDPay Wallet API", () => {
 
       const response = await request.delete(
         addIdPayPrefix(`/wallet/${initiativeId}/unsubscribe`)
+      );
+      expect(response.status).toBe(404);
+    });
+  });
+  describe("GET getIdpayCodeStatus", () => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
+    it("should return 200", async () => {
+      const response = await request.get(addIdPayPrefix(`/wallet/code/status`));
+      expect(response.status).toBe(200);
+    });
+  });
+  describe("POST generateCode", () => {
+    it("should return 200", async () => {
+      const response = await request.post(
+        addIdPayPrefix(`/wallet/code/generate`)
+      );
+      expect(response.status).toBe(200);
+    });
+    it("should return 200 when passing an initiativeId", async () => {
+      const tInitiative = initiatives[0];
+      const initiativeId = tInitiative.initiativeId;
+
+      const response = await request
+        .post(addIdPayPrefix(`/wallet/code/generate`))
+        .send({ initiativeId });
+      expect(response.status).toBe(200);
+    });
+    it("should return 404 when passing an initiativeId that does not exists", async () => {
+      const initiativeId = "ABC123";
+
+      const response = await request
+        .post(addIdPayPrefix(`/wallet/code/generate`))
+        .send({ initiativeId });
+      expect(response.status).toBe(404);
+    });
+  });
+  describe("PUT enrollInstrumentCode", () => {
+    // eslint-disable-next-line sonarjs/no-duplicate-string
+    it("should return 200", async () => {
+      const tInitiative = initiatives[1];
+      const initiativeId = tInitiative.initiativeId;
+
+      generateIdPayCode();
+
+      const response = await request.put(
+        addIdPayPrefix(`/wallet/${initiativeId}/code/instruments`)
+      );
+      expect(response.status).toBe(200);
+    });
+    // eslint-disable-next-line sonarjs/no-duplicate-string
+    it("should return 404", async () => {
+      const initiativeId = "ABC123";
+
+      const response = await request.put(
+        addIdPayPrefix(`/wallet/${initiativeId}/code/instruments`)
       );
       expect(response.status).toBe(404);
     });
