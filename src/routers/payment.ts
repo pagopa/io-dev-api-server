@@ -196,7 +196,11 @@ addHandler(
   "get",
   appendWalletV1Prefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
-    if (idPagamento === undefined || paymentRequest === undefined || O.isNone(paymentRptId)) {
+    if (
+      idPagamento === undefined ||
+      paymentRequest === undefined ||
+      O.isNone(paymentRptId)
+    ) {
       res.sendStatus(404);
       return;
     }
@@ -265,20 +269,23 @@ addHandler(
   walletRouter,
   "post",
   "/wallet/v3/webview/transactions/pay",
-  (req, res) => 
-    pipe(
-      ioDevServerConfig.wallet.paymentOutCode,
-      paymentOutCode => 
-        pipe(
-          paymentRptId,
-          O.filter(_ => paymentOutCode === 0 && !ioDevServerConfig.wallet.useLegacyRptIdVerificationSystem),
-          O.map(rptId => PaymentsDB.createProcessedPayment(rptId, Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO)),
-          _ => handlePaymentPostAndRedirect(
-            req,
-            res,
-            paymentOutCode
+  (req, res) =>
+    pipe(ioDevServerConfig.wallet.paymentOutCode, paymentOutCode =>
+      pipe(
+        paymentRptId,
+        O.filter(
+          _ =>
+            paymentOutCode === 0 &&
+            !ioDevServerConfig.wallet.useLegacyRptIdVerificationSystem
+        ),
+        O.map(rptId =>
+          PaymentsDB.createProcessedPayment(
+            rptId,
+            Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
           )
-        )
+        ),
+        _ => handlePaymentPostAndRedirect(req, res, paymentOutCode)
+      )
     )
 );
 
