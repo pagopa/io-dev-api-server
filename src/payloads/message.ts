@@ -16,7 +16,6 @@ import {
 } from "../../generated/definitions/backend/MessageCategoryPN";
 import { NewMessageContent } from "../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
-import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PrescriptionData } from "../../generated/definitions/backend/PrescriptionData";
 import { ThirdPartyAttachment } from "../../generated/definitions/backend/ThirdPartyAttachment";
@@ -30,9 +29,10 @@ import { thirdPartyMessagePreconditionMarkdown } from "../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backend/ThirdPartyMessagePrecondition";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
-import { OrganizationFiscalCode } from "../../generated/definitions/backend/OrganizationFiscalCode";
 import { pnServiceId } from "../features/pn/services/services";
+import { rptIdFromPaymentDataWithRequiredPayee } from "../utils/payment";
 import ServicesDB from "./../persistence/services";
+import PaymentsDB from "./../persistence/payments";
 
 // eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
@@ -85,25 +85,6 @@ export const withRemoteAttachments = (
   }
 });
 
-export const generatePaymentData = (
-  organizationFiscalCode: OrganizationFiscalCode,
-  invalidAfterDueDate: boolean = false,
-  noticeNumber: string = `0${faker.random.numeric(17)}`,
-  amount: number = getRandomIntInRange(1, 10000)
-) =>
-  pipe(
-    {
-      notice_number: noticeNumber as PaymentNoticeNumber,
-      amount: amount as PaymentAmount,
-      invalid_after_due_date: invalidAfterDueDate,
-      payee: {
-        fiscal_code: organizationFiscalCode
-      }
-    },
-    (data: PaymentDataWithRequiredPayee) =>
-      validatePayload(PaymentDataWithRequiredPayee, data)
-  );
-
 const serviceFromMessage = (
   message: CreatedMessageWithContent
 ): E.Either<Error, Readonly<ServicePublic>> =>
@@ -128,18 +109,34 @@ export const withPaymentData = (
   pipe(
     message,
     serviceFromMessage,
-    E.map(service =>
+    E.chain(service =>
       pipe(
-        generatePaymentData(
+        PaymentsDB.createPaymentData(
           service.organization_fiscal_code,
           invalidAfterDueDate,
-          noticeNumber,
-          amount
+          noticeNumber as PaymentNoticeNumber,
+          amount as PaymentAmount
         ),
-        payment_data => ({
-          ...message,
-          content: { ...message.content, payment_data }
-        })
+        E.map(paymentDataWithRequiredPayee =>
+          pipe(
+            PaymentsDB.createProcessablePayment(
+              rptIdFromPaymentDataWithRequiredPayee(
+                paymentDataWithRequiredPayee
+              ),
+              amount as PaymentAmount,
+              service.organization_fiscal_code,
+              service.organization_name
+            ),
+            _ => ({
+              ...message,
+              content: {
+                ...message.content,
+                payment_data: paymentDataWithRequiredPayee
+              }
+            })
+          )
+        ),
+        E.mapLeft(errors => Error(errors.join("\n")))
       )
     )
   );
