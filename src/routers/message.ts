@@ -318,7 +318,9 @@ addHandler(
 addHandler(
   messageRouter,
   "get",
-  addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
+  addApiV1Prefix(
+    "/third-party-messages/:messageId/attachments/:attachmentUrl(*)"
+  ),
   lollipopMiddleware((req, res) =>
     pipe(
       req.params.messageId,
@@ -346,15 +348,11 @@ addHandler(
                   O.chainNullableK(
                     thirdPartyMessage => thirdPartyMessage.attachments
                   ),
-                  O.map(attachments =>
-                    pipe(
-                      attachments,
-                      A.findFirst(attachment =>
-                        attachment.url.endsWith(req.params[0])
-                      )
+                  O.chain(
+                    A.findFirst(attachment =>
+                      attachment.url.endsWith(req.params.attachmentUrl)
                     )
                   ),
-                  O.flatten,
                   O.fold(
                     () =>
                       res
