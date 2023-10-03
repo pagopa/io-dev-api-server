@@ -8,10 +8,7 @@ import { Iban } from "../../generated/definitions/backend/Iban";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostRequest } from "../../generated/definitions/backend/PaymentActivationsPostRequest";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
-import {
-  DetailEnum,
-  Detail_v2Enum
-} from "../../generated/definitions/backend/PaymentProblemJson";
+import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
@@ -25,6 +22,7 @@ import { appendWalletV1Prefix } from "../utils/wallet";
 import PaymentsDB from "../persistence/payments";
 import { RptId } from "../../generated/definitions/backend/RptId";
 import { fold } from "../types/PaymentStatus";
+import { detailV2EnumToPaymentProblemJSON } from "../utils/payment";
 import ServicesDB, { ServiceSummary } from "./../persistence/services";
 import { profileRouter } from "./profile";
 import { walletRouter } from "./wallet";
@@ -33,9 +31,11 @@ export const paymentRouter = Router();
 
 // eslint-disable-next-line functional/no-let
 let paymentRequest: PaymentRequestsGetResponse | undefined;
-
+// eslint-disable-next-line functional/no-let
+let paymentRptId: O.Option<RptId> = O.none;
 // eslint-disable-next-line functional/no-let
 let idPagamento: string | undefined;
+
 /**
  * user wants to pay (VERIFICA)
  * this API return the current status of the payment
@@ -75,6 +75,7 @@ addHandler(
                   processedPayment =>
                     res.status(500).json(processedPayment.status),
                   processablePayment => {
+                    paymentRptId = O.some(rptId);
                     paymentRequest = processablePayment.data;
                     return res.status(200).json(processablePayment.data);
                   }
@@ -106,6 +107,7 @@ addHandler(
                   O.fromNullable,
                   O.fold(
                     () => {
+                      paymentRptId = O.some(req.params.rptId as RptId);
                       paymentRequest =
                         getPaymentRequestsGetResponse(randomService);
                       return res.json(paymentRequest);
@@ -133,7 +135,7 @@ addHandler(
   "post",
   addApiV1Prefix("/payment-activations"),
   (req, res) => {
-    if (paymentRequest === undefined) {
+    if (paymentRequest === undefined || O.isNone(paymentRptId)) {
       res.sendStatus(404);
       return;
     }
@@ -194,7 +196,11 @@ addHandler(
   "get",
   appendWalletV1Prefix("/payments/:idPagamento/actions/check"),
   (_, res) => {
-    if (idPagamento === undefined || paymentRequest === undefined) {
+    if (
+      idPagamento === undefined ||
+      paymentRequest === undefined ||
+      O.isNone(paymentRptId)
+    ) {
       res.sendStatus(404);
       return;
     }
@@ -264,10 +270,22 @@ addHandler(
   "post",
   "/wallet/v3/webview/transactions/pay",
   (req, res) =>
-    handlePaymentPostAndRedirect(
-      req,
-      res,
-      ioDevServerConfig.wallet.paymentOutCode
+    pipe(ioDevServerConfig.wallet.paymentOutCode, paymentOutCode =>
+      pipe(
+        paymentRptId,
+        O.filter(
+          _ =>
+            paymentOutCode === 0 &&
+            !ioDevServerConfig.wallet.useLegacyRptIdVerificationSystem
+        ),
+        O.map(rptId =>
+          PaymentsDB.createProcessedPayment(
+            rptId,
+            Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
+          )
+        ),
+        _ => handlePaymentPostAndRedirect(req, res, paymentOutCode)
+      )
     )
 );
 
@@ -293,8 +311,4 @@ addHandler(
 addNewRoute("post", "/wallet/v3/webview/transactions/pay");
 
 const legacyResponseWithError = (detailV2: Detail_v2Enum, res: Response) =>
-  res.status(500).json({
-    // deprecated, it is just a placeholder
-    detail: DetailEnum.PAYMENT_UNKNOWN,
-    detail_v2: detailV2
-  });
+  res.status(500).json(detailV2EnumToPaymentProblemJSON(detailV2));
