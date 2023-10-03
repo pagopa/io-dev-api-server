@@ -32,6 +32,7 @@ import { ThirdPartyMessagePrecondition } from "../../generated/definitions/backe
 import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
 import { FiscalCode } from "../../generated/definitions/backend/FiscalCode";
 import { pnServiceId } from "../features/pn/services/services";
+import { AttachmentCategory } from "../features/messages/types/attachmentCategory";
 import { rptIdFromPaymentDataWithRequiredPayee } from "../utils/payment";
 import ServicesDB from "./../persistence/services";
 import PaymentsDB from "./../persistence/payments";
@@ -201,7 +202,11 @@ export const getCategory = (
 export const defaultContentType = "application/octet-stream";
 
 export const thirdPartyAttachmentFromAbsolutePathArray =
-  (count: number, idOffset: number = 0) =>
+  (
+    count: number,
+    idOffset: number = 0,
+    category: AttachmentCategory = "DOCUMENT"
+  ) =>
   (absolutePaths: string[]) =>
     pipe(
       absolutePaths,
@@ -218,6 +223,7 @@ export const thirdPartyAttachmentFromAbsolutePathArray =
                 parsedPDFFile =>
                   ({
                     id: `${idOffset + attachmentIndex}`,
+                    category,
                     name: parsedPDFFile.name,
                     content_type: contentTypeFromParsedFile(parsedPDFFile),
                     url: attachmentUrlFromAbsolutePath(pdfAbsolutePath)
