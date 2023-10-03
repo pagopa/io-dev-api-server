@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function";
+import { identity, pipe } from "fp-ts/lib/function";
 import * as S from "fp-ts/lib/string";
 import * as B from "fp-ts/lib/boolean";
 import * as O from "fp-ts/lib/Option";
@@ -200,26 +200,26 @@ export const handleAttachment = (
             attachmentPollingData,
             config
           ),
-          pollingAndExpirationDatesTuple =>
-            pipe(
-              pollingAndExpirationDatesTuple[0] < new Date(),
-              B.foldW(
-                () =>
-                  pipe(
-                    config.messages.attachmentRetryAfterSeconds,
-                    O.fromNullable,
-                    O.getOrElse(() => 3),
-                    retryAfterSeconds =>
-                      sendRetryAfterCallback(retryAfterSeconds)
-                  ),
-                () =>
-                  sendAttachment(
-                    attachment.url,
-                    attachment.content_type,
-                    sendAttachmentCallback
-                  )
+          O.fromPredicate(
+            pollingAndExpirationDatesTuple =>
+              pollingAndExpirationDatesTuple[0] < new Date()
+          ),
+          O.isSome,
+          B.fold(
+            () =>
+              pipe(
+                config.messages.attachmentRetryAfterSeconds,
+                O.fromNullable,
+                O.getOrElse(() => 3),
+                sendRetryAfterCallback
+              ),
+            () =>
+              sendAttachment(
+                attachment.url,
+                attachment.content_type,
+                sendAttachmentCallback
               )
-            )
+          )
         )
     )
   );
@@ -244,6 +244,12 @@ const getPollingAndExpirationTuple = (
   pipe(
     attachmentPollingData.get(attachmentUrl),
     O.fromNullable,
+    O.chain(
+      O.fromPredicate(
+        pollingAndExpirationDatesTuple =>
+          new Date() < pollingAndExpirationDatesTuple[1]
+      )
+    ),
     O.fold(
       () =>
         generateAndSavePollingAndExpirationTuple(
@@ -251,20 +257,7 @@ const getPollingAndExpirationTuple = (
           attachmentPollingData,
           config
         ),
-      pollingAndExpirationTuple =>
-        pipe(
-          pollingAndExpirationTuple[1],
-          expirationDate => new Date() < expirationDate,
-          B.fold(
-            () =>
-              generateAndSavePollingAndExpirationTuple(
-                attachmentUrl,
-                attachmentPollingData,
-                config
-              ),
-            () => pollingAndExpirationTuple
-          )
-        )
+      identity
     )
   );
 
