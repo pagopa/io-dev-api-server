@@ -348,6 +348,7 @@ addHandler(
                   O.chainNullableK(
                     thirdPartyMessage => thirdPartyMessage.attachments
                   ),
+                  O.filter(_ => !!req.params.attachmentUrl),
                   O.chain(
                     A.findFirst(attachment =>
                       attachment.url.endsWith(req.params.attachmentUrl)
@@ -360,7 +361,7 @@ addHandler(
                         .json(
                           getProblemJson(
                             404,
-                            `Attachment not found for url (${req.params[0]})`
+                            `Attachment not found for url (${req.params.attachmentUrl})`
                           )
                         ),
                     attachment =>
