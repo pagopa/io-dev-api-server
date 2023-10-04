@@ -18,7 +18,7 @@ import {
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../../../payloads/features/fci/signature-request";
 import { addHandler } from "../../../payloads/response";
-import { sendFile } from "../../../utils/file";
+import { sendFileFromRootPath } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
@@ -160,7 +160,7 @@ addHandler(
   "get",
   `${staticContentRootPath}/fci/:filename`,
   (req, res) => {
-    sendFile(`assets/fci/pdf/${req.params.filename}.pdf`, res);
+    sendFileFromRootPath(`assets/fci/pdf/${req.params.filename}.pdf`, res);
   }
 );
 

@@ -10,7 +10,7 @@ import {
   isPrivative,
   resetCardConfig
 } from "../../payloads/wallet_v2";
-import { sendFile } from "../../utils/file";
+import { sendFileFromRootPath } from "../../utils/file";
 import {
   generateWalletV2Data,
   getWalletV2,
@@ -24,7 +24,7 @@ addHandler(
   dashboardWalletV2Router,
   "get",
   "/",
-  (_, res) => sendFile("assets/html/wallet2_config.html", res),
+  (_, res) => sendFileFromRootPath("assets/html/wallet2_config.html", res),
   () => 0,
   { description: "WalletV2 config dashboard" }
 );

@@ -17,7 +17,7 @@ import {
   redirectUrl
 } from "../payloads/login";
 import { addHandler } from "../payloads/response";
-import { readFileAsJSON, sendFile } from "../utils/file";
+import { readFileAsJSON, sendFileFromRootPath } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
 import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
 import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
@@ -96,15 +96,15 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     res.redirect(url);
     return;
   }
-  sendFile("assets/html/login.html", res);
+  sendFileFromRootPath("assets/html/login.html", res);
 });
 
 addHandler(publicRouter, "get", WALLET_ONBOARDING_PATH, (req, res) => {
-  sendFile("assets/wallet/wallet_onboarding.html", res);
+  sendFileFromRootPath("assets/wallet/wallet_onboarding.html", res);
 });
 
 addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
-  sendFile("assets/imgs/how_to_login.png", res);
+  sendFileFromRootPath("assets/imgs/how_to_login.png", res);
 });
 
 addHandler(publicRouter, "post", "/logout", (_, res) => {
@@ -135,7 +135,7 @@ addHandler(publicRouter, "post", "/test-login", (req, res) => {
 });
 
 addHandler(publicRouter, "get", "/paywebview", (_, res) => {
-  sendFile("assets/imgs/how_to_login.png", res);
+  sendFileFromRootPath("assets/imgs/how_to_login.png", res);
 });
 
 // it should be useful to reset some states
@@ -160,7 +160,7 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
 });
 
 addHandler(publicRouter, "get", "/donate", (req, res) => {
-  sendFile("assets/html/donate.html", res);
+  sendFileFromRootPath("assets/html/donate.html", res);
 });
 
 addHandler(publicRouter, "get", "/donations/availabledonations", (req, res) => {

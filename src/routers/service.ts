@@ -5,7 +5,7 @@ import { ServicePreference } from "../../generated/definitions/backend/ServicePr
 import { UpsertServicePreference } from "../../generated/definitions/backend/UpsertServicePreference";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
-import { sendFile } from "../utils/file";
+import { sendFileFromRootPath } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
@@ -121,7 +121,7 @@ addHandler(
  * html page that shows all local services, embedded in an app webview
  */
 addHandler(publicRouter, "get", "/services_web_view", (req, res) => {
-  sendFile("assets/html/services_web_view.html", res);
+  sendFileFromRootPath("assets/html/services_web_view.html", res);
 });
 
 /**

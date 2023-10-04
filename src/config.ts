@@ -18,8 +18,8 @@ import { readFileAsJSON } from "./utils/file";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
-export const assetsFolder = root + "/assets";
-export const configFolder = root + "/config";
+export const assetsFolder = path.join(root, "assets");
+export const configFolder = path.join(root, "config");
 
 const defaultProfileAttrs: ProfileAttrs = {
   name: "Maria Giovanna",
@@ -83,7 +83,8 @@ const defaultConfig: IoDevServerConfig = {
           failedPayments: 7,
           unrelatedPayments: 20,
           isCancelled: false,
-          f24Count: 7
+          attachmentCount: 2,
+          f24Count: 19
         }
       },
       {
@@ -95,7 +96,8 @@ const defaultConfig: IoDevServerConfig = {
           failedPayments: 1,
           unrelatedPayments: 1,
           isCancelled: false,
-          f24Count: 7
+          attachmentCount: 3,
+          f24Count: 4
         }
       }
     ],

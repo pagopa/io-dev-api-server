@@ -19,7 +19,7 @@ import {
   onlineMerchants
 } from "../../../payloads/features/cgn/merchants";
 import { addHandler } from "../../../payloads/response";
-import { sendFile } from "../../../utils/file";
+import { sendFileFromRootPath } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
 
@@ -156,5 +156,5 @@ addHandler(publicRouter, "get", "/merchant_landing", (req, res) => {
     "X-PagoPa-CGN-Referer header",
     req.header("X-PagoPa-CGN-Referer")
   );
-  sendFile("assets/html/merchants_landing_page.html", res);
+  sendFileFromRootPath("assets/html/merchants_landing_page.html", res);
 });

@@ -13,6 +13,7 @@ import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProble
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
+import { PNMessageTemplateWrapper } from "../features/pn/types/messageTemplateWrapper";
 
 /* profile */
 export const ProfileAttrs = t.intersection([
@@ -129,29 +130,6 @@ export const ServicesConfig = t.intersection([
   }),
   AllowRandomValue
 ]);
-
-export const PNMessageTemplate = t.intersection([
-  t.type({
-    unpaidValidPayments: t.number,
-    unpaidExpiredPayments: t.number,
-    paidPayments: t.number,
-    failedPayments: t.number,
-    unrelatedPayments: t.number,
-    f24Count: t.number
-  }),
-  t.partial({
-    isCancelled: t.boolean
-  })
-]);
-export type PNMessageTemplate = t.TypeOf<typeof PNMessageTemplate>;
-
-export const PNMessageTemplateWrapper = t.type({
-  template: PNMessageTemplate,
-  count: t.number
-});
-export type PNMessageTemplateWrapper = t.TypeOf<
-  typeof PNMessageTemplateWrapper
->;
 
 export const IoDevServerConfig = t.interface({
   global: t.intersection([

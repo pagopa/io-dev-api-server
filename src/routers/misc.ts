@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
-import { sendFile } from "../utils/file";
+import { sendFileFromRootPath } from "../utils/file";
 
 export const miscRouter = Router();
 
 addHandler(miscRouter, "get", "/myportal_playground.html", (_, res) => {
-  sendFile("assets/html/myportal_playground.html", res);
+  sendFileFromRootPath("assets/html/myportal_playground.html", res);
 });
 
 /**
