@@ -409,7 +409,8 @@ const createPNAttachmentsAndF24s = (
                 ),
                 thirdPartyAttachmentFromAbsolutePathArray(
                   f24Count,
-                  attachmentCount
+                  attachmentCount,
+                  "F24"
                 ),
                 pnF24s => [...pnAttachments, ...pnF24s]
               )

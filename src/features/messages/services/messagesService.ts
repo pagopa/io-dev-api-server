@@ -204,8 +204,7 @@ export const handleAttachment = (
             pollingAndExpirationDatesTuple =>
               pollingAndExpirationDatesTuple[0] < new Date()
           ),
-          O.isSome,
-          B.fold(
+          O.fold(
             () =>
               pipe(
                 config.messages.attachmentRetryAfterSeconds,
