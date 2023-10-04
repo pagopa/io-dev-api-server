@@ -7,7 +7,7 @@ import { EnrichedMessage } from "../../../generated/definitions/backend/Enriched
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
 import { ioDevServerConfig } from "../../config";
 import { basePath } from "../../payloads/response";
-import MessagesDB from "../../persistence/messages";
+import MessagesDB from "../../features/messages/persistence/messagesDatabase";
 import ServicesDB from "../../persistence/services";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";

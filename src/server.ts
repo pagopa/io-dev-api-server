@@ -18,7 +18,7 @@ import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
 import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
 import { fciRouter } from "./routers/features/fci";
 import { svRouter } from "./routers/features/siciliaVola";
-import { messageRouter } from "./routers/message";
+import { messageRouter } from "./features/messages/routers/messagesRouter";
 import { miscRouter } from "./routers/misc";
 import { paymentRouter } from "./routers/payment";
 import { profileRouter } from "./routers/profile";

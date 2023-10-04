@@ -86,21 +86,11 @@ const defaultConfig: IoDevServerConfig = {
           attachmentCount: 2,
           f24Count: 19
         }
-      },
-      {
-        count: 0,
-        template: {
-          unpaidValidPayments: 1,
-          unpaidExpiredPayments: 1,
-          paidPayments: 1,
-          failedPayments: 1,
-          unrelatedPayments: 1,
-          isCancelled: false,
-          attachmentCount: 3,
-          f24Count: 4
-        }
       }
     ],
+    attachmentAvailableAfterSeconds: 5,
+    attachmentExpiredAfterSeconds: 10,
+    attachmentRetryAfterSeconds: 2,
     pnOptInMessage: false,
     withRemoteAttachments: 0,
     paymentsCount: 1,

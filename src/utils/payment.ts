@@ -7,6 +7,8 @@ import {
 } from "../../generated/definitions/backend/PaymentProblemJson";
 import { RptId } from "../../generated/definitions/backend/RptId";
 import { NotificationPaymentInfo } from "../features/pn/types/notificationPaymentInfo";
+import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { PaymentData } from "../../generated/definitions/backend/PaymentData";
 
 export const enum CreditCardBrandEnum {
   "VISAELECTRON" = "VISAELECTRON",
@@ -69,6 +71,11 @@ export const rptIdFromNotificationPaymentInfo = (
   notificationPaymentInfo: NotificationPaymentInfo
 ): RptId =>
   `${notificationPaymentInfo.creditorTaxId}${notificationPaymentInfo.noticeCode}`;
+
+export const rptIdFromServiceAndPaymentData = (
+  service: ServicePublic,
+  paymentData: PaymentData
+) => `${service.organization_fiscal_code}${paymentData.notice_number}`;
 
 export const isPaid = (paymentProblemJSON: PaymentProblemJson) =>
   pipe(

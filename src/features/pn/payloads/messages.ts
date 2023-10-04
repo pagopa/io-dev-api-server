@@ -15,7 +15,7 @@ import {
   createMessage,
   thirdPartyAttachmentFromAbsolutePathArray,
   withContent
-} from "../../../payloads/message";
+} from "../../messages/persistence/messagesPayload";
 import { getRandomValue } from "../../../utils/random";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 import { OrganizationName } from "../../../../generated/definitions/backend/OrganizationName";
