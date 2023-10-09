@@ -101,6 +101,12 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "0.0.0",
         android: "0.0.0"
+      },
+      opt_in: {
+        min_app_version: {
+          ios: "0.0.0",
+          android: "0.0.0"
+        }
       }
     },
     nativeLogin: {
