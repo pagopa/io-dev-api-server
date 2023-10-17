@@ -12,6 +12,5 @@ export const appendWalletV3Prefix = (path: string) => `${walletV3Path}${path}`;
 
 export const WALLET_ONBOARDING_PATH = "/onboarding-wallet";
 export const generateOnboardingWalletData = (): WalletCreateResponse => ({
-  walletId: faker.datatype.uuid(),
   redirectUrl: `${serverUrl}${WALLET_ONBOARDING_PATH}#sessionToken=${faker.datatype.uuid()}`
 });
