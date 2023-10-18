@@ -9,7 +9,11 @@
 
         const simulateOutcome = () => {
             const container = document.getElementById("outcomeSelect");
-            window.location.href = `/outcomeView?outcome=${container.value}`;
+            if (container.value === "0") {
+              window.location.href = `/outcomeView?outcome=${container.value}&walletId=100`;
+            } else {
+              window.location.href = `/outcomeView?outcome=${container.value}`;
+            }
         }
 
         function onLoad() {
