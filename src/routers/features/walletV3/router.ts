@@ -17,4 +17,10 @@ export const addPaymentMethodsHandler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void
-) => addHandler(walletV3Router, method, addWalletV3Prefix(path), handleRequest);
+) =>
+  addHandler(
+    walletV3Router,
+    method,
+    addPaymentMethodsPrefix(path),
+    handleRequest
+  );
