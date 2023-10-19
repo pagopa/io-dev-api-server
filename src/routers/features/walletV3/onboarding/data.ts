@@ -17,20 +17,20 @@ export const allPaymentMethods: PaymentMethodsResponse = {
           max: 1000
         } as Range
       ]
+    },
+    {
+      id: "2",
+      name: "BANCOMAT Pay",
+      description: "Pagamento con BANCOMAT Pay",
+      asset: "bancomatPay",
+      status: PaymentMethodStatusEnum.ENABLED,
+      paymentTypeCode: "string",
+      ranges: [
+        {
+          min: 0,
+          max: 500
+        } as Range
+      ]
     }
-    // {
-    //   id: "2",
-    //   name: "BANCOMAT Pay",
-    //   description: "Pagamento con BANCOMAT Pay",
-    //   asset: "bancomatPay",
-    //   status: PaymentMethodStatusEnum.ENABLED,
-    //   paymentTypeCode: "string",
-    //   ranges: [
-    //     {
-    //       min: 0,
-    //       max: 500
-    //     } as Range
-    //   ]
-    // }
   ]
 };
