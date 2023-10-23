@@ -10,7 +10,7 @@
         const simulateOutcome = () => {
             const container = document.getElementById("outcomeSelect");
             if (container.value === "0") {
-              fetch('http://192.168.1.204:3000/wallets/mock', {
+              fetch('/wallets/mock', {
                 method: 'POST',
                 body: JSON.stringify({
                   paymentMethodId: "1",
