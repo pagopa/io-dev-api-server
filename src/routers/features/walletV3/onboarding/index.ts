@@ -36,6 +36,20 @@ addWalletV3Handler("get", "/:idWallet", (req, res) => {
   );
 });
 
+addWalletV3Handler("delete", "/:idWallet", (req, res) => {
+  const { idWallet } = req.params;
+  const result = WalletDB.getUserWalletInfo(idWallet);
+  pipe(
+    result,
+    O.fromNullable,
+    O.map(() => {
+      WalletDB.removeUserWallet(idWallet);
+      res.sendStatus(204);
+    }),
+    O.getOrElseW(() => res.status(400).json({ text: "Wallet id not present" }))
+  );
+});
+
 /**
  * This API is used to retrieve a list of payment methods available for the onboarding process
  */

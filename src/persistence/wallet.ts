@@ -33,9 +33,14 @@ const generateUserWallet = (paymentMethodId: string) => {
   return randomWallet;
 };
 
+const removeUserWallet = (walletId: string) => {
+  userWallets.delete(walletId);
+};
+
 export default {
   addUserWallet,
   getUserWallets,
   getUserWalletInfo,
-  generateUserWallet
+  generateUserWallet,
+  removeUserWallet
 };
