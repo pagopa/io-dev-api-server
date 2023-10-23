@@ -1,5 +1,6 @@
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 
 import WalletDB from "../../../../persistence/wallet";
 import { WalletCreateRequest } from "../../../../../generated/definitions/pagopa/walletv3/WalletCreateRequest";
@@ -14,7 +15,7 @@ addWalletV3Handler("post", "/", (req, res) => {
   pipe(
     WalletCreateRequest.decode(req.body),
     E.fold(
-      () => res.sendStatus(400),
+      () => res.sendStatus(404),
       () => res.status(201).json(generateOnboardingWalletData())
     )
   );
@@ -22,6 +23,17 @@ addWalletV3Handler("post", "/", (req, res) => {
 
 addWalletV3Handler("get", "/", (req, res) => {
   res.json(WalletDB.getUserWallets());
+});
+
+addWalletV3Handler("get", "/:idWallet", (req, res) => {
+  const { idWallet } = req.params;
+  const result = WalletDB.getUserWalletInfo(idWallet);
+  pipe(
+    result,
+    O.fromNullable,
+    O.map(() => res.json(WalletDB.getUserWalletInfo(idWallet))),
+    O.getOrElse(() => res.sendStatus(400))
+  );
 });
 
 /**
