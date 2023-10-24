@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script type="application/javascript">
+    <script type="text/javascript">
         const outcomeList = [
             ["0", "SUCCESS"],
             ["1", "ERROR"]
@@ -9,7 +9,25 @@
 
         const simulateOutcome = () => {
             const container = document.getElementById("outcomeSelect");
-            window.location.href = `/outcomeView?outcome=${container.value}`;
+            if (container.value === "0") {
+              fetch('/wallets/mock', {
+                method: 'POST',
+                body: JSON.stringify({
+                  paymentMethodId: "1",
+                }),
+                headers: new Headers({
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                })
+              })
+              .then(response => response.json())
+              .then(response => {
+                window.location.href = `/outcomeView?outcome=${container.value}&walletId=${response.walletId}`;
+              })
+              .catch(err => alert(err))
+            } else {
+              window.location.href = `/outcomeView?outcome=${container.value}`;
+            }
         }
 
         function onLoad() {

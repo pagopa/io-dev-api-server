@@ -4,9 +4,23 @@ import { addHandler, SupportedMethod } from "../../../payloads/response";
 export const walletV3Router = Router();
 
 export const addWalletV3Prefix = (path: string) => `/wallets${path}`;
+export const addPaymentMethodsPrefix = (path: string) =>
+  `/payment-methods${path}`;
 
 export const addWalletV3Handler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void
 ) => addHandler(walletV3Router, method, addWalletV3Prefix(path), handleRequest);
+
+export const addPaymentMethodsHandler = (
+  method: SupportedMethod,
+  path: string,
+  handleRequest: (request: Request, response: Response) => void
+) =>
+  addHandler(
+    walletV3Router,
+    method,
+    addPaymentMethodsPrefix(path),
+    handleRequest
+  );
