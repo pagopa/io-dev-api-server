@@ -4,7 +4,11 @@
     <script type="text/javascript">
         const outcomeList = [
             ["0", "SUCCESS"],
-            ["1", "ERROR"]
+            ["1", "GENERIC_ERROR"],
+            ["2", "AUTH_ERROR"],
+            ["4", "TIMEOUT"],
+            ["8", "CANCELED_BY_USER"],
+            ["14", "INVALID_SESSION"]
         ];
 
         const simulateOutcome = () => {
