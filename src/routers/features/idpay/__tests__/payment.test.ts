@@ -7,9 +7,9 @@ import { CodeEnum } from "../../../../../generated/definitions/idpay/Transaction
 export const codeToFailure: {
   [key: number]: { status: number; code: CodeEnum };
 } = {
-  1: { status: 404, code: CodeEnum.PAYMENT_NOT_FOUND_EXPIRED },
-  2: { status: 403, code: CodeEnum.PAYMENT_USER_NOT_VALID },
-  3: { status: 400, code: CodeEnum.PAYMENT_STATUS_NOT_VALID },
+  1: { status: 404, code: CodeEnum.PAYMENT_NOT_FOUND_OR_EXPIRED },
+  2: { status: 403, code: CodeEnum.PAYMENT_USER_NOT_ASSOCIATED },
+  3: { status: 400, code: CodeEnum.PAYMENT_NOT_FOUND_OR_EXPIRED },
   4: { status: 403, code: CodeEnum.PAYMENT_BUDGET_EXHAUSTED },
   5: { status: 403, code: CodeEnum.PAYMENT_GENERIC_REJECTED },
   6: { status: 429, code: CodeEnum.PAYMENT_TOO_MANY_REQUESTS },

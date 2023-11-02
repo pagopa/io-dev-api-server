@@ -439,7 +439,7 @@ range(0, walletConfig.discountCount).forEach(() => {
         instrumentId: ulid(),
         activationDate: new Date(),
         status: InstrumentStatus.ACTIVE,
-        instrumentType: InstrumentTypeEnum.QRCODE
+        instrumentType: InstrumentTypeEnum.APP_IO_PAYMENT
       }
     ]
   };
