@@ -21,7 +21,7 @@ export const fastLoginRouter = Router();
 addHandler(
   fastLoginRouter,
   "post",
-  addApiV1Prefix("/fast-login/generate-nonce"),
+  addApiV1Prefix("/fast-login/nonce/generate"),
   (_, res) => {
     generateNewNonce();
     const nonce = getNonceInfo().nonce;
