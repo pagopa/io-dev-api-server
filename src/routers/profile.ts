@@ -21,6 +21,7 @@ import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { getAuthenticationProvider } from "../persistence/sessionInfo";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { UpdateProfile412ErrorTypesEnum } from "../../generated/definitions/backend/UpdateProfile412ErrorTypes";
 
 // eslint-disable-next-line functional/no-let
 let currentProfile: InitializedProfile = {} as InitializedProfile;
@@ -81,6 +82,22 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
   if (E.isLeft(maybeProfileToUpdate)) {
     res.sendStatus(400);
     return;
+  } else {
+    if (maybeProfileToUpdate.right.email === "mario.mario@mario.com") {
+      res
+        .status(412)
+        .json(
+          getProblemJson(
+            412,
+            "Precondition Failed",
+            "Precondition Failed",
+            UpdateProfile412ErrorTypesEnum[
+              "https://ioapp.it/problems/email-already-taken"
+            ]
+          )
+        );
+      return;
+    }
   }
   // profile is merged with the one coming from request.
   // furthermore this profile's version is increased by 1
@@ -91,6 +108,9 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
   currentProfile = {
     ...currentProfile,
     ...clientProfileIncreased,
+    is_email_validated:
+      currentProfile.email === maybeProfileToUpdate.right.email &&
+      maybeProfileToUpdate.right.email !== "mario.mario@mario.com",
     is_inbox_enabled: (clientProfileIncreased.accepted_tos_version ?? 0) > 0
   };
   res.json(currentProfile);
