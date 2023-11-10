@@ -309,7 +309,7 @@ describe("IDPay Wallet API", () => {
   describe("PUT enrollInstrumentCode", () => {
     // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 200", async () => {
-      const tInitiative = initiatives[0];
+      const tInitiative = initiatives[1];
       const initiativeId = tInitiative.initiativeId;
 
       generateIdPayCode();

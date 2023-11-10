@@ -13,12 +13,13 @@ import {
 } from "../../generated/definitions/idpay/InitiativeDTO";
 import {
   InstrumentDTO,
-  StatusEnum as InstrumentStatus
+  StatusEnum as InstrumentStatus,
+  InstrumentTypeEnum
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import {
   InstrumentOperationDTO,
   OperationTypeEnum as InstrumentOperationTypeEnum,
-  InstrumentTypeEnum
+  InstrumentTypeEnum as InstrumentOperationInstrumentTypeEnum
 } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import {
   OnboardingOperationDTO,
@@ -375,30 +376,30 @@ range(0, walletConfig.refundCount).forEach(() => {
       generateRandomRejectedInstrumentOperationDTO({
         operationType:
           RejectedInstrumentOperationTypeEnum.REJECTED_DELETE_INSTRUMENT,
-        instrumentType: InstrumentTypeEnum.CARD
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
       }),
       generateRandomInstrumentOperationDTO({
         operationType: InstrumentOperationTypeEnum.DELETE_INSTRUMENT,
-        instrumentType: InstrumentTypeEnum.CARD
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
       }),
       generateRandomInstrumentOperationDTO({
         operationType: InstrumentOperationTypeEnum.DELETE_INSTRUMENT,
-        instrumentType: InstrumentTypeEnum.CARD,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD,
         brand: undefined,
         maskedPan: undefined
       }),
       generateRandomRejectedInstrumentOperationDTO({
         operationType:
           RejectedInstrumentOperationTypeEnum.REJECTED_ADD_INSTRUMENT,
-        instrumentType: InstrumentTypeEnum.CARD
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
       }),
       generateRandomInstrumentOperationDTO({
         operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
-        instrumentType: InstrumentTypeEnum.CARD
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
       }),
       generateRandomInstrumentOperationDTO({
         operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
-        instrumentType: InstrumentTypeEnum.CARD,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD,
         brand: undefined,
         maskedPan: undefined
       }),
@@ -534,7 +535,7 @@ range(0, walletConfig.discountCount).forEach(() => {
         instrumentId: ulid(),
         activationDate: new Date(),
         status: InstrumentStatus.ACTIVE,
-        instrumentType: InstrumentTypeEnum.IDPAYCODE
+        instrumentType: InstrumentTypeEnum.APP_IO_PAYMENT
       }
     ]
   };
