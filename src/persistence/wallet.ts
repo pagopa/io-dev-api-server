@@ -2,6 +2,8 @@ import { faker } from "@faker-js/faker";
 import { WalletInfo } from "../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { ServiceNameEnum } from "../../generated/definitions/pagopa/walletv3/ServiceName";
 import { WalletStatusEnum } from "../../generated/definitions/pagopa/walletv3/WalletStatus";
+import { getWalletTypeFromPaymentMethodId } from "../routers/features/walletV3/onboarding/utils";
+import { BrandEnum } from "../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -15,8 +17,8 @@ const getUserWalletInfo = (walletId: string) => userWallets.get(walletId);
 
 const generateUserWallet = (paymentMethodId: string) => {
   const walletId = (getUserWallets().length + 1).toString();
+  const expiryDate = faker.date.future();
   const randomWallet: WalletInfo = {
-    contractId: "2",
     creationDate: new Date(),
     paymentMethodId,
     services: [
@@ -26,8 +28,16 @@ const generateUserWallet = (paymentMethodId: string) => {
     ],
     status: WalletStatusEnum.CREATED,
     updateDate: new Date(),
-    userId: faker.datatype.uuid(),
-    walletId
+    walletId,
+    details: {
+      type: getWalletTypeFromPaymentMethodId(paymentMethodId),
+      maskedEmail: "***t@gmail.com",
+      abi: faker.datatype.string(4),
+      brand: BrandEnum.MASTERCARD,
+      expiryDate: expiryDate.toISOString(),
+      holder: faker.name.fullName(),
+      maskedPan: "0000"
+    }
   };
   addUserWallet(walletId, randomWallet);
   return randomWallet;

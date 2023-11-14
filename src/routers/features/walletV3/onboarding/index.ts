@@ -16,7 +16,10 @@ addWalletV3Handler("post", "/", (req, res) => {
     WalletCreateRequest.decode(req.body),
     E.fold(
       () => res.sendStatus(404),
-      () => res.status(201).json(generateOnboardingWalletData())
+      () =>
+        res
+          .status(201)
+          .json(generateOnboardingWalletData(req.body.paymentMethodId))
     )
   );
 });
