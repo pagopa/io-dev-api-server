@@ -54,6 +54,10 @@ import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
 import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import {
+  StatusEnum,
+  TransactionBarCodeResponse
+} from "../../generated/definitions/idpay/TransactionBarCodeResponse";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -648,4 +652,41 @@ export const enrollCodeToInitiative = (initiativeId: string): boolean => {
   }, 5000);
 
   return true;
+};
+
+// eslint-disable-next-line functional/no-let
+let barcodeTransactions: {
+  [initiativeID: string]: TransactionBarCodeResponse;
+} = {};
+
+export const getIdPayBarcodeTransaction = (
+  initiativeId: string,
+  trxExpirationMinutes: number = 1
+): TransactionBarCodeResponse => {
+  const currentBarcode = barcodeTransactions[initiativeId];
+  if (currentBarcode === undefined) {
+    const newBarcodeTransaction: TransactionBarCodeResponse = {
+      id: ulid(),
+      trxCode: faker.random.alphaNumeric(8),
+      initiativeId,
+      status: StatusEnum.CREATED,
+      trxDate: new Date(),
+      trxExpirationMinutes
+    };
+    barcodeTransactions = {
+      ...barcodeTransactions,
+      [initiativeId]: newBarcodeTransaction
+    };
+    return newBarcodeTransaction;
+  } else {
+    const timeDiff = new Date().getTime() - currentBarcode.trxDate.getTime();
+    // trxExpirationMinutes is in minutes, timeDiff is in milliseconds
+    const isExpired = timeDiff > trxExpirationMinutes * 60 * 1000;
+    if (isExpired) {
+      // eslint-disable-next-line functional/immutable-data
+      delete barcodeTransactions[initiativeId];
+      return getIdPayBarcodeTransaction(initiativeId, trxExpirationMinutes);
+    }
+    return currentBarcode;
+  }
 };
