@@ -5,6 +5,7 @@ import { createFilledDocumentBody } from "../../../../payloads/features/fci/qtsp
 import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signature-request";
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
+import { EnvironmentEnum } from "../../../../../generated/definitions/fci/Environment";
 
 const request = supertest(app);
 
@@ -17,6 +18,15 @@ describe("io-sign API", () => {
         );
         expect(response.status).toBe(200);
       });
+      it("should return a valid x-io-sign-environment header equal to test", async () => {
+        const response = await request.get(
+          addFciPrefix(`/signature-requests/${SIGNATURE_REQUEST_ID}`)
+        );
+        expect(response.status).toBe(200);
+        expect(response.header["x-io-sign-environment"]).toBe(
+          EnvironmentEnum.test
+        );
+      });
     });
     describe("when the signer request a signature-request without a valid signatureRequestId", () => {
       it("should return 404", async () => {
@@ -24,6 +34,15 @@ describe("io-sign API", () => {
           addFciPrefix(`/signature-requests/${ulid()}`)
         );
         expect(response.status).toBe(404);
+      });
+      it("should return a valid x-io-sign-environment header equal to test", async () => {
+        const response = await request.get(
+          addFciPrefix(`/signature-requests/${ulid()}`)
+        );
+        expect(response.status).toBe(404);
+        expect(response.header["x-io-sign-environment"]).toBe(
+          EnvironmentEnum.test
+        );
       });
     });
   });
