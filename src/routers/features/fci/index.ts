@@ -22,6 +22,7 @@ import { sendFileFromRootPath } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
+import { EnvironmentEnum } from "../../../../generated/definitions/fci/Environment";
 import { signatureRequestList } from "../../../payloads/features/fci/signature-requests";
 import { getProblemJson } from "../../../payloads/error";
 
@@ -37,6 +38,8 @@ addHandler(
   (req, res) => {
     const signatureRequestId = "signatureRequestId";
     const now = new Date();
+    const environment = EnvironmentEnum.test;
+    res.header("x-io-sign-environment", environment);
     pipe(
       O.fromNullable(req.params[signatureRequestId]),
       O.chain(signatureReqId =>
