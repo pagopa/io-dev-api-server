@@ -1,10 +1,10 @@
-import { randomBytes } from "crypto";
+import { randomUUID } from "crypto";
 import { pipe } from "fp-ts/lib/function";
 import { Request } from "express";
 import * as O from "fp-ts/lib/Option";
 import { getDateMsDifference } from "../../utils/date";
 
-export const NONCE_EXPYRING_MS = 30000;
+export const NONCE_EXPYRING_MS = 60000;
 
 export type NonceInfo = {
   nonce: string;
@@ -24,10 +24,8 @@ const setNonceInfo = (nonce: string, instantiationDate: Date) => {
 };
 
 export const generateNewNonce = () =>
-  pipe(
-    randomBytes(16),
-    str => str.toString("hex"),
-    base64 => setNonceInfo(base64, new Date())
+  pipe(randomUUID({ disableEntropyCache: true }), uuid =>
+    setNonceInfo(uuid, new Date())
   );
 
 const extractNonceFromRequest = (request: Request): O.Option<string> =>
