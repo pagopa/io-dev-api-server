@@ -14,5 +14,5 @@ export const WALLET_ONBOARDING_PATH = "/onboarding-wallet";
 export const generateOnboardingWalletData = (
   paymentMethodId: string
 ): WalletCreateResponse => ({
-  redirectUrl: `${serverUrl}${WALLET_ONBOARDING_PATH}?&paymentMethodId=${paymentMethodId}#sessionToken=${faker.datatype.uuid()}`
+  redirectUrl: `${serverUrl}${WALLET_ONBOARDING_PATH}?paymentMethodId=${paymentMethodId}#sessionToken=${faker.datatype.uuid()}`
 });

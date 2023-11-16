@@ -16,7 +16,7 @@
           const paymentMethodId = urlParams.get('paymentMethodId');
             const container = document.getElementById("outcomeSelect");
             if (container.value === "0") {
-              fetch('/wallets/mock', {
+              fetch('/payment-wallet/v1/wallets/mock', {
                 method: 'POST',
                 body: JSON.stringify({
                   paymentMethodId,
