@@ -10,7 +10,7 @@ export const appendWalletV2Prefix = (path: string) => `${walletV2Path}${path}`;
 const walletV3Path = "/wallet/v3";
 export const appendWalletV3Prefix = (path: string) => `${walletV3Path}${path}`;
 
-export const WALLET_ONBOARDING_PATH = "/onboarding-wallet";
+export const WALLET_ONBOARDING_PATH = "/wallets/outcomes";
 export const generateOnboardingWalletData = (
   paymentMethodId: string
 ): WalletCreateResponse => ({
