@@ -7,8 +7,8 @@ export const allPaymentMethods: PaymentMethodsResponse = {
   paymentMethods: [
     {
       id: "1",
-      name: "Carta di credito",
-      description: "Pagamento con carta di credito",
+      name: "CARDS",
+      description: "Carta di credito",
       asset: "creditCard",
       status: PaymentMethodStatusEnum.ENABLED,
       paymentTypeCode: TypeEnum.CARDS,
@@ -21,8 +21,8 @@ export const allPaymentMethods: PaymentMethodsResponse = {
     },
     {
       id: "2",
-      name: "PayPal",
-      description: "Pagamento con PayPal",
+      name: "PAYPAL",
+      description: "PayPal",
       asset: "payPal",
       status: PaymentMethodStatusEnum.ENABLED,
       paymentTypeCode: TypeEnum.PAYPAL,
