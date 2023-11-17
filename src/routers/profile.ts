@@ -83,7 +83,7 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
     res.sendStatus(400);
     return;
   } else {
-    if (maybeProfileToUpdate.right.email === "mario.mario@mario.com") {
+    if (maybeProfileToUpdate.right.email === "mario.error@prova.com") {
       res
         .status(412)
         .json(
@@ -109,8 +109,8 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
     ...currentProfile,
     ...clientProfileIncreased,
     is_email_validated:
-      currentProfile.email === maybeProfileToUpdate.right.email &&
-      maybeProfileToUpdate.right.email !== "mario.mario@mario.com",
+      maybeProfileToUpdate.right.email === "mario.success@prova.com" &&
+      maybeProfileToUpdate.right.email !== "mario.error@prova.com",
     is_inbox_enabled: (clientProfileIncreased.accepted_tos_version ?? 0) > 0
   };
   res.json(currentProfile);
