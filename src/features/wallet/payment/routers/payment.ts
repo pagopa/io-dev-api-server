@@ -35,11 +35,17 @@ addPaymentHandler("get", "/payment-methods/:paymentId/fees", (req, res) =>
     }),
     O.fold(
       () => res.sendStatus(400),
-      ({ calculateFeeRequest }) => {
-        const { walletId, paymentAmount } = calculateFeeRequest;
-        const fees = getCalculateFeeResponsePayload(walletId, paymentAmount);
-        return res.status(200).json(fees);
-      }
+      ({ calculateFeeRequest }) =>
+        pipe(
+          getCalculateFeeResponsePayload(
+            calculateFeeRequest.walletId,
+            calculateFeeRequest.paymentAmount
+          ),
+          O.fold(
+            () => res.sendStatus(404),
+            fees => res.status(200).json(fees)
+          )
+        )
     )
   )
 );
