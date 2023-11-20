@@ -28,11 +28,11 @@
               })
               .then(response => response.json())
               .then(response => {
-                window.location.href = `/outcomeView?outcome=${container.value}&walletId=${response.walletId}`;
+                window.location.href = `/wallets/outcomes?outcome=${container.value}&walletId=${response.walletId}`;
               })
               .catch(err => alert(err))
             } else {
-              window.location.href = `/outcomeView?outcome=${container.value}`;
+              window.location.href = `/wallets/outcomes?outcome=${container.value}`;
             }
         }
 
