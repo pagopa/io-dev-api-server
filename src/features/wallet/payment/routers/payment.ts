@@ -4,6 +4,7 @@ import { flow, pipe } from "fp-ts/lib/function";
 import { CalculateFeeRequest } from "../../../../../generated/definitions/pagopa/ecommerce/CalculateFeeRequest";
 import { RptId } from "../../../../../generated/definitions/pagopa/ecommerce/RptId";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
+import { getCalculateFeeResponsePayload } from "../payloads/transactions";
 import { addPaymentHandler } from "./router";
 
 addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
@@ -34,7 +35,11 @@ addPaymentHandler("get", "/payment-methods/:paymentId/fees", (req, res) =>
     }),
     O.fold(
       () => res.sendStatus(400),
-      () => res.status(200).json({})
+      ({ calculateFeeRequest }) => {
+        const { walletId, paymentAmount } = calculateFeeRequest;
+        const fees = getCalculateFeeResponsePayload(walletId, paymentAmount);
+        return res.status(200).json(fees);
+      }
     )
   )
 );
