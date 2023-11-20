@@ -16,6 +16,7 @@ import {
   loginLolliPopRedirect,
   redirectUrl
 } from "../payloads/login";
+import { WALLET_ONBOARDING_PATH } from "../features/wallet/onboarding/utils";
 import { addHandler } from "../payloads/response";
 import { readFileAsJSON, sendFileFromRootPath } from "../utils/file";
 import { getSamlRequest } from "../utils/login";
@@ -29,7 +30,6 @@ import {
   setSessionLoginType
 } from "../persistence/sessionInfo";
 import { clearSessionTokens } from "../payloads/session";
-import { WALLET_ONBOARDING_PATH } from "../utils/wallet";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
