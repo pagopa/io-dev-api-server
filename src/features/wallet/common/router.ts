@@ -1,3 +1,3 @@
-import { eCommerceRouter } from "../ecommerce/routers";
+import { paymentRouter } from "../payment/routers/router";
 
-export const walletRouter = [eCommerceRouter];
+export const walletRouter = [paymentRouter];

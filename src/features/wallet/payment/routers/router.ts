@@ -1,13 +1,12 @@
 import { Request, Response, Router } from "express";
 import { addHandler, SupportedMethod } from "../../../../payloads/response";
 
-export const eCommerceRouter = Router();
+export const paymentRouter = Router();
 
 export const addECommercePrefix = (path: string) => `/ecommerce/io/v1${path}`;
 
-export const addECommerceHandler = (
+export const addPaymentHandler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void
-) =>
-  addHandler(eCommerceRouter, method, addECommercePrefix(path), handleRequest);
+) => addHandler(paymentRouter, method, addECommercePrefix(path), handleRequest);
