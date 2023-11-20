@@ -2,7 +2,10 @@ import { faker } from "@faker-js/faker/locale/it";
 import { range } from "lodash";
 import { ulid } from "ulid";
 import { IbanDTO } from "../../generated/definitions/idpay/IbanDTO";
-import { OperationTypeEnum as IbanOperationEnum } from "../../generated/definitions/idpay/IbanOperationDTO";
+import {
+  IbanOperationDTO,
+  OperationTypeEnum as IbanOperationTypeEnum
+} from "../../generated/definitions/idpay/IbanOperationDTO";
 import {
   InitiativeDTO,
   InitiativeRewardTypeEnum,
@@ -13,24 +16,44 @@ import {
   StatusEnum as InstrumentStatus,
   InstrumentTypeEnum
 } from "../../generated/definitions/idpay/InstrumentDTO";
-import { OperationTypeEnum as InstrumentOperationEnum } from "../../generated/definitions/idpay/InstrumentOperationDTO";
-import { OperationTypeEnum as OnboardingOperationEnum } from "../../generated/definitions/idpay/OnboardingOperationDTO";
+import {
+  InstrumentOperationDTO,
+  OperationTypeEnum as InstrumentOperationTypeEnum,
+  InstrumentTypeEnum as InstrumentOperationInstrumentTypeEnum
+} from "../../generated/definitions/idpay/InstrumentOperationDTO";
+import {
+  OnboardingOperationDTO,
+  OperationTypeEnum as OnboardingOperationTypeEnum
+} from "../../generated/definitions/idpay/OnboardingOperationDTO";
 import { OperationListDTO } from "../../generated/definitions/idpay/OperationListDTO";
-import { OperationTypeEnum as RefundOperationEnum } from "../../generated/definitions/idpay/RefundOperationDTO";
+import {
+  ReadmittedOperationDTO,
+  OperationTypeEnum as ReadmittedOperationTypeEnum
+} from "../../generated/definitions/idpay/ReadmittedOperationDTO";
+import {
+  RefundOperationDTO,
+  OperationTypeEnum as RefundOperationTypeEnum
+} from "../../generated/definitions/idpay/RefundOperationDTO";
 import {
   InstrumentTypeEnum as OperationInstrumentTypeEnum,
-  OperationTypeEnum as RejectedInstrumentOperationEnum
+  RejectedInstrumentOperationDTO,
+  OperationTypeEnum as RejectedInstrumentOperationTypeEnum
 } from "../../generated/definitions/idpay/RejectedInstrumentOperationDTO";
 import {
+  SuspendOperationDTO,
+  OperationTypeEnum as SuspendOperationTypeEnum
+} from "../../generated/definitions/idpay/SuspendOperationDTO";
+import {
   ChannelEnum as TransactionChannelEnum,
-  OperationTypeEnum as TransactionOperationEnum,
+  TransactionOperationDTO,
+  OperationTypeEnum as TransactionOperationTypeEnum,
   StatusEnum as TransactionStatusEnum
 } from "../../generated/definitions/idpay/TransactionOperationDTO";
-import { CardInfo } from "../../generated/definitions/pagopa/CardInfo";
 import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
 import { ioDevServerConfig } from "../config";
 import { getRandomEnumValue } from "../payloads/utils/random";
 import { getWalletV2 } from "../routers/walletsV2";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
 import {
   StatusEnum,
   TransactionBarCodeResponse
@@ -40,7 +63,6 @@ const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
 
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
-const pagoPaWalletInfo: CardInfo = pagoPaWallet.info as CardInfo;
 
 const generateRandomInitiativeDTO = (): InitiativeDTO => {
   const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
@@ -72,67 +94,113 @@ const generateRandomIbanDTO = (): IbanDTO => ({
   channel: faker.datatype.string()
 });
 
-const generateRandomOperationDTO = (
-  type: OperationListDTO["operationType"]
-): OperationListDTO => {
-  switch (type) {
-    case "PAID_REFUND":
-    case "REJECTED_REFUND":
-      return {
-        operationType: type,
-        operationDate: new Date(),
-        operationId: ulid(),
-        eventId: ulid(),
-        amount: faker.datatype.number({ min: 5, max: 100 })
-      };
-    case "REVERSAL":
-    case "TRANSACTION":
-      return {
-        operationType: type,
-        operationDate: new Date(),
-        operationId: ulid(),
-        accrued: faker.datatype.number({ min: 5, max: 25 }),
-        amount: faker.datatype.number({ min: 50, max: 100 }),
-        brand: pagoPaWalletInfo.brand || "VISA",
-        circuitType: "01",
-        brandLogo: pagoPaWalletInfo.brandLogo || "",
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        status: getRandomEnumValue(TransactionStatusEnum),
-        channel: TransactionChannelEnum.RTD,
-        businessName: faker.company.name(),
-        eventId: ulid()
-      };
-    case "ADD_IBAN":
-      return {
-        operationType: IbanOperationEnum.ADD_IBAN,
-        operationDate: new Date(),
-        operationId: ulid(),
-        channel: faker.datatype.string(),
-        iban: faker.helpers.arrayElement(ibanList)?.iban || ""
-      };
-    case "ADD_INSTRUMENT":
-    case "REJECTED_ADD_INSTRUMENT":
-    case "DELETE_INSTRUMENT":
-    case "REJECTED_DELETE_INSTRUMENT":
-      return {
-        operationType: type,
-        operationDate: new Date(),
-        operationId: ulid(),
-        brand: pagoPaWalletInfo.brand || "VISA",
-        brandLogo: pagoPaWalletInfo.brandLogo || "",
-        channel: faker.datatype.string(),
-        maskedPan: pagoPaWalletInfo.blurredNumber || "0000",
-        instrumentType: OperationInstrumentTypeEnum.CARD
-      };
-    case "ONBOARDING":
-    default:
-      return {
-        operationType: OnboardingOperationEnum.ONBOARDING,
-        operationDate: new Date(),
-        operationId: ulid()
-      };
-  }
+const generateRandomTransactionOperationDTO = (
+  withInfo?: Partial<TransactionOperationDTO>
+): TransactionOperationDTO => {
+  const brand = faker.helpers.arrayElement(creditCardBrands);
+  const brandLogo = getCreditCardLogo(brand);
+  const maskedPan = Array.from({ length: 4 }, () =>
+    Math.floor(Math.random() * 10)
+  ).join("");
+
+  return {
+    operationType: getRandomEnumValue(TransactionOperationTypeEnum),
+    operationDate: new Date(),
+    operationId: ulid(),
+    accrued: faker.datatype.number({ min: 5, max: 25 }),
+    amount: faker.datatype.number({ min: 50, max: 100 }),
+    brand,
+    circuitType: "01",
+    brandLogo,
+    maskedPan,
+    status: getRandomEnumValue(TransactionStatusEnum),
+    channel: getRandomEnumValue(TransactionChannelEnum),
+    businessName: faker.company.name(),
+    eventId: ulid(),
+    ...withInfo
+  };
 };
+
+const generateRandomRefundOperationDTO = (
+  withInfo?: Partial<RefundOperationDTO>
+): RefundOperationDTO => ({
+  operationType: getRandomEnumValue(RefundOperationTypeEnum),
+  operationDate: new Date(),
+  operationId: ulid(),
+  eventId: ulid(),
+  amount: faker.datatype.number({ min: 5, max: 100 }),
+  ...withInfo
+});
+
+const generateRandomIbanOperationDTO = (): IbanOperationDTO => ({
+  operationType: IbanOperationTypeEnum.ADD_IBAN,
+  operationDate: new Date(),
+  operationId: ulid(),
+  channel: faker.datatype.string(),
+  iban: faker.helpers.arrayElement(ibanList)?.iban || ""
+});
+
+const generateRandomOnboardingOperationDTO = (): OnboardingOperationDTO => ({
+  operationType: OnboardingOperationTypeEnum.ONBOARDING,
+  operationDate: new Date(),
+  operationId: ulid()
+});
+
+const generateRandomInstrumentOperationDTO = (
+  withInfo?: Partial<InstrumentOperationDTO>
+): InstrumentOperationDTO => {
+  const brand = faker.helpers.arrayElement(creditCardBrands);
+  const brandLogo = getCreditCardLogo(brand);
+  const maskedPan = Array.from({ length: 4 }, () =>
+    Math.floor(Math.random() * 10)
+  ).join("");
+
+  return {
+    operationType: getRandomEnumValue(InstrumentOperationTypeEnum),
+    operationDate: new Date(),
+    operationId: ulid(),
+    brand,
+    brandLogo,
+    channel: getRandomEnumValue(TransactionChannelEnum),
+    maskedPan,
+    instrumentType: getRandomEnumValue(OperationInstrumentTypeEnum),
+    ...withInfo
+  };
+};
+
+const generateRandomRejectedInstrumentOperationDTO = (
+  withInfo?: Partial<RejectedInstrumentOperationDTO>
+): RejectedInstrumentOperationDTO => {
+  const brand = faker.helpers.arrayElement(creditCardBrands);
+  const brandLogo = getCreditCardLogo(brand);
+  const maskedPan = Array.from({ length: 4 }, () =>
+    Math.floor(Math.random() * 10)
+  ).join("");
+
+  return {
+    operationType: getRandomEnumValue(RejectedInstrumentOperationTypeEnum),
+    operationDate: new Date(),
+    operationId: ulid(),
+    brand,
+    brandLogo,
+    channel: getRandomEnumValue(TransactionChannelEnum),
+    maskedPan,
+    instrumentType: getRandomEnumValue(OperationInstrumentTypeEnum),
+    ...withInfo
+  };
+};
+
+const generateRandomSuspendOperationDTO = (): SuspendOperationDTO => ({
+  operationType: SuspendOperationTypeEnum.SUSPENDED,
+  operationDate: new Date(),
+  operationId: ulid()
+});
+
+const generateRandomReadmittedOperationDTO = (): ReadmittedOperationDTO => ({
+  operationType: ReadmittedOperationTypeEnum.READMITTED,
+  operationDate: new Date(),
+  operationId: ulid()
+});
 
 // eslint-disable-next-line functional/no-let
 export let initiatives: { [id: string]: InitiativeDTO } = {};
@@ -285,20 +353,63 @@ range(0, walletConfig.refundCount).forEach(() => {
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
-      generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
-      generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
-      generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
-      generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-      generateRandomOperationDTO(
-        RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
-      ),
-      generateRandomOperationDTO(
-        RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
-      ),
-      generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
-      generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
-      generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+      generateRandomRefundOperationDTO({
+        operationType: RefundOperationTypeEnum.PAID_REFUND
+      }),
+      generateRandomRefundOperationDTO({
+        operationType: RefundOperationTypeEnum.REJECTED_REFUND
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.REVERSAL,
+        status: TransactionStatusEnum.AUTHORIZED
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.CANCELLED
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED,
+        businessName: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED
+      }),
+      generateRandomIbanOperationDTO(),
+      generateRandomRejectedInstrumentOperationDTO({
+        operationType:
+          RejectedInstrumentOperationTypeEnum.REJECTED_DELETE_INSTRUMENT,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
+      }),
+      generateRandomInstrumentOperationDTO({
+        operationType: InstrumentOperationTypeEnum.DELETE_INSTRUMENT,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
+      }),
+      generateRandomInstrumentOperationDTO({
+        operationType: InstrumentOperationTypeEnum.DELETE_INSTRUMENT,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD,
+        brand: undefined,
+        maskedPan: undefined
+      }),
+      generateRandomRejectedInstrumentOperationDTO({
+        operationType:
+          RejectedInstrumentOperationTypeEnum.REJECTED_ADD_INSTRUMENT,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
+      }),
+      generateRandomInstrumentOperationDTO({
+        operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD
+      }),
+      generateRandomInstrumentOperationDTO({
+        operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
+        instrumentType: InstrumentOperationInstrumentTypeEnum.CARD,
+        brand: undefined,
+        maskedPan: undefined
+      }),
+      generateRandomReadmittedOperationDTO(),
+      generateRandomSuspendOperationDTO(),
+      generateRandomOnboardingOperationDTO()
     ]
   };
 });
@@ -321,9 +432,7 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
   instruments = { ...instruments, [initiativeId]: [] };
   initiativeTimeline = {
     ...initiativeTimeline,
-    [initiativeId]: [
-      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-    ]
+    [initiativeId]: [generateRandomOnboardingOperationDTO()]
   };
 });
 
@@ -354,22 +463,7 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
   };
   initiativeTimeline = {
     ...initiativeTimeline,
-    [initiativeId]: [
-      generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
-      generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
-      generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
-      generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-      generateRandomOperationDTO(
-        RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
-      ),
-      generateRandomOperationDTO(
-        RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
-      ),
-      generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
-      generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
-      generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
-    ]
+    [initiativeId]: [generateRandomOnboardingOperationDTO()]
   };
 });
 
@@ -401,20 +495,22 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
-      generateRandomOperationDTO(RefundOperationEnum.REJECTED_REFUND),
-      generateRandomOperationDTO(RefundOperationEnum.PAID_REFUND),
-      generateRandomOperationDTO(TransactionOperationEnum.REVERSAL),
-      generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
-      generateRandomOperationDTO(
-        RejectedInstrumentOperationEnum.REJECTED_DELETE_INSTRUMENT
-      ),
-      generateRandomOperationDTO(
-        RejectedInstrumentOperationEnum.REJECTED_ADD_INSTRUMENT
-      ),
-      generateRandomOperationDTO(IbanOperationEnum.ADD_IBAN),
-      generateRandomOperationDTO(InstrumentOperationEnum.DELETE_INSTRUMENT),
-      generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+      generateRandomRefundOperationDTO({
+        operationType: RefundOperationTypeEnum.PAID_REFUND
+      }),
+      generateRandomRefundOperationDTO({
+        operationType: RefundOperationTypeEnum.REJECTED_REFUND
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.CANCELLED
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        businessName: undefined
+      }),
+      generateRandomTransactionOperationDTO(),
+      generateRandomOnboardingOperationDTO()
     ]
   };
 });
@@ -451,26 +547,53 @@ range(0, walletConfig.discountCount).forEach(() => {
   initiativeTimeline = {
     ...initiativeTimeline,
     [initiativeId]: [
-      {
-        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
         status: TransactionStatusEnum.AUTHORIZED,
-        channel: TransactionChannelEnum.QRCODE
-      } as OperationListDTO,
-      {
-        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        brand: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        businessName: undefined,
+        brand: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED,
+        channel: TransactionChannelEnum.QRCODE,
+        brand: undefined,
+        businessName: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED,
+        channel: TransactionChannelEnum.QRCODE,
+        brand: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
         status: TransactionStatusEnum.REWARDED,
-        channel: TransactionChannelEnum.QRCODE
-      } as OperationListDTO,
-      {
-        ...generateRandomOperationDTO(TransactionOperationEnum.TRANSACTION),
+        channel: TransactionChannelEnum.QRCODE,
+        brand: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
         status: TransactionStatusEnum.CANCELLED,
-        channel: TransactionChannelEnum.QRCODE
-      } as OperationListDTO,
-      {
-        ...generateRandomOperationDTO(InstrumentOperationEnum.ADD_INSTRUMENT),
-        instrumentType: OperationInstrumentTypeEnum.IDPAYCODE
-      },
-      generateRandomOperationDTO(OnboardingOperationEnum.ONBOARDING)
+        channel: TransactionChannelEnum.QRCODE,
+        brand: undefined
+      }),
+      generateRandomTransactionOperationDTO({
+        operationType: TransactionOperationTypeEnum.REVERSAL,
+        status: TransactionStatusEnum.REWARDED,
+        channel: TransactionChannelEnum.QRCODE,
+        brand: undefined
+      }),
+      generateRandomInstrumentOperationDTO({
+        operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
+        instrumentType: OperationInstrumentTypeEnum.IDPAYCODE,
+        brand: undefined
+      }),
+      generateRandomOnboardingOperationDTO()
     ]
   };
 });
