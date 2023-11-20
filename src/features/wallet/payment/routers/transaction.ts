@@ -7,10 +7,10 @@ import { RequestAuthorizationRequest } from "../../../../../generated/definition
 import { RequestAuthorizationResponse } from "../../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
 import { serverUrl } from "../../../../utils/server";
 import {
-  createTransaction,
-  deleteTransaction,
-  getTransaction
-} from "../persistence/transactions";
+  getNewTransactionResponsePayload,
+  getTransactionInfoPayload
+} from "../payloads/transactions";
+import { WALLET_PAYMENT_PATH } from "../utils/path";
 import { addPaymentHandler } from "./router";
 
 addPaymentHandler("post", "/transactions", (req, res) =>
@@ -18,12 +18,16 @@ addPaymentHandler("post", "/transactions", (req, res) =>
     NewTransactionRequest.decode(req.body),
     O.fromEither,
     O.fold(
-      () => res.sendStatus(403),
-      flow(
-        ({ paymentNotices }) => paymentNotices,
-        createTransaction,
-        res.status(200).json
-      )
+      () => res.sendStatus(400),
+      ({ paymentNotices }) =>
+        pipe(
+          paymentNotices,
+          getNewTransactionResponsePayload,
+          O.fold(
+            () => res.sendStatus(404),
+            transaction => res.status(200).json(transaction)
+          )
+        )
     )
   )
 );
@@ -33,10 +37,13 @@ addPaymentHandler("get", "/transactions/:transactionId", (req, res) =>
     req.params.transactionId,
     O.fromNullable,
     O.fold(
-      () => res.sendStatus(403),
+      () => res.sendStatus(400),
       flow(
-        getTransaction,
-        O.fold(() => res.sendStatus(404), res.status(200).json)
+        getTransactionInfoPayload,
+        O.fold(
+          () => res.sendStatus(404),
+          transaction => res.status(200).json(transaction)
+        )
       )
     )
   )
@@ -47,17 +54,8 @@ addPaymentHandler("delete", "/transactions/:transactionId", (req, res) =>
     req.params.transactionId,
     O.fromNullable,
     O.fold(
-      () => res.sendStatus(403),
-      flow(
-        getTransaction,
-        O.fold(
-          () => res.sendStatus(404),
-          ({ transactionId }) => {
-            deleteTransaction(transactionId);
-            return res.status(202).json();
-          }
-        )
-      )
+      () => res.sendStatus(400),
+      () => res.sendStatus(200)
     )
   )
 );
@@ -72,18 +70,18 @@ addPaymentHandler(
           RequestAuthorizationRequest.decode(req.body),
           O.fromEither
         ),
-        transactionId: pipe(req.params.transactionId, O.fromNullable)
+        transactionId: O.fromNullable(req.params.transactionId)
       }),
       O.fold(
         () => res.sendStatus(403),
         ({ transactionId }) =>
           pipe(
-            getTransaction(transactionId),
+            getTransactionInfoPayload(transactionId),
             O.fold(
               () => res.sendStatus(404),
               () =>
                 res.status(200).json({
-                  authorizationUrl: `${serverUrl}`,
+                  authorizationUrl: `${serverUrl}${WALLET_PAYMENT_PATH}`,
                   authorizationRequestId: ulid()
                 } as RequestAuthorizationResponse)
             )

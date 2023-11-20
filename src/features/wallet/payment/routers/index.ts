@@ -1,2 +1,4 @@
 import "./payment";
-import "./transactions";
+import "./transaction";
+
+export { paymentRouter } from "./router";

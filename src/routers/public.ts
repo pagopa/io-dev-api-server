@@ -9,6 +9,7 @@ import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
 import { assetsFolder, ioDevServerConfig } from "../config";
+import { WALLET_PAYMENT_PATH } from "../features/wallet/payment/utils/path";
 import { backendInfo } from "../payloads/backend";
 import {
   AppUrlLoginScheme,
@@ -17,10 +18,9 @@ import {
   redirectUrl
 } from "../payloads/login";
 import { addHandler } from "../payloads/response";
-import { readFileAsJSON, sendFileFromRootPath } from "../utils/file";
-import { getSamlRequest } from "../utils/login";
-import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
+import { clearSessionTokens } from "../payloads/session";
 import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
+import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
 import {
   clearLoginSessionTokenInfo,
   createOrRefreshEverySessionToken,
@@ -28,14 +28,15 @@ import {
   setSessionAuthenticationProvider,
   setSessionLoginType
 } from "../persistence/sessionInfo";
-import { clearSessionTokens } from "../payloads/session";
+import { readFileAsJSON, sendFileFromRootPath } from "../utils/file";
+import { getSamlRequest } from "../utils/login";
 import { WALLET_ONBOARDING_PATH } from "../utils/wallet";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
+import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
-import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 
 export const publicRouter = Router();
 
@@ -100,6 +101,10 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
 });
 
 addHandler(publicRouter, "get", WALLET_ONBOARDING_PATH, (req, res) => {
+  sendFileFromRootPath("assets/wallet/wallet_onboarding.html", res);
+});
+
+addHandler(publicRouter, "get", WALLET_PAYMENT_PATH, (req, res) => {
   sendFileFromRootPath("assets/wallet/wallet_onboarding.html", res);
 });
 
