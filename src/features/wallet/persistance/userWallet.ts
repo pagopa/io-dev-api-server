@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { WalletInfo } from "../../generated/definitions/pagopa/walletv3/WalletInfo";
-import { ServiceNameEnum } from "../../generated/definitions/pagopa/walletv3/ServiceName";
-import { WalletStatusEnum } from "../../generated/definitions/pagopa/walletv3/WalletStatus";
-import { BrandEnum } from "../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import { getWalletTypeFromPaymentMethodId } from "../features/wallet/onboarding/utils";
+import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
+import { ServiceNameEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceName";
+import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
+import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
+import { getWalletTypeFromPaymentMethodId } from "../onboarding/utils";
 
 const userWallets = new Map<string, WalletInfo>();
 
