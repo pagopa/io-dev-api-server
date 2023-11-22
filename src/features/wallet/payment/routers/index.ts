@@ -135,7 +135,7 @@ addPaymentHandler(
               () => res.sendStatus(404),
               () =>
                 res.status(200).json({
-                  authorizationUrl: `${serverUrl}${WALLET_PAYMENT_PATH}`,
+                  authorizationUrl: `${serverUrl}${WALLET_PAYMENT_PATH}?transactionId=${transactionId}`,
                   authorizationRequestId: ulid()
                 } as RequestAuthorizationResponse)
             )

@@ -105,7 +105,7 @@ addHandler(publicRouter, "get", WALLET_ONBOARDING_PATH, (req, res) => {
 });
 
 addHandler(publicRouter, "get", WALLET_PAYMENT_PATH, (req, res) => {
-  sendFileFromRootPath("assets/wallet/wallet_onboarding.html", res);
+  sendFileFromRootPath("assets/wallet/wallet_payment.html", res);
 });
 
 addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
