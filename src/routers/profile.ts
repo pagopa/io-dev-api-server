@@ -109,7 +109,6 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
     ...currentProfile,
     ...clientProfileIncreased,
     is_email_validated:
-      maybeProfileToUpdate.right.email === "mario.success@prova.com" &&
       maybeProfileToUpdate.right.email !== "mario.error@prova.com",
     is_inbox_enabled: (clientProfileIncreased.accepted_tos_version ?? 0) > 0
   };
