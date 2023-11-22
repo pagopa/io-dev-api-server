@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { addHandler } from "../../payloads/response";
 import {
-  customSetEmailValidated, profileCustomConfiguration
+  customSetEmailValidated,
+  profileCustomConfiguration
 } from "../../persistence/profileCustomConfig";
 
 export const mailDashboardRouter = Router();

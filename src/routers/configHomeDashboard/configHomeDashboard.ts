@@ -2,7 +2,6 @@ import fs from "fs";
 import { Router } from "express";
 import { addHandler } from "../../payloads/response";
 
-
 export const dashboardHomeRouter = Router();
 
 addHandler(
@@ -10,39 +9,37 @@ addHandler(
   "get",
   "/",
   (_, res) => {
-    fs.readFile("assets/html/homeDashboard.html","utf-8",(error,data) => {
-        if (error) {
-          return res.status(500).send('Error');
-        }
+    fs.readFile("assets/html/homeDashboard.html", "utf-8", (error, data) => {
+      if (error) {
+        return res.status(500).send("Error");
+      }
 
-        const filesToInclude = extractPathsFromInclude(data);
+      const filesToInclude = extractPathsFromInclude(data);
 
-        filesToInclude.forEach((file) => {
-            const fileContent = fs.readFileSync(file, 'utf8');
-            // eslint-disable-next-line no-param-reassign
-            data = data.replace(`<include>${file}</include>`, fileContent);
-        });
+      filesToInclude.forEach(file => {
+        const fileContent = fs.readFileSync(file, "utf8");
+        // eslint-disable-next-line no-param-reassign
+        data = data.replace(`<include>${file}</include>`, fileContent);
+      });
 
-
-        res.send(data);
+      res.send(data);
     });
-    
-},
+  },
   () => 0,
   { description: "Home dashboard" }
 );
 
-function extractPathsFromInclude(data: string): string[]{
-    const regex = /<include>(.*?)<\/include>/gs;
-    const results: string[] = [];
-    
-    // eslint-disable-next-line functional/no-let
-    let match;
+function extractPathsFromInclude(data: string): string[] {
+  const regex = /<include>(.*?)<\/include>/gs;
+  const results: string[] = [];
 
-    while((match = regex.exec(data)) != null) {
-        // eslint-disable-next-line functional/immutable-data
-        results.push(match[1]);
-    }
+  // eslint-disable-next-line functional/no-let
+  let match;
 
-    return results;
+  while ((match = regex.exec(data)) != null) {
+    // eslint-disable-next-line functional/immutable-data
+    results.push(match[1]);
+  }
+
+  return results;
 }

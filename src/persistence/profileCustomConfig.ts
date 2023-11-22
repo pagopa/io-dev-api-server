@@ -18,7 +18,7 @@ export const customSetEmailValidated = (value?: boolean) => {
 };
 
 export function setOriginalProfileConfig(currentProfile: InitializedProfile) {
-  profileOriginalConfig = {...currentProfile};
+  profileOriginalConfig = { ...currentProfile };
 }
 
 export function applyCustomProfileConfig(currentProfile: InitializedProfile) {
