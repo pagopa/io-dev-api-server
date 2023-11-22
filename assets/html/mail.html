@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mail configuration</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function setIsEmailValidated(value){
+            $.ajax({
+                type: 'POST',
+                url: "/configEmail",
+                data: JSON.stringify({is_email_validated: value}),
+                contentType: "application/json",
+            });
+            const element = document.getElementById("mailStatus");
+
+            element.innerHTML = getNiceParam(value);
+        }
+
+        function getNiceParam(value){
+            if(value != undefined){
+                const valueToStr = value.toString();
+                return valueToStr.charAt(0).toUpperCase() + valueToStr.slice(1);
+            } else {
+                return "Standard Behavior";
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <table style="padding:16px;border: 1px solid black;margin-top:16px">
+        <tr>
+            <td>
+                <b>Mail configuration</b>
+            </td>
+        </tr>
+        <tr class="form_item">
+            <td>
+                <button onclick="setIsEmailValidated(true)">Validate email</button>
+                <button onclick="setIsEmailValidated(false)">Invalid email</button>
+                <button onclick="setIsEmailValidated(undefined)">Reset behavior</button>
+            </td>
+        </tr>
+        <tr class="form_item">
+            <td>
+                <h4>is_email_validated: </h4>
+                <h4 id="mailStatus">Standard Behavior</h4>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

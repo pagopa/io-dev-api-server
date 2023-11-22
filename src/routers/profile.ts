@@ -21,6 +21,10 @@ import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { getAuthenticationProvider } from "../persistence/sessionInfo";
 import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import {
+  applyCustomProfileConfig,
+  setOriginalProfileConfig
+} from "../persistence/profileCustomConfig";
 
 // eslint-disable-next-line functional/no-let
 let currentProfile: InitializedProfile = {} as InitializedProfile;
@@ -71,7 +75,12 @@ addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) => {
         "profile"
       )
     };
+
+    setOriginalProfileConfig(currentProfile);
   }
+
+  applyCustomProfileConfig(currentProfile);
+
   return res.json(currentProfile);
 });
 
@@ -93,6 +102,9 @@ addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
     ...clientProfileIncreased,
     is_inbox_enabled: (clientProfileIncreased.accepted_tos_version ?? 0) > 0
   };
+
+  applyCustomProfileConfig(currentProfile);
+
   res.json(currentProfile);
 });
 
