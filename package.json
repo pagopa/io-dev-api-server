@@ -28,7 +28,7 @@
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v13.22.0-RELEASE/api_pn.yaml",
   "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v5.8.0/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
   "api_fast_login": "https://raw.githubusercontent.com/pagopa/io-backend/v13.22.0-RELEASE/openapi/generated/api_fast_login.yaml",
-  "api_pagopa_walletv3": "https://raw.githubusercontent.com/pagopa/pagopa-infra/fde8d344d1eae9d16ca338d4f71095c805b99f75/src/domains/wallet-app/api/payment-wallet/v1/_openapi.json.tpl",
+  "api_pagopa_walletv3": "https://raw.githubusercontent.com/pagopa/pagopa-infra/5bd3f60aff52d2653111aa47a3975997295ae210/src/domains/wallet-app/api/payment-wallet/v1/_openapi.json.tpl",
   "author": "Matteo Boschi",
   "license": "MIT",
   "private": false,

@@ -39,7 +39,7 @@ import { idpayRouter } from "./routers/features/idpay";
 import { lollipopRouter } from "./routers/features/lollipop";
 import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
-import { walletV3Router } from "./routers/features/walletV3";
+import { walletV3Router } from "./features/wallet";
 import { pnRouter } from "./features/pn/routers/routers";
 // create express server
 const app: Application = express();
