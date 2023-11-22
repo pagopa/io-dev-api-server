@@ -18,6 +18,25 @@ import { WALLET_PAYMENT_PATH } from "../utils/path";
 import { addPaymentHandler } from "./router";
 export { paymentRouter } from "./router";
 
+// Verify single payment notices
+addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
+  pipe(
+    RptId.decode(req.params.rpt_id),
+    O.fromEither,
+    O.fold(
+      () => res.sendStatus(400),
+      flow(
+        getPaymentRequestsGetResponse,
+        O.fold(
+          () => res.sendStatus(404),
+          response => res.status(200).json(response)
+        )
+      )
+    )
+  )
+);
+
+// Create new transaction
 addPaymentHandler("post", "/transactions", (req, res) =>
   pipe(
     NewTransactionRequest.decode(req.body),
@@ -37,6 +56,7 @@ addPaymentHandler("post", "/transactions", (req, res) =>
   )
 );
 
+// Get transaction information
 addPaymentHandler("get", "/transactions/:transactionId", (req, res) =>
   pipe(
     req.params.transactionId,
@@ -54,6 +74,7 @@ addPaymentHandler("get", "/transactions/:transactionId", (req, res) =>
   )
 );
 
+// Performs the transaction cancellation
 addPaymentHandler("delete", "/transactions/:transactionId", (req, res) =>
   pipe(
     req.params.transactionId,
@@ -65,6 +86,34 @@ addPaymentHandler("delete", "/transactions/:transactionId", (req, res) =>
   )
 );
 
+// Calculatefees for given wallet id and amount
+addPaymentHandler("get", "/payment-methods/:paymentId/fees", (req, res) =>
+  pipe(
+    sequenceS(O.Monad)({
+      calculateFeeRequest: pipe(
+        CalculateFeeRequest.decode(req.body),
+        O.fromEither
+      ),
+      paymentId: O.fromNullable(req.params.paymentId)
+    }),
+    O.fold(
+      () => res.sendStatus(400),
+      ({ calculateFeeRequest }) =>
+        pipe(
+          getCalculateFeeResponsePayload(
+            calculateFeeRequest.walletId,
+            calculateFeeRequest.paymentAmount
+          ),
+          O.fold(
+            () => res.sendStatus(404),
+            fees => res.status(200).json(fees)
+          )
+        )
+    )
+  )
+);
+
+// Create a new request authorization given a transaction
 addPaymentHandler(
   "post",
   "/transactions/:transactionId/auth-requests",
@@ -93,47 +142,4 @@ addPaymentHandler(
           )
       )
     )
-);
-
-addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
-  pipe(
-    RptId.decode(req.params.rpt_id),
-    O.fromEither,
-    O.fold(
-      () => res.sendStatus(400),
-      flow(
-        getPaymentRequestsGetResponse,
-        O.fold(
-          () => res.sendStatus(404),
-          response => res.status(200).json(response)
-        )
-      )
-    )
-  )
-);
-
-addPaymentHandler("get", "/payment-methods/:paymentId/fees", (req, res) =>
-  pipe(
-    sequenceS(O.Monad)({
-      calculateFeeRequest: pipe(
-        CalculateFeeRequest.decode(req.body),
-        O.fromEither
-      ),
-      paymentId: O.fromNullable(req.params.paymentId)
-    }),
-    O.fold(
-      () => res.sendStatus(400),
-      ({ calculateFeeRequest }) =>
-        pipe(
-          getCalculateFeeResponsePayload(
-            calculateFeeRequest.walletId,
-            calculateFeeRequest.paymentAmount
-          ),
-          O.fold(
-            () => res.sendStatus(404),
-            fees => res.status(200).json(fees)
-          )
-        )
-    )
-  )
 );
