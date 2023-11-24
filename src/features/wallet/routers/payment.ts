@@ -2,21 +2,20 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
-import { CalculateFeeRequest } from "../../../../../generated/definitions/pagopa/ecommerce/CalculateFeeRequest";
-import { NewTransactionRequest } from "../../../../../generated/definitions/pagopa/ecommerce/NewTransactionRequest";
-import { RequestAuthorizationRequest } from "../../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationRequest";
-import { RequestAuthorizationResponse } from "../../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
-import { RptId } from "../../../../../generated/definitions/pagopa/ecommerce/RptId";
-import { serverUrl } from "../../../../utils/server";
+import { CalculateFeeRequest } from "../../../../generated/definitions/pagopa/ecommerce/CalculateFeeRequest";
+import { NewTransactionRequest } from "../../../../generated/definitions/pagopa/ecommerce/NewTransactionRequest";
+import { RequestAuthorizationRequest } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationRequest";
+import { RequestAuthorizationResponse } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
+import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
+import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
 import {
   getCalculateFeeResponsePayload,
   getNewTransactionResponsePayload,
   getTransactionInfoPayload
 } from "../payloads/transactions";
-import { WALLET_PAYMENT_PATH } from "../utils/path";
+import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { addPaymentHandler } from "./router";
-export { paymentRouter } from "./router";
 
 // Verify single payment notices
 addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>

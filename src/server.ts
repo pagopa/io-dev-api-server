@@ -5,7 +5,6 @@ import morgan from "morgan";
 import { ioDevServerConfig } from "./config";
 import { messageRouter } from "./features/messages/routers/messagesRouter";
 import { pnRouter } from "./features/pn/routers/routers";
-import { walletRouter as walletFeatureRouter } from "./features/wallet/common/router";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { bpd } from "./routers/features/bdp";
@@ -41,7 +40,7 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
-import { walletV3Router } from "./features/wallet";
+import { walletRouter as newWalletRouter } from "./features/wallet";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -94,8 +93,7 @@ app.use(fastLoginMiddleware);
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
-  walletV3Router,
-  walletFeatureRouter
+  newWalletRouter
 ].forEach(r => app.use(r));
 
 export default app;

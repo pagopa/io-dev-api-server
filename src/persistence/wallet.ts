@@ -3,7 +3,7 @@ import { WalletInfo } from "../../generated/definitions/pagopa/walletv3/WalletIn
 import { ServiceNameEnum } from "../../generated/definitions/pagopa/walletv3/ServiceName";
 import { WalletStatusEnum } from "../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { BrandEnum } from "../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import { getWalletTypeFromPaymentMethodId } from "../features/wallet/onboarding/utils";
+import { getWalletTypeFromPaymentMethodId } from "../features/wallet/utils/onboarding";
 
 const userWallets = new Map<string, WalletInfo>();
 

@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { ServicePublic } from "../../../../../generated/definitions/backend/ServicePublic";
-import { PaymentRequestsGetResponse } from "../../../../../generated/definitions/pagopa/ecommerce/PaymentRequestsGetResponse";
-import { RptId } from "../../../../../generated/definitions/pagopa/ecommerce/RptId";
-import ServicesDB from "./../../../../persistence/services";
+import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { PaymentRequestsGetResponse } from "../../../../generated/definitions/pagopa/ecommerce/PaymentRequestsGetResponse";
+import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
+import ServicesDB from "../../../persistence/services";
 
 export const getPaymentRequestsGetResponse = (
   rptId: RptId

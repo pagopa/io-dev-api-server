@@ -1,3 +1,1 @@
-import "./onboarding";
-
-export { walletV3Router } from "./routers";
+export { walletRouter } from "./routers";

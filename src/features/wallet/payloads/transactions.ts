@@ -1,17 +1,17 @@
 import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
-import { CalculateFeeResponse } from "../../../../../generated/definitions/pagopa/ecommerce/CalculateFeeResponse";
+import { CalculateFeeResponse } from "../../../../generated/definitions/pagopa/ecommerce/CalculateFeeResponse";
 import {
   ClientIdEnum,
   NewTransactionResponse,
   SendPaymentResultOutcomeEnum
-} from "../../../../../generated/definitions/pagopa/ecommerce/NewTransactionResponse";
-import { PaymentInfo } from "../../../../../generated/definitions/pagopa/ecommerce/PaymentInfo";
-import { PaymentMethodStatusEnum } from "../../../../../generated/definitions/pagopa/ecommerce/PaymentMethodStatus";
-import { RptId } from "../../../../../generated/definitions/pagopa/ecommerce/RptId";
-import { TransactionInfo } from "../../../../../generated/definitions/pagopa/ecommerce/TransactionInfo";
-import { TransactionStatusEnum } from "../../../../../generated/definitions/pagopa/ecommerce/TransactionStatus";
+} from "../../../../generated/definitions/pagopa/ecommerce/NewTransactionResponse";
+import { PaymentInfo } from "../../../../generated/definitions/pagopa/ecommerce/PaymentInfo";
+import { PaymentMethodStatusEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentMethodStatus";
+import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
+import { TransactionInfo } from "../../../../generated/definitions/pagopa/ecommerce/TransactionInfo";
+import { TransactionStatusEnum } from "../../../../generated/definitions/pagopa/ecommerce/TransactionStatus";
 
 export const getNewTransactionResponsePayload = (
   payments: ReadonlyArray<PaymentInfo>
