@@ -1,7 +1,12 @@
+import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
+import { WalletCreateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletCreateRequest";
 import WalletDB from "../persistence/userWallet";
-import { generateOnboardablePaymentMethods } from "../utils/onboarding";
+import {
+  generateOnboardablePaymentMethods,
+  generateOnboardingWalletData
+} from "../utils/onboarding";
 import { addPaymentWalletHandler } from "./router";
 
 addPaymentWalletHandler("get", "/wallets", (req, res) => {
@@ -31,6 +36,30 @@ addPaymentWalletHandler("delete", "/wallets/:idWallet", (req, res) => {
     }),
     O.getOrElseW(() => res.status(400).json({ text: "Wallet id not present" }))
   );
+});
+
+/**
+ * This API is used to start an onboarding process for a new method of payment
+ */
+addPaymentWalletHandler("post", "/wallets", (req, res) => {
+  pipe(
+    WalletCreateRequest.decode(req.body),
+    E.fold(
+      () => res.sendStatus(404),
+      () =>
+        res
+          .status(201)
+          .json(generateOnboardingWalletData(req.body.paymentMethodId))
+    )
+  );
+});
+/**
+ * This API is used to start an onboarding process for a new method of payment
+ */
+addPaymentWalletHandler("post", "/wallets/mock", (req, res) => {
+  const { paymentMethodId } = req.body;
+  const generatedWallet = WalletDB.generateUserWallet(paymentMethodId);
+  res.json(generatedWallet);
 });
 
 /**

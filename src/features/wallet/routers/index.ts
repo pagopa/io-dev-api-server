@@ -1,4 +1,3 @@
-import "./onboarding";
 import "./payment";
 import "./wallets";
 
