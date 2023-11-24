@@ -3,7 +3,7 @@ import { addHandler } from "../../payloads/response";
 import {
   customSetEmailValidated,
   profileCustomConfiguration
-} from "../../persistence/profileCustomConfig";
+} from "../../persistence/profile/profileCustomConfig";
 
 export const mailDashboardRouter = Router();
 

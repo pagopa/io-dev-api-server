@@ -1,4 +1,4 @@
-import { InitializedProfile } from "../../generated/definitions/backend/InitializedProfile";
+import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
 
 export type profileCustomConfiguration = Pick<
   InitializedProfile,
