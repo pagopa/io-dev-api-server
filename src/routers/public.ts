@@ -30,16 +30,16 @@ import {
   setSessionLoginType
 } from "../persistence/sessionInfo";
 import { clearSessionTokens } from "../payloads/session";
+import {
+  setProfileEmailAlreadyTaken,
+  setProfileEmailValidated
+} from "../persistence/profile/profile";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
 import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
-import {
-  setProfileEmailAlreadyTaken,
-  setProfileEmailValidated
-} from "../persistence/profile/profile";
 
 export const publicRouter = Router();
 

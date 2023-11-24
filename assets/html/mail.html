@@ -14,7 +14,7 @@
                 data: JSON.stringify({value}),
                 contentType: "application/json"
             }).done(function(data) {                                
-                element.innerHTML = `Email validated ${getNiceParam(data)}`
+                element.innerHTML = `Email validated = ${value}, ${getNiceParam(data)}`
             }).fail(function(jqXHR, textStatus, errorThrown) {                                
                 element.innerHTML = `Email validated ERROR ${textStatus}`                
             });           
@@ -28,7 +28,7 @@
                 data: JSON.stringify({value}),
                 contentType: "application/json"
             }).done(function(data) {                                
-                element.innerHTML = `Email already taken: ${getNiceParam(data)}`
+                element.innerHTML = `Email already taken = ${value}, ${getNiceParam(data)}`
             }).fail(function(jqXHR, textStatus, errorThrown) {                                
                 element.innerHTML = `Email already taken ERROR: ${textStatus}`                
             });          
