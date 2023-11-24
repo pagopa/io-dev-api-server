@@ -42,7 +42,6 @@ import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { walletV3Router } from "./features/wallet";
 import { pnRouter } from "./features/pn/routers/routers";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
-import { mailDashboardRouter } from "./routers/profileCustomConfig/mailDashboardConfig";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -96,8 +95,7 @@ app.use(fastLoginMiddleware);
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
-  walletV3Router,
-  mailDashboardRouter
+  walletV3Router
 ].forEach(r => app.use(r));
 
 export default app;

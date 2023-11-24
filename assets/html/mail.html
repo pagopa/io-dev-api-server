@@ -7,21 +7,36 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         function setIsEmailValidated(value){
+            const element = document.getElementById("mailStatus");
             $.ajax({
                 type: 'POST',
-                url: "/configEmail",
-                data: JSON.stringify({is_email_validated: value}),
-                contentType: "application/json",
-            });
-            const element = document.getElementById("mailStatus");
+                url: "/validate-profile-email",
+                data: JSON.stringify({value}),
+                contentType: "application/json"
+            }).done(function(data) {                                
+                element.innerHTML = `Email validated ${getNiceParam(data)}`
+            }).fail(function(jqXHR, textStatus, errorThrown) {                                
+                element.innerHTML = `Email validated ERROR ${textStatus}`                
+            });           
+        }
 
-            element.innerHTML = getNiceParam(value);
+        function setIsEmailAlreadyTaken(value){
+            const element = document.getElementById("mailStatus");
+            $.ajax({
+                type: 'POST',
+                url: "/set-email-already-taken",
+                data: JSON.stringify({value}),
+                contentType: "application/json"
+            }).done(function(data) {                                
+                element.innerHTML = `Email already taken: ${getNiceParam(data)}`
+            }).fail(function(jqXHR, textStatus, errorThrown) {                                
+                element.innerHTML = `Email already taken ERROR: ${textStatus}`                
+            });          
         }
 
         function getNiceParam(value){
-            if(value != undefined){
-                const valueToStr = value.toString();
-                return valueToStr.charAt(0).toUpperCase() + valueToStr.slice(1);
+            if(value && value.message){                
+                return value.message;
             } else {
                 return "Standard Behavior";
             }
@@ -40,16 +55,19 @@
         <tr class="form_item">
             <td>
                 <button onclick="setIsEmailValidated(true)">Validate email</button>
-                <button onclick="setIsEmailValidated(false)">Invalid email</button>
-                <button onclick="setIsEmailValidated(undefined)">Reset behavior</button>
-            </td>
+                <button onclick="setIsEmailValidated(false)">Invalidate email</button>                
+            </td>            
         </tr>
         <tr class="form_item">
             <td>
-                <h4>is_email_validated: </h4>
-                <h4 id="mailStatus">Standard Behavior</h4>
+                <button onclick="setIsEmailAlreadyTaken(true)">Set email already taken</button>
+                <button onclick="setIsEmailAlreadyTaken(false)">Set email not taken</button>                
             </td>
-        </tr>
+        <tr class="form_item">
+            <td>
+                <h4>Status: <span id="mailStatus">Standard Behavior</span></h4>                
+            </td>
+        </tr>        
     </table>
 </body>
 

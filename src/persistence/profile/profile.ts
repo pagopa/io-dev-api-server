@@ -21,7 +21,7 @@ export const getProfile = (): ProfileOperationsType["get"] => {
   }
   return {
     status: profileSuccessOperations.get.status,
-    payload: profileSuccessOperations.get.payload
+    payload: currentProfile
   };
 };
 
@@ -45,13 +45,14 @@ export const updateProfile = (req: Request): ProfileOperationsType["post"] => {
     ...currentProfile,
     ...clientProfileIncreased,
     is_email_validated:
-      maybeProfileToUpdate.right.email !== "mario.error@prova.com",
+      maybeProfileToUpdate.right.email === currentProfile.email &&
+      currentProfile.is_email_validated,
     is_inbox_enabled: (clientProfileIncreased.accepted_tos_version ?? 0) > 0
   };
 
   return {
     status: profileSuccessOperations.post.status,
-    payload: profileSuccessOperations.post.payload
+    payload: currentProfile
   };
 };
 
@@ -82,6 +83,28 @@ const initProfile = () => {
       },
       "profile"
     )
+  };
+};
+
+export const setProfileEmailValidated = (value: boolean) => {
+  if (R.isEmpty(currentProfile)) {
+    return;
+  }
+  currentProfile = {
+    ...currentProfile,
+    version: currentProfile.version + 1,
+    is_email_validated: value
+  };
+};
+
+export const setProfileEmailAlreadyTaken = (value: boolean) => {
+  if (R.isEmpty(currentProfile)) {
+    return;
+  }
+  currentProfile = {
+    ...currentProfile,
+    version: currentProfile.version + 1,
+    is_email_already_taken: value
   };
 };
 
@@ -123,7 +146,6 @@ const profileProblemsList: ProfileProblems = {
 };
 
 // MARK: Response
-
 type ProfileOperationsType = {
   get: CustomResponse;
   post: CustomResponse;
