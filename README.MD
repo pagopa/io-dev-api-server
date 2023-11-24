@@ -128,20 +128,50 @@ Regardless of how many endpoints have been wrapped, the lollipop middleware can 
 Server is able to perform a FastLogin.
 A FastLogin is a type of login that provides a very short session which is automatically renewed by calling the `fastlogin` endpoint. 
 
-To enable this feature, you must set the FeatureFlag to a minimum version higher than 0.0.0 in `src/payloads/backend.ts`
+To enable this feature, you must set the FeatureFlag to a minimum version higher than `0.0.0` in `src/payloads/backend.ts`
 ```
 fastLogin: {
       min_app_version: {
-        ios: "0.0.0",
-        android: "0.0.0"
+        ios: "1.0.0",
+        android: "1.0.0"
       }
     }
 
 ```
 If you want, you can specify a different minimum supported version for ios and android.
 
+To enable Fast Login Opt-In screen, you must set its feature flag to a minimum version higher than `0.0.0` as shown below:
+
+```
+fastLogin: {
+  min_app_version: {        
+    ios: "1.0.0",
+    android: "1.0.0"
+  },
+  opt_in: {
+    min_app_version: {          
+      ios: "1.0.0",
+      android: "1.0.0"
+    }
+  }
+```
+
 It will be possible to renew the session via the `fastlogin` endpoint until the expiration date of the `assertionRef`.
 
 You can configure the duration of the session by associating a value in MS to `sessionTTLinMS` in the `config.ts` file > `features/fastlogin`.
 
 In the same file it is possible to configure the duration of the `assertionRef`, giving a value in MS to the key `lollipop/assertionRefValidityMS`. If no value is specified for this key, `assertionRef` gets infinite validity.
+
+## Email Validation
+Server is able to validate/invalidate an email address with the below endpoints:
+
+```
+POST /validate-profile-email with body { value: boolean }
+```
+
+## Email Already Taken
+Server is able to set/reset if an email address is already taken with the below endpoints:
+
+```
+POST /set-email-already-taken with body { value: boolean }
+```

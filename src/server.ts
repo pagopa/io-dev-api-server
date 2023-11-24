@@ -41,6 +41,7 @@ import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { walletV3Router } from "./features/wallet";
 import { pnRouter } from "./features/pn/routers/routers";
+import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -72,6 +73,7 @@ app.use(fastLoginMiddleware);
   bancomatRouter,
   cobadgeRouter,
   dashboardWalletV2Router,
+  dashboardHomeRouter,
   paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,
