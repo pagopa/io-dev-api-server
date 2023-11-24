@@ -34,7 +34,7 @@ addPaymentWalletHandler("delete", "/wallets/:idWallet", (req, res) => {
 });
 
 /**
- * This API is used to retrieve a list of payment methods available for the onboarding process
+ * This API is used to retrieve a list of payment methods available
  */
 addPaymentWalletHandler("get", "/payment-methods", (req, res) => {
   res.json(generateOnboardablePaymentMethods());
