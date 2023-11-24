@@ -25,7 +25,6 @@ import { fciRouter } from "./routers/features/fci";
 import { idpayRouter } from "./routers/features/idpay";
 import { lollipopRouter } from "./routers/features/lollipop";
 import { svRouter } from "./routers/features/siciliaVola";
-import { walletV3Router } from "./routers/features/walletV3";
 import { miscRouter } from "./routers/misc";
 import { paymentRouter } from "./routers/payment";
 import { profileRouter } from "./routers/profile";
@@ -42,6 +41,7 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
+import { walletV3Router } from "./features/wallet";
 // create express server
 const app: Application = express();
 // parse body request as json

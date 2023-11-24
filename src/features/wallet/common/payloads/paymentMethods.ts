@@ -1,16 +1,17 @@
 import { PaymentMethodStatusEnum } from "../../../../../generated/definitions/pagopa/walletv3/PaymentMethodStatus";
 import { PaymentMethodsResponse } from "../../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
 import { Range } from "../../../../../generated/definitions/pagopa/walletv3/Range";
+import { TypeEnum } from "../../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 
 export const allPaymentMethods: PaymentMethodsResponse = {
   paymentMethods: [
     {
       id: "1",
-      name: "Carta di credito",
-      description: "Pagamento con carta di credito",
+      name: "CARDS",
+      description: "Carta di credito",
       asset: "creditCard",
       status: PaymentMethodStatusEnum.ENABLED,
-      paymentTypeCode: "string",
+      paymentTypeCode: TypeEnum.CARDS,
       ranges: [
         {
           min: 0,
@@ -20,11 +21,11 @@ export const allPaymentMethods: PaymentMethodsResponse = {
     },
     {
       id: "2",
-      name: "BANCOMAT Pay",
-      description: "Pagamento con BANCOMAT Pay",
-      asset: "bancomatPay",
+      name: "PAYPAL",
+      description: "PayPal",
+      asset: "payPal",
       status: PaymentMethodStatusEnum.ENABLED,
-      paymentTypeCode: "string",
+      paymentTypeCode: TypeEnum.PAYPAL,
       ranges: [
         {
           min: 0,
