@@ -10,7 +10,7 @@ import {
 import { addPaymentWalletHandler } from "./router";
 
 addPaymentWalletHandler("get", "/wallets", (req, res) => {
-  res.json(WalletDB.getUserWallets());
+  res.json({ wallets: WalletDB.getUserWallets() });
 });
 
 addPaymentWalletHandler("get", "/wallets/:idWallet", (req, res) => {

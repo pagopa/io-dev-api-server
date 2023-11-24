@@ -86,7 +86,7 @@ addPaymentHandler("delete", "/transactions/:transactionId", (req, res) =>
 );
 
 // Calculatefees for given wallet id and amount
-addPaymentHandler("get", "/payment-methods/:paymentId/fees", (req, res) =>
+addPaymentHandler("post", "/payment-methods/:paymentId/fees", (req, res) =>
   pipe(
     sequenceS(O.Monad)({
       calculateFeeRequest: pipe(
