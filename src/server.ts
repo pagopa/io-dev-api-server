@@ -41,6 +41,8 @@ import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { walletRouter as newWalletRouter } from "./features/wallet";
+import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
+
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -72,6 +74,7 @@ app.use(fastLoginMiddleware);
   bancomatRouter,
   cobadgeRouter,
   dashboardWalletV2Router,
+  dashboardHomeRouter,
   paymentRouter,
   servicesMetadataRouter,
   bonusVacanze,
