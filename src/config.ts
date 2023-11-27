@@ -73,6 +73,15 @@ const defaultConfig: IoDevServerConfig = {
       getMessageResponseCode: 200,
       getThirdPartyMessageResponseCode: 200
     },
+    messageTemplateWrappers: [
+      {
+        count: 1,
+        template: {
+          hasRemoteContent: true,
+          attachmentCount: 5
+        }
+      }
+    ],
     pnMessageTemplateWrappers: [
       {
         count: 0,
@@ -92,7 +101,7 @@ const defaultConfig: IoDevServerConfig = {
     attachmentExpiredAfterSeconds: 10,
     attachmentRetryAfterSeconds: 2,
     pnOptInMessage: false,
-    withRemoteAttachments: 0,
+    withRemoteAttachments: 1,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,

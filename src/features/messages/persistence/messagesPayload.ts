@@ -1,9 +1,10 @@
 import * as path from "path";
-import { pipe } from "fp-ts/lib/function";
-import * as S from "fp-ts/lib/string";
+import { constUndefined, pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
-import * as O from "fp-ts/lib/Option";
+import * as B from "fp-ts/lib/boolean";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as S from "fp-ts/lib/string";
 import { faker } from "@faker-js/faker/locale/it";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
@@ -27,6 +28,7 @@ import ServicesDB from "../../../persistence/services";
 import PaymentsDB from "../../../persistence/payments";
 import { AttachmentCategory } from "../types/attachmentCategory";
 import { rptIdFromPaymentDataWithRequiredPayee } from "../../../utils/payment";
+import { MessageTemplate } from "../types/messageTemplate";
 
 // eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
@@ -76,6 +78,36 @@ export const withRemoteAttachments = (
   },
   third_party_message: {
     attachments: getRemoteAttachments(attachmentCount)
+  }
+});
+
+export const withRemoteContent = (
+  template: MessageTemplate,
+  message: CreatedMessageWithContent,
+  markdown: string
+): ThirdPartyMessageWithContent => ({
+  ...message,
+  content: {
+    ...message.content,
+    third_party_data: {
+      ...message.content.third_party_data,
+      id: message.id as NonEmptyString
+    }
+  },
+  third_party_message: {
+    details: pipe(
+      template.hasRemoteContent,
+      B.fold(constUndefined, () => ({
+        subject: "#### Remote subject ####",
+        markdown
+      }))
+    ),
+    attachments: pipe(
+      template.attachmentCount > 0,
+      B.fold(constUndefined, () =>
+        getRemoteAttachments(template.attachmentCount)
+      )
+    )
   }
 });
 

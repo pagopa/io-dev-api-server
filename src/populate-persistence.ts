@@ -3,6 +3,7 @@ import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as B from "fp-ts/lib/boolean";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
@@ -11,12 +12,15 @@ import { MessageAttachment } from "../generated/definitions/backend/MessageAttac
 import { MessageSubject } from "../generated/definitions/backend/MessageSubject";
 import { PrescriptionData } from "../generated/definitions/backend/PrescriptionData";
 import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/ThirdPartyMessageWithContent";
+import { FiscalCode } from "../generated/definitions/backend/FiscalCode";
+import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
 import { ioDevServerConfig } from "./config";
 import {
   createMessage,
   withContent,
   withDueDate,
   withPaymentData,
+  withRemoteContent,
   withRemoteAttachments
 } from "./features/messages/persistence/messagesPayload";
 import ServicesDB from "./persistence/services";
@@ -48,6 +52,8 @@ import {
   createPNMessages,
   createPNOptInMessage
 } from "./features/pn/payloads/messages";
+import { MessageTemplateWrapper } from "./features/messages/types/messageTemplateWrapper";
+import { MessageTemplate } from "./features/messages/types/messageTemplate";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -483,6 +489,66 @@ const createMessagesWithRemoteAttachments = (
     )
   );
 
+const createMessageWithRemoteContent = (
+  template: MessageTemplate,
+  fiscalCode: FiscalCode,
+  templateIndex: number,
+  messageIndex: number,
+  markdown: string
+): CreatedMessageWithContent | ThirdPartyMessageWithContent =>
+  pipe(
+    {
+      sender: `Sender - ${templateIndex} / ${messageIndex}`,
+      subject: "Message with remote content"
+    },
+    sharedData =>
+      pipe(
+        createMessage(fiscalCode, getServiceId()),
+        createdMessageWithoutContent =>
+          withContent(
+            createdMessageWithoutContent,
+            `${sharedData.sender}: ${sharedData.subject}`,
+            markdown
+          ),
+        createdMessageWithContent =>
+          pipe(
+            template,
+            O.fromPredicate(t => t.hasRemoteContent || t.attachmentCount > 0),
+            O.fold(
+              () => createdMessageWithContent,
+              () =>
+                withRemoteContent(template, createdMessageWithContent, markdown)
+            )
+          )
+      )
+  );
+
+const createMessagesWithRemoteContent = (
+  customConfig: IoDevServerConfig
+): CreatedMessageWithContentAndAttachments[] =>
+  pipe(
+    customConfig.messages.messageTemplateWrappers,
+    O.fromNullable,
+    O.map(messageTemplateWrappers =>
+      pipe(
+        messageTemplateWrappers as MessageTemplateWrapper[],
+        A.mapWithIndex((templateIndex, messageTemplateWrapper) =>
+          A.makeBy(messageTemplateWrapper.count, messageIndex =>
+            createMessageWithRemoteContent(
+              messageTemplateWrapper.template,
+              customConfig.profile.attrs.fiscal_code,
+              templateIndex,
+              messageIndex,
+              messageMarkdown
+            )
+          )
+        ),
+        A.flatten
+      )
+    ),
+    O.getOrElse(() => [] as CreatedMessageWithContentAndAttachments[])
+  );
+
 const createMessages = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] => {
@@ -531,7 +597,8 @@ const createMessages = (
     ...createPNOptInMessage(customConfig),
     ...createPNMessages(customConfig),
 
-    ...createMessagesWithRemoteAttachments(customConfig)
+    ...createMessagesWithRemoteAttachments(customConfig),
+    ...createMessagesWithRemoteContent(customConfig)
   ];
 };
 
