@@ -44,7 +44,6 @@ const customConfig = _.merge(ioDevServerConfig, {
     withInValidDueDateCount: 2,
     standardMessageCount: 10,
     archivedMessageCount: 40,
-    withRemoteAttachments: 0,
     pnMessageTemplateWrappers: [
       {
         count: 1,

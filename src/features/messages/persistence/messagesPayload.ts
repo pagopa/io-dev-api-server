@@ -63,24 +63,6 @@ export const withDueDate = (
   content: { ...message.content, due_date: dueDate }
 });
 
-export const withRemoteAttachments = (
-  message: CreatedMessageWithContent,
-  attachmentCount: number
-): ThirdPartyMessageWithContent => ({
-  ...message,
-  content: {
-    ...message.content,
-    third_party_data: {
-      ...message.content.third_party_data,
-      id: message.id as NonEmptyString,
-      has_attachments: true
-    }
-  },
-  third_party_message: {
-    attachments: getRemoteAttachments(attachmentCount)
-  }
-});
-
 export const withRemoteContent = (
   template: MessageTemplate,
   message: CreatedMessageWithContent,

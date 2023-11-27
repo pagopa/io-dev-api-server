@@ -17,8 +17,6 @@ export const MessagesConfig = t.intersection([
       getThirdPartyMessageResponseCode: HttpResponseCode
     }),
     paymentsCount: t.number,
-    // number of messages with remote attachments
-    withRemoteAttachments: t.number,
     // number of message - invalid after due date - containing a payment and a valid (not expired) due date
     paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
     // number of message - invalid after due date -  containing a payment and a not valid (expired) due date

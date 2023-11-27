@@ -20,8 +20,7 @@ import {
   withContent,
   withDueDate,
   withPaymentData,
-  withRemoteContent,
-  withRemoteAttachments
+  withRemoteContent
 } from "./features/messages/persistence/messagesPayload";
 import ServicesDB from "./persistence/services";
 import MessagesDB from "./features/messages/persistence/messagesDatabase";
@@ -86,22 +85,6 @@ export const getNewMessage = (
     markdown,
     prescriptionData,
     euCovidCert
-  );
-
-const getNewRemoteAttachmentsMessage = (
-  customConfig: IoDevServerConfig,
-  sender: string,
-  subject: string,
-  markdown: string,
-  attachmentCount: number
-): ThirdPartyMessageWithContent =>
-  withRemoteAttachments(
-    withContent(
-      createMessage(customConfig.profile.attrs.fiscal_code, getServiceId()),
-      `${sender}: ${subject}`,
-      markdown
-    ),
-    attachmentCount
   );
 
 const createMessagesWithCTA = (
@@ -476,19 +459,6 @@ const createMessagesWithPayments = (
     )
   );
 
-const createMessagesWithRemoteAttachments = (
-  customConfig: IoDevServerConfig
-): CreatedMessageWithContentAndAttachments[] =>
-  A.makeBy(customConfig.messages.withRemoteAttachments, index =>
-    getNewRemoteAttachmentsMessage(
-      customConfig,
-      `Sender ${index}`,
-      `Subject ${index}: remote attachments`,
-      messageMarkdown,
-      1 + index
-    )
-  );
-
 const createMessageWithRemoteContent = (
   template: MessageTemplate,
   fiscalCode: FiscalCode,
@@ -597,7 +567,6 @@ const createMessages = (
     ...createPNOptInMessage(customConfig),
     ...createPNMessages(customConfig),
 
-    ...createMessagesWithRemoteAttachments(customConfig),
     ...createMessagesWithRemoteContent(customConfig)
   ];
 };
