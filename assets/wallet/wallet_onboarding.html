@@ -28,11 +28,11 @@
               })
               .then(response => response.json())
               .then(response => {
-                window.location.href = `/wallets/outcomes?outcome=${container.value}&walletId=${response.walletId}`;
+                window.location = `iowallet://127.0.0.1:3000/wallets/outcomes?outcome=${container.value}&walletId=${response.walletId}`;
               })
               .catch(err => alert(err))
             } else {
-              window.location.href = `/wallets/outcomes?outcome=${container.value}`;
+              window.location = `iowallet://127.0.0.1:3000/wallets/outcomes?outcome=${container.value}`;
             }
         }
 
