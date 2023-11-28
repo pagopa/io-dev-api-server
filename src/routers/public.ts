@@ -30,6 +30,10 @@ import {
   setSessionLoginType
 } from "../persistence/sessionInfo";
 import { clearSessionTokens } from "../payloads/session";
+import {
+  setProfileEmailAlreadyTaken,
+  setProfileEmailValidated
+} from "../persistence/profile/profile";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
@@ -217,3 +221,21 @@ const debugSamlRequestIfNeeded = async (
     console.log(chalk.bgBlack(chalk.green(`Stored Thumbprint: ${thumbprint}`)));
   }
 };
+
+addHandler(publicRouter, "post", "/validate-profile-email", (req, res) => {
+  if (req.body && req.body.value !== undefined) {
+    setProfileEmailValidated(req.body.value);
+    res.status(200).send({ message: "OK" });
+  } else {
+    res.status(500).send({ message: "KO" });
+  }
+});
+
+addHandler(publicRouter, "post", "/set-email-already-taken", (req, res) => {
+  if (req.body && req.body.value !== undefined) {
+    setProfileEmailAlreadyTaken(req.body.value);
+    res.status(200).send({ message: "OK" });
+  } else {
+    res.status(500).send({ message: "KO" });
+  }
+});
