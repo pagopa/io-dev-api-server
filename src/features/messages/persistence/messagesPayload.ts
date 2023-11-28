@@ -80,7 +80,7 @@ export const withRemoteContent = (
     details: pipe(
       template.hasRemoteContent,
       B.fold(constUndefined, () => ({
-        subject: "#### Remote subject ####",
+        subject: faker.lorem.sentence(template.subjectWordCount),
         markdown
       }))
     ),

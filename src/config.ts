@@ -77,6 +77,7 @@ const defaultConfig: IoDevServerConfig = {
       {
         count: 1,
         template: {
+          subjectWordCount: 5,
           hasRemoteContent: true,
           attachmentCount: 5
         }
