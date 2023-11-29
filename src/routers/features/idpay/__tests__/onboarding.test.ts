@@ -1,6 +1,5 @@
 import supertest from "supertest";
 import { StatusEnum as InitiativeStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { DetailsEnum } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 import {
   IDPayInitiativeID,
   IDPayServiceID
@@ -11,6 +10,7 @@ import {
 } from "../../../../payloads/features/idpay/utils";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
+import { CodeEnum as OnboardingErrorCodeEnum } from "../../../../../generated/definitions/idpay/OnboardingErrorDTO";
 
 const request = supertest(app);
 
@@ -126,8 +126,8 @@ describe("IDPay Onboarding API", () => {
 
       expect(response.status).toBe(403);
       expect(response.body).toHaveProperty(
-        "details",
-        DetailsEnum.BUDGET_TERMINATED
+        "code",
+        OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED
       );
     });
     it("should return 400 if malformed request body", async () => {

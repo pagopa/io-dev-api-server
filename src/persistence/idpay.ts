@@ -671,7 +671,9 @@ export const getIdPayBarcodeTransaction = (
       initiativeId,
       status: StatusEnum.CREATED,
       trxDate: new Date(),
-      trxExpirationMinutes
+      trxExpirationSeconds: trxExpirationMinutes * 60,
+      initiativeName: faker.company.name(),
+      residualBudgetCents: faker.datatype.number({ min: 100, max: 10000 })
     };
     barcodeTransactions = {
       ...barcodeTransactions,

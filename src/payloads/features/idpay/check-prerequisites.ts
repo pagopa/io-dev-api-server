@@ -1,16 +1,16 @@
-import * as O from "fp-ts/lib/Option";
 import { faker } from "@faker-js/faker/locale/it";
+import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
+import {
+  CodeEnum as OnboardingErrorCodeEnum,
+  OnboardingErrorDTO
+} from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
 import {
   AuthorityEnum,
   CodeEnum,
   OperatorEnum,
   PDNDCriteriaDTO
 } from "../../../../generated/definitions/idpay/PDNDCriteriaDTO";
-import {
-  PrerequisitesErrorDTO,
-  DetailsEnum
-} from "../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 import { RequiredCriteriaDTO } from "../../../../generated/definitions/idpay/RequiredCriteriaDTO";
 import {
   SelfDeclarationBoolDTO,
@@ -112,27 +112,23 @@ const checkPrerequisites: {
 };
 
 const prerequisitesErrors: {
-  [id: number]: PrerequisitesErrorDTO;
+  [id: number]: OnboardingErrorDTO;
 } = {
   [IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.BUDGET_TERMINATED
+    code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
+    message: ""
   },
   [IDPayInitiativeID.ERR_CHECK_ENDED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.INITIATIVE_END
+    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_ENDED,
+    message: ""
   },
   [IDPayInitiativeID.ERR_CHECK_NOT_STARTED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.INITIATIVE_NOT_STARTED
+    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_STARTED,
+    message: ""
   },
   [IDPayInitiativeID.ERR_CHECK_SUSPENDED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.INITIATIVE_SUSPENDED
+    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_STATUS_NOT_PUBLISHED,
+    message: ""
   }
 };
 
@@ -142,4 +138,4 @@ export const getCheckPrerequisitesResponseByInitiativeId = (
 
 export const getPrerequisitesErrorByInitiativeId = (
   id: IDPayInitiativeID
-): O.Option<PrerequisitesErrorDTO> => O.fromNullable(prerequisitesErrors[id]);
+): O.Option<OnboardingErrorDTO> => O.fromNullable(prerequisitesErrors[id]);
