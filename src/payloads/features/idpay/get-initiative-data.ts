@@ -19,85 +19,78 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
 const initiativeData: {
   [id: number]: InitiativeDataDTO;
 } = {
-  [IDPayServiceID.DEFAULT]: {
+  [IDPayServiceID.OK]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.DEFAULT),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.OK),
     initiativeName: "Iniziativa"
   },
-  [IDPayServiceID.INVITED]: {
+  [IDPayServiceID.OK_INVITED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.INVITED),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.OK_INVITED),
     initiativeName: "Iniziativa - Con invito"
   },
-  [IDPayServiceID.NO_PREREQUISITES]: {
+  [IDPayServiceID.OK_NO_PREREQUISITES]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.NO_PREREQUISITES),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.OK_NO_PREREQUISITES),
     initiativeName: "Iniziativa - Senza prerequisiti"
   },
-  [IDPayServiceID.PDND_ONLY]: {
+  [IDPayServiceID.OK_PDND_ONLY]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.PDND_ONLY),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.OK_PDND_ONLY),
     initiativeName: "Iniziativa - Solo PDND"
   },
-  [IDPayServiceID.SELF_ONLY]: {
+  [IDPayServiceID.OK_SELF_ONLY]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.SELF_ONLY),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.OK_SELF_ONLY),
     initiativeName: "Iniziativa - Solo auto dichiarazioni"
   },
-  [IDPayServiceID.ERR_STATUS_NOT_ELIGIBLE]: {
+  [IDPayServiceID.KO_STATUS_NOT_ELIGIBLE]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
-      IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE
+      IDPayInitiativeID.KO_STATUS_NOT_ELIGIBLE
     ),
     initiativeName: "Iniziativa - Non eligibile"
   },
-  [IDPayServiceID.ERR_STATUS_NO_REQUIREMENTS]: {
+  [IDPayServiceID.KO_STATUS_NO_REQUIREMENTS]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
-      IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS
+      IDPayInitiativeID.KO_STATUS_NO_REQUIREMENTS
     ),
     initiativeName: "Iniziativa - No requisiti"
   },
-  [IDPayServiceID.ERR_STATUS_ONBOARDED]: {
+  [IDPayServiceID.KO_STATUS_ONBOARDED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_STATUS_ONBOARDED),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.KO_STATUS_ONBOARDED),
     initiativeName: "Iniziativa - Onboarding terminato"
   },
-  [IDPayServiceID.ERR_STATUS_UNSUBSCRIBED]: {
+  [IDPayServiceID.KO_STATUS_UNSUBSCRIBED]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
-      IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED
+      IDPayInitiativeID.KO_STATUS_UNSUBSCRIBED
     ),
     initiativeName: "Iniziativa - Recesso"
   },
-  [IDPayServiceID.ERR_STATUS_ON_EVALUATION]: {
+  [IDPayServiceID.KO_STATUS_ON_EVALUATION]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
-      IDPayInitiativeID.ERR_STATUS_ON_EVALUATION
+      IDPayInitiativeID.KO_STATUS_ON_EVALUATION
     ),
     initiativeName: "Iniziativa - In valutazione"
   },
-  [IDPayServiceID.ERR_CHECK_BUDGET_TERMINATED]: {
+  [IDPayServiceID.KO_BUDGET_EXHAUSTED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(
-      IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED
-    ),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.KO_BUDGET_EXHAUSTED),
     initiativeName: "Iniziativa - No budget"
   },
-  [IDPayServiceID.ERR_CHECK_ENDED]: {
+  [IDPayServiceID.KO_ENDED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_CHECK_ENDED),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.KO_ENDED),
     initiativeName: "Iniziativa - Terminata"
   },
-  [IDPayServiceID.ERR_CHECK_NOT_STARTED]: {
+  [IDPayServiceID.KO_NOT_STARTED]: {
     ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_CHECK_NOT_STARTED),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.KO_NOT_STARTED),
     initiativeName: "Iniziativa - Non iniziata"
-  },
-  [IDPayServiceID.ERR_CHECK_SUSPENDED]: {
-    ...createRandomInitiativeDataDTO(),
-    initiativeId: initiativeIdToString(IDPayInitiativeID.ERR_CHECK_SUSPENDED),
-    initiativeName: "Iniziativa - Sospesa"
   }
 };
 
