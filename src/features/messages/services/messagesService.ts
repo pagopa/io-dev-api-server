@@ -83,7 +83,7 @@ const getPublicMessages = (
       B.fold(
         () => ({}),
         () => {
-          const { content, is_read, is_archived } =
+          const { content, is_read, is_archived, has_attachments } =
             message as CreatedMessageWithContentAndEnrichedData;
 
           return {
@@ -93,6 +93,7 @@ const getPublicMessages = (
             category: getMessageCategory(message),
             is_read,
             is_archived,
+            has_attachments,
             has_precondition: senderService.service_id === pnServiceId
           };
         }
