@@ -20,7 +20,7 @@ const onboardingStatuses: {
     statusDate: faker.date.recent(1)
   },
   [IDPayInitiativeID.KO_STATUS_NO_REQUIREMENTS]: {
-    status: OnboardingStatusEnum.ONBOARDING_KO,
+    status: OnboardingStatusEnum.ELIGIBLE_KO,
     statusDate: faker.date.recent(1)
   },
   [IDPayInitiativeID.KO_STATUS_ONBOARDED]: {
