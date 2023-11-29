@@ -74,7 +74,7 @@ export const withRemoteContent = (
     third_party_data: {
       ...message.content.third_party_data,
       id: message.id as NonEmptyString,
-      has_attachments: true
+      has_attachments: template.attachmentCount > 0
     }
   },
   third_party_message: {
