@@ -97,15 +97,15 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
 const checkPrerequisites: {
   [id: number]: RequiredCriteriaDTO;
 } = {
-  [IDPayInitiativeID.DEFAULT]: {
+  [IDPayInitiativeID.OK]: {
     pdndCriteria,
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
-  [IDPayInitiativeID.PDND_ONLY]: {
+  [IDPayInitiativeID.OK_PDND_ONLY]: {
     pdndCriteria,
     selfDeclarationList: []
   },
-  [IDPayInitiativeID.SELF_ONLY]: {
+  [IDPayInitiativeID.OK_SELF_ONLY]: {
     pdndCriteria: [],
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
   }
@@ -114,20 +114,20 @@ const checkPrerequisites: {
 const prerequisitesErrors: {
   [id: number]: OnboardingErrorDTO;
 } = {
-  [IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED]: {
-    code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
+  [IDPayInitiativeID.KO_GENERIC]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_GENERIC_ERROR,
     message: ""
   },
-  [IDPayInitiativeID.ERR_CHECK_ENDED]: {
-    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_ENDED,
-    message: ""
-  },
-  [IDPayInitiativeID.ERR_CHECK_NOT_STARTED]: {
+  [IDPayInitiativeID.KO_NOT_STARTED]: {
     code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_STARTED,
     message: ""
   },
-  [IDPayInitiativeID.ERR_CHECK_SUSPENDED]: {
-    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_STATUS_NOT_PUBLISHED,
+  [IDPayInitiativeID.KO_ENDED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_ENDED,
+    message: ""
+  },
+  [IDPayInitiativeID.KO_BUDGET_EXHAUSTED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
     message: ""
   }
 };
