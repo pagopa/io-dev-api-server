@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { ulid } from "ulid";
 import { ServiceNameEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceName";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
