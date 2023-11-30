@@ -661,7 +661,7 @@ let barcodeTransactions: {
 
 export const getIdPayBarcodeTransaction = (
   initiativeId: string,
-  trxExpirationMinutes: number = 1
+  trxExpirationSeconds: number = 60
 ): TransactionBarCodeResponse => {
   const currentBarcode = barcodeTransactions[initiativeId];
   if (currentBarcode === undefined) {
@@ -671,7 +671,9 @@ export const getIdPayBarcodeTransaction = (
       initiativeId,
       status: StatusEnum.CREATED,
       trxDate: new Date(),
-      trxExpirationMinutes
+      trxExpirationSeconds,
+      initiativeName: faker.company.name(),
+      residualBudgetCents: 100000
     };
     barcodeTransactions = {
       ...barcodeTransactions,
@@ -681,11 +683,11 @@ export const getIdPayBarcodeTransaction = (
   } else {
     const timeDiff = new Date().getTime() - currentBarcode.trxDate.getTime();
     // trxExpirationMinutes is in minutes, timeDiff is in milliseconds
-    const isExpired = timeDiff > trxExpirationMinutes * 60 * 1000;
+    const isExpired = timeDiff > trxExpirationSeconds * 1000;
     if (isExpired) {
       // eslint-disable-next-line functional/immutable-data
       delete barcodeTransactions[initiativeId];
-      return getIdPayBarcodeTransaction(initiativeId, trxExpirationMinutes);
+      return getIdPayBarcodeTransaction(initiativeId, trxExpirationSeconds);
     }
     return currentBarcode;
   }
