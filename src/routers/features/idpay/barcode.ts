@@ -7,6 +7,8 @@ import { getWalletDetailResponse } from "../../../payloads/features/idpay/get-wa
 import { getIdPayBarcodeTransaction } from "../../../persistence/idpay";
 import { addIdPayHandler } from "./router";
 
+const SECONDS_TO_EXPIRE_BARCODE = 120;
+
 addIdPayHandler("post", "/payment/bar-code", (req, res) =>
   pipe(
     TransactionBarCodeRequest.decode(req.body),
@@ -22,7 +24,7 @@ addIdPayHandler("post", "/payment/bar-code", (req, res) =>
             () => {
               const barcodeTransaction = getIdPayBarcodeTransaction(
                 initiativeId,
-                2
+                SECONDS_TO_EXPIRE_BARCODE
               );
               return res.status(201).json(barcodeTransaction);
             }
