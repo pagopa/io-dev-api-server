@@ -1,7 +1,7 @@
-import { PaymentMethodStatusEnum } from "../../../../../generated/definitions/pagopa/walletv3/PaymentMethodStatus";
-import { PaymentMethodsResponse } from "../../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
-import { Range } from "../../../../../generated/definitions/pagopa/walletv3/Range";
-import { TypeEnum } from "../../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
+import { PaymentMethodStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodStatus";
+import { PaymentMethodsResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
+import { Range } from "../../../../generated/definitions/pagopa/walletv3/Range";
+import { TypeEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 
 export const allPaymentMethods: PaymentMethodsResponse = {
   paymentMethods: [
