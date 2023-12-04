@@ -3,7 +3,7 @@ import { WalletCreateResponse } from "../../../../generated/definitions/pagopa/w
 import { serverUrl } from "../../../utils/server";
 import { PaymentMethodsResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
 import { TypeEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import { allPaymentMethods } from "../common/payloads/paymentMethods";
+import { allPaymentMethods } from "../payloads/paymentMethods";
 
 export const generateOnboardablePaymentMethods = (): PaymentMethodsResponse =>
   allPaymentMethods;

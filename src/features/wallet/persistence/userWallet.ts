@@ -1,9 +1,10 @@
 import { faker } from "@faker-js/faker";
-import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { ServiceNameEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceName";
-import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
+import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import { getWalletTypeFromPaymentMethodId } from "../onboarding/utils";
+import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
+import { allPaymentMethods } from "../payloads/paymentMethods";
+import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -46,6 +47,15 @@ const generateUserWallet = (paymentMethodId: string) => {
 const removeUserWallet = (walletId: string) => {
   userWallets.delete(walletId);
 };
+
+const generateWalletData = () => {
+  generateUserWallet(
+    faker.helpers.arrayElement(allPaymentMethods.paymentMethods).id
+  );
+};
+
+// At server startup
+generateWalletData();
 
 export default {
   addUserWallet,

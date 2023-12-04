@@ -3,7 +3,10 @@ import bodyParser from "body-parser";
 import express, { Application } from "express";
 import morgan from "morgan";
 import { ioDevServerConfig } from "./config";
+import { messageRouter } from "./features/messages/routers/messagesRouter";
+import { pnRouter } from "./features/pn/routers/routers";
 import { errorMiddleware } from "./middleware/errorMiddleware";
+import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { bpd } from "./routers/features/bdp";
 import { bpdAward } from "./routers/features/bdp/award";
 import { bpdRanking } from "./routers/features/bdp/ranking/v1";
@@ -16,9 +19,11 @@ import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
 import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
+import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fciRouter } from "./routers/features/fci";
+import { idpayRouter } from "./routers/features/idpay";
+import { lollipopRouter } from "./routers/features/lollipop";
 import { svRouter } from "./routers/features/siciliaVola";
-import { messageRouter } from "./features/messages/routers/messagesRouter";
 import { miscRouter } from "./routers/misc";
 import { paymentRouter } from "./routers/payment";
 import { profileRouter } from "./routers/profile";
@@ -35,13 +40,9 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
-import { idpayRouter } from "./routers/features/idpay";
-import { lollipopRouter } from "./routers/features/lollipop";
-import { fastLoginRouter } from "./routers/features/fastLogin";
-import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
-import { walletV3Router } from "./features/wallet";
-import { pnRouter } from "./features/pn/routers/routers";
+import { walletRouter as newWalletRouter } from "./features/wallet";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
+
 // create express server
 const app: Application = express();
 // parse body request as json
@@ -95,7 +96,7 @@ app.use(fastLoginMiddleware);
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
-  walletV3Router
+  newWalletRouter
 ].forEach(r => app.use(r));
 
 export default app;
