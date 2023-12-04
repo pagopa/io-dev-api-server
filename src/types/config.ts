@@ -30,6 +30,8 @@ export const ProfileAttrs = t.intersection([
   }),
   t.partial({
     reminder_status: ReminderStatus,
+    is_email_validated: t.boolean,
+    is_email_already_taken: t.boolean,
     push_notifications_content_type: PushNotificationsContentType
   })
 ]);
