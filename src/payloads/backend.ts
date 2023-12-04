@@ -109,7 +109,7 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
-    emailUniquenessVaildation: {
+    emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
         android: "0.0.0"
