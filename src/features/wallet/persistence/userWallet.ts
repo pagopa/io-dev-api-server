@@ -1,10 +1,13 @@
 import { faker } from "@faker-js/faker";
+import * as E from "fp-ts/lib/Either";
 import { ServiceNameEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceName";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { allPaymentMethods } from "../payloads/paymentMethods";
 import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
+import { WalletService } from "../../../../generated/definitions/pagopa/walletv3/WalletService";
+import { WalletServiceStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletServiceStatus";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -54,6 +57,25 @@ const generateWalletData = () => {
   );
 };
 
+const updateUserWalletService = (
+  walletId: string,
+  services?: ReadonlyArray<WalletService>
+) => {
+  if (getUserWalletInfo(walletId) && services) {
+    removeUserWallet(walletId);
+    const userWallet = getUserWalletInfo(walletId) as WalletInfo;
+    const wallet: WalletInfo = {
+      ...userWallet,
+      services: services
+        .filter(service => service.status === WalletServiceStatusEnum.DISABLED)
+        .map(service => ({ name: service.name }))
+    };
+    addUserWallet(walletId, wallet);
+    E.right(wallet);
+  }
+  return E.left("Wallet not found");
+};
+
 // At server startup
 generateWalletData();
 
@@ -62,5 +84,6 @@ export default {
   getUserWallets,
   getUserWalletInfo,
   generateUserWallet,
-  removeUserWallet
+  removeUserWallet,
+  updateUserWalletService
 };
