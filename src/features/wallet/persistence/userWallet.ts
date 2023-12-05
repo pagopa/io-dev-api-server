@@ -7,7 +7,7 @@ import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walle
 import { allPaymentMethods } from "../payloads/paymentMethods";
 import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
 import { WalletService } from "../../../../generated/definitions/pagopa/walletv3/WalletService";
-import { WalletServiceStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletServiceStatus";
+import { Service } from "../../../../generated/definitions/pagopa/walletv3/Service";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -62,16 +62,20 @@ const updateUserWalletService = (
   services?: ReadonlyArray<WalletService>
 ) => {
   if (getUserWalletInfo(walletId) && services) {
-    removeUserWallet(walletId);
     const userWallet = getUserWalletInfo(walletId) as WalletInfo;
+    removeUserWallet(walletId);
     const wallet: WalletInfo = {
       ...userWallet,
-      services: services
-        .filter(service => service.status === WalletServiceStatusEnum.DISABLED)
-        .map(service => ({ name: service.name }))
+      services: services.map(
+        service =>
+          ({
+            ...service,
+            updateDate: new Date()
+          } as Service)
+      )
     };
     addUserWallet(walletId, wallet);
-    E.right(wallet);
+    return E.right(wallet);
   }
   return E.left("Wallet not found");
 };
