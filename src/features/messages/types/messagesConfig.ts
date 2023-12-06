@@ -3,6 +3,7 @@ import { PNMessageTemplateWrapper } from "../../pn/types/messageTemplateWrapper"
 import { HttpResponseCode } from "../../../types/httpResponseCode";
 import { AllowRandomValue } from "../../../types/allowRandomValue";
 import { LiveModeMessages } from "./liveModeMessages";
+import { MessageTemplateWrapper } from "./messageTemplateWrapper";
 
 export const MessagesConfig = t.intersection([
   t.type({
@@ -16,8 +17,6 @@ export const MessagesConfig = t.intersection([
       getThirdPartyMessageResponseCode: HttpResponseCode
     }),
     paymentsCount: t.number,
-    // number of messages with remote attachments
-    withRemoteAttachments: t.number,
     // number of message - invalid after due date - containing a payment and a valid (not expired) due date
     paymentInvalidAfterDueDateWithValidDueDateCount: t.number,
     // number of message - invalid after due date -  containing a payment and a not valid (expired) due date
@@ -61,6 +60,8 @@ export const MessagesConfig = t.intersection([
     attachmentAvailableAfterSeconds: t.number,
     attachmentExpiredAfterSeconds: t.number,
     attachmentRetryAfterSeconds: t.number,
+    // number of messages with remote content
+    messageTemplateWrappers: t.readonlyArray(MessageTemplateWrapper),
     // number of messages coming from PN (aka Piattaforma Notifiche)
     pnMessageTemplateWrappers: t.readonlyArray(PNMessageTemplateWrapper),
     // PN Opt In message
