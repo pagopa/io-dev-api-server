@@ -8,6 +8,7 @@ import { allPaymentMethods } from "../payloads/paymentMethods";
 import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
 import { WalletService } from "../../../../generated/definitions/pagopa/walletv3/WalletService";
 import { Service } from "../../../../generated/definitions/pagopa/walletv3/Service";
+import { ServiceStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceStatus";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -27,7 +28,8 @@ const generateUserWallet = (paymentMethodId: string) => {
     paymentMethodId,
     services: [
       {
-        name: ServiceNameEnum.PAGOPA
+        name: ServiceNameEnum.PAGOPA,
+        status: ServiceStatusEnum.ENABLED
       }
     ],
     status: WalletStatusEnum.CREATED,
