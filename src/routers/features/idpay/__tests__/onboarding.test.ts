@@ -1,6 +1,5 @@
 import supertest from "supertest";
 import { StatusEnum as InitiativeStatusEnum } from "../../../../../generated/definitions/idpay/OnboardingStatusDTO";
-import { DetailsEnum } from "../../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 import {
   IDPayInitiativeID,
   IDPayServiceID
@@ -11,13 +10,14 @@ import {
 } from "../../../../payloads/features/idpay/utils";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
+import { CodeEnum as OnboardingErrorCodeEnum } from "../../../../../generated/definitions/idpay/OnboardingErrorDTO";
 
 const request = supertest(app);
 
 describe("IDPay Onboarding API", () => {
   describe("GET getInitiativeData", () => {
     it("should return 200 with Initiative data if service ID exists", async () => {
-      const serviceId = IDPayServiceID.DEFAULT;
+      const serviceId = IDPayServiceID.OK;
 
       const response = await request.get(
         addIdPayPrefix(`/onboarding/service/${serviceIdToString(serviceId)}`)
@@ -25,7 +25,7 @@ describe("IDPay Onboarding API", () => {
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty(
         "initiativeId",
-        initiativeIdToString(IDPayInitiativeID.DEFAULT)
+        initiativeIdToString(IDPayInitiativeID.OK)
       );
     });
 
@@ -38,7 +38,7 @@ describe("IDPay Onboarding API", () => {
   });
   describe("GET onboardingStatus", () => {
     it("should return 200 with status if initiativeId exists", async () => {
-      const initiativeId = IDPayInitiativeID.INVITED;
+      const initiativeId = IDPayInitiativeID.OK_INVITED;
 
       const response = await request.get(
         addIdPayPrefix(
@@ -52,7 +52,7 @@ describe("IDPay Onboarding API", () => {
       );
     });
     it("should return 404 if initiative status does not exists", async () => {
-      const initiativeId = IDPayInitiativeID.DEFAULT;
+      const initiativeId = IDPayInitiativeID.OK;
 
       const response = await request.get(
         addIdPayPrefix(
@@ -64,9 +64,7 @@ describe("IDPay Onboarding API", () => {
     it("should return 404 if initiative ID is not in the list", async () => {
       const response = await request.get(
         addIdPayPrefix(
-          `/onboarding/${initiativeIdToString(
-            IDPayInitiativeID.DEFAULT
-          )}/status`
+          `/onboarding/${initiativeIdToString(IDPayInitiativeID.OK)}/status`
         )
       );
       expect(response.status).toBe(404);
@@ -74,7 +72,7 @@ describe("IDPay Onboarding API", () => {
   });
   describe("PUT onboardingCitizen", () => {
     it("should return 204 if initiative ID exists", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.INVITED);
+      const initiativeId = initiativeIdToString(IDPayInitiativeID.OK_INVITED);
 
       const response = await request
         .put(addIdPayPrefix("/onboarding")) // eslint-disable-line sonarjs/no-duplicate-string
@@ -98,7 +96,7 @@ describe("IDPay Onboarding API", () => {
   });
   describe("PUT checkPrerequisites", () => {
     it("should return 200 with prerequisites if initiative ID exists and does not have errors", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.DEFAULT);
+      const initiativeId = initiativeIdToString(IDPayInitiativeID.OK);
 
       const response = await request
         .put(addIdPayPrefix("/onboarding/initiative")) // eslint-disable-line sonarjs/no-duplicate-string
@@ -107,7 +105,7 @@ describe("IDPay Onboarding API", () => {
     });
     it("should return 202 if initiative does not have prerequisites", async () => {
       const initiativeId = initiativeIdToString(
-        IDPayInitiativeID.NO_PREREQUISITES
+        IDPayInitiativeID.OK_NO_PREREQUISITES
       );
 
       const response = await request
@@ -117,7 +115,7 @@ describe("IDPay Onboarding API", () => {
     });
     it("should return 403 if initiative has check error", async () => {
       const initiativeId = initiativeIdToString(
-        IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED
+        IDPayInitiativeID.KO_BUDGET_EXHAUSTED
       );
 
       const response = await request
@@ -126,8 +124,8 @@ describe("IDPay Onboarding API", () => {
 
       expect(response.status).toBe(403);
       expect(response.body).toHaveProperty(
-        "details",
-        DetailsEnum.BUDGET_TERMINATED
+        "code",
+        OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED
       );
     });
     it("should return 400 if malformed request body", async () => {
@@ -147,7 +145,7 @@ describe("IDPay Onboarding API", () => {
   });
   describe("PUT consentOnboarding", () => {
     it("should return 202 if initiative ID exists", async () => {
-      const initiativeId = initiativeIdToString(IDPayInitiativeID.INVITED);
+      const initiativeId = initiativeIdToString(IDPayInitiativeID.OK_INVITED);
 
       const response = await request
         .put(addIdPayPrefix("/onboarding/consent")) // eslint-disable-line sonarjs/no-duplicate-string
