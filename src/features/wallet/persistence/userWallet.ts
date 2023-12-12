@@ -1,10 +1,14 @@
 import { faker } from "@faker-js/faker";
+import * as E from "fp-ts/lib/Either";
 import { ServiceNameEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceName";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { allPaymentMethods } from "../payloads/paymentMethods";
 import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
+import { WalletService } from "../../../../generated/definitions/pagopa/walletv3/WalletService";
+import { Service } from "../../../../generated/definitions/pagopa/walletv3/Service";
+import { ServiceStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceStatus";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -24,7 +28,8 @@ const generateUserWallet = (paymentMethodId: string) => {
     paymentMethodId,
     services: [
       {
-        name: ServiceNameEnum.PAGOPA
+        name: ServiceNameEnum.PAGOPA,
+        status: ServiceStatusEnum.ENABLED
       }
     ],
     status: WalletStatusEnum.CREATED,
@@ -54,6 +59,29 @@ const generateWalletData = () => {
   );
 };
 
+const updateUserWalletService = (
+  walletId: string,
+  services?: ReadonlyArray<WalletService>
+) => {
+  if (getUserWalletInfo(walletId) && services) {
+    const userWallet = getUserWalletInfo(walletId) as WalletInfo;
+    removeUserWallet(walletId);
+    const wallet: WalletInfo = {
+      ...userWallet,
+      services: services.map(
+        service =>
+          ({
+            ...service,
+            updateDate: new Date()
+          } as Service)
+      )
+    };
+    addUserWallet(walletId, wallet);
+    return E.right(wallet);
+  }
+  return E.left("Wallet not found");
+};
+
 // At server startup
 generateWalletData();
 
@@ -62,5 +90,6 @@ export default {
   getUserWallets,
   getUserWalletInfo,
   generateUserWallet,
-  removeUserWallet
+  removeUserWallet,
+  updateUserWalletService
 };
