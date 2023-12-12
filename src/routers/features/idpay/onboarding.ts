@@ -1,11 +1,15 @@
 import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
+import {
+  CodeEnum as OnboardingErrorCodeEnum,
+  OnboardingErrorDTO
+} from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
 import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
-import { getIdPayError } from "../../../payloads/features/idpay/error";
 import {
   getCheckPrerequisitesResponseByInitiativeId,
   getPrerequisitesErrorByInitiativeId
 } from "../../../payloads/features/idpay/check-prerequisites";
+import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/get-initiative-data";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding-status";
 import {
@@ -39,7 +43,11 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
     O.fromNullable,
     O.chain(getOnboardingStatusResponseByInitiativeId),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res.status(404).json({
+          code: OnboardingErrorCodeEnum.ONBOARDING_USER_NOT_ONBOARDED,
+          message: ""
+        } as OnboardingErrorDTO),
       status => res.status(200).json(status)
     )
   )

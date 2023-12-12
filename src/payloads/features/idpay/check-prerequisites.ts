@@ -1,16 +1,16 @@
-import * as O from "fp-ts/lib/Option";
 import { faker } from "@faker-js/faker/locale/it";
+import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
+import {
+  CodeEnum as OnboardingErrorCodeEnum,
+  OnboardingErrorDTO
+} from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
 import {
   AuthorityEnum,
   CodeEnum,
   OperatorEnum,
   PDNDCriteriaDTO
 } from "../../../../generated/definitions/idpay/PDNDCriteriaDTO";
-import {
-  PrerequisitesErrorDTO,
-  DetailsEnum
-} from "../../../../generated/definitions/idpay/PrerequisitesErrorDTO";
 import { RequiredCriteriaDTO } from "../../../../generated/definitions/idpay/RequiredCriteriaDTO";
 import {
   SelfDeclarationBoolDTO,
@@ -97,42 +97,38 @@ const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
 const checkPrerequisites: {
   [id: number]: RequiredCriteriaDTO;
 } = {
-  [IDPayInitiativeID.DEFAULT]: {
+  [IDPayInitiativeID.OK]: {
     pdndCriteria,
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
-  [IDPayInitiativeID.PDND_ONLY]: {
+  [IDPayInitiativeID.OK_PDND_ONLY]: {
     pdndCriteria,
     selfDeclarationList: []
   },
-  [IDPayInitiativeID.SELF_ONLY]: {
+  [IDPayInitiativeID.OK_SELF_ONLY]: {
     pdndCriteria: [],
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
   }
 };
 
 const prerequisitesErrors: {
-  [id: number]: PrerequisitesErrorDTO;
+  [id: number]: OnboardingErrorDTO;
 } = {
-  [IDPayInitiativeID.ERR_CHECK_BUDGET_TERMINATED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.BUDGET_TERMINATED
+  [IDPayInitiativeID.KO_GENERIC]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_GENERIC_ERROR,
+    message: ""
   },
-  [IDPayInitiativeID.ERR_CHECK_ENDED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.INITIATIVE_END
+  [IDPayInitiativeID.KO_NOT_STARTED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_STARTED,
+    message: ""
   },
-  [IDPayInitiativeID.ERR_CHECK_NOT_STARTED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.INITIATIVE_NOT_STARTED
+  [IDPayInitiativeID.KO_ENDED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_ENDED,
+    message: ""
   },
-  [IDPayInitiativeID.ERR_CHECK_SUSPENDED]: {
-    code: 403,
-    message: "",
-    details: DetailsEnum.INITIATIVE_SUSPENDED
+  [IDPayInitiativeID.KO_BUDGET_EXHAUSTED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
+    message: ""
   }
 };
 
@@ -142,4 +138,4 @@ export const getCheckPrerequisitesResponseByInitiativeId = (
 
 export const getPrerequisitesErrorByInitiativeId = (
   id: IDPayInitiativeID
-): O.Option<PrerequisitesErrorDTO> => O.fromNullable(prerequisitesErrors[id]);
+): O.Option<OnboardingErrorDTO> => O.fromNullable(prerequisitesErrors[id]);
