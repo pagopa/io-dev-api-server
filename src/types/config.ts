@@ -24,11 +24,11 @@ export const ProfileAttrs = t.intersection([
     name: t.string,
     family_name: t.string,
     mobile: NonEmptyString,
-    email: EmailAddress,
     accepted_tos_version: NonNegativeNumber,
     preferred_languages: PreferredLanguages
   }),
   t.partial({
+    email: EmailAddress,
     reminder_status: ReminderStatus,
     is_email_validated: t.boolean,
     is_email_already_taken: t.boolean,
