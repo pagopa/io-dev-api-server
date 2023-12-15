@@ -26,7 +26,7 @@
             const urlParams = new URLSearchParams(queryString);
             const transactionId = urlParams.get("transactionId");
             const container = document.getElementById("outcomeSelect");
-            window.location.href = `/ecommerce/io/v1/transactions/${transactionId}/outcomes?outcome=${container.value}`;
+            window.location.href = `iowallet://127.0.0.1:3000/ecommerce/io/v1/transactions/${transactionId}/outcomes?outcome=${container.value}`;
         }
 
         function onLoad() {
