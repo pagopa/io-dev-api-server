@@ -14,8 +14,9 @@ import { PreferredLanguages } from "../../generated/definitions/backend/Preferre
 import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
-import { HttpResponseCode } from "./httpResponseCode";
+import { WalletConfiguration } from "../features/wallet/types/configuration";
 import { AllowRandomValue } from "./allowRandomValue";
+import { HttpResponseCode } from "./httpResponseCode";
 
 /* profile */
 export const ProfileAttrs = t.intersection([
@@ -210,6 +211,9 @@ export const IoDevServerConfig = t.interface({
           assertionRefValidityMS: t.number
         })
       ])
+    }),
+    t.partial({
+      wallet: WalletConfiguration
     }),
     t.partial({
       fastLogin: t.interface({
