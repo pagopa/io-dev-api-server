@@ -5,6 +5,13 @@ import { PartyTimeoutFault } from "../../../../generated/definitions/pagopa/ecom
 import { PaymentStatusFault } from "../../../../generated/definitions/pagopa/ecommerce/PaymentStatusFault";
 import { ValidationFault } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
 
+export type WalletPaymentFailureType =
+  | ValidationFault
+  | PaymentStatusFault
+  | GatewayFault
+  | PartyConfigurationFault
+  | PartyTimeoutFault;
+
 export type WalletPaymentFailure = t.TypeOf<typeof WalletPaymentFailure>;
 export const WalletPaymentFailure = t.union([
   ValidationFault,
@@ -15,12 +22,7 @@ export const WalletPaymentFailure = t.union([
 ]);
 
 export const getStatusCodeForWalletFailure = (
-  failure:
-    | ValidationFault
-    | PaymentStatusFault
-    | GatewayFault
-    | PartyConfigurationFault
-    | PartyTimeoutFault
+  failure: WalletPaymentFailureType
 ): 404 | 409 | 502 | 503 | 504 => {
   if (ValidationFault.is(failure)) {
     return 404;
