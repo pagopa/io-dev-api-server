@@ -10,6 +10,7 @@ import { RequestAuthorizationResponse } from "../../../../generated/definitions/
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
 import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
 import { ioDevServerConfig } from "../../../config";
+import { getRandomEnumValue } from "../../../payloads/utils/random";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
 import {
@@ -17,6 +18,10 @@ import {
   getNewTransactionResponsePayload,
   getTransactionInfoPayload
 } from "../payloads/transactions";
+import {
+  WalletPaymentFailure,
+  getStatusCodeForWalletFailure
+} from "../types/failure";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { addPaymentHandler } from "./router";
 
@@ -30,7 +35,8 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
       rptId =>
         pipe(
           ioDevServerConfig.features.wallet?.verificationFailure,
-          O.fromNullable,
+          WalletPaymentFailure.decode,
+          O.fromEither,
           O.fold(
             () =>
               pipe(
@@ -46,7 +52,11 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
                   response => res.status(200).json(response)
                 )
               ),
-            failure => res.status(403).json(failure)
+            failure =>
+              res.status(getStatusCodeForWalletFailure(failure)).json({
+                faultCodeCategory: getRandomEnumValue(FaultCategoryEnum),
+                faultCodeDetail: failure
+              })
           )
         )
     )

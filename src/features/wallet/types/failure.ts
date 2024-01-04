@@ -1,15 +1,36 @@
 import * as t from "io-ts";
-import { GatewayFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/GatewayFaultPaymentProblemJson";
-import { PartyConfigurationFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFaultPaymentProblemJson";
-import { PartyTimeoutFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PartyTimeoutFaultPaymentProblemJson";
-import { PaymentStatusFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PaymentStatusFaultPaymentProblemJson";
-import { ValidationFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentProblemJson";
+import { GatewayFault } from "../../../../generated/definitions/pagopa/ecommerce/GatewayFault";
+import { PartyConfigurationFault } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFault";
+import { PartyTimeoutFault } from "../../../../generated/definitions/pagopa/ecommerce/PartyTimeoutFault";
+import { PaymentStatusFault } from "../../../../generated/definitions/pagopa/ecommerce/PaymentStatusFault";
+import { ValidationFault } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
 
 export type WalletPaymentFailure = t.TypeOf<typeof WalletPaymentFailure>;
 export const WalletPaymentFailure = t.union([
-  ValidationFaultPaymentProblemJson,
-  PaymentStatusFaultPaymentProblemJson,
-  GatewayFaultPaymentProblemJson,
-  PartyConfigurationFaultPaymentProblemJson,
-  PartyTimeoutFaultPaymentProblemJson
+  ValidationFault,
+  PaymentStatusFault,
+  GatewayFault,
+  PartyConfigurationFault,
+  PartyTimeoutFault
 ]);
+
+export const getStatusCodeForWalletFailure = (
+  failure:
+    | ValidationFault
+    | PaymentStatusFault
+    | GatewayFault
+    | PartyConfigurationFault
+    | PartyTimeoutFault
+): 404 | 409 | 502 | 503 | 504 => {
+  if (ValidationFault.is(failure)) {
+    return 404;
+  } else if (PaymentStatusFault.is(failure)) {
+    return 409;
+  } else if (GatewayFault.is(failure)) {
+    return 502;
+  } else if (PartyConfigurationFault.is(failure)) {
+    return 503;
+  } else {
+    return 504;
+  }
+};
