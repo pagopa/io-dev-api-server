@@ -1,36 +1,29 @@
 import * as t from "io-ts";
-import { GatewayFault } from "../../../../generated/definitions/pagopa/ecommerce/GatewayFault";
-import { PartyConfigurationFault } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFault";
-import { PartyTimeoutFault } from "../../../../generated/definitions/pagopa/ecommerce/PartyTimeoutFault";
-import { PaymentStatusFault } from "../../../../generated/definitions/pagopa/ecommerce/PaymentStatusFault";
-import { ValidationFault } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
-
-export type WalletPaymentFailureType =
-  | ValidationFault
-  | PaymentStatusFault
-  | GatewayFault
-  | PartyConfigurationFault
-  | PartyTimeoutFault;
+import { GatewayFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/GatewayFaultPaymentProblemJson";
+import { PartyConfigurationFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFaultPaymentProblemJson";
+import { PartyTimeoutFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PartyTimeoutFaultPaymentProblemJson";
+import { PaymentStatusFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PaymentStatusFaultPaymentProblemJson";
+import { ValidationFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentProblemJson";
 
 export type WalletPaymentFailure = t.TypeOf<typeof WalletPaymentFailure>;
 export const WalletPaymentFailure = t.union([
-  ValidationFault,
-  PaymentStatusFault,
-  GatewayFault,
-  PartyConfigurationFault,
-  PartyTimeoutFault
+  ValidationFaultPaymentProblemJson,
+  PaymentStatusFaultPaymentProblemJson,
+  GatewayFaultPaymentProblemJson,
+  PartyConfigurationFaultPaymentProblemJson,
+  PartyTimeoutFaultPaymentProblemJson
 ]);
 
 export const getStatusCodeForWalletFailure = (
-  failure: WalletPaymentFailureType
+  failure: WalletPaymentFailure
 ): 404 | 409 | 502 | 503 | 504 => {
-  if (ValidationFault.is(failure)) {
+  if (ValidationFaultPaymentProblemJson.is(failure)) {
     return 404;
-  } else if (PaymentStatusFault.is(failure)) {
+  } else if (PaymentStatusFaultPaymentProblemJson.is(failure)) {
     return 409;
-  } else if (GatewayFault.is(failure)) {
+  } else if (GatewayFaultPaymentProblemJson.is(failure)) {
     return 502;
-  } else if (PartyConfigurationFault.is(failure)) {
+  } else if (PartyConfigurationFaultPaymentProblemJson.is(failure)) {
     return 503;
   } else {
     return 504;

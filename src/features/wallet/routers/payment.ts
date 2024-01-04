@@ -10,7 +10,6 @@ import { RequestAuthorizationResponse } from "../../../../generated/definitions/
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
 import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
 import { ioDevServerConfig } from "../../../config";
-import { getRandomEnumValue } from "../../../payloads/utils/random";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
 import {
@@ -53,10 +52,7 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
                 )
               ),
             failure =>
-              res.status(getStatusCodeForWalletFailure(failure)).json({
-                faultCodeCategory: getRandomEnumValue(FaultCategoryEnum),
-                faultCodeDetail: failure
-              })
+              res.status(getStatusCodeForWalletFailure(failure)).json(failure)
           )
         )
     )
