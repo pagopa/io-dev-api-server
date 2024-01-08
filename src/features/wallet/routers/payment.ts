@@ -68,11 +68,21 @@ addPaymentHandler("post", "/transactions", (req, res) =>
       () => res.sendStatus(400),
       ({ paymentNotices }) =>
         pipe(
-          paymentNotices,
-          getNewTransactionResponsePayload,
+          ioDevServerConfig.features.wallet?.activationFailure,
+          WalletPaymentFailure.decode,
+          O.fromEither,
           O.fold(
-            () => res.sendStatus(404),
-            transaction => res.status(200).json(transaction)
+            () =>
+              pipe(
+                paymentNotices,
+                getNewTransactionResponsePayload,
+                O.fold(
+                  () => res.sendStatus(404),
+                  transaction => res.status(200).json(transaction)
+                )
+              ),
+            failure =>
+              res.status(getStatusCodeForWalletFailure(failure)).json(failure)
           )
         )
     )
