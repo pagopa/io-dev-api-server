@@ -27,7 +27,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
-  accepted_tos_version: 4.5 as NonNegativeNumber,
+  accepted_tos_version: 4.7 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT],
   reminder_status: ReminderStatusEnum.ENABLED,
   push_notifications_content_type: PushNotificationsContentTypeEnum.FULL
@@ -73,6 +73,16 @@ const defaultConfig: IoDevServerConfig = {
       getMessageResponseCode: 200,
       getThirdPartyMessageResponseCode: 200
     },
+    messageTemplateWrappers: [
+      {
+        count: 1,
+        template: {
+          subjectWordCount: 5,
+          hasRemoteContent: true,
+          attachmentCount: 5
+        }
+      }
+    ],
     pnMessageTemplateWrappers: [
       {
         count: 0,
@@ -92,7 +102,6 @@ const defaultConfig: IoDevServerConfig = {
     attachmentExpiredAfterSeconds: 10,
     attachmentRetryAfterSeconds: 2,
     pnOptInMessage: false,
-    withRemoteAttachments: 0,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,

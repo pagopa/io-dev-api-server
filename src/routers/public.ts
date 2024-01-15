@@ -9,6 +9,7 @@ import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
 import { assetsFolder, ioDevServerConfig } from "../config";
+import { WALLET_PAYMENT_PATH } from "../features/wallet/utils/payment";
 import { backendInfo } from "../payloads/backend";
 import {
   AppUrlLoginScheme,
@@ -16,11 +17,11 @@ import {
   loginLolliPopRedirect,
   redirectUrl
 } from "../payloads/login";
+import { WALLET_ONBOARDING_PATH } from "../features/wallet/utils/onboarding";
 import { addHandler } from "../payloads/response";
-import { readFileAsJSON, sendFileFromRootPath } from "../utils/file";
-import { getSamlRequest } from "../utils/login";
-import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
+import { clearSessionTokens } from "../payloads/session";
 import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
+import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
 import {
   clearLoginSessionTokenInfo,
   createOrRefreshEverySessionToken,
@@ -28,14 +29,18 @@ import {
   setSessionAuthenticationProvider,
   setSessionLoginType
 } from "../persistence/sessionInfo";
-import { clearSessionTokens } from "../payloads/session";
-import { WALLET_ONBOARDING_PATH } from "../utils/wallet";
+import { readFileAsJSON, sendFileFromRootPath } from "../utils/file";
+import { getSamlRequest } from "../utils/login";
+import {
+  setProfileEmailAlreadyTaken,
+  setProfileEmailValidated
+} from "../persistence/profile/profile";
 import { resetBpd } from "./features/bdp";
 import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
+import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 import { resetProfile } from "./profile";
 import { resetWalletV2 } from "./walletsV2";
-import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 
 export const publicRouter = Router();
 
@@ -101,6 +106,10 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
 
 addHandler(publicRouter, "get", WALLET_ONBOARDING_PATH, (req, res) => {
   sendFileFromRootPath("assets/wallet/wallet_onboarding.html", res);
+});
+
+addHandler(publicRouter, "get", WALLET_PAYMENT_PATH, (req, res) => {
+  sendFileFromRootPath("assets/wallet/wallet_payment.html", res);
 });
 
 addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
@@ -217,3 +226,21 @@ const debugSamlRequestIfNeeded = async (
     console.log(chalk.bgBlack(chalk.green(`Stored Thumbprint: ${thumbprint}`)));
   }
 };
+
+addHandler(publicRouter, "post", "/validate-profile-email", (req, res) => {
+  if (req.body && req.body.value !== undefined) {
+    setProfileEmailValidated(req.body.value);
+    res.status(200).send({ message: "OK" });
+  } else {
+    res.status(500).send({ message: "KO" });
+  }
+});
+
+addHandler(publicRouter, "post", "/set-email-already-taken", (req, res) => {
+  if (req.body && req.body.value !== undefined) {
+    setProfileEmailAlreadyTaken(req.body.value);
+    res.status(200).send({ message: "OK" });
+  } else {
+    res.status(500).send({ message: "KO" });
+  }
+});

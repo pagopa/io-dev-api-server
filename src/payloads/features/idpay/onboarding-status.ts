@@ -9,32 +9,31 @@ import { IDPayInitiativeID } from "./types";
 import { initiativeIdFromString } from "./utils";
 
 const onboardingStatuses: {
-  [id: number]: OnboardingStatusDTO | undefined;
+  [id: number]: OnboardingStatusDTO;
 } = {
-  [IDPayInitiativeID.DEFAULT]: undefined,
-  [IDPayInitiativeID.INVITED]: {
+  [IDPayInitiativeID.OK_INVITED]: {
     status: OnboardingStatusEnum.INVITED,
     statusDate: faker.date.recent(1)
   },
-  [IDPayInitiativeID.ERR_STATUS_NOT_ELIGIBLE]: {
+  [IDPayInitiativeID.KO_STATUS_NOT_ELIGIBLE]: {
     status: OnboardingStatusEnum.ELIGIBLE_KO,
     statusDate: faker.date.recent(1)
   },
-  [IDPayInitiativeID.ERR_STATUS_NO_REQUIREMENTS]: {
-    status: OnboardingStatusEnum.ONBOARDING_KO,
+  [IDPayInitiativeID.KO_STATUS_NO_REQUIREMENTS]: {
+    status: OnboardingStatusEnum.ELIGIBLE_KO,
     statusDate: faker.date.recent(1)
   },
-  [IDPayInitiativeID.ERR_STATUS_ONBOARDED]: {
+  [IDPayInitiativeID.KO_STATUS_ONBOARDED]: {
     status: OnboardingStatusEnum.ONBOARDING_OK,
     statusDate: faker.date.recent(1),
     onboardingOkDate: faker.date.recent(1)
   },
-  [IDPayInitiativeID.ERR_STATUS_UNSUBSCRIBED]: {
+  [IDPayInitiativeID.KO_STATUS_UNSUBSCRIBED]: {
     status: OnboardingStatusEnum.UNSUBSCRIBED,
     statusDate: faker.date.recent(1),
     onboardingOkDate: faker.date.recent(1)
   },
-  [IDPayInitiativeID.ERR_STATUS_ON_EVALUATION]: {
+  [IDPayInitiativeID.KO_STATUS_ON_EVALUATION]: {
     status: OnboardingStatusEnum.ON_EVALUATION,
     statusDate: faker.date.recent(1)
   }
@@ -49,7 +48,7 @@ export const getOnboardingStatusResponseByInitiativeId = (
       // In case of randomly generated ulid, the status returned is ONBOARDING_OK
       flow(
         initiativeIdFromString,
-        O.getOrElse(() => IDPayInitiativeID.ERR_STATUS_ONBOARDED)
+        O.getOrElse(() => IDPayInitiativeID.KO_STATUS_ONBOARDED)
       )
     ),
     O.chain(id => O.fromNullable(onboardingStatuses[id]))
