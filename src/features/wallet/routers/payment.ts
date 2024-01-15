@@ -3,10 +3,13 @@ import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
 import { CalculateFeeRequest } from "../../../../generated/definitions/pagopa/ecommerce/CalculateFeeRequest";
+import { FaultCategoryEnum } from "../../../../generated/definitions/pagopa/ecommerce/FaultCategory";
 import { NewTransactionRequest } from "../../../../generated/definitions/pagopa/ecommerce/NewTransactionRequest";
 import { RequestAuthorizationRequest } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationRequest";
 import { RequestAuthorizationResponse } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
+import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
+import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
 import {
@@ -14,6 +17,10 @@ import {
   getNewTransactionResponsePayload,
   getTransactionInfoPayload
 } from "../payloads/transactions";
+import {
+  WalletPaymentFailure,
+  getStatusCodeForWalletFailure
+} from "../types/failure";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { addPaymentHandler } from "./router";
 
@@ -24,13 +31,30 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
     O.fromEither,
     O.fold(
       () => res.sendStatus(400),
-      flow(
-        getPaymentRequestsGetResponse,
-        O.fold(
-          () => res.sendStatus(404),
-          response => res.status(200).json(response)
+      rptId =>
+        pipe(
+          ioDevServerConfig.features.wallet?.verificationFailure,
+          WalletPaymentFailure.decode,
+          O.fromEither,
+          O.fold(
+            () =>
+              pipe(
+                rptId,
+                getPaymentRequestsGetResponse,
+                O.fold(
+                  () =>
+                    res.status(404).json({
+                      faultCodeCategory: FaultCategoryEnum.PAYMENT_UNKNOWN,
+                      faultCodeDetail:
+                        ValidationFaultEnum.PAA_PAGAMENTO_SCONOSCIUTO
+                    }),
+                  response => res.status(200).json(response)
+                )
+              ),
+            failure =>
+              res.status(getStatusCodeForWalletFailure(failure)).json(failure)
+          )
         )
-      )
     )
   )
 );
@@ -44,11 +68,21 @@ addPaymentHandler("post", "/transactions", (req, res) =>
       () => res.sendStatus(400),
       ({ paymentNotices }) =>
         pipe(
-          paymentNotices,
-          getNewTransactionResponsePayload,
+          ioDevServerConfig.features.wallet?.activationFailure,
+          WalletPaymentFailure.decode,
+          O.fromEither,
           O.fold(
-            () => res.sendStatus(404),
-            transaction => res.status(200).json(transaction)
+            () =>
+              pipe(
+                paymentNotices,
+                getNewTransactionResponsePayload,
+                O.fold(
+                  () => res.sendStatus(404),
+                  transaction => res.status(200).json(transaction)
+                )
+              ),
+            failure =>
+              res.status(getStatusCodeForWalletFailure(failure)).json(failure)
           )
         )
     )
