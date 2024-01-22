@@ -44,7 +44,7 @@ export const getTransactionInfoPayload = (
   });
 
 export const getCalculateFeeResponsePayload = (
-  _walletId: string,
+  _walletId: string | undefined,
   _amount: number
 ): O.Option<CalculateFeeResponse> =>
   O.some({
