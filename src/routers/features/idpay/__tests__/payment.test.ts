@@ -74,7 +74,7 @@ describe("IDPay Payment API", () => {
 
   describe("DELETE deletePayment", () => {
     it("should return 200", async () => {
-      const trxCode = faker.random.alphaNumeric(8, { bannedChars: "1234567" });
+      const trxCode = "ABCDEFGH";
 
       const response = await request.delete(
         addIdPayPrefix(`/payment/qr-code/${trxCode}`)
