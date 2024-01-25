@@ -24,6 +24,11 @@ import {
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { addPaymentHandler } from "./router";
 
+// eCommerce session token
+addPaymentHandler("post", "/sessions", (req, res) =>
+  res.status(200).json({ sessionToken: ulid() })
+);
+
 // Verify single payment notices
 addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
   pipe(
