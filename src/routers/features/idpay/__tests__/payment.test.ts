@@ -22,7 +22,7 @@ const request = supertest(app);
 describe("IDPay Payment API", () => {
   describe("PUT putPreAuthPayment", () => {
     it("should return 200 with payment data", async () => {
-      const trxCode = faker.random.alphaNumeric(8, { bannedChars: "1234567" });
+      const trxCode = "ABCDEFGH";
 
       const response = await request.put(
         addIdPayPrefix(`/payment/qr-code/${trxCode}/relate-user`)
