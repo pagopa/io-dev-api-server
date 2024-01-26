@@ -7,13 +7,6 @@ import { messageRouter } from "./features/messages/routers/messagesRouter";
 import { pnRouter } from "./features/pn/routers/routers";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
-import { bpd } from "./routers/features/bdp";
-import { bpdAward } from "./routers/features/bdp/award";
-import { bpdRanking } from "./routers/features/bdp/ranking/v1";
-import { bpdRankingV2 } from "./routers/features/bdp/ranking/v2";
-import { bpdWinningTransactionsV1 } from "./routers/features/bdp/winning-transactions/v1";
-import { bpdWinningTransactionsV2 } from "./routers/features/bdp/winning-transactions/v2";
-import { bonusVacanze } from "./routers/features/bonus-vacanze";
 import { cdcRouter } from "./routers/features/cdc";
 import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
@@ -23,7 +16,6 @@ import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fciRouter } from "./routers/features/fci";
 import { idpayRouter } from "./routers/features/idpay";
 import { lollipopRouter } from "./routers/features/lollipop";
-import { svRouter } from "./routers/features/siciliaVola";
 import { miscRouter } from "./routers/misc";
 import { paymentRouter } from "./routers/payment";
 import { profileRouter } from "./routers/profile";
@@ -77,19 +69,11 @@ app.use(fastLoginMiddleware);
   dashboardHomeRouter,
   paymentRouter,
   servicesMetadataRouter,
-  bonusVacanze,
   miscRouter,
-  bpd,
-  bpdAward,
-  bpdRanking,
-  bpdRankingV2,
-  bpdWinningTransactionsV1,
-  bpdWinningTransactionsV2,
   cgnRouter,
   cgnMerchantsRouter,
   cgnGeoRouter,
   euCovidCertRouter,
-  svRouter,
   cdcRouter,
   fciRouter,
   pnRouter,

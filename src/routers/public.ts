@@ -35,8 +35,6 @@ import {
   setProfileEmailAlreadyTaken,
   setProfileEmailValidated
 } from "../persistence/profile/profile";
-import { resetBpd } from "./features/bdp";
-import { resetBonusVacanze } from "./features/bonus-vacanze";
 import { resetCgn } from "./features/cgn";
 import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 import { resetProfile } from "./profile";
@@ -152,8 +150,6 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
   type emptyFunc = () => void;
   const resets: ReadonlyArray<readonly [emptyFunc, string]> = [
     [resetProfile, "bonus vacanze"],
-    [resetBonusVacanze, "user delete/download"],
-    [resetBpd, "bdp"],
     [resetCgn, "cgn"],
     [resetWalletV2, "walletV2"]
   ];
