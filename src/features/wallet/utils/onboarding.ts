@@ -2,7 +2,6 @@ import { faker } from "@faker-js/faker";
 import { WalletCreateResponse } from "../../../../generated/definitions/pagopa/walletv3/WalletCreateResponse";
 import { serverUrl } from "../../../utils/server";
 import { PaymentMethodsResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
-import { TypeEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { allPaymentMethods } from "../payloads/paymentMethods";
 
 export const generateOnboardablePaymentMethods = (): PaymentMethodsResponse =>
@@ -10,9 +9,9 @@ export const generateOnboardablePaymentMethods = (): PaymentMethodsResponse =>
 
 export const getWalletTypeFromPaymentMethodId = (
   paymentMethodId: string
-): TypeEnum =>
+): string =>
   allPaymentMethods.paymentMethods?.find(({ id }) => id === paymentMethodId)
-    ?.paymentTypeCode as TypeEnum;
+    ?.paymentTypeCode || "CARDS";
 
 export const WALLET_ONBOARDING_PATH = "/wallets/outcomes";
 export const generateOnboardingWalletData = (
