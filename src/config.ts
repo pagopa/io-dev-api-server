@@ -107,7 +107,6 @@ const defaultConfig: IoDevServerConfig = {
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
     paymentWithValidDueDateCount: 0,
     paymentWithExpiredDueDateCount: 0,
-    medicalCount: 0,
     fci: {
       waitForSignatureCount: 0,
       rejectedCount: 0,
