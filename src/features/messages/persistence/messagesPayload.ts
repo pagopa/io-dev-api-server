@@ -13,7 +13,6 @@ import { EUCovidCert } from "../../../../generated/definitions/backend/EUCovidCe
 import { NewMessageContent } from "../../../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../../../generated/definitions/backend/PaymentAmount";
 import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
-import { PrescriptionData } from "../../../../generated/definitions/backend/PrescriptionData";
 import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../../../config";
@@ -155,13 +154,11 @@ export const withContent = (
   message: CreatedMessageWithoutContent,
   subject: string,
   markdown: string,
-  prescriptionData?: PrescriptionData,
   euCovidCert?: EUCovidCert
 ): CreatedMessageWithContent => {
   const content = validatePayload(NewMessageContent, {
     subject,
     markdown,
-    prescription_data: prescriptionData,
     eu_covid_cert: euCovidCert
   });
   return { ...message, content };
