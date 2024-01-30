@@ -61,7 +61,6 @@ export const createPNOptInMessage = (
           `PN OptIn CTA`,
           pnOptInCTA + messageMarkdown,
           undefined,
-          undefined,
           pnOptInServiceId
         )
       ]
