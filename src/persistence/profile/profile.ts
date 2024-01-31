@@ -36,7 +36,10 @@ export const updateProfile = (req: Request): ProfileOperationsType["post"] => {
   if (emailAlreadyTakenTestCheck) {
     return emailAlreadyTakenTestCheck;
   }
-
+  const profileVersionCheck = checkProfileVersion(maybeProfileToUpdate);
+  if (profileVersionCheck) {
+    return profileVersionCheck;
+  }
   const clientProfileIncreased: Profile = {
     ...maybeProfileToUpdate.right,
     version: parseInt(req.body.version, 10) + 1
@@ -108,6 +111,19 @@ export const setProfileEmailAlreadyTaken = (value: boolean) => {
   };
 };
 
+const checkProfileVersion = (profile: ReturnType<typeof Profile.decode>) => {
+  if (E.isRight(profile) && profile.right.version < currentProfile.version) {
+    return {
+      status: profileProblemsList.conflict.status,
+      payload: getProblemJson(
+        profileProblemsList.conflict.status,
+        profileProblemsList.conflict.detail,
+        profileProblemsList.conflict.detail
+      )
+    };
+  }
+};
+
 const handleAlreadyTakenTestEmail = (
   email?: string
 ): CustomResponse | undefined => {
@@ -127,11 +143,15 @@ const handleAlreadyTakenTestEmail = (
 };
 
 // MARK: Problems
-type ProfileProblemDetail = "Precondition Failed" | "BodyMalformed";
+type ProfileProblemDetail =
+  | "Precondition Failed"
+  | "BodyMalformed"
+  | "Conflict";
 
 type ProfileProblems = {
   emailAlreadyTaken: ResponseProblem<ProfileProblemDetail>;
   bodyMalformed: ResponseProblem<ProfileProblemDetail>;
+  conflict: ResponseProblem<ProfileProblemDetail>;
 };
 
 const profileProblemsList: ProfileProblems = {
@@ -142,6 +162,10 @@ const profileProblemsList: ProfileProblems = {
   bodyMalformed: {
     status: 400,
     detail: "BodyMalformed"
+  },
+  conflict: {
+    status: 409,
+    detail: "Conflict"
   }
 };
 
