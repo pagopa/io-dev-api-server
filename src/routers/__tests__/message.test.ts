@@ -37,7 +37,6 @@ const customConfig = _.merge(ioDevServerConfig, {
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 10,
     paymentWithValidDueDateCount: 10,
     paymentWithExpiredDueDateCount: 10,
-    medicalCount: 10,
     withCTA: true,
     withEUCovidCert: true,
     withValidDueDateCount: 10,
