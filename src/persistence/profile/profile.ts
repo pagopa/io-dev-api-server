@@ -112,7 +112,7 @@ export const setProfileEmailAlreadyTaken = (value: boolean) => {
 };
 
 const checkProfileVersion = (profile: ReturnType<typeof Profile.decode>) => {
-  if (E.isRight(profile) && profile.right.version < currentProfile.version) {
+  if (E.isRight(profile) && profile.right.version !== currentProfile.version) {
     return {
       status: profileProblemsList.conflict.status,
       payload: getProblemJson(
