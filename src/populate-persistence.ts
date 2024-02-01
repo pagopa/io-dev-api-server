@@ -1,4 +1,3 @@
-import fs from "fs";
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as B from "fp-ts/lib/boolean";
@@ -8,9 +7,6 @@ import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { EUCovidCert } from "../generated/definitions/backend/EUCovidCert";
-import { MessageAttachment } from "../generated/definitions/backend/MessageAttachment";
-import { MessageSubject } from "../generated/definitions/backend/MessageSubject";
-import { PrescriptionData } from "../generated/definitions/backend/PrescriptionData";
 import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { FiscalCode } from "../generated/definitions/backend/FiscalCode";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
@@ -72,7 +68,6 @@ export const getNewMessage = (
   customConfig: IoDevServerConfig,
   subject: string,
   markdown: string,
-  prescriptionData?: PrescriptionData,
   euCovidCert?: EUCovidCert,
   serviceId?: string
 ): CreatedMessageWithContentAndAttachments =>
@@ -83,7 +78,6 @@ export const getNewMessage = (
     ),
     subject,
     markdown,
-    prescriptionData,
     euCovidCert
   );
 
@@ -152,7 +146,6 @@ const createMessagesWithEUCovidCert = (
                 customConfig,
                 `🏥 EUCovidCert - ${description}`,
                 messageMarkdown,
-                undefined,
                 {
                   auth_code: authCode
                 }
@@ -163,51 +156,6 @@ const createMessagesWithEUCovidCert = (
         )
     )
   );
-
-const createMessagesWithObsoleteMedicalPrescriptions = (
-  customConfig: IoDevServerConfig
-): CreatedMessageWithContentAndAttachments[] => {
-  const medicalPrescription: PrescriptionData = {
-    nre: "050A00854698121",
-    iup: "0000X0NFM",
-    prescriber_fiscal_code: customConfig.profile.attrs.fiscal_code
-  };
-
-  const barcodeReceipt = fs
-    .readFileSync("assets/messages/barcodeReceipt.svg")
-    .toString("base64");
-
-  return A.makeBy(customConfig.messages.medicalCount, index => {
-    const baseMessage = getNewMessage(
-      customConfig,
-      `💊 medical prescription - ${index}`,
-      messageMarkdown,
-      medicalPrescription
-    );
-    const attachments: ReadonlyArray<MessageAttachment> = [
-      {
-        name: "prescription A",
-        content: "up, down, strange, charm, bottom, top",
-        mime_type: "text/plain"
-      },
-      {
-        name: "prescription B",
-        content: barcodeReceipt,
-        mime_type: "image/svg+xml"
-      }
-    ];
-
-    return {
-      ...baseMessage,
-      content: {
-        ...baseMessage.content,
-        subject:
-          `💊 medical prescription with attachments - ${index}` as MessageSubject,
-        attachments
-      }
-    };
-  });
-};
 
 const createMessagesWithFirmaConIOWaitForSignature = (
   customConfig: IoDevServerConfig
@@ -530,9 +478,6 @@ const createMessages = (
 
     /* with EUCovidCert */
     ...createMessagesWithEUCovidCert(customConfig),
-
-    /* medical */
-    ...createMessagesWithObsoleteMedicalPrescriptions(customConfig),
 
     /* Firma con IO */
     ...createMessagesWithFirmaConIOWaitForSignature(customConfig),

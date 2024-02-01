@@ -120,6 +120,10 @@ export const backendStatus: BackendStatus = {
         ios: "0.0.0",
         android: "0.0.0"
       }
+    },
+    tos: {
+      tos_version: 4.8,
+      tos_url: "https://io.italia.it/app-content/tos_privacy.html"
     }
   },
   sections: {

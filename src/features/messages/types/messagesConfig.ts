@@ -25,9 +25,6 @@ export const MessagesConfig = t.intersection([
     paymentWithValidDueDateCount: t.number,
     // number of message containing a payment and a not valid (expired) due date
     paymentWithExpiredDueDateCount: t.number,
-    // whether we dynamically create new messages or not
-    // number of medical messages
-    medicalCount: t.number,
     // number of fci messages
     fci: t.type({
       waitForSignatureCount: t.number,
