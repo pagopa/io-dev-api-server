@@ -17,10 +17,12 @@ import {
   getNewTransactionResponsePayload,
   getTransactionInfoPayload
 } from "../payloads/transactions";
+import WalletDB from "../persistence/userWallet";
 import {
   WalletPaymentFailure,
   getStatusCodeForWalletFailure
 } from "../types/failure";
+import { generateOnboardablePaymentMethods } from "../utils/onboarding";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { addPaymentHandler } from "./router";
 
@@ -181,3 +183,14 @@ addPaymentHandler(
       )
     )
 );
+
+addPaymentHandler("get", "/wallets", (req, res) => {
+  res.json({ wallets: WalletDB.getUserWallets() });
+});
+
+/**
+ * This API is used to retrieve a list of payment methods available
+ */
+addPaymentHandler("get", "/payment-methods", (req, res) => {
+  res.json(generateOnboardablePaymentMethods());
+});
