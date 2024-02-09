@@ -22,7 +22,7 @@ import {
 import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
-import { genRandomBonusCode } from "../../../payloads/features/bonus-vacanze/bonus";
+import { genRandomOtpCode } from "../../../features/cgn/utils";
 import { addHandler } from "../../../payloads/response";
 import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
 import { getRandomStringId } from "../../../utils/id";
@@ -252,7 +252,7 @@ addHandler(cgnRouter, "post", addPrefix("/otp"), (_, res) => {
   const now = new Date().getTime();
   const secondsInTheFuture = 30;
   const otp = {
-    code: genRandomBonusCode(11),
+    code: genRandomOtpCode(11),
     expires_at: new Date(now + secondsInTheFuture * 1000).toISOString(), // secondsInTheFuture seconds in the future
     ttl: secondsInTheFuture
   };

@@ -24,13 +24,10 @@ import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";
 import {
-  frontMatter1CTABonusBpd,
-  frontMatter1CTABonusBpdIban,
   frontMatter1CTABonusCgn,
   frontMatter1CTAFims,
   frontMatter1CTAV2BonusCgnDetails,
   frontMatter2CTA2,
-  frontMatterBonusVacanze,
   frontMatterCTAFCISignatureRequest,
   frontMatterCTAFCISignatureRequestCancelled,
   frontMatterCTAFCISignatureRequestExpired,
@@ -93,21 +90,6 @@ const createMessagesWithCTA = (
           customConfig,
           `2 nested CTA`,
           frontMatter2CTA2 + messageMarkdown
-        ),
-        getNewMessage(
-          customConfig,
-          `2 CTA bonus vacanze`,
-          frontMatterBonusVacanze + messageMarkdown
-        ),
-        getNewMessage(
-          customConfig,
-          `1 CTA start BPD`,
-          frontMatter1CTABonusBpd + messageMarkdown
-        ),
-        getNewMessage(
-          customConfig,
-          `1 CTA IBAN BPD`,
-          frontMatter1CTABonusBpdIban + messageMarkdown
         ),
         getNewMessage(
           customConfig,
