@@ -87,14 +87,14 @@ const defaultConfig: IoDevServerConfig = {
       {
         count: 0,
         template: {
-          unpaidValidPayments: 360,
-          unpaidExpiredPayments: 5,
-          paidPayments: 12,
-          failedPayments: 7,
-          unrelatedPayments: 20,
+          unpaidValidPayments: 3,
+          unpaidExpiredPayments: 2,
+          paidPayments: 4,
+          failedPayments: 1,
+          unrelatedPayments: 5,
           isCancelled: false,
-          attachmentCount: 2,
-          f24Count: 19
+          attachmentCount: 5,
+          f24Count: 9
         }
       }
     ],
