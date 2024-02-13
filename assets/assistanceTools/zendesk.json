@@ -197,22 +197,7 @@
         },
         "zendeskSubCategories": {
           "id": "8086481365265",
-          "subCategories": [
-            {
-              "value": "cashback",
-              "description": {
-                "it-IT": "Cashback",
-                "en-EN": "Cashback"
-              }
-            },
-            {
-              "value": "bonus_vacanze",
-              "description": {
-                "it-IT": "Bonus Vacanze",
-                "en-EN": "Bonus Vacanze"
-              }
-            }
-          ]
+          "subCategories": [ ]
         }
       },
       {

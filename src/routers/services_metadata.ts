@@ -139,39 +139,6 @@ addHandler(
   }
 );
 
-// get the list of all available bonus types
-addHandler(
-  servicesMetadataRouter,
-  "get",
-  addRoutePrefix("/bonus/vacanze/bonuses_available.json"),
-  (_, res) =>
-    res.json(
-      readFileAsJSON(
-        assetsFolder + "/bonus_available/bonus_available_legacy.json"
-      )
-    )
-);
-
-addHandler(
-  servicesMetadataRouter,
-  "get",
-  addRoutePrefix("/bonus/bonus_available.json"),
-  (_, res) =>
-    res.json(
-      readFileAsJSON(assetsFolder + "/bonus_available/bonus_available.json")
-    )
-);
-
-addHandler(
-  servicesMetadataRouter,
-  "get",
-  addRoutePrefix("/bonus/bonus_available_v1.json"),
-  (_, res) =>
-    res.json(
-      readFileAsJSON(assetsFolder + "/bonus_available/bonus_available_v1.json")
-    )
-);
-
 addHandler(
   servicesMetadataRouter,
   "get",

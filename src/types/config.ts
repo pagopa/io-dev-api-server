@@ -87,7 +87,6 @@ const responseError = t.interface({
 });
 
 export const SpecialServicesConfig = t.interface({
-  siciliaVola: t.boolean,
   cgn: t.boolean,
   cdc: t.boolean,
   pn: t.boolean,
