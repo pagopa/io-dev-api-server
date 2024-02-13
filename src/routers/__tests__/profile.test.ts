@@ -30,7 +30,7 @@ it("profile should return a valid updated profile (version increased)", async ()
     is_email_enabled: true,
     is_webhook_enabled: true,
     email: "new_email@email.it" as EmailAddress,
-    version: 5
+    version: 1
   };
   const response = await request
     .post(`${basePath}/profile`)
