@@ -164,7 +164,6 @@ const defaultConfig: IoDevServerConfig = {
     national: 5,
     local: 5,
     specialServices: {
-      siciliaVola: true,
       cgn: true,
       cdc: true,
       pn: false,

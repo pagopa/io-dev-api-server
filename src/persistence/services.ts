@@ -10,7 +10,6 @@ import {
   createCgnService
 } from "../payloads/services/special/cgn/factoryCGNService";
 import { createFciService } from "../payloads/services/special/fci/factoryFCIService";
-import { createSiciliaVolaService } from "../payloads/services/special/siciliaVola/factorySiciliaVolaService";
 import { isCgnActivated } from "../routers/features/cgn";
 import { IoDevServerConfig } from "../types/config";
 import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
@@ -49,7 +48,6 @@ const createServices = (customConfig: IoDevServerConfig) => {
 
   const specialServicesConfig = customConfig.services.specialServices;
   const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
-    [specialServicesConfig.siciliaVola, createSiciliaVolaService],
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],
     [specialServicesConfig.pn, createPnOptInService],
