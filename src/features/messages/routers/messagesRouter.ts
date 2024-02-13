@@ -384,3 +384,9 @@ addHandler(
     )
   )
 );
+
+addHandler(messageRouter, "post", addApiV1Prefix("/message"), (_, res) =>
+  pipe(MessagesService.createMessage(), MessagesDB.addNewMessage, newMessage =>
+    res.json(newMessage)
+  )
+);

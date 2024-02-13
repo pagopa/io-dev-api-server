@@ -9,6 +9,12 @@ let inboxMessages: CreatedMessageWithContentAndAttachments[] = [];
 // eslint-disable-next-line functional/no-let
 let archivedMessages: CreatedMessageWithContentAndAttachments[] = [];
 
+const addNewMessage = (message: CreatedMessageWithContentAndAttachments) =>
+  pipe({ ...message, is_read: false, is_archived: false }, enrichedMessage => {
+    inboxMessages = [enrichedMessage, ...inboxMessages];
+    return enrichedMessage;
+  });
+
 /**
  * Move the message with ID to the archived collection.
  * Return false if message ID is not in the Inbox.
@@ -153,6 +159,7 @@ function setReadMessage(id: string) {
 }
 
 export default {
+  addNewMessage,
   archive,
   dropAll,
   findAllArchived,
