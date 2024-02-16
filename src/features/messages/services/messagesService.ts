@@ -1,3 +1,4 @@
+import { ulid } from "ulid";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as S from "fp-ts/lib/string";
 import * as B from "fp-ts/lib/boolean";
@@ -22,6 +23,7 @@ import {
   TagEnum as TagEnumPN
 } from "../../../../generated/definitions/backend/MessageCategoryPN";
 import { rptIdFromServiceAndPaymentData } from "../../../utils/payment";
+import { ioDevServerConfig } from "../../../config";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
@@ -176,7 +178,29 @@ const computeGetMessagesQueryIndexes = (
     }));
 };
 
-export const handleAttachment = (
+const createMessage = () =>
+  pipe(
+    ServicesDB.getLocalServices(),
+    localServices =>
+      pipe(
+        localServices.length,
+        length => Math.min(Math.floor(Math.random() * length), length - 1),
+        randomServiceIndex => localServices[randomServiceIndex]
+      ),
+    localService =>
+      ({
+        id: ulid(),
+        fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
+        created_at: new Date(),
+        content: {
+          subject: `Created on ${new Date().toTimeString()}`,
+          markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
+        },
+        sender_service_id: localService.service_id
+      } as CreatedMessageWithContentAndAttachments)
+  );
+
+const handleAttachment = (
   attachment: ThirdPartyAttachment,
   attachmentPollingData: Map<string, [Date, Date]>,
   config: IoDevServerConfig,
@@ -305,6 +329,7 @@ const generateExpirationDate = (
 
 export default {
   computeGetMessagesQueryIndexes,
+  createMessage,
   getMessageCategory,
   getPublicMessages,
   handleAttachment
