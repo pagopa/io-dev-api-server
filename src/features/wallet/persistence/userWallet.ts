@@ -1,14 +1,12 @@
 import { faker } from "@faker-js/faker";
 import * as E from "fp-ts/lib/Either";
-import { ServiceNameEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceName";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { allPaymentMethods } from "../payloads/paymentMethods";
 import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
-import { WalletService } from "../../../../generated/definitions/pagopa/walletv3/WalletService";
-import { Service } from "../../../../generated/definitions/pagopa/walletv3/Service";
-import { ServiceStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/ServiceStatus";
+import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
+import { WalletApplication } from "../../../../generated/definitions/pagopa/walletv3/WalletApplication";
 
 const userWallets = new Map<string, WalletInfo>();
 
@@ -26,10 +24,10 @@ const generateUserWallet = (paymentMethodId: string) => {
   const randomWallet: WalletInfo = {
     creationDate: new Date(),
     paymentMethodId,
-    services: [
+    applications: [
       {
-        name: ServiceNameEnum.PAGOPA,
-        status: ServiceStatusEnum.ENABLED
+        name: "PAGOPA",
+        status: WalletApplicationStatusEnum.ENABLED
       }
     ],
     status: WalletStatusEnum.CREATED,
@@ -41,8 +39,8 @@ const generateUserWallet = (paymentMethodId: string) => {
       abi: faker.datatype.string(4),
       brand: BrandEnum.MASTERCARD,
       expiryDate: expiryDate.toISOString(),
-      holder: faker.name.fullName(),
-      maskedPan: "0000"
+      bankName: faker.name.fullName(),
+      lastFourDigits: "0000"
     }
   };
   addUserWallet(walletId, randomWallet);
@@ -59,21 +57,21 @@ const generateWalletData = () => {
   );
 };
 
-const updateUserWalletService = (
+const updateUserWalletApplication = (
   walletId: string,
-  services?: ReadonlyArray<WalletService>
+  services?: ReadonlyArray<WalletApplication>
 ) => {
   if (getUserWalletInfo(walletId) && services) {
     const userWallet = getUserWalletInfo(walletId) as WalletInfo;
     removeUserWallet(walletId);
     const wallet: WalletInfo = {
       ...userWallet,
-      services: services.map(
+      applications: services.map(
         service =>
           ({
             ...service,
             updateDate: new Date()
-          } as Service)
+          } as WalletApplication)
       )
     };
     addUserWallet(walletId, wallet);
@@ -91,5 +89,5 @@ export default {
   getUserWalletInfo,
   generateUserWallet,
   removeUserWallet,
-  updateUserWalletService
+  updateUserWalletApplication
 };
