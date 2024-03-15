@@ -8,7 +8,6 @@ export const allPaymentMethods: PaymentMethodsResponse = {
       id: "1",
       name: "CARDS",
       description: "Carta di credito",
-      asset: "creditCard",
       status: PaymentMethodStatusEnum.ENABLED,
       paymentTypeCode: "CARDS",
       ranges: [
@@ -22,7 +21,8 @@ export const allPaymentMethods: PaymentMethodsResponse = {
       id: "2",
       name: "PAYPAL",
       description: "PayPal",
-      asset: "payPal",
+      asset:
+        "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/paypal.png?raw=true",
       status: PaymentMethodStatusEnum.ENABLED,
       paymentTypeCode: "PAYPAL",
       ranges: [
