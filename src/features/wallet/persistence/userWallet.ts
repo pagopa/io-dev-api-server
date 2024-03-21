@@ -32,6 +32,8 @@ const generateUserWallet = (paymentMethodId: string) => {
     ],
     status: WalletStatusEnum.CREATED,
     updateDate: new Date(),
+    paymentMethodAsset:
+      "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/carte-pagamento.png?raw=true",
     walletId,
     details: {
       type: getWalletTypeFromPaymentMethodId(paymentMethodId),
