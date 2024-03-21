@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { sequenceS } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
@@ -9,6 +10,7 @@ import { RequestAuthorizationRequest } from "../../../../generated/definitions/p
 import { RequestAuthorizationResponse } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
 import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
+import { WalletInfo as EcommerceWalletInfo } from "../../../../generated/definitions/pagopa/ecommerce/WalletInfo";
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
@@ -185,7 +187,20 @@ addPaymentHandler(
 );
 
 addPaymentHandler("get", "/wallets", (req, res) => {
-  res.json({ wallets: WalletDB.getUserWallets() });
+  res.json({
+    wallets: WalletDB.getUserWallets().map(
+      w =>
+        ({
+          ...w,
+          services: [
+            ...w.applications.map(a => ({
+              ...a,
+              updateDate: faker.date.recent()
+            }))
+          ] as EcommerceWalletInfo["services"]
+        } as EcommerceWalletInfo)
+    )
+  });
 });
 
 /**
