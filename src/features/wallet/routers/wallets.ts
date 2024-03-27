@@ -89,7 +89,9 @@ addPaymentWalletHandler(
  */
 addPaymentWalletHandler("post", "/wallets/mock", (req, res) => {
   const { paymentMethodId } = req.body;
-  const generatedWallet = WalletDB.generateUserWallet(paymentMethodId);
+  const generatedWallet = WalletDB.generateUserWallet(
+    parseInt(paymentMethodId, 10)
+  );
   res.json(generatedWallet);
 });
 
