@@ -51,6 +51,8 @@ export const getCalculateFeeResponsePayload = (
     paymentMethodName: "VISA",
     paymentMethodDescription: "Test",
     paymentMethodStatus: PaymentMethodStatusEnum.ENABLED,
+    asset:
+      "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/carte-pagamento.png?raw=true",
     bundles: [
       {
         abi: "01010",

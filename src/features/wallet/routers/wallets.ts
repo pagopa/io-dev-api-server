@@ -2,8 +2,8 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { WalletCreateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletCreateRequest";
-import { WalletServiceUpdateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletServiceUpdateRequest";
 import WalletDB from "../persistence/userWallet";
+import { WalletApplicationUpdateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationUpdateRequest";
 import {
   generateOnboardablePaymentMethods,
   generateOnboardingWalletData
@@ -56,29 +56,33 @@ addPaymentWalletHandler("post", "/wallets", (req, res) => {
 });
 
 /**
- * This API is used to enable and disable an existing wallet service
+ * This API is used to enable and disable an existing wallet application
  */
-addPaymentWalletHandler("put", "/wallets/:idWallet/services", (req, res) => {
-  pipe(
-    WalletServiceUpdateRequest.decode(req.body),
-    E.fold(
-      () => res.sendStatus(404),
-      request =>
-        pipe(
-          request,
-          request =>
-            WalletDB.updateUserWalletService(
-              req.params.idWallet,
-              request.services
-            ),
-          E.fold(
-            () => res.sendStatus(404),
-            () => res.sendStatus(204)
+addPaymentWalletHandler(
+  "put",
+  "/wallets/:idWallet/applications",
+  (req, res) => {
+    pipe(
+      WalletApplicationUpdateRequest.decode(req.body),
+      E.fold(
+        () => res.sendStatus(404),
+        request =>
+          pipe(
+            request,
+            request =>
+              WalletDB.updateUserWalletApplication(
+                req.params.idWallet,
+                request.applications
+              ),
+            E.fold(
+              () => res.sendStatus(404),
+              () => res.sendStatus(204)
+            )
           )
-        )
-    )
-  );
-});
+      )
+    );
+  }
+);
 
 /**
  * This API is used to start an onboarding process for a new method of payment
