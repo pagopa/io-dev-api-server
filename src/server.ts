@@ -2,6 +2,7 @@ import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import bodyParser from "body-parser";
 import express, { Application } from "express";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import { ioDevServerConfig } from "./config";
 import { messageRouter } from "./features/messages/routers/messagesRouter";
 import { pnRouter } from "./features/pn/routers/routers";
@@ -34,6 +35,8 @@ import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { walletRouter as newWalletRouter } from "./features/wallet";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
+import { fimsProviderRouter } from "./features/fims/routers/providerRouter";
+import { fimsRelyingPartyRouter } from "./features/fims/routers/relyingPartyRouter";
 
 // create express server
 const app: Application = express();
@@ -50,6 +53,7 @@ app.use(
   )
 );
 app.use(errorMiddleware);
+app.use(cookieParser());
 app.use(fastLoginMiddleware);
 
 [
@@ -80,7 +84,9 @@ app.use(fastLoginMiddleware);
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
-  newWalletRouter
+  newWalletRouter,
+  fimsRelyingPartyRouter,
+  fimsProviderRouter
 ].forEach(r => app.use(r));
 
 export default app;
