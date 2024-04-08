@@ -1,62 +1,54 @@
 import { faker } from "@faker-js/faker";
 import * as E from "fp-ts/lib/Either";
-import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
-import { BrandEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
-import { allPaymentMethods } from "../payloads/paymentMethods";
-import { getWalletTypeFromPaymentMethodId } from "../utils/onboarding";
-import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
 import { WalletApplication } from "../../../../generated/definitions/pagopa/walletv3/WalletApplication";
+import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
+import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
+import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
+import { generateWalletDetailsByPaymentMethod } from "./paymentMethods";
 
-const userWallets = new Map<string, WalletInfo>();
-
-const addUserWallet = (walletId: string, wallet: WalletInfo) => {
-  userWallets.set(walletId, wallet);
-};
+const userWallets = new Map<WalletInfo["walletId"], WalletInfo>();
 
 const getUserWallets = () => Array.from(userWallets.values());
 
-const getUserWalletInfo = (walletId: string) => userWallets.get(walletId);
+const getUserWalletInfo = (walletId: WalletInfo["walletId"]) =>
+  userWallets.get(walletId);
 
-const generateUserWallet = (paymentMethodId: string) => {
+const addUserWallet = (wallet: WalletInfo) => {
+  userWallets.set(wallet.walletId, wallet);
+};
+
+const removeUserWallet = (walletId: WalletInfo["walletId"]) => {
+  userWallets.delete(walletId);
+};
+
+const generateUserWallet = (paymentMethodId: number) => {
   const walletId = (getUserWallets().length + 1).toString();
-  const expiryDate = faker.date.future();
+  const details = generateWalletDetailsByPaymentMethod(paymentMethodId);
+
   const randomWallet: WalletInfo = {
-    creationDate: new Date(),
-    paymentMethodId,
+    walletId,
+    paymentMethodId: paymentMethodId.toString(),
+    status: WalletStatusEnum.CREATED,
+    creationDate: faker.date.past(2),
+    updateDate: faker.date.past(1),
     applications: [
       {
         name: "PAGOPA",
         status: WalletApplicationStatusEnum.ENABLED
       }
     ],
-    status: WalletStatusEnum.CREATED,
-    updateDate: new Date(),
     paymentMethodAsset:
       "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/carte-pagamento.png?raw=true",
-    walletId,
-    details: {
-      type: getWalletTypeFromPaymentMethodId(paymentMethodId),
-      maskedEmail: "***t@gmail.com",
-      abi: faker.datatype.string(4),
-      brand: BrandEnum.MASTERCARD,
-      expiryDate: expiryDate.toISOString(),
-      bankName: faker.name.fullName(),
-      lastFourDigits: "0000"
-    }
+    details
   };
-  addUserWallet(walletId, randomWallet);
+  addUserWallet(randomWallet);
   return randomWallet;
 };
 
-const removeUserWallet = (walletId: string) => {
-  userWallets.delete(walletId);
-};
-
 const generateWalletData = () => {
-  generateUserWallet(
-    faker.helpers.arrayElement(allPaymentMethods.paymentMethods).id
-  );
+  generateUserWallet(3);
+  generateUserWallet(2);
+  generateUserWallet(1);
 };
 
 const updateUserWalletApplication = (
@@ -76,7 +68,7 @@ const updateUserWalletApplication = (
           } as WalletApplication)
       )
     };
-    addUserWallet(walletId, wallet);
+    addUserWallet(wallet);
     return E.right(wallet);
   }
   return E.left("Wallet not found");
