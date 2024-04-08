@@ -27,6 +27,7 @@ const sessionTTLMilliseconds = () => 1 * 60 * 1000;
 // TODO move to Config file
 const jwtTTLMilliseconds = () => 15 * 60 * 1000;
 // TODO move to Config file
+const useLaxInsteadOfNoneForSessionCookieSameSite = () => true;
 export const jwtSigningAlgorithm = () => "ES256K";
 // TODO move to Config file
 const jwtRawPrivateKey = () =>
@@ -732,13 +733,13 @@ addHandler(
         .cookie(sessionCookieKey(), sessionData.session, {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
-          sameSite: "none",
+          sameSite: sameSitePolicyForSessionCookie(),
           httpOnly: true
         })
         .cookie(sessionSignatyreCookieKey(), sessionData.sessionSignature, {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
-          sameSite: "none",
+          sameSite: sameSitePolicyForSessionCookie(),
           httpOnly: true
         })
         .cookie(sessionLegacyCookieKey(), sessionData.sessionLegacy, {
@@ -910,13 +911,13 @@ addHandler(
         .cookie(sessionCookieKey(), newSessionId, {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
-          sameSite: "none",
+          sameSite: sameSitePolicyForSessionCookie(),
           httpOnly: true
         })
         .cookie(sessionSignatyreCookieKey(), v4(), {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
-          sameSite: "none",
+          sameSite: sameSitePolicyForSessionCookie(),
           httpOnly: true
         })
         .cookie(sessionLegacyCookieKey(), newSessionId, {
@@ -987,3 +988,6 @@ const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
   }
   return true;
 };
+
+const sameSitePolicyForSessionCookie = () =>
+  useLaxInsteadOfNoneForSessionCookieSameSite() ? "lax" : "none";
