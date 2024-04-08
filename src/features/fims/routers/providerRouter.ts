@@ -1,6 +1,9 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
 import { Response, Router } from "express";
 import { v4 } from "uuid";
+import { TokenSigner } from "jsontokens";
 import { addHandler } from "../../../payloads/response";
 import { FIMSToken } from "../../../payloads/session";
 import {
@@ -19,6 +22,25 @@ const skipFIMSTokenValueValidation = () => true;
 const interactionTTLMilliseconds = () => 5 * 60 * 1000;
 // TODO move to Config file
 const sessionTTLMilliseconds = () => 1 * 60 * 1000;
+// TODO move to Config file
+const jwtTTLMilliseconds = () => 15 * 60 * 1000;
+// TODO move to Config file
+export const jwtSigningAlgorithm = () => "ES256K";
+// TODO move to Config file
+const jwtRawPrivateKey = () =>
+  "278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f";
+// TODO move to Config file
+export const jwtRawPublicKey = () =>
+  "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479";
+
+const interactionCookieKey = () => "_interaction";
+const interactionSignatureCookieKey = () => "_interaction.sig";
+const interactionResumeCookieKey = () => "_interaction_resume";
+const interactionResumeSignatureCookieKey = () => "_interaction_resume.sig";
+const sessionCookieKey = () => "_session";
+const sessionSignatyreCookieKey = () => "_session.sig";
+const sessionLegacyCookieKey = () => "_session.legacy";
+const sessionLegacySignatureCookieKey = () => "_session.legacy.sig";
 
 const providerRequests = new Map<string, Map<string, OIdCData>>();
 const interactionIds = new Map<string, OIdCData>();
@@ -76,11 +98,9 @@ addHandler(
     // Relying Party registration conformance
     const relyingParty = getRelyingParty(String(relyingPartyId));
     if (!relyingParty) {
-      res
-        .status(400)
-        .send({
-          message: `Relying Party with id (${relyingPartyId}) not found`
-        });
+      res.status(400).send({
+        message: `Relying Party with id (${relyingPartyId}) not found`
+      });
       return;
     }
     const requestScopes = String(scopes).split(" ");
@@ -95,29 +115,23 @@ addHandler(
       return;
     }
     if (relyingParty.responseType !== responseType) {
-      res
-        .status(400)
-        .send({
-          message: `Relying Party does not allow response type (${responseType})`
-        });
+      res.status(400).send({
+        message: `Relying Party does not allow response type (${responseType})`
+      });
       return;
     }
 
     if (!relyingParty.redirectUris.includes(String(redirectUri))) {
-      res
-        .status(400)
-        .send({
-          message: `Relying Party does not allow redirect uri (${redirectUri})`
-        });
+      res.status(400).send({
+        message: `Relying Party does not allow redirect uri (${redirectUri})`
+      });
       return;
     }
 
     if (relyingParty.responseMode !== responseMode) {
-      res
-        .status(400)
-        .send({
-          message: `Relying Party does not allow response mode (${responseMode})`
-        });
+      res.status(400).send({
+        message: `Relying Party does not allow response mode (${responseMode})`
+      });
       return;
     }
 
@@ -135,11 +149,9 @@ addHandler(
     const providerOIdCsForRelyingParty =
       providerRequests.get(relyingPartyIdString);
     if (!providerOIdCsForRelyingParty) {
-      res
-        .status(500)
-        .send({
-          message: "Unable to allocate OIdC data for current Relying Party"
-        });
+      res.status(500).send({
+        message: "Unable to allocate OIdC data for current Relying Party"
+      });
       return;
     }
 
@@ -161,11 +173,9 @@ addHandler(
     };
     const oidcDataId = oidcData.id();
     if (providerRequests.has(oidcDataId)) {
-      res
-        .status(400)
-        .send({
-          message: `Bad state (${state}) and nonce (${nonce}) for current request`
-        });
+      res.status(400).send({
+        message: `Bad state (${state}) and nonce (${nonce}) for current request`
+      });
       return;
     }
     providerRequests.set(oidcDataId, providerOIdCsForRelyingParty);
@@ -176,26 +186,30 @@ addHandler(
       new Date().getTime() + interactionTTLMilliseconds()
     );
     res
-      .cookie("_interaction", interactionData.interaction, {
+      .cookie(interactionCookieKey(), interactionData.interaction, {
         path: `/fims/provider/interaction/${interactionId}`,
         expires: cookieExpirationTime,
         sameSite: "lax",
         httpOnly: true
       })
-      .cookie("_interaction.sig", interactionData.interactionSignature, {
-        path: `/fims/provider/interaction/${interactionId}`,
-        expires: cookieExpirationTime,
-        sameSite: "lax",
-        httpOnly: true
-      })
-      .cookie("_interaction_resume", interactionData.interactionResume, {
+      .cookie(
+        interactionSignatureCookieKey(),
+        interactionData.interactionSignature,
+        {
+          path: `/fims/provider/interaction/${interactionId}`,
+          expires: cookieExpirationTime,
+          sameSite: "lax",
+          httpOnly: true
+        }
+      )
+      .cookie(interactionResumeCookieKey(), interactionData.interactionResume, {
         path: `/fims/provider/oauth/authorize/${interactionId}`,
         expires: cookieExpirationTime,
         sameSite: "lax",
         httpOnly: true
       })
       .cookie(
-        "_interaction_resume.sig",
+        interactionResumeSignatureCookieKey(),
         interactionData.interactionResumeSignature,
         {
           path: `/fims/provider/oauth/authorize/${interactionId}`,
@@ -217,11 +231,9 @@ addHandler(
     const requestInteractionId = req.params.id;
     const oidcData = interactionIds.get(requestInteractionId);
     if (!oidcData) {
-      res
-        .status(400)
-        .send({
-          message: `Interaction Id (${requestInteractionId}) not found`
-        });
+      res.status(400).send({
+        message: `Interaction Id (${requestInteractionId}) not found`
+      });
       return;
     }
 
@@ -233,38 +245,35 @@ addHandler(
 
     if (oidcData.firstInteraction) {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionId = cookies["_interaction"];
+      const cookieInteractionId = cookies[interactionCookieKey()];
       if (!cookieInteractionId) {
-        res
-          .status(400)
-          .send({ message: `Missing cookie with name '_interaction'` });
+        res.status(400).send({
+          message: `Missing cookie with name '${interactionCookieKey()}'`
+        });
         return;
       }
       if (cookieInteractionId !== oidcData.firstInteraction?.interaction) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_interaction' (${cookieInteractionId}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionCookieKey()}' (${cookieInteractionId}) does not match saved one`
+        });
         return;
       }
 
-      const cookieInteractionIdSignature = cookies["_interaction.sig"];
+      const cookieInteractionIdSignature =
+        cookies[interactionSignatureCookieKey()];
       if (!cookieInteractionIdSignature) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '_interaction.sig'` });
+        res.status(400).send({
+          message: `Mising cookie with name '${interactionSignatureCookieKey()}'`
+        });
         return;
       }
       if (
         cookieInteractionIdSignature !==
         oidcData.firstInteraction?.interactionSignature
       ) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_interaction.sig' (${cookieInteractionIdSignature}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionSignatureCookieKey()}' (${cookieInteractionIdSignature}) does not match saved one`
+        });
         return;
       }
 
@@ -273,114 +282,107 @@ addHandler(
       return;
     } else if (oidcData.secondInteraction) {
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionId = cookies["_interaction"];
+      const cookieInteractionId = cookies[interactionCookieKey()];
       if (!cookieInteractionId) {
-        res
-          .status(400)
-          .send({ message: `Missing cookie with name '_interaction'` });
+        res.status(400).send({
+          message: `Missing cookie with name '${interactionCookieKey()}'`
+        });
         return;
       }
       if (cookieInteractionId !== oidcData.secondInteraction?.interaction) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_interaction' (${cookieInteractionId}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionCookieKey()}' (${cookieInteractionId}) does not match saved one`
+        });
         return;
       }
 
-      const cookieInteractionIdSignature = cookies["_interaction.sig"];
+      const cookieInteractionIdSignature =
+        cookies[interactionSignatureCookieKey()];
       if (!cookieInteractionIdSignature) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '_interaction.sig'` });
+        res.status(400).send({
+          message: `Mising cookie with name '${interactionSignatureCookieKey()}'`
+        });
         return;
       }
       if (
         cookieInteractionIdSignature !==
         oidcData.secondInteraction?.interactionSignature
       ) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_interaction.sig' (${cookieInteractionIdSignature}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionSignatureCookieKey()}' (${cookieInteractionIdSignature}) does not match saved one`
+        });
         return;
       }
 
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieSession = cookies["_session"];
+      const cookieSession = cookies[sessionCookieKey()];
       if (!cookieSession) {
-        res.status(400).send({ message: `Mising cookie with name '_session'` });
+        res
+          .status(400)
+          .send({ message: `Mising cookie with name '${sessionCookieKey()}'` });
         return;
       }
       if (cookieSession !== oidcData.session?.session) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_session' (${cookieSession}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionCookieKey()}' (${cookieSession}) does not match saved one`
+        });
         return;
       }
 
-      const cookieSessionSignature = cookies["_session.sig"];
+      const cookieSessionSignature = cookies[sessionSignatyreCookieKey()];
       if (!cookieSessionSignature) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '_session.sig'` });
+        res.status(400).send({
+          message: `Mising cookie with name '${sessionSignatyreCookieKey()}'`
+        });
         return;
       }
       if (cookieSessionSignature !== oidcData.session?.sessionSignature) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_session.sig' (${cookieSessionSignature}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionSignatyreCookieKey()}' (${cookieSessionSignature}) does not match saved one`
+        });
         return;
       }
 
-      const cookieSessionLegacy = cookies["_session.legacy"];
+      const cookieSessionLegacy = cookies[sessionLegacyCookieKey()];
       if (!cookieSessionLegacy) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '_session.legacy'` });
+        res.status(400).send({
+          message: `Mising cookie with name '${sessionLegacyCookieKey()}'`
+        });
         return;
       }
       if (cookieSessionLegacy !== oidcData.session?.sessionLegacy) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_session.legacy' (${cookieSessionLegacy}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionLegacyCookieKey()}' (${cookieSessionLegacy}) does not match saved one`
+        });
         return;
       }
 
-      const cookieSessionLegacySignature = cookies["_session.legacy.sig"];
+      const cookieSessionLegacySignature =
+        cookies[sessionLegacySignatureCookieKey()];
       if (!cookieSessionLegacySignature) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '_session.legacy.sig'` });
+        res.status(400).send({
+          message: `Mising cookie with name '${sessionLegacySignatureCookieKey()}'`
+        });
         return;
       }
       if (
         cookieSessionLegacySignature !==
         oidcData.session?.sessionLegacySignature
       ) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_session.legacy.sig' (${cookieSessionLegacySignature}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionLegacySignatureCookieKey()}' (${cookieSessionLegacySignature}) does not match saved one`
+        });
         return;
       }
 
       const abortRedirectUri = `/fims/provider/interaction/${requestInteractionId}/abort`;
       const confirmRedirectUri = `/fims/provider/interaction/${requestInteractionId}/confirm`;
       res.status(200).send(`
-    <!doctype html>
-<html lang="en">
+  <!doctype html>
+  <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FIMS Provider: user action required</title>
   </head>
@@ -407,22 +409,143 @@ addHandler(
       return;
     }
 
-    res
-      .status(500)
-      .send({
-        message: `Internal inconsistency for Interaction Id (${requestInteractionId})`
-      });
+    res.status(500).send({
+      message: `Internal inconsistency for Interaction Id (${requestInteractionId})`
+    });
   },
   () => Math.random() * 2500
 );
 
 addHandler(
   fimsProviderRouter,
-  "get",
+  "post",
   "/fims/provider/interaction/:id/confirm",
   (req, res) => {
-    // TODO
-    //res.status(200).send("<html><head><title>FIMS Provider</title></head><body><div>WiP</div></body></html>");
+    const contentType = req.headers["content-type"];
+    if (contentType !== "application/x-www-form-urlencoded") {
+      res.status(400).send({
+        message: `Content-type (${contentType}) is not supported`
+      });
+      return;
+    }
+
+    const requestInteractionId = req.params.id;
+    const oidcData = interactionIds.get(requestInteractionId);
+    if (!oidcData) {
+      res.status(400).send({
+        message: `Interaction Id (${requestInteractionId}) not found`
+      });
+      return;
+    }
+
+    if (requestInteractionId !== oidcData.secondInteraction?.interaction) {
+      res.status(500).send({
+        message: `Internal inconsistency for Interaction Id (${requestInteractionId})`
+      });
+      return;
+    }
+
+    // Cookie validation
+    const cookies = req.cookies;
+    if (!validateFIMSToken(cookies, res)) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const cookieInteractionId = cookies[interactionCookieKey()];
+    if (!cookieInteractionId) {
+      res.status(400).send({
+        message: `Missing cookie with name '${interactionCookieKey()}'`
+      });
+      return;
+    }
+    if (cookieInteractionId !== oidcData.secondInteraction?.interaction) {
+      res.status(400).send({
+        message: `Value of cookie with name '${interactionCookieKey()}' (${cookieInteractionId}) does not match saved one`
+      });
+      return;
+    }
+
+    const cookieInteractionIdSignature =
+      cookies[interactionSignatureCookieKey()];
+    if (!cookieInteractionIdSignature) {
+      res.status(400).send({
+        message: `Mising cookie with name '${interactionSignatureCookieKey()}'`
+      });
+      return;
+    }
+    if (
+      cookieInteractionIdSignature !==
+      oidcData.secondInteraction?.interactionSignature
+    ) {
+      res.status(400).send({
+        message: `Value of cookie with name '${interactionSignatureCookieKey()}' (${cookieInteractionIdSignature}) does not match saved one`
+      });
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const cookieSession = cookies[sessionCookieKey()];
+    if (!cookieSession) {
+      res
+        .status(400)
+        .send({ message: `Mising cookie with name '${sessionCookieKey()}'` });
+      return;
+    }
+    if (cookieSession !== oidcData.session?.session) {
+      res.status(400).send({
+        message: `Value of cookie with name '${sessionCookieKey()}' (${cookieSession}) does not match saved one`
+      });
+      return;
+    }
+
+    const cookieSessionSignature = cookies[sessionSignatyreCookieKey()];
+    if (!cookieSessionSignature) {
+      res.status(400).send({
+        message: `Mising cookie with name '${sessionSignatyreCookieKey()}'`
+      });
+      return;
+    }
+    if (cookieSessionSignature !== oidcData.session?.sessionSignature) {
+      res.status(400).send({
+        message: `Value of cookie with name '${sessionSignatyreCookieKey()}' (${cookieSessionSignature}) does not match saved one`
+      });
+      return;
+    }
+
+    const cookieSessionLegacy = cookies[sessionLegacyCookieKey()];
+    if (!cookieSessionLegacy) {
+      res.status(400).send({
+        message: `Mising cookie with name '${sessionLegacyCookieKey()}'`
+      });
+      return;
+    }
+    if (cookieSessionLegacy !== oidcData.session?.sessionLegacy) {
+      res.status(400).send({
+        message: `Value of cookie with name '${sessionLegacyCookieKey()}' (${cookieSessionLegacy}) does not match saved one`
+      });
+      return;
+    }
+
+    const cookieSessionLegacySignature =
+      cookies[sessionLegacySignatureCookieKey()];
+    if (!cookieSessionLegacySignature) {
+      res.status(400).send({
+        message: `Mising cookie with name '${sessionLegacySignatureCookieKey()}'`
+      });
+      return;
+    }
+    if (
+      cookieSessionLegacySignature !== oidcData.session?.sessionLegacySignature
+    ) {
+      res.status(400).send({
+        message: `Value of cookie with name '${sessionLegacySignatureCookieKey()}' (${cookieSessionLegacySignature}) does not match saved one`
+      });
+      return;
+    }
+
+    const redirectUri = `/fims/provider/oauth/authorize/${requestInteractionId}`;
+    res.redirect(303, redirectUri);
   },
   () => Math.random() * 2500
 );
@@ -432,8 +555,46 @@ addHandler(
   "get",
   "/fims/provider/interaction/:id/abort",
   (req, res) => {
-    // TODO
-    //res.status(200).send("<html><head><title>FIMS Provider</title></head><body><div>WiP</div></body></html>");
+    const requestInteractionId = req.params.id;
+    const currentOidcData = interactionIds.get(requestInteractionId);
+    if (!currentOidcData) {
+      res.status(400).send({
+        message: `Interaction Id (${requestInteractionId}) not found`
+      });
+      return;
+    }
+
+    interactionIds.delete(requestInteractionId);
+
+    const relyingPartyId = currentOidcData.relyingPartyId;
+    const providerOIdCsForRelyingParty = providerRequests.get(relyingPartyId);
+    const currentOIdCDataId = currentOidcData.id();
+    providerOIdCsForRelyingParty?.delete(currentOIdCDataId);
+
+    // TODO replace by redirecting to the relying party with an abort
+    res
+      .clearCookie(interactionCookieKey())
+      .clearCookie(interactionSignatureCookieKey())
+      .clearCookie(interactionResumeCookieKey())
+      .clearCookie(interactionResumeSignatureCookieKey())
+      .clearCookie(sessionCookieKey())
+      .clearCookie(sessionSignatyreCookieKey())
+      .clearCookie(sessionLegacyCookieKey())
+      .clearCookie(sessionLegacySignatureCookieKey())
+      .status(200).send(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FIMS Provider: aborted</title>
+  </head>
+  <body>
+    <h1>Your request has been aborted</h1>
+  </body>
+  </html>
+    `);
   },
   () => Math.random() * 2500
 );
@@ -446,11 +607,9 @@ addHandler(
     const requestInteractionId = req.params.id;
     const currentOidcData = interactionIds.get(requestInteractionId);
     if (!currentOidcData) {
-      res
-        .status(400)
-        .send({
-          message: `Interaction Id (${requestInteractionId}) not found`
-        });
+      res.status(400).send({
+        message: `Interaction Id (${requestInteractionId}) not found`
+      });
       return;
     }
 
@@ -462,44 +621,38 @@ addHandler(
     if (currentOidcData.firstInteraction) {
       // Cookie validation
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionResume = cookies["_interaction_resume"];
+      const cookieInteractionResume = cookies[interactionResumeCookieKey()];
       if (!cookieInteractionResume) {
-        res
-          .status(400)
-          .send({ message: `Missing cookie with name '_interaction_resume'` });
+        res.status(400).send({
+          message: `Missing cookie with name '${interactionResumeCookieKey()}'`
+        });
         return;
       }
       if (
         cookieInteractionResume !==
         currentOidcData.firstInteraction?.interactionResume
       ) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_interaction_resume' (${cookieInteractionResume}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionResumeCookieKey()}' (${cookieInteractionResume}) does not match saved one`
+        });
         return;
       }
 
       const cookieInteractionResumeSignature =
-        cookies["_interaction_resume.sig"];
+        cookies[interactionResumeSignatureCookieKey()];
       if (!cookieInteractionResumeSignature) {
-        res
-          .status(400)
-          .send({
-            message: `Mising cookie with name '_interaction_resume.sig'`
-          });
+        res.status(400).send({
+          message: `Mising cookie with name '${interactionResumeSignatureCookieKey()}'`
+        });
         return;
       }
       if (
         cookieInteractionResumeSignature !==
         currentOidcData.firstInteraction?.interactionResumeSignature
       ) {
-        res
-          .status(400)
-          .send({
-            message: `Value of cookie with name '_interaction_resume.sig' (${cookieInteractionResumeSignature}) does not match saved one`
-          });
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionResumeSignatureCookieKey()}' (${cookieInteractionResumeSignature}) does not match saved one`
+        });
         return;
       }
 
@@ -510,10 +663,11 @@ addHandler(
         interactionResume: interactionId,
         interactionSignature: v4()
       };
+      const sessionId = v4();
       const sessionData: SessionData = {
-        session: v4(),
+        session: sessionId,
         sessionSignature: v4(),
-        sessionLegacy: v4(),
+        sessionLegacy: sessionId,
         sessionLegacySignature: v4()
       };
       const oidcData: OIdCData = {
@@ -537,26 +691,34 @@ addHandler(
         new Date().getTime() + sessionTTLMilliseconds()
       );
       res
-        .cookie("_interaction", interactionData.interaction, {
+        .cookie(interactionCookieKey(), interactionData.interaction, {
           path: `/fims/provider/interaction/${interactionId}`,
-          expires: interactionCookieExpirationTime,
-          sameSite: "lax",
-          httpOnly: true
-        })
-        .cookie("_interaction.sig", interactionData.interactionSignature, {
-          path: `/fims/provider/interaction/${interactionId}`,
-          expires: interactionCookieExpirationTime,
-          sameSite: "lax",
-          httpOnly: true
-        })
-        .cookie("_interaction_resume", interactionData.interactionResume, {
-          path: `/fims/provider/oauth/authorize/${interactionId}`,
           expires: interactionCookieExpirationTime,
           sameSite: "lax",
           httpOnly: true
         })
         .cookie(
-          "_interaction_resume.sig",
+          interactionSignatureCookieKey(),
+          interactionData.interactionSignature,
+          {
+            path: `/fims/provider/interaction/${interactionId}`,
+            expires: interactionCookieExpirationTime,
+            sameSite: "lax",
+            httpOnly: true
+          }
+        )
+        .cookie(
+          interactionResumeCookieKey(),
+          interactionData.interactionResume,
+          {
+            path: `/fims/provider/oauth/authorize/${interactionId}`,
+            expires: interactionCookieExpirationTime,
+            sameSite: "lax",
+            httpOnly: true
+          }
+        )
+        .cookie(
+          interactionResumeSignatureCookieKey(),
           interactionData.interactionResumeSignature,
           {
             path: `/fims/provider/oauth/authorize/${interactionId}`,
@@ -565,39 +727,233 @@ addHandler(
             httpOnly: true
           }
         )
-        .cookie("_session", sessionData.session, {
+        .cookie(sessionCookieKey(), sessionData.session, {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
           sameSite: "none",
           httpOnly: true
         })
-        .cookie("_session.sig", sessionData.sessionSignature, {
+        .cookie(sessionSignatyreCookieKey(), sessionData.sessionSignature, {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
           sameSite: "none",
           httpOnly: true
         })
-        .cookie("_session.legacy", sessionData.sessionLegacy, {
+        .cookie(sessionLegacyCookieKey(), sessionData.sessionLegacy, {
           path: `/fims/provider`,
           expires: sessionCookieExpirationTime,
           httpOnly: true
         })
-        .cookie("_session.legacy.sig", sessionData.sessionLegacySignature, {
-          path: `/fims/provider`,
-          expires: sessionCookieExpirationTime,
-          httpOnly: true
-        })
+        .cookie(
+          sessionLegacySignatureCookieKey(),
+          sessionData.sessionLegacySignature,
+          {
+            path: `/fims/provider`,
+            expires: sessionCookieExpirationTime,
+            httpOnly: true
+          }
+        )
         .redirect(303, interactionRedirectUri);
       return;
     } else if (currentOidcData.secondInteraction) {
-      // TODO
+      // This case happens as a redirect of the /confirm endpoint
+
+      // Cookie validation
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const cookieInteractionResume = cookies[interactionResumeCookieKey()];
+      if (!cookieInteractionResume) {
+        res.status(400).send({
+          message: `Missing cookie with name '${interactionResumeCookieKey()}'`
+        });
+        return;
+      }
+      if (
+        cookieInteractionResume !==
+        currentOidcData.secondInteraction?.interactionResume
+      ) {
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionResumeCookieKey()}' (${cookieInteractionResume}) does not match saved one`
+        });
+        return;
+      }
+
+      const cookieInteractionResumeSignature =
+        cookies[interactionResumeSignatureCookieKey()];
+      if (!cookieInteractionResumeSignature) {
+        res.status(400).send({
+          message: `Mising cookie with name '${interactionResumeSignatureCookieKey()}'`
+        });
+        return;
+      }
+      if (
+        cookieInteractionResumeSignature !==
+        currentOidcData.secondInteraction?.interactionResumeSignature
+      ) {
+        res.status(400).send({
+          message: `Value of cookie with name '${interactionResumeSignatureCookieKey()}' (${cookieInteractionResumeSignature}) does not match saved one`
+        });
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const cookieSession = cookies[sessionCookieKey()];
+      if (!cookieSession) {
+        res
+          .status(400)
+          .send({ message: `Mising cookie with name '${sessionCookieKey()}'` });
+        return;
+      }
+      if (cookieSession !== currentOidcData.session?.session) {
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionCookieKey()}' (${cookieSession}) does not match saved one`
+        });
+        return;
+      }
+
+      const cookieSessionSignature = cookies[sessionSignatyreCookieKey()];
+      if (!cookieSessionSignature) {
+        res.status(400).send({
+          message: `Mising cookie with name '${sessionSignatyreCookieKey()}'`
+        });
+        return;
+      }
+      if (
+        cookieSessionSignature !== currentOidcData.session?.sessionSignature
+      ) {
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionSignatyreCookieKey()}' (${cookieSessionSignature}) does not match saved one`
+        });
+        return;
+      }
+
+      const cookieSessionLegacy = cookies[sessionLegacyCookieKey()];
+      if (!cookieSessionLegacy) {
+        res.status(400).send({
+          message: `Mising cookie with name '${sessionLegacyCookieKey()}'`
+        });
+        return;
+      }
+      if (cookieSessionLegacy !== currentOidcData.session?.sessionLegacy) {
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionLegacyCookieKey()}' (${cookieSessionLegacy}) does not match saved one`
+        });
+        return;
+      }
+
+      const cookieSessionLegacySignature =
+        cookies[sessionLegacySignatureCookieKey()];
+      if (!cookieSessionLegacySignature) {
+        res.status(400).send({
+          message: `Mising cookie with name '${sessionLegacySignatureCookieKey()}'`
+        });
+        return;
+      }
+      if (
+        cookieSessionLegacySignature !==
+        currentOidcData.session?.sessionLegacySignature
+      ) {
+        res.status(400).send({
+          message: `Value of cookie with name '${sessionLegacySignatureCookieKey()}' (${cookieSessionLegacySignature}) does not match saved one`
+        });
+        return;
+      }
+
+      interactionIds.delete(requestInteractionId);
+
+      const relyingPartyId = currentOidcData.relyingPartyId;
+      const providerOIdCsForRelyingParty = providerRequests.get(relyingPartyId);
+      const currentOIdCDataId = currentOidcData.id();
+      providerOIdCsForRelyingParty?.delete(currentOIdCDataId);
+
+      const relyingPartyRedirectUri = currentOidcData.redirectUri;
+      const relyingPartyNonce = currentOidcData.nonce;
+      const relyingPartyState = currentOidcData.state;
+      const issuer = `${req.protocol}://${req.get("host")}`;
+      // TODO retrieve from profile (or configuration?)
+      const tokenPayload = {
+        sub: "SMTJHN50P01D222E",
+        family_name: "Smith",
+        given_name: "John",
+        name: "John Smith",
+        nonce: relyingPartyNonce,
+        s_hash: "NotImplemented", // TODO?
+        aud: relyingPartyId,
+        exp: new Date(new Date().getTime() + jwtTTLMilliseconds()).getTime(),
+        iat: new Date().getTime(),
+        iss: issuer
+      };
+      const idToken = new TokenSigner(
+        jwtSigningAlgorithm(),
+        jwtRawPrivateKey()
+      ).sign(tokenPayload);
+
+      const newSessionId = v4();
+      const invalidationExpirationTime = new Date(1970, 0, 1, 0, 0, 0);
+      const sessionCookieExpirationTime = new Date(
+        new Date().getTime() + sessionTTLMilliseconds()
+      );
+      res
+        .cookie(interactionResumeCookieKey(), "", {
+          path: `/fims/provider/oauth/authorize/${requestInteractionId}`,
+          expires: invalidationExpirationTime,
+          sameSite: "lax",
+          httpOnly: true
+        })
+        .cookie(interactionResumeSignatureCookieKey(), v4(), {
+          path: `/fims/provider/oauth/authorize/${requestInteractionId}`,
+          expires: invalidationExpirationTime,
+          sameSite: "lax",
+          httpOnly: true
+        })
+        .cookie(sessionCookieKey(), newSessionId, {
+          path: `/fims/provider`,
+          expires: sessionCookieExpirationTime,
+          sameSite: "none",
+          httpOnly: true
+        })
+        .cookie(sessionSignatyreCookieKey(), v4(), {
+          path: `/fims/provider`,
+          expires: sessionCookieExpirationTime,
+          sameSite: "none",
+          httpOnly: true
+        })
+        .cookie(sessionLegacyCookieKey(), newSessionId, {
+          path: `/fims/provider`,
+          expires: sessionCookieExpirationTime,
+          httpOnly: true
+        })
+        .cookie(sessionLegacySignatureCookieKey(), v4(), {
+          path: `/fims/provider`,
+          expires: sessionCookieExpirationTime,
+          httpOnly: true
+        })
+        .status(200).send(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FIMS Provider: submit callback</title>
+    <script>document.addEventListener('DOMContentLoaded', function () { document.forms[0].submit() });</script>
+  </head>
+  <body>
+    <form method="post" action="${relyingPartyRedirectUri}">
+      <input type="hidden" name="id_token" value="${idToken}"/>
+      <input type="hidden" name="state" value="${relyingPartyState}"/>
+      <noscript>Your browser does not support JavaScript or you've disabled it.<br/>
+        <button autofocus type="submit">Continue</button>
+      </noscript>
+    </form>
+  </body>
+  </html>
+      `);
+      return;
     }
 
-    res
-      .status(500)
-      .send({
-        message: `Internal inconsistency for Interaction Id (${requestInteractionId})`
-      });
+    res.status(500).send({
+      message: `Internal inconsistency for Interaction Id (${requestInteractionId})`
+    });
   },
   () => Math.random() * 2500
 );
@@ -619,11 +975,9 @@ const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
   const requestFimsTokenString = String(requestFimsToken);
   const fimsToken = FIMSToken();
   if (requestFimsTokenString !== fimsToken) {
-    res
-      .status(401)
-      .send({
-        message: `'${fimsTokenCookieName}' with value (${requestFimsTokenString}) does not match`
-      });
+    res.status(401).send({
+      message: `'${fimsTokenCookieName}' with value (${requestFimsTokenString}) does not match`
+    });
     return false;
   }
   return true;

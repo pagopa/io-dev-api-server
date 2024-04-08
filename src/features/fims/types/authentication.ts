@@ -8,7 +8,6 @@ export type OIdCData = {
   firstInteraction?: InteractionData;
   secondInteraction?: InteractionData;
   session?: SessionData;
-  finalSession?: SessionData;
 };
 
 export type InteractionData = {

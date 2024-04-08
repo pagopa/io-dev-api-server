@@ -7,7 +7,7 @@ export type RelyingParty = {
 };
 
 export type RelyingPartyRequest = {
-  id: string;
+  relyingPartyId: string;
   nonce: string;
   state: string;
 };
