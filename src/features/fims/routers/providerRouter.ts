@@ -17,6 +17,8 @@ export const fimsProviderRouter = Router();
 
 const FIMSTokenCookieNameGenerator = () => "X-IO-Federation-Token";
 // TODO move to Config file
+const skipFIMSTokenKeyValidation = () => false;
+// TODO move to Config file
 const skipFIMSTokenValueValidation = () => true;
 // TODO move to Config file
 const interactionTTLMilliseconds = () => 5 * 60 * 1000;
@@ -961,6 +963,9 @@ addHandler(
 // res.status(200).send("<html><head><title>FIMS Provider</title></head><body><div>WiP</div></body></html>");
 
 const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
+  if (skipFIMSTokenKeyValidation()) {
+    return true;
+  }
   const fimsTokenCookieName = FIMSTokenCookieNameGenerator();
   const requestFimsToken = cookies[fimsTokenCookieName];
   if (!requestFimsToken) {

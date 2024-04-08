@@ -129,14 +129,14 @@ addHandler(
 
       relyingPartyCurrentRequests.delete(state);
 
-      res.send(200).send(`
+      res.status(200).send(`
   <!DOCTYPE html>
   <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FIMS Provider: aborted</title>
+    <title>Relying Party: authenticated</title>
   </head>
   <body>
     <h1>Your data</h1>
@@ -155,7 +155,7 @@ addHandler(
   </html>
       `);
     } catch (e) {
-      res.send(400).send({
+      res.status(400).send({
         message: `Unable to decode token. Error is (${
           e instanceof Error ? e.message : "unknown error"
         })`
