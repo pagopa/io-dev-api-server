@@ -1,13 +1,13 @@
 import { faker } from "@faker-js/faker";
+import { format } from "date-fns";
 import * as E from "fp-ts/lib/Either";
+import _ from "lodash";
 import { WalletApplication } from "../../../../generated/definitions/pagopa/walletv3/WalletApplication";
 import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
+import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { generateWalletDetailsByPaymentMethod } from "./paymentMethods";
-import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import _ from "lodash";
-import { format } from "date-fns";
 
 const userWallets = new Map<WalletInfo["walletId"], WalletInfo>();
 
