@@ -5,6 +5,9 @@ import { WalletApplicationStatusEnum } from "../../../../generated/definitions/p
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { generateWalletDetailsByPaymentMethod } from "./paymentMethods";
+import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
+import _ from "lodash";
+import { format } from "date-fns";
 
 const userWallets = new Map<WalletInfo["walletId"], WalletInfo>();
 
@@ -21,9 +24,15 @@ const removeUserWallet = (walletId: WalletInfo["walletId"]) => {
   userWallets.delete(walletId);
 };
 
-const generateUserWallet = (paymentMethodId: number) => {
+const generateUserWallet = (
+  paymentMethodId: number,
+  extraDetails: Partial<WalletInfoDetails> = {}
+) => {
   const walletId = (getUserWallets().length + 1).toString();
-  const details = generateWalletDetailsByPaymentMethod(paymentMethodId);
+  const details = _.merge(
+    generateWalletDetailsByPaymentMethod(paymentMethodId),
+    extraDetails
+  );
 
   const randomWallet: WalletInfo = {
     walletId,
@@ -49,6 +58,7 @@ const generateWalletData = () => {
   generateUserWallet(3);
   generateUserWallet(2);
   generateUserWallet(1);
+  generateUserWallet(1, { expiryDate: format(faker.date.past(1), "yyyyMM") });
 };
 
 const updateUserWalletApplication = (
