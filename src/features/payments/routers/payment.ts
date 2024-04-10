@@ -11,12 +11,12 @@ import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId"
 import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
-import { getPaymentRequestsGetResponse } from "../payloads/payments";
 import {
+  getPaymentRequestsGetResponse,
   getCalculateFeeResponsePayload,
   getNewTransactionResponsePayload,
   getTransactionInfoPayload
-} from "../payloads/transactions";
+} from "../payloads/payments";
 import WalletDB from "../persistence/userWallet";
 import {
   WalletPaymentFailure,
