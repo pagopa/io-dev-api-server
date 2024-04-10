@@ -12,17 +12,17 @@ import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ec
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
 import {
-  getPaymentRequestsGetResponse,
   getCalculateFeeResponsePayload,
   getNewTransactionResponsePayload,
+  getPaymentRequestsGetResponse,
   getTransactionInfoPayload
 } from "../payloads/payments";
+import { paymentMethods } from "../persistence/paymentMethods";
 import WalletDB from "../persistence/userWallet";
 import {
   WalletPaymentFailure,
   getStatusCodeForWalletFailure
 } from "../types/failure";
-import { generateOnboardablePaymentMethods } from "../utils/onboarding";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { addPaymentHandler } from "./router";
 
@@ -194,5 +194,5 @@ addPaymentHandler("get", "/wallets", (req, res) => {
  * This API is used to retrieve a list of payment methods available
  */
 addPaymentHandler("get", "/payment-methods", (req, res) => {
-  res.json(generateOnboardablePaymentMethods());
+  res.json({ paymentMethods });
 });

@@ -1,13 +1,12 @@
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { WalletCreateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletCreateRequest";
-import WalletDB from "../persistence/userWallet";
+import { PaymentMethodsResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
 import { WalletApplicationUpdateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationUpdateRequest";
-import {
-  generateOnboardablePaymentMethods,
-  generateOnboardingWalletData
-} from "../utils/onboarding";
+import { WalletCreateRequest } from "../../../../generated/definitions/pagopa/walletv3/WalletCreateRequest";
+import { paymentMethods } from "../persistence/paymentMethods";
+import WalletDB from "../persistence/userWallet";
+import { generateOnboardingWalletData } from "../utils/onboarding";
 import { addPaymentWalletHandler } from "./router";
 
 addPaymentWalletHandler("get", "/wallets", (req, res) => {
@@ -99,5 +98,5 @@ addPaymentWalletHandler("post", "/wallets/mock", (req, res) => {
  * This API is used to retrieve a list of payment methods available
  */
 addPaymentWalletHandler("get", "/payment-methods", (req, res) => {
-  res.json(generateOnboardablePaymentMethods());
+  res.json({ paymentMethods } as PaymentMethodsResponse);
 });

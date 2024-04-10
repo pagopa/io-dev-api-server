@@ -9,7 +9,7 @@ import {
 } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { getRandomEnumValue } from "../../../payloads/utils/random";
 
-export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
+export const paymentMethods: ReadonlyArray<PaymentMethodResponse> = [
   {
     id: "1",
     name: "CARDS",
