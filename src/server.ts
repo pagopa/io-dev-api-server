@@ -32,7 +32,7 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
-import { walletRouter as newWalletRouter } from "./features/wallet";
+import { paymentsRouter } from "./features/payments/routers";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
 
 // create express server
@@ -80,7 +80,7 @@ app.use(fastLoginMiddleware);
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
-  newWalletRouter
+  paymentsRouter
 ].forEach(r => app.use(r));
 
 export default app;

@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { addHandler, SupportedMethod } from "../../../payloads/response";
 
-export const walletRouter = Router();
+export const paymentsRouter = Router();
 
 export const PAYMENT_WALLET_PREFIX = "/payment-wallet/v1";
 export const ECOMMERCE_PREFIX = "/ecommerce/io/v1";
@@ -17,10 +17,16 @@ export const addPaymentWalletHandler = (
   path: string,
   handleRequest: (request: Request, response: Response) => void
 ) =>
-  addHandler(walletRouter, method, addPaymentWalletPrefix(path), handleRequest);
+  addHandler(
+    paymentsRouter,
+    method,
+    addPaymentWalletPrefix(path),
+    handleRequest
+  );
 
 export const addPaymentHandler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void
-) => addHandler(walletRouter, method, addECommercePrefix(path), handleRequest);
+) =>
+  addHandler(paymentsRouter, method, addECommercePrefix(path), handleRequest);

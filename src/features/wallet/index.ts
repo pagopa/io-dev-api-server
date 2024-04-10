@@ -1,1 +1,0 @@
-export { walletRouter } from "./routers";
