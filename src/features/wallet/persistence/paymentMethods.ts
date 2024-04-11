@@ -7,6 +7,9 @@ import { PaymentMethodStatusEnum } from "../../../../generated/definitions/pagop
 import { Range } from "../../../../generated/definitions/pagopa/walletv3/Range";
 import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 
+const generateRandomCardBrand = () =>
+  faker.helpers.arrayElement(["VISA", "MASTERCARD", "AMEX", "MAESTRO"]);
+
 export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
   {
     id: "1",
@@ -65,7 +68,7 @@ export const generateWalletDetailsByPaymentMethod = (
         type: "CARDS",
         lastFourDigits: faker.finance.mask(4, false, false),
         expiryDate: format(faker.date.future(3), "yyyyMM"),
-        brand: "VISA"
+        brand: generateRandomCardBrand()
       };
     case 2:
       return {

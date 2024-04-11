@@ -55,7 +55,6 @@ const generateUserWallet = (
 };
 
 const generateWalletData = () => {
-  generateUserWallet(3);
   generateUserWallet(2);
   generateUserWallet(1);
   generateUserWallet(1, { expiryDate: format(faker.date.past(1), "yyyyMM") });
