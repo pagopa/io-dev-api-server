@@ -175,3 +175,21 @@ Server is able to set/reset if an email address is already taken with the below 
 ```
 POST /set-email-already-taken with body { value: boolean }
 ```
+## Uniqueness of email validation flow test
+In order to test the uniqueness of email validation flow, the `config/config.json` file must use configurations (of course you can edit them as you need): 
+
+```
+{
+  "profile": {
+    "attrs": {
+      "name": "Gian Maria",
+      "is_email_validated": false,
+      "is_email_already_taken": false, 
+      "fiscal_code": "AAAAAA00A00A000M"
+    }
+  }
+}
+
+```
+and to validate/invalidate the email or make the email already taken you have to navigate from the browser to `http://localhost:3000/`
+
