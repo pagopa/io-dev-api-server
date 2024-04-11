@@ -1,13 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { format } from "date-fns";
+import { ulid } from "ulid";
+import { PaymentMethodManagementTypeEnum } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodManagementType";
 import { PaymentMethodResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodResponse";
 import { PaymentMethodStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodStatus";
 import { Range } from "../../../../generated/definitions/pagopa/walletv3/Range";
-import {
-  BrandEnum,
-  WalletInfoDetails
-} from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
-import { getRandomEnumValue } from "../../../payloads/utils/random";
+import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 
 export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
   {
@@ -22,7 +20,8 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
         min: 0,
         max: 1000
       } as Range
-    ]
+    ],
+    methodManagement: PaymentMethodManagementTypeEnum.ONBOARDABLE
   },
   {
     id: "2",
@@ -36,7 +35,8 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
         min: 0,
         max: 500
       } as Range
-    ]
+    ],
+    methodManagement: PaymentMethodManagementTypeEnum.ONBOARDABLE
   },
   {
     id: "3",
@@ -50,7 +50,8 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
         min: 0,
         max: 1000
       } as Range
-    ]
+    ],
+    methodManagement: PaymentMethodManagementTypeEnum.NOT_ONBOARDABLE
   }
 ];
 
@@ -64,13 +65,13 @@ export const generateWalletDetailsByPaymentMethod = (
         type: "CARDS",
         lastFourDigits: faker.finance.mask(4, false, false),
         expiryDate: format(faker.date.future(3), "yyyyMM"),
-        brand: getRandomEnumValue(BrandEnum)
+        brand: "VISA"
       };
     case 2:
       return {
         type: "PAYPAL",
-        abi: faker.random.numeric(5),
-        maskedEmail: faker.internet.email()
+        maskedEmail: faker.internet.email(),
+        pspId: ulid()
       };
     case 3:
       return {
