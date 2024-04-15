@@ -21,7 +21,7 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
     ranges: [
       {
         min: 0,
-        max: 1000
+        max: Math.floor(Math.random() * 5000)
       } as Range
     ],
     methodManagement: PaymentMethodManagementTypeEnum.ONBOARDABLE
@@ -36,7 +36,7 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
     ranges: [
       {
         min: 0,
-        max: 500
+        max: Math.floor(Math.random() * 5000)
       } as Range
     ],
     methodManagement: PaymentMethodManagementTypeEnum.ONBOARDABLE
@@ -51,7 +51,7 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
     ranges: [
       {
         min: 0,
-        max: 1000
+        max: Math.floor(Math.random() * 5000)
       } as Range
     ],
     methodManagement: PaymentMethodManagementTypeEnum.NOT_ONBOARDABLE
@@ -60,28 +60,41 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
 
 export const generateWalletDetailsByPaymentMethod = (
   paymentMethodId: number
-): WalletInfoDetails => {
+): { details: WalletInfoDetails; paymentMethodAsset: string } => {
   switch (paymentMethodId) {
     case 1:
     default:
+      const brand = generateRandomCardBrand();
       return {
-        type: "CARDS",
-        lastFourDigits: faker.finance.mask(4, false, false),
-        expiryDate: format(faker.date.future(3), "yyyyMM"),
-        brand: generateRandomCardBrand()
+        details: {
+          type: "CARDS",
+          lastFourDigits: faker.finance.mask(4, false, false),
+          expiryDate: format(faker.date.future(3), "yyyyMM"),
+          brand
+        },
+        paymentMethodAsset:
+          "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/carte-pagamento.png?raw=true"
       };
     case 2:
       return {
-        type: "PAYPAL",
-        maskedEmail: faker.internet.email(),
-        pspId: ulid()
+        details: {
+          type: "PAYPAL",
+          maskedEmail: faker.internet.email(),
+          pspId: ulid()
+        },
+        paymentMethodAsset:
+          "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/paypal.png?raw=true"
       };
     case 3:
       return {
-        type: "BPAY",
-        maskedNumber: faker.phone.number(),
-        instituteCode: faker.random.numeric(5),
-        bankName: faker.finance.accountName()
+        details: {
+          type: "BPAY",
+          maskedNumber: faker.phone.number(),
+          instituteCode: faker.random.numeric(5),
+          bankName: faker.finance.accountName()
+        },
+        paymentMethodAsset:
+          "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/bancomat-pay.png?raw=true"
       };
   }
 };
