@@ -1,8 +1,11 @@
 import { faker } from "@faker-js/faker";
+import { format } from "date-fns";
 import * as E from "fp-ts/lib/Either";
+import _ from "lodash";
 import { WalletApplication } from "../../../../generated/definitions/pagopa/walletv3/WalletApplication";
 import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
+import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
 import { generateWalletDetailsByPaymentMethod } from "./paymentMethods";
 
@@ -21,9 +24,15 @@ const removeUserWallet = (walletId: WalletInfo["walletId"]) => {
   userWallets.delete(walletId);
 };
 
-const generateUserWallet = (paymentMethodId: number) => {
+const generateUserWallet = (
+  paymentMethodId: number,
+  extraDetails: Partial<WalletInfoDetails> = {}
+) => {
   const walletId = (getUserWallets().length + 1).toString();
-  const details = generateWalletDetailsByPaymentMethod(paymentMethodId);
+  const details = _.merge(
+    generateWalletDetailsByPaymentMethod(paymentMethodId),
+    extraDetails
+  );
 
   const randomWallet: WalletInfo = {
     walletId,
@@ -49,6 +58,7 @@ const generateWalletData = () => {
   generateUserWallet(3);
   generateUserWallet(2);
   generateUserWallet(1);
+  generateUserWallet(1, { expiryDate: format(faker.date.past(1), "yyyyMM") });
 };
 
 const updateUserWalletApplication = (
