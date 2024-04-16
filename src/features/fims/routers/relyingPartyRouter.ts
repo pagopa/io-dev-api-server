@@ -3,7 +3,11 @@ import { TokenVerifier, decodeToken } from "jsontokens";
 import { Router } from "express";
 import { addHandler } from "../../../payloads/response";
 import { RelyingParty, RelyingPartyRequest } from "../types/relyingParty";
-import { jwtRawPublicKey, jwtSigningAlgorithm } from "./providerRouter";
+import {
+  baseRelyingPartyPath,
+  relyingPartiesConfig
+} from "../services/relyingPartyService";
+import { baseProviderPath, providerConfig } from "../services/providerService";
 
 export const fimsRelyingPartyRouter = Router();
 
@@ -18,11 +22,10 @@ export const getRelyingParty = (id: string) => relyingParties.get(id);
 addHandler(
   fimsRelyingPartyRouter,
   "get",
-  "/fims/relyingParty/:id/landingPage",
+  `${baseRelyingPartyPath()}/:id/landingPage`,
   (req, res) => {
-    initializeIfNeeded();
     const relyingPartyId = req.params.id;
-    const relyingParty = relyingParties.get(relyingPartyId);
+    const relyingParty = findOrLazyLoadRelyingParty(relyingPartyId);
     if (!relyingParty) {
       res.status(404).send({
         message: `Relying Party with id (${relyingPartyId}) not found`
@@ -44,7 +47,13 @@ addHandler(
     }
     const relyingPartyRequestMap = relyingPartyRequests.get(relyingPartyId);
     relyingPartyRequestMap?.set(relyingPartyRequest.state, relyingPartyRequest);
-    const fimsProviderRedirectUri = `/fims/provider/oauth/authorize?client_id=${relyingParty.id}&scope=${scopes}&response_type=${relyingParty.responseType}&redirect_uri=${relyingParty.redirectUris[0]}&response_mode=${relyingParty.responseMode}&nonce=${relyingPartyRequest.nonce}&state=${relyingPartyRequest.state}`;
+    const fimsProviderRedirectUri = `${baseProviderPath()}/oauth/authorize?client_id=${
+      relyingParty.id
+    }&scope=${scopes}&response_type=${relyingParty.responseType}&redirect_uri=${
+      relyingParty.redirectUris[0]
+    }&response_mode=${relyingParty.responseMode}&nonce=${
+      relyingPartyRequest.nonce
+    }&state=${relyingPartyRequest.state}`;
     const encodedFimsProviderRedirectUri = encodeURI(fimsProviderRedirectUri);
     res.redirect(303, encodedFimsProviderRedirectUri);
   },
@@ -54,7 +63,7 @@ addHandler(
 addHandler(
   fimsRelyingPartyRouter,
   "post",
-  "/fims/relyingParty/:id/redirectUri",
+  `${baseRelyingPartyPath()}/:id/redirectUri`,
   (req, res) => {
     const relyingPartyId = req.params.id;
     const relyingPartyCurrentRequests =
@@ -95,12 +104,11 @@ addHandler(
       return;
     }
 
-    // TODO from config
-    const signingAlgorithm = jwtSigningAlgorithm();
-    const rawPublicKey = jwtRawPublicKey();
-    const verified = new TokenVerifier(signingAlgorithm, rawPublicKey).verify(
-      idToken
-    );
+    const config = providerConfig();
+    const verified = new TokenVerifier(
+      config.idTokenSigningAlgorithm,
+      config.idTokenRawPublicKey
+    ).verify(idToken);
     if (!verified) {
       res.status(400).send({ message: `Received ID token cannot be verified` });
       return;
@@ -129,9 +137,10 @@ addHandler(
 
       relyingPartyCurrentRequests.delete(state);
 
+      // TODO move HTML to dedicated file
       res.status(200).send(`
   <!DOCTYPE html>
-  <html>
+  <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -165,18 +174,22 @@ addHandler(
   () => Math.random() * 2500
 );
 
-const initializeIfNeeded = () => {
-  // TODO move to config file
-  if (relyingParties.size === 0) {
-    const relyingPartyId = "1";
-    relyingParties.set(relyingPartyId, {
-      id: relyingPartyId,
-      redirectUris: [
-        `http://localhost:3000/fims/relyingParty/${relyingPartyId}/redirectUri`
-      ],
+const findOrLazyLoadRelyingParty = (id: string) => {
+  const inMemoryRelyingParty = relyingParties.get(id);
+  if (inMemoryRelyingParty) {
+    return inMemoryRelyingParty;
+  }
+
+  const config = relyingPartiesConfig();
+  config.forEach(relyingPartyConfig =>
+    relyingParties.set(relyingPartyConfig.id, {
+      id: relyingPartyConfig.id,
+      redirectUris: relyingPartyConfig.redirectUri,
       responseMode: "form_post",
       responseType: "id_token",
-      scopes: ["openid", "profile"]
-    });
-  }
+      scopes: relyingPartyConfig.scopes
+    })
+  );
+
+  return relyingParties.get(id);
 };

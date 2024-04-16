@@ -189,6 +189,39 @@ const defaultConfig: IoDevServerConfig = {
     fastLogin: {
       sessionTTLinMS: 60000
     },
+    fims: {
+      provider: {
+        federationCookieName: "X-IO-Federation-Token",
+        idTokenRawPrivateKey:
+          "278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f",
+        idTokenRawPublicKey:
+          "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479",
+        idTokenSigningAlgorithm: "ES256K",
+        idTokenTTLMilliseconds: 15 * 60 * 1000,
+        interactionCookieKey: "_interaction",
+        interactionResumeCookieKey: "_interaction_resume",
+        interactionResumeSignatureCookieKey: "_interaction_resume.sig",
+        interactionSignatureCookieKey: "_interaction.sig",
+        interactionTTLMilliseconds: 5 * 60 * 1000,
+        sessionCookieKey: "_session",
+        sessionLegacyCookieKey: "_session.legacy",
+        sessionLegacySignatureCookieKey: "_session.legacy.sig",
+        sessionSignatureCookieKey: "_session.sig",
+        sessionTTLMilliseconds: 1 * 60 * 1000,
+        ignoreFederationCookiePresence: false,
+        ignoreFederationCookieValue: true,
+        useLaxInsteadOfNoneForSameSiteOnSessionCookies: true
+      },
+      relyingParties: [
+        {
+          id: "1",
+          redirectUri: [
+            "http://localhost:3000/fims/relyingParty/1/redirectUri"
+          ],
+          scopes: ["openid", "profile"]
+        }
+      ]
+    },
     allowRandomValues: true
   }
 };
