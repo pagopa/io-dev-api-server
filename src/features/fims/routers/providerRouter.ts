@@ -247,134 +247,30 @@ addHandler(
     }
 
     if (oidcData.firstInteraction) {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionId = cookies[interactionCookieKey()];
-      if (!cookieInteractionId) {
-        res.status(400).send({
-          message: `Missing cookie with name '${interactionCookieKey()}'`
-        });
-        return;
-      }
-      if (cookieInteractionId !== oidcData.firstInteraction?.interaction) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionCookieKey()}' (${cookieInteractionId}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieInteractionIdSignature =
-        cookies[interactionSignatureCookieKey()];
-      if (!cookieInteractionIdSignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${interactionSignatureCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieInteractionIdSignature !==
-        oidcData.firstInteraction?.interactionSignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionSignatureCookieKey()}' (${cookieInteractionIdSignature}) does not match saved one`
-        });
+      const cookiesToValidate = {
+        [interactionCookieKey()]: oidcData.firstInteraction?.interaction,
+        [interactionSignatureCookieKey()]:
+          oidcData.firstInteraction?.interactionSignature
+      };
+      if (!validateCookies(cookiesToValidate, cookies, res)) {
         return;
       }
 
       const redirectUri = `/fims/provider/oauth/authorize/${requestInteractionId}`;
       res.redirect(303, redirectUri);
       return;
-    } else if (oidcData.secondInteraction) {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionId = cookies[interactionCookieKey()];
-      if (!cookieInteractionId) {
-        res.status(400).send({
-          message: `Missing cookie with name '${interactionCookieKey()}'`
-        });
-        return;
-      }
-      if (cookieInteractionId !== oidcData.secondInteraction?.interaction) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionCookieKey()}' (${cookieInteractionId}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieInteractionIdSignature =
-        cookies[interactionSignatureCookieKey()];
-      if (!cookieInteractionIdSignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${interactionSignatureCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieInteractionIdSignature !==
-        oidcData.secondInteraction?.interactionSignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionSignatureCookieKey()}' (${cookieInteractionIdSignature}) does not match saved one`
-        });
-        return;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieSession = cookies[sessionCookieKey()];
-      if (!cookieSession) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '${sessionCookieKey()}'` });
-        return;
-      }
-      if (cookieSession !== oidcData.session?.session) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionCookieKey()}' (${cookieSession}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieSessionSignature = cookies[sessionSignatyreCookieKey()];
-      if (!cookieSessionSignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${sessionSignatyreCookieKey()}'`
-        });
-        return;
-      }
-      if (cookieSessionSignature !== oidcData.session?.sessionSignature) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionSignatyreCookieKey()}' (${cookieSessionSignature}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieSessionLegacy = cookies[sessionLegacyCookieKey()];
-      if (!cookieSessionLegacy) {
-        res.status(400).send({
-          message: `Mising cookie with name '${sessionLegacyCookieKey()}'`
-        });
-        return;
-      }
-      if (cookieSessionLegacy !== oidcData.session?.sessionLegacy) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionLegacyCookieKey()}' (${cookieSessionLegacy}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieSessionLegacySignature =
-        cookies[sessionLegacySignatureCookieKey()];
-      if (!cookieSessionLegacySignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${sessionLegacySignatureCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieSessionLegacySignature !==
-        oidcData.session?.sessionLegacySignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionLegacySignatureCookieKey()}' (${cookieSessionLegacySignature}) does not match saved one`
-        });
+    } else if (oidcData.secondInteraction && oidcData.session) {
+      const cookiesToValidate = {
+        [interactionCookieKey()]: oidcData.secondInteraction?.interaction,
+        [interactionSignatureCookieKey()]:
+          oidcData.secondInteraction?.interactionSignature,
+        [sessionCookieKey()]: oidcData.session?.session,
+        [sessionSignatyreCookieKey()]: oidcData.session?.sessionSignature,
+        [sessionLegacyCookieKey()]: oidcData.session?.sessionLegacy,
+        [sessionLegacySignatureCookieKey()]:
+          oidcData.session?.sessionLegacySignature
+      };
+      if (!validateCookies(cookiesToValidate, cookies, res)) {
         return;
       }
 
@@ -441,7 +337,10 @@ addHandler(
       return;
     }
 
-    if (requestInteractionId !== oidcData.secondInteraction?.interaction) {
+    if (
+      requestInteractionId !== oidcData.secondInteraction?.interaction ||
+      !oidcData.session
+    ) {
       res.status(500).send({
         message: `Internal inconsistency for Interaction Id (${requestInteractionId})`
       });
@@ -454,96 +353,17 @@ addHandler(
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const cookieInteractionId = cookies[interactionCookieKey()];
-    if (!cookieInteractionId) {
-      res.status(400).send({
-        message: `Missing cookie with name '${interactionCookieKey()}'`
-      });
-      return;
-    }
-    if (cookieInteractionId !== oidcData.secondInteraction?.interaction) {
-      res.status(400).send({
-        message: `Value of cookie with name '${interactionCookieKey()}' (${cookieInteractionId}) does not match saved one`
-      });
-      return;
-    }
-
-    const cookieInteractionIdSignature =
-      cookies[interactionSignatureCookieKey()];
-    if (!cookieInteractionIdSignature) {
-      res.status(400).send({
-        message: `Mising cookie with name '${interactionSignatureCookieKey()}'`
-      });
-      return;
-    }
-    if (
-      cookieInteractionIdSignature !==
-      oidcData.secondInteraction?.interactionSignature
-    ) {
-      res.status(400).send({
-        message: `Value of cookie with name '${interactionSignatureCookieKey()}' (${cookieInteractionIdSignature}) does not match saved one`
-      });
-      return;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const cookieSession = cookies[sessionCookieKey()];
-    if (!cookieSession) {
-      res
-        .status(400)
-        .send({ message: `Mising cookie with name '${sessionCookieKey()}'` });
-      return;
-    }
-    if (cookieSession !== oidcData.session?.session) {
-      res.status(400).send({
-        message: `Value of cookie with name '${sessionCookieKey()}' (${cookieSession}) does not match saved one`
-      });
-      return;
-    }
-
-    const cookieSessionSignature = cookies[sessionSignatyreCookieKey()];
-    if (!cookieSessionSignature) {
-      res.status(400).send({
-        message: `Mising cookie with name '${sessionSignatyreCookieKey()}'`
-      });
-      return;
-    }
-    if (cookieSessionSignature !== oidcData.session?.sessionSignature) {
-      res.status(400).send({
-        message: `Value of cookie with name '${sessionSignatyreCookieKey()}' (${cookieSessionSignature}) does not match saved one`
-      });
-      return;
-    }
-
-    const cookieSessionLegacy = cookies[sessionLegacyCookieKey()];
-    if (!cookieSessionLegacy) {
-      res.status(400).send({
-        message: `Mising cookie with name '${sessionLegacyCookieKey()}'`
-      });
-      return;
-    }
-    if (cookieSessionLegacy !== oidcData.session?.sessionLegacy) {
-      res.status(400).send({
-        message: `Value of cookie with name '${sessionLegacyCookieKey()}' (${cookieSessionLegacy}) does not match saved one`
-      });
-      return;
-    }
-
-    const cookieSessionLegacySignature =
-      cookies[sessionLegacySignatureCookieKey()];
-    if (!cookieSessionLegacySignature) {
-      res.status(400).send({
-        message: `Mising cookie with name '${sessionLegacySignatureCookieKey()}'`
-      });
-      return;
-    }
-    if (
-      cookieSessionLegacySignature !== oidcData.session?.sessionLegacySignature
-    ) {
-      res.status(400).send({
-        message: `Value of cookie with name '${sessionLegacySignatureCookieKey()}' (${cookieSessionLegacySignature}) does not match saved one`
-      });
+    const cookiesToValidate = {
+      [interactionCookieKey()]: oidcData.secondInteraction?.interaction,
+      [interactionSignatureCookieKey()]:
+        oidcData.secondInteraction?.interactionSignature,
+      [sessionCookieKey()]: oidcData.session?.session,
+      [sessionSignatyreCookieKey()]: oidcData.session?.sessionSignature,
+      [sessionLegacyCookieKey()]: oidcData.session?.sessionLegacy,
+      [sessionLegacySignatureCookieKey()]:
+        oidcData.session?.sessionLegacySignature
+    };
+    if (!validateCookies(cookiesToValidate, cookies, res)) {
       return;
     }
 
@@ -616,46 +436,20 @@ addHandler(
       return;
     }
 
+    // Cookie validation
     const cookies = req.cookies;
     if (!validateFIMSToken(cookies, res)) {
       return;
     }
 
     if (currentOidcData.firstInteraction) {
-      // Cookie validation
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionResume = cookies[interactionResumeCookieKey()];
-      if (!cookieInteractionResume) {
-        res.status(400).send({
-          message: `Missing cookie with name '${interactionResumeCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieInteractionResume !==
-        currentOidcData.firstInteraction?.interactionResume
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionResumeCookieKey()}' (${cookieInteractionResume}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieInteractionResumeSignature =
-        cookies[interactionResumeSignatureCookieKey()];
-      if (!cookieInteractionResumeSignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${interactionResumeSignatureCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieInteractionResumeSignature !==
-        currentOidcData.firstInteraction?.interactionResumeSignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionResumeSignatureCookieKey()}' (${cookieInteractionResumeSignature}) does not match saved one`
-        });
+      const cookiesToValidate = {
+        [interactionResumeCookieKey()]:
+          currentOidcData.firstInteraction?.interactionResume,
+        [interactionResumeSignatureCookieKey()]:
+          currentOidcData.firstInteraction?.interactionResumeSignature
+      };
+      if (!validateCookies(cookiesToValidate, cookies, res)) {
         return;
       }
 
@@ -758,106 +552,23 @@ addHandler(
         )
         .redirect(303, interactionRedirectUri);
       return;
-    } else if (currentOidcData.secondInteraction) {
+    } else if (currentOidcData.secondInteraction && currentOidcData.session) {
       // This case happens as a redirect of the /confirm endpoint
 
       // Cookie validation
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieInteractionResume = cookies[interactionResumeCookieKey()];
-      if (!cookieInteractionResume) {
-        res.status(400).send({
-          message: `Missing cookie with name '${interactionResumeCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieInteractionResume !==
-        currentOidcData.secondInteraction?.interactionResume
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionResumeCookieKey()}' (${cookieInteractionResume}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieInteractionResumeSignature =
-        cookies[interactionResumeSignatureCookieKey()];
-      if (!cookieInteractionResumeSignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${interactionResumeSignatureCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieInteractionResumeSignature !==
-        currentOidcData.secondInteraction?.interactionResumeSignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${interactionResumeSignatureCookieKey()}' (${cookieInteractionResumeSignature}) does not match saved one`
-        });
-        return;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const cookieSession = cookies[sessionCookieKey()];
-      if (!cookieSession) {
-        res
-          .status(400)
-          .send({ message: `Mising cookie with name '${sessionCookieKey()}'` });
-        return;
-      }
-      if (cookieSession !== currentOidcData.session?.session) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionCookieKey()}' (${cookieSession}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieSessionSignature = cookies[sessionSignatyreCookieKey()];
-      if (!cookieSessionSignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${sessionSignatyreCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieSessionSignature !== currentOidcData.session?.sessionSignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionSignatyreCookieKey()}' (${cookieSessionSignature}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieSessionLegacy = cookies[sessionLegacyCookieKey()];
-      if (!cookieSessionLegacy) {
-        res.status(400).send({
-          message: `Mising cookie with name '${sessionLegacyCookieKey()}'`
-        });
-        return;
-      }
-      if (cookieSessionLegacy !== currentOidcData.session?.sessionLegacy) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionLegacyCookieKey()}' (${cookieSessionLegacy}) does not match saved one`
-        });
-        return;
-      }
-
-      const cookieSessionLegacySignature =
-        cookies[sessionLegacySignatureCookieKey()];
-      if (!cookieSessionLegacySignature) {
-        res.status(400).send({
-          message: `Mising cookie with name '${sessionLegacySignatureCookieKey()}'`
-        });
-        return;
-      }
-      if (
-        cookieSessionLegacySignature !==
-        currentOidcData.session?.sessionLegacySignature
-      ) {
-        res.status(400).send({
-          message: `Value of cookie with name '${sessionLegacySignatureCookieKey()}' (${cookieSessionLegacySignature}) does not match saved one`
-        });
+      const cookiesToValidate = {
+        [interactionResumeCookieKey()]:
+          currentOidcData.secondInteraction?.interactionResume,
+        [interactionResumeSignatureCookieKey()]:
+          currentOidcData.secondInteraction?.interactionResumeSignature,
+        [sessionCookieKey()]: currentOidcData.session?.session,
+        [sessionSignatyreCookieKey()]:
+          currentOidcData.session?.sessionSignature,
+        [sessionLegacyCookieKey()]: currentOidcData.session?.sessionLegacy,
+        [sessionLegacySignatureCookieKey()]:
+          currentOidcData.session?.sessionLegacySignature
+      };
+      if (!validateCookies(cookiesToValidate, cookies, res)) {
         return;
       }
 
@@ -961,8 +672,6 @@ addHandler(
   () => Math.random() * 2500
 );
 
-// res.status(200).send("<html><head><title>FIMS Provider</title></head><body><div>WiP</div></body></html>");
-
 const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
   if (skipFIMSTokenKeyValidation()) {
     return true;
@@ -991,3 +700,28 @@ const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
 
 const sameSitePolicyForSessionCookie = () =>
   useLaxInsteadOfNoneForSessionCookieSameSite() ? "lax" : "none";
+
+const validateCookies = (
+  mandatoryCookies: Record<string, string>,
+  requestCookies: Record<string, unknown>,
+  res: Response
+) => {
+  // eslint-disable-next-line guard-for-in
+  for (const mandatoryCookieKey in mandatoryCookies) {
+    const cookieValue = requestCookies[mandatoryCookieKey];
+    if (!cookieValue) {
+      res.status(400).send({
+        message: `Mising cookie with name '${mandatoryCookieKey}'`
+      });
+      return false;
+    }
+    const mandatoryCookieValue = mandatoryCookies[mandatoryCookieKey];
+    if (cookieValue !== mandatoryCookieValue) {
+      res.status(400).send({
+        message: `Value of cookie with name '${mandatoryCookieKey}' (${cookieValue}) does not match exptected one (${mandatoryCookieValue})`
+      });
+      return false;
+    }
+  }
+  return true;
+};
