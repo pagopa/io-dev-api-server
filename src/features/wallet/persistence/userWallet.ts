@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { format } from "date-fns";
 import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
+import { WalletApplication } from "../../../../generated/definitions/pagopa/walletv3/WalletApplication";
 import { WalletApplicationInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationInfo";
 import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
@@ -59,13 +60,12 @@ const generateWalletData = () => {
 
 const updateUserWalletApplication = (
   walletId: string,
-  applications: ReadonlyArray<WalletApplicationInfo>
+  applications?: ReadonlyArray<WalletApplication>
 ) => {
   if (getUserWalletInfo(walletId) && applications) {
     const userWallet = getUserWalletInfo(walletId) as WalletInfo;
     removeUserWallet(walletId);
-    const wallet: WalletInfo = {
-      ...userWallet,
+    const wallet = _.merge(userWallet, {
       applications: applications.map(
         service =>
           ({
@@ -73,7 +73,7 @@ const updateUserWalletApplication = (
             updateDate: new Date()
           } as WalletApplicationInfo)
       )
-    };
+    });
     addUserWallet(wallet);
     return E.right(wallet);
   }
