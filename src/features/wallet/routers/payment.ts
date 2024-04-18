@@ -8,7 +8,6 @@ import { NewTransactionRequest } from "../../../../generated/definitions/pagopa/
 import { RequestAuthorizationRequest } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationRequest";
 import { RequestAuthorizationResponse } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
-import { ValidationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFault";
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
@@ -52,8 +51,7 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
                   () =>
                     res.status(404).json({
                       faultCodeCategory: FaultCategoryEnum.PAYMENT_UNKNOWN,
-                      faultCodeDetail:
-                        ValidationFaultEnum.PAA_PAGAMENTO_SCONOSCIUTO
+                      faultCodeDetail: ""
                     }),
                   response => res.status(200).json(response)
                 )
