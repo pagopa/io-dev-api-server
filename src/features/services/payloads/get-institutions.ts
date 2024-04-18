@@ -21,9 +21,6 @@ const filterBySearch = (service: ServicePublic, search?: string) => {
   return service.service_name.toLowerCase().includes(search);
 };
 
-// services?offset=0&limit=20
-// services?offset=20&limit=20
-// services?offset=40&limit=20
 export const getInstitutionsResponsePayload = (
   limit: number = 20,
   offset: number = 0,
@@ -46,8 +43,8 @@ export const getInstitutionsResponsePayload = (
         return [
           ...accumulator,
           {
-            id: service.service_id,
-            name: service.service_name,
+            id: service.organization_fiscal_code,
+            name: service.organization_name,
             fiscal_code: service.organization_fiscal_code
           }
         ];
