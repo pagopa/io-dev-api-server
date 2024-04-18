@@ -8,7 +8,12 @@ import {
   OIdCData,
   SessionData
 } from "../types/authentication";
-import { baseProviderPath, providerConfig } from "../services/providerService";
+import {
+  baseProviderPath,
+  generatePermissionHTML,
+  generateIdTokenRedirectHTML,
+  providerConfig
+} from "../services/providerService";
 import { getRelyingParty } from "./relyingPartyRouter";
 
 export const fimsProviderRouter = Router();
@@ -248,38 +253,15 @@ addHandler(
         return;
       }
 
-      const abortRedirectUri = `${baseProviderPath()}/interaction/${requestInteractionId}/abort`;
       const confirmRedirectUri = `${baseProviderPath()}/interaction/${requestInteractionId}/confirm`;
-      // TODO move HTML to dedicated file
-      res.status(200).send(`
-  <!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FIMS Provider: user action required</title>
-  </head>
-  <body>
-    <div>
-      <h3>Autorizzi l'invio dei dati?</h3>
-      <p>I seguenti dati stanno per essere condivisi con <strong>TODO LINK RELYING PARTY HERE</strong></p>
-      <p><strong>TODO LINK SCOPES HERE</strong></p>
-      <form autocomplete="off" action="${confirmRedirectUri}" method="post">
-        <div>
-          <input id="checkbox10" type="checkbox" name="to_remember" aria-labelledby="checkbox10-help">
-          <label for="checkbox10">Non richiedere più</label>
-        </div>
-        <br/>
-        <div>
-          <a href="${abortRedirectUri}">Annulla</a>
-          <button autotype="button">Conferma</button>
-        </div>
-      </form>
-    </div>
-  </body>
-  </html>
-    `);
+      const abortRedirectUri = `${baseProviderPath()}/interaction/${requestInteractionId}/abort`;
+      const htmlContent = generatePermissionHTML(
+        confirmRedirectUri,
+        abortRedirectUri,
+        oidcData.relyingPartyId,
+        oidcData.scopes
+      );
+      res.status(200).send(htmlContent);
       return;
     }
 
@@ -620,7 +602,11 @@ const responseFromOAuthAuthorizeSecondInteraction = (
   const sessionCookieExpirationTime = new Date(
     new Date().getTime() + config.sessionTTLMilliseconds
   );
-  // TODO move HTML to dedicated file
+  const redirectHTML = generateIdTokenRedirectHTML(
+    relyingPartyRedirectUri,
+    idToken,
+    relyingPartyState
+  );
   res
     .cookie(config.interactionResumeCookieKey, "", {
       path: `${baseProviderPath()}/oauth/authorize/${requestInteractionId}`,
@@ -656,27 +642,8 @@ const responseFromOAuthAuthorizeSecondInteraction = (
       expires: sessionCookieExpirationTime,
       httpOnly: true
     })
-    .status(200).send(`
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FIMS Provider: submit callback</title>
-    <script>document.addEventListener('DOMContentLoaded', function () { document.forms[0].submit() });</script>
-  </head>
-  <body>
-    <form method="post" action="${relyingPartyRedirectUri}">
-      <input type="hidden" name="id_token" value="${idToken}"/>
-      <input type="hidden" name="state" value="${relyingPartyState}"/>
-      <noscript>Your browser does not support JavaScript or you've disabled it.<br/>
-        <button autofocus type="submit">Continue</button>
-      </noscript>
-    </form>
-  </body>
-  </html>
-      `);
+    .status(200)
+    .send(redirectHTML);
 };
 
 const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
