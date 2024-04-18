@@ -29,15 +29,13 @@ const generateUserWallet = (
   extraDetails: Partial<WalletInfoDetails> = {}
 ) => {
   const walletId = (getUserWallets().length + 1).toString();
-  const details = _.merge(
-    generateWalletDetailsByPaymentMethod(paymentMethodId),
-    extraDetails
-  );
+  const { details, paymentMethodAsset } =
+    generateWalletDetailsByPaymentMethod(paymentMethodId);
 
   const randomWallet: WalletInfo = {
     walletId,
     paymentMethodId: paymentMethodId.toString(),
-    status: WalletStatusEnum.CREATED,
+    status: WalletStatusEnum.VALIDATED,
     creationDate: faker.date.past(2),
     updateDate: faker.date.past(1),
     applications: [
@@ -46,16 +44,14 @@ const generateUserWallet = (
         status: WalletApplicationStatusEnum.ENABLED
       }
     ],
-    paymentMethodAsset:
-      "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/carte-pagamento.png?raw=true",
-    details
+    paymentMethodAsset,
+    details: _.merge(details, extraDetails)
   };
   addUserWallet(randomWallet);
   return randomWallet;
 };
 
 const generateWalletData = () => {
-  generateUserWallet(3);
   generateUserWallet(2);
   generateUserWallet(1);
   generateUserWallet(1, { expiryDate: format(faker.date.past(1), "yyyyMM") });
