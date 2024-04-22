@@ -5,10 +5,7 @@ import { ServiceScopeEnum } from "../../../../generated/definitions/backend/Serv
 import { Institution } from "../../../../generated/definitions/services/Institution";
 import { InstitutionsResource } from "../../../../generated/definitions/services/InstitutionsResource";
 import ServicesDB from "../../../persistence/services";
-import {
-  InstitutionWithScope,
-  getInstitutions
-} from "../utils/services-by-institution-name";
+import { InstitutionWithScope, getInstitutions } from "../utils/institutions";
 
 const filterByScope = (
   institution: InstitutionWithScope,
