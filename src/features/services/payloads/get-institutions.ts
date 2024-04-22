@@ -1,24 +1,30 @@
 import * as A from "fp-ts/lib/Array";
 import { identity, pipe } from "fp-ts/lib/function";
 import _ from "lodash";
-import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
 import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
 import { Institution } from "../../../../generated/definitions/services/Institution";
 import { InstitutionsResource } from "../../../../generated/definitions/services/InstitutionsResource";
 import ServicesDB from "../../../persistence/services";
+import {
+  InstitutionWithScope,
+  getInstitutions
+} from "../utils/services-by-institution-name";
 
-const filterByScope = (service: ServicePublic, scope?: ServiceScopeEnum) => {
+const filterByScope = (
+  institution: InstitutionWithScope,
+  scope?: ServiceScopeEnum
+) => {
   if (!scope) {
     return true;
   }
-  return service.service_metadata?.scope === scope;
+  return institution.scope === scope;
 };
 
-const filterBySearch = (service: ServicePublic, search?: string) => {
+const filterBySearch = (institution: InstitutionWithScope, search?: string) => {
   if (!search) {
     return true;
   }
-  return service.service_name.toLowerCase().includes(search);
+  return institution.name.toLowerCase().includes(search);
 };
 
 export const getInstitutionsResponsePayload = (
@@ -29,23 +35,26 @@ export const getInstitutionsResponsePayload = (
 ): InstitutionsResource => {
   const filteredInstitutions = pipe(
     ServicesDB.getAllServices(),
-    A.reduce([] as Institution[], (accumulator, service) => {
-      const isValidService = pipe(
+    getInstitutions,
+    A.reduce([] as Institution[], (accumulator, institution) => {
+      const isValidInstitution = pipe(
         [
-          (service: ServicePublic) => filterByScope(service, scope),
-          (service: ServicePublic) => filterBySearch(service, search)
+          (institution: InstitutionWithScope) =>
+            filterByScope(institution, scope),
+          (institution: InstitutionWithScope) =>
+            filterBySearch(institution, search)
         ],
-        A.flap(service),
+        A.flap(institution),
         A.every(identity)
       );
 
-      if (isValidService) {
+      if (isValidInstitution) {
         return [
           ...accumulator,
           {
-            id: service.organization_fiscal_code,
-            name: service.organization_name,
-            fiscal_code: service.organization_fiscal_code
+            id: institution.id,
+            name: institution.name,
+            fiscal_code: institution.fiscal_code
           }
         ];
       }
@@ -59,12 +68,10 @@ export const getInstitutionsResponsePayload = (
   const endIndex = offset + limit;
   const istitutionList = _.slice(filteredInstitutions, startIndex, endIndex);
 
-  const response: InstitutionsResource = {
+  return {
     institutions: istitutionList,
     limit,
     offset,
     count: totalElements
   };
-
-  return response;
 };

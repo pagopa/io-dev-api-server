@@ -1,11 +1,13 @@
 import { sequenceT } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { addHandler } from "../../../payloads/response";
 import { ServiceScope } from "../../../../generated/definitions/backend/ServiceScope";
-import { getInstitutionsResponsePayload } from "../payloads/get-institutions";
 import { ioDevServerConfig } from "../../../config";
+import { addHandler } from "../../../payloads/response";
+import { getInstitutionsResponsePayload } from "../payloads/get-institutions";
 import { addApiV2Prefix, serviceRouter } from "./router";
+
+const serviceConfig = ioDevServerConfig.features.service;
 
 type Query = string | qs.ParsedQs | string[] | qs.ParsedQs[] | undefined;
 
@@ -17,9 +19,10 @@ const extractQuery = (query: Query) =>
     O.toUndefined
   );
 
+// Find institutions
 addHandler(serviceRouter, "get", addApiV2Prefix("/institutions"), (req, res) =>
   pipe(
-    ioDevServerConfig.features.service.response.institutionsResponseCode,
+    serviceConfig.response.institutionsResponseCode,
     O.fromPredicate(statusCode => statusCode !== 200),
     O.fold(
       () =>
