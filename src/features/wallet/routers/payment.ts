@@ -17,6 +17,7 @@ import {
   getTransactionInfoPayload
 } from "../payloads/transactions";
 import WalletDB from "../persistence/userWallet";
+import TransactionsDB from "../persistence/transactions";
 import {
   WalletPaymentFailure,
   getStatusCodeForWalletFailure
@@ -176,6 +177,31 @@ addPaymentHandler(
                   authorizationUrl: `${serverUrl}${WALLET_PAYMENT_PATH}?transactionId=${transactionId}`,
                   authorizationRequestId: ulid()
                 } as RequestAuthorizationResponse)
+            )
+          )
+      )
+    )
+);
+
+// This API is used to create a mock transaction when the outcome selected is SUCCESS (0)
+addPaymentHandler(
+  "post",
+  "/mock-transaction",
+  (req, res) =>
+    pipe(
+      req.body.transactionId,
+      O.fromNullable,
+      O.fold(
+        () => res.sendStatus(403),
+        (transactionId) =>
+          pipe(
+            getTransactionInfoPayload(transactionId),
+            O.fold(
+              () => res.sendStatus(404),
+              () => {
+                TransactionsDB.generateUserTransaction(transactionId);
+                return res.status(200).json({ status: "ok" });
+              }
             )
           )
       )
