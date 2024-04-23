@@ -191,6 +191,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     service: {
       response: {
+        featuredItemsResponseCode: 200,
         institutionsResponseCode: 200
       }
     },
