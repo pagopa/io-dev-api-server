@@ -1,11 +1,14 @@
 import { nonEmptyArray } from "fp-ts";
-import * as A from "fp-ts/Array";
+import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { FeaturedItem } from "../../../../generated/definitions/services/FeaturedItem";
 import { FeaturedItems } from "../../../../generated/definitions/services/FeaturedItems";
+import { ioDevServerConfig } from "../../../config";
 import ServicesDB from "../../../persistence/services";
 import { getInstitutionsResponsePayload } from "./get-institutions";
+
+const featuredItemsSize = ioDevServerConfig.features.service.featuredItemsSize;
 
 /**
  * Returns a random ordered array subset.
@@ -16,7 +19,7 @@ import { getInstitutionsResponsePayload } from "./get-institutions";
 const getRandomArraySubset = <T>(array: T[], size: number): T[] =>
   pipe(
     O.some(array),
-    O.fromPredicate(arr => O.isSome(arr) && size <= array.length),
+    O.fromPredicate(arr => O.isSome(arr) && size > 0 && size <= array.length),
     O.fold(
       () => [],
       () => {
@@ -92,7 +95,7 @@ export const getFeaturedItemsResponsePayload = (): FeaturedItems => {
       ...featuredIntitutions,
       ...featuredNationalServices
     ],
-    arr => getRandomArraySubset(arr, arr.length)
+    arr => getRandomArraySubset(arr, featuredItemsSize)
   );
 
   return {
