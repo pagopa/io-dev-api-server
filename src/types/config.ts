@@ -14,7 +14,7 @@ import { PreferredLanguages } from "../../generated/definitions/backend/Preferre
 import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
-import { WalletConfiguration } from "../features/wallet/types/configuration";
+import { WalletConfiguration } from "../features/payments/types/configuration";
 import { ServiceConfiguration } from "../features/services/types/configuration";
 import { AllowRandomValue } from "./allowRandomValue";
 import { HttpResponseCode } from "./httpResponseCode";

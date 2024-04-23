@@ -9,7 +9,7 @@ import * as E from "fp-ts/lib/Either";
 import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
 import { assetsFolder, ioDevServerConfig } from "../config";
-import { WALLET_PAYMENT_PATH } from "../features/wallet/utils/payment";
+import { WALLET_PAYMENT_PATH } from "../features/payments/utils/payment";
 import { backendInfo } from "../payloads/backend";
 import {
   AppUrlLoginScheme,
@@ -17,7 +17,7 @@ import {
   loginLolliPopRedirect,
   redirectUrl
 } from "../payloads/login";
-import { WALLET_ONBOARDING_PATH } from "../features/wallet/utils/onboarding";
+import { WALLET_ONBOARDING_PATH } from "../features/payments/utils/onboarding";
 import { addHandler } from "../payloads/response";
 import { clearSessionTokens } from "../payloads/session";
 import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
@@ -88,9 +88,8 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
 
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     createOrRefreshEverySessionToken();
-    const url = `${urlLoginScheme}://${
-      req.headers.host
-    }${redirectUrl}${getLoginSessionToken()}`;
+    const url = `${urlLoginScheme}://${req.headers.host
+      }${redirectUrl}${getLoginSessionToken()}`;
     res.redirect(url);
     return;
   }
@@ -155,12 +154,12 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
   ];
   res.send(
     "<h2>reset:</h2>" +
-      resets
-        .map(r => {
-          r[0]();
-          return `<li>${r[1]}</li>`;
-        })
-        .join("<br/>")
+    resets
+      .map(r => {
+        r[0]();
+        return `<li>${r[1]}</li>`;
+      })
+      .join("<br/>")
   );
 });
 
