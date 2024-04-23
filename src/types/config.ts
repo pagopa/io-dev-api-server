@@ -15,6 +15,7 @@ import { PushNotificationsContentType } from "../../generated/definitions/backen
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
 import { WalletConfiguration } from "../features/wallet/types/configuration";
+import { ServiceConfiguration } from "../features/services/types/configuration";
 import { AllowRandomValue } from "./allowRandomValue";
 import { HttpResponseCode } from "./httpResponseCode";
 
@@ -209,7 +210,8 @@ export const IoDevServerConfig = t.interface({
         t.partial({
           assertionRefValidityMS: t.number
         })
-      ])
+      ]),
+      service: ServiceConfiguration
     }),
     t.partial({
       wallet: WalletConfiguration

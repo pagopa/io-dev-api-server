@@ -33,6 +33,7 @@ import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { walletRouter as newWalletRouter } from "./features/wallet";
+import { serviceRouter as newServiceRouter } from "./features/services";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
 
 // create express server
@@ -80,7 +81,8 @@ app.use(fastLoginMiddleware);
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
-  newWalletRouter
+  newWalletRouter,
+  newServiceRouter
 ].forEach(r => app.use(r));
 
 export default app;
