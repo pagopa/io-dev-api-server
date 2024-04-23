@@ -189,6 +189,11 @@ const defaultConfig: IoDevServerConfig = {
     fastLogin: {
       sessionTTLinMS: 60000
     },
+    service: {
+      response: {
+        institutionsResponseCode: 200
+      }
+    },
     allowRandomValues: true
   }
 };

@@ -90,6 +90,12 @@ const deleteServices = () => {
   servicePreferences.clear();
 };
 
+const getAllServices = () => [
+  ...localServices,
+  ...nationalServices,
+  ...specialServices
+];
+
 const getLocalServices = () => localServices.map(ls => ({ ...ls }));
 
 const getPreference = (
@@ -158,6 +164,7 @@ const updatePreference = (
 export default {
   createServices,
   deleteServices,
+  getAllServices,
   getLocalServices,
   getPreference,
   getService,
