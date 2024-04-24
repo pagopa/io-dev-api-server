@@ -9,7 +9,7 @@ export const backendInfo = {
   version: "2.1.2"
 };
 
-// ref https://assets.cdn.io.italia.it/status/backend.json
+// ref https://assets.cdn.io.pagopa.it/status/backend.json
 export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
@@ -56,7 +56,7 @@ export const backendStatus: BackendStatus = {
           "en-EN":
             "Make a donation to humanitarian organizations that assist the civilians affected by the crisis in Ukraine"
         },
-        url: "https://assets.cdn.io.italia.it/html/donate.html"
+        url: "https://assets.cdn.io.pagopa.it/html/donate.html"
       }
     },
     premiumMessages: {
