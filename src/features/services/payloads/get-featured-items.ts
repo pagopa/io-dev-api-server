@@ -1,7 +1,6 @@
-import { nonEmptyArray } from "fp-ts";
 import * as A from "fp-ts/lib/Array";
-import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
+import _ from "lodash";
 import { FeaturedItem } from "../../../../generated/definitions/services/FeaturedItem";
 import { FeaturedItems } from "../../../../generated/definitions/services/FeaturedItems";
 import { ioDevServerConfig } from "../../../config";
@@ -10,67 +9,34 @@ import { getInstitutionsResponsePayload } from "./get-institutions";
 
 const featuredItemsSize = ioDevServerConfig.features.service.featuredItemsSize;
 
-/**
- * Returns a random ordered array subset.
- * @param array starting array of type T
- * @param size array subset size (if `size` greater than `array`, it returns empty array subset)
- * @returns
- */
-const getRandomArraySubset = <T>(array: T[], size: number): T[] =>
-  pipe(
-    O.some(array),
-    O.fromPredicate(arr => O.isSome(arr) && size > 0 && size <= array.length),
-    O.fold(
-      () => [],
-      () => {
-        const remainingItems = [...array];
-        return pipe(
-          nonEmptyArray.range(1, size),
-          A.map(() => {
-            const randomIndex = Math.floor(
-              Math.random() * remainingItems.length
-            );
-            const selectedItem = remainingItems[randomIndex];
-            // eslint-disable-next-line functional/immutable-data
-            remainingItems.splice(randomIndex, 1);
-            return selectedItem;
-          })
-        );
-      }
-    )
-  );
-
 export const getFeaturedItemsResponsePayload = (): FeaturedItems => {
   // take some casual national service
-  const selectedNationalServices = getRandomArraySubset(
+  const selectedNationalServices = _.sampleSize(
     ServicesDB.getNationalServices(),
     1
   );
   // take some casual special service
-  const selectedSpecialServices = getRandomArraySubset(
+  const selectedSpecialServices = _.sampleSize(
     ServicesDB.getSpecialServices(),
     3
   );
   // take some casual institutions
-  const featuredIntitutions = getRandomArraySubset(
+  const featuredIntitutions = _.sampleSize(
     Array.from(getInstitutionsResponsePayload().institutions),
     1
   );
 
   /**
-   * Reduced national services to FeaturedService[] (add organization_name for layout testing purpose)
+   * Map national services to FeaturedService[] (add organization_name for layout testing purpose)
    */
   const featuredNationalServices: FeaturedItem[] = pipe(
     selectedNationalServices,
-    A.reduce([] as FeaturedItem[], (accumulator, service) => [
-      ...accumulator,
-      {
-        id: service.service_id,
-        name: service.service_name,
-        version: service.version,
-        organization_name: service.organization_name
-      }
-    ])
+    A.map(service => ({
+      id: service.service_id,
+      name: service.service_name,
+      version: service.version,
+      organization_name: service.organization_name
+    }))
   );
 
   /**
@@ -78,14 +44,11 @@ export const getFeaturedItemsResponsePayload = (): FeaturedItems => {
    */
   const featuredSpecialServices: FeaturedItem[] = pipe(
     selectedSpecialServices,
-    A.reduce([] as FeaturedItem[], (accumulator, service) => [
-      ...accumulator,
-      {
-        id: service.service_id,
-        name: service.service_name,
-        version: service.version
-      }
-    ])
+    A.map(service => ({
+      id: service.service_id,
+      name: service.service_name,
+      version: service.version
+    }))
   );
 
   // returns randomly ordered featured items
@@ -95,7 +58,7 @@ export const getFeaturedItemsResponsePayload = (): FeaturedItems => {
       ...featuredIntitutions,
       ...featuredNationalServices
     ],
-    arr => getRandomArraySubset(arr, featuredItemsSize)
+    arr => _.sampleSize(arr, featuredItemsSize)
   );
 
   return {
