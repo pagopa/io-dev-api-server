@@ -52,13 +52,13 @@ export const getFeaturedItemsResponsePayload = (): FeaturedItems => {
   );
 
   // returns randomly ordered featured items
-  const featuredItems = pipe(
+  const featuredItems = _.sampleSize(
     [
       ...featuredSpecialServices,
       ...featuredIntitutions,
       ...featuredNationalServices
     ],
-    arr => _.sampleSize(arr, featuredItemsSize)
+    featuredItemsSize
   );
 
   return {
