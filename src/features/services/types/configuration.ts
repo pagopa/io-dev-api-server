@@ -5,7 +5,9 @@ export const ServiceConfiguration = t.interface({
   // configure some API response error code
   response: t.interface({
     // 200 success with payload
-    institutionsResponseCode: HttpResponseCode
+    institutionsResponseCode: HttpResponseCode,
+    // 200 success with payload
+    servicesByInstitutionIdResponseCode: HttpResponseCode
   })
 });
 

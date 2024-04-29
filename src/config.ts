@@ -191,7 +191,8 @@ const defaultConfig: IoDevServerConfig = {
     },
     service: {
       response: {
-        institutionsResponseCode: 200
+        institutionsResponseCode: 200,
+        servicesByInstitutionIdResponseCode: 200
       }
     },
     allowRandomValues: true
