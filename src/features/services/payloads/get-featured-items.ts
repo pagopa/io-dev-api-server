@@ -5,7 +5,7 @@ import { FeaturedItem } from "../../../../generated/definitions/services/Feature
 import { FeaturedItems } from "../../../../generated/definitions/services/FeaturedItems";
 import { ioDevServerConfig } from "../../../config";
 import ServicesDB from "../../../persistence/services";
-import { getInstitutionsResponsePayload } from "./get-institutions";
+import { getInstitutions } from "../utils/institutions";
 
 const featuredItemsSize = ioDevServerConfig.features.service.featuredItemsSize;
 
@@ -21,9 +21,18 @@ export const getFeaturedItemsResponsePayload = (): FeaturedItems => {
     3
   );
   // take some casual institutions
-  const featuredIntitutions = _.sampleSize(
-    Array.from(getInstitutionsResponsePayload().institutions),
+  const selectedInstitutions = _.sampleSize(
+    pipe(ServicesDB.getAllServices(), getInstitutions),
     1
+  );
+
+  const featuredIntitutions = pipe(
+    selectedInstitutions,
+    A.map(institution => ({
+      id: institution.id,
+      name: institution.name,
+      fiscal_code: institution.fiscal_code
+    }))
   );
 
   /**
