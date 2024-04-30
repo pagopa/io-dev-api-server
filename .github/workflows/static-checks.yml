@@ -3,6 +3,7 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    environment: dev
     concurrency:
       group: ${{ github.workflow }}-pr-staticcheck-${{ github.head_ref || github.run_id }}
       cancel-in-progress: true
@@ -43,5 +44,6 @@ jobs:
       - id: run-test
         run: yarn test:ci
       - id: coverage
-        run: ./scripts/codecov.sh
-        shell: bash
+        uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
