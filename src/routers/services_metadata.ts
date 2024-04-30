@@ -211,10 +211,14 @@ addHandler(
         },
         idps => {
           // set the logo url as server local resource
-          const idpsWithLogo = idps.items.map(idp => ({
-            ...idp,
-            logo: `${serverUrl}${staticContentRootPath}/logos/spid/idps/spid-idp-${idp.id}.png`
-          }));
+          const idpsWithLogo = idps.items.map(idp => {
+            const urlSegments = idp.logo.split("/");
+            const logoImageName = urlSegments[urlSegments.length - 1];
+            return {
+              ...idp,
+              logo: `${serverUrl}${staticContentRootPath}/logos/spid/idps/${logoImageName}`
+            };
+          });
           res.json({ ...idps, items: idpsWithLogo });
         }
       )
