@@ -35,10 +35,10 @@
     "visibility": "visible",
     "valid_from": "2020-07-01T00:00:00.000Z",
     "valid_to": "2020-12-31T00:00:00.000Z",
-    "cover": "https://assets.cdn.io.italia.it/bonus/cgn/logo/logo-cgn.png",
+    "cover": "https://assets.cdn.io.pagopa.it/bonus/cgn/logo/logo-cgn.png",
     "hero_image": "https://github.com/pagopa/io-services-metadata/blob/d579d53c2a6e1a1defcc393df657e7cfcb70b969/bonus/cgn/cover/hero-CGN.png?raw=true",
     "sponsorship_description": "PCM - Dipartimento per le Politiche Giovanili e il Servizio Civile Universale",
-    "sponsorship_cover": "https://assets.cdn.io.italia.it/bonus/cgn/logo/logo-cgn.png"
+    "sponsorship_cover": "https://assets.cdn.io.pagopa.it/bonus/cgn/logo/logo-cgn.png"
   },
   {
     "id_type": 4,
@@ -62,8 +62,8 @@
     "visibility": "hidden",
     "valid_from": "2022-07-01T00:00:00.000Z",
     "valid_to": "2022-12-31T00:00:00.000Z",
-    "cover": "https://assets.cdn.io.italia.it/bonus/cdc/logo/logo-cdc.png",
+    "cover": "https://assets.cdn.io.pagopa.it/bonus/cdc/logo/logo-cdc.png",
     "sponsorship_description": "Ministero della Cultura",
-    "sponsorship_cover": "https://assets.cdn.io.italia.it/bonus/cdc/logo/logo-cdc.png"
+    "sponsorship_cover": "https://assets.cdn.io.pagopa.it/bonus/cdc/logo/logo-cdc.png"
   }
 ]
