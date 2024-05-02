@@ -2,73 +2,73 @@
   "items": [
     {
       "id": "arubaid",
-      "name": "Aruba",
+      "name": "Aruba ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-arubaid.png",
       "profileUrl": "https://selfcarespid.aruba.it"
     },
     {
       "id": "ehtid",
-      "name": "EtnaHiTech",
+      "name": "Etna ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-etnaid.png",
       "profileUrl": "https://etnaid.eht.eu/"
     },
     {
       "id": "infocamereid",
-      "name": "Infocamere",
+      "name": "ID InfoCamere",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-infocamereid.png",
       "profileUrl": "https://selfcarespid.infocamere.it/spid-selfCare/#/login"
     },
     {
       "id": "infocertid",
-      "name": "Infocert",
+      "name": "InfoCert ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-infocertid.png",
       "profileUrl": "https://my.infocert.it/selfcare"
     },
     {
       "id": "intesiid",
-      "name": "IntesiGroup",
+      "name": "Intesi Group SPID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-intesigroupspid.png",
       "profileUrl": "https://spid.intesigroup.com"
     },    
     {
       "id": "lepidaid",
-      "name": "Lepida",
+      "name": "Lepida ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-lepidaid.png",
       "profileUrl": "https://id.lepida.it/"
     },
     {
       "id": "namirialid",
-      "name": "Namirial",
+      "name": "Namirial ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-namirialid.png",
       "profileUrl": "https://idp.namirialtsp.com/idp"
     },
     {
       "id": "posteid",
-      "name": "Poste",
+      "name": "Poste ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-posteid.png",
       "profileUrl": "https://posteid.poste.it/private/cruscotto.shtml"
     },
     {
       "id": "sielteid",
-      "name": "Sielte",
+      "name": "Sielte ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-sielteid.png",
       "profileUrl": "https://myid.sieltecloud.it/profile/"
     },
     {
       "id": "spiditalia",
-      "name": "SPIDItalia Register.it",
+      "name": "SpidItalia",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-spiditalia.png",
       "profileUrl": "https://spid.register.it"
     },
     {
       "id": "timid",
-      "name": "Telecom Italia",
+      "name": "TIM id",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-timid.png",
       "profileUrl": "https://id.tim.it/identity/private/"
     },
     {
       "id": "teamsystemid",
-      "name": "TeamSystem",
+      "name": "TeamSystem ID",
       "logo": "https://assets.cdn.io.pagopa.it/spid/idps/spid-idp-teamsystemid.png",
       "profileUrl": "https://identity.teamsystem.com/"
     }
