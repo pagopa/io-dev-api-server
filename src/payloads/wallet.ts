@@ -64,8 +64,8 @@ const validPsp2: Psp = {
   paymentType: "CP",
   idIntermediary: "idIntermediario1",
   idChannel: "idCanale14",
-  logoPSP: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
-  serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/03015.png",
+  logoPSP: "https://assets.cdn.io.pagopa.it/logos/abi/03015.png",
+  serviceLogo: "https://assets.cdn.io.pagopa.it/logos/abi/03015.png",
   serviceName: "nomeServizio 10 red",
   fixedCost: {
     currency: "EUR",
@@ -89,8 +89,8 @@ const validPsp3: Psp = {
   paymentType: "CP",
   idIntermediary: "idIntermediario1",
   idChannel: "idCanale14",
-  logoPSP: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
-  serviceLogo: "https://assets.cdn.io.italia.it/logos/abi/01030.png",
+  logoPSP: "https://assets.cdn.io.pagopa.it/logos/abi/01030.png",
+  serviceLogo: "https://assets.cdn.io.pagopa.it/logos/abi/01030.png",
   serviceName: "nomeServizio 10 Blu",
   fixedCost: {
     currency: "EUR",
