@@ -193,7 +193,8 @@ const defaultConfig: IoDevServerConfig = {
       featuredItemsSize: 5,
       response: {
         featuredItemsResponseCode: 200,
-        institutionsResponseCode: 200
+        institutionsResponseCode: 200,
+        servicesByInstitutionIdResponseCode: 200
       }
     },
     allowRandomValues: true

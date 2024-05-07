@@ -9,7 +9,10 @@ export const ServiceConfiguration = t.type({
   response: t.type({
     // 200 success with payload
     featuredItemsResponseCode: HttpResponseCode,
-    institutionsResponseCode: HttpResponseCode
+    // 200 success with payload
+    institutionsResponseCode: HttpResponseCode,
+    // 200 success with payload
+    servicesByInstitutionIdResponseCode: HttpResponseCode
   })
 });
 
