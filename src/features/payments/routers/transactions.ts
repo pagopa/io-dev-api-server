@@ -4,9 +4,13 @@ import TransactionsDB from "../persistence/transactions";
 
 import { addTransactionHandler } from "./router";
 
+const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
+
 addTransactionHandler("get", "/transactions", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : 10;
-  const transactions = TransactionsDB.getUserTransactions().slice(0, size);
+  const offset = req.headers[CONTINUATION_TOKEN_HEADER] ? Number(req.headers[CONTINUATION_TOKEN_HEADER]) : 0;
+  const transactions = TransactionsDB.getUserTransactions().slice(offset, (offset + size));
+  const continuationTokenHeader = { [CONTINUATION_TOKEN_HEADER]: TransactionsDB.getUserTransactions().length > (offset + size) ? (offset + size) : null };
   pipe(
     transactions,
     O.fromPredicate(transactions => transactions.length > 0),
@@ -16,7 +20,7 @@ addTransactionHandler("get", "/transactions", (req, res) => {
         status: 404,
         detail: "No transactions found for the user"
       }),
-      transactions => res.status(200).json(transactions)
+      transactions => res.status(200).set(continuationTokenHeader).json(transactions)
     )
   );
 });

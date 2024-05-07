@@ -173,6 +173,9 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   features: {
+    payments: {
+      numberOfTransactions: 12,
+    },
     bonus: {
       cgn: {
         isCgnEligible: true,

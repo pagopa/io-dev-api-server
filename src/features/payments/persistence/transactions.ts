@@ -5,6 +5,7 @@ import { TransactionListItem } from "../../../../generated/definitions/pagopa/tr
 import { TransactionDetailResponse } from "../../../../generated/definitions/pagopa/transactions/TransactionDetailResponse";
 import { TransactionInfo } from "../../../../generated/definitions/pagopa/ecommerce/TransactionInfo";
 import { generateRandomInfoTransaction } from "../utils/transactions";
+import { ioDevServerConfig } from "../../../config";
 
 type TransactionId = TransactionListItem["transactionId"];
 
@@ -78,7 +79,10 @@ const generateUserTransaction = (
 };
 
 const generateUserTransactionData = () => {
-  generateUserTransaction("1");
+  // eslint-disable-next-line functional/no-let
+  for (let i = 0; i < ioDevServerConfig.features.payments.numberOfTransactions; i = i + 1) {
+    generateUserTransaction(faker.datatype.uuid());
+  }
 };
 
 // At server startup

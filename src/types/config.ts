@@ -187,6 +187,10 @@ export const IoDevServerConfig = t.interface({
   ]),
   features: t.intersection([
     t.interface({
+      payments: t.interface({
+        // the number of transactions to generate at the beginning
+        numberOfTransactions: t.number
+      }),
       bonus: t.interface({
         // defines the special configuration for cgn eligibility
         cgn: t.intersection([
