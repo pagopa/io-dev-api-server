@@ -1,5 +1,7 @@
 import { Router } from "express";
+import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
 import { UpsertServicePreference } from "../../generated/definitions/backend/UpsertServicePreference";
@@ -35,38 +37,60 @@ addHandler(
   serviceRouter,
   "get",
   addApiV1Prefix("/services/:service_id"),
-  (req, res) => {
-    if (configResponse.getServiceResponseCode !== 200) {
-      res.sendStatus(configResponse.getServiceResponseCode);
-      return;
-    }
-    const serviceId = req.params.service_id as ServiceId;
-    const service = ServicesDB.getService(serviceId);
-    if (service === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    res.json(service);
-  }
+  (req, res) =>
+    pipe(
+      configResponse.getServiceResponseCode,
+      O.fromPredicate(statusCode => statusCode !== 200),
+      O.fold(
+        () =>
+          pipe(
+            req.params.service_id,
+            O.fromNullable,
+            O.chain(serviceId =>
+              pipe(
+                serviceId as ServiceId,
+                ServicesDB.getService,
+                O.fromNullable
+              )
+            ),
+            O.fold(
+              () => res.sendStatus(404),
+              service => res.status(200).json(service)
+            )
+          ),
+        statusCode => res.sendStatus(statusCode)
+      )
+    )
 );
 
 addHandler(
   serviceRouter,
   "get",
   addApiV1Prefix("/services/:service_id/preferences"),
-  (req, res) => {
-    if (configResponse.getServicesPreference !== 200) {
-      res.sendStatus(configResponse.getServicesPreference);
-      return;
-    }
-    const serviceId = req.params.service_id as ServiceId;
-    const servicePreference = ServicesDB.getPreference(serviceId);
-    if (servicePreference === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    res.json(servicePreference);
-  }
+  (req, res) =>
+    pipe(
+      configResponse.getServicesPreference,
+      O.fromPredicate(statusCode => statusCode !== 200),
+      O.fold(
+        () =>
+          pipe(
+            req.params.service_id,
+            O.fromNullable,
+            O.chain(serviceId =>
+              pipe(
+                serviceId as ServiceId,
+                ServicesDB.getPreference,
+                O.fromNullable
+              )
+            ),
+            O.fold(
+              () => res.sendStatus(404),
+              servicePreference => res.status(200).json(servicePreference)
+            )
+          ),
+        statusCode => res.sendStatus(statusCode)
+      )
+    )
 );
 
 addHandler(
@@ -98,17 +122,12 @@ addHandler(
       res.sendStatus(409);
       return;
     }
-    const increasedSettingsVersion =
-      ((servicePreference.settings_version as number) +
-        1) as ServicePreference["settings_version"];
-    const updatedServicePreference = {
+
+    const persistedServicePreference = ServicesDB.updatePreference(serviceId, {
       ...updatedPreference,
-      settings_version: increasedSettingsVersion
-    } as ServicePreference;
-    const persistedServicePreference = ServicesDB.updatePreference(
-      serviceId,
-      updatedServicePreference
-    );
+      settings_version: servicePreference.settings_version + 1
+    } as ServicePreference);
+
     if (!persistedServicePreference) {
       res.sendStatus(500);
       return;

@@ -34,6 +34,7 @@ import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { walletRouter as newWalletRouter } from "./features/wallet";
+import { serviceRouter as newServiceRouter } from "./features/services";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
 import { fimsProviderRouter } from "./features/fims/routers/providerRouter";
 import { fimsRelyingPartyRouter } from "./features/fims/routers/relyingPartyRouter";
@@ -85,6 +86,7 @@ app.use(fastLoginMiddleware);
   lollipopRouter,
   fastLoginRouter,
   newWalletRouter,
+  newServiceRouter,
   fimsRelyingPartyRouter,
   fimsProviderRouter
 ].forEach(r => app.use(r));

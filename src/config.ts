@@ -189,6 +189,14 @@ const defaultConfig: IoDevServerConfig = {
     fastLogin: {
       sessionTTLinMS: 60000
     },
+    service: {
+      featuredItemsSize: 5,
+      response: {
+        featuredItemsResponseCode: 200,
+        institutionsResponseCode: 200,
+        servicesByInstitutionIdResponseCode: 200
+      }
+    },
     fims: {
       provider: {
         federationCookieName: "X-IO-Federation-Token",
