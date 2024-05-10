@@ -4,6 +4,7 @@ import { pipe } from "fp-ts/lib/function";
 import { ServiceScope } from "../../../../generated/definitions/backend/ServiceScope";
 import { ioDevServerConfig } from "../../../config";
 import { addHandler } from "../../../payloads/response";
+import { getFeaturedInstitutionsResponsePayload } from "../payloads/get-featured-institutions";
 import { getInstitutionsResponsePayload } from "../payloads/get-institutions";
 import { getServicesByInstitutionIdResponsePayload } from "../payloads/get-services";
 import { addApiV2Prefix, serviceRouter } from "./router";
@@ -75,6 +76,29 @@ addHandler(
             O.fold(
               () => res.status(404),
               services => res.status(200).json(services)
+            )
+          ),
+        statusCode => res.sendStatus(statusCode)
+      )
+    )
+);
+
+// Retrieve featured institutions
+addHandler(
+  serviceRouter,
+  "get",
+  addApiV2Prefix("/institutions/featured"),
+  (_, res) =>
+    pipe(
+      serviceConfig.response.featuredInstitutionsResponseCode,
+      O.fromPredicate(statusCode => statusCode !== 200),
+      O.fold(
+        () =>
+          pipe(
+            O.of(getFeaturedInstitutionsResponsePayload()),
+            O.fold(
+              () => res.status(404),
+              featuredInstitutions => res.status(200).json(featuredInstitutions)
             )
           ),
         statusCode => res.sendStatus(statusCode)

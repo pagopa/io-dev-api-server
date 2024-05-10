@@ -3,12 +3,16 @@ import * as t from "io-ts";
 import { HttpResponseCode } from "../../../types/httpResponseCode";
 
 export const ServiceConfiguration = t.type({
-  // configure number of featured items
-  featuredItemsSize: WithinRangeNumber(0, 6),
+  // configure number of featured institutions
+  featuredInstitutionsSize: WithinRangeNumber(0, 6),
+  // configure number of featured services
+  featuredServicesSize: WithinRangeNumber(0, 6),
   // configure some API response error code
   response: t.type({
     // 200 success with payload
-    featuredItemsResponseCode: HttpResponseCode,
+    featuredInstitutionsResponseCode: HttpResponseCode,
+    // 200 success with payload
+    featuredServicesResponseCode: HttpResponseCode,
     // 200 success with payload
     institutionsResponseCode: HttpResponseCode,
     // 200 success with payload
