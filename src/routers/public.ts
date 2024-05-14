@@ -88,8 +88,9 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
 
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     createOrRefreshEverySessionToken();
-    const url = `${urlLoginScheme}://${req.headers.host
-      }${redirectUrl}${getLoginSessionToken()}`;
+    const url = `${urlLoginScheme}://${
+      req.headers.host
+    }${redirectUrl}${getLoginSessionToken()}`;
     res.redirect(url);
     return;
   }
@@ -154,12 +155,12 @@ addHandler(publicRouter, "get", "/reset", (_, res) => {
   ];
   res.send(
     "<h2>reset:</h2>" +
-    resets
-      .map(r => {
-        r[0]();
-        return `<li>${r[1]}</li>`;
-      })
-      .join("<br/>")
+      resets
+        .map(r => {
+          r[0]();
+          return `<li>${r[1]}</li>`;
+        })
+        .join("<br/>")
   );
 });
 

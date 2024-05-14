@@ -33,4 +33,5 @@ export const addTransactionHandler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void
-) => addHandler(walletRouter, method, addTransactionPrefix(path), handleRequest);
+) =>
+  addHandler(walletRouter, method, addTransactionPrefix(path), handleRequest);

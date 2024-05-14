@@ -12,15 +12,14 @@ type TransactionId = TransactionListItem["transactionId"];
 const userTransactions = new Map<TransactionId, TransactionListItem>();
 const transactions = new Map<TransactionId, TransactionDetailResponse>();
 
-const getUserTransactions = () => Array.from(userTransactions.size > 0 ? userTransactions.values() : []);
+const getUserTransactions = () =>
+  Array.from(userTransactions.size > 0 ? userTransactions.values() : []);
 
 const getTransactionDetails = (transactionId: TransactionId) =>
   pipe(
     transactions,
     O.fromNullable,
-    O.chain(transactions =>
-      O.fromNullable(transactions.get(transactionId))
-    ),
+    O.chain(transactions => O.fromNullable(transactions.get(transactionId)))
   );
 
 const addUserTransaction = (transaction: TransactionListItem) => {
@@ -32,7 +31,10 @@ const removeUserTransaction = (transactionId: TransactionId) => {
   removeTransactionDetails(transactionId);
 };
 
-const addTransactionDetails = (transactionId: TransactionId, transaction: TransactionDetailResponse) => {
+const addTransactionDetails = (
+  transactionId: TransactionId,
+  transaction: TransactionDetailResponse
+) => {
   transactions.set(transactionId, transaction);
 };
 
@@ -44,12 +46,12 @@ const generateUserTransaction = (
   transactionId: TransactionId,
   additionalTransactionInfo: Partial<TransactionInfo> = {}
 ) => {
-
   const randomTransaction: TransactionListItem = {
     transactionId,
     payeeName: faker.company.name(),
     payeeTaxCode: faker.random.alphaNumeric(16).toLocaleUpperCase(),
-    amount: (additionalTransactionInfo.payments?.[0]?.amount.toString() ?? faker.finance.amount(1, 1000)) as TransactionListItem["amount"],
+    amount: (additionalTransactionInfo.payments?.[0]?.amount.toString() ??
+      faker.finance.amount(1, 1000)) as TransactionListItem["amount"],
     transactionDate: new Date().toISOString(),
     isCart: true
   };
@@ -59,7 +61,9 @@ const generateUserTransaction = (
     infoTransaction: generateRandomInfoTransaction(),
     carts: [
       {
-        subject: faker.lorem.sentence(faker.datatype.number({ min: 2, max: 4 })),
+        subject: faker.lorem.sentence(
+          faker.datatype.number({ min: 2, max: 4 })
+        ),
         amount: randomTransaction.amount,
         payee: {
           name: randomTransaction.payeeName,
@@ -70,7 +74,9 @@ const generateUserTransaction = (
           taxCode: faker.random.alphaNumeric(16).toUpperCase()
         },
         refNumberType: "IBAN",
-        refNumberValue: faker.datatype.number({ min: 100000000000, max: 999999999999 }).toString(),
+        refNumberValue: faker.datatype
+          .number({ min: 100000000000, max: 999999999999 })
+          .toString()
       }
     ]
   };
@@ -80,7 +86,11 @@ const generateUserTransaction = (
 
 const generateUserTransactionData = () => {
   // eslint-disable-next-line functional/no-let
-  for (let i = 0; i < ioDevServerConfig.features.payments.numberOfTransactions; i = i + 1) {
+  for (
+    let i = 0;
+    i < ioDevServerConfig.features.payments.numberOfTransactions;
+    i = i + 1
+  ) {
     generateUserTransaction(faker.datatype.uuid());
   }
 };
@@ -93,5 +103,5 @@ export default {
   getUserTransactions,
   getTransactionDetails,
   generateUserTransaction,
-  removeUserTransaction,
+  removeUserTransaction
 };
