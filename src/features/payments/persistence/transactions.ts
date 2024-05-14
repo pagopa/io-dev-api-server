@@ -85,8 +85,8 @@ const generateUserTransaction = (
 };
 
 const generateUserTransactionData = () => {
-  // eslint-disable-next-line functional/no-let
   for (
+    // eslint-disable-next-line functional/no-let
     let i = 0;
     i < ioDevServerConfig.features.payments.numberOfTransactions;
     i = i + 1
