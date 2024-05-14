@@ -1,4 +1,5 @@
 import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
 import { identity, pipe } from "fp-ts/lib/function";
 import _ from "lodash";
 import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
@@ -29,7 +30,7 @@ export const getInstitutionsResponsePayload = (
   offset: number = 0,
   scope?: ServiceScopeEnum,
   search?: string
-): InstitutionsResource => {
+): O.Option<InstitutionsResource> => {
   const filteredInstitutions = pipe(
     ServicesDB.getAllServices(),
     getInstitutions,
@@ -65,10 +66,10 @@ export const getInstitutionsResponsePayload = (
   const endIndex = offset + limit;
   const istitutionList = _.slice(filteredInstitutions, startIndex, endIndex);
 
-  return {
+  return O.some({
     institutions: istitutionList,
     limit,
     offset,
     count: totalElements
-  };
+  });
 };

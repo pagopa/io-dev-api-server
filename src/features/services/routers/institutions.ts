@@ -4,7 +4,9 @@ import { pipe } from "fp-ts/lib/function";
 import { ServiceScope } from "../../../../generated/definitions/backend/ServiceScope";
 import { ioDevServerConfig } from "../../../config";
 import { addHandler } from "../../../payloads/response";
+import { getFeaturedInstitutionsResponsePayload } from "../payloads/get-featured-institutions";
 import { getInstitutionsResponsePayload } from "../payloads/get-institutions";
+import { getServicesByInstitutionIdResponsePayload } from "../payloads/get-services";
 import { addApiV2Prefix, serviceRouter } from "./router";
 
 const serviceConfig = ioDevServerConfig.features.service;
@@ -42,7 +44,7 @@ addHandler(serviceRouter, "get", addApiV2Prefix("/institutions"), (req, res) =>
               pipe(req.query.search as string, O.fromNullable, O.toUndefined)
             )
           ),
-          O.map(args => getInstitutionsResponsePayload(...args)),
+          O.chain(args => getInstitutionsResponsePayload(...args)),
           O.fold(
             () => res.status(404),
             instituitions => res.status(200).json(instituitions)
@@ -51,4 +53,55 @@ addHandler(serviceRouter, "get", addApiV2Prefix("/institutions"), (req, res) =>
       statusCode => res.sendStatus(statusCode)
     )
   )
+);
+
+// Find services for institution
+addHandler(
+  serviceRouter,
+  "get",
+  addApiV2Prefix("/institutions/:institutionId/services"),
+  (req, res) =>
+    pipe(
+      serviceConfig.response.servicesByInstitutionIdResponseCode,
+      O.fromPredicate(statusCode => statusCode !== 200),
+      O.fold(
+        () =>
+          pipe(
+            sequenceT(O.Monad)(
+              O.fromNullable(req.params.institutionId),
+              O.of(pipe(req.query.limit, extractQuery)),
+              O.of(pipe(req.query.offset, extractQuery))
+            ),
+            O.chain(args => getServicesByInstitutionIdResponsePayload(...args)),
+            O.fold(
+              () => res.status(404),
+              services => res.status(200).json(services)
+            )
+          ),
+        statusCode => res.sendStatus(statusCode)
+      )
+    )
+);
+
+// Retrieve featured institutions
+addHandler(
+  serviceRouter,
+  "get",
+  addApiV2Prefix("/institutions/featured"),
+  (_, res) =>
+    pipe(
+      serviceConfig.response.featuredInstitutionsResponseCode,
+      O.fromPredicate(statusCode => statusCode !== 200),
+      O.fold(
+        () =>
+          pipe(
+            O.of(getFeaturedInstitutionsResponsePayload()),
+            O.fold(
+              () => res.status(404),
+              featuredInstitutions => res.status(200).json(featuredInstitutions)
+            )
+          ),
+        statusCode => res.sendStatus(statusCode)
+      )
+    )
 );
