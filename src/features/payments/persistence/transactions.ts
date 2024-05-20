@@ -7,6 +7,8 @@ import { TransactionInfo } from "../../../../generated/definitions/pagopa/ecomme
 import { generateRandomInfoTransaction } from "../utils/transactions";
 import { ioDevServerConfig } from "../../../config";
 
+const mockedTaxCodes = ["1199250158", "13756881002", "262700362", "31500945"];
+
 type TransactionId = TransactionListItem["transactionId"];
 
 const userTransactions = new Map<TransactionId, TransactionListItem>();
@@ -46,10 +48,11 @@ const generateUserTransaction = (
   transactionId: TransactionId,
   additionalTransactionInfo: Partial<TransactionInfo> = {}
 ) => {
+  const payeeTaxCode = mockedTaxCodes[faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })];
   const randomTransaction: TransactionListItem = {
     transactionId,
     payeeName: faker.company.name(),
-    payeeTaxCode: faker.random.alphaNumeric(16).toLocaleUpperCase(),
+    payeeTaxCode,
     amount: (additionalTransactionInfo.payments?.[0]?.amount.toString() ??
       faker.finance.amount(1, 1000)) as TransactionListItem["amount"],
     transactionDate: new Date().toISOString(),

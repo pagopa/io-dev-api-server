@@ -8,7 +8,7 @@ const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
 
 addTransactionHandler("get", "/transactions", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : 10;
-  const offset = req.headers[CONTINUATION_TOKEN_HEADER]
+  const offset = (req.headers[CONTINUATION_TOKEN_HEADER] !== undefined && req.headers[CONTINUATION_TOKEN_HEADER] !== 'undefined')
     ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
     : 0;
   const transactions = TransactionsDB.getUserTransactions().slice(
