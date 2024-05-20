@@ -44,7 +44,7 @@ export const backendStatus: BackendStatus = {
     },
     fims: {
       enabled: true,
-      domain: "http://localhost:3000/"
+      domain: "http://localhost:3000/fims/provider/"
     },
     uaDonations: {
       enabled: false,
