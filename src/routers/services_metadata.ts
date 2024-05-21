@@ -132,8 +132,7 @@ addHandler(
       serviceLogoBaseRelativePathGenerator(),
       fallbackServiceLogoRelativePathGenerator
     );
-
-    sendFileFromRootPath(serviceLogoRelativePath, res); // "assets/imgs/logos/services/service_1.png"
+    sendFileFromRootPath(serviceLogoRelativePath, res);
   }
 );
 
