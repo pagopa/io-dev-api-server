@@ -56,32 +56,34 @@ const generateUserTransaction = (
     amount: (additionalTransactionInfo.payments?.[0]?.amount.toString() ??
       faker.finance.amount(1, 1000)) as TransactionListItem["amount"],
     transactionDate: new Date().toISOString(),
-    isCart: true
+    isCart: false,
   };
+
+  const cartList = Array.from({ length: faker.datatype.number({ min: 1, max: 2 }) }, () => ({
+    subject: faker.lorem.sentence(
+      faker.datatype.number({ min: 2, max: 4 })
+    ),
+    amount: randomTransaction.amount,
+    payee: {
+      name: randomTransaction.payeeName,
+      taxCode: randomTransaction.payeeTaxCode
+    },
+    debtor: {
+      name: faker.name.fullName(),
+      taxCode: faker.random.alphaNumeric(16).toUpperCase()
+    },
+    refNumberType: "IBAN",
+    refNumberValue: faker.datatype
+      .number({ min: 100000000000, max: 999999999999 })
+      .toString()
+  }));
+  // eslint-disable-next-line functional/immutable-data
+  randomTransaction.isCart = cartList.length > 1;
   addUserTransaction(randomTransaction);
 
   const randomTransactionDetails: TransactionDetailResponse = {
     infoTransaction: generateRandomInfoTransaction(),
-    carts: [
-      {
-        subject: faker.lorem.sentence(
-          faker.datatype.number({ min: 2, max: 4 })
-        ),
-        amount: randomTransaction.amount,
-        payee: {
-          name: randomTransaction.payeeName,
-          taxCode: randomTransaction.payeeTaxCode
-        },
-        debtor: {
-          name: faker.name.fullName(),
-          taxCode: faker.random.alphaNumeric(16).toUpperCase()
-        },
-        refNumberType: "IBAN",
-        refNumberValue: faker.datatype
-          .number({ min: 100000000000, max: 999999999999 })
-          .toString()
-      }
-    ]
+    carts: cartList
   };
   addTransactionDetails(transactionId, randomTransactionDetails);
   return randomTransaction;
