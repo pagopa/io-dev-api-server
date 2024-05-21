@@ -91,6 +91,7 @@ const getPublicMessages = (
           return {
             service_name: senderService.service_name,
             organization_name: senderService.organization_name,
+            organization_fiscal_code: senderService.organization_fiscal_code,
             message_title: content.subject,
             category: getMessageCategory(message),
             is_read,
