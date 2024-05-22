@@ -190,9 +190,11 @@ const defaultConfig: IoDevServerConfig = {
       sessionTTLinMS: 60000
     },
     service: {
-      featuredItemsSize: 5,
+      featuredInstitutionsSize: 5,
+      featuredServicesSize: 5,
       response: {
-        featuredItemsResponseCode: 200,
+        featuredInstitutionsResponseCode: 200,
+        featuredServicesResponseCode: 200,
         institutionsResponseCode: 200,
         servicesByInstitutionIdResponseCode: 200
       }
