@@ -48,11 +48,11 @@ const organizationLogoMap = new Map<string, string>();
 
 export const initializeServiceLogoMap = () => {
   serviceLogoMap.set(
-    pnServiceId.toLowerCase(),
+    `${pnServiceId.toLowerCase()}.png`,
     `${serviceLogoBaseRelativePathGenerator()}specialServices/service_send.png`
   );
   serviceLogoMap.set(
-    cgnServiceId.toLowerCase(),
+    `${cgnServiceId.toLowerCase()}.png`,
     `${serviceLogoBaseRelativePathGenerator()}specialServices/service_cgn.png`
   );
 };
@@ -96,16 +96,16 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/logos/organizations/:organization_id"),
+  addRoutePrefix("/logos/organizations/:fileNameWithExtension"),
   (req, res) =>
-    pipe(req.params.organization_id, organizationId =>
+    pipe(req.params.fileNameWithExtension, fileNameWithExtension =>
       pipe(
-        organizationId === "4.png",
+        fileNameWithExtension === "4.png",
         B.fold(
           () =>
             pipe(
               getOrLoadAndInitializeLogoRelativePath(
-                organizationId,
+                fileNameWithExtension,
                 organizationLogoMap,
                 organizationLogoBaseRelativePathGenerator(),
                 fallbackOrganizationLogoRelativePathGenerator
@@ -123,11 +123,11 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/logos/services/:service_id"),
+  addRoutePrefix("/logos/services/:fileNameWithExtension"),
   (req, res) => {
-    const serviceId = req.params.service_id;
+    const fileNameWithExtension = req.params.fileNameWithExtension;
     const serviceLogoRelativePath = getOrLoadAndInitializeLogoRelativePath(
-      serviceId,
+      fileNameWithExtension,
       serviceLogoMap,
       serviceLogoBaseRelativePathGenerator(),
       fallbackServiceLogoRelativePathGenerator
@@ -293,24 +293,26 @@ addHandler(
 );
 
 const getOrLoadAndInitializeLogoRelativePath = (
-  id: string,
+  fileNameWithExtension: string,
   map: Map<string, string>,
   sourceDirRelativePath: string,
   fallbackRelativePathFunction: () => string
 ) => {
-  const lowercaseId = id.toLowerCase();
-  if (!map.has(lowercaseId)) {
+  const lowercaseFileNameWithExtension = fileNameWithExtension.toLowerCase();
+  if (!map.has(lowercaseFileNameWithExtension)) {
     const fileNames = listDir(sourceDirRelativePath);
     const pngOrJpegOnlyFileNames = fileNames.filter(isPngOrJpegExtension);
     if (pngOrJpegOnlyFileNames.length > 0) {
       const pngOrJpegRandomIndex = Math.ceil(
-        pngOrJpegOnlyFileNames.length * Math.random()
+        (pngOrJpegOnlyFileNames.length - 1) * Math.random()
       );
       const pngOrJpegFileName = pngOrJpegOnlyFileNames[pngOrJpegRandomIndex];
       const pngOrJpegRelativePath = `${sourceDirRelativePath}${pngOrJpegFileName}`;
-      map.set(lowercaseId, pngOrJpegRelativePath);
+      map.set(lowercaseFileNameWithExtension, pngOrJpegRelativePath);
     }
   }
 
-  return map.get(lowercaseId) ?? fallbackRelativePathFunction();
+  return (
+    map.get(lowercaseFileNameWithExtension) ?? fallbackRelativePathFunction()
+  );
 };
