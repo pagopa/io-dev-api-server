@@ -46,6 +46,7 @@ import {
 } from "./features/pn/payloads/messages";
 import { MessageTemplateWrapper } from "./features/messages/types/messageTemplateWrapper";
 import { MessageTemplate } from "./features/messages/types/messageTemplate";
+import { initializeServiceLogoMap } from "./routers/services_metadata";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -505,6 +506,7 @@ const createMessages = (
  * @param customConfig
  */
 export default function init(customConfig = ioDevServerConfig) {
+  initializeServiceLogoMap();
   ServicesDB.createServices(customConfig);
 
   const messages = createMessages(customConfig);
