@@ -53,8 +53,7 @@ const generateUserTransaction = (
     transactionId,
     payeeName: faker.company.name(),
     payeeTaxCode,
-    amount: (additionalTransactionInfo.payments?.[0]?.amount.toString() ??
-      faker.finance.amount(1, 1000)) as TransactionListItem["amount"],
+    amount: additionalTransactionInfo.payments?.[0]?.amount.toString(),
     transactionDate: new Date().toISOString(),
     isCart: false,
   };
@@ -63,7 +62,7 @@ const generateUserTransaction = (
     subject: faker.lorem.sentence(
       faker.datatype.number({ min: 2, max: 4 })
     ),
-    amount: randomTransaction.amount,
+    amount: faker.finance.amount(1, 1000),
     payee: {
       name: randomTransaction.payeeName,
       taxCode: randomTransaction.payeeTaxCode
@@ -79,6 +78,11 @@ const generateUserTransaction = (
   }));
   // eslint-disable-next-line functional/immutable-data
   randomTransaction.isCart = cartList.length > 1;
+  // eslint-disable-next-line functional/immutable-data
+  randomTransaction.amount = cartList.reduce(
+    (acc, item) => acc + Number(item.amount),
+    0
+  ).toString();
   addUserTransaction(randomTransaction);
 
   const randomTransactionDetails: TransactionDetailResponse = {
