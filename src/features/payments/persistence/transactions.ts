@@ -82,7 +82,7 @@ const generateUserTransaction = (
   addUserTransaction(randomTransaction);
 
   const randomTransactionDetails: TransactionDetailResponse = {
-    infoTransaction: generateRandomInfoTransaction(),
+    infoTransaction: generateRandomInfoTransaction(cartList),
     carts: cartList
   };
   addTransactionDetails(transactionId, randomTransactionDetails);

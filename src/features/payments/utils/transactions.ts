@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { ulid } from "ulid";
 import { InfoTransactionView, OriginEnum, PaymentMethodEnum } from "../../../../generated/definitions/pagopa/transactions/InfoTransactionView";
+import { CartItem } from "../../../../generated/definitions/pagopa/transactions/CartItem";
 
 export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
   {
@@ -36,6 +37,7 @@ export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
 ];
 
 export const generateRandomInfoTransaction = (
+  cartList: CartItem[],
   transactionId?: string
 ): InfoTransactionView => {
   const randomPaymentMethod = faker.helpers.arrayElement(
@@ -56,8 +58,11 @@ export const generateRandomInfoTransaction = (
       name: faker.name.fullName(),
       taxCode: faker.random.alphaNumeric(16).toLocaleUpperCase()
     },
-    amount: faker.finance.amount(1, 1000),
-    fee: faker.finance.amount(0.1, 10),
+    amount: cartList.reduce(
+      (acc, item) => acc + Number(item.amount),
+      0
+    ).toString(),
+    fee: faker.finance.amount(0, 10),
     origin: OriginEnum.INTERNAL
   };
 };
