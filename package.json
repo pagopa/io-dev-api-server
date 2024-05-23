@@ -22,7 +22,7 @@
   "api_fast_login": "https://raw.githubusercontent.com/pagopa/io-backend/v13.32.1-RELEASE/openapi/generated/api_fast_login.yaml",
   "api_pagopa_walletv3": "https://raw.githubusercontent.com/pagopa/pagopa-infra/8b8a5b0c3ebc007d9b8f1a8dc4ae9b88b63b5794/src/domains/wallet-app/api/payment-wallet/v1/_openapi.json.tpl",
   "api_pagopa_ecommerce": "https://raw.githubusercontent.com/pagopa/pagopa-infra/8b8a5b0c3ebc007d9b8f1a8dc4ae9b88b63b5794/src/domains/ecommerce-app/api/ecommerce-io/v1/_openapi.json.tpl",
-  "api_pagopa_biz_events": "https://raw.githubusercontent.com/pagopa/pagopa-infra/9a2c52d7c3525224d3654956d8ad92555d881b95/src/domains/bizevents-app/api/transaction-service/v1/_openapi-jwt.json.tpl",
+  "api_pagopa_biz_events": "https://raw.githubusercontent.com/pagopa/pagopa-infra/b2320df09c7aee0be716fbbdc4a775c472ee7b9e/src/domains/bizevents-app/api/transaction-service/v1/_openapi-jwt.json.tpl",
   "api_services": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_services_app_backend.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
