@@ -1,10 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { ulid } from "ulid";
-import {
-  InfoTransaction,
-  OriginEnum,
-  PaymentMethodEnum
-} from "../../../../generated/definitions/pagopa/transactions/InfoTransaction";
+import { InfoTransactionView, OriginEnum, PaymentMethodEnum } from "../../../../generated/definitions/pagopa/transactions/InfoTransactionView";
 
 export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
   {
@@ -41,7 +37,7 @@ export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
 
 export const generateRandomInfoTransaction = (
   transactionId?: string
-): InfoTransaction => {
+): InfoTransactionView => {
   const randomPaymentMethod = faker.helpers.arrayElement(
     PAYMENT_METHODS_TRANSACTIONS_MOCK
   );

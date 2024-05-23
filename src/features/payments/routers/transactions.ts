@@ -2,6 +2,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import TransactionsDB from "../persistence/transactions";
 
+import { TransactionListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/TransactionListWrapResponse";
 import { addTransactionHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
@@ -11,19 +12,22 @@ addTransactionHandler("get", "/transactions", (req, res) => {
   const offset = (req.headers[CONTINUATION_TOKEN_HEADER] !== undefined && req.headers[CONTINUATION_TOKEN_HEADER] !== 'undefined')
     ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
     : 0;
-  const transactions = TransactionsDB.getUserTransactions().slice(
-    offset,
-    offset + size
-  );
-  const continuationTokenHeader = {
-    [CONTINUATION_TOKEN_HEADER]:
-      TransactionsDB.getUserTransactions().length > offset + size
-        ? offset + size
-        : null
+  const response: TransactionListWrapResponse = {
+    transactions: TransactionsDB.getUserTransactions().slice(
+      offset,
+      offset + size
+    )
   };
+  const continuationToken =
+    TransactionsDB.getUserTransactions().length > offset + size
+      ? (offset + size).toString()
+      : undefined;
   pipe(
-    transactions,
-    O.fromPredicate(transactions => transactions.length > 0),
+    response.transactions,
+    O.fromNullable,
+    O.chain(
+      O.fromPredicate(transactions => transactions.length > 0)
+    ),
     O.fold(
       () =>
         res.status(404).json({
@@ -31,8 +35,12 @@ addTransactionHandler("get", "/transactions", (req, res) => {
           status: 404,
           detail: "No transactions found for the user"
         }),
-      transactions =>
-        res.status(200).set(continuationTokenHeader).json(transactions)
+      _ => {
+        if (continuationToken) {
+          res.setHeader(CONTINUATION_TOKEN_HEADER, continuationToken);
+        }
+        return res.status(200).json(response);
+      }
     )
   );
 });
