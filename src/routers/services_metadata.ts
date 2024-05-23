@@ -17,6 +17,8 @@ import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
 import {
   fileExists,
+  isPngOrJpegExtension,
+  listDir,
   readFileAndDecode,
   readFileAsJSON,
   sendFileFromRootPath
@@ -24,11 +26,36 @@ import {
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
+import { pnServiceId } from "../features/pn/services/services";
+import { cgnServiceId } from "../payloads/services/special/cgn/factoryCGNService";
 import ServicesDB from "./../persistence/services";
 
 export const servicesMetadataRouter = Router();
 
 const addRoutePrefix = (path: string) => `${staticContentRootPath}${path}`;
+
+const serviceLogoBaseRelativePathGenerator = () =>
+  "assets/imgs/logos/services/";
+const fallbackServiceLogoRelativePathGenerator = () =>
+  `${serviceLogoBaseRelativePathGenerator()}service_00.png`;
+
+const organizationLogoBaseRelativePathGenerator = () =>
+  "assets/imgs/logos/organizations/";
+const fallbackOrganizationLogoRelativePathGenerator = () =>
+  `${organizationLogoBaseRelativePathGenerator()}organization_00.png`;
+const serviceLogoMap = new Map<string, string>();
+const organizationLogoMap = new Map<string, string>();
+
+export const initializeServiceLogoMap = () => {
+  serviceLogoMap.set(
+    `${pnServiceId.toLowerCase()}.png`,
+    `${serviceLogoBaseRelativePathGenerator()}specialServices/service_send.png`
+  );
+  serviceLogoMap.set(
+    `${cgnServiceId.toLowerCase()}.png`,
+    `${serviceLogoBaseRelativePathGenerator()}specialServices/service_cgn.png`
+  );
+};
 
 /**
  * @deprecated the app should not use this API. It should consume metadata contained in the service detail
@@ -69,19 +96,26 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/logos/organizations/:organization_id"),
+  addRoutePrefix("/logos/organizations/:fileNameWithExtension"),
   (req, res) =>
-    pipe(
-      req.params.organization_id === "4.png",
-      B.fold(
-        // ignoring organization id and send always the same image
-        () =>
-          sendFileFromRootPath(
-            "assets/imgs/logos/organizations/organization_1.png",
-            res
-          ),
-        // we send a 404 for the service number 4 to check missing image values
-        () => res.sendStatus(404)
+    pipe(req.params.fileNameWithExtension, fileNameWithExtension =>
+      pipe(
+        fileNameWithExtension === "4.png",
+        B.fold(
+          () =>
+            pipe(
+              getOrLoadAndInitializeLogoRelativePath(
+                fileNameWithExtension,
+                organizationLogoMap,
+                organizationLogoBaseRelativePathGenerator(),
+                fallbackOrganizationLogoRelativePathGenerator
+              ),
+              organizationLogoRelativePath =>
+                sendFileFromRootPath(organizationLogoRelativePath, res)
+            ),
+          // we send a 404 for the service number 4 to check missing image values
+          () => res.sendStatus(404)
+        )
       )
     )
 );
@@ -89,10 +123,16 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/logos/services/:service_id"),
-  (_, res) => {
-    // ignoring service id and send always the same image
-    sendFileFromRootPath("assets/imgs/logos/services/service_1.png", res);
+  addRoutePrefix("/logos/services/:fileNameWithExtension"),
+  (req, res) => {
+    const fileNameWithExtension = req.params.fileNameWithExtension;
+    const serviceLogoRelativePath = getOrLoadAndInitializeLogoRelativePath(
+      fileNameWithExtension,
+      serviceLogoMap,
+      serviceLogoBaseRelativePathGenerator(),
+      fallbackServiceLogoRelativePathGenerator
+    );
+    sendFileFromRootPath(serviceLogoRelativePath, res);
   }
 );
 
@@ -243,7 +283,7 @@ addHandler(
   servicesMetadataRouter,
   "get",
   addRoutePrefix("/assistanceTools/zendesk.json"),
-  (req, res) => {
+  (_, res) => {
     const content = readFileAsJSON(
       assetsFolder + "/assistanceTools/zendesk.json"
     );
@@ -251,3 +291,28 @@ addHandler(
     res.json(zendeskPayload);
   }
 );
+
+const getOrLoadAndInitializeLogoRelativePath = (
+  fileNameWithExtension: string,
+  map: Map<string, string>,
+  sourceDirRelativePath: string,
+  fallbackRelativePathFunction: () => string
+) => {
+  const lowercaseFileNameWithExtension = fileNameWithExtension.toLowerCase();
+  if (!map.has(lowercaseFileNameWithExtension)) {
+    const fileNames = listDir(sourceDirRelativePath);
+    const pngOrJpegOnlyFileNames = fileNames.filter(isPngOrJpegExtension);
+    if (pngOrJpegOnlyFileNames.length > 0) {
+      const pngOrJpegRandomIndex = Math.ceil(
+        (pngOrJpegOnlyFileNames.length - 1) * Math.random()
+      );
+      const pngOrJpegFileName = pngOrJpegOnlyFileNames[pngOrJpegRandomIndex];
+      const pngOrJpegRelativePath = `${sourceDirRelativePath}${pngOrJpegFileName}`;
+      map.set(lowercaseFileNameWithExtension, pngOrJpegRelativePath);
+    }
+  }
+
+  return (
+    map.get(lowercaseFileNameWithExtension) ?? fallbackRelativePathFunction()
+  );
+};

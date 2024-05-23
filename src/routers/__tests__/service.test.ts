@@ -42,14 +42,14 @@ it("services should return a valid service with content", async () => {
 
 it("static_contents should return a valid service logo", async () => {
   const response = await request.get(
-    `${staticContentRootPath}/logos/services/service_id`
+    `${staticContentRootPath}/logos/services/service_id.png`
   );
   expect(response.status).toBe(200);
 });
 
 it("static_contents should return a valid organization logo", async () => {
   const response = await request.get(
-    `${staticContentRootPath}/logos/organizations/organization_id`
+    `${staticContentRootPath}/logos/organizations/organization_id.png`
   );
   expect(response.status).toBe(200);
 });
