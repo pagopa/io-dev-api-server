@@ -109,3 +109,12 @@ export const contentTypeMapping: Record<string, string> = {
   png: "image/png",
   zip: "application/zip"
 };
+
+export const isPngOrJpegExtension = (inputString?: string) => {
+  const lowerCaseInputString = inputString?.toLowerCase() ?? "";
+  return (
+    lowerCaseInputString.endsWith(".png") ||
+    lowerCaseInputString.endsWith(".jpg") ||
+    lowerCaseInputString.endsWith(".jpeg")
+  );
+};
