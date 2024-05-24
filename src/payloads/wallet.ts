@@ -187,77 +187,76 @@ export const getTransactions = (
   }
   return count > 0
     ? range(1, count)
-        .map(idx => {
-          const amount = getRandomValue(
-            20000 + idx * 10,
-            faker.datatype.number({ min: 100, max: 20000 }),
-            "wallet"
-          );
-          const fee = getRandomValue(
-            100,
-            faker.datatype.number({ min: 1, max: 150 }),
-            "wallet"
-          );
-          const transactionId = getRandomValue(
-            idx,
-            faker.datatype.number(1000000),
-            "wallet"
-          );
-          const transactionDescription = getRandomValue(
-            `transaction - ${idx}`,
-            faker.finance.transactionDescription(),
-            "wallet"
-          );
-          const description = `/RFB/${transactionId}/${
-            amount / 100
+      .map(idx => {
+        const amount = getRandomValue(
+          20000 + idx * 10,
+          faker.datatype.number({ min: 100, max: 20000 }),
+          "wallet"
+        );
+        const fee = getRandomValue(
+          100,
+          faker.datatype.number({ min: 1, max: 150 }),
+          "wallet"
+        );
+        const transactionId = getRandomValue(
+          idx,
+          faker.datatype.number(1000000),
+          "wallet"
+        );
+        const transactionDescription = getRandomValue(
+          `transaction - ${idx}`,
+          faker.finance.transactionDescription(),
+          "wallet"
+        );
+        const description = `/RFB/${transactionId}/${amount / 100
           }/TXT/${transactionDescription}`;
-          const delta = 1000 * 60 * 60;
-          const now = new Date();
-          const created = getRandomValue(
-            new Date(now.getTime() + idx * delta),
-            faker.date.past(),
-            "wallet"
-          );
-          const merchant = getRandomValue(
-            `merchant-${idx}`,
-            faker.company.name(),
-            "wallet"
-          );
-          return validatePayload(Transaction, {
-            // 1 === transaction confirmed!
-            accountingStatus: confirmed ? 1 : 0,
-            amount: { amount },
-            created,
-            description,
-            error: false,
-            fee: { amount: fee },
-            grandTotal: { amount: amount + fee },
-            id: idx,
-            idPayment: 1,
-            idPsp: pipe(
-              O.fromNullable(wallets),
-              O.map(ws => Number(ws[idx % ws.length].idPsp)),
-              O.getOrElse(() => faker.datatype.number(10000))
-            ),
-            idStatus: 3,
-            idWallet: pipe(
-              O.fromNullable(wallets),
-              O.map(ws => ws[idx % ws.length].idWallet),
-              O.toUndefined
-            ),
-            merchant,
-            nodoIdPayment: "nodoIdPayment",
-            paymentModel: 5,
-            spcNodeDescription: "spcNodeDescription",
-            spcNodeStatus: 6,
-            statusMessage: "statusMessage",
-            success: true,
-            token: "token",
-            updated: undefined,
-            urlCheckout3ds: "urlCheckout3ds",
-            urlRedirectPSP: "urlRedirectPSP"
-          });
-        })
-        .reverse()
+        const delta = 1000 * 60 * 60;
+        const now = new Date();
+        const created = getRandomValue(
+          new Date(now.getTime() + idx * delta),
+          faker.date.past(),
+          "wallet"
+        );
+        const merchant = getRandomValue(
+          `merchant-${idx}`,
+          faker.company.name(),
+          "wallet"
+        );
+        return validatePayload(Transaction, {
+          // 1 === transaction confirmed!
+          accountingStatus: confirmed ? 1 : 0,
+          amount: { amount },
+          created,
+          description,
+          error: false,
+          fee: { amount: fee },
+          grandTotal: { amount: amount + fee },
+          id: idx,
+          idPayment: 1,
+          idPsp: pipe(
+            O.fromNullable(wallets),
+            O.map(ws => Number(ws[idx % ws.length].idPsp)),
+            O.getOrElse(() => faker.datatype.number(10000))
+          ),
+          idStatus: 3,
+          idWallet: pipe(
+            O.fromNullable(wallets),
+            O.map(ws => ws[idx % ws.length].idWallet),
+            O.toUndefined
+          ),
+          merchant,
+          nodoIdPayment: "nodoIdPayment",
+          paymentModel: 5,
+          spcNodeDescription: "spcNodeDescription",
+          spcNodeStatus: 6,
+          statusMessage: "statusMessage",
+          success: true,
+          token: "token",
+          updated: undefined,
+          urlCheckout3ds: "urlCheckout3ds",
+          urlRedirectPSP: "urlRedirectPSP"
+        });
+      })
+      .reverse()
     : [];
 };

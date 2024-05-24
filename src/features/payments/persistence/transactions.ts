@@ -46,6 +46,7 @@ const removeTransactionDetails = (transactionId: TransactionId) => {
 
 const generateUserTransaction = (
   transactionId: TransactionId,
+  idx: number,
   additionalTransactionInfo: Partial<TransactionInfo> = {}
 ) => {
   const payeeTaxCode = mockedTaxCodes[faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })];
@@ -54,7 +55,7 @@ const generateUserTransaction = (
     payeeName: faker.company.name(),
     payeeTaxCode,
     amount: additionalTransactionInfo.payments?.[0]?.amount.toString(),
-    transactionDate: new Date().toISOString(),
+    transactionDate: new Date(new Date().setDate(new Date().getDate() - (2 * idx))).toISOString(),
     isCart: false,
   };
 
@@ -100,7 +101,7 @@ const generateUserTransactionData = () => {
     i < ioDevServerConfig.features.payments.numberOfTransactions;
     i = i + 1
   ) {
-    generateUserTransaction(faker.datatype.uuid());
+    generateUserTransaction(faker.datatype.uuid(), i);
   }
 };
 

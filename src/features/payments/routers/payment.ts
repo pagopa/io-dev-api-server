@@ -196,7 +196,7 @@ addPaymentHandler("post", "/mock-transaction", (req, res) =>
           O.fold(
             () => res.sendStatus(404),
             () => {
-              TransactionsDB.generateUserTransaction(transactionId);
+              TransactionsDB.generateUserTransaction(transactionId, 0);
               return res.status(200).json({ status: "ok" });
             }
           )
