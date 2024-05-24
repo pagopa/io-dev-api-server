@@ -51,7 +51,9 @@ export const generateRandomInfoTransaction = (
     pspName: "Intesa Sanpaolo",
     walletInfo: {
       accountHolder: faker.name.fullName(),
-      brand: randomPaymentMethod.brand
+      brand: randomPaymentMethod.brand !== "PAYPAL" ? randomPaymentMethod.brand : undefined,
+      blurredNumber: randomPaymentMethod.brand !== "PAYPAL" ? faker.finance.creditCardNumber().slice(-4) : undefined,
+      maskedEmail: randomPaymentMethod.brand === "PAYPAL" ? faker.internet.email() : undefined,
     },
     paymentMethod: PaymentMethodEnum.PPAL,
     payer: {
