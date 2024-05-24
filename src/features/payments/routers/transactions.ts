@@ -9,9 +9,11 @@ const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
 
 addTransactionHandler("get", "/transactions", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : 10;
-  const offset = (req.headers[CONTINUATION_TOKEN_HEADER] !== undefined && req.headers[CONTINUATION_TOKEN_HEADER] !== 'undefined')
-    ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
-    : 0;
+  const offset =
+    req.headers[CONTINUATION_TOKEN_HEADER] !== undefined &&
+    req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
+      ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
+      : 0;
   const response: TransactionListWrapResponse = {
     transactions: TransactionsDB.getUserTransactions().slice(
       offset,
@@ -25,9 +27,7 @@ addTransactionHandler("get", "/transactions", (req, res) => {
   pipe(
     response.transactions,
     O.fromNullable,
-    O.chain(
-      O.fromPredicate(transactions => transactions.length > 0)
-    ),
+    O.chain(O.fromPredicate(transactions => transactions.length > 0)),
     O.fold(
       () =>
         res.status(404).json({

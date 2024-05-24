@@ -49,41 +49,46 @@ const generateUserTransaction = (
   idx: number,
   additionalTransactionInfo: Partial<TransactionInfo> = {}
 ) => {
-  const payeeTaxCode = mockedTaxCodes[faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })];
+  const payeeTaxCode =
+    mockedTaxCodes[
+      faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })
+    ];
   const randomTransaction: TransactionListItem = {
     transactionId,
     payeeName: faker.company.name(),
     payeeTaxCode,
     amount: additionalTransactionInfo.payments?.[0]?.amount.toString(),
-    transactionDate: new Date(new Date().setDate(new Date().getDate() - (2 * idx))).toISOString(),
-    isCart: false,
+    transactionDate: new Date(
+      new Date().setDate(new Date().getDate() - 2 * idx)
+    ).toISOString(),
+    isCart: false
   };
 
-  const cartList = Array.from({ length: faker.datatype.number({ min: 1, max: 2 }) }, () => ({
-    subject: faker.lorem.sentence(
-      faker.datatype.number({ min: 2, max: 4 })
-    ),
-    amount: faker.finance.amount(1, 1000),
-    payee: {
-      name: randomTransaction.payeeName,
-      taxCode: randomTransaction.payeeTaxCode
-    },
-    debtor: {
-      name: faker.name.fullName(),
-      taxCode: faker.random.alphaNumeric(16).toUpperCase()
-    },
-    refNumberType: "IBAN",
-    refNumberValue: faker.datatype
-      .number({ min: 100000000000, max: 999999999999 })
-      .toString()
-  }));
+  const cartList = Array.from(
+    { length: faker.datatype.number({ min: 1, max: 2 }) },
+    () => ({
+      subject: faker.lorem.sentence(faker.datatype.number({ min: 2, max: 4 })),
+      amount: faker.finance.amount(1, 1000),
+      payee: {
+        name: randomTransaction.payeeName,
+        taxCode: randomTransaction.payeeTaxCode
+      },
+      debtor: {
+        name: faker.name.fullName(),
+        taxCode: faker.random.alphaNumeric(16).toUpperCase()
+      },
+      refNumberType: "IBAN",
+      refNumberValue: faker.datatype
+        .number({ min: 100000000000, max: 999999999999 })
+        .toString()
+    })
+  );
   // eslint-disable-next-line functional/immutable-data
   randomTransaction.isCart = cartList.length > 1;
   // eslint-disable-next-line functional/immutable-data
-  randomTransaction.amount = cartList.reduce(
-    (acc, item) => acc + Number(item.amount),
-    0
-  ).toString();
+  randomTransaction.amount = cartList
+    .reduce((acc, item) => acc + Number(item.amount), 0)
+    .toString();
   addUserTransaction(randomTransaction);
 
   const randomTransactionDetails: TransactionDetailResponse = {

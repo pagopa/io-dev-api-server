@@ -1,6 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { ulid } from "ulid";
-import { InfoTransactionView, OriginEnum, PaymentMethodEnum } from "../../../../generated/definitions/pagopa/transactions/InfoTransactionView";
+import {
+  InfoTransactionView,
+  OriginEnum,
+  PaymentMethodEnum
+} from "../../../../generated/definitions/pagopa/transactions/InfoTransactionView";
 import { CartItem } from "../../../../generated/definitions/pagopa/transactions/CartItem";
 
 export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
@@ -51,19 +55,27 @@ export const generateRandomInfoTransaction = (
     pspName: "Intesa Sanpaolo",
     walletInfo: {
       accountHolder: faker.name.fullName(),
-      brand: randomPaymentMethod.brand !== "PAYPAL" ? randomPaymentMethod.brand : undefined,
-      blurredNumber: randomPaymentMethod.brand !== "PAYPAL" ? faker.finance.creditCardNumber().slice(-4) : undefined,
-      maskedEmail: randomPaymentMethod.brand === "PAYPAL" ? faker.internet.email() : undefined,
+      brand:
+        randomPaymentMethod.brand !== "PAYPAL"
+          ? randomPaymentMethod.brand
+          : undefined,
+      blurredNumber:
+        randomPaymentMethod.brand !== "PAYPAL"
+          ? faker.finance.creditCardNumber().slice(-4)
+          : undefined,
+      maskedEmail:
+        randomPaymentMethod.brand === "PAYPAL"
+          ? faker.internet.email()
+          : undefined
     },
     paymentMethod: PaymentMethodEnum.PPAL,
     payer: {
       name: faker.name.fullName(),
       taxCode: faker.random.alphaNumeric(16).toLocaleUpperCase()
     },
-    amount: cartList.reduce(
-      (acc, item) => acc + Number(item.amount),
-      0
-    ).toString(),
+    amount: cartList
+      .reduce((acc, item) => acc + Number(item.amount), 0)
+      .toString(),
     fee: faker.finance.amount(0, 10),
     origin: OriginEnum.INTERNAL
   };
