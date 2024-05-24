@@ -1,6 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import TransactionsDB from "../persistence/transactions";
+import { sendFileFromRootPath } from "../../../utils/file";
 
 import { TransactionListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/TransactionListWrapResponse";
 import { addTransactionHandler } from "./router";
@@ -11,7 +12,7 @@ addTransactionHandler("get", "/transactions", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : 10;
   const offset =
     req.headers[CONTINUATION_TOKEN_HEADER] !== undefined &&
-    req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
+      req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
       ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
       : 0;
   const response: TransactionListWrapResponse = {
@@ -58,6 +59,29 @@ addTransactionHandler("get", "/transactions/:transactionId", (req, res) => {
           O.fold(
             () => res.sendStatus(404),
             transaction => res.status(200).json(transaction)
+          )
+        );
+      }
+    )
+  );
+});
+
+addTransactionHandler("get", "/transactions/:transactionId/pdf", (req, res) => {
+  pipe(
+    req.params.transactionId,
+    O.fromNullable,
+    O.fold(
+      () => res.sendStatus(400),
+      transactionId => {
+        const transaction = TransactionsDB.getTransactionDetails(transactionId);
+        return pipe(
+          transaction,
+          O.fold(
+            () => res.sendStatus(404),
+            _ => {
+              sendFileFromRootPath("assets/payments/receipts/loremIpsum.pdf", res);
+              return res;
+            }
           )
         );
       }
