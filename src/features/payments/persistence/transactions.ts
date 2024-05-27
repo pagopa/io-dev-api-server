@@ -51,7 +51,7 @@ const generateUserTransaction = (
 ) => {
   const payeeTaxCode =
     mockedTaxCodes[
-    faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })
+      faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })
     ];
   const randomTransaction: TransactionListItem = {
     transactionId,

@@ -12,7 +12,7 @@ addTransactionHandler("get", "/transactions", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : 10;
   const offset =
     req.headers[CONTINUATION_TOKEN_HEADER] !== undefined &&
-      req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
+    req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
       ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
       : 0;
   const response: TransactionListWrapResponse = {
@@ -79,7 +79,10 @@ addTransactionHandler("get", "/transactions/:transactionId/pdf", (req, res) => {
           O.fold(
             () => res.sendStatus(404),
             _ => {
-              sendFileFromRootPath("assets/payments/receipts/loremIpsum.pdf", res);
+              sendFileFromRootPath(
+                "assets/payments/receipts/loremIpsum.pdf",
+                res
+              );
               return res;
             }
           )
