@@ -4,6 +4,8 @@ export type RelyingParty = {
   responseType: "id_token";
   redirectUris: ReadonlyArray<string>; // TODO use relative path (i.e. compose protocol, host, port and base path dinamically)
   responseMode: "form_post";
+  serviceId: string;
+  displayName: string;
   // TODO failure callbackUrl
   // TODO programmatic flow flag
 };

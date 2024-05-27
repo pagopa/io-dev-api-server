@@ -10,9 +10,8 @@ import {
 } from "../types/authentication";
 import {
   baseProviderPath,
-  generatePermissionHTML,
-  generateIdTokenRedirectHTML,
-  providerConfig
+  providerConfig,
+  translationForScope
 } from "../services/providerService";
 import { getRelyingParty } from "./relyingPartyRouter";
 
@@ -224,6 +223,23 @@ addHandler(
       return;
     }
 
+    // Header validation
+    const requestHeaders = req.headers;
+    const accept = requestHeaders.accept as string;
+    if ("application/hl+json" !== accept?.toLowerCase()) {
+      res.status(400).send({
+        message: `Missing or empty header 'Accept': (${accept})`
+      });
+      return;
+    }
+    const acceptLanguage = requestHeaders["accept-language"] as string;
+    if (!acceptLanguage || acceptLanguage.trim().length === 0) {
+      res.status(400).send({
+        message: `Missing or empty header 'Accept-Language': (${acceptLanguage})`
+      });
+      return;
+    }
+
     const config = providerConfig();
     if (oidcData.firstInteraction) {
       const cookiesToValidate = {
@@ -253,15 +269,31 @@ addHandler(
         return;
       }
 
-      const confirmRedirectUri = `${baseProviderPath()}/interaction/${requestInteractionId}/confirm`;
-      const abortRedirectUri = `${baseProviderPath()}/interaction/${requestInteractionId}/abort`;
-      const htmlContent = generatePermissionHTML(
-        confirmRedirectUri,
-        abortRedirectUri,
-        oidcData.relyingPartyId,
-        oidcData.scopes
-      );
-      res.status(200).send(htmlContent);
+      const relyingParty = getRelyingParty(oidcData.relyingPartyId);
+      if (!relyingParty) {
+        res.status(500).send({
+          message: `Internal inconsistency for Interaction Id (${requestInteractionId}): unable to find Relying Party (${oidcData.relyingPartyId})`
+        });
+        return;
+      }
+
+      const consentData = {
+        _links: {
+          confirm: {
+            href: `${baseProviderPath()}/interaction/${requestInteractionId}/confirm`
+          }
+        },
+        service_id: relyingParty.serviceId,
+        redirection: {
+          display_name: relyingParty.displayName
+        },
+        type: "consent",
+        claims: oidcData.scopes.map(scope => ({
+          name: scope,
+          display_name: translationForScope(scope)
+        }))
+      };
+      res.status(200).send(consentData);
       return;
     }
 
@@ -602,11 +634,15 @@ const responseFromOAuthAuthorizeSecondInteraction = (
   const sessionCookieExpirationTime = new Date(
     new Date().getTime() + config.sessionTTLMilliseconds
   );
-  const redirectHTML = generateIdTokenRedirectHTML(
-    relyingPartyRedirectUri,
-    idToken,
-    relyingPartyState
+
+  const relyingPartyRedirectURLInstance = new URL(relyingPartyRedirectUri);
+  relyingPartyRedirectURLInstance.searchParams.set(
+    "authorization_code",
+    idToken
   );
+  relyingPartyRedirectURLInstance.searchParams.set("nonce", relyingPartyNonce);
+  relyingPartyRedirectURLInstance.searchParams.set("state", relyingPartyState);
+
   res
     .cookie(config.interactionResumeCookieKey, "", {
       path: `${baseProviderPath()}/oauth/authorize/${requestInteractionId}`,
@@ -642,8 +678,7 @@ const responseFromOAuthAuthorizeSecondInteraction = (
       expires: sessionCookieExpirationTime,
       httpOnly: true
     })
-    .status(200)
-    .send(redirectHTML);
+    .redirect(303, relyingPartyRedirectURLInstance.href);
 };
 
 const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {

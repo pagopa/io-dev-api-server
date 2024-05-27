@@ -1,3 +1,4 @@
+import { ParsedQs } from "qs";
 import { ioDevServerConfig } from "../../../config";
 import { IoDevServerConfig } from "../../../types/config";
 import { RelyingPartiesConfig } from "../types/config";
@@ -8,8 +9,9 @@ export const relyingPartiesConfig = (
 
 export const baseRelyingPartyPath = () => "/fims/relyingParty";
 
-export const generateUserProfileHTML = (
-  tokenPayload: Record<string, unknown>
+export const tokenPayloadToUrl = (
+  tokenPayload: Record<string, unknown>,
+  baseUrl: string
 ) => {
   const fullName = tokenPayload.name as string;
   const name = tokenPayload.given_name as string;
@@ -20,6 +22,31 @@ export const generateUserProfileHTML = (
   const issuer = tokenPayload.iss as string;
   const issuedOn = tokenPayload.iat as number;
   const expiresOn = tokenPayload.exp as number;
+
+  const url = new URL(baseUrl);
+  url.searchParams.set("fullname", fullName);
+  url.searchParams.set("name", name);
+  url.searchParams.set("surname", surname);
+  url.searchParams.set("fiscalCode", fiscalCode);
+  url.searchParams.set("signatureHash", signatureHash);
+  url.searchParams.set("audienceId", audienceId);
+  url.searchParams.set("issuer", issuer);
+  url.searchParams.set("issuedOn", `${issuedOn}`);
+  url.searchParams.set("expiresOn", `${expiresOn}`);
+
+  return url.href;
+};
+
+export const generateUserProfileHTML = (query: ParsedQs) => {
+  const fullName = query.fullname;
+  const name = query.name;
+  const surname = query.surname;
+  const fiscalCode = query.fiscalCode;
+  const signatureHash = query.signatureHash;
+  const audienceId = query.audienceId;
+  const issuer = query.issuer;
+  const issuedOn = query.issuedOn;
+  const expiresOn = query.expiresOn;
 
   return `
 <!DOCTYPE html>
@@ -40,8 +67,8 @@ export const generateUserProfileHTML = (
     <li>Signature Hash: ${signatureHash}</li>
     <li>Audience Id: ${audienceId}</li>
     <li>Issuer: ${issuer}</li>
-    <li>Issued on: ${new Date(issuedOn)}</li>
-    <li>Expires on: ${new Date(expiresOn)}</li>
+    <li>Issued on: ${new Date(Number(issuedOn))}</li>
+    <li>Expires on: ${new Date(Number(expiresOn))}</li>
   </ul>
 </body>
 </html>

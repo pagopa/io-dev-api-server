@@ -28,12 +28,15 @@ export const ProviderConfig = t.intersection([
 export const RelyingPartiesConfig = t.intersection([
   t.type({
     id: t.string,
+    registrationName: t.string,
     redirectUri: t.readonlyArray(t.string),
     scopes: t.readonlyArray(
       t.union([t.literal("openid"), t.literal("profile")])
     )
   }),
-  t.partial({})
+  t.partial({
+    serviceId: t.string
+  })
 ]);
 
 export const FIMSConfig = t.intersection([

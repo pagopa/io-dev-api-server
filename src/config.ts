@@ -228,6 +228,7 @@ const defaultConfig: IoDevServerConfig = {
           redirectUri: [
             "http://localhost:3000/fims/relyingParty/1/redirectUri"
           ],
+          registrationName: "Example Relying Party 1",
           scopes: ["openid", "profile"]
         }
       ]

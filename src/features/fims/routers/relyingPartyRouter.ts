@@ -6,9 +6,11 @@ import { RelyingParty, RelyingPartyRequest } from "../types/relyingParty";
 import {
   baseRelyingPartyPath,
   generateUserProfileHTML,
-  relyingPartiesConfig
+  relyingPartiesConfig,
+  tokenPayloadToUrl
 } from "../services/relyingPartyService";
 import { baseProviderPath, providerConfig } from "../services/providerService";
+import ServicesDB from "../../../persistence/services";
 
 export const fimsRelyingPartyRouter = Router();
 
@@ -63,7 +65,7 @@ addHandler(
 
 addHandler(
   fimsRelyingPartyRouter,
-  "post",
+  "get",
   `${baseRelyingPartyPath()}/:id/redirectUri`,
   (req, res) => {
     const relyingPartyId = req.params.id;
@@ -76,15 +78,39 @@ addHandler(
       return;
     }
 
-    const contentType = req.headers["content-type"];
-    if (contentType !== "application/x-www-form-urlencoded") {
+    const requestHeaders = req.headers;
+    const lollipopMethod = requestHeaders[
+      "x-pagopa-lollipop-original-method"
+    ] as string;
+    if (!lollipopMethod || lollipopMethod.trim().length === 0) {
       res.status(400).send({
-        message: `Content-type (${contentType}) is not supported`
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-original-method'`
+      });
+      return;
+    }
+    const lollipopOriginalUrl = requestHeaders[
+      "x-pagopa-lollipop-original-url"
+    ] as string;
+    if (!lollipopOriginalUrl || lollipopOriginalUrl.trim().length === 0) {
+      res.status(400).send({
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-original-url'`
+      });
+      return;
+    }
+    const lollipopAuthorizationCode = requestHeaders[
+      "x-pagopa-lollipop-original-authorization_code"
+    ] as string;
+    if (
+      !lollipopAuthorizationCode ||
+      lollipopAuthorizationCode.trim().length === 0
+    ) {
+      res.status(400).send({
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-original-authorization_code'`
       });
       return;
     }
 
-    const state = req.body.state;
+    const state = req.query.state as string;
     if (!state) {
       res.status(400).send({ message: `Missing parameter 'state' in request` });
       return;
@@ -97,11 +123,23 @@ addHandler(
       return;
     }
 
-    const idToken = req.body.id_token;
-    if (!idToken) {
+    const nonce = req.query.nonce as string;
+    if (!nonce) {
+      res.status(400).send({ message: `Missing parameter 'nonce' in request` });
+      return;
+    }
+    if (nonce !== relyingPartyRequest.nonce) {
+      res.status(400).send({
+        message: `Bad nonce value (${nonce}) for Relying Party with id (${relyingPartyId}) with state (${state})`
+      });
+      return;
+    }
+
+    const fakeIdToken = req.query.authorization_code as string;
+    if (!fakeIdToken) {
       res
         .status(400)
-        .send({ message: `Missing parameter 'id_token' in request` });
+        .send({ message: `Missing parameter 'authorization_code' in request` });
       return;
     }
 
@@ -109,27 +147,32 @@ addHandler(
     const verified = new TokenVerifier(
       config.idTokenSigningAlgorithm,
       config.idTokenRawPublicKey
-    ).verify(idToken);
+    ).verify(fakeIdToken);
     if (!verified) {
       res.status(400).send({ message: `Received ID token cannot be verified` });
       return;
     }
 
     try {
-      const tokenData = decodeToken(idToken);
+      const tokenData = decodeToken(fakeIdToken);
       const tokenPayload = tokenData.payload as Record<string, unknown>;
-      const nonce = tokenPayload.nonce as string;
-      if (nonce !== relyingPartyRequest.nonce) {
+      const payloadNonce = tokenPayload.nonce as string;
+      if (payloadNonce !== relyingPartyRequest.nonce) {
         res.status(400).send({
-          message: `Bad nonce value (${nonce}) for Relying Party with id (${relyingPartyId}) with state (${state})`
+          message: `Bad nonce value (${payloadNonce}) for Relying Party with id (${relyingPartyId}) with state (${state})`
         });
         return;
       }
 
       relyingPartyCurrentRequests.delete(state);
 
-      const userProfileHTML = generateUserProfileHTML(tokenPayload);
-      res.status(200).send(userProfileHTML);
+      const authenticatedUrl = tokenPayloadToUrl(
+        tokenPayload,
+        `${req.protocol}://${
+          req.headers.host
+        }${baseRelyingPartyPath()}/authenticatedPage`
+      );
+      res.redirect(302, authenticatedUrl);
     } catch (e) {
       res.status(400).send({
         message: `Unable to decode token. Error is (${
@@ -141,6 +184,17 @@ addHandler(
   () => Math.random() * 2500
 );
 
+addHandler(
+  fimsRelyingPartyRouter,
+  "get",
+  `${baseRelyingPartyPath()}/authenticatedPage`,
+  (req, res) => {
+    const query = req.query;
+    const userProfileHTML = generateUserProfileHTML(query);
+    res.status(200).send(userProfileHTML);
+  }
+);
+
 const findOrLazyLoadRelyingParty = (id: string) => {
   const inMemoryRelyingParty = relyingParties.get(id);
   if (inMemoryRelyingParty) {
@@ -148,15 +202,29 @@ const findOrLazyLoadRelyingParty = (id: string) => {
   }
 
   const config = relyingPartiesConfig();
-  config.forEach(relyingPartyConfig =>
+  config.forEach(relyingPartyConfig => {
+    const serviceId = relyingPartyConfig.serviceId ?? randomServiceId();
     relyingParties.set(relyingPartyConfig.id, {
+      displayName: relyingPartyConfig.registrationName,
       id: relyingPartyConfig.id,
       redirectUris: relyingPartyConfig.redirectUri,
       responseMode: "form_post",
       responseType: "id_token",
-      scopes: relyingPartyConfig.scopes
-    })
-  );
+      scopes: relyingPartyConfig.scopes,
+      serviceId
+    });
+  });
 
   return relyingParties.get(id);
+};
+
+const randomServiceId = () => {
+  const allServices = ServicesDB.getAllServices();
+  if (allServices.length > 0) {
+    const firstNationalService = allServices[0];
+    return firstNationalService.service_id;
+  }
+  throw new Error(
+    "RelyingPartyRouter.randomServiceId: empty service collection. It must have some values at this point"
+  );
 };

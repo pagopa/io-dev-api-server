@@ -68,3 +68,12 @@ export const generateIdTokenRedirectHTML = (
 </body>
 </html>
 `;
+
+export const translationForScope = (scope: string) => {
+  if ("openid" === scope.toLowerCase()) {
+    return "ID";
+  } else if ("profile" === scope.toLowerCase()) {
+    return "Name and Surname";
+  }
+  return scope;
+};
