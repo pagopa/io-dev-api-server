@@ -225,13 +225,6 @@ addHandler(
 
     // Header validation
     const requestHeaders = req.headers;
-    const accept = requestHeaders.accept as string;
-    if ("application/hl+json" !== accept?.toLowerCase()) {
-      res.status(400).send({
-        message: `Missing or empty header 'Accept': (${accept})`
-      });
-      return;
-    }
     const acceptLanguage = requestHeaders["accept-language"] as string;
     if (!acceptLanguage || acceptLanguage.trim().length === 0) {
       res.status(400).send({
@@ -309,14 +302,6 @@ addHandler(
   "post",
   `${baseProviderPath()}/interaction/:id/confirm`,
   (req, res) => {
-    const contentType = req.headers["content-type"];
-    if (contentType !== "application/x-www-form-urlencoded") {
-      res.status(400).send({
-        message: `Content-type (${contentType}) is not supported`
-      });
-      return;
-    }
-
     const requestInteractionId = req.params.id;
     const oidcData = interactionIds.get(requestInteractionId);
     if (!oidcData) {

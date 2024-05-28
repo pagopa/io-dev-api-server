@@ -120,7 +120,7 @@ const defaultConfig: IoDevServerConfig = {
         getFciResponseCode: 200
       }
     },
-    withCTA: false,
+    withCTA: true,
     withEUCovidCert: false,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
@@ -201,7 +201,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     fims: {
       provider: {
-        federationCookieName: "X-IO-Federation-Token",
+        federationCookieName: "_io_fims_token",
         idTokenRawPrivateKey:
           "278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f",
         idTokenRawPublicKey:

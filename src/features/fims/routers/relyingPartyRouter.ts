@@ -98,14 +98,14 @@ addHandler(
       return;
     }
     const lollipopAuthorizationCode = requestHeaders[
-      "x-pagopa-lollipop-original-authorization_code"
+      "x-pagopa-lollipop-custom-authorization_code"
     ] as string;
     if (
       !lollipopAuthorizationCode ||
       lollipopAuthorizationCode.trim().length === 0
     ) {
       res.status(400).send({
-        message: `Missing or empty lollipop header 'x-pagopa-lollipop-original-authorization_code'`
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-custom-authorization_code'`
       });
       return;
     }
