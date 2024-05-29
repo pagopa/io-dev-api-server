@@ -1,0 +1,82 @@
+import { faker } from "@faker-js/faker";
+import { ulid } from "ulid";
+import {
+  InfoTransactionView,
+  OriginEnum,
+  PaymentMethodEnum
+} from "../../../../generated/definitions/pagopa/transactions/InfoTransactionView";
+import { CartItem } from "../../../../generated/definitions/pagopa/transactions/CartItem";
+
+export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
+  {
+    logo: "https://assets.cdn.platform.pagopa.it/creditcard/visa.png",
+    brand: "VISA",
+    name: "Visa"
+  },
+  {
+    logo: "https://assets.cdn.platform.pagopa.it/creditcard/mastercard.png",
+    brand: "MASTERCARD",
+    name: "Mastercard"
+  },
+  {
+    logo: "https://assets.cdn.platform.pagopa.it/creditcard/amex.png",
+    brand: "AMEX",
+    name: "Amex"
+  },
+  {
+    logo: "https://assets.cdn.platform.pagopa.it/creditcard/maestro.png",
+    brand: "MAESTRO",
+    name: "Maestro"
+  },
+  {
+    logo: "https://assets.cdn.platform.pagopa.it/apm/paypal.png",
+    brand: "PAYPAL",
+    name: "PayPal"
+  },
+  {
+    logo: "https://assets.cdn.platform.pagopa.it/apm/mybank.png",
+    brand: "MYBANK",
+    name: "MyBank"
+  }
+];
+
+export const generateRandomInfoTransaction = (
+  cartList: CartItem[],
+  transactionId?: string
+): InfoTransactionView => {
+  const randomPaymentMethod = faker.helpers.arrayElement(
+    PAYMENT_METHODS_TRANSACTIONS_MOCK
+  );
+  return {
+    transactionId: transactionId ?? ulid(),
+    authCode: faker.random.alphaNumeric(6),
+    rrn: faker.random.numeric(12),
+    transactionDate: new Date().toISOString(),
+    pspName: "Intesa Sanpaolo",
+    walletInfo: {
+      accountHolder: faker.name.fullName(),
+      brand:
+        randomPaymentMethod.brand !== "PAYPAL"
+          ? randomPaymentMethod.brand
+          : undefined,
+      blurredNumber:
+        randomPaymentMethod.brand !== "PAYPAL"
+          ? faker.finance.creditCardNumber().slice(-4)
+          : undefined,
+      maskedEmail:
+        randomPaymentMethod.brand === "PAYPAL"
+          ? faker.internet.email()
+          : undefined
+    },
+    paymentMethod: PaymentMethodEnum.PPAL,
+    payer: {
+      name: faker.name.fullName(),
+      taxCode: faker.random.alphaNumeric(16).toLocaleUpperCase()
+    },
+    amount: cartList
+      .reduce((acc, item) => acc + Number(item.amount), 0)
+      .toString(),
+    fee: faker.finance.amount(0, 10),
+    origin: OriginEnum.INTERNAL
+  };
+};
