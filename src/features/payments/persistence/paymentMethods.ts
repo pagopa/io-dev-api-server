@@ -7,7 +7,7 @@ import { PaymentMethodStatusEnum } from "../../../../generated/definitions/pagop
 import { Range } from "../../../../generated/definitions/pagopa/walletv3/Range";
 import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 
-const generateRandomCardBrand = () =>
+export const generateRandomCardBrand = () =>
   faker.helpers.arrayElement(["VISA", "MASTERCARD", "AMEX", "MAESTRO"]);
 
 export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
