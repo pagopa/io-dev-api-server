@@ -22,7 +22,7 @@ const filterBySearch = (institution: InstitutionWithScope, search?: string) => {
   if (!search) {
     return true;
   }
-  return institution.name.toLowerCase().includes(search);
+  return institution.name.toLowerCase().includes(search.toLowerCase());
 };
 
 export const getInstitutionsResponsePayload = (
