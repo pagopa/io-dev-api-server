@@ -28,7 +28,25 @@
             const urlParams = new URLSearchParams(queryString);
             const transactionId = urlParams.get("transactionId");
             const container = document.getElementById("outcomeSelect");
-            window.location.href = `iowallet://127.0.0.1:3000/ecommerce/io/v1/transactions/${transactionId}/outcomes?outcome=${container.value}`;
+            if (container.value === "0") {
+              fetch('/ecommerce/io/v1/mock-transaction', {
+                method: 'POST',
+                body: JSON.stringify({
+                  transactionId,
+                }),
+                headers: new Headers({
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                })
+              })
+              .then(response => response.json())
+              .then(response => {
+                window.location = `iowallet://127.0.0.1:3000/ecommerce/io/v1/transactions/${transactionId}/outcomes?outcome=${container.value}`;
+              })
+              .catch(err => alert(err))
+            } else {
+                window.location.href = `iowallet://127.0.0.1:3000/ecommerce/io/v1/transactions/${transactionId}/outcomes?outcome=${container.value}`;
+            }
         }
 
         function onLoad() {

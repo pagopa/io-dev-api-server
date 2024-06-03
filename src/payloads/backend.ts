@@ -97,6 +97,13 @@ export const backendStatus: BackendStatus = {
         android: "1.2.3"
       }
     },
+    newPaymentSection: {
+      enabled: false,
+      min_app_version: {
+        ios: "0.0.0",
+        android: "0.0.0"
+      }
+    },
     fastLogin: {
       min_app_version: {
         ios: "0.0.0",
