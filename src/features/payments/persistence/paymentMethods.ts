@@ -80,6 +80,7 @@ export const generateWalletDetailsByPaymentMethod = (
         details: {
           type: "PAYPAL",
           maskedEmail: faker.internet.email(),
+          pspBusinessName: "Intesa Sanpaolo",
           pspId: ulid()
         },
         paymentMethodAsset:
