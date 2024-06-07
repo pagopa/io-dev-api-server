@@ -82,5 +82,9 @@ export const getCalculateFeeResponsePayload = (
     paymentMethodStatus: PaymentMethodStatusEnum.ENABLED,
     asset:
       "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/carte-pagamento.png?raw=true",
-    bundles: idPspList ? mockAvailablePspList.filter(psp => psp.idPsp && idPspList?.includes(psp.idPsp)) : mockAvailablePspList
+    bundles: idPspList
+      ? mockAvailablePspList.filter(
+          psp => psp.idPsp && idPspList?.includes(psp.idPsp)
+        )
+      : mockAvailablePspList
   });
