@@ -2,6 +2,7 @@ import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConf
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 import { pnOptInServiceId } from "../features/pn/services/services";
+import { serverUrl } from "../utils/server";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -44,7 +45,7 @@ export const backendStatus: BackendStatus = {
     },
     fims: {
       enabled: true,
-      domain: "http://localhost:3000/fims/provider/"
+      domain: `${serverUrl}/fims/provider/`
     },
     uaDonations: {
       enabled: false,

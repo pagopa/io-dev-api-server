@@ -8,6 +8,7 @@ import {
   SIGNED_SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
 } from "../payloads/features/fci/signature-request";
+import { serverUrl } from "./server";
 
 export const frontMatterMyPortal = `---
 it:
@@ -109,11 +110,11 @@ export const frontMatter1CTAFims = `---
 it:
     cta_1: 
         text: "Fims SSO"
-        action: "iosso://http://localhost:3000/fims/relyingParty/1/landingPage"
+        action: "iosso://${serverUrl}/fims/relyingParty/1/landingPage"
 en:
     cta_1: 
         text: "Fims SSO"
-        action: "iosso://http://localhost:3000/fims/relyingParty/1/landingPage"
+        action: "iosso://${serverUrl}/fims/relyingParty/1/landingPage"
 ---`;
 
 export const frontMatterCTAFCISignatureRequest = `---

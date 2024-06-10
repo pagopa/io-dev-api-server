@@ -15,6 +15,7 @@ import {
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
+import { serverUrl } from "./utils/server";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
@@ -228,9 +229,7 @@ const defaultConfig: IoDevServerConfig = {
       relyingParties: [
         {
           id: "1",
-          redirectUri: [
-            "http://localhost:3000/fims/relyingParty/1/redirectUri"
-          ],
+          redirectUri: [`${serverUrl}/fims/relyingParty/1/redirectUri`],
           registrationName: "Example Relying Party 1",
           scopes: ["openid", "profile"]
         }
