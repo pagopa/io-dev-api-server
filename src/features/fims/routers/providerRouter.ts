@@ -272,16 +272,19 @@ addHandler(
 
       const consentData = {
         _links: {
+          abort: {
+            href: `${baseProviderPath()}/interaction/${requestInteractionId}/abort`
+          },
           confirm: {
             href: `${baseProviderPath()}/interaction/${requestInteractionId}/confirm`
           }
         },
         service_id: relyingParty.serviceId,
-        redirection: {
+        redirect: {
           display_name: relyingParty.displayName
         },
         type: "consent",
-        claims: oidcData.scopes.map(scope => ({
+        user_metadata: oidcData.scopes.map(scope => ({
           name: scope,
           display_name: translationForScope(scope)
         }))
@@ -350,7 +353,7 @@ addHandler(
 
 addHandler(
   fimsProviderRouter,
-  "get",
+  "post",
   `${baseProviderPath()}/interaction/:id/abort`,
   (req, res) => {
     const requestInteractionId = req.params.id;
