@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { format } from "date-fns";
-import { ulid } from "ulid";
 import { PaymentMethodManagementTypeEnum } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodManagementType";
 import { PaymentMethodResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodResponse";
 import { PaymentMethodStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodStatus";
 import { Range } from "../../../../generated/definitions/pagopa/walletv3/Range";
 import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
+import { mockAvailablePspList } from "../payloads/transactions";
 
 export const generateRandomCardBrand = () =>
   faker.helpers.arrayElement(["VISA", "MASTERCARD", "AMEX", "MAESTRO"]);
@@ -81,7 +81,7 @@ export const generateWalletDetailsByPaymentMethod = (
           type: "PAYPAL",
           maskedEmail: faker.internet.email(),
           pspBusinessName: "Intesa Sanpaolo",
-          pspId: ulid()
+          pspId: mockAvailablePspList[0].idPsp || "1"
         },
         paymentMethodAsset:
           "https://github.com/pagopa/io-services-metadata/blob/master/logos/apps/paypal.png?raw=true"
