@@ -17,8 +17,7 @@ export const addECommercePrefix = (path: string) =>
 export const addTransactionPrefix = (path: string) =>
   `${TRANSACTIONS_PREFIX}${path}`;
 
-export const addPlatformPrefix = (path: string) =>
-  `${PLATFORM_PREFIX}${path}`;
+export const addPlatformPrefix = (path: string) => `${PLATFORM_PREFIX}${path}`;
 
 export const addPaymentWalletHandler = (
   method: SupportedMethod,
@@ -44,5 +43,4 @@ export const addPlatformHandler = (
   method: SupportedMethod,
   path: string,
   handleRequest: (request: Request, response: Response) => void
-) =>
-  addHandler(walletRouter, method, addPlatformPrefix(path), handleRequest);
+) => addHandler(walletRouter, method, addPlatformPrefix(path), handleRequest);
