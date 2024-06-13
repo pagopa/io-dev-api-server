@@ -60,7 +60,8 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
     id: "4",
     name: "POSTEPAY",
     description: "PostePay",
-    asset: "https://github.com/pagopa/io-services-metadata/raw/master/logos/apps/paga-con-postepay.png",
+    asset:
+      "https://github.com/pagopa/io-services-metadata/raw/master/logos/apps/paga-con-postepay.png",
     status: PaymentMethodStatusEnum.ENABLED,
     paymentTypeCode: "PPAY",
     ranges: [
