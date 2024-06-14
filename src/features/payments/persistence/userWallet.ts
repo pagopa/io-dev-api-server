@@ -41,7 +41,10 @@ const generateUserWallet = (
     creationDate: faker.date.past(2),
     updateDate: faker.date.past(1),
     clients: {
-      TEST: { status: WalletClientStatusEnum.ENABLED, lastUsage: undefined }
+      IO: {
+        status: WalletClientStatusEnum.ENABLED,
+        lastUsage: faker.date.recent()
+      }
     },
     applications: [
       {

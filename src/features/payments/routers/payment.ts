@@ -141,7 +141,8 @@ addPaymentHandler("post", "/payment-methods/:paymentId/fees", (req, res) =>
         pipe(
           getCalculateFeeResponsePayload(
             calculateFeeRequest.walletId,
-            calculateFeeRequest.paymentAmount
+            calculateFeeRequest.paymentAmount,
+            calculateFeeRequest.idPspList
           ),
           O.fold(
             () => res.sendStatus(404),
