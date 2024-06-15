@@ -38,6 +38,7 @@ import { serviceRouter as newServiceRouter } from "./features/services";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
 import { fimsProviderRouter } from "./features/fims/routers/providerRouter";
 import { fimsRelyingPartyRouter } from "./features/fims/routers/relyingPartyRouter";
+import { fimsHistoryRouter } from "./features/fims/routers/historyRouter";
 
 // create express server
 const app: Application = express();
@@ -88,7 +89,8 @@ app.use(fastLoginMiddleware);
   newWalletRouter,
   newServiceRouter,
   fimsRelyingPartyRouter,
-  fimsProviderRouter
+  fimsProviderRouter,
+  fimsHistoryRouter
 ].forEach(r => app.use(r));
 
 export default app;

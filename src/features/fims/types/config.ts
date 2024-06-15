@@ -1,4 +1,17 @@
 import * as t from "io-ts";
+import { FailureHttpResponseCode } from "../../../types/httpResponseCode";
+
+export const HistoryConfig = t.intersection([
+  t.type({
+    count: t.number,
+    exportProcessingTimeMilliseconds: t.number,
+    pageSize: t.number
+  }),
+  t.partial({
+    consentsEndpointFailureStatusCode: FailureHttpResponseCode,
+    exportEndpointFailureStatusCode: FailureHttpResponseCode
+  })
+]);
 
 export const ProviderConfig = t.intersection([
   t.type({
@@ -41,6 +54,7 @@ export const RelyingPartiesConfig = t.intersection([
 
 export const FIMSConfig = t.intersection([
   t.type({
+    history: HistoryConfig,
     provider: ProviderConfig,
     relyingParties: t.readonlyArray(RelyingPartiesConfig)
   }),
