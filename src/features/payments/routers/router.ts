@@ -5,7 +5,7 @@ export const walletRouter = Router();
 
 export const PAYMENT_WALLET_PREFIX = "/payment-wallet/v1";
 export const ECOMMERCE_PREFIX = "/ecommerce/io/v1";
-export const TRANSACTIONS_PREFIX = "/bizevents/bizevents/tx-service-jwt/v1";
+export const TRANSACTIONS_PREFIX = "/bizevents/tx-service-jwt/v1";
 export const PLATFORM_PREFIX = "/session-wallet/v1";
 
 export const addPaymentWalletPrefix = (path: string) =>
