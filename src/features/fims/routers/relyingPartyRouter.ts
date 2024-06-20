@@ -139,7 +139,10 @@ addHandler(
   `${baseRelyingPartyPath()}/:id/redirectUri`,
   (req, res) => {
     const contentType = req.headers["content-type"];
-    if (!contentType || !contentType.toLowerCase().includes("application/x-www-form-urlencoded")) {
+    if (
+      !contentType ||
+      !contentType.toLowerCase().includes("application/x-www-form-urlencoded")
+    ) {
       res.status(400).send({
         message: `Content-type (${contentType}) is not supported`
       });
@@ -187,11 +190,9 @@ addHandler(
 
     const fakeIdToken = req.body.id_token as string;
     if (!fakeIdToken) {
-      res
-        .status(400)
-        .send({
-          message: `Missing parameter 'authorization_code' in request body`
-        });
+      res.status(400).send({
+        message: `Missing parameter 'authorization_code' in request body`
+      });
       return;
     }
 
