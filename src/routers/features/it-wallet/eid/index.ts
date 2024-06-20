@@ -41,14 +41,11 @@ addHandler(itwRouter, "get", addItwPrefix("/as/par"), (req, res) => {
  * @param request_uri - The request_uri
  * @param idphint - The idphint user choice
  */
-addHandler(
-  itwRouter,
-  "get",
-  addItwPrefix("/authorize/:client_id/:request_uri/:idphint"),
-  (_, res) => {
-    res.status(200).send("authorization_token");
-  }
-);
+addHandler(itwRouter, "get", addItwPrefix("/authorize"), (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { client_id, request_uri, idphint } = req.query;
+  res.status(200).send("authorization_token");
+});
 
 /**
  * Callback Endpoint
