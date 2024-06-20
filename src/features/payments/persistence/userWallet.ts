@@ -5,6 +5,7 @@ import _ from "lodash";
 import { WalletApplication } from "../../../../generated/definitions/pagopa/walletv3/WalletApplication";
 import { WalletApplicationInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationInfo";
 import { WalletApplicationStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletApplicationStatus";
+import { WalletClientStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletClientStatus";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
@@ -39,6 +40,12 @@ const generateUserWallet = (
     status: WalletStatusEnum.VALIDATED,
     creationDate: faker.date.past(2),
     updateDate: faker.date.past(1),
+    clients: {
+      IO: {
+        status: WalletClientStatusEnum.ENABLED,
+        lastUsage: faker.date.recent()
+      }
+    },
     applications: [
       {
         name: "PAGOPA",

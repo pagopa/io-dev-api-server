@@ -32,7 +32,7 @@ import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
 import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
-import { walletRouter as newWalletRouter } from "./features/wallet";
+import { walletRouter as newWalletRouter } from "./features/payments";
 import { serviceRouter as newServiceRouter } from "./features/services";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
 import { trialSystemRouter } from "./features/trialSystem/routers";
