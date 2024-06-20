@@ -1,15 +1,14 @@
 import { v4 } from "uuid";
-import { TokenVerifier, decodeToken } from "jsontokens";
 import { Router } from "express";
 import { addHandler } from "../../../payloads/response";
 import { RelyingParty, RelyingPartyRequest } from "../types/relyingParty";
 import {
   baseRelyingPartyPath,
+  commonRedirectionValidation,
   generateUserProfileHTML,
-  relyingPartiesConfig,
-  tokenPayloadToUrl
+  relyingPartiesConfig
 } from "../services/relyingPartyService";
-import { baseProviderPath, providerConfig } from "../services/providerService";
+import { baseProviderPath } from "../services/providerService";
 import ServicesDB from "../../../persistence/services";
 
 export const fimsRelyingPartyRouter = Router();
@@ -69,14 +68,6 @@ addHandler(
   `${baseRelyingPartyPath()}/:id/redirectUri`,
   (req, res) => {
     const relyingPartyId = req.params.id;
-    const relyingPartyCurrentRequests =
-      relyingPartyRequests.get(relyingPartyId);
-    if (!relyingPartyCurrentRequests) {
-      res.status(400).send({
-        message: `Relying Party with id (${relyingPartyId}) not found`
-      });
-      return;
-    }
 
     const requestHeaders = req.headers;
     const lollipopMethod = requestHeaders[
@@ -115,23 +106,10 @@ addHandler(
       res.status(400).send({ message: `Missing parameter 'state' in request` });
       return;
     }
-    const relyingPartyRequest = relyingPartyCurrentRequests.get(state);
-    if (!relyingPartyRequest) {
-      res.status(400).send({
-        message: `No active request for state (${state}) on Relying Party with id (${relyingPartyId})`
-      });
-      return;
-    }
 
     const nonce = req.query.nonce as string;
     if (!nonce) {
       res.status(400).send({ message: `Missing parameter 'nonce' in request` });
-      return;
-    }
-    if (nonce !== relyingPartyRequest.nonce) {
-      res.status(400).send({
-        message: `Bad nonce value (${nonce}) for Relying Party with id (${relyingPartyId}) with state (${state})`
-      });
       return;
     }
 
@@ -143,43 +121,88 @@ addHandler(
       return;
     }
 
-    const config = providerConfig();
-    const verified = new TokenVerifier(
-      config.idTokenSigningAlgorithm,
-      config.idTokenRawPublicKey
-    ).verify(fakeIdToken);
-    if (!verified) {
-      res.status(400).send({ message: `Received ID token cannot be verified` });
+    commonRedirectionValidation(
+      fakeIdToken,
+      relyingPartyId,
+      state,
+      relyingPartyRequests,
+      req,
+      res
+    );
+  },
+  () => Math.random() * 2500
+);
+
+addHandler(
+  fimsRelyingPartyRouter,
+  "post",
+  `${baseRelyingPartyPath()}/:id/redirectUri`,
+  (req, res) => {
+    const contentType = req.headers["content-type"];
+    if (!contentType || !contentType.toLowerCase().includes("application/x-www-form-urlencoded")) {
+      res.status(400).send({
+        message: `Content-type (${contentType}) is not supported`
+      });
       return;
     }
 
-    try {
-      const tokenData = decodeToken(fakeIdToken);
-      const tokenPayload = tokenData.payload as Record<string, unknown>;
-      const payloadNonce = tokenPayload.nonce as string;
-      if (payloadNonce !== relyingPartyRequest.nonce) {
-        res.status(400).send({
-          message: `Bad nonce value (${payloadNonce}) for Relying Party with id (${relyingPartyId}) with state (${state})`
-        });
-        return;
-      }
+    const relyingPartyId = req.params.id;
 
-      relyingPartyCurrentRequests.delete(state);
-
-      const authenticatedUrl = tokenPayloadToUrl(
-        tokenPayload,
-        `${req.protocol}://${
-          req.headers.host
-        }${baseRelyingPartyPath()}/authenticatedPage`
-      );
-      res.redirect(302, authenticatedUrl);
-    } catch (e) {
+    const requestHeaders = req.headers;
+    const lollipopMethod = requestHeaders[
+      "x-pagopa-lollipop-original-method"
+    ] as string;
+    if (!lollipopMethod || lollipopMethod.trim().length === 0) {
       res.status(400).send({
-        message: `Unable to decode token. Error is (${
-          e instanceof Error ? e.message : "unknown error"
-        })`
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-original-method'`
       });
+      return;
     }
+    const lollipopOriginalUrl = requestHeaders[
+      "x-pagopa-lollipop-original-url"
+    ] as string;
+    if (!lollipopOriginalUrl || lollipopOriginalUrl.trim().length === 0) {
+      res.status(400).send({
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-original-url'`
+      });
+      return;
+    }
+    const lollipopIdToken = requestHeaders[
+      "x-pagopa-lollipop-custom-id_token"
+    ] as string;
+    if (!lollipopIdToken || lollipopIdToken.trim().length === 0) {
+      res.status(400).send({
+        message: `Missing or empty lollipop header 'x-pagopa-lollipop-custom-id_token'`
+      });
+      return;
+    }
+
+    const state = req.body.state as string;
+    if (!state) {
+      res
+        .status(400)
+        .send({ message: `Missing parameter 'state' in request body` });
+      return;
+    }
+
+    const fakeIdToken = req.body.id_token as string;
+    if (!fakeIdToken) {
+      res
+        .status(400)
+        .send({
+          message: `Missing parameter 'authorization_code' in request body`
+        });
+      return;
+    }
+
+    commonRedirectionValidation(
+      fakeIdToken,
+      relyingPartyId,
+      state,
+      relyingPartyRequests,
+      req,
+      res
+    );
   },
   () => Math.random() * 2500
 );

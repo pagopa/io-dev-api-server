@@ -25,6 +25,7 @@ export const ProviderConfig = t.intersection([
     interactionResumeSignatureCookieKey: t.string,
     interactionSignatureCookieKey: t.string,
     interactionTTLMilliseconds: t.number,
+    implicitCodeFlow: t.boolean,
     sessionCookieKey: t.string,
     sessionLegacyCookieKey: t.string,
     sessionLegacySignatureCookieKey: t.string,

@@ -219,6 +219,7 @@ const defaultConfig: IoDevServerConfig = {
           "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479",
         idTokenSigningAlgorithm: "ES256K",
         idTokenTTLMilliseconds: 15 * 60 * 1000,
+        implicitCodeFlow: false,
         interactionCookieKey: "_interaction",
         interactionResumeCookieKey: "_interaction_resume",
         interactionResumeSignatureCookieKey: "_interaction_resume.sig",

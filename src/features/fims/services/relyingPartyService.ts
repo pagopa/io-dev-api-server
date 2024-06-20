@@ -1,7 +1,11 @@
+import { Request, Response } from "express";
 import { ParsedQs } from "qs";
+import { TokenVerifier, decodeToken } from "jsontokens";
 import { ioDevServerConfig } from "../../../config";
 import { IoDevServerConfig } from "../../../types/config";
 import { RelyingPartiesConfig } from "../types/config";
+import { RelyingPartyRequest } from "../types/relyingParty";
+import { providerConfig } from "./providerService";
 
 export const relyingPartiesConfig = (
   config: IoDevServerConfig = ioDevServerConfig
@@ -73,4 +77,67 @@ export const generateUserProfileHTML = (query: ParsedQs) => {
 </body>
 </html>
 `;
+};
+
+export const commonRedirectionValidation = (
+  idToken: string,
+  relyingPartyId: string,
+  state: string,
+  relyingPartyRequests: Map<string, Map<string, RelyingPartyRequest>>,
+  req: Request,
+  res: Response
+) => {
+  const relyingPartyCurrentRequests = relyingPartyRequests.get(relyingPartyId);
+  if (!relyingPartyCurrentRequests) {
+    res.status(400).send({
+      message: `Relying Party with id (${relyingPartyId}) not found`
+    });
+    return;
+  }
+
+  const relyingPartyRequest = relyingPartyCurrentRequests.get(state);
+  if (!relyingPartyRequest) {
+    res.status(400).send({
+      message: `No active request for state (${state}) on Relying Party with id (${relyingPartyId})`
+    });
+    return;
+  }
+
+  const config = providerConfig();
+  const verified = new TokenVerifier(
+    config.idTokenSigningAlgorithm,
+    config.idTokenRawPublicKey
+  ).verify(idToken);
+  if (!verified) {
+    res.status(400).send({ message: `Received ID token cannot be verified` });
+    return;
+  }
+
+  try {
+    const tokenData = decodeToken(idToken);
+    const tokenPayload = tokenData.payload as Record<string, unknown>;
+    const payloadNonce = tokenPayload.nonce as string;
+    if (payloadNonce !== relyingPartyRequest.nonce) {
+      res.status(400).send({
+        message: `Bad nonce value (${payloadNonce}) for Relying Party with id (${relyingPartyId}) with state (${state})`
+      });
+      return;
+    }
+
+    relyingPartyCurrentRequests.delete(state);
+
+    const authenticatedUrl = tokenPayloadToUrl(
+      tokenPayload,
+      `${req.protocol}://${
+        req.headers.host
+      }${baseRelyingPartyPath()}/authenticatedPage`
+    );
+    res.redirect(302, authenticatedUrl);
+  } catch (e) {
+    res.status(400).send({
+      message: `Unable to decode token. Error is (${
+        e instanceof Error ? e.message : "unknown error"
+      })`
+    });
+  }
 };

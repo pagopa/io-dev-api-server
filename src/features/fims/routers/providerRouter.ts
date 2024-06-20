@@ -10,6 +10,7 @@ import {
 } from "../types/authentication";
 import {
   baseProviderPath,
+  generateIdTokenRedirectHTML,
   providerConfig,
   translationForScope
 } from "../services/providerService";
@@ -593,6 +594,7 @@ const responseFromOAuthAuthorizeSecondInteraction = (
   res: Response
 ) => {
   const config = providerConfig();
+  const isImplicitCodeFlow = config.implicitCodeFlow;
   const relyingPartyRedirectUri = currentOIdCData.redirectUri;
   const relyingPartyNonce = currentOIdCData.nonce;
   const relyingPartyState = currentOIdCData.state;
@@ -623,15 +625,7 @@ const responseFromOAuthAuthorizeSecondInteraction = (
     new Date().getTime() + config.sessionTTLMilliseconds
   );
 
-  const relyingPartyRedirectURLInstance = new URL(relyingPartyRedirectUri);
-  relyingPartyRedirectURLInstance.searchParams.set(
-    "authorization_code",
-    idToken
-  );
-  relyingPartyRedirectURLInstance.searchParams.set("nonce", relyingPartyNonce);
-  relyingPartyRedirectURLInstance.searchParams.set("state", relyingPartyState);
-
-  res
+  const commonResponse = res
     .cookie(config.interactionResumeCookieKey, "", {
       path: `${baseProviderPath()}/oauth/authorize/${requestInteractionId}`,
       expires: invalidationExpirationTime,
@@ -665,8 +659,22 @@ const responseFromOAuthAuthorizeSecondInteraction = (
       path: `${baseProviderPath()}`,
       expires: sessionCookieExpirationTime,
       httpOnly: true
-    })
-    .redirect(303, relyingPartyRedirectURLInstance.href);
+    });
+
+  const relyingPartyURLInstance = new URL(relyingPartyRedirectUri);
+  if (isImplicitCodeFlow) {
+    const responseHTMLBody = generateIdTokenRedirectHTML(
+      relyingPartyURLInstance.href,
+      idToken,
+      relyingPartyState
+    );
+    commonResponse.status(200).send(responseHTMLBody);
+  } else {
+    relyingPartyURLInstance.searchParams.set("authorization_code", idToken);
+    relyingPartyURLInstance.searchParams.set("nonce", relyingPartyNonce);
+    relyingPartyURLInstance.searchParams.set("state", relyingPartyState);
+    commonResponse.redirect(303, relyingPartyURLInstance.href);
+  }
 };
 
 const validateFIMSToken = (cookies: Record<string, unknown>, res: Response) => {
