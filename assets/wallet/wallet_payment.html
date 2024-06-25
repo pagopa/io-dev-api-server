@@ -29,7 +29,7 @@
             const transactionId = urlParams.get("transactionId");
             const container = document.getElementById("outcomeSelect");
             if (container.value === "0") {
-              fetch('/ecommerce/io/v1/mock-transaction', {
+              fetch('/ecommerce/io/v2/mock-transaction', {
                 method: 'POST',
                 body: JSON.stringify({
                   transactionId,
