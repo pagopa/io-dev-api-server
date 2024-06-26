@@ -12,13 +12,22 @@ const getToken = (defaultValue: string) =>
     "global"
   );
 
+// eslint-disable-next-line functional/no-let
+let mFIMSToken: string | undefined;
+export const FIMSToken = () => {
+  if (!mFIMSToken) {
+    mFIMSToken = getToken("AAAAAAAAAAAAA5");
+  }
+  return mFIMSToken;
+};
+
 const generateSessionTokens = (): PublicSession => ({
   spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
   walletToken: getToken("AAAAAAAAAAAAA1"),
   myPortalToken: getToken("AAAAAAAAAAAAA2"),
   bpdToken: getToken("AAAAAAAAAAAAA3"),
   zendeskToken: getToken("AAAAAAAAAAAAA4"),
-  fimsToken: getToken("AAAAAAAAAAAAA5")
+  fimsToken: FIMSToken()
 });
 
 // eslint-disable-next-line functional/no-let

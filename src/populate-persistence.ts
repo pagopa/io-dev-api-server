@@ -104,7 +104,7 @@ const createMessagesWithCTA = (
         ),
         getNewMessage(
           customConfig,
-          `1 CTA start FISM SSO`,
+          `1 CTA start FIMS SSO`,
           frontMatter1CTAFims + messageMarkdown
         )
       ]
