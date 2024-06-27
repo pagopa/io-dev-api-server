@@ -35,6 +35,7 @@ import { delayer } from "./utils/delay_middleware";
 import { walletRouter as newWalletRouter } from "./features/payments";
 import { serviceRouter as newServiceRouter } from "./features/services";
 import { dashboardHomeRouter } from "./routers/configHomeDashboard/configHomeDashboard";
+import { trialSystemRouter } from "./features/trialSystem/routers";
 
 // create express server
 const app: Application = express();
@@ -82,7 +83,8 @@ app.use(fastLoginMiddleware);
   lollipopRouter,
   fastLoginRouter,
   newWalletRouter,
-  newServiceRouter
+  newServiceRouter,
+  trialSystemRouter
 ].forEach(r => app.use(r));
 
 export default app;
