@@ -5,6 +5,7 @@ import { FeaturedService } from "../../../../generated/definitions/services/Feat
 import { FeaturedServices } from "../../../../generated/definitions/services/FeaturedServices";
 import { ioDevServerConfig } from "../../../config";
 import ServicesDB from "../../../persistence/services";
+import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
 
 const featuredServicesSize =
   ioDevServerConfig.features.service.featuredServicesSize;
@@ -52,7 +53,20 @@ export const getFeaturedServicesResponsePayload = (): FeaturedServices => {
     featuredServicesSize
   );
 
+  // CGN Service
+  const cgnSpecialService = featuredSpecialServices.find(
+    service => service.id === cgnServiceId
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [first, ...rest] = featuredServices;
+
   return {
-    services: featuredServices
+    services: cgnSpecialService
+      ? [
+          cgnSpecialService,
+          ...rest.filter(service => service.id !== cgnSpecialService.id)
+        ]
+      : featuredServices
   };
 };
