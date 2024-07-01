@@ -45,7 +45,8 @@ export const backendStatus: BackendStatus = {
     },
     fims: {
       enabled: true,
-      domain: `${serverUrl}/fims/provider/`
+      domain: `${serverUrl}/fims/provider/`,
+      historyEnabled: true
     },
     uaDonations: {
       enabled: false,
