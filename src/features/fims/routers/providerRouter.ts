@@ -276,7 +276,7 @@ addHandler(
           abort: {
             href: `${baseProviderPath()}/interaction/${requestInteractionId}/abort`
           },
-          confirm: {
+          consent: {
             href: `${baseProviderPath()}/interaction/${requestInteractionId}/confirm`
           }
         },
