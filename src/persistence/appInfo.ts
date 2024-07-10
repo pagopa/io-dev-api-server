@@ -2,21 +2,24 @@ import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import * as A from "fp-ts/lib/Array";
 import { Request } from "express";
-import { VersionPerPlatform } from "../../generated/definitions/content/VersionPerPlatform";
+
+type osPlatform = "ios" | "android";
 
 type DeviceOS = {
-  iPhone: keyof VersionPerPlatform;
-  Android: keyof VersionPerPlatform;
+  iPhone: osPlatform;
+  Android: osPlatform;
+  Darwin: osPlatform;
 };
 
 const osPerDevice: DeviceOS = {
   iPhone: "ios",
-  Android: "android"
+  Android: "android",
+  Darwin: "ios"
 };
 
 type AppInfo = {
   appVersion: string | undefined;
-  appOs: O.Option<keyof VersionPerPlatform>;
+  appOs: O.Option<osPlatform>;
 };
 
 const appInfo: AppInfo = {

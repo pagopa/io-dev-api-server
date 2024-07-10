@@ -55,6 +55,22 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
       } as Range
     ],
     methodManagement: PaymentMethodManagementTypeEnum.NOT_ONBOARDABLE
+  },
+  {
+    id: "4",
+    name: "POSTEPAY",
+    description: "PostePay",
+    asset:
+      "https://github.com/pagopa/io-services-metadata/raw/master/logos/apps/paga-con-postepay.png",
+    status: PaymentMethodStatusEnum.ENABLED,
+    paymentTypeCode: "PPAY",
+    ranges: [
+      {
+        min: 0,
+        max: Math.floor(Math.random() * 5000)
+      } as Range
+    ],
+    methodManagement: PaymentMethodManagementTypeEnum.REDIRECT
   }
 ];
 
