@@ -131,6 +131,13 @@ export const backendStatus: BackendStatus = {
     tos: {
       tos_version: 4.8,
       tos_url: "https://io.italia.it/app-content/tos_privacy.html"
+    },
+    itw: {
+      enabled: true,
+      min_app_version: {
+        ios: "2.66.0.0",
+        android: "2.66.0.0"
+      }
     }
   },
   sections: {
