@@ -13,6 +13,8 @@ import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProble
 import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
 import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
+import { SubscriptionState } from "../../generated/definitions/trial_system/SubscriptionState";
+import { TrialId } from "../../generated/definitions/trial_system/TrialId";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
 import { WalletConfiguration } from "../features/payments/types/configuration";
 import { ServiceConfiguration } from "../features/services/types/configuration";
@@ -226,6 +228,9 @@ export const IoDevServerConfig = t.interface({
       fastLogin: t.interface({
         sessionTTLinMS: t.number
       })
+    }),
+    t.partial({
+      trials: t.record(TrialId, SubscriptionState)
     }),
     AllowRandomValue
   ])
