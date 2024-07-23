@@ -128,7 +128,7 @@ addHandler(publicRouter, "get", "/info", (_, res) => res.json(backendInfo));
 addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 
 // test login
-addHandler(publicRouter, "post", "/test-login", (req, res) => {
+addHandler(publicRouter, "post", "/test-login", async (req, res) => {
   const { password } = req.body;
   if (password === "error") {
     res.status(500).json({ token: getLoginSessionToken() });
@@ -137,6 +137,22 @@ addHandler(publicRouter, "post", "/test-login", (req, res) => {
       res.json({ token: getLoginSessionToken() });
     }, 3000);
   } else {
+    const lollipopPublicKeyHeaderValue = req.get(
+      DEFAULT_HEADER_LOLLIPOP_PUB_KEY
+    );
+    const jwkPK = parseJwkOrError(lollipopPublicKeyHeaderValue);
+
+    if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
+      res.sendStatus(400);
+      return;
+    }
+    const thumbprint = await jose.calculateJwkThumbprint(
+      jwkPK.right,
+      DEFAULT_LOLLIPOP_HASH_ALGORITHM
+    );
+    setLollipopInfo(thumbprint, jwkPK.right);
+
+    createOrRefreshEverySessionToken();
     res.json({ token: getLoginSessionToken() });
   }
 });
