@@ -9,7 +9,7 @@
   "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/v13.39.1-RELEASE/api_cgn.yaml",
   "api_cgn_merchants": "https://raw.githubusercontent.com/pagopa/io-backend/v13.39.1-RELEASE/api_cgn_operator_search.yaml",
   "api_cgn_geo": "https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml",
-  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.35/definitions.yml",
+  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/IOPID-2049-add-remote-ff-session-refresh/definitions.yml",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.35/bonus/specs/bpd/pm/walletv2.json",
   "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/paymentManager/spec.json",
   "pagopa_cobadge_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.35/pagopa/cobadge/abi_definitions.yml",
