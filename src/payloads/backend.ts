@@ -114,6 +114,12 @@ export const backendStatus: BackendStatus = {
           ios: "0.0.0",
           android: "0.0.0"
         }
+      },
+      sessionRefresh: {
+        min_app_version: {
+          ios: "0.0.0",
+          android: "0.0.0"
+        }
       }
     },
     emailUniquenessValidation: {
