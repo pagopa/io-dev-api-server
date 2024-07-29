@@ -181,7 +181,7 @@ const defaultConfig: IoDevServerConfig = {
         isCgnEligible: true,
         isEycaEligible: true,
         allowRandomValues: true,
-        hangOnActivation : false
+        hangOnActivation: false
       }
     },
     idpay: {
