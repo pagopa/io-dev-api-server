@@ -10,6 +10,7 @@ import {
 } from "../services/relyingPartyService";
 import { baseProviderPath } from "../services/providerService";
 import ServicesDB from "../../../persistence/services";
+import { serverUrl } from "../../../utils/server";
 
 export const fimsRelyingPartyRouter = Router();
 
@@ -49,7 +50,7 @@ addHandler(
     }
     const relyingPartyRequestMap = relyingPartyRequests.get(relyingPartyId);
     relyingPartyRequestMap?.set(relyingPartyRequest.state, relyingPartyRequest);
-    const fimsProviderRedirectUri = `${baseProviderPath()}/oauth/authorize?client_id=${
+    const fimsProviderRedirectUri = `${serverUrl}${baseProviderPath()}/oauth/authorize?client_id=${
       relyingParty.id
     }&scope=${scopes}&response_type=${relyingParty.responseType}&redirect_uri=${
       relyingParty.redirectUris[0]
