@@ -224,6 +224,8 @@ const defaultConfig: IoDevServerConfig = {
           "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479",
         idTokenSigningAlgorithm: "ES256K",
         idTokenTTLMilliseconds: 15 * 60 * 1000,
+        ignoreFederationCookiePresence: false,
+        ignoreFederationCookieValue: true,
         implicitCodeFlow: false,
         interactionCookieKey: "_interaction",
         interactionResumeCookieKey: "_interaction_resume",
@@ -235,8 +237,6 @@ const defaultConfig: IoDevServerConfig = {
         sessionLegacySignatureCookieKey: "_session.legacy.sig",
         sessionSignatureCookieKey: "_session.sig",
         sessionTTLMilliseconds: 1 * 60 * 1000,
-        ignoreFederationCookiePresence: false,
-        ignoreFederationCookieValue: true,
         useLaxInsteadOfNoneForSameSiteOnSessionCookies: true
       },
       relyingParties: [

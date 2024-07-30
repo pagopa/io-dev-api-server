@@ -7,6 +7,8 @@ import { RelyingPartiesConfig } from "../types/config";
 import { RelyingPartyRequest } from "../types/relyingParty";
 import { providerConfig } from "./providerService";
 
+export const relyingPartyNuisanceCookie = "_rpNuisanceCookie";
+
 export const relyingPartiesConfig = (
   config: IoDevServerConfig = ioDevServerConfig
 ): ReadonlyArray<RelyingPartiesConfig> => config.features.fims.relyingParties;
@@ -132,7 +134,14 @@ export const commonRedirectionValidation = (
         req.headers.host
       }${baseRelyingPartyPath()}/authenticatedPage`
     );
-    res.redirect(302, authenticatedUrl);
+    res
+    .cookie(relyingPartyNuisanceCookie, relyingPartyNuisanceCookie, {
+      domain: `${baseRelyingPartyPath}`,
+      expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+      sameSite: "lax",
+      httpOnly: true
+    })
+    .redirect(302, authenticatedUrl);
   } catch (e) {
     res.status(400).send({
       message: `Unable to decode token. Error is (${

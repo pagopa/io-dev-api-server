@@ -6,7 +6,8 @@ import {
   baseRelyingPartyPath,
   commonRedirectionValidation,
   generateUserProfileHTML,
-  relyingPartiesConfig
+  relyingPartiesConfig,
+  relyingPartyNuisanceCookie
 } from "../services/relyingPartyService";
 import { baseProviderPath } from "../services/providerService";
 import ServicesDB from "../../../persistence/services";
@@ -35,6 +36,16 @@ addHandler(
       });
       return;
     }
+
+    const cookies = req.cookies;
+    const nuisanceCookie = cookies[relyingPartyNuisanceCookie];
+    if (nuisanceCookie) {
+      res.status(403).send({
+        message: `This request should not have any previously set cookie. Found '${nuisanceCookie}'`
+      });
+      return;
+    }
+
     const scopes = relyingParty.scopes.join(" ");
     const state = v4();
     const relyingPartyRequest: RelyingPartyRequest = {
