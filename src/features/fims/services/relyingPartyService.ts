@@ -135,13 +135,13 @@ export const commonRedirectionValidation = (
       }${baseRelyingPartyPath()}/authenticatedPage`
     );
     res
-    .cookie(relyingPartyNuisanceCookie, relyingPartyNuisanceCookie, {
-      domain: `${baseRelyingPartyPath}`,
-      expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-      sameSite: "lax",
-      httpOnly: true
-    })
-    .redirect(302, authenticatedUrl);
+      .cookie(relyingPartyNuisanceCookie, relyingPartyNuisanceCookie, {
+        path: `${baseRelyingPartyPath()}`,
+        expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+        sameSite: "lax",
+        httpOnly: true
+      })
+      .redirect(302, authenticatedUrl);
   } catch (e) {
     res.status(400).send({
       message: `Unable to decode token. Error is (${

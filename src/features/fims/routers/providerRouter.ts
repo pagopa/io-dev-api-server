@@ -14,8 +14,8 @@ import {
   providerConfig,
   translationForScope
 } from "../services/providerService";
-import { getRelyingParty } from "./relyingPartyRouter";
 import { isSessionTokenValid } from "../../../persistence/sessionInfo";
+import { getRelyingParty } from "./relyingPartyRouter";
 
 export const fimsProviderRouter = Router();
 
@@ -119,7 +119,12 @@ addHandler(
     }
 
     // Fast login
-    isSessionTokenValid();
+    if (!isSessionTokenValid()) {
+      res.status(401).send({
+        message: "Fast Login Session expired"
+      });
+      return;
+    }
 
     // OIdC session
     const relyingPartyIdString = String(relyingPartyId);
@@ -349,9 +354,14 @@ addHandler(
     if (!validateCookies(cookiesToValidate, cookies, res)) {
       return;
     }
-    
+
     // Fast login
-    isSessionTokenValid();
+    if (!isSessionTokenValid()) {
+      res.status(401).send({
+        message: "Fast Login Session expired"
+      });
+      return;
+    }
 
     const redirectUri = `${baseProviderPath()}/oauth/authorize/${requestInteractionId}`;
     res.redirect(303, redirectUri);
