@@ -69,12 +69,14 @@ export const setSessionAuthenticationProvider = (req: Request) => {
     | undefined;
 };
 
-export const isSessionTokenValid = (req: Request) => {
-  const bearerToken = req.get("authorization");
+export const isSessionTokenValid = (requestOrUndefined?: Request) => {
+  if (requestOrUndefined) {
+    const bearerToken = requestOrUndefined.get("authorization");
 
-  // if there is no bearer token , we assume the call does not require verification
-  if (!bearerToken) {
-    return true;
+    // if there is no bearer token , we assume the call does not require verification
+    if (!bearerToken) {
+      return true;
+    }
   }
 
   // if user is authenticated but this is not a fast login, the token in always ok
