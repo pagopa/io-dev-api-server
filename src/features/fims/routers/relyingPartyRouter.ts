@@ -6,8 +6,7 @@ import {
   baseRelyingPartyPath,
   commonRedirectionValidation,
   generateUserProfileHTML,
-  relyingPartiesConfig,
-  relyingPartyNuisanceCookie
+  relyingPartiesConfig
 } from "../services/relyingPartyService";
 import { baseProviderPath } from "../services/providerService";
 import ServicesDB from "../../../persistence/services";
@@ -33,15 +32,6 @@ addHandler(
     if (!relyingParty) {
       res.status(404).send({
         message: `Relying Party with id (${relyingPartyId}) not found`
-      });
-      return;
-    }
-
-    const cookies = req.cookies;
-    const nuisanceCookie = cookies[relyingPartyNuisanceCookie];
-    if (nuisanceCookie) {
-      res.status(403).send({
-        message: `This request should not have any previously set cookie. Found '${nuisanceCookie}'`
       });
       return;
     }

@@ -44,9 +44,21 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     fims: {
-      enabled: true,
       domain: `${serverUrl}/fims/provider/`,
-      historyEnabled: true
+      enabled: true,
+      history: {
+        min_app_version: {
+          android: "2.68.0.0",
+          ios: "2.68.0.0"
+        }
+      },
+      historyEnabled: true,
+      singleSignOn: {
+        min_app_version: {
+          android: "2.68.0.0",
+          ios: "2.68.0.0"
+        }
+      }
     },
     uaDonations: {
       enabled: false,
