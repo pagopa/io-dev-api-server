@@ -17,6 +17,18 @@ export const backendStatus: BackendStatus = {
     "it-IT": "",
     "en-EN": "English message"
   },
+  statusMessages: {
+    items: [
+      {
+        routes: ["MESSAGES_HOME"],
+        level: LevelEnum.warning,
+        message: {
+          "en-EN": "Some generic error message",
+          "it-IT": "Un messaggio di errore generico"
+        }
+      }
+    ]
+  },
   config: {
     bpd_ranking: false,
     bpd_ranking_v2: true,
