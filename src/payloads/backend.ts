@@ -2,6 +2,7 @@ import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConf
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 import { pnOptInServiceId } from "../features/pn/services/services";
+import { serverUrl } from "../utils/server";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -43,8 +44,21 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     fims: {
+      domain: `${serverUrl}/fims/provider/`,
       enabled: true,
-      domain: "http://localhost:3000/"
+      history: {
+        min_app_version: {
+          android: "2.68.0.0",
+          ios: "2.68.0.0"
+        }
+      },
+      historyEnabled: true,
+      singleSignOn: {
+        min_app_version: {
+          android: "2.68.0.0",
+          ios: "2.68.0.0"
+        }
+      }
     },
     uaDonations: {
       enabled: false,
@@ -114,6 +128,12 @@ export const backendStatus: BackendStatus = {
           ios: "0.0.0",
           android: "0.0.0"
         }
+      },
+      sessionRefresh: {
+        min_app_version: {
+          ios: "0.0.0",
+          android: "0.0.0"
+        }
       }
     },
     emailUniquenessValidation: {
@@ -131,6 +151,13 @@ export const backendStatus: BackendStatus = {
     tos: {
       tos_version: 4.8,
       tos_url: "https://io.italia.it/app-content/tos_privacy.html"
+    },
+    itw: {
+      enabled: true,
+      min_app_version: {
+        ios: "2.66.0.0",
+        android: "2.66.0.0"
+      }
     }
   },
   sections: {

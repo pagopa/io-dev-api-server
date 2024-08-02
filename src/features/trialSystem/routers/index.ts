@@ -2,15 +2,27 @@
 import { Router } from "express";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { addHandler } from "../../../payloads/response";
-import { Subscription } from "../../../../generated/definitions/trial_systwem/Subscription";
-import { TrialId } from "../../../../generated/definitions/trial_systwem/TrialId";
-import { SubscriptionStateEnum } from "../../../../generated/definitions/trial_systwem/SubscriptionState";
+import { Subscription } from "../../../../generated/definitions/trial_system/Subscription";
+import { TrialId } from "../../../../generated/definitions/trial_system/TrialId";
+import { SubscriptionStateEnum } from "../../../../generated/definitions/trial_system/SubscriptionState";
+import { ioDevServerConfig } from "../../../config";
 
 export const trialSystemRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/trials${path}`);
 
 const trials: Record<TrialId, Subscription> = {};
+
+const loadTrials = () =>
+  Object.entries(ioDevServerConfig.features.trials || {})?.forEach(
+    ([trialId, state]) => {
+      trials[trialId as TrialId] = {
+        trialId: trialId as TrialId,
+        state,
+        createdAt: new Date()
+      };
+    }
+  );
 
 addHandler(
   trialSystemRouter,
@@ -54,3 +66,5 @@ addHandler(
     res.sendStatus(404);
   }
 );
+
+loadTrials();
