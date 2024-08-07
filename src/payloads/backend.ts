@@ -62,12 +62,6 @@ export const backendStatus: BackendStatus = {
         android: "2.68.0.0",
         ios: "2.68.0.0"
       },
-      history: {
-        min_app_version: {
-          android: "2.68.0.0",
-          ios: "2.68.0.0"
-        }
-      },
       historyEnabled: true
     },
     uaDonations: {
