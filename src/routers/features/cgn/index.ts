@@ -69,6 +69,9 @@ export const isCgnActivated = () => firstCgnActivationRequestTime > 0;
 // 409 -> Cannot activate the user's cgn because another updateCgn request was found for this user or it is already active.
 // 403 -> Cannot activate a new CGN because the user is ineligible to get the CGN.
 addHandler(cgnRouter, "post", addPrefix("/activation"), (_, res) => {
+  if (ioDevServerConfig.features.bonus.cgn.hangOnActivation) {
+    return;
+  }
   // if there is no previous activation -> Request created -> send back the created id
   pipe(
     O.fromNullable(idActivationCgn),
