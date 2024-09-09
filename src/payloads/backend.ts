@@ -46,19 +46,11 @@ export const backendStatus: BackendStatus = {
     fims: {
       domain: `${serverUrl}/fims/provider/`,
       enabled: true,
-      history: {
-        min_app_version: {
-          android: "2.68.0.0",
-          ios: "2.68.0.0"
-        }
+      min_app_version: {
+        android: "2.68.0.0",
+        ios: "2.68.0.0"
       },
-      historyEnabled: true,
-      singleSignOn: {
-        min_app_version: {
-          android: "2.68.0.0",
-          ios: "2.68.0.0"
-        }
-      }
+      historyEnabled: true
     },
     uaDonations: {
       enabled: false,
@@ -134,6 +126,12 @@ export const backendStatus: BackendStatus = {
           ios: "0.0.0",
           android: "0.0.0"
         }
+      }
+    },
+    cie_id: {
+      min_app_version: {
+        ios: "0.0.0.0",
+        android: "0.0.0.0"
       }
     },
     emailUniquenessValidation: {

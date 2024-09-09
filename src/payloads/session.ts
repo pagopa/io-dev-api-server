@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker/locale/it";
-import { PublicSession } from "../../generated/definitions/backend/PublicSession";
-import { SpidLevel } from "../../generated/definitions/backend/SpidLevel";
+import { PublicSession } from "../../generated/definitions/session_manager/PublicSession";
+import { SpidLevel } from "../../generated/definitions/session_manager/SpidLevel";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
