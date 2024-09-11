@@ -9,9 +9,9 @@ import { getRandomValue } from "../utils/random";
 import { addApiV1Prefix } from "../utils/strings";
 export const sessionRouter = Router();
 
-addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
+addHandler(sessionRouter, "get", addApiV1Prefix("/session"), ({ query }, res) =>
   pipe(
-    getCustomSession(),
+    getCustomSession(query),
     O.fromNullable,
     O.fold(
       () => res.sendStatus(401),
