@@ -165,6 +165,12 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    cie_id: {
+      min_app_version: {
+        ios: "0.0.0.0",
+        android: "0.0.0.0"
+      }
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
