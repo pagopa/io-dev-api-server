@@ -108,7 +108,7 @@ const defaultConfig: IoDevServerConfig = {
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
-    paymentWithValidDueDateCount: 1,
+    paymentWithValidDueDateCount: 0,
     paymentWithExpiredDueDateCount: 0,
     fci: {
       waitForSignatureCount: 0,
@@ -124,7 +124,7 @@ const defaultConfig: IoDevServerConfig = {
       }
     },
     withCTA: false,
-    withEUCovidCert: true,
+    withEUCovidCert: false,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
@@ -207,8 +207,7 @@ const defaultConfig: IoDevServerConfig = {
       }
     },
     trials: {
-      ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]:
-        SubscriptionStateEnum.SUBSCRIBED // IT Wallet trial
+      ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]: SubscriptionStateEnum.ACTIVE // IT Wallet trial
     },
     fims: {
       history: {
