@@ -34,10 +34,7 @@ addHandler(
       return res.status(400);
     }
 
-    if (
-      currentTrial.state === SubscriptionStateEnum.SUBSCRIBED ||
-      currentTrial.state === SubscriptionStateEnum.ACTIVE
-    ) {
+    if (currentTrial.state !== SubscriptionStateEnum.UNSUBSCRIBED) {
       return res.status(409).json({
         detail: "The resource already exists.",
         title: "Conflict"
