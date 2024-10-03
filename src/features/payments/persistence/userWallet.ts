@@ -15,6 +15,7 @@ import {
   WalletLastUsageTypeEnum
 } from "../../../../generated/definitions/pagopa/ecommerce/WalletLastUsageType";
 import { GuestMethodLastUsageType } from "../../../../generated/definitions/pagopa/ecommerce/GuestMethodLastUsageType";
+import { uuidv4 } from "../../../utils/strings";
 import { generateWalletDetailsByPaymentMethod } from "./paymentMethods";
 
 const userWallets = new Map<WalletInfo["walletId"], WalletInfo>();
@@ -39,7 +40,7 @@ const generateUserWallet = (
   paymentMethodId: number,
   extraDetails: Partial<WalletInfoDetails> = {}
 ) => {
-  const walletId = (getUserWallets().length + 1).toString();
+  const walletId = uuidv4();
   const { details, paymentMethodAsset } =
     generateWalletDetailsByPaymentMethod(paymentMethodId);
 
