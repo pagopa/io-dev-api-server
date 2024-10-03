@@ -8,10 +8,19 @@ import { WalletApplicationStatusEnum } from "../../../../generated/definitions/p
 import { WalletClientStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletClientStatus";
 import { WalletInfo } from "../../../../generated/definitions/pagopa/walletv3/WalletInfo";
 import { WalletInfoDetails } from "../../../../generated/definitions/pagopa/walletv3/WalletInfoDetails";
+import { UserLastPaymentMethodResponse } from "../../../../generated/definitions/pagopa/ecommerce/UserLastPaymentMethodResponse";
 import { WalletStatusEnum } from "../../../../generated/definitions/pagopa/walletv3/WalletStatus";
+import {
+  WalletLastUsageType,
+  WalletLastUsageTypeEnum
+} from "../../../../generated/definitions/pagopa/ecommerce/WalletLastUsageType";
+import { GuestMethodLastUsageType } from "../../../../generated/definitions/pagopa/ecommerce/GuestMethodLastUsageType";
 import { generateWalletDetailsByPaymentMethod } from "./paymentMethods";
 
 const userWallets = new Map<WalletInfo["walletId"], WalletInfo>();
+
+// eslint-disable-next-line functional/no-let, @typescript-eslint/no-unused-vars
+let recentUsedPaymentMethod: UserLastPaymentMethodResponse | undefined;
 
 const getUserWallets = () => Array.from(userWallets.values());
 
@@ -87,6 +96,27 @@ const updateUserWalletApplication = (
   return E.left("Wallet not found");
 };
 
+const setRecentUsedPaymentMethod = (
+  id: string,
+  type: WalletLastUsageType | GuestMethodLastUsageType
+) => {
+  if (type === WalletLastUsageTypeEnum.wallet) {
+    recentUsedPaymentMethod = {
+      date: new Date(),
+      type,
+      walletId: id
+    };
+    return;
+  }
+  recentUsedPaymentMethod = {
+    date: new Date(),
+    type,
+    paymentMethodId: id
+  };
+};
+
+const getRecentusedPaymentMethod = () => recentUsedPaymentMethod;
+
 // At server startup
 generateWalletData();
 
@@ -96,5 +126,7 @@ export default {
   getUserWalletInfo,
   generateUserWallet,
   removeUserWallet,
+  setRecentUsedPaymentMethod,
+  getRecentusedPaymentMethod,
   updateUserWalletApplication
 };
