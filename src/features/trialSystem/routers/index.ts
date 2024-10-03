@@ -6,8 +6,6 @@ import { Subscription } from "../../../../generated/definitions/trial_system/Sub
 import { TrialId } from "../../../../generated/definitions/trial_system/TrialId";
 import { SubscriptionStateEnum } from "../../../../generated/definitions/trial_system/SubscriptionState";
 import { ioDevServerConfig } from "../../../config";
-import { title } from "process";
-
 export const trialSystemRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/trials${path}`);
