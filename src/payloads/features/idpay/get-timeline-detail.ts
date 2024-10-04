@@ -24,7 +24,7 @@ const generateRandomOperationDetailDTO = (
     case "TRANSACTION":
       return {
         ...operation,
-        accrued: operation.accrued || faker.datatype.number(100),
+        accruedCents: operation.accruedCents || faker.datatype.number(10000),
         idTrxAcquirer: ulid(),
         idTrxIssuer: ulid()
       };
