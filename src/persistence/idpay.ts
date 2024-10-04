@@ -65,7 +65,7 @@ const { idPay: walletConfig } = ioDevServerConfig.wallet;
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
 
 const generateRandomInitiativeDTO = (): InitiativeDTO => {
-  const amountCents = faker.datatype.number({ min: 500, max: 200 });
+  const amountCents = faker.datatype.number({ min: 5000, max: 20000 });
   const accruedCents = faker.datatype.number({ max: 20000 });
   const refundedCents = faker.datatype.number({ max: accruedCents });
 
