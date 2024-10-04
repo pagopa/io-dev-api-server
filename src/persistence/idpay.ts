@@ -65,19 +65,19 @@ const { idPay: walletConfig } = ioDevServerConfig.wallet;
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
 
 const generateRandomInitiativeDTO = (): InitiativeDTO => {
-  const amount = faker.datatype.number({ min: 50, max: 200, precision: 10 });
-  const accrued = faker.datatype.number({ max: 200, precision: 10 });
-  const refunded = faker.datatype.number({ max: accrued, precision: 10 });
+  const amountCents = faker.datatype.number({ min: 500, max: 200 });
+  const accruedCents = faker.datatype.number({ max: 20000 });
+  const refundedCents = faker.datatype.number({ max: accruedCents });
 
   return {
     initiativeId: ulid(),
     initiativeName: faker.company.name(),
     status: getRandomEnumValue(InitiativeStatus),
     endDate: faker.date.future(1),
-    amount,
-    accrued,
+    amountCents,
+    accruedCents,
     initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
-    refunded,
+    refundedCents,
     lastCounterUpdate: faker.date.recent(1),
     iban: faker.helpers.arrayElement(ibanList)?.iban || "",
     nInstr: 1,
@@ -107,8 +107,8 @@ const generateRandomTransactionOperationDTO = (
     operationType: getRandomEnumValue(TransactionOperationTypeEnum),
     operationDate: new Date(),
     operationId: ulid(),
-    accrued: faker.datatype.number({ min: 5, max: 25 }),
-    amount: faker.datatype.number({ min: 50, max: 100 }),
+    accruedCents: faker.datatype.number({ min: 500, max: 2500 }),
+    amountCents: faker.datatype.number({ min: 5000, max: 10000 }),
     brand,
     circuitType: "01",
     brandLogo,
@@ -128,7 +128,7 @@ const generateRandomRefundOperationDTO = (
   operationDate: new Date(),
   operationId: ulid(),
   eventId: ulid(),
-  amount: faker.datatype.number({ min: 5, max: 100 }),
+  amountCents: faker.datatype.number({ min: 500, max: 10000 }),
   ...withInfo
 });
 
@@ -525,8 +525,8 @@ range(0, walletConfig.discountCount).forEach(() => {
     status: InitiativeStatus.REFUNDABLE,
     iban: undefined,
     nInstr: 0,
-    accrued: 0,
-    refunded: 0
+    accruedCents: 0,
+    refundedCents: 0
   };
 
   const { initiativeId } = initiative;
