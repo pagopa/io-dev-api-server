@@ -18,33 +18,7 @@ export const backendStatus: BackendStatus = {
     "en-EN": "English message"
   },
   statusMessages: {
-    items: [
-      {
-        routes: ["MESSAGES_HOME"],
-        level: LevelEnum.normal,
-        message: {
-          "en-EN": "Some generic error message",
-          "it-IT": "Un messaggio di errore generico che si aggiorna di nuovo"
-        }
-      },
-      {
-        routes: ["MESSAGE_DETAIL"],
-        level: LevelEnum.warning,
-        message: {
-          "en-EN": "Some generic error message 1",
-          "it-IT":
-            "C'è un problema con i pagamenti a partire dai messaggi, attenzione alle frodi"
-        }
-      },
-      {
-        routes: ["PAYMENT_METHOD_DETAILS_SCREEN"],
-        level: LevelEnum.warning,
-        message: {
-          "en-EN": "Some generic error message 2",
-          "it-IT": "C'è un problema con i metodi di pagamento, non usare Paypal"
-        }
-      }
-    ]
+    items: []
   },
   config: {
     bpd_ranking: false,
@@ -75,19 +49,7 @@ export const backendStatus: BackendStatus = {
     fims: {
       domain: `${serverUrl}/fims/provider/`,
       enabled: true,
-      history: {
-        min_app_version: {
-          android: "2.68.0.0",
-          ios: "2.68.0.0"
-        }
-      },
-      historyEnabled: true,
-      singleSignOn: {
-        min_app_version: {
-          android: "2.68.0.0",
-          ios: "2.68.0.0"
-        }
-      }
+      historyEnabled: true
     },
     uaDonations: {
       enabled: false,
