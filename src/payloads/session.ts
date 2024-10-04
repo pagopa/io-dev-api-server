@@ -64,13 +64,13 @@ export const clearSessionTokens = () => {
 };
 
 export const getCustomSession = (
-  value?: QueryString.ParsedQs
+  query?: QueryString.ParsedQs
 ): IOResponse<PublicSession> | undefined => {
-  if (value?.fields) {
+  if (query?.fields) {
     return {
       payload: validatePayload(
         PublicSession,
-        generateCustomObjectSessionTokens(value?.fields)
+        generateCustomObjectSessionTokens(query?.fields)
       ),
       isJson: true
     };
@@ -82,3 +82,8 @@ export const getCustomSession = (
       }
     : undefined;
 };
+
+export const shouldAddLollipopAssertionRef = (query?: QueryString.ParsedQs) =>
+  !query?.fields ||
+  (typeof query.fields === "string" &&
+    query.fields.includes("lollipopAssertionRef"));
