@@ -17,6 +17,9 @@ export const backendStatus: BackendStatus = {
     "it-IT": "",
     "en-EN": "English message"
   },
+  statusMessages: {
+    items: []
+  },
   config: {
     bpd_ranking: false,
     bpd_ranking_v2: true,
