@@ -6,7 +6,6 @@ import { Subscription } from "../../../../generated/definitions/trial_system/Sub
 import { TrialId } from "../../../../generated/definitions/trial_system/TrialId";
 import { SubscriptionStateEnum } from "../../../../generated/definitions/trial_system/SubscriptionState";
 import { ioDevServerConfig } from "../../../config";
-
 export const trialSystemRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/trials${path}`);
@@ -31,10 +30,14 @@ addHandler(
   (req, res) => {
     const currentTrial = trials[req.params.trialId as TrialId];
 
-    if (currentTrial) {
-      return res.status(200).json({
-        ...currentTrial,
-        state: SubscriptionStateEnum.SUBSCRIBED
+    if (!currentTrial) {
+      return res.status(400);
+    }
+
+    if (currentTrial.state !== SubscriptionStateEnum.UNSUBSCRIBED) {
+      return res.status(409).json({
+        detail: "The resource already exists.",
+        title: "Conflict"
       });
     }
 
