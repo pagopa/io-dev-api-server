@@ -52,19 +52,6 @@ export const backendStatus: BackendStatus = {
       },
       historyEnabled: true
     },
-    uaDonations: {
-      enabled: false,
-      banner: {
-        visible: false,
-        description: {
-          "it-IT":
-            "Fai una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina",
-          "en-EN":
-            "Make a donation to humanitarian organizations that assist the civilians affected by the crisis in Ukraine"
-        },
-        url: "https://assets.cdn.io.pagopa.it/html/donate.html"
-      }
-    },
     premiumMessages: {
       opt_in_out_enabled: true
     },
