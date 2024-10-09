@@ -1,6 +1,6 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
+import { PublicSession } from "../../../generated/definitions/session_manager/PublicSession";
 import { AppUrlLoginScheme } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
 import app from "../../server";

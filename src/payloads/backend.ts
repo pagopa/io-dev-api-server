@@ -2,6 +2,7 @@ import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConf
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 import { pnOptInServiceId } from "../features/pn/services/services";
+import { serverUrl } from "../utils/server";
 
 export const backendInfo = {
   min_app_version: { android: "1.27.0", ios: "1.27.0" },
@@ -15,6 +16,9 @@ export const backendStatus: BackendStatus = {
   message: {
     "it-IT": "",
     "en-EN": "English message"
+  },
+  statusMessages: {
+    items: []
   },
   config: {
     bpd_ranking: false,
@@ -43,21 +47,13 @@ export const backendStatus: BackendStatus = {
       merchants_v2: false
     },
     fims: {
+      domain: `${serverUrl}/fims/provider/`,
       enabled: true,
-      domain: "http://localhost:3000/"
-    },
-    uaDonations: {
-      enabled: false,
-      banner: {
-        visible: false,
-        description: {
-          "it-IT":
-            "Fai una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina",
-          "en-EN":
-            "Make a donation to humanitarian organizations that assist the civilians affected by the crisis in Ukraine"
-        },
-        url: "https://assets.cdn.io.pagopa.it/html/donate.html"
-      }
+      min_app_version: {
+        android: "2.68.0.0",
+        ios: "2.68.0.0"
+      },
+      historyEnabled: true
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -145,6 +141,12 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    cie_id: {
+      min_app_version: {
+        ios: "0.0.0.0",
+        android: "0.0.0.0"
+      }
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
@@ -158,8 +160,8 @@ export const backendStatus: BackendStatus = {
       }
     },
     tos: {
-      tos_version: 4.8,
-      tos_url: "https://io.italia.it/app-content/tos_privacy.html"
+      tos_version: 4.91,
+      tos_url: "https://io.italia.it/app-content/tos_privacy.html?v=4.91"
     },
     itw: {
       enabled: true,

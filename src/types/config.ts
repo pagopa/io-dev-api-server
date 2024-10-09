@@ -18,6 +18,7 @@ import { TrialId } from "../../generated/definitions/trial_system/TrialId";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
 import { WalletConfiguration } from "../features/payments/types/configuration";
 import { ServiceConfiguration } from "../features/services/types/configuration";
+import { FIMSConfig } from "../features/fims/types/config";
 import { AllowRandomValue } from "./allowRandomValue";
 import { HttpResponseCode } from "./httpResponseCode";
 
@@ -200,7 +201,9 @@ export const IoDevServerConfig = t.interface({
             // if true the user is eligible to the CGN
             isCgnEligible: t.boolean,
             // if true the user is eligible to the EYCA related activation
-            isEycaEligible: t.boolean
+            isEycaEligible: t.boolean,
+            // if true the handler does nothing, effectively timing out, use to test loading states
+            hangOnActivation: t.boolean
           }),
           AllowRandomValue
         ])
@@ -217,7 +220,8 @@ export const IoDevServerConfig = t.interface({
           assertionRefValidityMS: t.number
         })
       ]),
-      service: ServiceConfiguration
+      service: ServiceConfiguration,
+      fims: FIMSConfig
     }),
     t.partial({
       wallet: WalletConfiguration
