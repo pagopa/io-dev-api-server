@@ -7,6 +7,9 @@ import { FaultCategoryEnum } from "../../../../generated/definitions/pagopa/ecom
 import { NewTransactionRequest } from "../../../../generated/definitions/pagopa/ecommerce/NewTransactionRequest";
 import { RequestAuthorizationRequest } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationRequest";
 import { RequestAuthorizationResponse } from "../../../../generated/definitions/pagopa/ecommerce/RequestAuthorizationResponse";
+import { GuestMethodLastUsageTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/GuestMethodLastUsageType";
+import { WalletLastUsageTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/WalletLastUsageType";
+import { WalletDetailTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/WalletDetailType";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
@@ -163,16 +166,31 @@ addPaymentHandler(
       }),
       O.fold(
         () => res.sendStatus(403),
-        ({ transactionId }) =>
+        ({ transactionId, requestAuthorization }) =>
           pipe(
             getTransactionInfoPayload(transactionId),
             O.fold(
               () => res.sendStatus(404),
-              () =>
-                res.status(200).json({
+              () => {
+                const usedPaymentMethodType =
+                  requestAuthorization.details.detailType ===
+                  WalletDetailTypeEnum.wallet
+                    ? WalletLastUsageTypeEnum.wallet
+                    : GuestMethodLastUsageTypeEnum.guest;
+                const usedPaymentMethodId =
+                  requestAuthorization.details.detailType ===
+                  WalletDetailTypeEnum.wallet
+                    ? requestAuthorization.details.walletId
+                    : requestAuthorization.details.paymentMethodId;
+                WalletDB.setRecentUsedPaymentMethod(
+                  usedPaymentMethodId,
+                  usedPaymentMethodType
+                );
+                return res.status(200).json({
                   authorizationUrl: `${serverUrl}${WALLET_PAYMENT_PATH}?transactionId=${transactionId}`,
                   authorizationRequestId: ulid()
-                } as RequestAuthorizationResponse)
+                } as RequestAuthorizationResponse);
+              }
             )
           )
       )
@@ -204,6 +222,12 @@ addPaymentHandler("post", "/mock-transaction", (req, res) =>
 addPaymentHandler("get", "/wallets", (req, res) => {
   res.json({
     wallets: WalletDB.getUserWallets()
+  });
+});
+
+addPaymentHandler("get", "/user/lastPaymentMethodUsed", (req, res) => {
+  res.json({
+    ...WalletDB.getRecentusedPaymentMethod()
   });
 });
 
