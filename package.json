@@ -11,7 +11,7 @@
   "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/v14.3.0-RELEASE/api_cgn.yaml",
   "api_cgn_merchants": "https://raw.githubusercontent.com/pagopa/io-backend/v14.3.0-RELEASE/api_cgn_operator_search.yaml",
   "api_cgn_geo": "https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml",
-  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/2e55656fd79d1f600f9cb27f273779bb634579cc/definitions.yml",
+  "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/IOBP-803-add-banner-new-payment-section/definitions.yml",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.42/bonus/specs/bpd/pm/walletv2.json",
   "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/paymentManager/spec.json",
   "pagopa_cobadge_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.42/pagopa/cobadge/abi_definitions.yml",
