@@ -146,6 +146,13 @@ export const backendStatus: BackendStatus = {
         ios: "2.66.0.0",
         android: "2.66.0.0"
       }
+    },
+    landing_banners: {
+      priority_order: [
+        "PUSH_NOTIFICATIONS_REMINDER",
+        "ITW_DISCOVERY",
+        "THIS_SHOULD_BREAK"
+      ]
     }
   },
   sections: {
