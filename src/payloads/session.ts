@@ -22,38 +22,45 @@ export const FIMSToken = () => {
   return mFIMSToken;
 };
 
-const tokensObject: PublicSession = {
+const generateSessionTokens = (): PublicSession => ({
   spidLevel: "https://www.spid.gov.it/SpidL2" as SpidLevel,
   walletToken: getToken("AAAAAAAAAAAAA1"),
   myPortalToken: getToken("AAAAAAAAAAAAA2"),
   bpdToken: getToken("AAAAAAAAAAAAA3"),
   zendeskToken: getToken("AAAAAAAAAAAAA4"),
   fimsToken: FIMSToken()
-};
+});
 
-const generateSessionTokens = (): PublicSession => tokensObject;
+// eslint-disable-next-line functional/no-let
+let customSession: PublicSession | undefined;
 
 export const generateCustomObjectSessionTokens = (
   tokenString: string | ParsedQs | string[] | ParsedQs[]
 ): Partial<PublicSession> => {
   // If no tokenString is provided, return the entire tokensObject
   if (!tokenString || typeof tokenString !== "string") {
-    return tokensObject;
+    customSession = generateSessionTokens();
+  } else {
+    // Parse the tokenString to extract the tokens
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const tokenKeys: Array<keyof PublicSession> = tokenString
+      .replace(/[()]/g, "") // Remove parentheses
+      .split(",") // Split by comma
+      .filter(
+        (key: string): key is keyof PublicSession =>
+          key in generateSessionTokens()
+      ); // Ensure keys are valid
+    // Return a filtered object based on tokenKeys
+    const filteredEntries = tokenKeys.map(key => [
+      key,
+      generateSessionTokens()[key]
+    ]);
+    customSession = Object.fromEntries(
+      filteredEntries
+    ) as Partial<PublicSession>;
   }
-
-  // Parse the tokenString to extract the tokens
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const tokenKeys: Array<keyof PublicSession> = tokenString
-    .replace(/[()]/g, "") // Remove parentheses
-    .split(",") // Split by comma
-    .filter((key: string): key is keyof PublicSession => key in tokensObject); // Ensure keys are valid
-  // Return a filtered object based on tokenKeys
-  const filteredEntries = tokenKeys.map(key => [key, tokensObject[key]]);
-  return Object.fromEntries(filteredEntries) as Partial<PublicSession>;
+  return customSession;
 };
-
-// eslint-disable-next-line functional/no-let
-let customSession: PublicSession | undefined;
 
 export const createOrRefreshSessionTokens = () => {
   customSession = generateSessionTokens();
