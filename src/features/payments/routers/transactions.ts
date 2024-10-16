@@ -43,7 +43,7 @@ addTransactionHandler("get", "/transactions", (req, res) => {
   );
 });
 
-addTransactionHandler("get", "/transactions/:transactionId", (req, res) => {
+addTransactionHandler("get", "/paids/:transactionId", (req, res) => {
   pipe(
     req.params.transactionId,
     O.fromNullable,
@@ -63,7 +63,7 @@ addTransactionHandler("get", "/transactions/:transactionId", (req, res) => {
   );
 });
 
-addTransactionHandler("get", "/transactions/:transactionId/pdf", (req, res) => {
+addTransactionHandler("get", "/paids/:transactionId/pdf", (req, res) => {
   pipe(
     req.params.transactionId,
     O.fromNullable,
