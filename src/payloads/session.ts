@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker/locale/it";
-import QueryString, { ParsedQs } from "qs";
+import QueryString from "qs";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
 import { PublicSession } from "../../generated/definitions/session_manager/PublicSession";
@@ -34,32 +34,18 @@ const generateSessionTokens = (): PublicSession => ({
 // eslint-disable-next-line functional/no-let
 let customSession: PublicSession | undefined;
 
-export const generateCustomObjectSessionTokens = (
-  tokenString: string | ParsedQs | string[] | ParsedQs[]
+const generateCustomObjectSessionTokens = (
+  tokenString: string
 ): Partial<PublicSession> => {
-  // If no tokenString is provided, return the entire tokensObject
-  if (!tokenString || typeof tokenString !== "string") {
-    customSession = generateSessionTokens();
-  } else {
-    // Parse the tokenString to extract the tokens
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const tokenKeys: Array<keyof PublicSession> = tokenString
-      .replace(/[()]/g, "") // Remove parentheses
-      .split(",") // Split by comma
-      .filter(
-        (key: string): key is keyof PublicSession =>
-          key in generateSessionTokens()
-      ); // Ensure keys are valid
-    // Return a filtered object based on tokenKeys
-    const filteredEntries = tokenKeys.map(key => [
-      key,
-      generateSessionTokens()[key]
-    ]);
-    customSession = Object.fromEntries(
-      filteredEntries
-    ) as Partial<PublicSession>;
-  }
-  return customSession;
+  // Parse the tokenString to extract the tokens
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const tokenKeys = tokenString
+    .replace(/[()]/g, "") // Remove parentheses
+    .split(",") as Array<keyof PublicSession>; // Split by comma
+
+  // Return a filtered object based on customSession
+  const filteredEntries = tokenKeys.map(key => [key, customSession?.[key]]);
+  return Object.fromEntries(filteredEntries) as Partial<PublicSession>;
 };
 
 export const createOrRefreshSessionTokens = () => {
@@ -72,23 +58,21 @@ export const clearSessionTokens = () => {
 
 export const getCustomSession = (
   query?: QueryString.ParsedQs
-): IOResponse<PublicSession> | undefined => {
-  if (query?.fields) {
-    return {
-      payload: validatePayload(
-        PublicSession,
-        generateCustomObjectSessionTokens(query?.fields)
-      ),
-      isJson: true
-    };
-  }
-  return customSession
-    ? {
-        payload: validatePayload(PublicSession, customSession),
-        isJson: true
-      }
+): IOResponse<PublicSession> | undefined =>
+  customSession
+    ? query?.fields && typeof query?.fields === "string"
+      ? {
+          payload: validatePayload(
+            PublicSession,
+            generateCustomObjectSessionTokens(query.fields)
+          ),
+          isJson: true
+        }
+      : {
+          payload: validatePayload(PublicSession, customSession),
+          isJson: true
+        }
     : undefined;
-};
 
 export const shouldAddLollipopAssertionRef = (query?: QueryString.ParsedQs) =>
   !query?.fields ||
