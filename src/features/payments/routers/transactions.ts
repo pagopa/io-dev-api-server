@@ -8,7 +8,7 @@ import { addTransactionHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
 
-addTransactionHandler("get", "/transactions", (req, res) => {
+addTransactionHandler("get", "/paids", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : 10;
   const offset =
     req.headers[CONTINUATION_TOKEN_HEADER] !== undefined &&
