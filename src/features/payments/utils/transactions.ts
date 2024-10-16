@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { ulid } from "ulid";
 import {
-  InfoTransactionView,
+  InfoNotice,
   OriginEnum,
   PaymentMethodEnum
-} from "../../../../generated/definitions/pagopa/transactions/InfoTransactionView";
+} from "../../../../generated/definitions/pagopa/transactions/InfoNotice";
 import { CartItem } from "../../../../generated/definitions/pagopa/transactions/CartItem";
 
 export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
@@ -43,15 +43,15 @@ export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
 export const generateRandomInfoTransaction = (
   cartList: CartItem[],
   transactionId?: string
-): InfoTransactionView => {
+): InfoNotice => {
   const randomPaymentMethod = faker.helpers.arrayElement(
     PAYMENT_METHODS_TRANSACTIONS_MOCK
   );
   return {
-    transactionId: transactionId ?? ulid(),
+    eventId: transactionId ?? ulid(),
     authCode: faker.random.alphaNumeric(6),
     rrn: faker.random.numeric(12),
-    transactionDate: new Date().toISOString(),
+    noticeDate: new Date().toISOString(),
     pspName: "Intesa Sanpaolo",
     walletInfo: {
       accountHolder: faker.name.fullName(),

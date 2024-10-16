@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/lib/function";
 import TransactionsDB from "../persistence/transactions";
 import { sendFileFromRootPath } from "../../../utils/file";
 
-import { TransactionListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/TransactionListWrapResponse";
+import { NoticeListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/NoticeListWrapResponse";
 import { addTransactionHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
@@ -15,18 +15,15 @@ addTransactionHandler("get", "/transactions", (req, res) => {
     req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
       ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
       : 0;
-  const response: TransactionListWrapResponse = {
-    transactions: TransactionsDB.getUserTransactions().slice(
-      offset,
-      offset + size
-    )
+  const response: NoticeListWrapResponse = {
+    notices: TransactionsDB.getUserTransactions().slice(offset, offset + size)
   };
   const continuationToken =
     TransactionsDB.getUserTransactions().length > offset + size
       ? (offset + size).toString()
       : undefined;
   pipe(
-    response.transactions,
+    response.notices,
     O.fromNullable,
     O.chain(O.fromPredicate(transactions => transactions.length > 0)),
     O.fold(
