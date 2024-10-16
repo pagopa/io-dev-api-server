@@ -16,8 +16,8 @@ import { addIdPayHandler } from "./router";
 
 const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
   const amount = faker.datatype.number({
-    min: 100,
-    max: 10000
+    min: 10000,
+    max: 1000000
   });
 
   return {
@@ -25,12 +25,12 @@ const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
     initiativeId: Object.values(initiatives)[0]?.initiativeId ?? ulid(),
     status: getRandomEnumValue(PaymentStatusEnum),
     trxCode: faker.datatype.string(),
-    reward: amount,
+    rewardCents: amount,
     amountCents: amount,
     businessName: faker.commerce.productName(),
     initiativeName: faker.company.name(),
     trxDate: faker.date.recent(0),
-    residualBudget: faker.datatype.number({
+    residualBudgetCents: faker.datatype.number({
       min: 1000,
       max: 20000
     })

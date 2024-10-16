@@ -9,12 +9,15 @@ import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
+import { SubscriptionStateEnum } from "../generated/definitions/trial_system/SubscriptionState";
+import { TrialId } from "../generated/definitions/trial_system/TrialId";
 import {
   IoDevServerConfig,
   ProfileAttrs,
   WalletMethodConfig
 } from "./types/config";
 import { readFileAsJSON } from "./utils/file";
+import { serverUrl } from "./utils/server";
 
 export const staticContentRootPath = "/static_contents";
 const root = path.resolve(".");
@@ -27,7 +30,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   mobile: "5555555555" as NonEmptyString,
   fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
-  accepted_tos_version: 4.8 as NonNegativeNumber,
+  accepted_tos_version: 4.91 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT],
   reminder_status: ReminderStatusEnum.ENABLED,
   push_notifications_content_type: PushNotificationsContentTypeEnum.FULL
@@ -180,7 +183,8 @@ const defaultConfig: IoDevServerConfig = {
       cgn: {
         isCgnEligible: true,
         isEycaEligible: true,
-        allowRandomValues: true
+        allowRandomValues: true,
+        hangOnActivation: false
       }
     },
     idpay: {
@@ -201,6 +205,49 @@ const defaultConfig: IoDevServerConfig = {
         institutionsResponseCode: 200,
         servicesByInstitutionIdResponseCode: 200
       }
+    },
+    trials: {
+      ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]: SubscriptionStateEnum.ACTIVE // IT Wallet trial
+    },
+    fims: {
+      history: {
+        count: 52,
+        consentsEndpointFailureStatusCode: undefined,
+        exportEndpointFailureStatusCode: undefined,
+        exportProcessingTimeMilliseconds: 15000,
+        pageSize: 12
+      },
+      provider: {
+        federationCookieName: "_io_fims_token",
+        idTokenRawPrivateKey:
+          "278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f",
+        idTokenRawPublicKey:
+          "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479",
+        idTokenSigningAlgorithm: "ES256K",
+        idTokenTTLMilliseconds: 15 * 60 * 1000,
+        ignoreFederationCookiePresence: false,
+        ignoreFederationCookieValue: true,
+        implicitCodeFlow: false,
+        interactionCookieKey: "_interaction",
+        interactionResumeCookieKey: "_interaction_resume",
+        interactionResumeSignatureCookieKey: "_interaction_resume.sig",
+        interactionSignatureCookieKey: "_interaction.sig",
+        interactionTTLMilliseconds: 5 * 60 * 1000,
+        sessionCookieKey: "_session",
+        sessionLegacyCookieKey: "_session.legacy",
+        sessionLegacySignatureCookieKey: "_session.legacy.sig",
+        sessionSignatureCookieKey: "_session.sig",
+        sessionTTLMilliseconds: 1 * 60 * 1000,
+        useLaxInsteadOfNoneForSameSiteOnSessionCookies: true
+      },
+      relyingParties: [
+        {
+          id: "1",
+          redirectUri: [`${serverUrl}/fims/relyingParty/1/redirectUri`],
+          registrationName: "Example Relying Party 1",
+          scopes: ["openid", "profile"]
+        }
+      ]
     },
     allowRandomValues: true
   }

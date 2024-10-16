@@ -1,6 +1,6 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { PublicSession } from "../../../generated/definitions/backend/PublicSession";
+import { PublicSession } from "../../../generated/definitions/session_manager/PublicSession";
 import { AppUrlLoginScheme } from "../../payloads/login";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
@@ -37,8 +37,30 @@ it("session should return a valid session", async () => {
   expect(E.isRight(session)).toBeTruthy();
 });
 
-it("test-login /test-login should always return sessionToken", async () => {
-  const result = await request.post("/test-login");
+it("test-login for LEGACY /test-login should always return sessionToken", async () => {
+  const result = await request
+    .post("/test-login")
+    .set("x-pagopa-lollipop-pub-key-hash-algo", "sha256")
+    .set(
+      "x-pagopa-lollipop-pub-key",
+      "eyJrdHkiOiJFQyIsInkiOiJuYkFGd0JLT3AvRnh4VHpITGgvbVdUL3NtSjllY0lxaElkK0dBemQxTFB3PSIsIngiOiJkdHhFZU5PK1B2RFdoVkM2ZnQyTFRLMlZvWHoxektpQmI4bkRyUy9sZGY4PSIsImNydiI6IlAtMjU2In0="
+    )
+    .set("x-pagopa-idp-id", "spid");
+
+  expect(result.status).toBe(200);
+  expect(result.body).toStrictEqual({ token: getLoginSessionToken() });
+});
+
+it("test-login for FL /test-login should always return sessionToken", async () => {
+  const result = await request
+    .post("/test-login")
+    .set("x-pagopa-lollipop-pub-key-hash-algo", "sha256")
+    .set(
+      "x-pagopa-lollipop-pub-key",
+      "eyJrdHkiOiJFQyIsInkiOiJuYkFGd0JLT3AvRnh4VHpITGgvbVdUL3NtSjllY0lxaElkK0dBemQxTFB3PSIsIngiOiJkdHhFZU5PK1B2RFdoVkM2ZnQyTFRLMlZvWHoxektpQmI4bkRyUy9sZGY4PSIsImNydiI6IlAtMjU2In0="
+    )
+    .set("x-pagopa-idp-id", "spid")
+    .set("x-pagopa-login-type", "LV");
 
   expect(result.status).toBe(200);
   expect(result.body).toStrictEqual({ token: getLoginSessionToken() });
