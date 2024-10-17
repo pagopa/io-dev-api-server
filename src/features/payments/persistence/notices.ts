@@ -100,12 +100,9 @@ const generateUserNotice = (
 };
 
 const generateUserNoticeData = () => {
-  for (
-    // eslint-disable-next-line functional/no-let
-    let i = 0;
-    i < ioDevServerConfig.features.payments.numberOfTransactions;
-    i = i + 1
-  ) {
+  for (const i of Array(
+    ioDevServerConfig.features.payments.numberOfTransactions
+  ).keys()) {
     generateUserNotice(faker.datatype.uuid(), i);
   }
 };
