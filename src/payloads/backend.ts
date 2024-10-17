@@ -254,6 +254,18 @@ export const backendStatus: BackendStatus = {
         "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
       }
     },
+    payments: {
+      is_visible: false,
+      level: LevelEnum.critical,
+      message: {
+        "it-IT": "Dalle 20:30 alle 22:40 non sarà possibile pagare con PayPal.",
+        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
+      },
+      web_url: {
+        "it-IT": "https://io.italia.it/status/#2012081628",
+        "en-EN": "https://io.italia.it/status/en/#2012081628"
+      }
+    },
     ingress: {
       is_visible: false,
       level: LevelEnum.warning,
