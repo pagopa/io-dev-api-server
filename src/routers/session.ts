@@ -3,22 +3,27 @@ import { faker } from "@faker-js/faker/locale/it";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import { addHandler } from "../payloads/response";
-import { getCustomSession } from "../payloads/session";
+import {
+  getCustomSession,
+  shouldAddLollipopAssertionRef
+} from "../payloads/session";
 import { getAssertionRef } from "../persistence/lollipop";
 import { getRandomValue } from "../utils/random";
 import { addApiV1Prefix } from "../utils/strings";
 export const sessionRouter = Router();
 
-addHandler(sessionRouter, "get", addApiV1Prefix("/session"), (_, res) =>
+addHandler(sessionRouter, "get", addApiV1Prefix("/session"), ({ query }, res) =>
   pipe(
-    getCustomSession(),
+    getCustomSession(query),
     O.fromNullable,
     O.fold(
       () => res.sendStatus(401),
       customSession =>
         res.json({
           ...customSession.payload,
-          lollipopAssertionRef: getAssertionRef()
+          ...(shouldAddLollipopAssertionRef(query) && {
+            lollipopAssertionRef: getAssertionRef()
+          })
         })
     )
   )

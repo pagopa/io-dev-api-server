@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker/locale/it";
-import { PublicSession } from "../../generated/definitions/session_manager/PublicSession";
-import { SpidLevel } from "../../generated/definitions/session_manager/SpidLevel";
+import QueryString from "qs";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
+import { PublicSession } from "../../generated/definitions/session_manager/PublicSession";
+import { SpidLevel } from "../../generated/definitions/session_manager/SpidLevel";
 import { IOResponse } from "./response";
 
 const getToken = (defaultValue: string) =>
@@ -33,6 +34,20 @@ const generateSessionTokens = (): PublicSession => ({
 // eslint-disable-next-line functional/no-let
 let customSession: PublicSession | undefined;
 
+const generateCustomObjectSessionTokens = (
+  tokenString: string
+): Partial<PublicSession> => {
+  // Parse the tokenString to extract the tokens
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const tokenKeys = tokenString
+    .replace(/[()]/g, "") // Remove parentheses
+    .split(",") as Array<keyof PublicSession>; // Split by comma
+
+  // Return a filtered object based on customSession
+  const filteredEntries = tokenKeys.map(key => [key, customSession?.[key]]);
+  return Object.fromEntries(filteredEntries) as Partial<PublicSession>;
+};
+
 export const createOrRefreshSessionTokens = () => {
   customSession = generateSessionTokens();
 };
@@ -41,10 +56,25 @@ export const clearSessionTokens = () => {
   customSession = undefined;
 };
 
-export const getCustomSession = (): IOResponse<PublicSession> | undefined =>
+export const getCustomSession = (
+  query?: QueryString.ParsedQs
+): IOResponse<PublicSession> | undefined =>
   customSession
-    ? {
-        payload: validatePayload(PublicSession, customSession),
-        isJson: true
-      }
+    ? query?.fields && typeof query?.fields === "string"
+      ? {
+          payload: validatePayload(
+            PublicSession,
+            generateCustomObjectSessionTokens(query.fields)
+          ),
+          isJson: true
+        }
+      : {
+          payload: validatePayload(PublicSession, customSession),
+          isJson: true
+        }
     : undefined;
+
+export const shouldAddLollipopAssertionRef = (query?: QueryString.ParsedQs) =>
+  !query?.fields ||
+  (typeof query.fields === "string" &&
+    query.fields.includes("lollipopAssertionRef"));
