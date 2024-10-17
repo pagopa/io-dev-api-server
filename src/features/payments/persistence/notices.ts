@@ -4,48 +4,45 @@ import * as O from "fp-ts/lib/Option";
 import { NoticeListItem } from "../../../../generated/definitions/pagopa/transactions/NoticeListItem";
 import { NoticeDetailResponse } from "../../../../generated/definitions/pagopa/transactions/NoticeDetailResponse";
 import { TransactionInfo } from "../../../../generated/definitions/pagopa/ecommerce/TransactionInfo";
-import { generateRandomInfoTransaction } from "../utils/transactions";
+import { generateRandomInfoNotice } from "../utils/transactions";
 import { ioDevServerConfig } from "../../../config";
 
 const mockedTaxCodes = ["1199250158", "13756881002", "262700362", "31500945"];
 
-type TransactionId = NoticeListItem["eventId"];
+type EventId = NoticeListItem["eventId"];
 
-const userTransactions = new Map<TransactionId, NoticeListItem>();
-const transactions = new Map<TransactionId, NoticeDetailResponse>();
+const userNotices = new Map<EventId, NoticeListItem>();
+const notices = new Map<EventId, NoticeDetailResponse>();
 
-const getUserTransactions = () =>
-  Array.from(userTransactions.size > 0 ? userTransactions.values() : []);
+const getUserNotices = () =>
+  Array.from(userNotices.size > 0 ? userNotices.values() : []);
 
-const getTransactionDetails = (transactionId: TransactionId) =>
+const getNoticeDetails = (eventId: EventId) =>
   pipe(
-    transactions,
+    notices,
     O.fromNullable,
-    O.chain(transactions => O.fromNullable(transactions.get(transactionId)))
+    O.chain(notices => O.fromNullable(notices.get(eventId)))
   );
 
-const addUserTransaction = (transaction: NoticeListItem) => {
-  userTransactions.set(transaction.eventId, transaction);
+const addUserNotice = (transaction: NoticeListItem) => {
+  userNotices.set(transaction.eventId, transaction);
 };
 
-const removeUserTransaction = (transactionId: TransactionId) => {
-  userTransactions.delete(transactionId);
-  removeTransactionDetails(transactionId);
+const removeUserNotice = (eventId: EventId) => {
+  userNotices.delete(eventId);
+  removeNoticeDetails(eventId);
 };
 
-const addTransactionDetails = (
-  transactionId: TransactionId,
-  transaction: NoticeDetailResponse
-) => {
-  transactions.set(transactionId, transaction);
+const addNoticeDetails = (eventId: EventId, notice: NoticeDetailResponse) => {
+  notices.set(eventId, notice);
 };
 
-const removeTransactionDetails = (transactionId: TransactionId) => {
-  transactions.delete(transactionId);
+const removeNoticeDetails = (eventId: EventId) => {
+  notices.delete(eventId);
 };
 
-const generateUserTransaction = (
-  eventId: TransactionId,
+const generateUserNotice = (
+  eventId: EventId,
   idx: number,
   additionalTransactionInfo: Partial<TransactionInfo> = {}
 ) => {
@@ -53,7 +50,7 @@ const generateUserTransaction = (
     mockedTaxCodes[
       faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })
     ];
-  const randomTransaction: NoticeListItem = {
+  const randomNotice: NoticeListItem = {
     eventId,
     payeeName: faker.company.name(),
     payeeTaxCode,
@@ -72,8 +69,8 @@ const generateUserTransaction = (
       subject: faker.lorem.sentence(faker.datatype.number({ min: 2, max: 4 })),
       amount: faker.finance.amount(1, 1000),
       payee: {
-        name: randomTransaction.payeeName,
-        taxCode: randomTransaction.payeeTaxCode
+        name: randomNotice.payeeName,
+        taxCode: randomNotice.payeeTaxCode
       },
       debtor: {
         name: faker.name.fullName(),
@@ -86,39 +83,39 @@ const generateUserTransaction = (
     })
   );
   // eslint-disable-next-line functional/immutable-data
-  randomTransaction.isCart = cartList.length > 1;
+  randomNotice.isCart = cartList.length > 1;
   // eslint-disable-next-line functional/immutable-data
-  randomTransaction.amount = cartList
+  randomNotice.amount = cartList
     .reduce((acc, item) => acc + Number(item.amount), 0)
     .toString();
-  addUserTransaction(randomTransaction);
+  addUserNotice(randomNotice);
 
-  const randomTransactionDetails: NoticeDetailResponse = {
-    infoNotice: generateRandomInfoTransaction(cartList),
+  const randomNoticeDetails: NoticeDetailResponse = {
+    infoNotice: generateRandomInfoNotice(cartList),
     carts: cartList
   };
-  addTransactionDetails(eventId, randomTransactionDetails);
-  return randomTransaction;
+  addNoticeDetails(eventId, randomNoticeDetails);
+  return randomNotice;
 };
 
-const generateUserTransactionData = () => {
+const generateUserNoticeData = () => {
   for (
     // eslint-disable-next-line functional/no-let
     let i = 0;
     i < ioDevServerConfig.features.payments.numberOfTransactions;
     i = i + 1
   ) {
-    generateUserTransaction(faker.datatype.uuid(), i);
+    generateUserNotice(faker.datatype.uuid(), i);
   }
 };
 
 // At server startup
-generateUserTransactionData();
+generateUserNoticeData();
 
 export default {
-  addUserTransaction,
-  getUserTransactions,
-  getTransactionDetails,
-  generateUserTransaction,
-  removeUserTransaction
+  addUserNotice,
+  getUserNotices,
+  getNoticeDetails,
+  generateUserNotice,
+  removeUserNotice
 };

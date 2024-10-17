@@ -20,7 +20,7 @@ import {
   getTransactionInfoPayload
 } from "../payloads/transactions";
 import WalletDB from "../persistence/userWallet";
-import TransactionsDB from "../persistence/transactions";
+import NoticesDB from "../persistence/notices";
 import {
   WalletPaymentFailure,
   getStatusCodeForWalletFailure
@@ -210,7 +210,7 @@ addPaymentHandler("post", "/mock-transaction", (req, res) =>
           O.fold(
             () => res.sendStatus(404),
             () => {
-              TransactionsDB.generateUserTransaction(transactionId, 0);
+              NoticesDB.generateUserNotice(transactionId, 0);
               return res.status(200).json({ status: "ok" });
             }
           )

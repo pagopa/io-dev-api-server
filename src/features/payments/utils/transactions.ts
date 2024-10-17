@@ -40,15 +40,15 @@ export const PAYMENT_METHODS_TRANSACTIONS_MOCK = [
   }
 ];
 
-export const generateRandomInfoTransaction = (
+export const generateRandomInfoNotice = (
   cartList: CartItem[],
-  transactionId?: string
+  eventId?: string
 ): InfoNotice => {
   const randomPaymentMethod = faker.helpers.arrayElement(
     PAYMENT_METHODS_TRANSACTIONS_MOCK
   );
   return {
-    eventId: transactionId ?? ulid(),
+    eventId: eventId ?? ulid(),
     authCode: faker.random.alphaNumeric(6),
     rrn: faker.random.numeric(12),
     noticeDate: new Date().toISOString(),
