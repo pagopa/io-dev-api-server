@@ -7,14 +7,13 @@ import { NoticeListWrapResponse } from "../../../../generated/definitions/pagopa
 import { addNoticesHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
+const DEFAULT_SIZE = 10;
 
 addNoticesHandler("get", "/paids", (req, res) => {
-  const size = req.query.size ? Number(req.query.size) : 10;
-  const offset =
-    req.headers[CONTINUATION_TOKEN_HEADER] !== undefined &&
-    req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
-      ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
-      : 0;
+  const size = req.query.size ? Number(req.query.size) : DEFAULT_SIZE;
+  const offset = isNaN(Number(req.headers[CONTINUATION_TOKEN_HEADER]))
+    ? 0
+    : Number(req.headers[CONTINUATION_TOKEN_HEADER]);
   const response: NoticeListWrapResponse = {
     notices: NoticesDB.getUserNotices().slice(offset, offset + size)
   };
