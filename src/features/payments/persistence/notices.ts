@@ -82,13 +82,14 @@ const generateUserNotice = (
         .toString()
     })
   );
-  // eslint-disable-next-line functional/immutable-data
-  randomNotice.isCart = cartList.length > 1;
-  // eslint-disable-next-line functional/immutable-data
-  randomNotice.amount = cartList
-    .reduce((acc, item) => acc + Number(item.amount), 0)
-    .toString();
-  addUserNotice(randomNotice);
+  const updatedNotice = {
+    ...randomNotice,
+    isCart: cartList.length > 1,
+    amount: cartList
+      .reduce((acc, item) => acc + Number(item.amount), 0)
+      .toString()
+  };
+  addUserNotice(updatedNotice);
 
   const randomNoticeDetails: NoticeDetailResponse = {
     infoNotice: generateRandomInfoNotice(cartList),
