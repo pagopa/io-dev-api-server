@@ -1,32 +1,28 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import TransactionsDB from "../persistence/transactions";
+import NoticesDB from "../persistence/notices";
 import { sendFileFromRootPath } from "../../../utils/file";
 
-import { TransactionListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/TransactionListWrapResponse";
-import { addTransactionHandler } from "./router";
+import { NoticeListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/NoticeListWrapResponse";
+import { addNoticesHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
+const DEFAULT_SIZE = 10;
 
-addTransactionHandler("get", "/transactions", (req, res) => {
-  const size = req.query.size ? Number(req.query.size) : 10;
-  const offset =
-    req.headers[CONTINUATION_TOKEN_HEADER] !== undefined &&
-    req.headers[CONTINUATION_TOKEN_HEADER] !== "undefined"
-      ? Number(req.headers[CONTINUATION_TOKEN_HEADER])
-      : 0;
-  const response: TransactionListWrapResponse = {
-    transactions: TransactionsDB.getUserTransactions().slice(
-      offset,
-      offset + size
-    )
+addNoticesHandler("get", "/paids", (req, res) => {
+  const size = req.query.size ? Number(req.query.size) : DEFAULT_SIZE;
+  const offset = isNaN(Number(req.headers[CONTINUATION_TOKEN_HEADER]))
+    ? 0
+    : Number(req.headers[CONTINUATION_TOKEN_HEADER]);
+  const response: NoticeListWrapResponse = {
+    notices: NoticesDB.getUserNotices().slice(offset, offset + size)
   };
   const continuationToken =
-    TransactionsDB.getUserTransactions().length > offset + size
+    NoticesDB.getUserNotices().length > offset + size
       ? (offset + size).toString()
       : undefined;
   pipe(
-    response.transactions,
+    response.notices,
     O.fromNullable,
     O.chain(O.fromPredicate(transactions => transactions.length > 0)),
     O.fold(
@@ -46,14 +42,14 @@ addTransactionHandler("get", "/transactions", (req, res) => {
   );
 });
 
-addTransactionHandler("get", "/transactions/:transactionId", (req, res) => {
+addNoticesHandler("get", "/paids/:eventId", (req, res) => {
   pipe(
-    req.params.transactionId,
+    req.params.eventId,
     O.fromNullable,
     O.fold(
       () => res.sendStatus(400),
-      transactionId => {
-        const transaction = TransactionsDB.getTransactionDetails(transactionId);
+      eventId => {
+        const transaction = NoticesDB.getNoticeDetails(eventId);
         return pipe(
           transaction,
           O.fold(
@@ -66,14 +62,14 @@ addTransactionHandler("get", "/transactions/:transactionId", (req, res) => {
   );
 });
 
-addTransactionHandler("get", "/transactions/:transactionId/pdf", (req, res) => {
+addNoticesHandler("get", "/paids/:eventId/pdf", (req, res) => {
   pipe(
-    req.params.transactionId,
+    req.params.eventId,
     O.fromNullable,
     O.fold(
       () => res.sendStatus(400),
-      transactionId => {
-        const transaction = TransactionsDB.getTransactionDetails(transactionId);
+      eventId => {
+        const transaction = NoticesDB.getNoticeDetails(eventId);
         return pipe(
           transaction,
           O.fold(
