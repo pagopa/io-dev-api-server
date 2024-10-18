@@ -9,7 +9,6 @@ import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
-import { SubscriptionStateEnum } from "../generated/definitions/trial_system/SubscriptionState";
 import { TrialId } from "../generated/definitions/trial_system/TrialId";
 import {
   IoDevServerConfig,
