@@ -1,6 +1,6 @@
 import "./payment";
 import "./wallets";
-import "./transactions";
+import "./notices";
 import "./platform";
 
 export { walletRouter } from "./router";

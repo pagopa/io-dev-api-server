@@ -326,6 +326,8 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [SERVICE WEBVIEW](ioit://SERVICE_WEBVIEW?url=https://www.google.com)
 
+[ITW Activation](ioit://itw/discovery/info)
+
 [LINK CORROTTO](ioit://WRONG&$)
 
 [LINK navigation v2 errore](ioit://cgn/details)
