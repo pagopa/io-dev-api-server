@@ -106,18 +106,18 @@ export const backendStatus: BackendStatus = {
         },
         title: {
           "it-IT": "Puoi dirci com'è andata?",
-          "en-EN": "Puoi dirci com'è andata?"
+          "en-EN": "Can you tell us how it went?"
         },
         description: {
           "it-IT":
             "Raccontaci la tua esperienza con il pagamento e aiutaci a migliorare.",
-          "en-EN":
-            "Raccontaci la tua esperienza con il pagamento e aiutaci a migliorare."
+          "en-EN": 
+            "Tell us about your experience with payment and help us improve."
         },
         action: {
           label: {
             "it-IT": "Vai al sondaggio",
-            "en-EN": "Go to the survey"
+            "en-EN": "Go to survey"
           },
           url: "https://io.italia.it/diccilatua/ces-pagamento"
         }
