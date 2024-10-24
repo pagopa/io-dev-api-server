@@ -174,6 +174,7 @@ export const backendStatus: BackendStatus = {
       priority_order: [
         "PUSH_NOTIFICATIONS_REMINDER",
         "ITW_DISCOVERY",
+        "SETTINGS_DISCOVERY",
         "INVALID_ID"
       ]
     }
