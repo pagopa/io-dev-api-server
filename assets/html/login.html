@@ -61,7 +61,8 @@
             ["28", "28 - Operazione annullata"],
             ["29", "29 - Identità non erogata"],
             ["1001", "1001 - Cittadino minore di 14 anni"],
-            ["1002", "1002 - Utente con identità bloccata da ioapp.it"]
+            ["1002", "1002 - Utente con identità bloccata da ioapp.it"],
+            ["CIEID_OPERATION_CANCEL", "CIEID_OPERATION_CANCEL"]
         ];
 
         const simulateSpidError = () => {
@@ -76,7 +77,6 @@
             const container = document.getElementById("select_container");
             container.innerHTML = `<div>${select}</div>`;
         }
-
     </script>
   <meta charset="UTF-8">
   <title>Welcome in IO</title>
@@ -101,6 +101,18 @@
          onclick="simulateSpidError()"
          style="padding: 16px; width: 350px; font-size: 30px; color: white; background-color: #e67f00; text-decoration: none;">
         SIMULATE LOGIN ERROR</div>
+    </div>
+    <div style="margin-top: 40px; ">
+      <a
+         href="iologincie:https://idserver.servizicie.interno.gov.it/cieiderror?cieid_error_message=Operazione_annullata_dall'utente"
+         style="padding: 16px; width: 350px; font-size: 30px; color: white; background-color: #e67f00; text-decoration: none;">
+        SIMULATE CIE ID DEEP LINK ERROR (operation cancelled)</a>
+    </div>
+        <div style="margin-top: 40px; ">
+      <a
+         href="iologincie:https://idserver.servizicie.interno.gov.it/cieiderror?cieid_error_message=Operazione_non_valida"
+         style="padding: 16px; width: 350px; font-size: 30px; color: white; background-color: #e67f00; text-decoration: none;">
+        SIMULATE CIE ID DEEP LINK ERROR (invalid operation)</a>
     </div>
   </div>
 </div>
