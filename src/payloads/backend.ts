@@ -173,6 +173,7 @@ export const backendStatus: BackendStatus = {
     landing_banners: {
       priority_order: [
         "PUSH_NOTIFICATIONS_REMINDER",
+        "SETTINGS_DISCOVERY",
         "ITW_DISCOVERY",
         "INVALID_ID"
       ]
