@@ -1,13 +1,15 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import NoticesDB from "../persistence/notices";
 import { sendFileFromRootPath } from "../../../utils/file";
+import NoticesDB from "../persistence/notices";
 
 import { NoticeListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/NoticeListWrapResponse";
+import { ioDevServerConfig } from "../../../config";
 import { addNoticesHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
 const DEFAULT_SIZE = 10;
+const { hideReceiptResponseCode } = ioDevServerConfig.features.payments;
 
 addNoticesHandler("get", "/paids", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : DEFAULT_SIZE;
@@ -84,6 +86,24 @@ addNoticesHandler("get", "/paids/:eventId/pdf", (req, res) => {
           )
         );
       }
+    )
+  );
+});
+
+addNoticesHandler("post", "/paids/:eventId/disable", (req, res) => {
+  pipe(
+    req.params.eventId,
+    O.fromNullable,
+    O.fold(
+      () => res.sendStatus(400),
+      eventId =>
+        pipe(
+          O.fromNullable(NoticesDB.removeUserNotice(eventId)),
+          O.fold(
+            () => res.sendStatus(hideReceiptResponseCode),
+            () => res.sendStatus(hideReceiptResponseCode)
+          )
+        )
     )
   );
 });
