@@ -98,6 +98,29 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "0.0.0",
         android: "0.0.0"
+      },
+      feedbackBanner: {
+        min_app_version: {
+          ios: "2.65.0.0",
+          android: "2.65.0.0"
+        },
+        title: {
+          "it-IT": "Puoi dirci com'è andata?",
+          "en-EN": "Can you tell us how it went?"
+        },
+        description: {
+          "it-IT":
+            "Raccontaci la tua esperienza con il pagamento e aiutaci a migliorare.",
+          "en-EN":
+            "Tell us about your experience with payment and help us improve."
+        },
+        action: {
+          label: {
+            "it-IT": "Vai al sondaggio",
+            "en-EN": "Go to survey"
+          },
+          url: "https://io.italia.it/diccilatua/ces-pagamento"
+        }
       }
     },
     fastLogin: {
@@ -145,6 +168,7 @@ export const backendStatus: BackendStatus = {
       priority_order: [
         "PUSH_NOTIFICATIONS_REMINDER",
         "ITW_DISCOVERY",
+        "SETTINGS_DISCOVERY",
         "INVALID_ID"
       ]
     }
