@@ -1063,6 +1063,11 @@
   dependencies:
     date-fns "*"
 
+"@types/escape-html@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/escape-html/-/escape-html-1.0.4.tgz#dc7c166b76c7b03b27e32f80edf01d91eb5d9af2"
+  integrity sha512-qZ72SFTgUAZ5a7Tj6kf2SHLetiH5S6f8G5frB2SPQ3EyF02kxdyBFf4Tz4banE3xCgGnKgWLt//a6VuYHKYJTg==
+
 "@types/express-serve-static-core@*":
   version "4.17.0"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.0.tgz#e80c25903df5800e926402b7e8267a675c54a281"
@@ -2631,10 +2636,10 @@ escape-goat@^2.0.0:
   resolved "https://registry.yarnpkg.com/escape-goat/-/escape-goat-2.1.1.tgz#1b2dc77003676c457ec760b2dc68edb648188675"
   integrity sha512-8/uIhbG12Csjy2JEW7D9pHbreaVaS/OpN3ycnyvElTdwM5n6GY6W6e2IPemfvGZeUMqZ9A/3GqIZMgKnBhAw/Q==
 
-escape-html@~1.0.3:
+escape-html@^1.0.3, escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
-  integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
+  integrity sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==
 
 escape-string-regexp@4.0.0, escape-string-regexp@^4.0.0:
   version "4.0.0"
