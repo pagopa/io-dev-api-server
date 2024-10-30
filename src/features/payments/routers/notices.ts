@@ -96,14 +96,10 @@ addNoticesHandler("post", "/paids/:eventId/disable", (req, res) => {
     O.fromNullable,
     O.fold(
       () => res.sendStatus(400),
-      eventId =>
-        pipe(
-          O.fromNullable(NoticesDB.removeUserNotice(eventId)),
-          O.fold(
-            () => res.sendStatus(hideReceiptResponseCode),
-            () => res.sendStatus(hideReceiptResponseCode)
-          )
-        )
+      eventId => {
+        NoticesDB.removeUserNotice(eventId);
+        return res.sendStatus(hideReceiptResponseCode);
+      }
     )
   );
 });
