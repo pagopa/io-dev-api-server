@@ -179,7 +179,9 @@ const computeGetMessagesQueryIndexes = (
     }));
 };
 
-const createMessage = () =>
+const createMessage = (
+  markdown: string = `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
+) =>
   pipe(
     ServicesDB.getLocalServices(),
     localServices =>
@@ -195,7 +197,10 @@ const createMessage = () =>
         created_at: new Date(),
         content: {
           subject: `Created on ${new Date().toTimeString()}`,
-          markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
+          markdown:
+            markdown.length > 80
+              ? markdown
+              : `${"A".repeat(80 - markdown.length)}${markdown}`
         },
         sender_service_id: localService.service_id
       } as CreatedMessageWithContentAndAttachments)

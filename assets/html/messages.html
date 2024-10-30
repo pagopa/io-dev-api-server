@@ -7,11 +7,14 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script>
         function createNewMessage(){
+            const markdown = "Ciccio pizza";
+            const theBody = JSON.stringify({ markdown });
             const element = document.getElementById("newMessageResult");
             $.ajax({
                 type: 'POST',
                 url: "/api/v1/message",
-                contentType: "application/json"
+                contentType: "application/json",
+                data: theBody
             }).done(function(data, textStatus, jqXHR) {                                
                 element.innerHTML = `${jqXHR.status} ${jqXHR.statusText}<br/>${JSON.stringify(data)}`
             }).fail(function(jqXHR, textStatus, errorThrown) {                                
