@@ -22,6 +22,7 @@ import { addHandler } from "../../../payloads/response";
 import { sendFileFromRootPath } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
+import { SearchRequest } from "../../../../generated/definitions/cgn/merchants/SearchRequest";
 
 export const cgnMerchantsRouter = Router();
 
@@ -73,6 +74,28 @@ addHandler(
     return res.status(500);
   }
 );
+
+addHandler(cgnMerchantsRouter, "post", addPrefix("/search"), (req, res) => {
+  if (SearchRequest.is(req.body)) {
+    return res.status(200).json({
+      items: merchantsAll
+        .filter(
+          merchant =>
+            merchant.name.toLowerCase().includes(req.body.token.toLowerCase()) ||
+            merchant.description
+              ?.toLowerCase()
+              .includes(req.body.token.toLowerCase())
+        )
+        .map(merchant => ({
+          id: merchant.id,
+          name: merchant.name,
+          description: merchant.description,
+          newDiscounts: faker.datatype.boolean()
+        }))
+    });
+  }
+  return res.status(500);
+});
 
 addHandler(
   cgnMerchantsRouter,
