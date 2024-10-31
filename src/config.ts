@@ -177,7 +177,8 @@ const defaultConfig: IoDevServerConfig = {
   },
   features: {
     payments: {
-      numberOfTransactions: 12
+      numberOfTransactions: 12,
+      hideReceiptResponseCode: 400
     },
     bonus: {
       cgn: {
