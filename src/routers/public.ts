@@ -102,6 +102,10 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
   sendFileFromRootPath("assets/html/login.html", res);
 });
 
+addHandler(publicRouter, "get", "/error.html", (req, res) => {
+  sendFileFromRootPath("assets/html/error.html", res);
+});
+
 addHandler(publicRouter, "get", WALLET_ONBOARDING_PATH, (req, res) => {
   sendFileFromRootPath("assets/wallet/wallet_onboarding.html", res);
 });
