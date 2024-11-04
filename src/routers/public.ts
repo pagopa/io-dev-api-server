@@ -13,7 +13,8 @@ import { WALLET_PAYMENT_PATH } from "../features/payments/utils/payment";
 import { backendInfo } from "../payloads/backend";
 import {
   AppUrlLoginScheme,
-  errorRedirectUrl,
+  errorCodeRedirectUrl,
+  errorMessageRedirectUrl,
   loginLolliPopRedirect,
   redirectUrl
 } from "../payloads/login";
@@ -95,7 +96,22 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     return;
   }
   if (req.query.error) {
-    const url = `${urlLoginScheme}://${req.headers.host}${errorRedirectUrl}${req.query.error}`;
+    // eslint-disable-next-line functional/no-let
+    let redirectUrl;
+    // eslint-disable-next-line functional/no-let
+    let errorCodeOrMessage;
+    if (
+      req.query.error &&
+      typeof req.query.error === "string" &&
+      req.query.error.includes("errorMessage:")
+    ) {
+      redirectUrl = errorMessageRedirectUrl;
+      errorCodeOrMessage = req.query.error.split(":")[1];
+    } else {
+      redirectUrl = errorCodeRedirectUrl;
+      errorCodeOrMessage = req.query.error;
+    }
+    const url = `${urlLoginScheme}://${req.headers.host}${redirectUrl}${errorCodeOrMessage}`;
     res.redirect(url);
     return;
   }

@@ -1,6 +1,7 @@
 export const loginLolliPopRedirect: string = "/idp-login";
 export const redirectUrl: string = "/profile.html?token=";
-export const errorRedirectUrl: string = "/error.html?errorCode=";
+export const errorCodeRedirectUrl: string = "/error.html?errorCode=";
+export const errorMessageRedirectUrl: string = "/error.html?errorMessage=";
 
 export enum AppUrlLoginScheme {
   native = "iologin",

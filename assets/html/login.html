@@ -62,11 +62,14 @@
             ["29", "29 - Identità non erogata"],
             ["1001", "1001 - Cittadino minore di 14 anni"],
             ["1002", "1002 - Utente con identità bloccata da ioapp.it"],
-            ["CIEID_OPERATION_CANCEL", "CIEID_OPERATION_CANCEL"]
+            ["CIEID_OPERATION_CANCEL", "CIEID_OPERATION_CANCEL - Operazione annullata"],
+            ["errorMessage:Missing SAMLResponse in ACS", "SAML_RESPONSE_ERROR_MESSAGE - Missing SAMLResponse in ACS"],
+            ["errorMessage:MISSING_IDP_ISSUER", "MISSING_IDP_ISSUER - Error: Missing idpIssuer inside configuration"]
         ];
 
         const simulateSpidError = () => {
             const container = document.getElementById("spidSelect");
+            console.log(container)
             window.location.href = `/idp-login?authorized=0&error=${container.value}`;
             return false;
         }
