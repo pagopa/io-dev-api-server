@@ -75,6 +75,15 @@ addHandler(
   }
 );
 
+addHandler(cgnMerchantsRouter, "get", addPrefix("/count"), (req, res) => {
+  if (SearchRequest.is(req.body)) {
+    return res.status(200).json({
+      count: merchantsAll.length
+    });
+  }
+  return res.status(500);
+});
+
 addHandler(cgnMerchantsRouter, "post", addPrefix("/search"), (req, res) => {
   if (SearchRequest.is(req.body)) {
     return res.status(200).json({
