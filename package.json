@@ -125,6 +125,7 @@
     "eslint-plugin-functional": "^5.0.8",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-sonarjs": "^0.19.0",
+    "husky": "^8.0.0",
     "jest": "^27.4.7",
     "nodemon": "^2.0.15",
     "prettier": "2.8.8",
