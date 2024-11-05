@@ -90,7 +90,9 @@ addHandler(cgnMerchantsRouter, "post", addPrefix("/search"), (req, res) => {
       items: merchantsAll
         .filter(
           merchant =>
-            merchant.name.toLowerCase().includes(req.body.token.toLowerCase()) ||
+            merchant.name
+              .toLowerCase()
+              .includes(req.body.token.toLowerCase()) ||
             merchant.description
               ?.toLowerCase()
               .includes(req.body.token.toLowerCase())
