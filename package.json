@@ -66,7 +66,8 @@
     "generate:trial-system-definitions": "rimraf generated/definitions/trial_system && mkdir -p generated/definitions/trial_system && gen-api-models --api-spec $npm_package_api_trial_system --out-dir ./generated/definitions/trial_system --no-strict --response-decoders --request-types",
     "generate:pagopa": "npm-run-all generate:pagopa-walletv2-definitions generate:pagopa-privative-configuration-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-walletv3-definitions generate:pagopa-ecommerce-definitions generate:pagopa-transactions-definitions generate:pagopa-platform-definitions",
     "generate:services-definitions": "rimraf generated/definitions/services && mkdir -p generated/definitions/services  && gen-api-models --api-spec $npm_package_api_services --out-dir ./generated/definitions/services --no-strict",
-    "generate": "npm-run-all generate:*"
+    "generate": "npm-run-all generate:*",
+    "prepare": "husky install"
   },
   "jest": {
     "preset": "ts-jest",
@@ -131,5 +132,11 @@
     "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint -c .eslintrc.js --fix"
+    ]
   }
 }
