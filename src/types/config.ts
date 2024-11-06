@@ -234,7 +234,7 @@ export const IoDevServerConfig = t.interface({
       })
     }),
     t.partial({
-      trials: t.record(TrialId, SubscriptionState)
+      trials: t.record(TrialId, t.union([SubscriptionState, t.undefined]))
     }),
     AllowRandomValue
   ])
