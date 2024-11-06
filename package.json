@@ -28,6 +28,7 @@
   "api_pagopa_biz_events": "https://raw.githubusercontent.com/pagopa/pagopa-biz-events-service/0.1.57/openapi/openapi_io_patch_lap.json",
   "api_pagopa_platform": "https://raw.githubusercontent.com/pagopa/pagopa-infra/v1.64.0/src/domains/shared-app/api/session-wallet/v1/_openapi.json.tpl",
   "api_services": "https://raw.githubusercontent.com/pagopa/io-backend/master/api_services_app_backend.yaml",
+  "fims_history": "https://raw.githubusercontent.com/pagopa/io-backend/b2d3e39146757b90c4eaf0a90d6b5b67f7f76479/api_io_fims.yaml",
   "fims_sso": "https://raw.githubusercontent.com/pagopa/io-fims/a93f1a1abf5230f103d9f489b139902b87288061/apps/op-app/openapi.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
@@ -67,6 +68,7 @@
     "generate:trial-system-definitions": "rimraf generated/definitions/trial_system && mkdir -p generated/definitions/trial_system && gen-api-models --api-spec $npm_package_api_trial_system --out-dir ./generated/definitions/trial_system --no-strict --response-decoders --request-types",
     "generate:pagopa": "npm-run-all generate:pagopa-walletv2-definitions generate:pagopa-privative-configuration-definitions generate:pagopa-cobadge-configuration-definitions generate:pagopa-walletv3-definitions generate:pagopa-ecommerce-definitions generate:pagopa-transactions-definitions generate:pagopa-platform-definitions",
     "generate:services-definitions": "rimraf generated/definitions/services && mkdir -p generated/definitions/services  && gen-api-models --api-spec $npm_package_api_services --out-dir ./generated/definitions/services --no-strict",
+    "generate:fims_history": "rimraf generated/definitions/fims_history && mkdir -p generated/definitions/fims_history && gen-api-models --api-spec $npm_package_fims_history --out-dir ./generated/definitions/fims_history --no-strict --request-types --response-decoders",
     "generate:fims_sso": "rimraf generated/definitions/fims_sso && mkdir -p generated/definitions/fims_sso && gen-api-models --api-spec $npm_package_fims_sso --out-dir ./generated/definitions/fims_sso --no-strict --request-types --response-decoders",
     "generate": "npm-run-all generate:*"
   },

@@ -1,27 +1,32 @@
 import { Router } from "express";
+import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+import { ulid } from "ulid";
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { getProblemJson } from "../../../payloads/error";
-import { HistoryPieceOfData } from "../types/history";
 import {
-  generateHistory,
+  generateAccessHistoryData,
   isProcessingExport,
-  nextPageFromRequest
+  nextAccessHistoryPageFromRequest
 } from "../services/historyService";
 import { getFimsConfig } from "../services/configurationService";
 import { FIMSConfig } from "../types/config";
+import { Access } from "../../../../generated/definitions/fims_history/Access";
+import { LastExportRequest } from "../types/lastExportRequest";
+import { ExportRequest } from "../../../../generated/definitions/fims_history/ExportRequest";
 
 export const fimsHistoryRouter = Router();
 
 // eslint-disable-next-line functional/no-let
-let history: HistoryPieceOfData[] | null = null;
+let history: O.Option<ReadonlyArray<Access>> = O.none;
 // eslint-disable-next-line functional/no-let
-let lastExportRequestTimestamp: number = 0;
+let lastExportRequest: O.Option<LastExportRequest> = O.none;
 
 addHandler(
   fimsHistoryRouter,
   "get",
-  addApiV1Prefix("/fims/consents"),
+  addApiV1Prefix("/fims/accesses"),
   (req, res) => {
     const config = getFimsConfig();
     const failureResponseCode =
@@ -35,13 +40,19 @@ addHandler(
 
     initializeIfNeeded(config);
 
-    const nextPage = nextPageFromRequest(config, history, req);
-    if (typeof nextPage === "string") {
-      res.status(500).send(getProblemJson(500, nextPage));
+    const nextAccessHistoryPageEither = nextAccessHistoryPageFromRequest(
+      config,
+      history,
+      req
+    );
+    if (E.isLeft(nextAccessHistoryPageEither)) {
+      res
+        .status(400)
+        .send(getProblemJson(400, nextAccessHistoryPageEither.left));
       return;
     }
 
-    res.status(200).send(nextPage);
+    res.status(200).send(nextAccessHistoryPageEither.right);
   },
   () => Math.floor(2500 * Math.random())
 );
@@ -49,7 +60,7 @@ addHandler(
 addHandler(
   fimsHistoryRouter,
   "post",
-  addApiV1Prefix("/fims/exports"),
+  addApiV1Prefix("/fims/export-requests"),
   (_req, res) => {
     const config = getFimsConfig();
     const failureResponseCode = config.history.exportEndpointFailureStatusCode;
@@ -62,22 +73,33 @@ addHandler(
 
     const isStillProcessingExport = isProcessingExport(
       config,
-      lastExportRequestTimestamp
+      lastExportRequest
     );
     if (isStillProcessingExport) {
-      res.status(409).send();
+      res
+        .status(409)
+        .send(
+          getProblemJson(409, "The export request has already been requested")
+        );
       return;
     }
 
-    lastExportRequestTimestamp = Date.now();
-    res.status(202).send();
+    const exportRequestId = ulid();
+    lastExportRequest = O.some({
+      id: exportRequestId,
+      timestamp: Date.now()
+    });
+    const exportRequest: ExportRequest = {
+      id: exportRequestId
+    };
+    res.status(202).send(exportRequest);
   },
   () => Math.floor(2500 + 1400 * Math.random())
 );
 
 const initializeIfNeeded = (config: FIMSConfig) => {
-  if (history) {
+  if (O.isSome(history)) {
     return;
   }
-  history = generateHistory(config);
+  history = O.some(generateAccessHistoryData(config));
 };
