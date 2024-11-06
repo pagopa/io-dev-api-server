@@ -9,7 +9,6 @@ import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
 import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
-import { SubscriptionStateEnum } from "../generated/definitions/trial_system/SubscriptionState";
 import { TrialId } from "../generated/definitions/trial_system/TrialId";
 import {
   IoDevServerConfig,
@@ -207,9 +206,6 @@ const defaultConfig: IoDevServerConfig = {
         servicesByInstitutionIdResponseCode: 200
       }
     },
-    trials: {
-      ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]: SubscriptionStateEnum.ACTIVE // IT Wallet trial
-    },
     fims: {
       history: {
         count: 52,
@@ -249,6 +245,9 @@ const defaultConfig: IoDevServerConfig = {
           scopes: ["openid", "profile"]
         }
       ]
+    },
+    trials: {
+      ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]: undefined // IT-WALLET-TRIAL (the user never subscribed to the trial)
     },
     allowRandomValues: true
   }
