@@ -6,8 +6,6 @@ export type RelyingParty = {
   responseMode: "form_post";
   serviceId: string;
   displayName: string;
-  // TODO failure callbackUrl
-  // TODO programmatic flow flag
 };
 
 export type RelyingPartyRequest = {
