@@ -95,16 +95,12 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     res.redirect(url);
     return;
   }
-  if (req.query.error) {
+  if (req.query.error && typeof req.query.error === "string") {
     // eslint-disable-next-line functional/no-let
     let redirectUrl;
     // eslint-disable-next-line functional/no-let
     let errorCodeOrMessage;
-    if (
-      req.query.error &&
-      typeof req.query.error === "string" &&
-      req.query.error.includes("errorMessage:")
-    ) {
+    if (req.query.error.includes("errorMessage:")) {
       redirectUrl = errorMessageRedirectUrl;
       errorCodeOrMessage = req.query.error.split(":")[1];
     } else {
