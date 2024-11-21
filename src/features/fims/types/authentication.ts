@@ -23,3 +23,11 @@ export type SessionData = {
   sessionLegacy: string;
   sessionLegacySignature: string;
 };
+
+export type OIDCErrorCodes =
+  | "unauthorized_client"
+  | "access_denied"
+  | "unsupported_response_type"
+  | "invalid_scope"
+  | "server_error"
+  | "temporarily_unavailable";

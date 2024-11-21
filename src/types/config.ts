@@ -192,7 +192,9 @@ export const IoDevServerConfig = t.interface({
     t.interface({
       payments: t.interface({
         // the number of transactions to generate at the beginning
-        numberOfTransactions: t.number
+        numberOfTransactions: t.number,
+        // the response code when hiding a receipt
+        hideReceiptResponseCode: HttpResponseCode
       }),
       bonus: t.interface({
         // defines the special configuration for cgn eligibility
@@ -232,7 +234,7 @@ export const IoDevServerConfig = t.interface({
       })
     }),
     t.partial({
-      trials: t.record(TrialId, SubscriptionState)
+      trials: t.record(TrialId, t.union([SubscriptionState, t.undefined]))
     }),
     AllowRandomValue
   ])

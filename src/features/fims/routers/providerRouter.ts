@@ -1,11 +1,13 @@
 import { Request, Response, Router } from "express";
 import { v4 } from "uuid";
 import { TokenSigner } from "jsontokens";
+import * as E from "fp-ts/lib/Either";
 import { addHandler } from "../../../payloads/response";
 import { FIMSToken } from "../../../payloads/session";
 import {
   InteractionData,
   OIdCData,
+  OIDCErrorCodes,
   SessionData
 } from "../types/authentication";
 import {
@@ -15,6 +17,7 @@ import {
   translationForScope
 } from "../services/providerService";
 import { isSessionTokenValid } from "../../../persistence/sessionInfo";
+import { Consent } from "../../../../generated/definitions/fims_sso/Consent";
 import { getRelyingParty } from "./relyingPartyRouter";
 
 export const fimsProviderRouter = Router();
@@ -27,88 +30,11 @@ addHandler(
   "get",
   `${baseProviderPath()}/oauth/authorize`,
   (req, res) => {
-    // Required parameters
-    const relyingPartyId = req.query.client_id;
-    if (!relyingPartyId) {
+    const validationResult = validateAndHandleAuthorizeRequestParameters(
+      req,
       res
-        .status(400)
-        .send({ message: "Missing 'client_id' parameter in request" });
-      return;
-    }
-    const scopes = req.query.scope;
-    if (!scopes) {
-      res.status(400).send({ message: "Missing 'scope' parameter in request" });
-      return;
-    }
-    const responseType = req.query.response_type;
-    if (!responseType) {
-      res
-        .status(400)
-        .send({ message: "Missing 'response_type' parameter in request" });
-      return;
-    }
-    const redirectUri = req.query.redirect_uri;
-    if (!redirectUri) {
-      res
-        .status(400)
-        .send({ message: "Missing 'redirect_uri' parameter in request" });
-      return;
-    }
-    const responseMode = req.query.response_mode;
-    if (!responseMode) {
-      res
-        .status(400)
-        .send({ message: "Missing 'response_mode' parameter in request" });
-      return;
-    }
-    const nonce = req.query.nonce;
-    if (!nonce) {
-      res.status(400).send({ message: "Missing 'nonce' parameter in request" });
-      return;
-    }
-    const state = req.query.state;
-    if (!state) {
-      res.status(400).send({ message: "Missing 'state' parameter in request" });
-      return;
-    }
-
-    // Relying Party registration conformance
-    const relyingParty = getRelyingParty(String(relyingPartyId));
-    if (!relyingParty) {
-      res.status(400).send({
-        message: `Relying Party with id (${relyingPartyId}) not found`
-      });
-      return;
-    }
-    const requestScopes = String(scopes).split(" ");
-    const relyingPartyScopes = new Set<string>(relyingParty.scopes);
-    if (
-      requestScopes.length === 0 ||
-      !requestScopes.every(requestScope => relyingPartyScopes.has(requestScope))
-    ) {
-      res
-        .status(400)
-        .send({ message: `Relying Party does not allow requested scopes` });
-      return;
-    }
-    if (relyingParty.responseType !== responseType) {
-      res.status(400).send({
-        message: `Relying Party does not allow response type (${responseType})`
-      });
-      return;
-    }
-
-    if (!relyingParty.redirectUris.includes(String(redirectUri))) {
-      res.status(400).send({
-        message: `Relying Party does not allow redirect uri (${redirectUri})`
-      });
-      return;
-    }
-
-    if (relyingParty.responseMode !== responseMode) {
-      res.status(400).send({
-        message: `Relying Party does not allow response mode (${responseMode})`
-      });
+    );
+    if (!validationResult) {
       return;
     }
 
@@ -125,6 +51,9 @@ addHandler(
       });
       return;
     }
+
+    const { nonce, redirectUri, relyingPartyId, requestScopes, state } =
+      validationResult;
 
     // OIdC session
     const relyingPartyIdString = String(relyingPartyId);
@@ -158,9 +87,11 @@ addHandler(
     };
     const oidcDataId = oidcData.id();
     if (providerRequests.has(oidcDataId)) {
-      res.status(400).send({
-        message: `Bad state (${state}) and nonce (${nonce}) for current request`
-      });
+      replyWithOIDCError(
+        "unauthorized_client",
+        `Bad state (${state}) and nonce (${nonce}) for current request`,
+        res
+      );
       return;
     }
     providerRequests.set(oidcDataId, providerOIdCsForRelyingParty);
@@ -221,9 +152,11 @@ addHandler(
     const requestInteractionId = req.params.id;
     const oidcData = interactionIds.get(requestInteractionId);
     if (!oidcData) {
-      res.status(400).send({
-        message: `Interaction Id (${requestInteractionId}) not found`
-      });
+      replyWithOIDCError(
+        "unauthorized_client",
+        `Interaction Id (${requestInteractionId}) not found`,
+        res
+      );
       return;
     }
 
@@ -237,9 +170,11 @@ addHandler(
     const requestHeaders = req.headers;
     const acceptLanguage = requestHeaders["accept-language"] as string;
     if (!acceptLanguage || acceptLanguage.trim().length === 0) {
-      res.status(400).send({
-        message: `Missing or empty header 'Accept-Language': (${acceptLanguage})`
-      });
+      replyWithOIDCError(
+        "unauthorized_client",
+        `Missing or empty header 'Accept-Language': (${acceptLanguage})`,
+        res
+      );
       return;
     }
 
@@ -280,7 +215,7 @@ addHandler(
         return;
       }
 
-      const consentData = {
+      const consentEither = Consent.decode({
         _links: {
           abort: {
             href: `${baseProviderPath()}/interaction/${requestInteractionId}/abort`
@@ -298,8 +233,16 @@ addHandler(
           name: scope,
           display_name: translationForScope(scope)
         }))
-      };
-      res.status(200).send(consentData);
+      });
+      if (E.isLeft(consentEither)) {
+        res
+          .status(500)
+          .send(
+            `Internal encoding of Consent data has failed (check the autogenerated specification) for Interaction Id (${requestInteractionId})`
+          );
+        return;
+      }
+      res.status(200).send(consentEither.right);
       return;
     }
 
@@ -427,9 +370,11 @@ addHandler(
     const requestInteractionId = req.params.id;
     const currentOidcData = interactionIds.get(requestInteractionId);
     if (!currentOidcData) {
-      res.status(400).send({
-        message: `Interaction Id (${requestInteractionId}) not found`
-      });
+      replyWithOIDCError(
+        "unauthorized_client",
+        `Interaction Id (${requestInteractionId}) not found`,
+        res
+      );
       return;
     }
 
@@ -735,18 +680,158 @@ const validateCookies = (
   for (const mandatoryCookieKey in mandatoryCookies) {
     const cookieValue = requestCookies[mandatoryCookieKey];
     if (!cookieValue) {
-      res.status(400).send({
-        message: `Mising cookie with name '${mandatoryCookieKey}'`
-      });
+      replyWithOIDCError(
+        "unauthorized_client",
+        `Mising cookie with name '${mandatoryCookieKey}'`,
+        res
+      );
       return false;
     }
     const mandatoryCookieValue = mandatoryCookies[mandatoryCookieKey];
     if (cookieValue !== mandatoryCookieValue) {
-      res.status(400).send({
-        message: `Value of cookie with name '${mandatoryCookieKey}' (${cookieValue}) does not match exptected one (${mandatoryCookieValue})`
-      });
+      replyWithOIDCError(
+        "unauthorized_client",
+        `Value of cookie with name '${mandatoryCookieKey}' (${cookieValue}) does not match exptected one (${mandatoryCookieValue})`,
+        res
+      );
       return false;
     }
   }
   return true;
 };
+
+const validateAndHandleAuthorizeRequestParameters = (
+  req: Request,
+  res: Response
+) => {
+  // Required parameters
+  const relyingPartyId = req.query.client_id;
+  if (!relyingPartyId) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      "Missing 'client_id' parameter in request",
+      res
+    );
+    return undefined;
+  }
+  const scopes = req.query.scope;
+  if (!scopes) {
+    replyWithOIDCError(
+      "invalid_scope",
+      "Missing 'scope' parameter in request",
+      res
+    );
+    return undefined;
+  }
+  const responseType = req.query.response_type;
+  if (!responseType) {
+    replyWithOIDCError(
+      "unsupported_response_type",
+      "Missing 'response_type' parameter in request",
+      res
+    );
+    return undefined;
+  }
+  const redirectUri = req.query.redirect_uri;
+  if (!redirectUri) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      "Missing 'redirect_uri' parameter in request",
+      res
+    );
+    return undefined;
+  }
+  const responseMode = req.query.response_mode;
+  if (!responseMode) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      "Missing 'response_mode' parameter in request",
+      res
+    );
+    return undefined;
+  }
+  const nonce = req.query.nonce;
+  if (!nonce) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      "Missing 'nonce' parameter in request",
+      res
+    );
+    return undefined;
+  }
+  const state = req.query.state;
+  if (!state) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      "Missing 'state' parameter in request",
+      res
+    );
+    return undefined;
+  }
+
+  // Relying Party registration conformance
+  const relyingParty = getRelyingParty(String(relyingPartyId));
+  if (!relyingParty) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      `Relying Party with id (${relyingPartyId}) not found`,
+      res
+    );
+    return undefined;
+  }
+  const requestScopes = String(scopes).split(" ");
+  const relyingPartyScopes = new Set<string>(relyingParty.scopes);
+  if (
+    requestScopes.length === 0 ||
+    !requestScopes.every(requestScope => relyingPartyScopes.has(requestScope))
+  ) {
+    replyWithOIDCError(
+      "invalid_scope",
+      `Relying Party does not allow requested scopes`,
+      res
+    );
+    return undefined;
+  }
+  if (relyingParty.responseType !== responseType) {
+    replyWithOIDCError(
+      "unsupported_response_type",
+      `Relying Party does not allow response type (${responseType})`,
+      res
+    );
+    return undefined;
+  }
+
+  if (!relyingParty.redirectUris.includes(String(redirectUri))) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      `Relying Party does not allow redirect uri (${redirectUri})`,
+      res
+    );
+    return undefined;
+  }
+
+  if (relyingParty.responseMode !== responseMode) {
+    replyWithOIDCError(
+      "unauthorized_client",
+      `Relying Party does not allow response mode (${responseMode})`,
+      res
+    );
+    return undefined;
+  }
+
+  return { nonce, redirectUri, relyingPartyId, requestScopes, state };
+};
+
+/**
+ * See https://www.rfc-editor.org/rfc/rfc6749.txt
+ * 4.1.2.1.  Error Response
+ */
+const replyWithOIDCError = (
+  errorCode: OIDCErrorCodes,
+  description: string,
+  res: Response
+) =>
+  res.status(400).send({
+    error: errorCode,
+    error_description: description
+  });

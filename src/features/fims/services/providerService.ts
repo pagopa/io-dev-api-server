@@ -1,3 +1,4 @@
+import escapeHTML from "escape-html";
 import { ioDevServerConfig } from "../../../config";
 import { IoDevServerConfig } from "../../../types/config";
 import { ProviderConfig } from "../types/config";
@@ -25,16 +26,18 @@ export const generatePermissionHTML = (
 <body>
   <div>
     <h3>Autorizzi l'invio dei dati?</h3>
-    <p>I seguenti dati stanno per essere condivisi con <strong>${relyingPartyName}</strong></p>
-    <p><strong>${scopes?.join(" ")}</strong></p>
-    <form autocomplete="off" action="${confirmUrl}" method="post">
+    <p><strong>${escapeHTML(scopes?.join(" "))}</strong></p>
+    <p>I seguenti dati stanno per essere condivisi con <strong>${escapeHTML(
+      relyingPartyName
+    )}</strong></p>
+    <form autocomplete="off" action="${escapeHTML(confirmUrl)}" method="post">
       <div>
         <input id="checkbox10" type="checkbox" name="to_remember" aria-labelledby="checkbox10-help">
         <label for="checkbox10">Non richiedere più</label>
       </div>
       <br/>
       <div>
-        <a href="${abortUrl}">Annulla</a>
+        <a href="${escapeHTML(abortUrl)}">Annulla</a>
         <button autotype="button">Conferma</button>
       </div>
     </form>
@@ -58,9 +61,9 @@ export const generateIdTokenRedirectHTML = (
   <script>document.addEventListener('DOMContentLoaded', function () { document.forms[0].submit() });</script>
 </head>
 <body>
-  <form method="post" action="${redirectUrl}">
-    <input type="hidden" name="id_token" value="${idToken}"/>
-    <input type="hidden" name="state" value="${relyingPartyState}"/>
+  <form method="post" action="${escapeHTML(redirectUrl)}">
+    <input type="hidden" name="id_token" value="${escapeHTML(idToken)}"/>
+    <input type="hidden" name="state" value="${escapeHTML(relyingPartyState)}"/>
     <noscript>Your browser does not support JavaScript or you've disabled it.<br/>
       <button autofocus type="submit">Continue</button>
     </noscript>

@@ -17,6 +17,9 @@ export const backendStatus: BackendStatus = {
     "it-IT": "",
     "en-EN": "English message"
   },
+  statusMessages: {
+    items: []
+  },
   config: {
     bpd_ranking: false,
     bpd_ranking_v2: true,
@@ -51,19 +54,6 @@ export const backendStatus: BackendStatus = {
         ios: "2.68.0.0"
       },
       historyEnabled: true
-    },
-    uaDonations: {
-      enabled: false,
-      banner: {
-        visible: false,
-        description: {
-          "it-IT":
-            "Fai una donazione alle organizzazioni umanitarie che assistono le vittime civili della crisi in Ucraina",
-          "en-EN":
-            "Make a donation to humanitarian organizations that assist the civilians affected by the crisis in Ukraine"
-        },
-        url: "https://assets.cdn.io.pagopa.it/html/donate.html"
-      }
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -108,6 +98,29 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "0.0.0",
         android: "0.0.0"
+      },
+      feedbackBanner: {
+        min_app_version: {
+          ios: "2.65.0.0",
+          android: "2.65.0.0"
+        },
+        title: {
+          "it-IT": "Puoi dirci com'è andata?",
+          "en-EN": "Can you tell us how it went?"
+        },
+        description: {
+          "it-IT":
+            "Raccontaci la tua esperienza con il pagamento e aiutaci a migliorare.",
+          "en-EN":
+            "Tell us about your experience with payment and help us improve."
+        },
+        action: {
+          label: {
+            "it-IT": "Vai al sondaggio",
+            "en-EN": "Go to survey"
+          },
+          url: "https://io.italia.it/diccilatua/ces-pagamento"
+        }
       }
     },
     fastLogin: {
@@ -116,12 +129,6 @@ export const backendStatus: BackendStatus = {
         android: "0.0.0"
       },
       opt_in: {
-        min_app_version: {
-          ios: "0.0.0",
-          android: "0.0.0"
-        }
-      },
-      sessionRefresh: {
         min_app_version: {
           ios: "0.0.0",
           android: "0.0.0"
@@ -147,8 +154,8 @@ export const backendStatus: BackendStatus = {
       }
     },
     tos: {
-      tos_version: 4.8,
-      tos_url: "https://io.italia.it/app-content/tos_privacy.html"
+      tos_version: 4.91,
+      tos_url: "https://io.italia.it/app-content/tos_privacy.html?v=4.91"
     },
     itw: {
       enabled: true,
@@ -156,6 +163,14 @@ export const backendStatus: BackendStatus = {
         ios: "2.66.0.0",
         android: "2.66.0.0"
       }
+    },
+    landing_banners: {
+      priority_order: [
+        "PUSH_NOTIFICATIONS_REMINDER",
+        "ITW_DISCOVERY",
+        "SETTINGS_DISCOVERY",
+        "INVALID_ID"
+      ]
     }
   },
   sections: {
@@ -255,6 +270,18 @@ export const backendStatus: BackendStatus = {
       message: {
         "it-IT": "Dalle 20:30 alle 22:40 non sarà possibile pagare con PayPal.",
         "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
+      }
+    },
+    payments: {
+      is_visible: false,
+      level: LevelEnum.critical,
+      message: {
+        "it-IT": "Dalle 20:30 alle 22:40 non sarà possibile pagare con PayPal.",
+        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
+      },
+      web_url: {
+        "it-IT": "https://io.italia.it/status/#2012081628",
+        "en-EN": "https://io.italia.it/status/en/#2012081628"
       }
     },
     ingress: {
