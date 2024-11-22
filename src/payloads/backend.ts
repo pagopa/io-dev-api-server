@@ -162,7 +162,8 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "2.66.0.0",
         android: "2.66.0.0"
-      }
+      },
+      feedback_banner_visible: true
     },
     landing_banners: {
       priority_order: [
