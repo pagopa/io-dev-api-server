@@ -132,6 +132,8 @@ definitions:
         $ref: "#/definitions/Idp"
       cie:
         $ref: "#/definitions/Idp"
+      cieid:
+        $ref: "#/definitions/Idp"
       test:
         $ref: "#/definitions/Idp"
   Idp:
