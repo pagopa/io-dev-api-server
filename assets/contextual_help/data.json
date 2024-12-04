@@ -1689,182 +1689,955 @@
       }
    },
    "de":{
-      "screens":[
-         {
-            "route_name":"MESSAGE_DETAIL_ATTACHMENT",
-            "title":"Vorschau des Dokuments",
-            "content":"Hier kannst du eine Vorschau des an die Nachricht angehängten Dokuments anzeigen. Du kannst es auch speichern, weitergeben oder mit einer auf deinem Gerät installierten PDF-Reader-App öffnen."
-         },
-         {
-            "route_name":"FCI_DOCUMENTS",
-            "title":"Dokument",
-            "content":"Hier kannst du die Vorschau des zu signierenden Dokuments sehen",
-            "faqs":[
-               {
-                  "title":"Was kann ich tun, wenn ein zu signierendes Dokument Fehler enthält?",
-                  "body":"Wende dich direkt an die Körperschaft, die das Dokument gesendet hat. Die Kontaktdaten findest du in der Nachricht zur Signaturanforderung."
-               },
-               {
-                  "title":"Was kann ich tun, wenn die App abstürzt, während ich ein Dokument signiere?",
-                  "body":"Überprüfe, ob du die neueste Version der IO-App aus dem Store deines Geräts installiert hast. Wenn die App nicht mehr aktuell ist, lade die neueste Version herunter. Andernfalls geh zum unteren Ende dieser Seite und wähle Ticket erstellen > Mit IO signieren."
-               },
-               {
-                  "title":"Ich habe ein Problem mit der Signatur eines Dokuments. Was kann ich tun?",
-                  "body":"Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
-               },
-               {
-                  "title":"Welchen rechtlichen Wert hat die Signatur eines Dokuments über IO?",
-                  "body":"Eine über IO angebrachte digitale Signatur ist eine QES (Qualifizierte elektronische Signatur). Sie hat die gleiche Rechtsgültigkeit wie eine handschriftliche Unterschrift auf Papier. Sie garantiert somit die Authentizität der signierten Dokumente und die vollständige Rückverfolgbarkeit zum Unterzeichner."
-               }
-            ]
-         },
-         {
-            "route_name":"FCI_SIGNATURE_FIELDS",
-            "title":"Zu signierende Felder",
-            "content":"Hier kannst du die Liste der im Dokument erforderlichen Signaturen einsehen und die zu tätigenden Signaturen auswählen. Obligatorische Signaturen sind als solche bereits ausgewählt",
-            "faqs":[
-               {
-                  "title":"Warum muss ich mehrmals signieren?",
-                  "body":"Es ist möglich, dass für einige Dokumente verschiedene Arten von Unterschriften erforderlich sind, die jeweils einen anderen Wert haben.\n Damit ein Dokument gültig ist, sind die obligatorische Signaturen immer erforderlich.\n Einige Dokumente sehen besonders belastende Klauseln vor. Diese sind ebenfalls obligatorische Signaturen; wenn du sie nicht auswählst, kannst du nicht fortfahren. Sie kennzeichnen besondere Bedingungen, auf die du achten sollst. Sie müssen vom Gesetz her leicht erkennbar sein, damit der Unterzeichner vor der Signatur über ihren Inhalt informiert ist.\n Fakultative Signaturen hingegen dienen dazu, bestimmte Bedingungen zu bestätigen oder zu akzeptieren; in diesem Fall kannst du wählen, ob du signieren möchtest oder nicht."
-               },
-               {
-                  "title":"Ich habe ein Problem mit der Unterzeichnung eines Dokuments. Was kann ich tun?",
-                  "body":"Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
-               }
-            ]
-         },
-         {
-            "route_name":"FCI_USER_DATA_SHARE",
-            "title":"Weitergabe von Daten",
-            "content":"Hier kannst du die Daten einsehen, die an den Anbieter der digitalen Signatur weitergegeben werden.",
-            "faqs":[
-               {
-                  "title":"Warum muss ich meine Daten weitergeben?",
-                  "body":"Die von dir mitgeteilten Daten werden vom Anbieter der digitalen Signatur verwendet, um dir den Dienst anzubieten und deine Signatur zu zertifizieren."
-               },
-               {
-                  "title":"Ich habe die Nachricht mit den signierten Dokumenten erhalten, aber sie sind nicht mehr verfügbar. Wie kann ich sie abrufen?",
-                  "body":"In diesem Fall musst du dich direkt an die Körperschaft wenden, die das Dokument ausgestellt hat. Die Kontaktdaten findest du in der Zusammenfassung des signierten Dokuments, die du in der IO-App erhalten hast."
-               },
-               {
-                  "title":"Ich habe ein Problem mit der Signatur eines Dokuments. Was kann ich tun?",
-                  "body":"Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
-               },
-               {
-                  "title":"Was kann ich tun, wenn ich einen Signaturanforderung erhalten habe, die Frist aber bereits abgelaufen ist?",
-                  "body":"Du kannst dich an die Körperschaft wenden, die das Dokument verschickt hat, und diese bitten, dir einen neuen Antrag zu senden."
-               }
-            ]
-         },
-         {
-            "route_name":"ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
-            "title":"Push-Benachrichtigungen",
-            "content":"Hier kannst du die Push-Benachrichtigungen anpassen.",
-            "faqs":[
-               {
-                  "title":"Was bedeutet 'Vorschau anzeigen'?",
-                  "body":"Wenn du die Option 'Vorschau anzeigen' aktivierst, werden in den IO-Push-Benachrichtigungen der Absender und der Betreff der Nachrichten angezeigt. So kannst du wissen, wer dir geschrieben hat, ohne die App zu öffnen."
-               },
-               {
-                  "title":"Was bedeutet 'Erinnerung zulassen'?",
-                  "body":"Wenn du die Option 'Erinnerungen zulassen' aktivierst, erhältst du Push-Benachrichtigungen, wenn sich Fristen nähern oder wenn du ungelesene Nachrichten hast."
-               }
-            ]
-         },
-         {
-            "route_name":"ONBOARDING_NOTIFICATIONS_PREFERENCES",
-            "title":"Push-Benachrichtigungen",
-            "content":"Hier kannst du die Push-Benachrichtigungen anpassen.",
-            "faqs":[
-               {
-                  "title":"Was bedeutet 'Vorschau anzeigen'?",
-                  "body":"Wenn du die Option 'Vorschau anzeigen' aktivierst, werden in den IO-Push-Benachrichtigungen der Absender und der Betreff der Nachrichten angezeigt. So kannst du wissen, wer dir geschrieben hat, ohne die App zu öffnen."
-               },
-               {
-                  "title":"Was bedeutet 'Erinnerung zulassen'?",
-                  "body":"Wenn du die Option 'Erinnerungen zulassen' aktivierst, erhältst du Push-Benachrichtigungen, wenn sich Fristen nähern oder wenn du ungelesene Nachrichten hast."
-               }
-            ]
-         },
-         {
-            "route_name":"PROFILE_PREFERENCES_NOTIFICATIONS",
-            "title":"Push-Benachrichtigungen",
-            "content":"Hier kannst du die Push-Benachrichtigungen anpassen.",
-            "faqs":[
-               {
-                  "title":"Was bedeutet 'Vorschau anzeigen'?",
-                  "body":"Wenn du die Option 'Vorschau anzeigen' aktivierst, werden in den IO-Push-Benachrichtigungen der Absender und der Betreff der Nachrichten angezeigt. So kannst du wissen, wer dir geschrieben hat, ohne die App zu öffnen."
-               },
-               {
-                  "title":"Was bedeutet 'Erinnerung zulassen'?",
-                  "body":"Wenn du die Option 'Erinnerungen zulassen' aktivierst, erhältst du Push-Benachrichtigungen, wenn sich Fristen nähern oder wenn du ungelesene Nachrichten hast."
-               }
-            ]
-         },
-         {
-            "route_name":"PN_ROUTES_MESSAGE_DETAILS",
-            "title":"Details zur Zustellung",
-            "content":"Diese Mitteilung enthält eine Zustellung, d.h. eine Mitteilung mit rechtlichem Wert. Nachdem du die Nachricht geöffnet hast, wird dir der Bescheid rechtlich zugestellt. Hier kannst du den Inhalt des Bescheids lesen, die beigefügten Unterlagen einsehen und etwaige Gebühren bezahlen.",
-            "faqs":[
-               {
-                  "title":"Was ist eine Zustellung?",
-                  "body":"Zustellungen sind Mitteilungen mit rechtlichem Wert, die offiziell von einer Verwaltung erstellt werden, z. B. Geldbußen, Steuerbescheide oder Erstattungen. 'Zustellungen' unterscheiden sich daher von 'Push-Benachrichtigungen', d. h. von den Kurznachrichten, die du auf dem Bildschirm deines Geräts erhältst. Bislang wurden diese Mitteilungen fast immer per Einschreiben verschickt. Jetzt kannst du sie aber auch digital erhalten."
-               },
-               {
-                  "title":"Was bedeutet es, dass eine Mitteilung von rechtlichem Wert ist?",
-                  "body":"Das bedeutet, dass das Versenden und der Empfang dieser Mitteilungen sowohl für den Absender als auch für den Empfänger rechtliche Auswirkungen haben. Wenn du beispielsweise einen Bußgeldbescheid für einen Verkehrsverstoß erhältst, wirkt sich das Datum, an dem du ihn erhältst, auf den Betrag aus, den du zahlen musst oder auf dein Recht, ihn anzufechten."
-               },
-               {
-                  "title":"Was ist SEND?",
-                  "body":"Es handelt sich um eine Plattform, die die Verwaltung von Zustellungen digitalisiert und vereinfacht: Sie ermöglicht es dir, Bescheide zu erhalten, beigefügte Dokumente herunterzuladen und etwaige Gebühren in der IO-App oder auf der Plattform SEND - digitaler Zustelldienst zu bezahlen. Weitere Informationen findest du [auf der SEND-Website] (https://notifichedigitali.pagopa.it)."
-               },
-               {
-                  "title":"Warum habe ich diese Nachricht erhalten?",
-                  "body":"Weil du den Dienst 'Digitale Zustellungen' von SEND aktiviert hast und eine Körperschaft eine Zustellung für dich hat. Das Öffnen der Nachricht auf IO und damit die Einsicht in den Inhalt der Zustellung ist gleichbedeutend mit der Unterzeichnung des Rückscheins eines herkömmlichen Einschreibens."
-               },
-               {
-                  "title":"Ich habe die Nachricht geöffnet. Was soll ich jetzt tun?",
-                  "body":"Nachdem du die Nachricht geöffnet hast, ist die Zustellung rechtskräftig: Es ist so, als hättest du den Rückschein eines herkömmlichen Einschreibens unterschrieben. Du kannst den Inhalt der Zustellung lesen, die beigefügten Dokumente einsehen und etwaige Gebühren direkt in der App bezahlen."
-               },
-               {
-                  "title":"Ich habe die Nachricht geöffnet. Was passiert, wenn ich sie ignoriere?",
-                  "body":"Die Nachricht zu öffnen, keine Gebühren zu zahlen oder ihren Inhalt zu ignorieren, ist wie ein Einschreiben zu ignorieren."
-               },
-               {
-                  "title":"Ich habe ein Problem mit dieser Zustellung. Was kann ich tun?",
-                  "body":"Wenn du Probleme oder Fragen zum Inhalt der Zustellung hast, wende dich bitte an die Körperschaft, die dir die Mitteilung zugesandt hat. Wenn du technische Probleme hast, z. B. wenn du die an die Zustellung angehängten Dokumente nicht sehen oder die Gebühren nicht bezahlen kannst, geh zum Ende dieser Seite und wähle Ticket erstellen > Mitteilungen > Ich habe ein Problem mit einer SEND-Mitteilung."
-               },
-               {
-                  "title":"Wie lange sind die Dokumente der Zustellung in der App verfügbar?",
-                  "body":"Für 120 Tage ab dem Datum der Rechtswirksamkeit. Nach Ablauf dieser Frist kannst du sie nicht mehr über IO oder SEND einsehen. Du musst dich dann an die Körperschaft wenden, die sie dir zugesandt hat."
-               },
-               {
-                  "title":"Was bedeutet 'Rechtswirksamkeit'?",
-                  "body":"Die Rechtswirksamkeit einer Zustellung bedeutet, dass sie für alle Zwecke Rechtskraft erlangt. So beginnen beispielsweise ab dem Zeitpunkt der Rechtswirksamkeit einer Zustellung die Fristen für die Ausübung der einschlägigen Rechte, die Anfechtung von Handlungen und die Zahlung von Sanktionen zu laufen."
-               },
-               {
-                  "title":"Wann wird eine Zustellung rechtswirksam?",
-                  "body":"Eine Zustellung wird zu unterschiedlichen Zeitpunkten für die Körperschaft, die sie versendet, und für den Empfänger, der sie erhält, rechtswirksam. Für den Absender ist sie an dem Tag rechtswirksam, an dem das zuzustellende Dokument auf der Plattform zur Verfügung gestellt wird. Für den Empfänger hängt die Rechtswirksamkeit davon ab, wie er die Benachrichtigung erhält oder liest. [Hier](https://notifichedigitali.pagopa.it/perfezionamento) findest du den Zeitpunkt der Rechtswirksamkeit einer Zustellung in Abhängigkeit von dem Kanal, über den sie empfangen oder eingesehen wird."
-               },
-               {
-                  "title":"Wie kann ich erfahren, wann eine Meldung rechtswirksam ist?",
-                  "body":"Wähle in den Details der Zustellung 'Webversion aufrufen'. Du findest diese Informationen rechts im Abschnitt 'Status der Zustellung'."
-               },
-               {
-                  "title":"Die Zustellung, die ich erhalten habe, wurde storniert. Wie kommt das?",
-                  "body":"Die Körperschaft, die sie versandt hat, kann sie aus verschiedenen Gründen storniert haben. So kann ihr beispielsweise ein Fehler unterlaufen sein oder es können Umstände eingetreten sein, aufgrund derer die Zustellung nicht mehr wirksam ist.\n\nWenn du eine Zustellung erhalten hast und diese annulliert wurde, ignoriere deren Inhalt. Wenn du Zweifel oder Fragen hast, wende dich an die Körperschaft, die dir den Bescheid zugestellt hat."
-               },
-               {
-                  "title":"Die Zustellung, die ich erhalten habe, wurde storniert, aber ich habe sie bereits bezahlt. Was soll ich tun?",
-                  "body":"Für Informationen über eine mögliche Rückerstattung wende dich bitte an die Körperschaft, die dir das Dokument zugesandt hat."
-               },
-               {
-                  "title":"In einer Zustellung mit mehreren Zahlungenaufforderungen enthalten einige die Zustellkosten und andere nicht. Wie kommt das?",
-                  "body":"Einige Zustellungen enthalten eine Gebühr für den Versand, die nur einmal pro Zustellung zu entrichten ist. Bei Zustellungen mit mehreren Zahlungsaufforderungen sind die Kosten für die Zusendung nur in einer und nicht in allen Zustellungen enthalten.\n\nSo kannst du beispielsweise entscheiden, ob du die Zahlungenaufforderung in einem Mal oder in Raten zahlen möchtest. Wenn du dich für die Zahlung eines Gesamtbetrags entscheidest, sind die Kosten für den Versand in der betreffenden Zahlungenaufforderung enthalten. Wenn du sich für eine Ratenzahlung entscheidest, sind die Kosten für den Versand nur in einem der verschiedenen Zahlungenaufforderungen enthalten - in der Regel in der ersten Rate."
-               }
-            ]
-         }
-      ],
+     "screens": [
+      {
+        "route_name": "MESSAGE_DETAIL_ATTACHMENT",
+        "title": "Vorschau des Dokuments",
+        "content": "Hier kannst du eine Vorschau des an die Nachricht angehängten Dokuments anzeigen. Du kannst es auch speichern, weitergeben oder mit einer auf deinem Gerät installierten PDF-Reader-App öffnen."
+      },
+      {
+        "route_name": "FCI_DOCUMENTS",
+        "title": "Dokument",
+        "content": "Hier kannst du die Vorschau des zu signierenden Dokuments sehen",
+        "faqs": [
+          {
+            "title": "Was kann ich tun, wenn ein zu signierendes Dokument Fehler enthält?",
+            "body": "Wende dich direkt an die Körperschaft, die das Dokument gesendet hat. Die Kontaktdaten findest du in der Nachricht zur Signaturanforderung."
+          },
+          {
+            "title": "Was kann ich tun, wenn die App abstürzt, während ich ein Dokument signiere?",
+            "body": "Überprüfe, ob du die neueste Version der IO-App aus dem Store deines Geräts installiert hast. Wenn die App nicht mehr aktuell ist, lade die neueste Version herunter. Andernfalls geh zum unteren Ende dieser Seite und wähle Ticket erstellen > Mit IO signieren."
+          },
+          {
+            "title": "Ich habe ein Problem mit der Signatur eines Dokuments. Was kann ich tun?",
+            "body": "Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
+          },
+          {
+            "title": "Welchen rechtlichen Wert hat die Signatur eines Dokuments über IO?",
+            "body": "Eine über IO angebrachte digitale Signatur ist eine QES (Qualifizierte elektronische Signatur). Sie hat die gleiche Rechtsgültigkeit wie eine handschriftliche Unterschrift auf Papier. Sie garantiert somit die Authentizität der signierten Dokumente und die vollständige Rückverfolgbarkeit zum Unterzeichner."
+          }
+        ]
+      },
+      {
+        "route_name": "FCI_SIGNATURE_FIELDS",
+        "title": "Zu signierende Felder",
+        "content": "Hier kannst du die Liste der im Dokument erforderlichen Signaturen einsehen und die zu tätigenden Signaturen auswählen. Obligatorische Signaturen sind als solche bereits ausgewählt",
+        "faqs": [
+          {
+            "title": "Warum muss ich mehrmals signieren?",
+            "body": "Es ist möglich, dass für einige Dokumente verschiedene Arten von Unterschriften erforderlich sind, die jeweils einen anderen Wert haben.\n Damit ein Dokument gültig ist, sind die obligatorische Signaturen immer erforderlich.\n Einige Dokumente sehen besonders belastende Klauseln vor. Diese sind ebenfalls obligatorische Signaturen; wenn du sie nicht auswählst, kannst du nicht fortfahren. Sie kennzeichnen besondere Bedingungen, auf die du achten sollst. Sie müssen vom Gesetz her leicht erkennbar sein, damit der Unterzeichner vor der Signatur über ihren Inhalt informiert ist.\n Fakultative Signaturen hingegen dienen dazu, bestimmte Bedingungen zu bestätigen oder zu akzeptieren; in diesem Fall kannst du wählen, ob du signieren möchtest oder nicht."
+          },
+          {
+            "title": "Ich habe ein Problem mit der Unterzeichnung eines Dokuments. Was kann ich tun?",
+            "body": "Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
+          }
+        ]
+      },
+      {
+        "route_name": "FCI_USER_DATA_SHARE",
+        "title": "Weitergabe von Daten",
+        "content": "Hier kannst du die Daten einsehen, die an den Anbieter der digitalen Signatur weitergegeben werden.",
+        "faqs": [
+          {
+            "title": "Warum muss ich meine Daten weitergeben?",
+            "body": "Die von dir mitgeteilten Daten werden vom Anbieter der digitalen Signatur verwendet, um dir den Dienst anzubieten und deine Signatur zu zertifizieren."
+          },
+          {
+            "title": "Ich habe die Nachricht mit den signierten Dokumenten erhalten, aber sie sind nicht mehr verfügbar. Wie kann ich sie abrufen?",
+            "body": "In diesem Fall musst du dich direkt an die Körperschaft wenden, die das Dokument ausgestellt hat. Die Kontaktdaten findest du in der Zusammenfassung des signierten Dokuments, die du in der IO-App erhalten hast."
+          },
+          {
+            "title": "Ich habe ein Problem mit der Signatur eines Dokuments. Was kann ich tun?",
+            "body": "Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
+          },
+          {
+            "title": "Was kann ich tun, wenn ich einen Signaturanforderung erhalten habe, die Frist aber bereits abgelaufen ist?",
+            "body": "Du kannst dich an die Körperschaft wenden, die das Dokument verschickt hat, und diese bitten, dir einen neuen Antrag zu senden."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_INFO_SCREEN_CONSENT",
+        "title": "Push-Benachrichtigungen",
+        "content": "Hier kannst du die Push-Benachrichtigungen anpassen.",
+        "faqs": [
+          {
+            "title": "Was bedeutet 'Vorschau anzeigen'?",
+            "body": "Wenn du die Option 'Vorschau anzeigen' aktivierst, werden in den IO-Push-Benachrichtigungen der Absender und der Betreff der Nachrichten angezeigt. So kannst du wissen, wer dir geschrieben hat, ohne die App zu öffnen."
+          },
+          {
+            "title": "Was bedeutet 'Erinnerung zulassen'?",
+            "body": "Wenn du die Option 'Erinnerungen zulassen' aktivierst, erhältst du Push-Benachrichtigungen, wenn sich Fristen nähern oder wenn du ungelesene Nachrichten hast."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_NOTIFICATIONS_PREFERENCES",
+        "title": "Push-Benachrichtigungen",
+        "content": "Hier kannst du die Push-Benachrichtigungen anpassen.",
+        "faqs": [
+          {
+            "title": "Was bedeutet 'Vorschau anzeigen'?",
+            "body": "Wenn du die Option 'Vorschau anzeigen' aktivierst, werden in den IO-Push-Benachrichtigungen der Absender und der Betreff der Nachrichten angezeigt. So kannst du wissen, wer dir geschrieben hat, ohne die App zu öffnen."
+          },
+          {
+            "title": "Was bedeutet 'Erinnerung zulassen'?",
+            "body": "Wenn du die Option 'Erinnerungen zulassen' aktivierst, erhältst du Push-Benachrichtigungen, wenn sich Fristen nähern oder wenn du ungelesene Nachrichten hast."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_NOTIFICATIONS",
+        "title": "Push-Benachrichtigungen",
+        "content": "Hier kannst du die Push-Benachrichtigungen anpassen.",
+        "faqs": [
+          {
+            "title": "Was bedeutet 'Vorschau anzeigen'?",
+            "body": "Wenn du die Option 'Vorschau anzeigen' aktivierst, werden in den IO-Push-Benachrichtigungen der Absender und der Betreff der Nachrichten angezeigt. So kannst du wissen, wer dir geschrieben hat, ohne die App zu öffnen."
+          },
+          {
+            "title": "Was bedeutet 'Erinnerung zulassen'?",
+            "body": "Wenn du die Option 'Erinnerungen zulassen' aktivierst, erhältst du Push-Benachrichtigungen, wenn sich Fristen nähern oder wenn du ungelesene Nachrichten hast."
+          }
+        ]
+      },
+      {
+        "route_name": "PN_ROUTES_MESSAGE_DETAILS",
+        "title": "Details zur Zustellung",
+        "content": "Diese Mitteilung enthält eine Zustellung, d.h. eine Mitteilung mit rechtlichem Wert. Nachdem du die Nachricht geöffnet hast, wird dir der Bescheid rechtlich zugestellt. Hier kannst du den Inhalt des Bescheids lesen, die beigefügten Unterlagen einsehen und etwaige Gebühren bezahlen.",
+        "faqs": [
+          {
+            "title": "Was ist eine Zustellung?",
+            "body": "Zustellungen sind Mitteilungen mit rechtlichem Wert, die offiziell von einer Verwaltung erstellt werden, z. B. Geldbußen, Steuerbescheide oder Erstattungen. 'Zustellungen' unterscheiden sich daher von 'Push-Benachrichtigungen', d. h. von den Kurznachrichten, die du auf dem Bildschirm deines Geräts erhältst. Bislang wurden diese Mitteilungen fast immer per Einschreiben verschickt. Jetzt kannst du sie aber auch digital erhalten."
+          },
+          {
+            "title": "Was bedeutet es, dass eine Mitteilung von rechtlichem Wert ist?",
+            "body": "Das bedeutet, dass das Versenden und der Empfang dieser Mitteilungen sowohl für den Absender als auch für den Empfänger rechtliche Auswirkungen haben. Wenn du beispielsweise einen Bußgeldbescheid für einen Verkehrsverstoß erhältst, wirkt sich das Datum, an dem du ihn erhältst, auf den Betrag aus, den du zahlen musst oder auf dein Recht, ihn anzufechten."
+          },
+          {
+            "title": "Was ist SEND?",
+            "body": "Es handelt sich um eine Plattform, die die Verwaltung von Zustellungen digitalisiert und vereinfacht: Sie ermöglicht es dir, Bescheide zu erhalten, beigefügte Dokumente herunterzuladen und etwaige Gebühren in der IO-App oder auf der Plattform SEND - digitaler Zustelldienst zu bezahlen. Weitere Informationen findest du [auf der SEND-Website] (https://notifichedigitali.pagopa.it)."
+          },
+          {
+            "title": "Warum habe ich diese Nachricht erhalten?",
+            "body": "Weil du den Dienst 'Digitale Zustellungen' von SEND aktiviert hast und eine Körperschaft eine Zustellung für dich hat. Das Öffnen der Nachricht auf IO und damit die Einsicht in den Inhalt der Zustellung ist gleichbedeutend mit der Unterzeichnung des Rückscheins eines herkömmlichen Einschreibens."
+          },
+          {
+            "title": "Ich habe die Nachricht geöffnet. Was soll ich jetzt tun?",
+            "body": "Nachdem du die Nachricht geöffnet hast, ist die Zustellung rechtskräftig: Es ist so, als hättest du den Rückschein eines herkömmlichen Einschreibens unterschrieben. Du kannst den Inhalt der Zustellung lesen, die beigefügten Dokumente einsehen und etwaige Gebühren direkt in der App bezahlen."
+          },
+          {
+            "title": "Ich habe die Nachricht geöffnet. Was passiert, wenn ich sie ignoriere?",
+            "body": "Die Nachricht zu öffnen, keine Gebühren zu zahlen oder ihren Inhalt zu ignorieren, ist wie ein Einschreiben zu ignorieren."
+          },
+          {
+            "title": "Ich habe ein Problem mit dieser Zustellung. Was kann ich tun?",
+            "body": "Wenn du Probleme oder Fragen zum Inhalt der Zustellung hast, wende dich bitte an die Körperschaft, die dir die Mitteilung zugesandt hat. Wenn du technische Probleme hast, z. B. wenn du die an die Zustellung angehängten Dokumente nicht sehen oder die Gebühren nicht bezahlen kannst, geh zum Ende dieser Seite und wähle Ticket erstellen > Mitteilungen > Ich habe ein Problem mit einer SEND-Mitteilung."
+          },
+          {
+            "title": "Wie lange sind die Dokumente der Zustellung in der App verfügbar?",
+            "body": "Für 120 Tage ab dem Datum der Rechtswirksamkeit. Nach Ablauf dieser Frist kannst du sie nicht mehr über IO oder SEND einsehen. Du musst dich dann an die Körperschaft wenden, die sie dir zugesandt hat."
+          },
+          {
+            "title": "Was bedeutet 'Rechtswirksamkeit'?",
+            "body": "Die Rechtswirksamkeit einer Zustellung bedeutet, dass sie für alle Zwecke Rechtskraft erlangt. So beginnen beispielsweise ab dem Zeitpunkt der Rechtswirksamkeit einer Zustellung die Fristen für die Ausübung der einschlägigen Rechte, die Anfechtung von Handlungen und die Zahlung von Sanktionen zu laufen."
+          },
+          {
+            "title": "Wann wird eine Zustellung rechtswirksam?",
+            "body": "Eine Zustellung wird zu unterschiedlichen Zeitpunkten für die Körperschaft, die sie versendet, und für den Empfänger, der sie erhält, rechtswirksam. Für den Absender ist sie an dem Tag rechtswirksam, an dem das zuzustellende Dokument auf der Plattform zur Verfügung gestellt wird. Für den Empfänger hängt die Rechtswirksamkeit davon ab, wie er die Benachrichtigung erhält oder liest. [Hier](https://notifichedigitali.pagopa.it/perfezionamento) findest du den Zeitpunkt der Rechtswirksamkeit einer Zustellung in Abhängigkeit von dem Kanal, über den sie empfangen oder eingesehen wird."
+          },
+          {
+            "title": "Wie kann ich erfahren, wann eine Meldung rechtswirksam ist?",
+            "body": "Wähle in den Details der Zustellung 'Webversion aufrufen'. Du findest diese Informationen rechts im Abschnitt 'Status der Zustellung'."
+          },
+          {
+            "title": "Die Zustellung, die ich erhalten habe, wurde storniert. Wie kommt das?",
+            "body": "Die Körperschaft, die sie versandt hat, kann sie aus verschiedenen Gründen storniert haben. So kann ihr beispielsweise ein Fehler unterlaufen sein oder es können Umstände eingetreten sein, aufgrund derer die Zustellung nicht mehr wirksam ist.\n\nWenn du eine Zustellung erhalten hast und diese annulliert wurde, ignoriere deren Inhalt. Wenn du Zweifel oder Fragen hast, wende dich an die Körperschaft, die dir den Bescheid zugestellt hat."
+          },
+          {
+            "title": "Die Zustellung, die ich erhalten habe, wurde storniert, aber ich habe sie bereits bezahlt. Was soll ich tun?",
+            "body": "Für Informationen über eine mögliche Rückerstattung wende dich bitte an die Körperschaft, die dir das Dokument zugesandt hat."
+          },
+          {
+            "title": "In einer Zustellung mit mehreren Zahlungenaufforderungen enthalten einige die Zustellkosten und andere nicht. Wie kommt das?",
+            "body": "Einige Zustellungen enthalten eine Gebühr für den Versand, die nur einmal pro Zustellung zu entrichten ist. Bei Zustellungen mit mehreren Zahlungsaufforderungen sind die Kosten für die Zusendung nur in einer und nicht in allen Zustellungen enthalten.\n\nSo kannst du beispielsweise entscheiden, ob du die Zahlungenaufforderung in einem Mal oder in Raten zahlen möchtest. Wenn du dich für die Zahlung eines Gesamtbetrags entscheidest, sind die Kosten für den Versand in der betreffenden Zahlungenaufforderung enthalten. Wenn du sich für eine Ratenzahlung entscheidest, sind die Kosten für den Versand nur in einem der verschiedenen Zahlungenaufforderungen enthalten - in der Regel in der ersten Rate."
+          }
+        ]
+      },
+      {
+        "route_name": "PN_ROUTES_MESSAGE_ATTACHMENT",
+        "title": "Der Zustellung beiliegenden Dokumente",
+        "content": "Hier kannst du die an der Zustellung angehängten Dokumente anzeigen, speichern und weitergeben.",
+        "faqs": [
+          {
+            "title": "Ich habe ein Problem mit einem angehängten Dokument. Was kann ich tun?",
+            "body": "Wenn du Probleme oder Fragen zum Inhalt der Zustellung hast, wende dich bitte an die Körperschaft, die dir die Mitteilung zugesandt hat. Wenn du technische Probleme hast, z. B. wenn du die an die Zustellung angehängten Dokumente nicht sehen oder die Gebühren nicht bezahlen kannst, geh zum Ende dieser Seite und wähle Ticket erstellen > Mitteilungen > Ich habe ein Problem mit einer SEND-Mitteilung."
+          },
+          {
+            "title": "Ich habe ein Problem mit dieser Zustellung. Was kann ich tun?",
+            "body": "Wenn du Probleme oder Fragen zum Inhalt der Zustellung hast, wende dich bitte an die Körperschaft, die dir die Mitteilung zugesandt hat. Wenn du technische Probleme hast, z. B. wenn du die an die Zustellung angehängten Dokumente nicht sehen oder die Gebühren nicht bezahlen kannst, geh zum Ende dieser Seite und wähle Ticket erstellen > Mitteilungen > Ich habe ein Problem mit einer SEND-Mitteilung."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_IDP_LOGIN",
+        "title": "Deine Zugangsdaten",
+        "content": "Um sich bei IO über SPID anzumelden, musst du deinen Benutzernamen und dein Passwort eingeben. Bestätige dann die Anmeldeanfrage per OTP oder in der App deines Identity Providers und kehre zur IO-App zurück.",
+        "faqs": [
+          {
+            "title": "Wie lautet mein Passwort?",
+            "body": "Dies ist der alphanumerische Code, den du bei der Aktivierung von SPID festgelegt hast."
+          },
+          {
+            "title": "Ich habe meine SPID-Anmeldedaten verloren. Was kann ich tun?",
+            "body": "Du kannst deinen Benutzernamen und dein Passwort jederzeit wiederherstellen. Wähle deinen Identitätsanbieter aus der Liste, um zu erfahren, wie du vorgehen musst:\n -[Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx)\n -[EtnaID](https://etnaid.eht.eu/signup/forgotPassword)\n -[Infocamere](https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryEmergencyCode)\n -[Infocert](https://my.infocert.it/selfcare/#/recoveryPin)\n -[Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)\n -[Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php)\n -[Poste](https://posteid.poste.it/recuperocredenziali.shtml)\n -[Register, wenn du deinen Benutzernamen vergessen hast](https://spid.register.it/selfcare/recovery/username)\n -[Register, wenn du dein Passwort vergessen hast](https://spid.register.it/selfcare/recovery/password)\n -[Sielte](https://myid.sieltecloud.it/profile/recovery/forgotPassword)\n -[Tim, wenn du deinen Benutzernamen vergessen hast](https://id.tim.it/secure-proxy/fu)\n -[Tim, wenn du dein Passwort vergessen hast](https://id.tim.it/secure-proxy/fp)\n -[TeamSystem, wenn du deinen Benutzernamen vergessen hast](https://spid.teamsystem.com/it/auth/usernameLost)\n -[TeamSystem, wenn du dein Passwort vergessen hast](https://spid.teamsystem.com/it/auth/passwordLost)."
+          },
+          {
+            "title": "Ich habe alles richtig gemacht, aber ich komme nicht rein. Was kann ich tun?",
+            "body": "Wenn dies der Fall ist, geh zum Ende dieser Seite und wähle 'Ticket erstellen', um uns zu schreiben: Unser Support wird dir helfen, das Problem zu lösen."
+          },
+          {
+            "title": "Wie wird meine Privatsphäre geschützt?",
+            "body": "Die IO-App wurde nach den Grundsätzen der [Datenschutz-Grundverordnung](https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679&from=EN), auch bekannt als GDPR, und des [Italienischen Datenschutzgesetzes](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=) konzipiert und entwickelt. Sie ist daher ein sicheres Werkzeug, das deine Daten und deine Rechte schützt."
+          },
+          {
+            "title": "Ich habe Probleme, mich mit SPID von einem Android-Gerät aus anzumelden. Was kann ich tun?",
+            "body": "Auf einigen Geräten mit Android-Betriebssystem kann die IO-App abstürzen oder unerwartet neu gestartet werden, wenn sie in Verbindung mit anderen Apps verwendet wird, z. B. wenn du versuchst, dich mit SPID über die App deines Identitätsanbieters anzumelden. Wenn dieses Problem auftritt, führe bitte die folgenden Schritte aus: \n\n1- tippe auf das IO-App-Symbol und halte es einige Sekunden lang gedrückt;\n2- wähle im angezeigten Menü die Option '**App-Info**' aus;\n3- scrolle nach unten und wähle '**Energiesparen**' oder '**Batterie**' (kann je nach Gerät variieren); \n4- wähle die Option '**Keine Einschränkungen**' oder '**Keine Beschränkungen**' oder deaktiviere auf andere Weise die Optimierung des Akkuverbrauchs für IO (kann je nach Gerät variieren); \n5- starte die App neu und versuche erneut, dich mit SPID anzumelden."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_LANDING",
+        "title": "Zugang zu IO",
+        "content": "Um Zugang zu IO zu erhalten, musst du dich mit deiner SPID-Identität oder deiner elektronischen Identitätskarte (CIE) authentifizieren. Um SPID zu aktivieren, befolge das Verfahren, das du [auf dieser Website](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/) findest. Um die CIE zu beantragen, geh auf die Website deiner Gemeinde.",
+        "faqs": [
+          {
+            "title": "Was ist SPID?",
+            "body": "SPID ist das Authentifizierungssystem, das Bürgern und Unternehmen den Zugang zu den Online-Diensten der öffentlichen Verwaltung und teilnehmenden Privatpersonen mit einer eindeutigen digitalen Identität, bestehend aus einem Benutzernamen und einem Passwort, ermöglicht."
+          },
+          {
+            "title": "Wie kann ich SPID aktivieren?",
+            "body": "[Auf dieser Website](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/) findest du alle Informationen darüber, wo und wie du SPID aktivieren kannst."
+          },
+          {
+            "title": "Ich habe meine SPID-Anmeldedaten verloren. Was kann ich tun?",
+            "body": "Du kannst deinen Benutzernamen und dein Passwort jederzeit wiederherstellen. Wähle deinen Identitätsanbieter aus der Liste, um zu erfahren, wie du vorgehen musst:\n- [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx)\n- [EtnaID](https://etnaid.eht.eu/signup/forgotPassword)\n- [Infocamere](https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryEmergencyCode)\n- [Infocert](https://my.infocert.it/selfcare/#/recoveryPin)\n- [Intesi Group](https://www.intesigroup.com/it/spid/)\n- [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)\n- [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php)\n- [Poste](https://posteid.poste.it/recuperocredenziali.shtml)\n -[SpidItalia, wenn du deinen Benutzernamen vergessen hast](https://spid.register.it/selfcare/recovery/username)\n- [SpidItalia, wenn du dein Passwort vergessen hast](https://spid.register.it/selfcare/recovery/password)\n- [Sielte](https://myid.sieltecloud.it/profile/recovery/forgotPassword)\n -[Tim, wenn du deinen Benutzernamen vergessen hast](https://id.tim.it/secure-proxy/fu)\n- [Tim, wenn du dein Passwort vergessen hast](https://id.tim.it/secure-proxy/fp)\n- [TeamSystem, wenn du deinen Benutzernamen vergessen hast](https://spid.teamsystem.com/it/auth/usernameLost)\n- [TeamSystem, wenn du dein Passwort vergessen hast](https://spid.teamsystem.com/it/auth/passwordLost)."
+          },
+          {
+            "title": "Was ist die CIE?",
+            "body": "Die elektronische Identitätskarte (CIE) ist das Identitätsdokument der italienischen Bürger. Sie ermöglicht die Feststellung der Identität seines Inhabers und den Zugang zu Online-Diensten der öffentlichen Verwaltungen."
+          },
+          {
+            "title": "Wie kann ich ein CIE beantragen?",
+            "body": "[Geh auf diese Website](https://www.prenotazionicie.interno.gov.it/) und gib den Namen deiner Gemeinde ein, um zu prüfen, ob sie das Online-Terminvereinbarungssystem Agenda CIE verwendet. Wenn ja, kannst du den Termin buchen. Wenn nicht, fordere einen Termin über die Website deiner Gemeinde an oder geh zu einem Gemeindebüro."
+          },
+          {
+            "title": "Ich habe Probleme, mich mit SPID von einem Android-Gerät aus anzumelden. Was kann ich tun?",
+            "body": "Auf einigen Geräten mit Android-Betriebssystem kann die IO-App abstürzen oder unerwartet neu gestartet werden, wenn sie in Verbindung mit anderen Apps verwendet wird, z. B. wenn du versuchst, dich mit SPID über die App deines Identitätsanbieters anzumelden. Wenn dieses Problem auftritt, führe bitte die folgenden Schritte aus: \n\n1- tippe auf das IO-App-Symbol und halte es einige Sekunden lang gedrückt;\n2- wähle im angezeigten Menü die Option '**App-Info**' aus;\n3- scrolle nach unten und wähle '**Energiesparen**' oder '**Batterie**' (kann je nach Gerät variieren); \n4- wähle die Option '**Keine Einschränkungen**' oder '**Keine Beschränkungen**' oder deaktiviere auf andere Weise die Optimierung des Akkuverbrauchs für IO (kann je nach Gerät variieren); \n5- starte die App neu und versuche erneut, dich mit SPID anzumelden."
+          }
+        ]
+      },
+      {
+        "route_name": "AUTHENTICATION_IDP_SELECTION",
+        "title": "Dein Identitätsanbieter",
+        "content": "Der Identitätsanbieter ist der Verwalter deiner digitalen Identität. Du kannst dich nur authentifizieren, wenn du den Identitätsanbieter ausgewählt hast, der deinen SPID ausgestellt hat.",
+        "faqs": [
+          {
+            "title": "Was ist ein Identitätsanbieter?",
+            "body": "Die SPID-Identität wird von Identitätsanbietern ausgestellt, die digitale Identitäten bereitstellen und die Benutzerauthentifizierung verwalten. Dein Identitätsanbieter ist das Unternehmen, das du als deinen SPID-Anbieter ausgewählt hast."
+          }
+        ]
+      },
+      {
+        "route_name": "CIE_PIN_SCREEN",
+        "title": "Der PIN-Code deiner CIE",
+        "content": "Der PIN-Code deiner elektronischen Identitätskarte ist ein 8-stelliger Code, der für den Zugang erforderlich ist.",
+        "faqs": [
+          {
+            "title": "Wo kann ich die PIN- und PUK-Codes für die CIE finden?",
+            "body": "PIN- und PUK-Code bestehen jeweils aus 8 Ziffern: Die ersten 4 Ziffern wurden dir im Meldeamt mitgeteilt, die letzten 4 Ziffern wurden dir zusammen mit der elektronischen Identitätskarte nach Hause geschickt. Der PUK-Code wird verwendet, um den PIN-Code nach drei Fehlversuchen zu entsperren."
+          },
+          {
+            "title": "Ich habe meinen PIN- und/oder PUK-Code nicht mehr. Was kann ich tun?",
+            "body": "[Auf dieser Website](https://www.cartaidentita.interno.gov.it/anagrafe/procedure/) findest du alle Informationen, die du benötigst, um sie wiederzufinden."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_FINGERPRINT",
+        "title": "Wie funktioniert die biometrische Erkennung",
+        "content": "Mit der biometrischen Erkennung kannst du auf die App zugreifen, ohne jedes Mal den Entsperrcode eingeben zu müssen. Du kannst sie im Abschnitt 'Profil' aktivieren oder deaktivieren",
+        "faqs": [
+          {
+            "title": "Wann werde ich zur biometrischen Erkennung aufgefordert?",
+            "body": "Wenn du diese Funktion aktiviert hast, kannst du die biometrische Erkennung anstelle des Freischaltcodes verwenden. Wie der Freischaltcode bleibt auch diese Erkennung 30 Tage lang nach deiner letzten Anmeldung mit SPID oder CIE aktiv. Nach diesem Zeitraum musst du dich erneut anmelden."
+          },
+          {
+            "title": "Wie kann ich die biometrische Erkennung aktivieren?",
+            "body": "Wenn dein Telefon die biometrische Erkennung unterstützt, aktiviere sie in den Systemeinstellungen. Geh dann zum Abschnitt 'Profil' und aktiviere sie auch dort."
+          },
+          {
+            "title": "Wie kann ich die biometrische Erkennung deaktivieren?",
+            "body": "Geh zum Abschnitt 'Profil'. Die biometrische Erkennung ist bereits deaktiviert, wenn dein Gerät sie nicht unterstützt oder wenn sie in den Systemeinstellungen deaktiviert ist."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_PIN",
+        "title": "Wie funktioniert der Entsperrcode",
+        "content": "Hier kannst du deinen Entsperrcode festlegen oder ändern. Wenn du zum ersten Mal in der App bist, wähle einen Code und merk ihn dir, damit du ihn jedes Mal verwenden kannst, wenn du dich anmelden musst. Wenn du ihn bereits eingestellt hast und dich nicht mehr daran erinnern kannst, tippe auf 'Entsperrcode vergessen' und bib einen neuen Code ein. Wenn du ihn ändern möchtest, tippe auf 'Entsperrcode ändern'.\n\nDer Freischaltcode ist mit dem Gerät verknüpft, auf dem du ihn eingestellt hast: Wenn du dein Telefon wechselst, musst du ihn bei der ersten Anmeldung in der App erneut einstellen.",
+        "faqs": [
+          {
+            "title": "Was ist der Entsperrcode?",
+            "body": "Es handelt sich um einen 6-stelligen Code, den du beim ersten Zugriff auf IO festlegst und der es dir ermöglicht, die App zu betreten, ohne jedes Mal deine SPID- oder CIE-Anmeldedaten eingeben zu müssen. Du musst ihn auch eingeben, um sensible Daten einzusehen und bestimmte Vorgänge zu bestätigen, z. B. eine Zahlung vorzunehmen oder dein Konto zu löschen.\nDiese Erkennung bleibt 30 Tage nach deiner letzten Anmeldung mit SPID oder CIE aktiv. Danach musst du dich erneut authentifizieren und einen neuen Freischaltcode festlegen."
+          },
+          {
+            "title": "Ich habe den Entsperrcode vergessen. Was kann ich tun?",
+            "body": "Tippe auf 'Entsperrcode vergessen?', authentifiziere dich mit SPID oder CIE und gib den neuen Code ein."
+          },
+          {
+            "title": "Wie kann ich den Entsperrcode ändern?",
+            "body": "Wenn du dich an den Entsperrcode erinnerst, ihn aber ändern möchtest, wähle 'Entsperrcode zurücksetzen', authentifiziere dich mit SPID oder CIE und gib den neuen Code ein."
+          }
+        ]
+      },
+      {
+        "route_name": "ONBOARDING_TOS",
+        "title": "Datenschutz und Nutzungsbedingungen",
+        "content": "Hier findest du die vollständige Beschreibung, wie IO mit deinen persönlichen Daten umgeht sowie die Nutzungsbedingungen der App."
+      },
+      {
+        "route_name": "PROFILE_MAIN",
+        "title": "Was du in deinem Profil tun kannst",
+        "content": "Hier kannst du deine Präferenzen und dein Konto verwalten, Informationen über die Verarbeitung personenbezogener Daten finden und die digitale Version deiner Steuernummerkarte einsehen.",
+        "faqs": [
+          {
+            "title": "Wie wird meine Privatsphäre geschützt?",
+            "body": "Die IO-App wurde nach den Grundsätzen der [Datenschutz-Grundverordnung](https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679&from=EN), auch bekannt als GDPR, und des [Italienischen Datenschutzgesetzes](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=) konzipiert und entwickelt. Sie ist daher ein sicheres Werkzeug, das deine Daten und deine Rechte schützt.\n\nWeitere Informationen findest du in unserer Datenschutzrichtlinie unter 'Datenschutz und Nutzungsbedingungen'."
+          },
+          {
+            "title": "Wozu dient die digitale Version meiner Steuernummerkarte?",
+            "body": "Oben in diesem Abschnitt findest du die digitale Version deiner Steuernummerkarte. Dieses Faksimile ersetzt nicht die physische Karte, sondern kann zum Lesen der Daten und des Strichcodes von Händlern verwendet werden, die es anfordern, z.B. in Apotheken oder Postämtern.\nUm die Details der Steuernummer zu sehen, tippe auf die Karte. Wenn due erneut tippest, wird das Dokument auf den gesamten Bildschirm vergrößert."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_DATA",
+        "title": "Deine Daten",
+        "content": "Hier kannst du deinen Vor- und Nachnamen einsehen und die mit IO verbundene E-Mail-Adresse ändern.",
+        "faqs": [
+          {
+            "title": "Wie kann ich mein Konto und meine Daten löschen?",
+            "body": "Geh zu 'Datenschutz und Nutzungsbedingungen' und wähle 'Dein Konto löschen'. Wenn die Löschung abgeschlossen ist, erhältst du eine Bestätigungsnachricht an die mit der App verbundene E-Mail-Adresse. Dies bedeutet nicht, dass du IO nicht mehr nutzen kannst: Wenn du dich erneut anmeldest, wird ein neues Konto erstellt."
+          },
+          {
+            "title": "Wie kann ich meine E-Mail-Adresse ändern?",
+            "body": "Die E-Mail-Adresse, die du in deinem Profil siehst, ist diejenige, die du bei der ersten Anmeldung angegeben hast. Wenn du sie ändern möchtest, geh zu Profil > Deine Daten und wähle E-Mail-Adresse > E-Mail-Adresse bearbeiten."
+          },
+          {
+            "title": "In meinem Profil ist ein Fehler in meinem Vornamen, Nachnamen oder meiner Steuernummer enthalten. Was kann ich tun?",
+            "body": "Der Vorname, der Nachname und die Steuernummer, die du unter Profil > Deine Daten siehst, stammen von den SPID oder CIE-Daten, die du für den Zugang zu IO verwendet hast und sind direkt mit den Daten in deinem Ausweisdokument verknüpft. Wenn der Fehler auch in deinem Dokument vorhanden ist, wende dich an das Meldeamt deiner Gemeinde, um die erforderlichen Änderungen vorzunehmen, die dann auch in den digitalen Identitätsdaten der CIE vorgenommen werden. Liegt der Fehler nur in deinen SPID-Daten vor, wende dich an deinen Identitätsanbieter."
+          }
+        ]
+      },
+      {
+        "route_name": "READ_EMAIL_SCREEN",
+        "title": "Deine E-Mail-Adresse",
+        "content": "Dies ist die E-Mail-Adresse, die du bei der Registrierung bestätigt hast. Dort senden wir dir Zahlungsbelege und leiten, wenn du die Option aktiviert hast, die Nachrichten weiter, die du in der App erhältst."
+      },
+      {
+        "route_name": "INSERT_EMAIL_SCREEN",
+        "title": "Ändere deine E-Mail-Adresse",
+        "content": "Du kannst deine E-Mail-Adresse hier ändern. Sobald du sie eingegeben hast, musst du sie bestätigen, indem du auf den Link klickst, den du über die neue Adresse erhalten hast."
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_HOME",
+        "title": "Deine Einstellungen",
+        "content": "Hier kannst du die von allen Diensten auf IO verwendeten Einstellungen einsehen und ändern. Du kannst auch den Kalender auswählen, in dem du Erinnerungen speichern möchtest, die automatische Weiterleitung von Nachrichten, die du auf IO erhältst, an deine E-Mail-Adresse aktivieren und die Sprache ändern.",
+        "faqs": [
+          {
+            "title": "Wie wird meine Privatsphäre geschützt?",
+            "body": "Die IO-App wurde nach den Grundsätzen der [Datenschutz-Grundverordnung](https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679&from=EN), auch bekannt als GDPR, und des [Italienischen Datenschutzgesetzes](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=) konzipiert und entwickelt. Sie ist daher ein sicheres Werkzeug, das deine Daten und deine Rechte schützt.\n\nWeitere Informationen findest du in unserer Datenschutzrichtlinie unter 'Datenschutz und Nutzungsbedingungen'."
+          },
+          {
+            "title": "Wie kann ich mein Konto und meine Daten löschen?",
+            "body": "Geh zu 'Datenschutz und Nutzungsbedingungen' und wähle 'Dein Konto löschen'. Wenn die Löschung abgeschlossen ist, erhältst du eine Bestätigungsnachricht an die mit der App verbundene E-Mail-Adresse. Dies bedeutet nicht, dass du IO nicht mehr nutzen kannst: Wenn du dich erneut anmeldest, wird ein neues Konto erstellt."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_SERVICES",
+        "title": "Die Konfiguration der Dienste",
+        "content": "Hier kannst du entscheiden, wie du die Dienste in der App konfigurieren möchtest. IO übermittelt Mitteilungen von nationalen oder lokalen Körperschaften, die dir etwas mitzuteilen haben. Deshalb empfehlen wir die Schnellkonfiguration: Wenn eine Körperschaft dir etwas mitzuteilen hat, kann sie das tun.",
+        "faqs": [
+          {
+            "title": "Warum sollte ich die Schnelleinrichtung verwenden?",
+            "body": "IO sendet nur Mitteilungen, die speziell an dich gerichtet sind und sendet keine Broadcast- oder Spam-Mitteilungen. Wenn du die Schnellkonfiguration verwendest, erhältst du auch Mitteilungen von Diensten, die in der Zukunft eintreffen werden."
+          },
+          {
+            "title": "Was passiert, wenn ich die Konfiguration manuell vornehme?",
+            "body": "Bei manueller Konfiguration können dir aktuelle oder zukünftige IO-Dienste keine Mitteilungen senden. Um den Diensten, an denen du interessiert bist, zu erlauben, dir zu schreiben, musst du sie einzeln konfigurieren, indem du auf der Registerkarte eines jeden Dienstes den Punkt 'In der App kontaktieren' auswählst.\n\nFür einige Dienste, z. B. Boni, musst du diese abonnieren. In diesen Fällen kannst du die Option 'In der App kontaktieren' nicht deaktivieren, sobald du deine Registrierung abgeschlossen hast. Wenn du keine Nachrichten mehr von diesen Diensten erhalten möchtest, musst du dich abmelden, verlierst dann aber auch die damit verbundenen Vorteile."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_EMAIL_FORWARDING",
+        "title": "Weiterleitung von Mitteilungen",
+        "content": "Hier kannst du die Weiterleitung von Mitteilungen, die du auf IO erhältst, an deine E-Mail-Adresse aktivieren oder deaktivieren."
+      },
+      {
+        "route_name": "PROFILE_PREFERENCES_LANGUAGE",
+        "title": "Ändern der Sprache",
+        "content": "IO verwendet standardmäßig die Sprache des Betriebssystems deines Geräts. Du kannst sie jederzeit auf dieser Seite ändern. Die Sprache des Nachrichteninhalts hingegen wird von jeder Körperschaft festgelegt, die entscheidet, ob der Inhalt in verschiedenen Sprachen übersetzt und gesendet werden soll."
+      },
+      {
+        "route_name": "PROFILE_SECURITY",
+        "title": "Deine Authentifizierungsmethoden",
+        "content": "Hier kannst du den Entsperrcode ändern und die biometrische Erkennung aktivieren oder deaktivieren.",
+        "faqs": [
+          {
+            "title": "Was ist der Entsperrcode?",
+            "body": "Es handelt sich um einen 6-stelligen Code, den du beim ersten Zugriff auf IO festlegst und der es dir ermöglicht, die App zu öffnen, ohne jedes Mal deine SPID- oder CIE-Anmeldedaten eingeben zu müssen. Er muss auch eingegeben werden, um sensible Daten einzusehen und bestimmte Vorgänge zu bestätigen, z. B. eine Zahlung vorzunehmen oder dein Konto zu löschen.\n\nDiese Erkennung bleibt 30 Tage nach deiner letzten Anmeldung mit SPID oder CIE aktiv. Danach musst du dich erneut authentifizieren und einen neuen Freischaltcode festlegen."
+          },
+          {
+            "title": "Ich habe den Entsperrcode vergessen. Was kann ich tun?",
+            "body": "Drücke auf 'Entsperrcode vergessen?', authentifiziere dich mit SPID oder CIE und gib den neuen Code ein."
+          },
+          {
+            "title": "Wie kann ich den Entsperrcode ändern?",
+            "body": "Wenn du dich an den Entsperrcode erinnerst, ihn aber ändern möchtest, wähle 'Entsperrcode ändern', authentifiziere dich mit SPID oder CIE und gib den neuen Code ein."
+          },
+          {
+            "title": "Wozu dient die biometrische Erkennung?",
+            "body": "Wenn aktiviert, kannst du die biometrische Erkennung anstelle des Entsperrcodes verwenden. Wie der Entsperrcode bleibt auch diese Erkennung 30 Tage lang nach deiner letzten Anmeldung mit SPID oder CIE aktiv. Nach diesem Zeitraum musst du dich erneut anmelden."
+          },
+          {
+            "title": "Wie kann ich die biometrische Erkennung aktivieren?",
+            "body": "Wenn dein Telefon die biometrische Erkennung unterstützt, aktiviere sie in den Systemeinstellungen. Geh dann zum Abschnitt 'Profil' in der IO-App und aktiviere sie auch dort."
+          },
+          {
+            "title": "Wie kann ich die biometrische Erkennung deaktivieren?",
+            "body": "Geh zum Abschnitt 'Profil' in der IO-App. Die biometrische Erkennung ist bereits deaktiviert, wenn dein Gerät sie nicht unterstützt oder wenn sie in den Systemeinstellungen deaktiviert ist."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PRIVACY_MAIN",
+        "title": "Deine Datenschutzeinstellungen",
+        "content": "Hier findest du Informationen über die Verarbeitung deiner personenbezogenen Daten und die Nutzungsbedingungen von IO. Insbesondere kannst du die Datenschutzbestimmungen einsehen, eine Kopie der mit deinem Konto verbundenen Daten herunterladen oder dein Konto löschen und IO die Erlaubnis zur Erhebung deiner Nutzungsdaten erteilen oder widerrufen.",
+        "faqs": [
+          {
+            "title": "Wie wird meine Privatsphäre geschützt?",
+            "body": "Die IO-App wurde nach den Grundsätzen der [Datenschutz-Grundverordnung](https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679&from=EN), auch bekannt als GDPR, und des [Italienischen Datenschutzgesetzes](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=) konzipiert und entwickelt. Sie ist daher ein sicheres Werkzeug, das deine Daten und deine Rechte schützt."
+          },
+          {
+            "title": "Wie kann ich mein Konto und meine Daten löschen?",
+            "body": "Geh zu 'Datenschutz und Nutzungsbedingungen' und wähle 'Dein Konto löschen'. Wenn die Löschung abgeschlossen ist, erhältst du eine Bestätigungsnachricht an die mit der App verbundene E-Mail-Adresse. Dies bedeutet nicht, dass du IO nicht mehr nutzen kannst: Wenn du dich erneut anmeldest, wird ein neues Konto erstellt."
+          },
+          {
+            "title": "Wie kann ich eine Kopie der mit meinem IO-Konto verbundenen Daten anfordern?",
+            "body": "Wähle 'Zugriff auf deine Daten' und drücke dann auf 'Kopie deiner Daten anfordern'. Du erhältst eine Mitteilung mit einer Datei, die eine Kopie der mit deinem Konto verbundenen Daten enthält."
+          },
+          {
+            "title": "Ich habe Fragen zum Datenschutz und zur Verwendung meiner Daten. An wen kann ich mich wenden?",
+            "body": "Bitte füll [dieses Formular](https://privacyportal-de.onetrust.com/webform/77f17844-04c3-4969-a11d-462ee77acbe1/9ab6533d-be4a-482e-929a-0d8d2ab29df8) aus, das ausschließlich für Anfragen zur Verarbeitung personenbezogener Daten in der App bestimmt ist."
+          }
+        ]
+      },
+      {
+        "route_name": "PROFILE_PRIVACY",
+        "title": "Datenschutz und Nutzungsbedingungen",
+        "content": "Hier findest du die vollständige Beschreibung, wie IO mit deinen persönlichen Daten umgeht und die Nutzungsbedingungen der App.",
+        "faqs": [
+          {
+            "title": "Wie wird meine Privatsphäre geschützt?",
+            "body": "Die IO-App wurde nach den Grundsätzen der [Datenschutz-Grundverordnung](https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679&from=EN), auch bekannt als GDPR, und des [Italienischen Datenschutzgesetzes](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=) konzipiert und entwickelt. Sie ist daher ein sicheres Werkzeug, das deine Daten und deine Rechte schützt.\n\nWeitere Informationen findest du in unserer Datenschutzrichtlinie unter 'Datenschutz und Nutzungsbedingungen'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ADD_CARD",
+        "title": "Bezahle mit einer Kredit-, Debit- oder Prepaid-Karte",
+        "content": "Auf dieser Seite kannst du eine Kredit-, Debit- oder Prepaid-Karte als Zahlungsmethode hinzufügen. Du kannst die Einstellungen der neuen Zahlungsmethode jederzeit ändern oder sie entfernen, indem du auf die entsprechende Karte in deinem Konto tippst.",
+        "faqs": [
+          {
+            "title": "Wo finde ich den Sicherheitscode?",
+            "body": "Der Sicherheitscode, auch CVV oder CVS genannt, ist ein dreistelliger Code, der sich auf der Rückseite deiner Karte befindet. Bei American Express-Karten wird er CID genannt, ist vierstellig und befindet sich auf der Vorderseite. Wenn du ihn nicht finden kannst, ist deine Karte wahrscheinlich nicht für Online-Zahlungen zugelassen."
+          },
+          {
+            "title": "Ich kann meine Karte nicht hinzufügen. Wie kommt das?",
+            "body": "In diesem Fall raten wir dir, dich an deine Bank zu wenden. Dafür kann es mehrere Gründe geben, die häufigsten sind:\n\n- deine Karte ist nicht für Online-Einkäufe freigeschaltet;\n\n- deine Karte wurde 'pausiert';\n\n- du hast den [3DS-Service](https://io.italia.it/faq/#n3_4), ein Sicherheitssystem für Online-Zahlungen, noch nicht aktiviert.\n\nAuf der Seite [Zahlungsmethoden](https://io.italia.it/metodi-pagamento/) findest du eine detaillierte Liste der von der App unterstützten Methoden."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_PAYPAL_DETAIL",
+        "title": "Dein PayPal-Konto",
+        "content": "Auf dieser Seite kannst du die Details zu dieser Zahlungsmethode einsehen, die Einstellungen ändern oder sie aus deinem Konto entfernen.",
+        "faqs": [
+          {
+            "title": "Wie kann ich diese Zahlungsmethode als bevorzugt einstellen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte für diese Methode und leg sie als bevorzugt fest."
+          },
+          {
+            "title": "Wie kann ich diese Zahlungsmethode entfernen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte, die du entfernen möchtest und tipp dann auf 'Diese Zahlungsmethode entfernen'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_BPAY_DETAIL",
+        "title": "Dein BANCOMAT Pay-Konto",
+        "content": "Auf dieser Seite kannst du die Details zu dieser Zahlungsmethode einsehen, die Einstellungen ändern oder sie aus deinem Konto entfernen.",
+        "faqs": [
+          {
+            "title": "Wie kann ich diese Zahlungsmethode als bevorzugt einstellen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte für diese Methode und leg sie als bevorzugt fest."
+          },
+          {
+            "title": "Wie kann ich diese Zahlungsmethode entfernen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte, die du entfernen möchtest und tipp dann auf 'Diese Zahlungsmethode entfernen'."
+          },
+          {
+            "title": "Ich kann In-App-Zahlungen mit BANCOMAT Pay nicht aktivieren. Was kann ich tun?",
+            "body": "Um das Problem zu beheben, versuche, die App auf die neueste verfügbare Version zu aktualisieren.\nNachdem du dies getan hast, entferne die Zahlungsmethode aus deinem Konto, füg sie erneut hinzu und versuch erneut, die Zahlung durchzuführen."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_CREDIT_CARD_DETAIL",
+        "title": "Deine Karte",
+        "content": "Auf dieser Seite kannst du die Details zu dieser Zahlungsmethode einsehen, die Einstellungen ändern oder sie aus deinem Konto entfernen.",
+        "faqs": [
+          {
+            "title": "Wie kann ich diese Zahlungsmethode als bevorzugt einstellen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte für diese Methode und leg sie als bevorzugt fest."
+          },
+          {
+            "title": "Wie kann ich diese Zahlungsmethode entfernen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte, die du entfernen möchtest und tipp dann auf 'Diese Zahlungsmethode entfernen'."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_HOME",
+        "title": "Was du in deinem Konto tun kannst",
+        "content": "Im Tab Konto findest du die von dir hinzugefügten Zahlungsmittel, die Boni und Initiativen, an denen du teilgenommen hast, sowie die Historie der mit pagoPA, der Plattform für Zahlungen an die öffentliche Verwaltung, getätigten Transaktionen. In diesem Bereich kannst du auch alle Zahlungsmitteilungen mit dem pagoPA-Logo bezahlen.",
+        "faqs": [
+          {
+            "title": "Wie kann ich auf IO zahlen?",
+            "body": "Du kannst mit Debit-, Kredit- und Prepaid-Karten, PayPal oder BANCOMAT Pay bezahlen. Die aktualisierte Liste der verfügbaren Zahlungsmethoden findest du auf der Seite [Zahlungsmöglichkeiten](https://io.italia.it/metodi-pagamento)."
+          },
+          {
+            "title": "Wie kann ich eine Zahlungsmethode hinzufügen?",
+            "body": "Geh zum Tab Konto, tipp auf 'Hinzufügen' und 'Zahlungsmethode'. Wähle dann die Methode, die du hinzufügen möchtest und gib die erforderlichen Daten ein."
+          },
+          {
+            "title": "Welche Boni, Rabatte oder andere Initiativen kann ich in Anspruch nehmen?",
+            "body": "Geh zum Tab Konto, tippe auf 'Hinzufügen' und 'Rabatte, Boni und andere Initiativen'. Es wird eine Liste mit allen Boni und Initiativen angezeigt, die du über die IO-App in Anspruch nehmen kannst."
+          },
+          {
+            "title": "Ich kann keine Zahlungsmethode hinzufügen. Was kann ich tun?",
+            "body": "Geh zur Seite [Status Hinzufügen der Zahlungsmethode](ioit://CREDIT_CARD_ONBOARDING_ATTEMPTS_SCREEN), wähle den fehlgeschlagenen Versuch aus und wende dich an den Support."
+          },
+          {
+            "title": "Wie kann ich diese Zahlungsmethode entfernen?",
+            "body": "Deine Zahlungsmethoden werden oben auf dem Tab 'Konto' als Karten angezeigt. Tipp auf die Karte, die du entfernen möchtest und tipp dann auf 'Diese Zahlungsmethode entfernen'."
+          },
+          {
+            "title": "Ich habe ein Problem mit einer Zahlung. Was kann ich tun?",
+            "body": "Geh auf die Seite [Zahlungsstatus](ioit://PAYMENTS_HISTORY_SCREEN), wähle den fehlgeschlagenen Zahlungsversuch aus und kontaktiere den Support."
+          },
+          {
+            "title": "Wo finde ich die von mir geleisteten Zahlungen?",
+            "body": "In deinem Konto findest du eine Liste mit Zahlungen, die erfolgreich über die IO-App durchgeführt wurden. Die Liste enthält auch Zahlungen, die über die Website oder App von teilnehmenden Organisationen getätigt wurden, wenn du dich mit SPID authentifiziert hast."
+          },
+          {
+            "title": "Kann ich eine Zahlungsmitteilung bezahlen, die ich nicht über IO erhalten habe?",
+            "body": "Ja, wenn das pagoPA Logo und der QR-Code oder der Zahlungskodex auf der Zahlungsmitteilung vorhanden sind. Geh dazu zum Tab Konto, scanne den QR-Code oder gib den Zahlungskodex ein und schließ die Zahlung ab."
+          },
+          {
+            "title": "Was ist ein QR-Code?",
+            "body": "Ein QR-Code ist ein quadratisches Bild, das aus schwarzen und weißen Elementen besteht. Wenn er von der Kamera eines Telefons gescannt wird, ermöglicht er den Zugriff auf digitale Inhalte, wie eine Website, eine Zahlung oder einen Artikel.\n\nDer QR-Code, den du auf Zahlungsmitteilungen findest, ist mit einem Zahlungskodex verbunden. Wenn du in deinem Konto auf 'Zahlungsmitteilung bezahlen' tippst und den Code mit deiner Kamera scannst, kannst du die Zahlungsmitteilungen bezahlen, ohne Informationen wie Grund, Betrag oder Steuernummer manuell eingeben zu müssen."
+          },
+          {
+            "title": "Was ist pagoPA?",
+            "body": "pagoPA ist eine Plattform, die alle Zahlungen an die öffentliche Verwaltung einfacher, sicherer und transparenter machen soll. Neben anderen Vorteilen steigert sie die Nutzung elektronischer Zahlungsmittel und gibt den Menschen die Freiheit zu wählen, wie sie bezahlen, während sie die Transaktionskosten getrennt ausweist. Weitere Informationen findest du [auf der pagoPA-Website](https://www.pagopa.gov.it/)."
+          },
+          {
+            "title": "Wie kann ich mehr über digitale Zahlungen erfahren?",
+            "body": "Um mehr über die Themen zu erfahren, die dich im Zusammenhang mit der Welt des digitalen Zahlungsverkehrs interessieren, kannst du die von der [Zentralbank von Italien](https://www.bancaditalia.it/) im Rahmen der Programme zur finanziellen Bildung zur Verfügung gestellten Materialien konsultieren, einschließlich des [speziellen Bereichs](https://economiapertutti.bancaditalia.it/pagare/) der Website [Wirtschaft für alle](https://economiapertutti.bancaditalia.it/) und des [Leitfadens für Zahlungen im elektronischen Handel](https://www.bancaditalia.it/pubblicazioni/guide-bi/guida-pagamenti-comm-elettronico/guide-BI-i-pagamenti-nel-commercio-elettronico_ITA. pdf).\n\nWenn du beispielsweise mehr über die Zahlungsmethoden erfahren möchtest, die du zu deinem IO-App Konto hinzufügen kannst, kannst du die entsprechenden Informationsblätter lesen, wie die [Kreditkarte](https://economiapertutti.bancaditalia.it/pagare/carta-di-credito/), die [Debitkarte](https://economiapertutti.bancaditalia.it/pagare/carta-di-debito/), die [Prepaid-Karte](https://economiapertutti.bancaditalia.it/pagare/carta-prepagata/) und die [Co-Badge-Karte](https://economiapertutti.bancaditalia.it/pagare/carte_co-badge_multifunzione/)."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_PAYPAL_SEARCH_PSP",
+        "title": "Wähle den Zahlungsdienstleister",
+        "content": "Der Zahlungsdienstleister, d. h. das Unternehmen, die den fälligen Betrag im Namen des Zahlungsempfängers einzieht, kann für jede Zahlung eine variable Gebühr verlangen. Auf dieser Seite kannst du wählen, welchen Zahlungsdienstleister du verwenden möchtest. Du kannst diese Wahl bei jeder Zahlung ändern, indem du dich nach der vorgeschlagenen Transaktionsgebühr richtest.",
+        "faqs": [
+          {
+            "title": "Was ist der Zahlungsdienstleister?",
+            "body": "Der Zahlungsdienstleister, der auch als PSP (Payment Service Provider) bezeichnet wird, ist das Unternehmen, das den fälligen Betrag im Namen des Zahlungsempfängers einzieht. Für die Erbringung dieser Dienstleistung kann der Betreiber jedes Mal eine Transaktionsgebühr verlangen. Die von den einzelnen Anbietern erhobenen Transaktionsgebühren findest du [auf dieser Seite](https://www.pagopa.gov.it/it/cittadini/trasparenza-costi/).\n\npagoPA ermöglicht es dir, elektronische Zahlungen über einen der teilnehmenden Zahlungsdienstleister zu tätigen. Dies ist das Verfahren, mit dem du einen Bescheid, Studiengebühren, Stempelgebühren oder Steuern direkt in der App bezahlen kannst."
+          },
+          {
+            "title": "Warum muss ich den Zahlungsdienstleister auswählen?",
+            "body": "Wenn du eine Zahlung durchführst, zeigt dir IO alle Zahlungsdienstleister, die du nutzen kannst, so dass du denjenigen auswählen kannst, der am besten zu dir passt, je nach der vorgeschlagenen Transaktionsgebühr. Diese Transaktionsgebühr wird nicht von pagoPA erhoben, sondern vom Betreiber selbst. Die Kosten der einzelnen Betreiber findest du [auf dieser Seite](https://www.pagopa.gov.it/it/cittadini/trasparenza-costi/)."
+          },
+          {
+            "title": "Welchen Zahlungsdienstleister soll ich wählen?",
+            "body": "Du kannst den Zahlungsdienstleister auswählen, den du bevorzugst, unabhängig davon, ob du Kunde bist oder nicht und auch wenn du ihn noch nie benutzt hast. Deine Wahl des Zahlungsdienstleister ist nicht endgültig: du kannst ihn bei jeder Zahlung ändern."
+          },
+          {
+            "title": "Was sind die Transaktionsgebühr",
+            "body": "Um die Bearbeitungskosten zu tragen und die Sicherheit des Geldtransfers zu gewährleisten, kann jeder Zahlungsdienstleister eine variable Transaktionsgebühr erheben. Die Höhe der Transaktionsgebühr hängt von der Geschäftspolitik und den Vertragsbedingungen ab, die du mit dem von dir gewählten Zahlungsdienstleister abgeschlossen hast. IO zeigt dir immer die vom Zahlungsdienstleister angegebene Transaktionsgebühr an, damit du die günstigste Variante wählen kannst. Du kannst die von den einzelnen Zahlungsdienstleistern angewandten Transaktionsgebühren [auf dieser Seite](https://www.pagopa.gov.it/it/cittadini/trasparenza-costi/) finden."
+          },
+          {
+            "title": "Ich kann PayPal nicht als Zahlungsmethode hinzufügen.",
+            "body": "Wenn du Probleme beim Hinzufügen deines PayPal-Kontos hast, empfehlen wir dir:\n\n1. Überprüfe, ob dein Gerät mit einem Netzwerk verbunden ist.\n\n1. Vergewissere dich, dass du den Benutzernamen und das Passwort für dein PayPal-Konto korrekt eingegeben hast.\n\n1. Vergewissere dich, dass du die Zwei-Faktor-Authentifizierung abgeschlossen hast.\n\nWenn du alle Schritte korrekt ausgeführt hast und das Problem immer noch nicht behoben ist, wende dich an den [PayPal-Support](https://www.paypal.com/it/smarthelp/contact-us)."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_PAYPAL_START",
+        "title": "Mit PayPal bezahlen",
+        "content": "Auf dieser Seite kannst du PayPal als Zahlungsmethode in der IO App hinzufügen.\n\nMit PayPalPal kannst du bezahlen, ohne jedes Mal deine Kartendaten eingeben zu müssen. Außerdem kannst du damit dein Bankkonto verknüpfen, was nützlich ist, wenn du große Beträge bezahlen musst, die dein Kartenlimit überschreiten.",
+        "faqs": [
+          {
+            "title": "Was ist PayPal?",
+            "body": "PayPal ist der Dienst, mit dem du schneller, einfacher und sicherer bezahlen, Geld senden und Zahlungen annehmen kannst, ohne jedes Mal deine Kartendaten eingeben zu müssen. Um mehr zu erfahren oder ein kostenloses Konto zu eröffnen, besuchen [paypal.com](https://www.paypal.com/it)."
+          },
+          {
+            "title": "Wie funktioniert das?",
+            "body": "Um PayPal in IO zu nutzen, registriere dich mit deinem Namen und deiner E-Mail-Adresse unter [paypal.com](https://www.paypal.com/it) und verknüpfe deine Kreditkarte, Debitkarte, Prepaid-Karte oder dein Bankkonto. Zu diesem Zweck wirst du nach der E-Mail-Adresse und dem Passwort deines PayPal-Kontos gefragt. Außerdem musst du die Zwei-Faktor-Authentifizierung mittels PayPal-App, per SMS oder Anruf durchführen."
+          },
+          {
+            "title": "Welche Vorteile habe ich, wenn ich PayPal für die Zahlung in IO verwende?",
+            "body": "Du kannst nicht nur deine Kredit-, Debit- oder Prepaid-Karte mit deinem PayPal-Konto verknüpfen, sondern auch dein Bankkonto, was nützlich ist, wenn du größere Beträge zahlen musst, die dein Kartenlimit überschreiten. [Hier](https://www.paypal.com/de/cshelp/article/come-faccio-a-collegare-il-mio-conto-bancario-al-mio-conto-paypal-help183) erfährst du, wie du dein Bankkonto mit PayPal verknüpfen kannst."
+          },
+          {
+            "title": "Ich habe kein PayPal-Konto. Wie kann ich eines erstellen?",
+            "body": "Um ein PayPal-Konto zu erstellen, musst du dich mit deinem Namen und deiner E-Mail-Adresse unter [paypal.com](https://www.paypal.com/it) registrieren. Dazu musst du volljährig sein und mindestens eine Zahlungsmethode verknüpfen."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BPAY_START",
+        "title": "Zahle mit BANCOMAT Pay",
+        "content": "Auf dieser Seite kannst du BANCOMAT Pay als Zahlungsmethode in der IO-App hinzufügen. Mit BANCOMAT Pay kannst du Zahlungen einfach, schnell und sicher durchführen.",
+        "faqs": [
+          {
+            "title": "Was ist BANCOMAT Pay?",
+            "body": "BANCOMAT Pay ist ein digitaler Zahlungsdienst, mit dem du schnell und einfach bezahlen, Geld senden und Zahlungen annehmen kannst. Nach der Aktivierung des Dienstes musst du nur noch deine Mobiltelefonnummer verwenden, um die Transaktionen durchzuführen. Weitere Informationen findest du unter [BANCOMAT Pay](https://bancomat.it/it/bancomat/bancomat-pay®)."
+          },
+          {
+            "title": "Wie funktioniert das?",
+            "body": "BANCOMAT Pay verknüpft deine Mobiltelefonnummer mit einer IBAN, die von einem Kontokorrent oder einer Prepaid-Karte stammen kann.\nUm BANCOMAT Pay auf IO zu nutzen, überprüfe, ob deine Bank [zu den teilnehmenden Banken](https://bancomat.it/it/bancomat/bancomat-pay%C2%AE#banca-appbancomatpay) gehört und aktiviere den Dienst über die BANCOMAT Pay-App oder die App deiner Bank.\nAnschließend füge den Dienst als Zahlungsmethode im Tab 'Konto' von IO hinzu, indem du das gewünschte Konto auswählst."
+          },
+          {
+            "title": "Ich habe kein BANCOMAT Pay-Konto, was kann ich tun?",
+            "body": "[Finde hier](https://bancomat.it/it/bancomat/bancomat-pay%C2%AE) heraus, ob deine Bank diesen Service anbietet. Wenn ja, kannst du den Antrag über das Homebanking oder die App deiner Bank stellen.\nWeitere Informationen findest du in den [häufig gestellten Fragen](https://bancomat.it/it/faq-questions-top)."
+          },
+          {
+            "title": "Ich kann BANCOMAT Pay nicht als Zahlungsmethode hinzufügen.",
+            "body": "Wenn du Probleme beim Hinzufügen deines BANCOMAT Pay-Kontos auf IO hast, empfehlen wir dir:\n1. Überprüfe, ob dein Gerät mit einem Netzwerk verbunden ist.\n2. Vergewissere dich, dass der Dienst aktiv ist. Du kannst dies über Homebanking oder die App deiner Bank oder über die BANCOMAT Pay-App tun.\nWenn du alle Schritte korrekt ausgeführt hast und das Problem immer noch nicht gelöst ist, wende dich an deine Bank."
+          }
+        ]
+      },
+      {
+        "route_name": "WALLET_ONBOARDING_BPAY_SEARCH_AVAILABLE_USER_ACCOUNT",
+        "title": "BANCOMAT Pay hinzufügen",
+        "content": "Auf dieser Seite kannst du deine BANCOMAT Pay-Konten einsehen und zu deinem IO-Konto hinzufügen.",
+        "faqs": [
+          {
+            "title": "Ich kann BANCOMAT Pay nicht als Zahlungsmethode hinzufügen.",
+            "body": "Wenn du Probleme beim Hinzufügen deines BANCOMAT Pay-Kontos auf IO hast, empfehlen wir dir:\n1. Überprüfe, ob dein Gerät mit einem Netzwerk verbunden ist.\n2. Vergewissere dich, dass der Dienst aktiv ist. Du kannst dies über Homebanking oder die App deiner Bank oder über die BANCOMAT Pay-App tun.\nWenn du alle Schritte korrekt ausgeführt hast und das Problem immer noch nicht gelöst ist, wende dich an deine Bank."
+          }
+        ]
+      },
+      {
+        "route_name": "PAYMENT_PICK_PAYMENT_METHOD",
+        "title": "Auswahl der Zahlungsmethode",
+        "content": "Hier kannst du die Zahlungsmethode wählen.",
+        "faqs": [
+          {
+            "title": "Ich habe BANCOMAT Pay, kann aber nicht bezahlen",
+            "body": "Um das Problem zu beheben, versuche, die App auf die neueste verfügbare Version zu aktualisieren.\nNachdem du dies getan hast, lösche die Zahlungsmethode aus deinem IO-Konto, füge sie erneut hinzu und versuche erneut, die Zahlung durchzuführen."
+          }
+        ]
+      },
+      {
+        "route_name": "MESSAGE_DETAIL",
+        "title": "Details zur Mitteilung",
+        "content": "Hier kannst du die Details der Mitteilung einsehen, die du von einer in der IO-App integrierten Körperschaft erhalten hast. Wenn du Zweifel oder Fragen zum spezifischen Inhalt der Nachricht hast, kannst du die Körperschaft über die Kontaktdaten am Ende dieser Nachricht oder im Abschnitt 'Dienste' kontaktieren.",
+        "faqs": [
+          {
+            "title": "Diese Mitteilung interessiert dich nicht?",
+            "body": "Auf IO kannst du die Kommunikation von Diensten, die dich nicht interessieren, jederzeit deaktivieren:\n1. besuche den Tab 'Dienste'; \n2. wähle den betreffenden Dienst aus der Liste aus; \n3. deaktiviere im Bereich 'Dieser Dienst kann' die Option 'In der App kontaktieren'. \n\nDie Körperschaft wird dich nicht mehr über IO kontaktieren, sie kann dich aber weiterhin über die üblichen Kommunikationskanäle (E-Mail, Telefon oder Post) kontaktieren."
+          },
+          {
+            "title": "Liegt ein Fehler in der Mitteilung vor, die du erhalten hast?",
+            "body": "Wenn du der Meinung bist, dass die Mitteilung, die du erhalten hast, einen Fehler enthält, kannst du die Kontaktdaten der Körperschaft verwenden, um eine Meldung zu machen oder um eine Klarstellung zu bitten. \nDie Kontaktdaten findest du im Bereich der Mitteilungsdetails oder im Tab 'Dienste' der IO-App, indem du die betreffende Körperschaft und den betreffenden Dienst auswählst. \nAbhängig von der Kontaktmethode, die von der jeweiligen Körperschaft und dem jeweiligen Dienst verwaltet wird, können die Kontaktangaben Folgendes umfassen: physische Schalteradresse, Telefonnummer, E-Mail- und/oder PEC-Adresse, Website, Online-Hilfe, mobile App."
+          },
+          {
+            "title": "Hat diese Körperschaft die Erlaubnis an mich zu schreiben?",
+            "body": "Eine Körperschaft kann dir nur dann Nachrichten senden, wenn sie eine bestimmte Mitteilung an dich zu übermitteln hat, die mit deiner Steuernummer verknüpft ist. Deine Steuernummer wird nicht von der IO-App an die Körperschaft übermittelt, sondern jede Körperschaft kann die IO-App nur dann nutzen, um dir zu schreiben, wenn sie bereits über deine Daten verfügt. \nWenn du keine Mitteilungen mehr von einer bestimmten Körperschaft erhalten möchtest, kannst du die Dienste, die dich nicht interessieren, deaktivieren: \n1. besuche den Tab 'Dienste'; \n2. wähle den betreffenden Dienst aus der Liste aus; \n3. deaktiviere im Bereich 'Dieser Dienst kann' die Option 'In der App kontaktieren'. \nDie Körperschaft wird dich nicht mehr über IO kontaktieren, kann dich aber weiterhin über die üblichen Kommunikationskanäle (E-Mail, Telefon oder Post) kontaktieren. \n \nIm Abschnitt 'Profil > Einstellungen > Dienste verwalten' kannst du entscheiden, ob du die Kommunikation aller Dienste eingeschaltet lässt oder die manuelle Konfiguration wählst, bei der du alle Dienste einzeln auf dem entsprechenden Detailansicht konfigurieren musst."
+          },
+          {
+            "title": "Möchtest du die Körperschaft kontaktieren?",
+            "body": "In den Mitteilungsdetails kannst du Informationen über den jeweiligen Dienst und den Dienstanbieter einsehen. Wenn du dem Link zum Dienstprofil folgst, findest du die erweiterten Informationen und Kontaktdaten, über die du die Körperschaft kontaktieren kannst. \nJe nach der von der einzelnen Körperschaft und dem Dienst verwalteten Kontaktmethode können die Kontaktdaten Folgendes umfassen: physische Schalteradresse, Telefonnummer, E-Mail- und/oder PEC-Adresse, Website, Online-Hilfe, mobile App."
+          },
+          {
+            "title": "Was muss ich tun, um ein Dokument über die IO-App zu unterschreiben?",
+            "body": "Gib einfach den Entsperrcode der App ein oder verwende beim Unterschreiben die biometrische Erkennung."
+          },
+          {
+            "title": "Was kann ich tun, wenn ein zu unterzeichnendes Dokument Fehler enthält?",
+            "body": "Wende dich direkt an die Stelle, die das Dokument gesendet hat. Die Kontaktdaten findest du in der Mitteilung über die Signaturanforderung."
+          },
+          {
+            "title": "Ich habe ein Problem mit der Unterzeichnung eines Dokuments. Was kann ich tun?",
+            "body": "Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits ein Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
+          },
+          {
+            "title": "Wo kann ich die von mir unterzeichneten Dokumente finden?",
+            "body": "Du erhältst in der App eine Mitteilung mit den unterzeichneten Dokumenten. Du kannst sie innerhalb von 90 Tagen nach Erhalt der Mitteilung einsehen oder herunterladen."
+          },
+          {
+            "title": "Welchen rechtlichen Wert hat die Unterzeichnung eines Dokuments mit IO?",
+            "body": "Eine mit IO angebrachte digitale Signatur ist eine FEQ (qualifizierte elektronische Signatur). Sie hat die gleiche Rechtsgültigkeit wie eine handschriftliche Unterschrift auf Papier. Sie garantiert somit die Authentizität der unterzeichneten Dokumente und die vollständige Rückverfolgbarkeit zum Unterzeichner."
+          },
+          {
+            "title": "Ich habe die Mitteilung mit dem signierten Dokument nicht erhalten. Was kann ich tun?",
+            "body": "Kontaktiere den Support. Geh dazu zum unteren Ende dieser Seite und wähle Ticket erstellen > Mit IO unterschreiben."
+          },
+          {
+            "title": "Kann ich Dokumente im Namen einer anderen Person unterschreiben?",
+            "body": "Nein. Die Person, deren Unterschrift angefordert wird, muss mit der Person identisch sein, die sich bei der App angemeldet hat."
+          },
+          {
+            "title": "Was kann ich tun, wenn die App abstürzt, während ich ein Dokument unterschreibe?",
+            "body": "Überprüfe, ob du die neueste Version der IO-App aus dem Store deines Geräts installiert hast. Wenn die App nicht mehr aktuell ist, lade die neueste Version herunter. Andernfalls geh zum unteren Ende dieser Seite und wähle Ticket erstellen > Mit IO unterschreiben."
+          },
+          {
+            "title": "Ein Dokument wurde mit meinem Ausweis, aber ohne meine Zustimmung unterzeichnet. Was kann ich tun?",
+            "body": "Du kannst dies dem Support melden. Geh zum unteren Ende dieser Seite und wähle Ticket erstellen > Mit IO unterschreiben."
+          },
+          {
+            "title": "Ich habe die Mitteilung mit den signierten Dokumenten erhalten, aber sie sind nicht mehr verfügbar. Wie kann ich sie abrufen?",
+            "body": "Wende dich direkt an die Körperschaft, die das Dokument ausgestellt hat. Die Kontaktdaten findest du in der Zusammenfassung des signierten Dokuments, die du in der IO-App erhalten hast."
+          },
+          {
+            "title": "Was sind dynamische Mitteilungen?",
+            "body": "Es handelt sich um Mitteilungen, die die Körperschaft ändern kann, nachdem du sie erhalten hast. Auf diese Weise sind die Informationen, die sie enthalten, immer aktuell. Eine Körperschaft kann die Informationen in einer dynamischen Mitteilung nur in bestimmten Fällen ändern, z. B. um alte Informationen zu ändern oder eine Anlage zu aktualisieren, die nicht mehr gültig ist. Wenn sie dich über neue Informationen oder wichtige Aktualisierungen informieren muss, schickt sie dir eine neue Mitteilung."
+          }
+        ]
+      },
+      {
+        "route_name": "SERVICES_HOME",
+        "title": "Was kann ich im Tab Dienste tun?",
+        "content": "Hier kannst du die Liste der in der App verfügbaren nationalen und lokalen Dienste einsehen. \nTippe auf einen Dienstnamen, um dessen Details anzuzeigen. Auf der Detailseite des Dienstes kannst du auch das Senden von Push-Benachrichtigungen und die Weiterleitung von Nachrichten an deine E-Mail-Adresse verwalten.",
+        "faqs": [
+          {
+            "title": "Wie kann ich Dienste konfigurieren?",
+            "body": "Für jeden Dienst kannst du entscheiden, ob du In-App-Mitteilungen und Push-Benachrichtigungen erhalten möchtest. Unter Profil > Einstellungen > Mitteilungen mittels E-Mail weiterleiten kannst du auch die Weiterleitung von Nachrichten von allen aktiven Diensten an deine E-Mail-Adresse aktivieren.\n Auch wenn du die vollständige Liste der Dienste siehst, wirst du nur von den Körperschaften kontaktiert, die deine Steuernummer kennen und eine Mitteilung haben, die dich persönlich betrifft."
+          },
+          {
+            "title": "Kann ich Körperschaften über IO kontaktieren?",
+            "body": "Nein, du kannst Körperschaften nicht direkt über die App kontaktieren. Wenn du eine Körperschaften kontaktieren musst, kannst du dies über die Kontakte tun, die du auf der Registerkarte für jeden Dienst im Tab 'Dienste' findest."
+          }
+        ]
+      },
+      {
+        "route_name": "SERVICE_DETAIL",
+        "title": "Dienstdetails",
+        "content": "Hier findest du die Beschreibung des Dienstes, die Datenschutzrichtlinie und die Nutzungsbedingungen sowie die Kontaktdaten der Körperschaft oder des Dienstes. Du kannst auch wählen, wie du Mitteilungen von diesem speziellen Dienst erhalten möchtest.\nDu wirst nur von Diensten angeschrieben, die Informationen über dich haben. Du erhälst keine Spam-Mitteilungen oder Inhalte, die für dich nicht von Interesse sind.\n Wenn du keine Mitteilungen von dem Dienst erhalten möchtest, kannst du dies im Bereich 'Dieser Dienst kann' tun, indem du die Option 'In der App kontaktieren' deaktivierst. Die Körperschaft wird dich dann nicht mehr über IO anschreiben, kann dich aber weiterhin über andere Kanäle, wie E-Mail, Telefon oder Post, kontaktieren.",
+        "faqs": [
+          {
+            "title": "Was passiert, wenn ich einen Dienst deaktiviere?",
+            "body": "Du wirst in der IO-App keine Mitteilungen mehr von diesem Dienst erhalten. Der Dienstanbieter kann dich weiterhin über andere Kanäle wie die Website, E-Mail oder Telefonnummer kontaktieren."
+          },
+          {
+            "title": "Was sind Push-Benachrichtigungen und wie funktionieren sie?",
+            "body": "Push-Benachrichtigungen sind Sofortnachrichten, die du auf deinem Gerät empfangen kannst. Sie informieren dich darüber, dass eine neue Mitteilung in der IO-App eingegangen ist und laden dich ein, sie zu lesen. Wenn du sie lieber deaktivieren möchtest, deaktiviere die Option 'Push-Benachrichtigungen senden' im Bereich 'Dieser Dienst kann'."
+          },
+          {
+            "title": "Wie funktioniert die E-Mail-Weiterleitung?",
+            "body": "Wenn du die E-Mail-Weiterleitung von Nachrichten aktivierst, erhältst du an die mit der App verknüpfte E-Mail-Adresse eine Kopie der Mitteilungen, die du auf IO erhältst. Die E-Mail-Weiterleitung ist für einige Dienste nicht verfügbar, da die Körperschaft möglicherweise beschließt, Mitteilungen mit sensiblem Inhalt nicht weiterzuleiten."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_INFORMATION_TOS",
+        "title": "Aktiviere die Nationale Jugendkarte",
+        "content": "Hier findest du alle Informationen über die Nationale Jugendkarte, eine Maßnahme des Präsidium des italienischen Ministerrates, Abteilung für Jugendpolitik und Zivildienst, die Jugendlichen mit Wohnsitz in Italien Rabatte und Vergünstigungen beim Kauf bestimmter Waren und Dienstleistungen gewährt.",
+        "faqs": [
+          {
+            "title": "Wie kann ich die Nationale Jugendkarte beantragen?",
+            "body": "Wenn du volljährig bist und deinen Wohnsitz in Italien hast, tippe auf die Schaltfläche 'Karte beantragen' unten auf der Seite und folge den Anweisungen in der App. Die IO-App prüft dein Alter und aktiviert, wenn du berechtigt bist, die Nationale Jugendkarte."
+          },
+          {
+            "title": "Was ist die EYCA?",
+            "body": "Die EYCA vereint alle Jugendkarten der europäischen Länder und bietet wechselseitige Vorteile: Ein italienischer Jugendlicher mit einer Nationalen Jugendkarte, die Mitglied der EYCA ist, kann die Vorteile in den teilnehmenden Ländern nutzen, ebenso wie ausländische Jugendliche, die unser Land besuchen, ihre EYCA-Karten bei den Händlern einsetzen können, die Mitglied der Nationalen Jugendkarte sind."
+          },
+          {
+            "title": "Was muss ich tun, um der EYCA beizutreten?",
+            "body": "Die EYCA-Mitgliedschaft ist nur für junge Menschen bis zum Alter von 30 Jahren vorgesehen. Wenn du zu dieser Altersgruppe gehörst, musst du nichts tun: IO wird deinen Antrag an die EYCA-Systeme weiterleiten. Die Kartennummer und das EYCA-Logo werden in den Details deiner Nationalen Jugendkarte erscheinen. Du benötigst diese Angaben, um die im europäischen Kreis angebotenen Leistungen in Anspruch nehmen zu können."
+          },
+          {
+            "title": "Wie lange dauert es von der Antragstellung bis zur Aktivierung meiner Nationalen Jugendkarte?",
+            "body": "Wenn du alle Voraussetzungen für die Nationale Jugendkarte erfüllst, erfolgt die Aktivierung fast in Echtzeit: Innerhalb weniger Minuten nach der Beantragung führt IO die erforderlichen Prüfungen durch und aktiviert deine Karte."
+          },
+          {
+            "title": "Kann ich die Vorteile der Nationalen Jugendkarte mit meiner Familie und meinen Freunden teilen?",
+            "body": "Nein, die durch die Nationalen Jugendkarte geförderten Vorteile sind individueller und nominativer Natur und können daher nur vom Karteninhaber genutzt werden. Die missbräuchliche Verwendung der Karte kann zum Entzug der Karte führen."
+          },
+          {
+            "title": "Muss ich in der IO-App eine Kreditkarte hinzufügen, um die Nationalen Jugendkarte zu beantragen und zu nutzen?",
+            "body": "Nein, die Nutzung der Karte ist in keiner Weise an die Verfügbarkeit einer Kreditkarte oder anderer in der App gespeicherter Zahlungsmethoden gebunden. Wenn du die Vorteile der Karte nutzt, um einen Rabatt zu erhalten - im E-Commerce oder in den physischen Einrichtungen des Vertragsunternehmens - zahlst du mit der von dir bevorzugten Methode."
+          },
+          {
+            "title": "Wenn ich die Vorteile meiner Nationalen Jugendkarte für einen Online-Einkauf nutze, wird der Rabatt dann sofort angewandt oder wird er mir später erstattet?",
+            "body": "Der Rabatt wird sofort angewendet. Falls du beim Kauf einen Rabattcode eingibst, achte darauf, dass du ihn korrekt eingibst, damit der Rabatt sofort im Warenkorb des Betreibers angewendet wird."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_DETAILS",
+        "title": "Deine Nationalen Jugendkarte",
+        "content": "Dies ist die Detailseite deiner Nationalen Jugendkarte. Hier kannst du die Liste der teilnehmenden Händler und Institutionen und die entsprechenden Vorteile einsehen oder deine EYCA Kartennummer kopieren, wenn du zwischen 18 und 30 Jahre alt bist.",
+        "faqs": [
+          {
+            "title": "Wie kann ich mit der Nationalen Jugendkarte Ermäßigungen erhalten?",
+            "body": "Bei Einkäufen in Geschäften öffne die IO-App und zeige vor dem Bezahlen deine Nationale Jugendkarte vor. Bei Online-Einkäufen kopiere den Rabattcode, den du auf der Karte der gewünschten Einrichtung findest und füge ihn in das Rabattfeld auf dem Portal des Händlers ein. Wenn der eingegebene Code korrekt ist, wird der Rabatt automatisch auf deinen Einkaufswagen angewendet."
+          },
+          {
+            "title": "Was ist die EYCA?",
+            "body": "Die EYCA vereint alle Jugendkarten der europäischen Länder und bietet wechselseitige Vorteile: Ein italienischer Jugendlicher mit einer Nationalen Jugendkarte, die Mitglied der EYCA ist, kann die Vorteile in den teilnehmenden Ländern nutzen, ebenso wie ausländische Jugendliche, die unser Land besuchen, ihre EYCA-Karten bei den Händlern einsetzen können, die Mitglied der Nationalen Jugendkarte sind."
+          },
+          {
+            "title": "Was muss ich tun, um der EYCA beizutreten?",
+            "body": "Die EYCA-Mitgliedschaft ist nur für junge Menschen bis zum Alter von 30 Jahren vorgesehen. Wenn du zu dieser Altersgruppe gehörst, musst du nichts tun: IO wird deinen Antrag an die EYCA-Systeme weiterleiten. Die Kartennummer und das EYCA-Logo werden in den Details deiner Nationalen Jugendkarte erscheinen. Du benötigst diese Angaben, um die im europäischen Kreis angebotenen Leistungen in Anspruch nehmen zu können."
+          },
+          {
+            "title": "Wann läuft meine Nationale Jugendkarte ab?",
+            "body": "Deine Nationale Jugendkarte verliert ihre Gültigkeit mit Vollendung des 36. Lebensjahres. Das Ablaufdatum ist in den Details deiner Karte angegeben, die immer im Tab 'Konto' der App verfügbar ist. Nach Vollendung des 30. Lebensjahres kannst du in jedem Fall nur noch die auf nationaler Ebene geförderten Leistungen in Anspruch nehmen, da die von EYCA auf europäischer Ebene angebotenen Leistungen bis zum 31. Lebensjahr verfügbar sind."
+          },
+          {
+            "title": "Kann ich meine Nationalen Jugendkarte deaktivieren?",
+            "body": "Ja. Tippe auf dem CGN-Detailbildschirm auf 'Die Karte deaktivieren' und bestätige. Von diesem Moment an wirst du die CGN nicht mehr in deinem Konto sehen. Durch die Deaktivierung der CGN verlierst du auch deine EYCA-Rechte."
+          },
+          {
+            "title": "Kann ich die Vorteile der Nationalen Jugendkarte mit meiner Familie und meinen Freunden teilen?",
+            "body": "Nein, die durch die Nationale Jugendkarte geförderten Vorteile sind individueller und nominativer Natur und können daher nur vom Karteninhaber genutzt werden. Die missbräuchliche Verwendung der Karte kann zum Entzug der Karte führen."
+          },
+          {
+            "title": "Wenn ich die Vorteile meiner Nationalen Jugendkarte für einen Online-Einkauf nutze, wird der Rabatt dann sofort angewandt oder wird er mir später erstattet?",
+            "body": "Der Rabatt wird sofort angewendet. Falls du beim Kauf einen Rabattcode eingibst, achte darauf, dass du ihn korrekt eingibst, damit der Rabatt sofort im Warenkorb des Betreibers angewendet wird."
+          },
+          {
+            "title": "Wie viele Einkäufe, online oder lokal, kann ich mit den Vorteilen der Nationalen Jugendkarte tätigen?",
+            "body": "Die Anzahl der Rabatte, die genutzt werden können, ist nicht begrenzt. In jedem Fall kann jeder Vertragsbetreiber autonom entscheiden, wie er die von ihm zur Verfügung gestellten Rabattcodes verwendet, indem er alle Bedingungen in der Karte, die in der IO-App immer sichtbar sind, ausdrücklich angibt."
+          },
+          {
+            "title": "Kann ich eine physische Version der Karte erhalten?",
+            "body": "Nein, die Nationale Jugendkarte gibt es nur in digitaler Form in deiner IO-App und dieses Format ist ausreichend, um die Vorteile in Anspruch zu nehmen. Sollte dich ein Händler oder ein anderer Partner der Initiative nach deiner physischen Karte oder der Nummer deiner Nationalen Jugendkarte fragen, melde dies bitte über die IO-App an den Support und gib die Details des Händlers an (z. B. Name des Partners, Adresse der Filiale/Verkaufsstelle, in der er die Anfrage gestellt hat)."
+          },
+          {
+            "title": "Ich wurde nach dem Code meiner Nationalen Jugendkarte gefragt, wo kann ich ihn finden?",
+            "body": "Die Nationalen Jugendkarte hat keinen Identifikationscode und keine Nummer und ist daher nicht erforderlich, um Zugang zu den von den Betreibern angebotenen Rabatten oder Aktionen zu erhalten. Sollte dich ein Händler oder ein anderer Partner der Initiative nach deiner physischen Karte oder der Nummer deiner Nationalen Jugendkarte fragen, melde dies bitte über die IO-App an den Support und gib die Details des Händlers an (z. B. Name des Partners, Adresse der Filiale/Verkaufsstelle, in der er die Anfrage gestellt hat)."
+          },
+          {
+            "title": "Was ist der Unterschied zwischen der nationalen und regionalen Karten?",
+            "body": "Die Nationale Jugendkarte ist ein digitales Instrument für Jugendliche im Alter von 18 bis 35 Jahren mit Wohnsitz in Italien und ermöglicht ihnen einen erleichterten Zugang zu Gütern, Dienstleistungen, Erfahrungen und Möglichkeiten im gesamten Staatsgebiet. Sie wird vom Präsidium des italienischen Ministerrates, Abteilung für Jugendpolitik und Zivildienst ausgestellt. Bei den regionalen Jugendkarten handelt es sich um physische und/oder digitale Instrumente, die von einigen italienischen Regionen an ihre Bürger ausgegeben werden, um Erleichterungen auf dem Gebiet der Region selbst in Anspruch nehmen zu können. Sie können andere Anforderungen als die Nationale Jugendkarte haben und bieten unterschiedliche Möglichkeiten, Ermäßigungen zu erhalten. Weitere Einzelheiten zu den regionalen Jugendkarten findest du [unter diesem Link](https://giovani2030.it/iniziativa/carta-giovani-nazionale/)."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_MERCHANTS_LIST",
+        "title": "Liste der Partner",
+        "content": "Hier kannst du die ständig aktualisierte Liste der teilnehmenden Händler und Einrichtungen einsehen. Die Liste enthält sowohl lokale Einrichtungen als auch Online-Anbieter.",
+        "faqs": [
+          {
+            "title": "Wie kann ich mit der Nationalen Jugendkarte Ermäßigungen erhalten?",
+            "body": "Bei Einkäufen in Geschäften öffne die IO-App und zeige vor dem Bezahlen deine Nationale Jugendkarte vor. Bei Online-Einkäufen kopiere den Rabattcode, den du auf der Karte der gewünschten Einrichtung findest und füge ihn in das Rabattfeld auf dem Portal des Händlers ein. Wenn der eingegebene Code korrekt ist, wird der Rabatt automatisch auf deinen Einkaufswagen angewendet."
+          },
+          {
+            "title": "Warum funktioniert der Rabattcode nicht?",
+            "body": "Wenn der Code nicht gültig ist: \n\n - Vergewissere dich, dass du ihn richtig eingegeben hast; \n\n - Vergewissere dich, dass er noch gültig ist: einige Codes laufen innerhalb kurzer Zeit ab; \n\n - Überprüfe in den Einzelheiten der Erleichterung, ob der Betreiber Bedingungen hinsichtlich der Nutzungsmodalitäten und der Gültigkeit des Rabatts anwendet. \n}nWenn das Problem weiterhin besteht, wende dich an den Support des Betreibers."
+          },
+          {
+            "title": "Ich wurde gebeten, ein Formular auszufüllen, um nachzuweisen, dass ich die Nationale Jugendkarte besitze; wo kann ich es finden?",
+            "body": "Es gibt keine Formulare zum Nachweis des Besitzes der Nationalen Jugendkarte. Die Nationale Jugendkarte gibt es nur in digitaler Form in deiner IO-App und dieses Format reicht aus, um die Leistungen in Anspruch zu nehmen. \n\nBitte melde dies über die IO-App an den Support und gib die Details des Händlers an (z. B. Name des Partners, Adresse der Filiale/Verkaufsstelle, in der er die Anfrage gestellt hat)."
+          },
+          {
+            "title": "Ein Mitarbeiter bat mich, die Aktivierungs-E-Mail der Karte vorzulegen, um die Vorteile nutzen zu können. Wo kann ich sie finden?",
+            "body": "Für die Nationale Jugendkarte gibt es keine Aktivierungsmail. Die Nationale Jugendkarte gibt es nur in digitaler Form in deiner IO-App und dieses Format reicht aus, um die Leistungen in Anspruch zu nehmen. \n\nBitte melde dies über die IO-App an den Support und gib die Details des Händlers an (z. B. Name des Partners, Adresse der Filiale/Verkaufsstelle, in der er die Anfrage gestellt hat)."
+          }
+        ]
+      },
+      {
+        "route_name": "CGN_MERCHANTS_DETAIL",
+        "title": "Angaben zum Partner",
+        "content": "Auf dieser Seite findest du alle Informationen über den von dir ausgewählten Betreiber, einschließlich der aktuellen Leistungen.",
+        "faqs": [
+          {
+            "title": "Wie kann ich mit der Nationalen Jugendkarte Ermäßigungen erhalten?",
+            "body": "Bei Einkäufen in Geschäften öffne die IO-App und zeige vor dem Bezahlen deine Nationale Jugendkarte vor. Bei Online-Einkäufen kopiere den Rabattcode, den du auf der Karte der gewünschten Einrichtung findest und füge ihn in das Rabattfeld auf dem Portal des Händlers ein. Wenn der eingegebene Code korrekt ist, wird der Rabatt automatisch auf deinen Einkaufswagen angewendet."
+          },
+          {
+            "title": "Warum funktioniert der Rabattcode nicht?",
+            "body": "Wenn der Code nicht gültig ist: \n\n - Vergewissere dich, dass du ihn richtig eingegeben hast; \n\n - Vergewissere dich, dass er noch gültig ist: einige Codes laufen innerhalb kurzer Zeit ab; \n\n - Überprüfe in den Einzelheiten der Erleichterung, ob der Betreiber Bedingungen hinsichtlich der Nutzungsmodalitäten und der Gültigkeit des Rabatts anwendet. \n}nWenn das Problem weiterhin besteht, wende dich an den Support des Betreibers."
+          },
+          {
+            "title": "Ich wurde gebeten, ein Formular auszufüllen, um nachzuweisen, dass ich die Nationale Jugendkarte besitze; wo kann ich es finden?",
+            "body": "Es gibt keine Formulare zum Nachweis des Besitzes der Nationalen Jugendkarte. Die Nationale Jugendkarte gibt es nur in digitaler Form in deiner IO-App und dieses Format reicht aus, um die Leistungen in Anspruch zu nehmen. \n\nBitte melde dies über die IO-App an den Support und gib die Details des Händlers an (z. B. Name des Partners, Adresse der Filiale/Verkaufsstelle, in der er die Anfrage gestellt hat)."
+          },
+          {
+            "title": "Ein Mitarbeiter bat mich, die Aktivierungs-E-Mail der Karte vorzulegen, um die Vorteile nutzen zu können. Wo kann ich sie finden?",
+            "body": "Für die Nationale Jugendkarte gibt es keine Aktivierungsmail. Die Nationale Jugendkarte gibt es nur in digitaler Form in deiner IO-App und dieses Format reicht aus, um die Leistungen in Anspruch zu nehmen. \n\nBitte melde dies über die IO-App an den Support und gib die Details des Händlers an (z. B. Name des Partners, Adresse der Filiale/Verkaufsstelle, in der er die Anfrage gestellt hat)."
+          }
+        ]
+      },
+      {
+        "route_name": "MESSAGES_INBOX",
+        "title": "Was kann ich in Mitteilungen tun?",
+        "content": "**Im Tab 'Mitteilungen' findest du die Mitteilungen, die dir von an IO teilnehmenden Körperschaften** zugesandt wurden. Nur Körperschaften, die dir etwas zu sagen haben, wie z. B. eine Zahlungsaufforderung, eine Erinnerung an eine Frist, eine Information oder eine Mitteilung über eine Aktualisierung, werden dir schreiben. Die Nachrichten sind in zwei Tabs unterteilt: 'Erhalten' enthält die Mitteilungen, die du erhalten hast und 'Archiviert' enthält die Mitteilungen, die du archiviert hast.",
+        "faqs": [
+          {
+            "title": "Welche Art von Mitteilungen kann ich empfangen?",
+            "body": "In IO kannst du verschiedene Arten von Mitteilungen erhalten: Zahlungsmitteilungen, Erinnerungen an Fristen, Benachrichtigungen und Aktualisierungen oder Aufforderungen zur Unterzeichnung von Dokumenten. Du erhältst niemals allgemeine Nachrichten, sondern immer und nur Mitteilungen, die dich persönlich betreffen, wie z. B. eine Mitteilung über das Ablaufen eines Ausweises."
+          },
+          {
+            "title": "Was kann ich in meinen Mitteilungen tun?",
+            "body": "Innerhalb der Mitteilungen kannst du:\n- Informationen anzeigen, wie z. B. den QR-Code deiner grünen Zertifizierung;\n- eine Erinnerung einstellen, um dich an eine Frist zu erinnern;\n- mit der Zahlung einer Mitteilung fortfahren;\n- mit der Unterzeichnung von Dokumenten fortfahren."
+          },
+          {
+            "title": "Wie kann ich eine Mitteilungen archivieren?",
+            "body": "Um eine Mitteilungen zu archivieren, halte sie gedrückt und wähle 'Archivieren'. Die Mitteilungen wird in den Tab 'Archiviert' verschoben. Auf dieselbe Weise kannst du auch Mitteilungen von 'Archiviert' nach 'Erhalten' verschieben."
+          },
+          {
+            "title": "Kann ich eine Mitteilungen löschen?",
+            "body": "Nein, du kannst Mitteilungen, die du über IO erhältst, nicht löschen, aber du kannst sie in den Tab 'Archiviert' verschieben. Auf diese Weise kannst du, wenn du in Zukunft Informationen in einer alten Mitteilungen finden musst, direkt in diesem Tab suchen."
+          },
+          {
+            "title": "Kann ich ein Dokument über die IO-App unterschreiben?",
+            "body": "Ja. Die Körperschaft sendet eine Mitteilungen mit dem zu signierenden Dokument direkt an die App. Folge den Anweisungen und verwende deinen Entsperrungscode oder die biometrische Erkennung zum Unterschreiben."
+          },
+          {
+            "title": "Was kann ich tun, wenn ein zu unterzeichnendes Dokument Fehler enthält?",
+            "body": "Wende dich direkt an die Körperschaft, die das Dokument gesendet hat. Die Kontaktdaten findest du in der Nachricht zur Signaturanforderung."
+          },
+          {
+            "title": "Welchen rechtlichen Wert hat die Unterzeichnung eines Dokuments über IO?",
+            "body": "Eine über IO angebrachte digitale Signatur ist eine QES (Qualifizierte elektronische Signatur). Sie hat die gleiche Rechtsgültigkeit wie eine handschriftliche Unterschrift auf Papier. Sie garantiert somit die Authentizität der signierten Dokumente und die vollständige Rückverfolgbarkeit zum Unterzeichner."
+          },
+          {
+            "title": "Ich habe ein Problem mit der Unterzeichnung eines Dokuments. Was kann ich tun?",
+            "body": "Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
+          }
+        ]
+      }
+    ],
       "idps":{
          "arubaid":{
             "description":"Wenn du andere Probleme mit dem Authentifizierungsverfahren hast, kannst du dich an den dedizierten Service von Aruba wenden, indem du eine der hier verfügbaren Optionen auswählst.",
