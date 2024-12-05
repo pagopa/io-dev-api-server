@@ -62,18 +62,25 @@ export const generateUserProfileHTML = (query: ParsedQs) => {
   <title>Relying Party: authenticated</title>
 </head>
 <body>
-  <h1>Your data</h1>
-  <ul>
-    <li>Full name: ${fullName}</li>
-    <li>Name: ${name}</li>
-    <li>Surname: ${surname}</li>
-    <li>Fiscal Code: ${fiscalCode}</li>
-    <li>Signature Hash: ${signatureHash}</li>
-    <li>Audience Id: ${audienceId}</li>
-    <li>Issuer: ${issuer}</li>
-    <li>Issued on: ${new Date(Number(issuedOn))}</li>
-    <li>Expires on: ${new Date(Number(expiresOn))}</li>
-  </ul>
+  <div>
+    <h1>Your data</h1>
+    <ul>
+      <li>Full name: ${fullName}</li>
+      <li>Name: ${name}</li>
+      <li>Surname: ${surname}</li>
+      <li>Fiscal Code: ${fiscalCode}</li>
+      <li>Signature Hash: ${signatureHash}</li>
+      <li>Audience Id: ${audienceId}</li>
+      <li>Issuer: ${issuer}</li>
+      <li>Issued on: ${new Date(Number(issuedOn))}</li>
+      <li>Expires on: ${new Date(Number(expiresOn))}</li>
+    </ul>
+  </div>
+  <div>
+    <a href="iossoapi://cancel">
+      <button>Cancel</button>
+    </a>
+  </div>
 </body>
 </html>
 `;
