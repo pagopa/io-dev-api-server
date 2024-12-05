@@ -6,7 +6,6 @@ import * as O from "fp-ts/lib/Option";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import { EUCovidCert } from "../generated/definitions/backend/EUCovidCert";
 import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { FiscalCode } from "../generated/definitions/backend/FiscalCode";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
@@ -20,7 +19,6 @@ import {
 } from "./features/messages/persistence/messagesPayload";
 import ServicesDB from "./persistence/services";
 import MessagesDB from "./features/messages/persistence/messagesDatabase";
-import { eucovidCertAuthResponses } from "./routers/features/eu_covid_cert";
 import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";
 import {
@@ -47,6 +45,7 @@ import {
 import { MessageTemplateWrapper } from "./features/messages/types/messageTemplateWrapper";
 import { MessageTemplate } from "./features/messages/types/messageTemplate";
 import { initializeServiceLogoMap } from "./routers/services_metadata";
+import { LegacyGreenPass } from "./features/messages/types/LegacyGreenPass";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -66,7 +65,7 @@ export const getNewMessage = (
   customConfig: IoDevServerConfig,
   subject: string,
   markdown: string,
-  euCovidCert?: EUCovidCert,
+  legacyGreenPass?: LegacyGreenPass,
   serviceId?: string
 ): CreatedMessageWithContentAndAttachments =>
   withContent(
@@ -76,7 +75,7 @@ export const getNewMessage = (
     ),
     subject,
     markdown,
-    euCovidCert
+    legacyGreenPass
   );
 
 const createMessagesWithCTA = (
@@ -111,32 +110,18 @@ const createMessagesWithCTA = (
     )
   );
 
-const createMessagesWithEUCovidCert = (
+const createMessagesWithLegacyGreenPass = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
   pipe(
-    customConfig.messages.withEUCovidCert,
+    customConfig.messages.generateLegacyGreenPassMessage,
     B.fold(
       () => [],
-      () =>
-        eucovidCertAuthResponses.reduce(
-          (acc: CreatedMessageWithContentAndAttachments[], config) => {
-            const [authCode, description] = config;
-
-            return [
-              ...acc,
-              getNewMessage(
-                customConfig,
-                `🏥 EUCovidCert - ${description}`,
-                messageMarkdown,
-                {
-                  auth_code: authCode
-                }
-              )
-            ];
-          },
-          []
-        )
+      () => [
+        getNewMessage(customConfig, `🏥 Legacy Green Pass`, messageMarkdown, {
+          auth_code: "auth1"
+        })
+      ]
     )
   );
 
@@ -459,8 +444,8 @@ const createMessages = (
     /* with CTAs */
     ...createMessagesWithCTA(customConfig),
 
-    /* with EUCovidCert */
-    ...createMessagesWithEUCovidCert(customConfig),
+    /* with legacy Green Pass */
+    ...createMessagesWithLegacyGreenPass(customConfig),
 
     /* Firma con IO */
     ...createMessagesWithFirmaConIOWaitForSignature(customConfig),

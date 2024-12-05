@@ -77,7 +77,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     messageTemplateWrappers: [
       {
-        count: 1,
+        count: 0,
         template: {
           subjectWordCount: 5,
           hasRemoteContent: true,
@@ -104,7 +104,7 @@ const defaultConfig: IoDevServerConfig = {
     attachmentExpiredAfterSeconds: 10,
     attachmentRetryAfterSeconds: 2,
     pnOptInMessage: false,
-    paymentsCount: 1,
+    paymentsCount: 0,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
     paymentWithValidDueDateCount: 0,
@@ -123,12 +123,12 @@ const defaultConfig: IoDevServerConfig = {
       }
     },
     withCTA: false,
-    withEUCovidCert: false,
+    generateLegacyGreenPassMessage: true,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
-    standardMessageCount: 2,
-    archivedMessageCount: 1,
+    standardMessageCount: 0,
+    archivedMessageCount: 0,
     // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
   },
@@ -208,7 +208,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     fims: {
       history: {
-        count: 52,
+        count: 0,
         consentsEndpointFailureStatusCode: undefined,
         exportEndpointFailureStatusCode: undefined,
         exportProcessingTimeMilliseconds: 15000,
