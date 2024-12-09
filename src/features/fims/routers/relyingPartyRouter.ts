@@ -233,6 +233,7 @@ const findOrLazyLoadRelyingParty = (id: string) => {
     relyingParties.set(relyingPartyConfig.id, {
       displayName: relyingPartyConfig.registrationName,
       id: relyingPartyConfig.id,
+      isInternal: relyingPartyConfig.isInternal,
       redirectUris: relyingPartyConfig.redirectUri,
       responseMode: "form_post",
       responseType: "id_token",

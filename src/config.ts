@@ -240,6 +240,7 @@ const defaultConfig: IoDevServerConfig = {
       relyingParties: [
         {
           id: "1",
+          isInternal: false,
           redirectUri: [`${serverUrl}/fims/relyingParty/1/redirectUri`],
           registrationName: "Example Relying Party 1",
           scopes: ["openid", "profile"]
