@@ -77,7 +77,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     messageTemplateWrappers: [
       {
-        count: 0,
+        count: 1,
         template: {
           subjectWordCount: 5,
           hasRemoteContent: true,
@@ -104,7 +104,7 @@ const defaultConfig: IoDevServerConfig = {
     attachmentExpiredAfterSeconds: 10,
     attachmentRetryAfterSeconds: 2,
     pnOptInMessage: false,
-    paymentsCount: 0,
+    paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
     paymentWithValidDueDateCount: 0,
@@ -127,8 +127,8 @@ const defaultConfig: IoDevServerConfig = {
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
-    standardMessageCount: 0,
-    archivedMessageCount: 0,
+    standardMessageCount: 2,
+    archivedMessageCount: 1,
     // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
   },
