@@ -7,7 +7,8 @@
         "value": "accesso_a_io",
         "description": {
           "it-IT": "Accesso a IO",
-          "en-EN": "Login"
+          "en-EN": "Login",
+          "de-DE": "Anmelden in IO"
         },
         "zendeskSubCategories": {
           "id": "8086272355217",
@@ -16,21 +17,85 @@
               "value": "accesso_spid",
               "description": {
                 "it-IT": "Non riesco ad accedere con SPID",
-                "en-EN": "Login with SPID"
+                "en-EN": "Login with SPID",
+                "de-DE": "SPID-Anmeldung"
               }
             },
             {
               "value": "accesso_cie",
               "description": {
                 "it-IT": "Non riesco ad accedere con CIE",
-                "en-EN": "Login with CIE"
+                "en-EN": "Login with CIE",
+                "de-DE": "CIE-Anmeldung"
               }
             },
             {
               "value": "ho_dimenticato_il_codice_di_sblocco",
               "description": {
                 "it-IT": "Ho dimenticato il codice di sblocco",
-                "en-EN": "I forgot the unlock code"
+                "en-EN": "I forgot the unlock code",
+                "de-DE": "Entsperrcode vergessen"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "value": "it_wallet",
+        "description": {
+          "it-IT": "Documenti su IO",
+          "en-EN": "Documenti su IO",
+          "de-DE": "Dokumente in IO"
+        },
+        "zendeskSubCategories": {
+          "id": "29326690756369",
+          "subCategories": [
+            {
+              "value": "it_wallet_info",
+              "description": {
+                "it-IT": "Vorrei più informazioni",
+                "en-EN": "I need more details",
+                "de-DE": "Weitere Informationen erhalten"
+              }
+            },
+            {
+              "value": "it_wallet_aggiunta_documenti",
+              "description": {
+                "it-IT": "Non riesco ad aggiungere i documenti",
+                "en-EN": "Non riesco ad aggiungere i documenti",
+                "de-DE": "Ich kann keine Dokumente hinzufügen"
+              }
+            },
+            {
+              "value": "it_wallet_patente_guida_non_ho_ricevuto",
+              "description": {
+                "it-IT": "Non ho ancora ricevuto la versione digitale della Patente",
+                "en-EN": "I haven't received the digital Driving Licence",
+                "de-DE": "Führerschein nicht erhalten"
+              }
+            },
+            {
+              "value": "it_wallet_patente_guida",
+              "description": {
+                "it-IT": "Ho un problema con la Patente di guida",
+                "en-EN": "I have an issue with the Driving Licence",
+                "de-DE": "Ich habe ein Problem mit dem Führerschein"
+              }
+            },
+            {
+              "value": "it_wallet_tessera_sanitaria",
+              "description": {
+                "it-IT": "Ho un problema con la Tessera Sanitaria",
+                "en-EN": "I have an issue with the Health Insurance Card",
+                "de-DE": "Ich habe ein Problem mit der Gesundheitskarte"
+              }
+            },
+            {
+              "value": "it_wallet_carta_disabilita",
+              "description": {
+                "it-IT": "Ho un problema con la Carta Europea della Disabilità",
+                "en-EN": "I have an issue with the European Disability Card",
+                "de-DE": "Ich habe ein Problem mit dem Europäischen Behindertenausweis"
               }
             }
           ]
@@ -40,21 +105,24 @@
         "value": "pagamenti_pagopa",
         "description": {
           "it-IT": "Pagamento pagoPA",
-          "en-EN": "pagoPA payment"
+          "en-EN": "pagoPA payment",
+          "de-DE": "pagoPA Zahlung"
         }
       },
       {
         "value": "metodo_di_pagamento",
         "description": {
           "it-IT": "Metodo di pagamento",
-          "en-EN": "Payment method"
+          "en-EN": "Payment method",
+          "de-DE": "Zahlungsmethode"
         }
       },
       {
         "value": "messaggi",
         "description": {
           "it-IT": "Messaggi",
-          "en-EN": "Messages"
+          "en-EN": "Messages",
+          "de-DE": "Mitteilungen"
         },
         "zendeskSubCategories": {
           "id": "8086421779473",
@@ -63,35 +131,48 @@
               "value": "non_riesco_a_pagare_un_avviso",
               "description": {
                 "it-IT": "Non riesco a pagare un avviso",
-                "en-EN": "I have trouble paying a notice"
+                "en-EN": "I have trouble paying a notice",
+                "de-DE": "Ich kann eine Aufforderung nicht bezahlen"
               }
             },
             {
               "value": "il_contenuto_di_un_messaggio_è_errato",
               "description": {
                 "it-IT": "Il contenuto di un messaggio è errato",
-                "en-EN": "The content of a message is wrong"
+                "en-EN": "The content of a message is wrong",
+                "de-DE": "Fehlerhafter Mitteilungsinhalt"
               }
             },
             {
               "value": "il_contenuto_di_un_messaggio_è_offensivo",
               "description": {
                 "it-IT": "Il contenuto di un messaggio è offensivo",
-                "en-EN": "The content of a message is offensive"
+                "en-EN": "The content of a message is offensive",
+                "de-DE": "Anstößiger Mitteilungsinhalt"
+              }
+            },
+            {
+              "value": "ho_un_problema_con_un_messaggio_di_send",
+              "description": {
+                "it-IT": "Ho un problema con un messaggio di SEND",
+                "en-EN": "I have an issue with a message from SEND",
+                "de-DE": "Problem mit einer SEND-Mitteilung"
               }
             },
             {
               "value": "non_mi_è_arrivato_un_messaggio",
               "description": {
                 "it-IT": "Non mi è arrivato un messaggio",
-                "en-EN": "I haven't received a message"
+                "en-EN": "I haven't received a message",
+                "de-DE": "Mitteilung nicht erhalten"
               }
             },
             {
               "value": "messaggi_ho_un_altro_problema",
               "description": {
                 "it-IT": "Ho un altro problema",
-                "en-EN": "I have a different issue"
+                "en-EN": "I have a different issue",
+                "de-DE": "Anderes Problem"
               }
             }
           ]
@@ -101,7 +182,8 @@
         "value": "carta_giovani_nazionale",
         "description": {
           "it-IT": "Carta Giovani Nazionale",
-          "en-EN": "Carta Giovani Nazionale"
+          "en-EN": "Carta Giovani Nazionale",
+          "de-DE": "Nationale Jugendkarte"
         },
         "zendeskSubCategories": {
           "id": "7840326533265",
@@ -110,21 +192,24 @@
               "value": "carta_giovani_nazionale_info",
               "description": {
                 "it-IT": "Vorrei più informazioni su come richiedere e utilizzare la Carta",
-                "en-EN": "I need more info on how to request or use the Card"
+                "en-EN": "I need more info on how to request or use the Card",
+                "de-DE": "Weitere Informationen über die Beantragung und Nutzung der Karte"
               }
             },
             {
               "value": "carta_giovani_nazionale_agevolazionespecifica",
               "description": {
                 "it-IT": "Ho un problema con un'agevolazione specifica",
-                "en-EN": "I have an issue with a specific discount"
+                "en-EN": "I have an issue with a specific discount",
+                "de-DE": "Problem mit einer spezifischen Ermäßigung"
               }
             },
             {
               "value": "carta_giovani_nazionale_problema",
               "description": {
                 "it-IT": "Ho un altro problema",
-                "en-EN": "I have a different issue"
+                "en-EN": "I have a different issue",
+                "de-DE": "Anderes Problem"
               }
             }
           ]
@@ -134,7 +219,8 @@
         "value": "firma_con_io",
         "description": {
           "it-IT": "Firma con IO",
-          "en-EN": "Firma con IO"
+          "en-EN": "Firma con IO",
+          "de-DE": "Mit IO unterschreiben"
         },
         "zendeskSubCategories": {
           "id": "14506152434193",
@@ -143,14 +229,16 @@
               "value": "firma_problemi_tecnici_su_io",
               "description": {
                 "it-IT": "Ho un problema con IO",
-                "en-EN": "I have an issue with IO"
+                "en-EN": "I have an issue with IO",
+                "de-DE": "Technisches Problem mit IO"
               }
             },
             {
               "value": "firma_informazioni_generali",
               "description": {
                 "it-IT": "Vorrei più informazioni",
-                "en-EN": "I'd like to have more information"
+                "en-EN": "I need more details",
+                "de-DE": "Weitere Informationen erhalten"
               }
             }
           ]
@@ -160,7 +248,8 @@
         "value": "certificazione_verde_covid-19",
         "description": {
           "it-IT": "Certificazione Verde COVID-19",
-          "en-EN": "EU Digital COVID Certificate"
+          "en-EN": "EU Digital COVID Certificate",
+          "de-DE": "Grünes EU COVID Zertifikat"
         },
         "zendeskSubCategories": {
           "id": "360029178738",
@@ -169,21 +258,24 @@
               "value": "non_ho_ricevuto_nulla",
               "description": {
                 "it-IT": "Non ho ricevuto la Certificazione",
-                "en-EN": "I haven't received the Certificate"
+                "en-EN": "I haven't received the Certificate",
+                "de-DE": "Zertifikat nicht erhalten"
               }
             },
             {
               "value": "problemi_tecnici_su_io",
               "description": {
                 "it-IT": "Ho un problema con IO",
-                "en-EN": "I have a problem with IO"
+                "en-EN": "I have a problem with IO",
+                "de-DE": "Technisches Problem mit IO"
               }
             },
             {
               "value": "informazioni_generali",
               "description": {
                 "it-IT": "Vorrei più informazioni",
-                "en-EN": "I would like to have more information"
+                "en-EN": "I need more details",
+                "de-DE": "Weitere Informationen erhalten"
               }
             }
           ]
@@ -193,18 +285,45 @@
         "value": "bonus_e_iniziative",
         "description": {
           "it-IT": "Bonus e iniziative",
-          "en-EN": "Bonuses and initiatives"
+          "en-EN": "Bonuses and initiatives",
+          "de-DE": "Boni und Initiativen"
         },
         "zendeskSubCategories": {
           "id": "8086481365265",
-          "subCategories": [ ]
+          "subCategories": [
+            {
+              "value": "bonus_pc",
+              "description": {
+                "it-IT": "Bonus PC",
+                "en-EN": "Bonus PC",
+                "de-DE": "PC Bonus"
+              }
+            },
+            {
+              "value": "cashback",
+              "description": {
+                "it-IT": "Cashback",
+                "en-EN": "Cashback",
+                "de-DE": "Cashback"
+              }
+            },
+            {
+              "value": "bonus_vacanze",
+              "description": {
+                "it-IT": "Bonus Vacanze",
+                "en-EN": "Bonus Vacanze",
+                "de-DE": "Ferienbonus"
+              }
+            }
+          ]
         }
       },
       {
         "value": "nessuno_dei_precedenti",
         "description": {
           "it-IT": "Nessuno dei precedenti",
-          "en-EN": "None of the above"
+          "en-EN": "None of the above",
+          "de-DE": "Keine der vorgenannten"
         },
         "zendeskSubCategories": {
           "id": "8086537475601",
@@ -213,28 +332,32 @@
               "value": "privacy",
               "description": {
                 "it-IT": "Privacy",
-                "en-EN": "Privacy"
+                "en-EN": "Privacy",
+                "de-DE": "Privacy"
               }
             },
             {
               "value": "accessibilità_/_usabilità",
               "description": {
                 "it-IT": "Accessibilità e Usabilità",
-                "en-EN": "Accessibility and Usability"
+                "en-EN": "Accessibility and Usability",
+                "de-DE": "Barrierefreiheit und Benutzerfreundlichkeit"
               }
             },
             {
               "value": "suggerimento",
               "description": {
                 "it-IT": "Vorrei dare un suggerimento",
-                "en-EN": "I'd like to make a suggestion"
+                "en-EN": "I'd like to make a suggestion",
+                "de-DE": "Vorschlag einreichen"
               }
             },
             {
               "value": "nessuno_dei_precedenti_altro_problema",
               "description": {
                 "it-IT": "Ho un altro problema",
-                "en-EN": "I have a different issue"
+                "en-EN": "I have a different issue",
+                "de-DE": "Anderes Problem"
               }
             }
           ]
