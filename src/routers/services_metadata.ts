@@ -6,15 +6,19 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as B from "fp-ts/lib/boolean";
 import { pipe } from "fp-ts/lib/function";
+import { unknown } from "io-ts";
+import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../config";
+import { pnServiceId } from "../features/pn/services/services";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
+import { cgnServiceId } from "../payloads/services/special/cgn/factoryCGNService";
 import {
   fileExists,
   isPngOrJpegExtension,
@@ -25,9 +29,6 @@ import {
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
-import { pnServiceId } from "../features/pn/services/services";
-import { cgnServiceId } from "../payloads/services/special/cgn/factoryCGNService";
 import ServicesDB from "./../persistence/services";
 
 export const servicesMetadataRouter = Router();
@@ -288,6 +289,19 @@ addHandler(
       assetsFolder + "/assistanceTools/zendesk.json"
     );
     const zendeskPayload = validatePayload(Zendesk, content);
+    res.json(zendeskPayload);
+  }
+);
+
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/assistanceTools/paymentMap.json"),
+  (_, res) => {
+    const content = readFileAsJSON(
+      assetsFolder + "/assistanceTools/paymentMap.json"
+    );
+    const zendeskPayload = validatePayload(unknown, content);
     res.json(zendeskPayload);
   }
 );
