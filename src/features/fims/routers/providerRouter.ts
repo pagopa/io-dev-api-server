@@ -215,6 +215,13 @@ addHandler(
         return;
       }
 
+      // Internal RP does not require client explicit consents (since it is
+      // not sending data to a third relying party but to an internal one)
+      if (relyingParty.isInternal) {
+        commonRedirectToGivenConsents(requestInteractionId, res);
+        return;
+      }
+
       const consentEither = Consent.decode({
         _links: {
           abort: {
@@ -306,8 +313,7 @@ addHandler(
       return;
     }
 
-    const redirectUri = `${baseProviderPath()}/oauth/authorize/${requestInteractionId}`;
-    res.redirect(303, redirectUri);
+    commonRedirectToGivenConsents(requestInteractionId, res);
   },
   () => Math.random() * 2500
 );
@@ -835,3 +841,11 @@ const replyWithOIDCError = (
     error: errorCode,
     error_description: description
   });
+
+const commonRedirectToGivenConsents = (
+  requestInteractionId: string,
+  res: Response
+) => {
+  const redirectUri = `${baseProviderPath()}/oauth/authorize/${requestInteractionId}`;
+  res.redirect(303, redirectUri);
+};
