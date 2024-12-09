@@ -12,7 +12,6 @@ import { cdcRouter } from "./routers/features/cdc";
 import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
-import { euCovidCertRouter } from "./routers/features/eu_covid_cert";
 import { fastLoginRouter } from "./routers/features/fastLogin";
 import { fciRouter } from "./routers/features/fci";
 import { idpayRouter } from "./routers/features/idpay";
@@ -80,7 +79,6 @@ app.use(fastLoginMiddleware);
   cgnRouter,
   cgnMerchantsRouter,
   cgnGeoRouter,
-  euCovidCertRouter,
   cdcRouter,
   fciRouter,
   pnRouter,

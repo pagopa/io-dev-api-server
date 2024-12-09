@@ -9,7 +9,6 @@ import { faker } from "@faker-js/faker/locale/it";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../../../generated/definitions/backend/CreatedMessageWithoutContent";
-import { EUCovidCert } from "../../../../generated/definitions/backend/EUCovidCert";
 import { NewMessageContent } from "../../../../generated/definitions/backend/NewMessageContent";
 import { PaymentAmount } from "../../../../generated/definitions/backend/PaymentAmount";
 import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
@@ -28,6 +27,7 @@ import PaymentsDB from "../../../persistence/payments";
 import { AttachmentCategory } from "../types/attachmentCategory";
 import { rptIdFromPaymentDataWithRequiredPayee } from "../../../utils/payment";
 import { MessageTemplate } from "../types/messageTemplate";
+import { LegacyGreenPass } from "../types/LegacyGreenPass";
 
 // eslint-disable-next-line functional/no-let
 let messageIdIndex = 0;
@@ -154,12 +154,12 @@ export const withContent = (
   message: CreatedMessageWithoutContent,
   subject: string,
   markdown: string,
-  euCovidCert?: EUCovidCert
+  legacyGreenPass?: LegacyGreenPass
 ): CreatedMessageWithContent => {
   const content = validatePayload(NewMessageContent, {
     subject,
     markdown,
-    eu_covid_cert: euCovidCert
+    eu_covid_cert: legacyGreenPass
   });
   return { ...message, content };
 };

@@ -42,8 +42,8 @@ export const MessagesConfig = t.intersection([
     }),
     // if true, messages (all available) with nested CTA will be included
     withCTA: t.boolean,
-    // if true, messages (all available) with EUCovidCert will be included
-    withEUCovidCert: t.boolean,
+    // if true, messages (all available) with legacy Green Pass will be included
+    generateLegacyGreenPassMessage: t.boolean,
     // with valid due date
     withValidDueDateCount: t.number,
     // with invalid (expired) due date
