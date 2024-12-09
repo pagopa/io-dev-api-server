@@ -1,0 +1,25 @@
+{
+    "payments": {
+        "subcategoryId": "29473336574609",
+        "subcategories": {
+            "pagamenti_pagopa_in_corso": [
+                "PAYMENT_ONGOING"
+            ],
+            "pagamenti_pagopa_blocco": [],
+            "pagamenti_pagopa_info_stato": [],
+            "pagamenti_pagopa_altro_problema": []
+
+        }
+    },
+    "receipts": {
+        "subcategoryId": "30635967748497",
+        "subcategories": {
+            "ricevute_pagopa_info": [],
+            "ricevute_pagopa_non_arrivata": [],
+            "ricevute_pagopa_arrivata_sconosciuta": [],
+            "ricevute_pagopa_errore_nei_dati": [],
+            "ricevute_pagopa_non_riesco_a_scaricare": [],
+            "ricevute_pagopa_altro_problema": []
+        }
+    }
+}
