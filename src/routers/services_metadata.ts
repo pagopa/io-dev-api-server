@@ -296,10 +296,10 @@ addHandler(
 addHandler(
   servicesMetadataRouter,
   "get",
-  addRoutePrefix("/assistanceTools/paymentMap.json"),
+  addRoutePrefix("/assistanceTools/payment/zendeskOutcomeMapping.json"),
   (_, res) => {
     const content = readFileAsJSON(
-      assetsFolder + "/assistanceTools/paymentMap.json"
+      assetsFolder + "/assistanceTools/payment/zendeskOutcomeMapping.json"
     );
     const zendeskPayload = validatePayload(unknown, content);
     res.json(zendeskPayload);
