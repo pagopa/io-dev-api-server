@@ -208,7 +208,7 @@ const defaultConfig: IoDevServerConfig = {
     },
     fims: {
       history: {
-        count: 0,
+        count: 52,
         consentsEndpointFailureStatusCode: undefined,
         exportEndpointFailureStatusCode: undefined,
         exportProcessingTimeMilliseconds: 15000,
