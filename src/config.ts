@@ -123,7 +123,7 @@ const defaultConfig: IoDevServerConfig = {
       }
     },
     withCTA: false,
-    withEUCovidCert: false,
+    generateLegacyGreenPassMessage: true,
     withValidDueDateCount: 0,
     withInValidDueDateCount: 0,
     // sending 2 messages at minimum to allow for basic pagination
