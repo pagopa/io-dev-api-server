@@ -6,11 +6,11 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as B from "fp-ts/lib/boolean";
 import { pipe } from "fp-ts/lib/function";
-import { unknown } from "io-ts";
 import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
+import { ZendeskSubcategoriesErrors } from "../../generated/definitions/content/ZendeskSubcategoriesErrors";
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../config";
@@ -301,7 +301,7 @@ addHandler(
     const content = readFileAsJSON(
       assetsFolder + "/assistanceTools/payment/zendeskOutcomeMapping.json"
     );
-    const zendeskPayload = validatePayload(unknown, content);
+    const zendeskPayload = validatePayload(ZendeskSubcategoriesErrors, content);
     res.json(zendeskPayload);
   }
 );
