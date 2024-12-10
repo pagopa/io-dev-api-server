@@ -107,6 +107,59 @@
           "it-IT": "Pagamento pagoPA",
           "en-EN": "pagoPA payment",
           "de-DE": "pagoPA Zahlung"
+        },
+        "zendeskSubCategories": {
+          "id": "29473336574609",
+          "subCategories": [
+            {
+              "value": "pagamenti_pagopa_in_corso",
+              "description": {
+                "it-IT": "Il mio pagamento è in corso da troppo tempo",
+                "en-EN": "Il mio pagamento è in corso da troppo tempo",
+                "de-DE": "Il mio pagamento è in corso da troppo tempo"
+              }
+            },
+            {
+              "value": "pagamenti_pagopa_errore",
+              "description": {
+                "it-IT": "Mi è comparso un errore durante un pagamento",
+                "en-EN": "Mi è comparso un errore durante un pagamento",
+                "de-DE": "Mi è comparso un errore durante un pagamento"
+              }
+            },
+            {
+              "value": "pagamenti_pagopa_blocco",
+              "description": {
+                "it-IT": "L'app si è bloccata o riavviata durante un pagamento",
+                "en-EN": "L'app si è bloccata o riavviata durante un pagamento",
+                "de-DE": "L'app si è bloccata o riavviata durante un pagamento"
+              }
+            },
+            {
+              "value": "pagamenti_pagopa_aggiunta_metodo",
+              "description": {
+                "it-IT": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
+                "en-EN": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
+                "de-DE": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio"
+              }
+            },
+            {
+              "value": "pagamenti_ pagopa_info_stato",
+              "description": {
+                "it-IT": "Vorrei informazioni sullo stato di un pagamento",
+                "en-EN": "Vorrei informazioni sullo stato di un pagamento",
+                "de-DE": "Vorrei informazioni sullo stato di un pagamento"
+              }
+            },
+            {
+              "value": "pagamenti_pagopa_altro_problema",
+              "description": {
+                "it-IT": "Ho un altro problema",
+                "en-EN": "Ho un altro problema",
+                "de-DE": "Ho un altro problema"
+              }
+            }
+          ]
         }
       },
       {
