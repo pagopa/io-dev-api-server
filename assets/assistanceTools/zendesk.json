@@ -102,7 +102,7 @@
         }
       },
       {
-        "value": "pagamenti_pagopa",
+        "value": "io_pagamenti_pagopa",
         "description": {
           "it-IT": "Pagamento pagoPA",
           "en-EN": "pagoPA payment",
@@ -120,7 +120,7 @@
               }
             },
             {
-              "value": "pagamenti_pagopa_errore",
+              "value": "pagamenti_pagopa",
               "description": {
                 "it-IT": "Mi è comparso un errore durante un pagamento",
                 "en-EN": "Mi è comparso un errore durante un pagamento",
@@ -136,7 +136,7 @@
               }
             },
             {
-              "value": "pagamenti_pagopa_aggiunta_metodo",
+              "value": "metodo_di_pagamento",
               "description": {
                 "it-IT": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
                 "en-EN": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
@@ -163,11 +163,72 @@
         }
       },
       {
-        "value": "metodo_di_pagamento",
+        "value": "io_ricevute_pagopa",
         "description": {
-          "it-IT": "Metodo di pagamento",
-          "en-EN": "Payment method",
-          "de-DE": "Zahlungsmethode"
+          "it-IT": "Ricevute pagoPA",
+          "en-EN": "pagoPA receipts",
+          "de-DE": "Zahlungsbelege pagoPA"
+        },
+        "zendeskSubCategories": {
+          "id": "30635967748497",
+          "subCategories": [
+            {
+              "value": "ricevute_pagopa_info",
+              "description": {
+                "it-IT": "Vorrei più informazioni su come ottenere una ricevuta di pagamento",
+                "en-EN": "Vorrei più informazioni su come ottenere una ricevuta di pagamento",
+                "de-DE": "Vorrei più informazioni su come ottenere una ricevuta di pagamento"
+              }
+            },
+            {
+              "value": "ricevute_pagopa_non_arrivata",
+              "description": {
+                "it-IT": "Non mi è arrivata la ricevuta dopo un pagamento",
+                "en-EN": "Non mi è arrivata la ricevuta dopo un pagamento",
+                "de-DE": "Non mi è arrivata la ricevuta dopo un pagamento"
+              }
+            },
+            {
+              "value": "ricevute_pagopa_arrivata_sconosciuta",
+              "description": {
+                "it-IT": "Mi è arrivata una ricevuta di un pagamento che non conosco",
+                "en-EN": "Mi è arrivata una ricevuta di un pagamento che non conosco",
+                "de-DE": "Mi è arrivata una ricevuta di un pagamento che non conosco"
+              }
+            },
+            {
+              "value": "ricevute_pagopa_errore_nei_dati",
+              "description": {
+                "it-IT": "C'è un errore nei dati della ricevuta",
+                "en-EN": "C'è un errore nei dati della ricevuta",
+                "de-DE": "C'è un errore nei dati della ricevuta"
+              }
+            },
+            {
+              "value": "ricevute_pagopa_non_riesco_a_scaricare",
+              "description": {
+                "it-IT": "Non riesco a scaricare la ricevuta",
+                "en-EN": "Non riesco a scaricare la ricevuta",
+                "de-DE": "Non riesco a scaricare la ricevuta"
+              }
+            },
+            {
+              "value": "ricevute_pagopa_non_riesco_a_trovare",
+              "description": {
+                "it-IT": "Non riesco a trovare la ricevuta",
+                "en-EN": "Non riesco a trovare la ricevuta",
+                "de-DE": "Non riesco a trovare la ricevuta"
+              }
+            },
+            {
+              "value": "ricevute_pagopa_altro_problema",
+              "description": {
+                "it-IT": "Ho un altro problema",
+                "en-EN": "Ho un altro problema",
+                "de-DE": "Ho un altro problema"
+              }
+            }
+          ]
         }
       },
       {
