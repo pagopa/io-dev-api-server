@@ -249,7 +249,7 @@ addHandler(
           );
         return;
       }
-      res.status(200).send(consentEither.right);
+      res.status(200).type("application/hal+json").send(consentEither.right);
       return;
     }
 
