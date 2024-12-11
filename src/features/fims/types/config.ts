@@ -42,6 +42,7 @@ export const ProviderConfig = t.intersection([
 export const RelyingPartiesConfig = t.intersection([
   t.type({
     id: t.string,
+    isInternal: t.boolean,
     registrationName: t.string,
     redirectUri: t.readonlyArray(t.string),
     scopes: t.readonlyArray(
