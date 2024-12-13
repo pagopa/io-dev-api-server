@@ -120,7 +120,7 @@
               }
             },
             {
-              "value": "pagamenti_pagopa",
+              "value": "pagamenti_pagopa_errore",
               "description": {
                 "it-IT": "Mi è comparso un errore durante un pagamento",
                 "en-EN": "Mi è comparso un errore durante un pagamento",
@@ -136,7 +136,7 @@
               }
             },
             {
-              "value": "metodo_di_pagamento",
+              "value": "pagamenti_pagopa_aggiunta_metodo",
               "description": {
                 "it-IT": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
                 "en-EN": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",

@@ -7,7 +7,7 @@
                 "PAA_PAGAMENTO_IN_CORSO",
                 "PPT_PAGAMENTO_IN_CORSO"
             ],
-            "pagamenti_pagopa": [
+            "pagamenti_pagopa_errore": [
                 "GENERIC_ERROR",
                 "DOMAIN_UNKNOWN",
                 "PPT_STAZIONE_INT_PA_IRRAGGIUNGIBILE",
@@ -51,7 +51,7 @@
                 "BE_KO"
             ],
             "pagamenti_pagopa_blocco": [],
-            "metodo_di_pagamento": [],
+            "pagamenti_pagopa_aggiunta_metodo": [],
             "pagamenti_pagopa_info_stato": [],
             "pagamenti_pagopa_altro_problema": []
         }
