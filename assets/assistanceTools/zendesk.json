@@ -106,7 +106,7 @@
         "description": {
           "it-IT": "Pagamento pagoPA",
           "en-EN": "pagoPA payment",
-          "de-DE": "pagoPA Zahlung"
+          "de-DE": "pagoPA-Zahlung"
         },
         "zendeskSubCategories": {
           "id": "29473336574609",
@@ -116,7 +116,7 @@
               "description": {
                 "it-IT": "Il mio pagamento è in corso da troppo tempo",
                 "en-EN": "Il mio pagamento è in corso da troppo tempo",
-                "de-DE": "Il mio pagamento è in corso da troppo tempo"
+                "de-DE": "Meine Zahlung ist schon zu lange in Bearbeitung"
               }
             },
             {
@@ -124,7 +124,7 @@
               "description": {
                 "it-IT": "Mi è comparso un errore durante un pagamento",
                 "en-EN": "Mi è comparso un errore durante un pagamento",
-                "de-DE": "Mi è comparso un errore durante un pagamento"
+                "de-DE": "Bei einer Zahlung ist ein Fehler aufgetreten"
               }
             },
             {
@@ -132,7 +132,7 @@
               "description": {
                 "it-IT": "L'app si è bloccata o riavviata durante un pagamento",
                 "en-EN": "L'app si è bloccata o riavviata durante un pagamento",
-                "de-DE": "L'app si è bloccata o riavviata durante un pagamento"
+                "de-DE": "Die App ist während einer Zahlung eingefroren oder neu gestartet worden"
               }
             },
             {
@@ -140,15 +140,15 @@
               "description": {
                 "it-IT": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
                 "en-EN": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio",
-                "de-DE": "Non riesco ad aggiungere un metodo di pagamento al Portafoglio"
+                "de-DE": "Ich kann keine Zahlungsmethode zum Konto hinzufügen"
               }
             },
             {
-              "value": "pagamenti_ pagopa_info_stato",
+              "value": "pagamenti_pagopa_info_stato",
               "description": {
                 "it-IT": "Vorrei informazioni sullo stato di un pagamento",
                 "en-EN": "Vorrei informazioni sullo stato di un pagamento",
-                "de-DE": "Vorrei informazioni sullo stato di un pagamento"
+                "de-DE": "Ich möchte Informationen über den Status einer Zahlung"
               }
             },
             {
@@ -156,7 +156,7 @@
               "description": {
                 "it-IT": "Ho un altro problema",
                 "en-EN": "Ho un altro problema",
-                "de-DE": "Ho un altro problema"
+                "de-DE": "Ich habe ein anderes Problem"
               }
             }
           ]
@@ -167,7 +167,7 @@
         "description": {
           "it-IT": "Ricevute pagoPA",
           "en-EN": "pagoPA receipts",
-          "de-DE": "Zahlungsbelege pagoPA"
+          "de-DE": "pagoPA-Quittungen"
         },
         "zendeskSubCategories": {
           "id": "30635967748497",
@@ -177,7 +177,7 @@
               "description": {
                 "it-IT": "Vorrei più informazioni su come ottenere una ricevuta di pagamento",
                 "en-EN": "Vorrei più informazioni su come ottenere una ricevuta di pagamento",
-                "de-DE": "Vorrei più informazioni su come ottenere una ricevuta di pagamento"
+                "de-DE": "Ich möchte mehr Informationen darüber, wie ich einen Quittung erhalten kann"
               }
             },
             {
@@ -185,7 +185,7 @@
               "description": {
                 "it-IT": "Non mi è arrivata la ricevuta dopo un pagamento",
                 "en-EN": "Non mi è arrivata la ricevuta dopo un pagamento",
-                "de-DE": "Non mi è arrivata la ricevuta dopo un pagamento"
+                "de-DE": "Ich habe nach einer Zahlung keine Quittung erhalten"
               }
             },
             {
@@ -193,7 +193,7 @@
               "description": {
                 "it-IT": "Mi è arrivata una ricevuta di un pagamento che non conosco",
                 "en-EN": "Mi è arrivata una ricevuta di un pagamento che non conosco",
-                "de-DE": "Mi è arrivata una ricevuta di un pagamento che non conosco"
+                "de-DE": "Ich habe eine Quittung für eine Zahlung erhalten, von der ich nichts weiß."
               }
             },
             {
@@ -201,7 +201,7 @@
               "description": {
                 "it-IT": "C'è un errore nei dati della ricevuta",
                 "en-EN": "C'è un errore nei dati della ricevuta",
-                "de-DE": "C'è un errore nei dati della ricevuta"
+                "de-DE": "Es liegt ein Fehler in der Quittung vor"
               }
             },
             {
@@ -209,7 +209,7 @@
               "description": {
                 "it-IT": "Non riesco a scaricare la ricevuta",
                 "en-EN": "Non riesco a scaricare la ricevuta",
-                "de-DE": "Non riesco a scaricare la ricevuta"
+                "de-DE": "Ich kann die Quittung nicht herunterladen"
               }
             },
             {
@@ -217,7 +217,7 @@
               "description": {
                 "it-IT": "Non riesco a trovare la ricevuta",
                 "en-EN": "Non riesco a trovare la ricevuta",
-                "de-DE": "Non riesco a trovare la ricevuta"
+                "de-DE": "Ich kann die Quittung nicht finden"
               }
             },
             {
@@ -225,7 +225,7 @@
               "description": {
                 "it-IT": "Ho un altro problema",
                 "en-EN": "Ho un altro problema",
-                "de-DE": "Ho un altro problema"
+                "de-DE": "Ich habe ein anderes Problem"
               }
             }
           ]
@@ -286,7 +286,7 @@
               "description": {
                 "it-IT": "Ho un altro problema",
                 "en-EN": "I have a different issue",
-                "de-DE": "Anderes Problem"
+                "de-DE": "Ich habe ein anderes Problem"
               }
             }
           ]
@@ -323,73 +323,7 @@
               "description": {
                 "it-IT": "Ho un altro problema",
                 "en-EN": "I have a different issue",
-                "de-DE": "Anderes Problem"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "value": "firma_con_io",
-        "description": {
-          "it-IT": "Firma con IO",
-          "en-EN": "Firma con IO",
-          "de-DE": "Mit IO unterschreiben"
-        },
-        "zendeskSubCategories": {
-          "id": "14506152434193",
-          "subCategories": [
-            {
-              "value": "firma_problemi_tecnici_su_io",
-              "description": {
-                "it-IT": "Ho un problema con IO",
-                "en-EN": "I have an issue with IO",
-                "de-DE": "Technisches Problem mit IO"
-              }
-            },
-            {
-              "value": "firma_informazioni_generali",
-              "description": {
-                "it-IT": "Vorrei più informazioni",
-                "en-EN": "I need more details",
-                "de-DE": "Weitere Informationen erhalten"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "value": "certificazione_verde_covid-19",
-        "description": {
-          "it-IT": "Certificazione Verde COVID-19",
-          "en-EN": "EU Digital COVID Certificate",
-          "de-DE": "Grünes EU COVID Zertifikat"
-        },
-        "zendeskSubCategories": {
-          "id": "360029178738",
-          "subCategories": [
-            {
-              "value": "non_ho_ricevuto_nulla",
-              "description": {
-                "it-IT": "Non ho ricevuto la Certificazione",
-                "en-EN": "I haven't received the Certificate",
-                "de-DE": "Zertifikat nicht erhalten"
-              }
-            },
-            {
-              "value": "problemi_tecnici_su_io",
-              "description": {
-                "it-IT": "Ho un problema con IO",
-                "en-EN": "I have a problem with IO",
-                "de-DE": "Technisches Problem mit IO"
-              }
-            },
-            {
-              "value": "informazioni_generali",
-              "description": {
-                "it-IT": "Vorrei più informazioni",
-                "en-EN": "I need more details",
-                "de-DE": "Weitere Informationen erhalten"
+                "de-DE": "Ich habe ein anderes Problem"
               }
             }
           ]
@@ -428,6 +362,14 @@
                 "en-EN": "Bonus Vacanze",
                 "de-DE": "Ferienbonus"
               }
+            },
+            {
+              "value": "firma_con_io",
+              "description": {
+                "it-IT": "Firma con IO",
+                "en-EN": "Firma con IO",
+                "de-DE": "Mit IO unterschreiben"
+              }
             }
           ]
         }
@@ -459,6 +401,14 @@
               }
             },
             {
+              "value": "certificazione_verde_covid-19",
+              "description": {
+                "it-IT": "Certificazione Verde COVID-19",
+                "en-EN": "EU Digital COVID Certificate",
+                "de-DE": "Grünes EU COVID Zertifikat"
+              }
+            },
+            {
               "value": "suggerimento",
               "description": {
                 "it-IT": "Vorrei dare un suggerimento",
@@ -471,7 +421,7 @@
               "description": {
                 "it-IT": "Ho un altro problema",
                 "en-EN": "I have a different issue",
-                "de-DE": "Anderes Problem"
+                "de-DE": "Ich habe ein anderes Problem"
               }
             }
           ]
