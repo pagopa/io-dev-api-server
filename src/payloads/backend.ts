@@ -15,7 +15,8 @@ export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
     "it-IT": "",
-    "en-EN": "English message"
+    "en-EN": "English message",
+    "de-DE": ""
   },
   statusMessages: {
     items: []
@@ -167,8 +168,8 @@ export const backendStatus: BackendStatus = {
         ios: "2.66.0.0",
         android: "2.66.0.0"
       },
-      feedback_banner_visible: true,
-      ipatente_cta_visible: true
+      ipatente_cta_visible: true,
+      feedback_banner_visible: true
     },
     landing_banners: {
       priority_order: [
@@ -185,12 +186,14 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.critical,
       web_url: {
         "it-IT": "https://io.italia.it/status/#2012081628",
-        "en-EN": "https://io.italia.it/status/en/#2012081628"
+        "en-EN": "https://io.italia.it/status/en/#2012081628",
+        "de-DE": ""
       },
       message: {
         "it-IT":
           "Il messaggio di validazione indirizzo email potrebbe arrivare dopo diverse ore.",
-        "en-EN": "The email validation message may arrive after several hours."
+        "en-EN": "The email validation message may arrive after several hours.",
+        "de-DE": ""
       }
     },
     cashback: {
@@ -198,11 +201,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.warning,
       web_url: {
         "it-IT": "https://io.italia.it/cashback",
-        "en-EN": "https://io.italia.it/cashback"
+        "en-EN": "https://io.italia.it/cashback",
+        "de-DE": ""
       },
       message: {
         "it-IT": "L’iniziativa del Cashback si è conclusa.",
-        "en-EN": "The Cashback initiative has ended."
+        "en-EN": "The Cashback initiative has ended.",
+        "de-DE": ""
       }
     },
     cdc: {
@@ -210,11 +215,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.warning,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     cgn: {
@@ -222,11 +229,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.warning,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     fims: {
@@ -234,11 +243,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.warning,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     messages: {
@@ -248,7 +259,8 @@ export const backendStatus: BackendStatus = {
         "it-IT":
           "Ci sono dei problemi con la visualizzazione delle Certificazioni Verdi. I tecnici sono al lavoro per ripristinare il servizio.",
         "en-EN":
-          "We’re having issues showing EU digital COVID certificates. Technicians are working to restore service."
+          "We’re having issues showing EU digital COVID certificates. Technicians are working to restore service.",
+        "de-DE": ""
       }
     },
     services: {
@@ -257,7 +269,8 @@ export const backendStatus: BackendStatus = {
       message: {
         "it-IT":
           "Stiamo aggiornando i servizi locali. La lista tornerà presto disponibile.",
-        "en-EN": "We're updating local services. The list will be back soon."
+        "en-EN": "We're updating local services. The list will be back soon.",
+        "de-DE": ""
       }
     },
     login: {
@@ -267,7 +280,8 @@ export const backendStatus: BackendStatus = {
         "it-IT":
           "I nostri sistemi potrebbero rispondere con lentezza, ci scusiamo per il disagio.",
         "en-EN":
-          "Our systems may respond slowly, we apologize for the inconvenience."
+          "Our systems may respond slowly, we apologize for the inconvenience.",
+        "de-DE": ""
       }
     },
     wallets: {
@@ -275,7 +289,8 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.warning,
       message: {
         "it-IT": "Dalle 20:30 alle 22:40 non sarà possibile pagare con PayPal.",
-        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
+        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM.",
+        "de-DE": ""
       }
     },
     payments: {
@@ -283,11 +298,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.critical,
       message: {
         "it-IT": "Dalle 20:30 alle 22:40 non sarà possibile pagare con PayPal.",
-        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM."
+        "en-EN": "PayPal services won't be available from 8:30 to 10:40 PM.",
+        "de-DE": ""
       },
       web_url: {
         "it-IT": "https://io.italia.it/status/#2012081628",
-        "en-EN": "https://io.italia.it/status/en/#2012081628"
+        "en-EN": "https://io.italia.it/status/en/#2012081628",
+        "de-DE": ""
       }
     },
     ingress: {
@@ -297,7 +314,8 @@ export const backendStatus: BackendStatus = {
         "it-IT":
           "I nostri sistemi potrebbero rispondere con lentezza, ci scusiamo per il disagio.",
         "en-EN":
-          "Our systems may respond slowly, we apologize for the inconvenience."
+          "Our systems may respond slowly, we apologize for the inconvenience.",
+        "de-DE": ""
       }
     },
     bancomat: {
@@ -305,11 +323,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     satispay: {
@@ -317,11 +337,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     bancomatpay: {
@@ -329,11 +351,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     credit_card: {
@@ -343,11 +367,13 @@ export const backendStatus: BackendStatus = {
         "it-IT":
           "Per il grande numero di richieste, la verifica della tua carta potrebbe subire dei rallentamenti",
         "en-EN":
-          "Due to the big number of requests, the card verification process may be slowed down"
+          "Due to the big number of requests, the card verification process may be slowed down",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "possibili rallentamenti",
-        "en-EN": "possible slowdowns"
+        "en-EN": "possible slowdowns",
+        "de-DE": ""
       }
     },
     paypal: {
@@ -355,11 +381,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.warning,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     digital_payments: {
@@ -367,11 +395,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     cobadge: {
@@ -379,11 +409,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       badge: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     },
     euCovidCert: {
@@ -393,7 +425,8 @@ export const backendStatus: BackendStatus = {
         "it-IT":
           "Ci sono dei problemi con la visualizzazione delle Certificazioni Verdi. I tecnici sono al lavoro per ripristinare il servizio.",
         "en-EN":
-          "We’re having issues showing EU digital COVID certificates. Technicians are working to restore service."
+          "We’re having issues showing EU digital COVID certificates. Technicians are working to restore service.",
+        "de-DE": ""
       }
     },
     favourite_language: {
@@ -401,11 +434,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       web_url: {
         "it-IT": "https://github.com/pagopa/io-app/issues/new/choose",
-        "en-EN": "https://github.com/pagopa/io-app/issues/new/choose"
+        "en-EN": "https://github.com/pagopa/io-app/issues/new/choose",
+        "de-DE": ""
       },
       message: {
         "it-IT": "La traduzione in tedesco è in corso. Contribuisci su GitHub!",
-        "en-EN": "German translation is in progress. Contribute on GitHub!"
+        "en-EN": "German translation is in progress. Contribute on GitHub!",
+        "de-DE": ""
       }
     },
     app_update_required: {
@@ -413,11 +448,13 @@ export const backendStatus: BackendStatus = {
       level: LevelEnum.normal,
       web_url: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       },
       message: {
         "it-IT": "",
-        "en-EN": ""
+        "en-EN": "",
+        "de-DE": ""
       }
     }
   }
