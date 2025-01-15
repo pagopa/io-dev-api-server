@@ -116,7 +116,7 @@ definitions:
         $ref: "#/definitions/Idp"
       infocertid:
         $ref: "#/definitions/Idp"
-      intesaid:
+      intesiid:
         $ref: "#/definitions/Idp"
       lepidaid:
         $ref: "#/definitions/Idp"

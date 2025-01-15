@@ -158,6 +158,10 @@ export const backendStatus: BackendStatus = {
       tos_version: 4.91,
       tos_url: "https://io.italia.it/app-content/tos_privacy.html?v=4.91"
     },
+    absolutePortalLinks: {
+      io_web: "https://ioapp.it/",
+      io_showcase: "https://io.italia.it/"
+    },
     itw: {
       enabled: true,
       min_app_version: {
