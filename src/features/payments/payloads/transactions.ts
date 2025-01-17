@@ -29,7 +29,8 @@ export const mockAvailablePspList: ReadonlyArray<Bundle> = [
     pspBusinessName: "Banco di Sardegna",
     taxPayerFee: 456,
     primaryCiIncurredFee: 456,
-    idBundle: "B"
+    idBundle: "B",
+    onUs: true
   },
   {
     idPsp: "3",
