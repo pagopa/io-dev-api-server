@@ -74,13 +74,17 @@ export const onlineMerchants: OnlineMerchants = {
       discountTypes[
         faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
       ];
+    const newDiscounts = faker.datatype.boolean();
     return {
       discountCodeType: discountType,
       id: faker.datatype.number().toString() as NonEmptyString,
       name: `${faker.company.name()} [Online]` as NonEmptyString,
       productCategories: generateRandomCategoriesList(),
       websiteUrl: faker.internet.url() as NonEmptyString,
-      newDiscounts: faker.datatype.boolean()
+      newDiscounts,
+      numberOfNewDiscounts: newDiscounts
+        ? faker.datatype.number({ min: 1, max: 99 })
+        : undefined
     };
   })
 };
@@ -91,6 +95,7 @@ export const offlineMerchants: OfflineMerchants = {
     faker.datatype.number({ min: 1, max: 15 })
   ).map<OfflineMerchant>(_ => {
     faker.seed(millis++);
+    const newDiscounts = faker.datatype.boolean();
     return {
       id: faker.datatype.number().toString() as NonEmptyString,
       name: `${faker.company.name()} [Offline]` as NonEmptyString,
@@ -104,7 +109,10 @@ export const offlineMerchants: OfflineMerchants = {
         min: 0,
         max: 50000
       }) as NonNegativeInteger,
-      newDiscounts: faker.datatype.boolean()
+      newDiscounts,
+      numberOfNewDiscounts: newDiscounts
+        ? faker.datatype.number({ min: 1, max: 99 })
+        : undefined
     };
   })
 };
