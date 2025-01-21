@@ -121,6 +121,21 @@ const generateRandomTransactionOperationDTO = (
   };
 };
 
+const generateRandomTransactionOperationExpenseDTO = (
+  withInfo?: Partial<TransactionOperationDTO>
+): TransactionOperationDTO => ({
+  operationType: getRandomEnumValue(TransactionOperationTypeEnum),
+  operationDate: new Date(),
+  operationId: ulid(),
+  accruedCents: faker.datatype.number({ min: 500, max: 2500 }),
+  amountCents: faker.datatype.number({ min: 5000, max: 10000 }),
+  circuitType: "01",
+  status: getRandomEnumValue(TransactionStatusEnum),
+  businessName: faker.company.name(),
+  eventId: ulid(),
+  ...withInfo
+});
+
 const generateRandomRefundOperationDTO = (
   withInfo?: Partial<RefundOperationDTO>
 ): RefundOperationDTO => ({
@@ -592,6 +607,56 @@ range(0, walletConfig.discountCount).forEach(() => {
         operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
         instrumentType: OperationInstrumentTypeEnum.IDPAYCODE,
         brand: undefined
+      }),
+      generateRandomOnboardingOperationDTO()
+    ]
+  };
+});
+
+range(0, walletConfig.expenseCount).forEach(() => {
+  const initiativeName = `${faker.company.name()} [E]`;
+  const initiative: InitiativeDTO = {
+    ...generateRandomInitiativeDTO(),
+    initiativeName,
+    initiativeRewardType: InitiativeRewardTypeEnum.EXPENSE,
+    status: InitiativeStatus.REFUNDABLE
+  };
+
+  const { initiativeId } = initiative;
+
+  initiatives = { ...initiatives, [initiativeId]: initiative };
+  instruments = {
+    ...instruments,
+    [initiativeId]: [
+      {
+        instrumentId: ulid(),
+        idWallet: pagoPaWallet.idWallet?.toString(),
+        activationDate: new Date(),
+        status: InstrumentStatus.ACTIVE,
+        instrumentType: InstrumentTypeEnum.CARD
+      }
+    ]
+  };
+  initiativeTimeline = {
+    ...initiativeTimeline,
+    [initiativeId]: [
+      generateRandomRefundOperationDTO({
+        operationType: RefundOperationTypeEnum.PAID_REFUND
+      }),
+      generateRandomRefundOperationDTO({
+        operationType: RefundOperationTypeEnum.REJECTED_REFUND
+      }),
+      generateRandomTransactionOperationExpenseDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED
+      }),
+      generateRandomTransactionOperationExpenseDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED
+      }),
+      generateRandomTransactionOperationExpenseDTO({
+        operationType: TransactionOperationTypeEnum.TRANSACTION,
+        status: TransactionStatusEnum.AUTHORIZED
       }),
       generateRandomOnboardingOperationDTO()
     ]
