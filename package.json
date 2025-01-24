@@ -16,7 +16,7 @@
   "api_pagopa": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/paymentManager/spec.json",
   "pagopa_cobadge_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.57/pagopa/cobadge/abi_definitions.yml",
   "pagopa_privative_configuration": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.57/pagopa/privative/definitions.yml",
-  "api_cdc": "https://raw.githubusercontent.com/pagopa/io-app/master/assets/CdcSwagger.yml",
+  "api_cdc": "./assets/CdcSwagger.yml",
   "api_fci": "https://raw.githubusercontent.com/pagopa/io-backend/v16.4.0-RELEASE/api_io_sign.yaml",
   "api_pn": "https://raw.githubusercontent.com/pagopa/io-backend/v16.4.0-RELEASE/api_pn.yaml",
   "api_idpay": "https://raw.githubusercontent.com/pagopa/cstar-infrastructure/v8.25.1/src/domains/idpay-app/api/idpay_appio_full/openapi.appio.full.yml",
@@ -143,5 +143,6 @@
       "prettier --write",
       "eslint -c .eslintrc.js --fix"
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
