@@ -9,7 +9,7 @@
   "io_session_manager_public_api": "https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@1.0.0/apps/io-session-manager/api/public.yaml",
   "api_public_specs": "https://raw.githubusercontent.com/pagopa/io-backend/v16.4.0-RELEASE/api_public.yaml",
   "api_cgn": "https://raw.githubusercontent.com/pagopa/io-backend/v16.4.0-RELEASE/api_cgn.yaml",
-  "api_cgn_merchants": "https://raw.githubusercontent.com/pagopa/io-backend/v16.7.3-RELEASE/api_cgn_operator_search.yaml",
+  "api_cgn_merchants": "https://raw.githubusercontent.com/pagopa/io-backend/v16.7.4-RELEASE/api_cgn_operator_search.yaml",
   "api_cgn_geo": "https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml",
   "content_specs": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.57/definitions.yml",
   "api_pagopa_walletv2": "https://raw.githubusercontent.com/pagopa/io-services-metadata/1.0.57/bonus/specs/bpd/pm/walletv2.json",
