@@ -120,20 +120,20 @@ const checkPrerequisites: {
         code: ulid(),
         description:
           "Avere un ISEE valido al 31\\12\\2024 con un valore pari a:",
-        value: ["valore ISEE"]
+        value: "valore ISEE"
       },
       {
         _type: SelfDeclarationTextDTO.text,
         code: ulid(),
         description:
           "Aver già presentato una Dichiarazione Sostitutive Unica (DSU) con numero di protocollo:",
-        value: ["Numero di protocollo DSU"]
+        value: "Numero di protocollo DSU"
       },
       {
         _type: SelfDeclarationTextDTO.text,
         code: ulid(),
         description: "Voler ricevere il rimborso al seguente IBAN:",
-        value: ["IBAN"]
+        value: "IBAN"
       }
     ]
   },
