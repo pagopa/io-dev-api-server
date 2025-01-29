@@ -192,15 +192,3 @@ In order to test the uniqueness of email validation flow, the `config/config.jso
 
 ```
 and to validate/invalidate the email or make the email already taken you have to navigate from the browser to `http://localhost:3000/`
-
-## Cie ID
-To enable this feature, you must set the FeatureFlag to a minimum version higher than `0.0.0` in `src/payloads/backend.ts`
-
-```ts
-cie_id: {
-  min_app_version: {
-    ios: "1.0.0",
-    android: "1.0.0"
-  }
-}
-```
