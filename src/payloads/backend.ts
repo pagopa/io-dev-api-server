@@ -178,6 +178,9 @@ export const backendStatus: BackendStatus = {
         "SETTINGS_DISCOVERY",
         "INVALID_ID"
       ]
+    },
+    ioMarkdown: {
+      disabledForMessagesAndServices: false
     }
   },
   sections: {
