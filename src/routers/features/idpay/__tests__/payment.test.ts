@@ -49,7 +49,7 @@ describe("IDPay Payment API", () => {
 
   describe("PUT putAuthPayment", () => {
     it("should return 200 with payment data", async () => {
-      const trxCode = faker.random.alphaNumeric(8, { bannedChars: "1234567" });
+      const trxCode = faker.random.alphaNumeric(8, { bannedChars: "12345678" });
 
       const response = await request.put(
         addIdPayPrefix(`/payment/qr-code/${trxCode}/authorize`)
