@@ -619,7 +619,8 @@ range(0, walletConfig.expenseCount).forEach(() => {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.EXPENSE,
-    status: InitiativeStatus.REFUNDABLE
+    status: InitiativeStatus.REFUNDABLE,
+    webViewUrl: faker.internet.url()
   };
 
   const { initiativeId } = initiative;
