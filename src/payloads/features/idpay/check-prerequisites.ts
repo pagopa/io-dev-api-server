@@ -20,6 +20,7 @@ import {
   SelfDeclarationMultiDTO,
   _typeEnum as SelfDeclarationMultiType
 } from "../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
+import { _typeEnum as SelfDeclarationTextDTO } from "../../../../generated/definitions/idpay/SelfDeclarationTextDTO";
 import { getRandomEnumValue } from "../../utils/random";
 import { IDPayInitiativeID } from "./types";
 
@@ -73,6 +74,15 @@ const selfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
   }
 ];
 
+const guidoniaSelfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
+  {
+    _type: SelfDeclarationMultiType.multi,
+    code: ulid(),
+    description: "Costituire una famiglia monogenitoriale:",
+    value: ["Sì", "No"]
+  }
+];
+
 const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
   {
     _type: SelfDeclarationBoolType.boolean,
@@ -100,6 +110,32 @@ const checkPrerequisites: {
   [IDPayInitiativeID.OK]: {
     pdndCriteria,
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+  },
+  [IDPayInitiativeID.OK_GUIDONIA]: {
+    pdndCriteria,
+    selfDeclarationList: [
+      ...guidoniaSelfDeclarationMulti,
+      {
+        _type: SelfDeclarationTextDTO.text,
+        code: ulid(),
+        description:
+          "Avere un ISEE valido al 31\\12\\2024 con un valore pari a:",
+        value: "valore ISEE"
+      },
+      {
+        _type: SelfDeclarationTextDTO.text,
+        code: ulid(),
+        description:
+          "Aver già presentato una Dichiarazione Sostitutive Unica (DSU) con numero di protocollo:",
+        value: "Numero di protocollo DSU"
+      },
+      {
+        _type: SelfDeclarationTextDTO.text,
+        code: ulid(),
+        description: "Voler ricevere il rimborso al seguente IBAN:",
+        value: "IBAN"
+      }
+    ]
   },
   [IDPayInitiativeID.OK_PDND_ONLY]: {
     pdndCriteria,

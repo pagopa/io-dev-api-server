@@ -44,6 +44,11 @@ const initiativeData: {
     initiativeId: initiativeIdToString(IDPayInitiativeID.OK_SELF_ONLY),
     initiativeName: "Iniziativa - Solo auto dichiarazioni"
   },
+  [IDPayServiceID.OK_GUIDONIA]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.OK_GUIDONIA),
+    initiativeName: "Iniziativa GUIDONIA"
+  },
   [IDPayServiceID.KO_STATUS_NOT_ELIGIBLE]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
