@@ -58,6 +58,7 @@ import {
   StatusEnum,
   TransactionBarCodeResponse
 } from "../../generated/definitions/idpay/TransactionBarCodeResponse";
+import { serverUrl } from "../utils/server";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -620,7 +621,7 @@ range(0, walletConfig.expenseCount).forEach(() => {
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.EXPENSE,
     status: InitiativeStatus.REFUNDABLE,
-    webViewUrl: faker.internet.url()
+    webViewUrl: `iosso://${serverUrl}/fims/relyingParty/1/landingPage`
   };
 
   const { initiativeId } = initiative;
