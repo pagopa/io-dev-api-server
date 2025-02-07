@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
@@ -172,6 +173,16 @@ export const backendStatus: BackendStatus = {
         "SETTINGS_DISCOVERY",
         "INVALID_ID"
       ]
+    },
+    app_feedback: {
+      min_app_version: {
+        ios: "0.0.0.0",
+        android: "0.0.0.0"
+      },
+      feedback_uri: {
+        general: "https://io.italia.it/",
+        itw: "https://io.italia.it/"
+      }
     },
     ioMarkdown: {
       disabledForMessagesAndServices: false
