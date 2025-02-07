@@ -180,8 +180,9 @@ export const backendStatus: BackendStatus = {
         android: "0.0.0.0"
       },
       feedback_uri: {
-        general: "https://io.italia.it/",
-        itw: "https://io.italia.it/"
+        general: "https://pagopa.qualtrics.com/jfe/form/SV_dg0CZHTfsBN56aG",
+        payments: "https://pagopa.qualtrics.com/jfe/form/SV_0HrNTh9QPOcYKma",
+        itw: "https://pagopa.qualtrics.com/jfe/form/SV_3sMkRc6Jg9aarhY"
       }
     },
     ioMarkdown: {
