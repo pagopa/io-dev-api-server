@@ -39,3 +39,5 @@ for elem in "${apis[@]}"; do
     echo ${strarr[0]}; rm -rf ${strarr[0]}; mkdir -p ${strarr[0]}; yarn run gen-api-models --api-spec ${strarr[1]} --out-dir ${strarr[0]} --no-strict --response-decoders --request-types &
 done
 wait
+
+yarn prepare
