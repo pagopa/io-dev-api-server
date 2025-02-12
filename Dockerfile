@@ -6,5 +6,5 @@ COPY ./ ./
 
 EXPOSE 3000
 
-RUN yarn install --production
+RUN yarn install
 
