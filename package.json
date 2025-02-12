@@ -31,7 +31,6 @@
   "fims_sso": "https://raw.githubusercontent.com/pagopa/io-fims/a93f1a1abf5230f103d9f489b139902b87288061/apps/op-app/openapi.yaml",
   "author": "Matteo Boschi",
   "license": "MIT",
-  "private": false,
   "scripts": {
     "dev": "nodemon",
     "test": "jest",
@@ -143,5 +142,6 @@
       "prettier --write",
       "eslint -c .eslintrc.js --fix"
     ]
-  }
+  },
+  "packageManager": "yarn@3.8.7"
 }
