@@ -41,18 +41,25 @@
           "bannerEducational": {
             "title": {
               "it-IT": "Non riesci ad accedere?",
-              "en-EN": "Non riesci ad accedere?"
+              "en-EN": "Non riesci ad accedere?",
+              "de-DE": "Non riesci ad accedere?"
             },
             "content": {
               "it-IT": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE.",
-              "en-EN": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE."
+              "en-EN": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE.",
+              "de-DE": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE."
             },
             "action": {
               "label": {
                 "it-IT": "Leggi come fare",
-                "en-EN": "Leggi come fare"
+                "en-EN": "Leggi come fare",
+                "de-DE": "Leggi come fare"
               },
-              "href": "https://assistenza.ioapp.it/hc/it"
+              "href": {
+                "it-IT":"https://assistenza.ioapp.it/hc/it",
+                "en-EN":"https://assistenza.ioapp.it/hc/it",
+                "de-DE":"https://assistenza.ioapp.it/hc/it"
+              }
             }
           }
         }
