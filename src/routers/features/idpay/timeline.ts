@@ -30,8 +30,8 @@ addIdPayHandler("get", "/timeline/:initiativeId", (req, res) =>
       pipe(
         sequenceT(O.Monad)(
           O.of(initiativeId),
-          O.of(pipe(req.query.page, extractQuery)),
-          O.of(pipe(req.query.size, extractQuery))
+          O.of(pipe(req.query.page as Query, extractQuery)),
+          O.of(pipe(req.query.size as Query, extractQuery))
         ),
         O.chain(args => getTimelineResponse(...args))
       )

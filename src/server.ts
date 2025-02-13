@@ -8,7 +8,6 @@ import { messageRouter } from "./features/messages/routers/messagesRouter";
 import { pnRouter } from "./features/pn/routers/routers";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
-import { cdcRouter } from "./routers/features/cdc";
 import { cgnRouter } from "./routers/features/cgn";
 import { cgnGeoRouter } from "./routers/features/cgn/geocoding";
 import { cgnMerchantsRouter } from "./routers/features/cgn/merchants";
@@ -79,7 +78,6 @@ app.use(fastLoginMiddleware);
   cgnRouter,
   cgnMerchantsRouter,
   cgnGeoRouter,
-  cdcRouter,
   fciRouter,
   pnRouter,
   idpayRouter,

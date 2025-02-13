@@ -30,8 +30,8 @@ addHandler(serviceRouter, "get", addApiV2Prefix("/institutions"), (req, res) =>
       () =>
         pipe(
           sequenceT(O.Monad)(
-            O.of(pipe(req.query.limit, extractQuery)),
-            O.of(pipe(req.query.offset, extractQuery)),
+            O.of(pipe(req.query.limit as Query, extractQuery)),
+            O.of(pipe(req.query.offset as Query, extractQuery)),
             O.of(
               pipe(
                 req.query.scope,
@@ -69,8 +69,8 @@ addHandler(
           pipe(
             sequenceT(O.Monad)(
               O.fromNullable(req.params.institutionId),
-              O.of(pipe(req.query.limit, extractQuery)),
-              O.of(pipe(req.query.offset, extractQuery))
+              O.of(pipe(req.query.limit as Query, extractQuery)),
+              O.of(pipe(req.query.offset as Query, extractQuery))
             ),
             O.chain(args => getServicesByInstitutionIdResponsePayload(...args)),
             O.fold(
