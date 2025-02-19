@@ -3,10 +3,12 @@
 IO_BACKEND_VERSION=v16.7.4-RELEASE
 # need to change after merge on io-services-metadata
 IO_SERVICES_METADATA_VERSION=1.0.59
+# Session manager version
+IO_SESSION_MANAGER_VERSION=1.4.0
 
 declare -a noParams=(
   "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_public.yaml"
-  "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@1.0.0/apps/io-session-manager/api/public.yaml"
+  "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/public.yaml"
   "./generated/definitions/content https://raw.githubusercontent.com/pagopa/io-services-metadata/$IO_SERVICES_METADATA_VERSION/definitions.yml"
   "./generated/definitions/pagopa/cobadge/configuration https://raw.githubusercontent.com/pagopa/io-services-metadata/$IO_SERVICES_METADATA_VERSION/pagopa/cobadge/abi_definitions.yml"
   "./generated/definitions/pagopa/privative/configuration https://raw.githubusercontent.com/pagopa/io-services-metadata/$IO_SERVICES_METADATA_VERSION/pagopa/privative/definitions.yml"
@@ -29,7 +31,7 @@ declare -a noStrict=(
 
 declare -a noStrictRequestTypesRespondeDecoders=(
   "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_pn.yaml"
-  "./generated/definitions/fast_login https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@1.0.0/apps/io-session-manager/api/fast-login.yaml"
+  "./generated/definitions/fast_login https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/fast-login.yaml"
   "./generated/definitions/trial_system https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_trial_system.yaml"
   "./generated/definitions/fims_history https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_fims.yaml"
   "./generated/definitions/fims_sso https://raw.githubusercontent.com/pagopa/io-fims/a93f1a1abf5230f103d9f489b139902b87288061/apps/op-app/openapi.yaml"
@@ -37,7 +39,7 @@ declare -a noStrictRequestTypesRespondeDecoders=(
 
 declare -a noRMNoMKDirNoStrict=(
   "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_backend.yaml"
-  "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@1.0.0/apps/io-session-manager/api/internal.yaml"
+  "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/internal.yaml"
 )
 
 for elem in "${noParams[@]}"; do

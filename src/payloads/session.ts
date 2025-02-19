@@ -13,6 +13,15 @@ const getToken = (defaultValue: string) =>
     "global"
   );
 
+const getExpirationDate = (days: number) => {
+  const today = new Date();
+  const expirationDate = new Date();
+
+  expirationDate.setDate(today.getDate() + days);
+
+  return expirationDate;
+};
+
 // eslint-disable-next-line functional/no-let
 let mFIMSToken: string | undefined;
 export const FIMSToken = () => {
@@ -28,7 +37,8 @@ const generateSessionTokens = (): PublicSession => ({
   myPortalToken: getToken("AAAAAAAAAAAAA2"),
   bpdToken: getToken("AAAAAAAAAAAAA3"),
   zendeskToken: getToken("AAAAAAAAAAAAA4"),
-  fimsToken: FIMSToken()
+  fimsToken: FIMSToken(),
+  expirationDate: getExpirationDate(15)
 });
 
 // eslint-disable-next-line functional/no-let

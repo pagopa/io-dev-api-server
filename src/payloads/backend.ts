@@ -137,6 +137,11 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    loginConfig: {
+      notifyExpirationThreshold: {
+        fastLogin: 15
+      }
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
@@ -169,6 +174,7 @@ export const backendStatus: BackendStatus = {
     landing_banners: {
       priority_order: [
         "PUSH_NOTIFICATIONS_REMINDER",
+        "LV_EXPIRATION_REMINDER",
         "ITW_DISCOVERY",
         "SETTINGS_DISCOVERY",
         "INVALID_ID"
