@@ -2,7 +2,7 @@
 
 IO_BACKEND_VERSION=v16.7.4-RELEASE
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.58
+IO_SERVICES_METADATA_VERSION=1.0.59
 
 declare -a noParams=(
   "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_public.yaml"
