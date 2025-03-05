@@ -186,7 +186,6 @@ export const backendStatus: BackendStatus = {
         "SEND_ACTIVATION_REMINDER",
         "LV_EXPIRATION_REMINDER",
         "ITW_DISCOVERY",
-        "SETTINGS_DISCOVERY",
         "INVALID_ID"
       ]
     },
