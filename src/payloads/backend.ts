@@ -192,7 +192,10 @@ export const backendStatus: BackendStatus = {
       }
     },
     ioMarkdown: {
-      disabledForMessagesAndServices: false
+      min_app_version: {
+        ios: "3.1.0.0",
+        android: "3.1.0.0"
+      }
     }
   },
   sections: {
