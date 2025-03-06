@@ -2,7 +2,10 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
-import { pnOptInServiceId } from "../features/pn/services/services";
+import {
+  pnOptInServiceId,
+  pnServiceId
+} from "../features/pn/services/services";
 import { serverUrl } from "../utils/server";
 
 export const backendInfo = {
@@ -96,7 +99,8 @@ export const backendStatus: BackendStatus = {
         android: "2.35.0.1"
       },
       frontend_url: "https://cittadini.notifichedigitali.it",
-      optInServiceId: pnOptInServiceId
+      optInServiceId: pnOptInServiceId,
+      notificationServiceId: pnServiceId
     },
     idPay: {
       min_app_version: {
