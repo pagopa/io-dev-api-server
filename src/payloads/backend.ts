@@ -193,8 +193,8 @@ export const backendStatus: BackendStatus = {
     },
     ioMarkdown: {
       min_app_version: {
-        ios: "3.1.0.0",
-        android: "3.1.0.0"
+        ios: "4.0.0.0",
+        android: "4.0.0.0"
       }
     }
   },
