@@ -58,7 +58,16 @@ export const backendStatus: BackendStatus = {
         android: "2.68.0.0",
         ios: "2.68.0.0"
       },
-      historyEnabled: true
+      historyEnabled: true,
+      services: [
+        {
+          configuration_id: "iPatente",
+          service_id: "01JEXVQSRV2XRX9XDWQ5XQ6A8T",
+          organization_fiscal_code: "97532760580",
+          organization_name: "Ministero delle infrastrutture e dei trasporti",
+          service_name: "Motorizzazione Civile - Le mie patenti"
+        }
+      ]
     },
     premiumMessages: {
       opt_in_out_enabled: true
