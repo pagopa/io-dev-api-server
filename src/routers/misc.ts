@@ -22,6 +22,6 @@ addHandler(miscRouter, "get", "/config", (_, res) => {
  * API dedicated to status
  * return the current server status
  */
-addHandler(miscRouter, "get", addApiV1Prefix("/status"), (_, res) => {
+addHandler(miscRouter, "get", addApiV1Prefix("/ping"), (_, res) => {
   res.sendStatus(204);
 });
