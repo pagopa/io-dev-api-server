@@ -100,7 +100,9 @@ export const backendStatus: BackendStatus = {
       },
       frontend_url: "https://cittadini.notifichedigitali.it",
       optInServiceId: pnOptInServiceId,
-      notificationServiceId: pnServiceId
+      notificationServiceId: pnServiceId,
+      tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
+      privacy_url: "https://cittadini.notifichedigitali.it/informativa-privacy"
     },
     idPay: {
       min_app_version: {
