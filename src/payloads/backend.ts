@@ -73,7 +73,7 @@ export const backendStatus: BackendStatus = {
       opt_in_out_enabled: true
     },
     cdc: {
-      enabled: false
+      enabled: true
     },
     barcodesScanner: {
       dataMatrixPosteEnabled: true
