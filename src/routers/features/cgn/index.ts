@@ -24,11 +24,11 @@ import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
 import { genRandomOtpCode } from "../../../features/cgn/utils";
 import { addHandler } from "../../../payloads/response";
-import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
+import { cgnServiceId } from "../../../features/services/persistence/services/special/cgn-service";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 import { addApiV1Prefix } from "../../../utils/strings";
-import ServicesDB from "./../../../persistence/services";
+import ServicesDB from "../../../features/services/persistence/servicesDatabase";
 
 export const cgnRouter = Router();
 

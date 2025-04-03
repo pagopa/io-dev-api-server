@@ -10,7 +10,7 @@ import { defaultContentType } from "../persistence/messagesPayload";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
 import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 import { pnServiceId } from "../../pn/services/services";
 import { GetMessagesParameters } from "../../../types/parameters";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";

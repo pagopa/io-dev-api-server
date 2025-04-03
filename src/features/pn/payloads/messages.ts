@@ -8,7 +8,7 @@ import { faker } from "@faker-js/faker/locale/it";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { IoDevServerConfig } from "../../../types/config";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 import PaymentDB from "../../../persistence/payments";
 import { messageMarkdown } from "../../../utils/variables";
 import {

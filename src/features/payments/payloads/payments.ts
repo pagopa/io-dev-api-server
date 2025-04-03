@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/function";
 import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
 import { PaymentRequestsGetResponse } from "../../../../generated/definitions/pagopa/ecommerce/PaymentRequestsGetResponse";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 
 export const getPaymentRequestsGetResponse = (
   rptId: RptId

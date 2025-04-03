@@ -18,7 +18,6 @@ import { pnServiceId } from "../features/pn/services/services";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
-import { cgnServiceId } from "../payloads/services/special/cgn/factoryCGNService";
 import {
   fileExists,
   isPngOrJpegExtension,
@@ -29,7 +28,8 @@ import {
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import ServicesDB from "./../persistence/services";
+import ServicesDB from "../features/services/persistence/servicesDatabase";
+import { cgnServiceId } from "../features/services/persistence/services/special/cgn-service";
 
 export const servicesMetadataRouter = Router();
 

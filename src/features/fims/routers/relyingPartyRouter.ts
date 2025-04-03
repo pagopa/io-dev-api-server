@@ -9,7 +9,7 @@ import {
   relyingPartiesConfig
 } from "../services/relyingPartyService";
 import { baseProviderPath } from "../services/providerService";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 import { serverUrl } from "../../../utils/server";
 
 export const fimsRelyingPartyRouter = Router();

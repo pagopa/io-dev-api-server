@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/lib/function";
 import _ from "lodash";
 import { Institutions } from "../../../../generated/definitions/services/Institutions";
 import { ioDevServerConfig } from "../../../config";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../persistence/servicesDatabase";
 import { getInstitutions } from "../utils/institutions";
 
 const featuredInstitutionsSize =

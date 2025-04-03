@@ -5,7 +5,7 @@ import _ from "lodash";
 import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
 import { Institution } from "../../../../generated/definitions/services/Institution";
 import { InstitutionsResource } from "../../../../generated/definitions/services/InstitutionsResource";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../persistence/servicesDatabase";
 import { InstitutionWithScope, getInstitutions } from "../utils/institutions";
 
 const filterByScope = (

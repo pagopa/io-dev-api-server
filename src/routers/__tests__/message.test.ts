@@ -8,7 +8,7 @@ import { PaginatedPublicMessagesCollection } from "../../../generated/definition
 import { ioDevServerConfig } from "../../config";
 import { basePath } from "../../payloads/response";
 import MessagesDB from "../../features/messages/persistence/messagesDatabase";
-import ServicesDB from "../../persistence/services";
+import ServicesDB from "../../features/services/persistence/servicesDatabase";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
 import * as lollipopMid from "../../middleware/lollipopMiddleware";

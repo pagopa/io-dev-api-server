@@ -7,7 +7,7 @@ import { ServicePublic } from "../../../../generated/definitions/backend/Service
 import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
 import { SpecialServiceCategoryEnum } from "../../../../generated/definitions/backend/SpecialServiceCategory";
 import { SpecialServiceMetadata } from "../../../../generated/definitions/backend/SpecialServiceMetadata";
-import { SpecialServiceGenerator } from "../../../payloads/services/factory";
+import { SpecialServiceGenerator } from "../../services/persistence/services/factory";
 
 export const pnServiceId = "servicePN" as ServiceId;
 export const pnOptInServiceId = "01G74SW1PSM6XY2HM5EGZHZZET" as ServiceId;

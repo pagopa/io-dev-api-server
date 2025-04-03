@@ -23,7 +23,9 @@ import PaymentsDB from "../persistence/payments";
 import { RptId } from "../../generated/definitions/backend/RptId";
 import { fold } from "../types/PaymentStatus";
 import { detailV2EnumToPaymentProblemJSON } from "../utils/payment";
-import ServicesDB, { ServiceSummary } from "./../persistence/services";
+import ServicesDB, {
+  ServiceSummary
+} from "../features/services/persistence/servicesDatabase";
 import { profileRouter } from "./profile";
 import { walletRouter } from "./wallet";
 
