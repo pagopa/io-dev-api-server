@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/function";
 import _ from "lodash";
 import { InstitutionServicesResource } from "../../../../generated/definitions/services/InstitutionServicesResource";
 import { ServiceMinified } from "../../../../generated/definitions/services/ServiceMinified";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../persistence/servicesDatabase";
 
 export const getServicesByInstitutionIdResponsePayload = (
   institutionId: string,

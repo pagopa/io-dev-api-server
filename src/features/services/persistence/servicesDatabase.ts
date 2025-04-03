@@ -1,22 +1,17 @@
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
-import { ServicePreference } from "../../generated/definitions/backend/ServicePreference";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
-import ServiceFactory, {
-  SpecialServiceGenerator
-} from "../payloads/services/factory";
-import { createCdcService } from "../payloads/services/special/cdc/factoryCDCService";
-import {
-  cgnServiceId,
-  createCgnService
-} from "../payloads/services/special/cgn/factoryCGNService";
-import { createFciService } from "../payloads/services/special/fci/factoryFCIService";
-import { isCgnActivated } from "../routers/features/cgn";
-import { IoDevServerConfig } from "../types/config";
-import { ServiceScopeEnum } from "../../generated/definitions/backend/ServiceScope";
+import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
+import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { isCgnActivated } from "../../../routers/features/cgn";
+import { IoDevServerConfig } from "../../../types/config";
+import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
 import {
   createPnOptInService,
   createPnService
-} from "../features/pn/services/services";
+} from "../../pn/services/services";
+import { createFciService } from "./services/special/fci-service";
+import { cgnServiceId, createCgnService } from "./services/special/cgn-service";
+import ServiceFactory, { SpecialServiceGenerator } from "./services/factory";
+import { createCdcService } from "./services/special/cdc-service";
 
 export type ServiceSummary = {
   service_id: ServiceId;
@@ -36,47 +31,48 @@ let servicePreferences: Map<ServiceId, ServicePreference> = new Map<
   ServicePreference
 >();
 
-const createServices = (customConfig: IoDevServerConfig) => {
-  const localServiceCount = customConfig.services.local;
-  localServices = ServiceFactory.createLocalServices(localServiceCount, 0);
+const createServices = (config: IoDevServerConfig) => {
+  const {
+    local: localServiceCount,
+    national: nationalServiceCount,
+    specialServices: specialServicesConfig
+  } = config.services;
 
-  const nationalServiceCount = customConfig.services.national;
+  localServices = ServiceFactory.createLocalServices(localServiceCount, 0);
   nationalServices = ServiceFactory.createNationalServices(
     nationalServiceCount,
     localServiceCount
   );
 
-  const specialServicesConfig = customConfig.services.specialServices;
   const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],
+    [specialServicesConfig.fci, createFciService],
     [specialServicesConfig.pn, createPnOptInService],
-    [specialServicesConfig.pn, createPnService],
-    [specialServicesConfig.fci, createFciService]
+    [specialServicesConfig.pn, createPnService]
   ];
-  const specialServiceStartIndex = localServiceCount + nationalServiceCount;
   specialServices = ServiceFactory.createSpecialServices(
     specialServiceGenerators,
-    specialServiceStartIndex
+    localServiceCount + nationalServiceCount
   );
 
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
   customPreferenceEnabledGenerators.set(cgnServiceId, isCgnActivated);
-  const servicePreferenceSources = localServices
-    .map(localService =>
+
+  const servicePreferenceSources = [
+    ...localServices.map(localService =>
       ServiceFactory.createServicePreferenceSource(localService.service_id)
-    )
-    .concat(
-      nationalServices.map(nationalService =>
-        ServiceFactory.createServicePreferenceSource(nationalService.service_id)
-      ),
-      specialServices.map(specialService =>
-        ServiceFactory.createServicePreferenceSource(
-          specialService.service_id,
-          true
-        )
+    ),
+    ...nationalServices.map(nationalService =>
+      ServiceFactory.createServicePreferenceSource(nationalService.service_id)
+    ),
+    ...specialServices.map(specialService =>
+      ServiceFactory.createServicePreferenceSource(
+        specialService.service_id,
+        true
       )
-    );
+    )
+  ];
   servicePreferences = ServiceFactory.createServicePreferences(
     servicePreferenceSources,
     customPreferenceEnabledGenerators
@@ -132,20 +128,17 @@ const getSummaries = (
     ...nationalServices,
     ...(excludeSpecialServices ? [] : specialServices)
   ];
-  return services.map(
-    s =>
-      ({
-        service_id: s.service_id,
-        version: s.version,
-        scope: s.service_metadata?.scope
-      } as ServiceSummary)
-  );
+  return services.map(s => ({
+    service_id: s.service_id,
+    version: s.version,
+    scope: s.service_metadata?.scope
+  }));
 };
 
-const isSpecialService = (serviceId: ServiceId): boolean =>
-  specialServices.find(
+const isSpecialService = (serviceId: ServiceId) =>
+  specialServices.some(
     specialService => specialService.service_id === serviceId
-  ) !== undefined;
+  );
 
 const updatePreference = (
   serviceId: ServiceId,

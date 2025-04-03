@@ -22,7 +22,7 @@ import { thirdPartyMessagePreconditionMarkdown } from "../../../utils/variables"
 import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
 import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
 import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 import PaymentsDB from "../../../persistence/payments";
 import { AttachmentCategory } from "../types/attachmentCategory";
 import { rptIdFromPaymentDataWithRequiredPayee } from "../../../utils/payment";
