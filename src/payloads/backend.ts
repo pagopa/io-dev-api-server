@@ -183,8 +183,8 @@ export const backendStatus: BackendStatus = {
     },
     nativeLogin: {
       min_app_version: {
-        ios: "4.0.0",
-        android: "4.0.0"
+        ios: "0.0.0",
+        android: "0.0.0"
       }
     },
     tos: {
