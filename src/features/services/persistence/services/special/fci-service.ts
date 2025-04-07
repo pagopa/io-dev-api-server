@@ -1,24 +1,27 @@
-import { OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { ServiceMetadata } from "../../../../../../generated/definitions/backend/ServiceMetadata";
-import { ServicePublic } from "../../../../../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../../../../../generated/definitions/backend/ServiceScope";
-import { OrganizationName } from "../../../../../../generated/definitions/backend/OrganizationName";
-import { ServiceName } from "../../../../../../generated/definitions/backend/ServiceName";
+import {
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "@pagopa/ts-commons/lib/strings";
 import { SpecialServiceGenerator } from "../factory";
-import { ServiceId } from "../../../../../../generated/definitions/backend/ServiceId";
+import { ServiceDetails } from "../../../../../../generated/definitions/services/ServiceDetails";
+import { ScopeTypeEnum } from "../../../../../../generated/definitions/services/ScopeType";
+import { ServiceMetadata } from "../../../../../../generated/definitions/services/ServiceMetadata";
+import { ServiceId } from "../../../../../../generated/definitions/services/ServiceId";
 
 const fciServiceId = "serviceFci" as ServiceId;
 
 export const createFciService: SpecialServiceGenerator = (
-  createService: (serviceId: string) => ServicePublic,
-  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
+  createService: (serviceId: string) => ServiceDetails,
+  createServiceMetadata: (scope: ScopeTypeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
-): ServicePublic => ({
+): ServiceDetails => ({
   ...createService(fciServiceId),
-  organization_name: "Firma con IO" as OrganizationName,
-  service_name: "Firma con IO" as ServiceName,
-  service_metadata: {
-    ...createServiceMetadata(ServiceScopeEnum.NATIONAL)
+  organization: {
+    fiscal_code: organizationFiscalCode,
+    name: "Firma con IO" as NonEmptyString
   },
-  organization_fiscal_code: organizationFiscalCode
+  metadata: {
+    ...createServiceMetadata(ScopeTypeEnum.NATIONAL)
+  },
+  name: "Firma con IO" as NonEmptyString
 });

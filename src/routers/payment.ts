@@ -10,7 +10,7 @@ import { PaymentActivationsPostRequest } from "../../generated/definitions/backe
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { ServiceDetails } from "../../generated/definitions/services/ServiceDetails";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
 import { ioDevServerConfig } from "../config";
 import { getProblemJson } from "../payloads/error";
@@ -103,7 +103,7 @@ addHandler(
                       "Unable to find auto-referenced service"
                     )
                   ),
-              (randomService: ServicePublic) =>
+              (randomService: ServiceDetails) =>
                 pipe(
                   ioDevServerConfig.wallet.verificaError,
                   O.fromNullable,

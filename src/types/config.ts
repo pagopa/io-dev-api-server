@@ -101,10 +101,6 @@ export const ServicesConfig = t.intersection([
   t.interface({
     // configure some API response error code
     response: t.interface({
-      // 200 success with payload
-      getServicesResponseCode: HttpResponseCode,
-      // 200 success with payload
-      getServiceResponseCode: HttpResponseCode,
       // 200 success
       postServicesPreference: HttpResponseCode,
       // 200 success with payload

@@ -136,8 +136,8 @@ const createPnMessage = (
                   createPNMessageWithContent(
                     template,
                     createdMessageWithContent,
-                    pnService.organization_fiscal_code,
-                    pnService.organization_name,
+                    pnService.organization.fiscal_code,
+                    pnService.organization.name,
                     faker.helpers.replaceSymbols("######-#-####-####-#"),
                     sharedData.sender,
                     sharedData.subject,

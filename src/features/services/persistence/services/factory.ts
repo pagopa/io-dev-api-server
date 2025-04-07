@@ -4,27 +4,23 @@ import {
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
 import { faker } from "@faker-js/faker/locale/it";
-import { ServicePublic } from "../../../../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../../../../generated/definitions/backend/ServiceScope";
-import { OrganizationName } from "../../../../../generated/definitions/backend/OrganizationName";
-import { DepartmentName } from "../../../../../generated/definitions/backend/DepartmentName";
-import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
-import { NotificationChannelEnum } from "../../../../../generated/definitions/backend/NotificationChannel";
 import { validatePayload } from "../../../../utils/validator";
-import { ServiceMetadata } from "../../../../../generated/definitions/backend/ServiceMetadata";
-import { StandardServiceCategoryEnum } from "../../../../../generated/definitions/backend/StandardServiceCategory";
 import { frontMatter2CTA2 } from "../../../../utils/variables";
 import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../../../generated/definitions/backend/ServicePreference";
 import { getRandomValue } from "../../../../utils/random";
+import { ServiceDetails } from "../../../../../generated/definitions/services/ServiceDetails";
+import { StandardServiceCategoryEnum } from "../../../../../generated/definitions/services/StandardServiceCategory";
+import { ScopeTypeEnum } from "../../../../../generated/definitions/services/ScopeType";
+import { ServiceMetadata } from "../../../../../generated/definitions/services/ServiceMetadata";
 
 const createLocalServices = (
   count: number,
   serviceStartIndex: number,
   aggregationCount = 3
-): ServicePublic[] =>
+): ServiceDetails[] =>
   createServices(
-    ServiceScopeEnum.LOCAL,
+    ScopeTypeEnum.LOCAL,
     count,
     serviceStartIndex,
     aggregationCount
@@ -34,9 +30,9 @@ const createNationalServices = (
   count: number,
   serviceStartIndex: number,
   aggregationCount = 3
-): ServicePublic[] =>
+): ServiceDetails[] =>
   createServices(
-    ServiceScopeEnum.NATIONAL,
+    ScopeTypeEnum.NATIONAL,
     count,
     serviceStartIndex,
     aggregationCount
@@ -46,7 +42,7 @@ const createSpecialServices = (
   specialServiceGeneratorTuples: Array<[boolean, SpecialServiceGenerator]>,
   serviceStartIndex: number,
   aggregationCount = 3
-): ServicePublic[] =>
+): ServiceDetails[] =>
   createSpecialServicesInternal(
     specialServiceGeneratorTuples,
     serviceStartIndex,
@@ -100,11 +96,11 @@ const createServicePreferences = (
 };
 
 const createServices = (
-  scope: ServiceScopeEnum,
+  scope: ScopeTypeEnum,
   count: number,
   serviceStartIndex: number,
   aggregationCount: number
-): ServicePublic[] =>
+): ServiceDetails[] =>
   A.makeBy(count, index => {
     const serviceIndex = index + serviceStartIndex;
 
@@ -115,13 +111,14 @@ const createServices = (
 
     return {
       ...createService(`service${serviceIndex + 1}`),
-      organization_fiscal_code: `${organizationIndex}`.padStart(
-        11,
-        "0"
-      ) as OrganizationFiscalCode,
-      organization_name:
-        `${faker.company.name()} [${organizationIndex}]` as OrganizationName,
-      service_metadata: {
+      organization: {
+        fiscal_code: `${organizationIndex}`.padStart(
+          11,
+          "0"
+        ) as OrganizationFiscalCode,
+        name: `${faker.company.name()} [${organizationIndex}]` as NonEmptyString
+      },
+      metadata: {
         ...createServiceMetadata(scope),
         scope,
         cta: frontMatter2CTA2 as NonEmptyString
@@ -129,25 +126,24 @@ const createServices = (
     };
   });
 
-const createService = (serviceId: string): ServicePublic => {
+const createService = (serviceId: string): ServiceDetails => {
   const service = {
-    department_name: "dev department name" as DepartmentName,
-    organization_fiscal_code: "00514490010" as OrganizationFiscalCode,
-    organization_name: "dev organization name" as OrganizationName,
-    service_id: serviceId,
-    service_name: `${faker.company.bs()}` as ServiceName,
-    available_notification_channels: [
-      NotificationChannelEnum.EMAIL,
-      NotificationChannelEnum.WEBHOOK
-    ],
-    version: 1
+    description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
+    id: serviceId,
+    metadata: {
+      category: StandardServiceCategoryEnum.STANDARD,
+      scope: ScopeTypeEnum.LOCAL
+    },
+    name: `${faker.company.bs()}`,
+    organization: {
+      fiscal_code: "00514490010" as OrganizationFiscalCode,
+      name: "dev organization name" as NonEmptyString
+    }
   };
-  return validatePayload(ServicePublic, service);
+  return validatePayload(ServiceDetails, service);
 };
 
-const createServiceMetadata = (scope: ServiceScopeEnum): ServiceMetadata => ({
-  description:
-    "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>" as NonEmptyString,
+const createServiceMetadata = (scope: ScopeTypeEnum): ServiceMetadata => ({
   scope,
   address: faker.address.streetAddress() as NonEmptyString,
   email: faker.internet.email() as NonEmptyString,
@@ -165,14 +161,14 @@ const createSpecialServicesInternal = (
   specialServiceGeneratorTuples: Array<[boolean, SpecialServiceGenerator]>,
   serviceStartIndex: number,
   aggregationCount: number
-): ServicePublic[] => {
+): ServiceDetails[] => {
   const organizationStartIndex =
     getOrganizationIndex(serviceStartIndex, aggregationCount) +
     (serviceStartIndex % aggregationCount !== 0 ? 1 : 0);
 
   return specialServiceGeneratorTuples.reduce(
     (
-      acc: ServicePublic[],
+      acc: ServiceDetails[],
       [isSpecialServiceEnabled, specialServiceGenerator],
       index
     ) => {
@@ -204,10 +200,10 @@ const getOrganizationFiscalCode = (organizationsCount: number) =>
   `${organizationsCount}`.padStart(11, "0") as OrganizationFiscalCode;
 
 export type SpecialServiceGenerator = (
-  createService: (serviceId: string) => ServicePublic,
-  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
+  createService: (serviceId: string) => ServiceDetails,
+  createServiceMetadata: (scope: ScopeTypeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
-) => ServicePublic;
+) => ServiceDetails;
 
 export type ServicePreferenceSource = {
   serviceId: ServiceId;

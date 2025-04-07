@@ -20,7 +20,7 @@ import { getRandomIntInRange } from "../../../utils/id";
 import { validatePayload } from "../../../utils/validator";
 import { thirdPartyMessagePreconditionMarkdown } from "../../../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import PaymentsDB from "../../../persistence/payments";
@@ -96,7 +96,7 @@ export const withRemoteContent = (
 
 const serviceFromMessage = (
   message: CreatedMessageWithContent
-): E.Either<Error, Readonly<ServicePublic>> =>
+): E.Either<Error, Readonly<ServiceDetails>> =>
   pipe(message.sender_service_id, serviceId =>
     pipe(
       serviceId,
@@ -121,7 +121,7 @@ export const withPaymentData = (
     E.chain(service =>
       pipe(
         PaymentsDB.createPaymentData(
-          service.organization_fiscal_code,
+          service.organization.fiscal_code,
           invalidAfterDueDate,
           noticeNumber as PaymentNoticeNumber,
           amount as PaymentAmount
@@ -133,8 +133,8 @@ export const withPaymentData = (
                 paymentDataWithRequiredPayee
               ),
               amount as PaymentAmount,
-              service.organization_fiscal_code,
-              service.organization_name
+              service.organization.fiscal_code,
+              service.organization.name
             ),
             _ => ({
               ...message,

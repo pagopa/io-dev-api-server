@@ -8,7 +8,7 @@ import { PaymentActivationsGetResponse } from "../../generated/definitions/backe
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
 import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
-import { ServicePublic } from "../../generated/definitions/backend/ServicePublic";
+import { ServiceDetails } from "../../generated/definitions/services/ServiceDetails";
 import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definitions/backend/SpezzoneStrutturatoCausaleVersamento";
 import { Payment } from "../../generated/definitions/pagopa/walletv2/Payment";
 import { PaymentResponse } from "../../generated/definitions/pagopa/walletv2/PaymentResponse";
@@ -258,7 +258,7 @@ export const transactionIdResponseSecond = {
 };
 
 export const getPaymentRequestsGetResponse = (
-  senderService: ServicePublic
+  senderService: ServiceDetails
 ): PaymentRequestsGetResponse => ({
   importoSingoloVersamento: getRandomValue(
     ioDevServerConfig.wallet.payment
@@ -276,8 +276,8 @@ export const getPaymentRequestsGetResponse = (
     faker.finance.iban() as PaymentRequestsGetResponse["ibanAccredito"],
   causaleVersamento: faker.finance.transactionDescription(),
   enteBeneficiario: {
-    identificativoUnivocoBeneficiario: senderService.organization_fiscal_code,
-    denominazioneBeneficiario: senderService.organization_name
+    identificativoUnivocoBeneficiario: senderService.organization.fiscal_code,
+    denominazioneBeneficiario: senderService.organization.name
   },
   spezzoniCausaleVersamento: [
     {

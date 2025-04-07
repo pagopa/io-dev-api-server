@@ -249,7 +249,7 @@ const randomServiceId = () => {
   const allServices = ServicesDB.getAllServices();
   if (allServices.length > 0) {
     const firstNationalService = allServices[0];
-    return firstNationalService.service_id;
+    return firstNationalService.id;
   }
   throw new Error(
     "RelyingPartyRouter.randomServiceId: empty service collection. It must have some values at this point"

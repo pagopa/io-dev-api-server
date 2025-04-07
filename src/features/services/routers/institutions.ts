@@ -1,7 +1,7 @@
 import { sequenceT } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { ServiceScope } from "../../../../generated/definitions/backend/ServiceScope";
+import { ScopeType } from "../../../../generated/definitions/services/ScopeType";
 import { ioDevServerConfig } from "../../../config";
 import { addHandler } from "../../../payloads/response";
 import { getFeaturedInstitutionsResponsePayload } from "../payloads/get-featured-institutions";
@@ -35,7 +35,7 @@ addHandler(serviceRouter, "get", addApiV2Prefix("/institutions"), (req, res) =>
             O.of(
               pipe(
                 req.query.scope,
-                ServiceScope.decode,
+                ScopeType.decode,
                 O.fromEither,
                 O.toUndefined
               )
