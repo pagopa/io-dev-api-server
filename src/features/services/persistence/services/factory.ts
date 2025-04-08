@@ -4,19 +4,19 @@ import {
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
 import { faker } from "@faker-js/faker/locale/it";
-import { ServicePublic } from "../../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../../generated/definitions/backend/ServiceScope";
-import { OrganizationName } from "../../../generated/definitions/backend/OrganizationName";
-import { DepartmentName } from "../../../generated/definitions/backend/DepartmentName";
-import { ServiceName } from "../../../generated/definitions/backend/ServiceName";
-import { NotificationChannelEnum } from "../../../generated/definitions/backend/NotificationChannel";
-import { validatePayload } from "../../utils/validator";
-import { ServiceMetadata } from "../../../generated/definitions/backend/ServiceMetadata";
-import { StandardServiceCategoryEnum } from "../../../generated/definitions/backend/StandardServiceCategory";
-import { frontMatter2CTA2 } from "../../utils/variables";
-import { ServiceId } from "../../../generated/definitions/backend/ServiceId";
-import { ServicePreference } from "../../../generated/definitions/backend/ServicePreference";
-import { getRandomValue } from "../../utils/random";
+import { ServicePublic } from "../../../../../generated/definitions/backend/ServicePublic";
+import { ServiceScopeEnum } from "../../../../../generated/definitions/backend/ServiceScope";
+import { OrganizationName } from "../../../../../generated/definitions/backend/OrganizationName";
+import { DepartmentName } from "../../../../../generated/definitions/backend/DepartmentName";
+import { ServiceName } from "../../../../../generated/definitions/backend/ServiceName";
+import { NotificationChannelEnum } from "../../../../../generated/definitions/backend/NotificationChannel";
+import { validatePayload } from "../../../../utils/validator";
+import { ServiceMetadata } from "../../../../../generated/definitions/backend/ServiceMetadata";
+import { StandardServiceCategoryEnum } from "../../../../../generated/definitions/backend/StandardServiceCategory";
+import { frontMatter2CTA2 } from "../../../../utils/variables";
+import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
+import { ServicePreference } from "../../../../../generated/definitions/backend/ServicePreference";
+import { getRandomValue } from "../../../../utils/random";
 
 const createLocalServices = (
   count: number,
@@ -56,11 +56,10 @@ const createSpecialServices = (
 const createServicePreferenceSource = (
   serviceId: ServiceId,
   isSpecialService: boolean = false
-): ServicePreferenceSource =>
-  ({
-    serviceId,
-    isSpecialService
-  } as ServicePreferenceSource);
+): ServicePreferenceSource => ({
+  serviceId,
+  isSpecialService
+});
 
 const createServicePreferences = (
   servicesSources: ReadonlyArray<ServicePreferenceSource>,
@@ -216,9 +215,9 @@ export type ServicePreferenceSource = {
 };
 
 export default {
-  createServicePreferenceSource,
-  createServicePreferences,
   createLocalServices,
   createNationalServices,
+  createServicePreferenceSource,
+  createServicePreferences,
   createSpecialServices
 };
