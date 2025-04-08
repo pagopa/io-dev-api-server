@@ -5,7 +5,7 @@ import * as RA from "fp-ts/lib/ReadonlyArray";
 import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { ulid } from "ulid";
 import { faker } from "@faker-js/faker/locale/it";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
 import { Access } from "../../../../generated/definitions/fims_history/Access";
 import { FIMSConfig } from "../types/config";

@@ -5,7 +5,7 @@ import { ServicePublic } from "../../../generated/definitions/backend/ServicePub
 import { ioDevServerConfig, staticContentRootPath } from "../../config";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
-import ServicesDB from "./../../persistence/services";
+import ServicesDB from "../../features/services/persistence/servicesDatabase";
 
 const request = supertest(app);
 

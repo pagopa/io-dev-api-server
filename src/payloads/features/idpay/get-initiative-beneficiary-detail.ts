@@ -9,7 +9,7 @@ import { TimeTypeEnum } from "../../../../generated/definitions/idpay/TimeParame
 import { initiatives } from "../../../persistence/idpay";
 import { getRandomEnumValue } from "../../utils/random";
 
-import ServicesDB from "./../../../persistence/services";
+import ServicesDB from "../../../features/services/persistence/servicesDatabase";
 
 const generateRandomInitiativeDetailDTO = (
   initiative: InitiativeDTO

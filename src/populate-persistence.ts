@@ -17,7 +17,7 @@ import {
   withPaymentData,
   withRemoteContent
 } from "./features/messages/persistence/messagesPayload";
-import ServicesDB from "./persistence/services";
+import ServicesDB from "./features/services/persistence/servicesDatabase";
 import MessagesDB from "./features/messages/persistence/messagesDatabase";
 import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";

@@ -4,8 +4,8 @@ import _ from "lodash";
 import { FeaturedService } from "../../../../generated/definitions/services/FeaturedService";
 import { FeaturedServices } from "../../../../generated/definitions/services/FeaturedServices";
 import { ioDevServerConfig } from "../../../config";
-import ServicesDB from "../../../persistence/services";
-import { cgnServiceId } from "../../../payloads/services/special/cgn/factoryCGNService";
+import ServicesDB from "../persistence/servicesDatabase";
+import { cgnServiceId } from "../persistence/services/special/cgn-service";
 
 const featuredServicesSize =
   ioDevServerConfig.features.service.featuredServicesSize;

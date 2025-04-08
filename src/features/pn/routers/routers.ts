@@ -4,7 +4,7 @@ import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { addHandler } from "../../../payloads/response";
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
-import ServicesDB from "../../../persistence/services";
+import ServicesDB from "../../services/persistence/servicesDatabase";
 import { pnServiceId } from "../services/services";
 import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 

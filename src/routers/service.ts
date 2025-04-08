@@ -11,8 +11,8 @@ import { sendFileFromRootPath } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
 import { validatePayload } from "../utils/validator";
 import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
+import ServicesDB from "../features/services/persistence/servicesDatabase";
 import { publicRouter } from "./public";
-import ServicesDB from "./../persistence/services";
 
 export const serviceRouter = Router();
 const configResponse = ioDevServerConfig.services.response;
