@@ -138,6 +138,24 @@ export const backendStatus: BackendStatus = {
           },
           url: "https://io.italia.it/diccilatua/ces-pagamento"
         }
+      },
+      pspBanner: {
+        MYBANK: {
+          min_app_version: {
+            ios: "2.65.0.0",
+            android: "2.65.0.0"
+          },
+          title: {
+            "it-IT": "Non trovi la tua banca?",
+            "en-EN": "You don't find your bank?"
+          },
+          description: {
+            "it-IT":
+              "Non preoccuparti: dovrai selezionarla nei passaggi successivi.",
+            "en-EN":
+              "Don't worry: you will have to select it in the next steps."
+          }
+        }
       }
     },
     fastLogin: {
