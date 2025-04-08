@@ -13,18 +13,16 @@ export const getServicesByInstitutionIdResponsePayload = (
 ): O.Option<InstitutionServicesResource> => {
   const filteredServices: ServiceMinified[] = pipe(
     ServicesDB.getAllServices(),
-    A.filterMap(
-      ({ organization_fiscal_code, service_id, service_name, version }) => {
-        if (organization_fiscal_code === institutionId) {
-          return O.some({
-            id: service_id,
-            name: service_name,
-            version
-          });
-        }
-        return O.none;
+    A.filterMap(({ id, organization, name }) => {
+      if (organization.fiscal_code === institutionId) {
+        return O.some({
+          id,
+          name,
+          version: 1
+        });
       }
-    )
+      return O.none;
+    })
   );
 
   const totalElements = filteredServices.length;

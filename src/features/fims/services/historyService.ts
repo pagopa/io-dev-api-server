@@ -6,7 +6,7 @@ import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { ulid } from "ulid";
 import { faker } from "@faker-js/faker/locale/it";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { Access } from "../../../../generated/definitions/fims_history/Access";
 import { FIMSConfig } from "../types/config";
 import { AccessHistoryPage } from "../../../../generated/definitions/fims_history/AccessHistoryPage";
@@ -31,11 +31,11 @@ export const generateAccessHistoryData = (
 
 export const generateAccess = (
   index: number,
-  services: ServicePublic[],
+  services: ServiceDetails[],
   relyingPartyNameForService: Map<string, Redirect>
 ): Access => {
   const serviceId =
-    services[Math.round(Math.random() * (services.length - 1))].service_id;
+    services[Math.round(Math.random() * (services.length - 1))].id;
   if (!relyingPartyNameForService.has(serviceId)) {
     relyingPartyNameForService.set(serviceId, {
       display_name: faker.company.name(),

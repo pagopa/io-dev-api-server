@@ -9,59 +9,11 @@ import { ioDevServerConfig } from "../config";
 import { addHandler } from "../payloads/response";
 import { sendFileFromRootPath } from "../utils/file";
 import { addApiV1Prefix } from "../utils/strings";
-import { validatePayload } from "../utils/validator";
-import { PaginatedServiceTupleCollection } from "../../generated/definitions/backend/PaginatedServiceTupleCollection";
 import ServicesDB from "../features/services/persistence/servicesDatabase";
 import { publicRouter } from "./public";
 
 export const serviceRouter = Router();
 const configResponse = ioDevServerConfig.services.response;
-
-addHandler(serviceRouter, "get", addApiV1Prefix("/services"), (_, res) => {
-  if (configResponse.getServicesResponseCode !== 200) {
-    res.sendStatus(configResponse.getServicesResponseCode);
-    return;
-  }
-  const serviceSummaries = ServicesDB.getSummaries();
-  const paginatedServiceSummaries = validatePayload(
-    PaginatedServiceTupleCollection,
-    {
-      items: serviceSummaries,
-      page_size: serviceSummaries.length
-    }
-  );
-  res.json(paginatedServiceSummaries);
-});
-
-addHandler(
-  serviceRouter,
-  "get",
-  addApiV1Prefix("/services/:service_id"),
-  (req, res) =>
-    pipe(
-      configResponse.getServiceResponseCode,
-      O.fromPredicate(statusCode => statusCode !== 200),
-      O.fold(
-        () =>
-          pipe(
-            req.params.service_id,
-            O.fromNullable,
-            O.chain(serviceId =>
-              pipe(
-                serviceId as ServiceId,
-                ServicesDB.getService,
-                O.fromNullable
-              )
-            ),
-            O.fold(
-              () => res.sendStatus(404),
-              service => res.status(200).json(service)
-            )
-          ),
-        statusCode => res.sendStatus(statusCode)
-      )
-    )
-);
 
 addHandler(
   serviceRouter,

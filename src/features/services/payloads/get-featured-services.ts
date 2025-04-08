@@ -28,10 +28,10 @@ export const getFeaturedServicesResponsePayload = (): FeaturedServices => {
   const featuredNationalServices: FeaturedService[] = pipe(
     selectedNationalServices,
     A.map(service => ({
-      id: service.service_id,
-      name: service.service_name,
-      version: service.version,
-      organization_name: service.organization_name
+      id: service.id,
+      name: service.name,
+      version: 1,
+      organization_name: service.organization.name
     }))
   );
 
@@ -41,9 +41,9 @@ export const getFeaturedServicesResponsePayload = (): FeaturedServices => {
   const featuredSpecialServices: FeaturedService[] = pipe(
     selectedSpecialServices,
     A.map(service => ({
-      id: service.service_id,
-      name: service.service_name,
-      version: service.version
+      id: service.id,
+      name: service.name,
+      version: 1
     }))
   );
 

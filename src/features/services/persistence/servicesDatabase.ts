@@ -1,13 +1,13 @@
 import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
-import { ServicePublic } from "../../../../generated/definitions/backend/ServicePublic";
+import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { isCgnActivated } from "../../../routers/features/cgn";
 import { IoDevServerConfig } from "../../../types/config";
-import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
 import {
   createPnOptInService,
   createPnService
 } from "../../pn/services/services";
+import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { createFciService } from "./services/special/fci-service";
 import { cgnServiceId, createCgnService } from "./services/special/cgn-service";
 import ServiceFactory, { SpecialServiceGenerator } from "./services/factory";
@@ -15,16 +15,15 @@ import { createCdcService } from "./services/special/cdc-service";
 
 export type ServiceSummary = {
   service_id: ServiceId;
-  version: number;
-  scope?: ServiceScopeEnum;
+  scope: ScopeTypeEnum;
 };
 
 // eslint-disable-next-line functional/no-let
-let localServices: ServicePublic[] = [];
+let localServices: ServiceDetails[] = [];
 // eslint-disable-next-line functional/no-let
-let nationalServices: ServicePublic[] = [];
+let nationalServices: ServiceDetails[] = [];
 // eslint-disable-next-line functional/no-let
-let specialServices: ServicePublic[] = [];
+let specialServices: ServiceDetails[] = [];
 // eslint-disable-next-line functional/no-let
 let servicePreferences: Map<ServiceId, ServicePreference> = new Map<
   ServiceId,
@@ -61,16 +60,13 @@ const createServices = (config: IoDevServerConfig) => {
 
   const servicePreferenceSources = [
     ...localServices.map(localService =>
-      ServiceFactory.createServicePreferenceSource(localService.service_id)
+      ServiceFactory.createServicePreferenceSource(localService.id)
     ),
     ...nationalServices.map(nationalService =>
-      ServiceFactory.createServicePreferenceSource(nationalService.service_id)
+      ServiceFactory.createServicePreferenceSource(nationalService.id)
     ),
     ...specialServices.map(specialService =>
-      ServiceFactory.createServicePreferenceSource(
-        specialService.service_id,
-        true
-      )
+      ServiceFactory.createServicePreferenceSource(specialService.id, true)
     )
   ];
   servicePreferences = ServiceFactory.createServicePreferences(
@@ -102,22 +98,20 @@ const getPreference = (
 
 const getService = (
   serviceId: ServiceId
-): Readonly<ServicePublic> | undefined => {
-  const localService = localServices.find(
-    service => service.service_id === serviceId
-  );
+): Readonly<ServiceDetails> | undefined => {
+  const localService = localServices.find(service => service.id === serviceId);
   if (localService) {
     return localService;
   }
 
   const nationalService = nationalServices.find(
-    service => service.service_id === serviceId
+    service => service.id === serviceId
   );
   if (nationalService) {
     return nationalService;
   }
 
-  return specialServices.find(service => service.service_id === serviceId);
+  return specialServices.find(service => service.id === serviceId);
 };
 
 const getSummaries = (
@@ -129,16 +123,13 @@ const getSummaries = (
     ...(excludeSpecialServices ? [] : specialServices)
   ];
   return services.map(s => ({
-    service_id: s.service_id,
-    version: s.version,
-    scope: s.service_metadata?.scope
+    service_id: s.id,
+    scope: s.metadata.scope
   }));
 };
 
 const isSpecialService = (serviceId: ServiceId) =>
-  specialServices.some(
-    specialService => specialService.service_id === serviceId
-  );
+  specialServices.some(specialService => specialService.id === serviceId);
 
 const updatePreference = (
   serviceId: ServiceId,

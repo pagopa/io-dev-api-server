@@ -38,7 +38,7 @@ export const getMessageCategory = (
   }
   if (
     ThirdPartyMessageWithContent.is(message) &&
-    senderService.service_id === pnServiceId
+    senderService.id === pnServiceId
   ) {
     return {
       tag: TagEnumPN.PN,
@@ -89,15 +89,15 @@ const getPublicMessages = (
             message as CreatedMessageWithContentAndEnrichedData;
 
           return {
-            service_name: senderService.service_name,
-            organization_name: senderService.organization_name,
-            organization_fiscal_code: senderService.organization_fiscal_code,
+            service_name: senderService.name,
+            organization_name: senderService.organization.name,
+            organization_fiscal_code: senderService.organization.fiscal_code,
             message_title: content.subject,
             category: getMessageCategory(message),
             is_read,
             is_archived,
             has_attachments,
-            has_precondition: senderService.service_id === pnServiceId
+            has_precondition: senderService.id === pnServiceId
           };
         }
       )
@@ -197,7 +197,7 @@ const createMessage = () =>
           subject: `Created on ${new Date().toTimeString()}`,
           markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
         },
-        sender_service_id: localService.service_id
+        sender_service_id: localService.id
       } as CreatedMessageWithContentAndAttachments)
   );
 
