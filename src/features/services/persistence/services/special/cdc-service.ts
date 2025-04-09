@@ -1,28 +1,31 @@
-import { OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { ServiceMetadata } from "../../../../../../generated/definitions/backend/ServiceMetadata";
-import { ServicePublic } from "../../../../../../generated/definitions/backend/ServicePublic";
-import { ServiceScopeEnum } from "../../../../../../generated/definitions/backend/ServiceScope";
-import { OrganizationName } from "../../../../../../generated/definitions/backend/OrganizationName";
-import { ServiceName } from "../../../../../../generated/definitions/backend/ServiceName";
-import { SpecialServiceCategoryEnum } from "../../../../../../generated/definitions/backend/SpecialServiceCategory";
-import { SpecialServiceMetadata } from "../../../../../../generated/definitions/backend/SpecialServiceMetadata";
-import { ServiceId } from "../../../../../../generated/definitions/backend/ServiceId";
+import {
+  NonEmptyString,
+  OrganizationFiscalCode
+} from "@pagopa/ts-commons/lib/strings";
 import { SpecialServiceGenerator } from "../factory";
+import { ServiceDetails } from "../../../../../../generated/definitions/services/ServiceDetails";
+import { ScopeTypeEnum } from "../../../../../../generated/definitions/services/ScopeType";
+import { ServiceMetadata } from "../../../../../../generated/definitions/services/ServiceMetadata";
+import { SpecialServiceCategoryEnum } from "../../../../../../generated/definitions/services/SpecialServiceCategory";
+import { SpecialServiceMetadata } from "../../../../../../generated/definitions/services/SpecialServiceMetadata";
+import { ServiceId } from "../../../../../../generated/definitions/services/ServiceId";
 
 const cdcServiceId = "01G2AFTME08TS0QD2P2S682CJ0" as ServiceId;
 
 export const createCdcService: SpecialServiceGenerator = (
-  createService: (serviceId: string) => ServicePublic,
-  createServiceMetadata: (scope: ServiceScopeEnum) => ServiceMetadata,
+  createService: (serviceId: string) => ServiceDetails,
+  createServiceMetadata: (scope: ScopeTypeEnum) => ServiceMetadata,
   organizationFiscalCode: OrganizationFiscalCode
-): ServicePublic => ({
+): ServiceDetails => ({
   ...createService(cdcServiceId),
-  organization_name: "Ministero beni culturali" as OrganizationName,
-  service_name: "Carta Della Cultura" as ServiceName,
-  service_metadata: {
-    ...createServiceMetadata(ServiceScopeEnum.NATIONAL),
+  organization: {
+    fiscal_code: organizationFiscalCode,
+    name: "Ministero beni culturali" as NonEmptyString
+  },
+  metadata: {
+    ...createServiceMetadata(ScopeTypeEnum.NATIONAL),
     category: SpecialServiceCategoryEnum.SPECIAL,
     custom_special_flow: "cdc" as SpecialServiceMetadata["custom_special_flow"]
   },
-  organization_fiscal_code: organizationFiscalCode
+  name: "Carta Della Cultura" as NonEmptyString
 });

@@ -10,6 +10,8 @@ import {
 import app from "../../../../server";
 import { getWalletV2 } from "../../../walletsV2";
 import { addIdPayPrefix } from "../router";
+import ServicesDB from "../../../../features/services/persistence/servicesDatabase";
+import { ioDevServerConfig } from "../../../../config";
 
 const request = supertest(app);
 
@@ -17,6 +19,10 @@ const initiatives = Object.values(idPayInitiatives);
 
 // eslint-disable-next-line max-lines-per-function
 describe("IDPay Wallet API", () => {
+  beforeAll(() => {
+    ServicesDB.createServices(ioDevServerConfig);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });

@@ -2,15 +2,15 @@ import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { identity, pipe } from "fp-ts/lib/function";
 import _ from "lodash";
-import { ServiceScopeEnum } from "../../../../generated/definitions/backend/ServiceScope";
 import { Institution } from "../../../../generated/definitions/services/Institution";
 import { InstitutionsResource } from "../../../../generated/definitions/services/InstitutionsResource";
 import ServicesDB from "../persistence/servicesDatabase";
 import { InstitutionWithScope, getInstitutions } from "../utils/institutions";
+import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 
 const filterByScope = (
   institution: InstitutionWithScope,
-  scope?: ServiceScopeEnum
+  scope?: ScopeTypeEnum
 ) => {
   if (!scope) {
     return true;
@@ -28,7 +28,7 @@ const filterBySearch = (institution: InstitutionWithScope, search?: string) => {
 export const getInstitutionsResponsePayload = (
   limit: number = 20,
   offset: number = 0,
-  scope?: ServiceScopeEnum,
+  scope?: ScopeTypeEnum,
   search?: string
 ): O.Option<InstitutionsResource> => {
   const filteredInstitutions = pipe(

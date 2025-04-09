@@ -40,7 +40,7 @@ const generateRandomInitiativeDetailDTO = (
     tcLink: faker.internet.url(),
     logoURL: initiative.logoURL,
     updateDate: faker.date.recent(1),
-    serviceId: faker.helpers.arrayElement(serviceSummaries)?.service_id
+    serviceId: faker.helpers.arrayElement(serviceSummaries).service_id
   };
 };
 

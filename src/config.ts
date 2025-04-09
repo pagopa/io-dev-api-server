@@ -160,9 +160,7 @@ const defaultConfig: IoDevServerConfig = {
   services: {
     response: {
       getServicesPreference: 200,
-      getServicesResponseCode: 200,
-      postServicesPreference: 200,
-      getServiceResponseCode: 200
+      postServicesPreference: 200
     },
     national: 5,
     local: 5,
@@ -204,7 +202,8 @@ const defaultConfig: IoDevServerConfig = {
         featuredInstitutionsResponseCode: 200,
         featuredServicesResponseCode: 200,
         institutionsResponseCode: 200,
-        servicesByInstitutionIdResponseCode: 200
+        servicesByInstitutionIdResponseCode: 200,
+        serviceByIdResponseCode: 200
       }
     },
     fims: {

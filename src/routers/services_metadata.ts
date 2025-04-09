@@ -6,7 +6,6 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as B from "fp-ts/lib/boolean";
 import { pipe } from "fp-ts/lib/function";
-import { ServiceId } from "../../generated/definitions/backend/ServiceId";
 import { SpidIdps } from "../../generated/definitions/content/SpidIdps";
 import { VersionInfo } from "../../generated/definitions/content/VersionInfo";
 import { Zendesk } from "../../generated/definitions/content/Zendesk";
@@ -28,7 +27,6 @@ import {
 } from "../utils/file";
 import { serverUrl } from "../utils/server";
 import { validatePayload } from "../utils/validator";
-import ServicesDB from "../features/services/persistence/servicesDatabase";
 import { cgnServiceId } from "../features/services/persistence/services/special/cgn-service";
 
 export const servicesMetadataRouter = Router();
@@ -57,25 +55,6 @@ export const initializeServiceLogoMap = () => {
     `${serviceLogoBaseRelativePathGenerator()}specialServices/service_cgn.png`
   );
 };
-
-/**
- * @deprecated the app should not use this API. It should consume metadata contained in the service detail
- */
-addHandler(
-  servicesMetadataRouter,
-  "get",
-  addRoutePrefix(`/services/:service_id`),
-  (req, res) => {
-    const serviceId = req.params.service_id.split(".")[0] as ServiceId;
-    const service = ServicesDB.getService(serviceId);
-    if (service === undefined || service.service_metadata === undefined) {
-      res.sendStatus(404);
-      return;
-    }
-    const serviceMetadata = service.service_metadata;
-    res.json(serviceMetadata);
-  }
-);
 
 // backend service status
 addHandler(
