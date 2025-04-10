@@ -73,7 +73,13 @@ export const backendStatus: BackendStatus = {
       opt_in_out_enabled: true
     },
     cdc: {
-      enabled: false
+      enabled: true
+    },
+    cdcV2: {
+      min_app_version: {
+        android: "2.68.0.0",
+        ios: "2.68.0.0"
+      }
     },
     barcodesScanner: {
       dataMatrixPosteEnabled: true
