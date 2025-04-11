@@ -162,6 +162,12 @@ export const backendStatus: BackendStatus = {
               "Don't worry: you will have to select it in the next steps."
           }
         }
+      },
+      webViewPaymentFlow: {
+        min_app_version: {
+          ios: "2.65.0.0",
+          android: "2.65.0.0"
+        }
       }
     },
     fastLogin: {
