@@ -1,12 +1,11 @@
+import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
-import { addApiV1Prefix } from "../../../utils/strings";
-import { addHandler } from "../../../payloads/response";
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
+import { addHandler } from "../../../payloads/response";
+import { addApiV1Prefix } from "../../../utils/strings";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import { pnServiceId } from "../services/services";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 
 export const pnRouter = Router();
 
@@ -25,16 +24,12 @@ addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
     return;
   }
 
-  const increasedSettingsVersion =
-    ((servicePreference.settings_version as number) + 1) as NonNegativeInteger;
-  const updatedPreference = {
+  const persistedServicePreference = ServicesDB.updatePreference(pnServiceId, {
+    ...servicePreference,
     is_inbox_enabled: maybeActivation.right.activation_status,
-    settings_version: increasedSettingsVersion
-  } as ServicePreference;
-  const persistedServicePreference = ServicesDB.updatePreference(
-    pnServiceId,
-    updatedPreference
-  );
+    settings_version: (servicePreference.settings_version +
+      1) as NonNegativeInteger
+  });
   if (!persistedServicePreference) {
     res.sendStatus(500);
     return;
