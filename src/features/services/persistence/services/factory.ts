@@ -110,7 +110,7 @@ const createServices = (
     );
 
     return {
-      ...createService(`service${serviceIndex + 1}`),
+      ...createServiceFromFactory(`service${serviceIndex + 1}`),
       organization: {
         fiscal_code: `${organizationIndex}`.padStart(
           11,
@@ -119,14 +119,14 @@ const createServices = (
         name: `${faker.company.name()} [${organizationIndex}]` as NonEmptyString
       },
       metadata: {
-        ...createServiceMetadata(scope),
+        ...createServiceMetadataFromFactory(scope),
         scope,
         cta: frontMatter2CTA2 as NonEmptyString
       }
     };
   });
 
-const createService = (serviceId: string): ServiceDetails => {
+export const createServiceFromFactory = (serviceId: string): ServiceDetails => {
   const service = {
     description: "demo demo <br/>demo demo <br/>demo demo <br/>demo demo <br/>",
     id: serviceId,
@@ -143,7 +143,9 @@ const createService = (serviceId: string): ServiceDetails => {
   return validatePayload(ServiceDetails, service);
 };
 
-const createServiceMetadata = (scope: ScopeTypeEnum): ServiceMetadata => ({
+export const createServiceMetadataFromFactory = (
+  scope: ScopeTypeEnum
+): ServiceMetadata => ({
   scope,
   address: faker.address.streetAddress() as NonEmptyString,
   email: faker.internet.email() as NonEmptyString,
@@ -180,8 +182,8 @@ const createSpecialServicesInternal = (
         return [
           ...acc,
           specialServiceGenerator(
-            createService,
-            createServiceMetadata,
+            createServiceFromFactory,
+            createServiceMetadataFromFactory,
             organizationFiscalCode
           )
         ];
