@@ -27,7 +27,10 @@ export const getStatusCodeForWalletFailure = (
 ): 400 | 404 | 409 | 502 | 503 => {
   if (ValidationFaultPaymentUnknownProblemJson.is(failure)) {
     return 404;
-  } else if (PaymentDuplicatedStatusFaultPaymentProblemJson.is(failure)) {
+  } else if (
+    PaymentDuplicatedStatusFaultPaymentProblemJson.is(failure) ||
+    PaymentOngoingStatusFaultPaymentProblemJson.is(failure)
+  ) {
     return 409;
   } else if (GatewayFaultPaymentProblemJson.is(failure)) {
     return 502;

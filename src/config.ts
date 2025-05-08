@@ -10,6 +10,8 @@ import { PreferredLanguageEnum } from "../generated/definitions/backend/Preferre
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
 import { TrialId } from "../generated/definitions/trial_system/TrialId";
+import { FaultCodeCategoryEnum } from "../generated/definitions/pagopa/ecommerce/PaymentOngoingStatusFaultPaymentProblemJson";
+import { PaymentOngoingStatusFaultEnum } from "../generated/definitions/pagopa/ecommerce/PaymentOngoingStatusFault";
 import {
   IoDevServerConfig,
   ProfileAttrs,
@@ -249,6 +251,12 @@ const defaultConfig: IoDevServerConfig = {
     },
     trials: {
       ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]: undefined // IT-WALLET-TRIAL (the user never subscribed to the trial)
+    },
+    wallet: {
+      verificationFailure: {
+        faultCodeCategory: FaultCodeCategoryEnum.PAYMENT_ONGOING,
+        faultCodeDetail: PaymentOngoingStatusFaultEnum.PAA_PAGAMENTO_IN_CORSO
+      }
     },
     allowRandomValues: true
   }
