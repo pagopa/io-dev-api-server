@@ -296,6 +296,8 @@ a link must **always** include the protocol (\`http://\` or \`https://\`)
 
 [SERVICES_HOME](ioit://SERVICES_HOME)
 
+[INSTITUTION_HOME](ioit://services/institution-home?institutionId=00000000003&institutionName=Institution%20Name)
+
 [PROFILE_MAIN](ioit://PROFILE_MAIN)
 
 [PROFILE_PRIVACY](ioit://PROFILE_PRIVACY)
