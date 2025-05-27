@@ -24,6 +24,12 @@ import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import MessagesService, {
   getMessageCategory
 } from "../services/messagesService";
+import PaymentsDB from "../../../persistence/payments";
+import { isProcessedPayment } from "../../../types/PaymentStatus";
+import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
+
+// eslint-disable-next-line functional/no-let
+let latestPaymentRequestId: string | undefined;
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -390,3 +396,78 @@ addHandler(messageRouter, "post", addApiV1Prefix("/message"), (_, res) =>
     res.status(201).json(newMessage)
   )
 );
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/payment-requests/:rptId"),
+  (req, res) => {
+    const rptId = req.params.rptId;
+    const maybePaymentStatus = PaymentsDB.getPaymentStatus(rptId);
+    if (O.isNone(maybePaymentStatus)) {
+      res
+        .status(404)
+        .json(getProblemJson(404, `Payment with rptdId (${rptId}) not found`));
+      return;
+    }
+
+    const paymentStatus = maybePaymentStatus.value;
+    if (isProcessedPayment(paymentStatus)) {
+      res.status(500).json(paymentStatus.status);
+    } else {
+      latestPaymentRequestId = rptId;
+      res.status(200).json(paymentStatus.data);
+    }
+  }
+);
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/payment-info/:rptId"),
+  (req, res) => {
+    // TODO
+    res.redirect(addApiV1Prefix(`/payment-requests/${req.params.rptId}`));
+  }
+);
+
+addHandler(
+  messageRouter,
+  "post",
+  addApiV1Prefix("/messages/private/finalizePayment"),
+  (req, res) => {
+    if (latestPaymentRequestId != null) {
+      const outcomeString = req.query.outcome;
+      const outcomeNumber = Number(outcomeString);
+      if (!Number.isSafeInteger(outcomeNumber)) {
+        res
+          .status(400)
+          .json(getProblemJson(400, "Missing or invalid 'outcome' parameter"));
+        return;
+      }
+      const outcomeDetailV2Enum = mapOutcomeCodeToDetailsV2Enum(outcomeNumber);
+      PaymentsDB.createProcessedPayment(
+        latestPaymentRequestId,
+        outcomeDetailV2Enum
+      );
+      latestPaymentRequestId = undefined;
+    }
+    res.sendStatus(200);
+  }
+);
+
+const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
+  switch (outcome) {
+    case 0:
+      return Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO;
+    case 8:
+      return Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO;
+    case 9:
+      return Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO;
+    case 11:
+      return Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO;
+    case 18:
+      return Detail_v2Enum.PAA_PAGAMENTO_SCADUTO;
+  }
+  return Detail_v2Enum.GENERIC_ERROR;
+};

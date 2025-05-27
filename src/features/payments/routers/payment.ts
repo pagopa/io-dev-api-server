@@ -23,10 +23,14 @@ import WalletDB from "../persistence/userWallet";
 import NoticesDB from "../persistence/notices";
 import {
   WalletPaymentFailure,
-  getStatusCodeForWalletFailure
+  getStatusCodeForWalletFailure,
+  httpStatusCodeFromDetailV2Enum,
+  payloadFromDetailV2Enum
 } from "../types/failure";
 import { generateOnboardablePaymentMethods } from "../utils/onboarding";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
+import PaymentsDB from "../../../persistence/payments";
+import { fold } from "../../../types/PaymentStatus";
 import { addPaymentHandler } from "./router";
 
 // Verify single payment notices
@@ -45,14 +49,50 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
             () =>
               pipe(
                 rptId,
-                getPaymentRequestsGetResponse,
+                PaymentsDB.getPaymentStatus,
                 O.fold(
                   () =>
-                    res.status(404).json({
-                      faultCodeCategory: FaultCategoryEnum.PAYMENT_UNKNOWN,
-                      faultCodeDetail: ""
-                    }),
-                  response => res.status(200).json(response)
+                    pipe(
+                      rptId,
+                      getPaymentRequestsGetResponse,
+                      O.fold(
+                        () =>
+                          res.status(404).json({
+                            faultCodeCategory:
+                              FaultCategoryEnum.PAYMENT_UNKNOWN,
+                            faultCodeDetail: ""
+                          }),
+                        response => res.status(200).json(response)
+                      )
+                    ),
+                  fold(
+                    processedPayment =>
+                      res
+                        .status(
+                          httpStatusCodeFromDetailV2Enum(
+                            processedPayment.status.detail_v2
+                          )
+                        )
+                        .json(
+                          payloadFromDetailV2Enum(
+                            processedPayment.status.detail_v2
+                          )
+                        ),
+                    processablePayment =>
+                      res.status(200).send({
+                        rptId: processablePayment.data.codiceContestoPagamento,
+                        amount:
+                          processablePayment.data.importoSingoloVersamento,
+                        paFiscalCode:
+                          processablePayment.data.enteBeneficiario
+                            ?.identificativoUnivocoBeneficiario,
+                        paName:
+                          processablePayment.data.enteBeneficiario
+                            ?.denominazioneBeneficiario,
+                        description: processablePayment.data.causaleVersamento,
+                        dueDate: processablePayment.data.dueDate
+                      })
+                  )
                 )
               ),
             failure =>

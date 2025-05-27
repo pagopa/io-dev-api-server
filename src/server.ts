@@ -16,7 +16,6 @@ import { fciRouter } from "./routers/features/fci";
 import { idpayRouter } from "./routers/features/idpay";
 import { lollipopRouter } from "./routers/features/lollipop";
 import { miscRouter } from "./routers/misc";
-import { paymentRouter } from "./routers/payment";
 import { profileRouter } from "./routers/profile";
 import { publicRouter } from "./routers/public";
 import { serviceRouter } from "./routers/service";
@@ -29,7 +28,6 @@ import { bancomatRouter } from "./routers/walletsV2/methods/bancomat";
 import { bpayRouter } from "./routers/walletsV2/methods/bpay";
 import { cobadgeRouter } from "./routers/walletsV2/methods/cobadge";
 import { satispayRouter } from "./routers/walletsV2/methods/satispay";
-import { payPalRouter } from "./routers/walletsV3/methods/paypal";
 import { delayer } from "./utils/delay_middleware";
 import { walletRouter as newWalletRouter } from "./features/payments";
 import { serviceRouter as newServiceRouter } from "./features/services";
@@ -66,13 +64,11 @@ app.use(fastLoginMiddleware);
   walletRouter,
   wallet2Router,
   satispayRouter,
-  payPalRouter,
   bpayRouter,
   bancomatRouter,
   cobadgeRouter,
   dashboardWalletV2Router,
   dashboardHomeRouter,
-  paymentRouter,
   servicesMetadataRouter,
   miscRouter,
   cgnRouter,
