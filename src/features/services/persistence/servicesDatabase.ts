@@ -1,5 +1,6 @@
 import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { isCgnActivated } from "../../../routers/features/cgn";
 import { IoDevServerConfig } from "../../../types/config";
@@ -7,11 +8,10 @@ import {
   createPnOptInService,
   createPnService
 } from "../../pn/services/services";
-import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
-import { createFciService } from "./services/special/fci-service";
-import { cgnServiceId, createCgnService } from "./services/special/cgn-service";
 import ServiceFactory, { SpecialServiceGenerator } from "./services/factory";
 import { createCdcService } from "./services/special/cdc-service";
+import { cgnServiceId, createCgnService } from "./services/special/cgn-service";
+import { createFciService } from "./services/special/fci-service";
 
 export type ServiceSummary = {
   service_id: ServiceId;
@@ -38,21 +38,23 @@ const createServices = (config: IoDevServerConfig) => {
   } = config.services;
 
   localServices = ServiceFactory.createLocalServices(localServiceCount, 0);
-  nationalServices = ServiceFactory.createNationalServices(
-    nationalServiceCount,
-    localServiceCount
-  );
+  nationalServices = [
+    ...ServiceFactory.createNationalServices(
+      nationalServiceCount,
+      localServiceCount
+    ),
+    createPnOptInService()
+  ];
 
   const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],
     [specialServicesConfig.fci, createFciService],
-    [specialServicesConfig.pn, createPnOptInService],
     [specialServicesConfig.pn, createPnService]
   ];
   specialServices = ServiceFactory.createSpecialServices(
     specialServiceGenerators,
-    localServiceCount + nationalServiceCount
+    localServiceCount + nationalServiceCount + 1 // + 1 for the pn opt-in service
   );
 
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
