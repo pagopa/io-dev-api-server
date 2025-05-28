@@ -435,7 +435,8 @@ addHandler(
       latestPaymentRequestId = rptId;
       res.status(200).json(paymentStatus.data);
     }
-  }
+  },
+  () => Math.ceil(500 + 1000 * Math.random())
 );
 
 addHandler(
@@ -470,7 +471,8 @@ addHandler(
       latestPaymentRequestId = rptId;
       res.status(statusCode).json(payload);
     }
-  }
+  },
+  () => Math.ceil(500 + 1000 * Math.random())
 );
 
 addHandler(
