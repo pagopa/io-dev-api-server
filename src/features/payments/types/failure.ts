@@ -1,25 +1,45 @@
 import * as t from "io-ts";
-import { GatewayFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/GatewayFaultPaymentProblemJson";
-import { PartyConfigurationFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFaultPaymentProblemJson";
-import { PaymentCanceledStatusFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PaymentCanceledStatusFaultPaymentProblemJson";
-import { PaymentDuplicatedStatusFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PaymentDuplicatedStatusFaultPaymentProblemJson";
-import { PaymentExpiredStatusFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PaymentExpiredStatusFaultPaymentProblemJson";
-import { PaymentOngoingStatusFaultPaymentProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/PaymentOngoingStatusFaultPaymentProblemJson";
+import {
+  FaultCodeCategoryEnum as GatewayEnum,
+  GatewayFaultPaymentProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/GatewayFaultPaymentProblemJson";
+import {
+  FaultCodeCategoryEnum as PartyEnum,
+  PartyConfigurationFaultPaymentProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFaultPaymentProblemJson";
+import {
+  FaultCodeCategoryEnum as CancelledEnum,
+  PaymentCanceledStatusFaultPaymentProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/PaymentCanceledStatusFaultPaymentProblemJson";
+import {
+  FaultCodeCategoryEnum as DuplicatedEnum,
+  PaymentDuplicatedStatusFaultPaymentProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/PaymentDuplicatedStatusFaultPaymentProblemJson";
+import {
+  FaultCodeCategoryEnum as ExpiredEnum,
+  PaymentExpiredStatusFaultPaymentProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/PaymentExpiredStatusFaultPaymentProblemJson";
+import {
+  FaultCodeCategoryEnum as OngoingEnum,
+  PaymentOngoingStatusFaultPaymentProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/PaymentOngoingStatusFaultPaymentProblemJson";
 import { ValidationFaultPaymentDataErrorProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentDataErrorProblemJson";
-import { ValidationFaultPaymentUnavailableProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnavailableProblemJson";
-import { ValidationFaultPaymentUnknownProblemJson } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnknownProblemJson";
+import {
+  FaultCodeCategoryEnum as ValidationEnum,
+  ValidationFaultPaymentUnavailableProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnavailableProblemJson";
+import {
+  FaultCodeCategoryEnum as UnknownEnum,
+  ValidationFaultPaymentUnknownProblemJson
+} from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnknownProblemJson";
 import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentDuplicatedStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentDuplicatedStatusFault";
-import { FaultCodeCategoryEnum as DuplicatedEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentDuplicatedStatusFaultPaymentProblemJson";
 import { PaymentCanceledStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentCanceledStatusFault";
-import { FaultCodeCategoryEnum as CancelledEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentCanceledStatusFaultPaymentProblemJson";
 import { PaymentExpiredStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentExpiredStatusFault";
-import { FaultCodeCategoryEnum as ExpiredEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentExpiredStatusFaultPaymentProblemJson";
 import { PaymentOngoingStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentOngoingStatusFault";
-import { FaultCodeCategoryEnum as OngoingEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentOngoingStatusFaultPaymentProblemJson";
 import { ValidationFaultPaymentUnknownEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnknown";
-import { FaultCodeCategoryEnum as UnknownEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnknownProblemJson";
-import { FaultCodeCategoryEnum as GatewayEnum } from "../../../../generated/definitions/pagopa/ecommerce/GatewayFaultPaymentProblemJson";
+import { PartyConfigurationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFault";
+import { ValidationFaultPaymentUnavailableEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnavailable";
 
 export type WalletPaymentFailure = t.TypeOf<typeof WalletPaymentFailure>;
 export const WalletPaymentFailure = t.union([
@@ -72,6 +92,10 @@ export const httpStatusCodeFromDetailV2Enum = (input: Detail_v2Enum) => {
       return 409;
     case Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO:
       return 404;
+    case Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA:
+      return 503;
+    case Detail_v2Enum.PPT_AUTENTICAZIONE:
+      return 502;
     default:
       return 400;
   }
@@ -107,6 +131,17 @@ export const payloadFromDetailV2Enum = (input: Detail_v2Enum) => {
         faultCodeCategory: UnknownEnum.PAYMENT_UNKNOWN,
         faultCodeDetail:
           ValidationFaultPaymentUnknownEnum.PAA_PAGAMENTO_SCONOSCIUTO
+      };
+    case Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA:
+      return {
+        faultCodeCategory: PartyEnum.DOMAIN_UNKNOWN,
+        faultCodeDetail: PartyConfigurationFaultEnum.PPT_ERRORE_EMESSO_DA_PAA
+      };
+    case Detail_v2Enum.PPT_AUTENTICAZIONE:
+      return {
+        faultCodeCategory: ValidationEnum.PAYMENT_UNAVAILABLE,
+        faultCodeDetail:
+          ValidationFaultPaymentUnavailableEnum.PPT_AUTENTICAZIONE
       };
     default:
       return {

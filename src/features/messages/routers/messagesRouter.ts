@@ -5,6 +5,7 @@ import * as B from "fp-ts/lib/boolean";
 import * as A from "fp-ts/lib/ReadonlyArray";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import _ from "lodash";
 import { TagEnum as PNCategoryTagEnum } from "../../../../generated/definitions/backend/MessageCategoryPN";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
@@ -25,8 +26,24 @@ import MessagesService, {
   getMessageCategory
 } from "../services/messagesService";
 import PaymentsDB from "../../../persistence/payments";
-import { isProcessedPayment } from "../../../types/PaymentStatus";
-import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
+import {
+  isProcessedPayment,
+  ProcessablePayment,
+  ProcessedPayment
+} from "../../../types/PaymentStatus";
+import {
+  Detail_v2Enum,
+  DetailEnum
+} from "../../../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentInfoNotFoundResponse } from "../../../../generated/definitions/backend/PaymentInfoNotFoundResponse";
+import { PaymentInfoResponse } from "../../../../generated/definitions/backend/PaymentInfoResponse";
+import {
+  httpStatusCodeFromDetailV2Enum,
+  payloadFromDetailV2Enum
+} from "../../payments/types/failure";
+import { PaymentInfoConflictResponse } from "../../../../generated/definitions/backend/PaymentInfoConflictResponse";
+import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/backend/PaymentInfoBadGatewayResponse";
+import { PaymentInfoUnavailableResponse } from "../../../../generated/definitions/backend/PaymentInfoUnavailableResponse";
 
 // eslint-disable-next-line functional/no-let
 let latestPaymentRequestId: string | undefined;
@@ -426,8 +443,33 @@ addHandler(
   "get",
   addApiV1Prefix("/payment-info/:rptId"),
   (req, res) => {
-    // TODO
-    res.redirect(addApiV1Prefix(`/payment-requests/${req.params.rptId}`));
+    const rptId = req.params.rptId;
+    const maybePaymentStatus = PaymentsDB.getPaymentStatus(rptId);
+    if (O.isNone(maybePaymentStatus)) {
+      const fakeProcessedPayment: ProcessedPayment = {
+        status: {
+          detail_v2: Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO,
+          detail: DetailEnum.PAYMENT_UNKNOWN
+        },
+        type: "processed"
+      };
+      const [statusCode, payload] =
+        processedPaymentToStatusCodeAndPayload(fakeProcessedPayment);
+      res.status(statusCode).json(payload);
+      return;
+    }
+
+    const paymentStatus = maybePaymentStatus.value;
+    if (isProcessedPayment(paymentStatus)) {
+      const [statusCode, payload] =
+        processedPaymentToStatusCodeAndPayload(paymentStatus);
+      res.status(statusCode).json(payload);
+    } else {
+      const [statusCode, payload] =
+        processablePaymentToStatusCodeAndPayload(paymentStatus);
+      latestPaymentRequestId = rptId;
+      res.status(statusCode).json(payload);
+    }
   }
 );
 
@@ -460,6 +502,10 @@ const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
   switch (outcome) {
     case 0:
       return Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO;
+    case 2:
+      return Detail_v2Enum.PPT_AUTENTICAZIONE;
+    case 3:
+      return Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA;
     case 8:
       return Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO;
     case 9:
@@ -470,4 +516,63 @@ const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
       return Detail_v2Enum.PAA_PAGAMENTO_SCADUTO;
   }
   return Detail_v2Enum.GENERIC_ERROR;
+};
+
+const processablePaymentToStatusCodeAndPayload = (
+  payment: ProcessablePayment
+): [number, string | PaymentInfoResponse] => {
+  const payloadEither = PaymentInfoResponse.decode({
+    amount: payment.data.importoSingoloVersamento,
+    description: payment.data.causaleVersamento,
+    dueDate: payment.data.dueDate,
+    paFiscalCode:
+      payment.data.enteBeneficiario?.identificativoUnivocoBeneficiario,
+    paName: payment.data.enteBeneficiario?.denominazioneBeneficiario,
+    rptId: payment.data.codiceContestoPagamento
+  });
+  if (E.isLeft(payloadEither)) {
+    return [500, readableReport(payloadEither.left)];
+  }
+  return [200, payloadEither.right];
+};
+
+const processedPaymentToStatusCodeAndPayload = (
+  payment: ProcessedPayment
+): [number, string | ReturnType<typeof payloadFromDetailV2Enum>] => {
+  const detailV2Enum = payment.status.detail_v2;
+  const statusCode = httpStatusCodeFromDetailV2Enum(detailV2Enum);
+  const payload = payloadFromDetailV2Enum(detailV2Enum);
+  // eCommerce API has been mapped by IO-Backend so we must make
+  // sure that type conversion is correct by validating the
+  // different types that maps the same instance's content
+  if (statusCode === 404) {
+    const paymentInfoNotFoundResponseEither =
+      PaymentInfoNotFoundResponse.decode(payload);
+    if (E.isLeft(paymentInfoNotFoundResponseEither)) {
+      return [500, readableReport(paymentInfoNotFoundResponseEither.left)];
+    }
+  } else if (statusCode === 409) {
+    const paymentInfoConflictResponse =
+      PaymentInfoConflictResponse.decode(payload);
+    if (E.isLeft(paymentInfoConflictResponse)) {
+      return [500, readableReport(paymentInfoConflictResponse.left)];
+    }
+  } else if (statusCode === 502) {
+    const paymentInfoBadGatewayResponse =
+      PaymentInfoBadGatewayResponse.decode(payload);
+    if (E.isLeft(paymentInfoBadGatewayResponse)) {
+      return [500, readableReport(paymentInfoBadGatewayResponse.left)];
+    }
+  } else if (statusCode === 503) {
+    const paymentInfoUnavailableResponse =
+      PaymentInfoUnavailableResponse.decode(payload);
+    if (E.isLeft(paymentInfoUnavailableResponse)) {
+      return [500, readableReport(paymentInfoUnavailableResponse.left)];
+    }
+  } else if (statusCode === 400 || statusCode === 401) {
+    // eCommerce 400 and 401 status codes are mapped to 500 on IOBackend,
+    // since 401 is a FastLogin error and 400 is a server-to-server error
+    return [500, payload];
+  }
+  return [statusCode, payload];
 };
