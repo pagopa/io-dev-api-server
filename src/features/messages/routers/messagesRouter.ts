@@ -428,6 +428,16 @@ addHandler(
       return;
     }
 
+    const isTest = req.query.test;
+    if (isTest == null) {
+      // This is not the real backend behavior, but it is here in
+      // order to make sure that the request is properly formatted
+      res
+        .status(400)
+        .json(getProblemJson(400, "Missing 'isTest' query parameter"));
+      return;
+    }
+
     const paymentStatus = maybePaymentStatus.value;
     if (isProcessedPayment(paymentStatus)) {
       res.status(500).json(paymentStatus.status);
@@ -457,6 +467,16 @@ addHandler(
       const [statusCode, payload] =
         processedPaymentToStatusCodeAndPayload(fakeProcessedPayment);
       res.status(statusCode).json(payload);
+      return;
+    }
+
+    const isTest = req.query.test;
+    if (isTest == null) {
+      // This is not the real backend behavior, but it is here in
+      // order to make sure that the request is properly formatted
+      res
+        .status(400)
+        .json(getProblemJson(400, "Missing 'isTest' query parameter"));
       return;
     }
 
