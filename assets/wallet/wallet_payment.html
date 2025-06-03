@@ -34,7 +34,7 @@
             // Async promise to support payment outcome when starting
             // from messages. This is just a workaround that does not
             // resemble in any way what happens in production.
-            fetch(`/api/v1/messages/private/finalizePayment?outcome=${outcome}`, {
+            fetch(`/ecommerce/io/v2/private/finalizePayment?outcome=${outcome}`, {
                 method: 'POST',
                 headers: new Headers({
                 'Content-Type': 'application/json',

@@ -11,6 +11,7 @@ import { GuestMethodLastUsageTypeEnum } from "../../../../generated/definitions/
 import { WalletLastUsageTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/WalletLastUsageType";
 import { WalletDetailTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/WalletDetailType";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
+import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
@@ -31,7 +32,11 @@ import { generateOnboardablePaymentMethods } from "../utils/onboarding";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import PaymentsDB from "../../../persistence/payments";
 import { fold } from "../../../types/PaymentStatus";
+import { getProblemJson } from "../../../payloads/error";
 import { addPaymentHandler } from "./router";
+
+// eslint-disable-next-line functional/no-let
+let latestPaymentRequestId: string | undefined;
 
 // Verify single payment notices
 addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
@@ -78,8 +83,9 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
                             processedPayment.status.detail_v2
                           )
                         ),
-                    processablePayment =>
-                      res.status(200).send({
+                    processablePayment => {
+                      latestPaymentRequestId = rptId;
+                      return res.status(200).send({
                         rptId: processablePayment.data.codiceContestoPagamento,
                         amount:
                           processablePayment.data.importoSingoloVersamento,
@@ -91,7 +97,8 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
                             ?.denominazioneBeneficiario,
                         description: processablePayment.data.causaleVersamento,
                         dueDate: processablePayment.data.dueDate
-                      })
+                      });
+                    }
                   )
                 )
               ),
@@ -277,3 +284,43 @@ addPaymentHandler("get", "/user/lastPaymentMethodUsed", (req, res) => {
 addPaymentHandler("get", "/payment-methods", (req, res) => {
   res.json(generateOnboardablePaymentMethods());
 });
+
+addPaymentHandler("post", "/private/finalizePayment", (req, res) => {
+  if (latestPaymentRequestId != null) {
+    const outcomeString = req.query.outcome;
+    const outcomeNumber = Number(outcomeString);
+    if (!Number.isSafeInteger(outcomeNumber)) {
+      res
+        .status(400)
+        .json(getProblemJson(400, "Missing or invalid 'outcome' parameter"));
+      return;
+    }
+    const outcomeDetailV2Enum = mapOutcomeCodeToDetailsV2Enum(outcomeNumber);
+    PaymentsDB.createProcessedPayment(
+      latestPaymentRequestId,
+      outcomeDetailV2Enum
+    );
+    latestPaymentRequestId = undefined;
+  }
+  res.sendStatus(200);
+});
+
+const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
+  switch (outcome) {
+    case 0:
+      return Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO;
+    case 2:
+      return Detail_v2Enum.PPT_AUTENTICAZIONE;
+    case 3:
+      return Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA;
+    case 8:
+      return Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO;
+    case 9:
+      return Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO;
+    case 11:
+      return Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO;
+    case 18:
+      return Detail_v2Enum.PAA_PAGAMENTO_SCADUTO;
+  }
+  return Detail_v2Enum.GENERIC_ERROR;
+};

@@ -45,9 +45,6 @@ import { PaymentInfoConflictResponse } from "../../../../generated/definitions/b
 import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/backend/PaymentInfoBadGatewayResponse";
 import { PaymentInfoUnavailableResponse } from "../../../../generated/definitions/backend/PaymentInfoUnavailableResponse";
 
-// eslint-disable-next-line functional/no-let
-let latestPaymentRequestId: string | undefined;
-
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
 
@@ -442,7 +439,6 @@ addHandler(
     if (isProcessedPayment(paymentStatus)) {
       res.status(500).json(paymentStatus.status);
     } else {
-      latestPaymentRequestId = rptId;
       res.status(200).json(paymentStatus.data);
     }
   },
@@ -488,57 +484,11 @@ addHandler(
     } else {
       const [statusCode, payload] =
         processablePaymentToStatusCodeAndPayload(paymentStatus);
-      latestPaymentRequestId = rptId;
       res.status(statusCode).json(payload);
     }
   },
   () => Math.ceil(500 + 1000 * Math.random())
 );
-
-addHandler(
-  messageRouter,
-  "post",
-  addApiV1Prefix("/messages/private/finalizePayment"),
-  (req, res) => {
-    if (latestPaymentRequestId != null) {
-      const outcomeString = req.query.outcome;
-      const outcomeNumber = Number(outcomeString);
-      if (!Number.isSafeInteger(outcomeNumber)) {
-        res
-          .status(400)
-          .json(getProblemJson(400, "Missing or invalid 'outcome' parameter"));
-        return;
-      }
-      const outcomeDetailV2Enum = mapOutcomeCodeToDetailsV2Enum(outcomeNumber);
-      PaymentsDB.createProcessedPayment(
-        latestPaymentRequestId,
-        outcomeDetailV2Enum
-      );
-      latestPaymentRequestId = undefined;
-    }
-    res.sendStatus(200);
-  }
-);
-
-const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
-  switch (outcome) {
-    case 0:
-      return Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO;
-    case 2:
-      return Detail_v2Enum.PPT_AUTENTICAZIONE;
-    case 3:
-      return Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA;
-    case 8:
-      return Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO;
-    case 9:
-      return Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO;
-    case 11:
-      return Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO;
-    case 18:
-      return Detail_v2Enum.PAA_PAGAMENTO_SCADUTO;
-  }
-  return Detail_v2Enum.GENERIC_ERROR;
-};
 
 const processablePaymentToStatusCodeAndPayload = (
   payment: ProcessablePayment
