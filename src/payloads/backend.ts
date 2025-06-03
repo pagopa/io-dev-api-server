@@ -86,7 +86,8 @@ export const backendStatus: BackendStatus = {
         ios: "2.68.0.0"
       },
       cta_onboarding_config: {
-        url: "https://api-app.io.pagopa.it/api/cdc/v1/fauth"
+        url: "https://api-app.io.pagopa.it/api/cdc/v1/fauth",
+        includeDeviceId: true
       }
     },
     barcodesScanner: {
