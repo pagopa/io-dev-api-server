@@ -66,6 +66,11 @@ export const backendStatus: BackendStatus = {
           organization_fiscal_code: "97532760580",
           organization_name: "Ministero delle infrastrutture e dei trasporti",
           service_name: "Motorizzazione Civile - Le mie patenti"
+        },
+        {
+          configuration_id: "cdc-onboarding",
+          service_id: "01JV4M365CHAZN5C0FDR62DCVD",
+          service_name: "Carta della Cultura - Onboarding"
         }
       ]
     },
@@ -79,6 +84,9 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         android: "2.68.0.0",
         ios: "2.68.0.0"
+      },
+      cta_onboarding_config: {
+        url: "https://api-app.io.pagopa.it/api/cdc/v1/fauth"
       }
     },
     barcodesScanner: {
