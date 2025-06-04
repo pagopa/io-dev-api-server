@@ -135,7 +135,6 @@ const defaultConfig: IoDevServerConfig = {
   wallet: {
     methods: paymentMethods,
     shuffleAbi: true,
-    useLegacyRptIdVerificationSystem: false,
     verificaError: undefined,
     attivaError: undefined,
     // atm it has no effect (pr welcome)
