@@ -96,7 +96,7 @@ const generateUserNotice = (
     carts: cartList
   };
   addNoticeDetails(eventId, randomNoticeDetails);
-  return randomNotice;
+  return updatedNotice;
 };
 
 const generateUserNoticeData = () => {
