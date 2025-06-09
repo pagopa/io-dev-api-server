@@ -194,6 +194,12 @@ export const backendStatus: BackendStatus = {
     loginConfig: {
       notifyExpirationThreshold: {
         fastLogin: 15
+      },
+      activeSessionLogin: {
+        min_app_version: {
+          ios: "0.0.0",
+          android: "0.0.0"
+        }
       }
     },
     emailUniquenessValidation: {
