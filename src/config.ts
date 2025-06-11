@@ -10,6 +10,8 @@ import { PreferredLanguageEnum } from "../generated/definitions/backend/Preferre
 import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
 import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
 import { TrialId } from "../generated/definitions/trial_system/TrialId";
+import { PaymentCanceledStatusFaultEnum } from "../generated/definitions/pagopa/ecommerce/PaymentCanceledStatusFault";
+import { FaultCodeCategoryEnum } from "../generated/definitions/backend/PaymentCanceledStatusFaultPaymentProblemJson";
 import {
   IoDevServerConfig,
   ProfileAttrs,
@@ -135,7 +137,6 @@ const defaultConfig: IoDevServerConfig = {
   wallet: {
     methods: paymentMethods,
     shuffleAbi: true,
-    useLegacyRptIdVerificationSystem: false,
     verificaError: undefined,
     attivaError: undefined,
     // atm it has no effect (pr welcome)
@@ -249,6 +250,12 @@ const defaultConfig: IoDevServerConfig = {
     },
     trials: {
       ["01J2GN4TA8FB6DPTAX3T3YD6M1" as TrialId]: undefined // IT-WALLET-TRIAL (the user never subscribed to the trial)
+    },
+    wallet: {
+      verificationFailure: {
+        faultCodeCategory: FaultCodeCategoryEnum.PAYMENT_CANCELED,
+        faultCodeDetail: PaymentCanceledStatusFaultEnum.PAA_PAGAMENTO_ANNULLATO
+      }
     },
     allowRandomValues: true
   }
