@@ -315,10 +315,10 @@ const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
       return Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA;
     case 8:
       return Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO;
-    case 9:
-      return Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO;
     case 11:
       return Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO;
+    case 13:
+      return Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO;
     case 18:
       return Detail_v2Enum.PAA_PAGAMENTO_SCADUTO;
   }
