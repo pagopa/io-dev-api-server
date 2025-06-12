@@ -70,7 +70,8 @@ export const backendStatus: BackendStatus = {
         {
           configuration_id: "cdc-onboarding",
           service_id: "01JV4M365CHAZN5C0FDR62DCVD",
-          service_name: "Carta della Cultura - Onboarding"
+          service_name: "Carta della Cultura - Onboarding",
+          share_ios_cookies: false
         }
       ]
     },
