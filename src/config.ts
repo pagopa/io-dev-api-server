@@ -87,23 +87,36 @@ const defaultConfig: IoDevServerConfig = {
     ],
     pnMessageTemplateWrappers: [
       {
-        count: 0,
+        count: 1,
         template: {
-          unpaidValidPayments: 3,
-          unpaidExpiredPayments: 2,
-          paidPayments: 4,
-          failedPayments: 1,
-          unrelatedPayments: 5,
+          unpaidValidPayments: 2,
+          unpaidExpiredPayments: 1,
+          paidPayments: 1,
+          failedPayments: 2,
+          unrelatedPayments: 1,
+          isCancelled: true,
+          attachmentCount: 1,
+          f24Count: 2
+        }
+      },
+      {
+        count: 1,
+        template: {
+          unpaidValidPayments: 2,
+          unpaidExpiredPayments: 1,
+          paidPayments: 1,
+          failedPayments: 2,
+          unrelatedPayments: 1,
           isCancelled: false,
-          attachmentCount: 5,
-          f24Count: 9
+          attachmentCount: 2,
+          f24Count: 1
         }
       }
     ],
     attachmentAvailableAfterSeconds: 5,
     attachmentExpiredAfterSeconds: 10,
     attachmentRetryAfterSeconds: 2,
-    pnOptInMessage: false,
+    pnOptInMessage: true,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -166,7 +179,7 @@ const defaultConfig: IoDevServerConfig = {
     specialServices: {
       cgn: true,
       cdc: true,
-      pn: false,
+      pn: true,
       fci: true
     },
     // it has partially effect (pr welcome)
