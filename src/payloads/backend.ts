@@ -2,6 +2,7 @@
 import { ToolEnum } from "../../generated/definitions/content/AssistanceToolConfig";
 import { BackendStatus } from "../../generated/definitions/content/BackendStatus";
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
+import { baseRelyingPartyPath } from "../features/fims/services/relyingPartyService";
 import {
   pnOptInServiceId,
   pnServiceId
@@ -70,10 +71,10 @@ export const backendStatus: BackendStatus = {
         {
           configuration_id: "cdc-onboarding",
           service_id: "01JV4M365CHAZN5C0FDR62DCVD",
-          service_name: "Carta della Cultura - Onboarding",
-          share_ios_cookies: false
+          service_name: "Carta della Cultura - Onboarding"
         }
-      ]
+      ],
+      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"]
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -87,7 +88,7 @@ export const backendStatus: BackendStatus = {
         ios: "2.68.0.0"
       },
       cta_onboarding_config: {
-        url: "https://api-app.io.pagopa.it/api/cdc/v1/fauth",
+        url: `${serverUrl}${baseRelyingPartyPath()}/2/landingPage`,
         includeDeviceId: true
       }
     },
