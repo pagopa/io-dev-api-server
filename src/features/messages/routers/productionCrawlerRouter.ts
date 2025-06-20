@@ -96,12 +96,14 @@ const downloadMessageList = async (
     throw Error(`api/v1/messages ${readableReport(responseEither.left)}`);
   }
   const messages = responseEither.right.items;
+  const accumulatedMessages = [...accumulator, ...messages];
+
   const next = responseEither.right.next;
   if (next == null) {
-    return accumulator;
+    return accumulatedMessages;
   }
   return await downloadMessageList(
-    [...accumulator, ...messages],
+    accumulatedMessages,
     archived,
     bearerToken,
     next
