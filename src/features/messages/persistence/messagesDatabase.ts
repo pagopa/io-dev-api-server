@@ -84,6 +84,17 @@ function persist(messages: CreatedMessageWithContentAndAttachments[]): void {
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
+function replaceMessages(
+  archived: boolean,
+  messages: ReadonlyArray<CreatedMessageWithContentAndAttachments>
+): void {
+  if (archived) {
+    archivedMessages = [...messages];
+  } else {
+    inboxMessages = [...messages];
+  }
+}
+
 function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndAttachments> {
   return inboxMessages;
 }
@@ -166,6 +177,7 @@ export default {
   findAllInbox,
   getMessageById,
   persist,
+  replaceMessages,
   setReadMessage,
   unarchive
 };

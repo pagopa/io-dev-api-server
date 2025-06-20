@@ -36,6 +36,7 @@ import { fimsProviderRouter } from "./features/fims/routers/providerRouter";
 import { fimsRelyingPartyRouter } from "./features/fims/routers/relyingPartyRouter";
 import { fimsHistoryRouter } from "./features/fims/routers/historyRouter";
 import { trialSystemRouter } from "./features/trialSystem/routers";
+import { productionCrawlerRouter } from "./features/messages/routers/productionCrawlerRouter";
 
 // create express server
 const app: Application = express();
@@ -60,6 +61,7 @@ app.use(fastLoginMiddleware);
   profileRouter,
   sessionRouter,
   messageRouter,
+  productionCrawlerRouter,
   serviceRouter,
   walletRouter,
   wallet2Router,

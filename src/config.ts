@@ -142,6 +142,7 @@ const defaultConfig: IoDevServerConfig = {
     // sending 2 messages at minimum to allow for basic pagination
     standardMessageCount: 2,
     archivedMessageCount: 1,
+    useMessagesSavedUnderConfig: false,
     // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
   },
