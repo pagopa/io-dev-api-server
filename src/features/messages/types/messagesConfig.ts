@@ -49,7 +49,8 @@ export const MessagesConfig = t.intersection([
     // with invalid (expired) due date
     withInValidDueDateCount: t.number,
     standardMessageCount: t.number,
-    archivedMessageCount: t.number
+    archivedMessageCount: t.number,
+    useMessagesSavedUnderConfig: t.boolean
   }),
   AllowRandomValue,
   t.partial({

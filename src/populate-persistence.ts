@@ -1,14 +1,17 @@
+import fs from "fs";
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as B from "fp-ts/lib/boolean";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { faker } from "@faker-js/faker/locale/it";
 import _ from "lodash";
 import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { FiscalCode } from "../generated/definitions/backend/FiscalCode";
 import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
+import { MessageStatusAttributes } from "../generated/definitions/backend/MessageStatusAttributes";
 import { ioDevServerConfig } from "./config";
 import {
   createMessage,
@@ -46,6 +49,10 @@ import { MessageTemplateWrapper } from "./features/messages/types/messageTemplat
 import { MessageTemplate } from "./features/messages/types/messageTemplate";
 import { initializeServiceLogoMap } from "./routers/services_metadata";
 import { LegacyGreenPass } from "./features/messages/types/LegacyGreenPass";
+import {
+  AggregatedMessage,
+  productionMessagesFileRelativePath
+} from "./features/messages/routers/productionCrawlerRouter";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -484,6 +491,81 @@ const createMessages = (
   ];
 };
 
+const loadProductionInboxAndArchive = (customConfig: IoDevServerConfig) => {
+  const inboxProductionMessages = loadAndParseProductionMessages(
+    false,
+    customConfig
+  );
+  const archiveProductionMessages = loadAndParseProductionMessages(
+    true,
+    customConfig
+  );
+  MessagesDB.replaceMessages(true, archiveProductionMessages);
+  MessagesDB.replaceMessages(false, inboxProductionMessages);
+};
+
+const loadAndParseProductionMessages = (
+  archived: boolean,
+  customConfig: IoDevServerConfig
+): ReadonlyArray<CreatedMessageWithContentAndAttachments> => {
+  const productionMessagesString = fs.readFileSync(
+    productionMessagesFileRelativePath(archived),
+    "utf-8"
+  );
+  const productionMessagesJSON = JSON.parse(
+    productionMessagesString
+  ) as ReadonlyArray<AggregatedMessage>;
+  return productionMessagesJSON.map(({ message }, index) => {
+    if (message == null) {
+      throw Error(
+        `loadAndParseProductionMessages ${
+          archived ? "archive" : "inbox"
+        }: expected property 'message' in array item at '${index}' but found a nullish value instead`
+      );
+    }
+    const messageEither =
+      CreatedMessageWithContentAndAttachments.decode(message);
+    if (E.isLeft(messageEither)) {
+      throw Error(
+        `loadAndParseProductionMessages ${
+          archived ? "archive" : "inbox"
+        }: deconding error for array item at '${index}' ${readableReport(
+          messageEither.left
+        )}`
+      );
+    }
+
+    return {
+      ...getNewMessage(
+        customConfig,
+        message.content.subject,
+        message.content.markdown
+      ),
+      content: {
+        ...message.content
+      },
+      created_at: message.created_at,
+      ...attributesFromCreatedMessageWithContentAndAttachments(message)
+    };
+  });
+};
+
+const attributesFromCreatedMessageWithContentAndAttachments = (
+  message: CreatedMessageWithContentAndAttachments
+): MessageStatusAttributes => {
+  const statusAttributes = MessageStatusAttributes.decode(message);
+  if (E.isLeft(statusAttributes)) {
+    return {
+      is_archived: false,
+      is_read: false
+    };
+  }
+  return {
+    is_archived: statusAttributes.right.is_archived,
+    is_read: statusAttributes.right.is_read
+  };
+};
+
 /**
  * Initialize the services and messages persistence layer.
  * Default on config.json if custom config not defined.
@@ -494,17 +576,21 @@ export default function init(customConfig = ioDevServerConfig) {
   initializeServiceLogoMap();
   ServicesDB.createServices(customConfig);
 
-  const messages = createMessages(customConfig);
-  MessagesDB.persist(messages);
+  if (customConfig.messages.useMessagesSavedUnderConfig) {
+    loadProductionInboxAndArchive(customConfig);
+  } else {
+    const messages = createMessages(customConfig);
+    MessagesDB.persist(messages);
 
-  if (customConfig.messages.archivedMessageCount > 0) {
-    const allInboxMessages = MessagesDB.findAllInbox();
-    const archivableInboxMessages = allInboxMessages.filter(
-      message => !ServicesDB.isSpecialService(message.sender_service_id)
-    );
-    _.shuffle(archivableInboxMessages)
-      .slice(0, customConfig.messages.archivedMessageCount)
-      .forEach(({ id }) => MessagesDB.archive(id));
+    if (customConfig.messages.archivedMessageCount > 0) {
+      const allInboxMessages = MessagesDB.findAllInbox();
+      const archivableInboxMessages = allInboxMessages.filter(
+        message => !ServicesDB.isSpecialService(message.sender_service_id)
+      );
+      _.shuffle(archivableInboxMessages)
+        .slice(0, customConfig.messages.archivedMessageCount)
+        .forEach(({ id }) => MessagesDB.archive(id));
+    }
   }
 
   if (customConfig.messages.liveMode) {

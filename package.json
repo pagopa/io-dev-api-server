@@ -23,11 +23,15 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "collectCoverage": true
+    "collectCoverage": false,
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    }
   },
   "dependencies": {
     "@mattrglobal/http-signatures": "^4.0.1",
     "@pagopa/ts-commons": "^10.15.0",
+    "axios": "^1.10.0",
     "body-parser": "^1.19.2",
     "chalk": "^4.1.1",
     "cli-ux": "^5.6.3",
