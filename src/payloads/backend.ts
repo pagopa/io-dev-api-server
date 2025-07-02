@@ -125,6 +125,18 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "1.2.3",
         android: "1.2.3"
+      },
+      onboarding: {
+        min_app_version: {
+          ios: "3.0.0",
+          android: "3.0.0"
+        }
+      },
+      initiative_details: {
+        min_app_version: {
+          ios: "3.0.0",
+          android: "3.0.0"
+        }
       }
     },
     newPaymentSection: {
