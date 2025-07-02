@@ -144,6 +144,28 @@ const checkPrerequisites: {
   [IDPayInitiativeID.OK_SELF_ONLY]: {
     pdndCriteria: [],
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+  },
+  [IDPayInitiativeID.BONUS_ELETTRODOMESTICI]: {
+    pdndCriteria,
+    selfDeclarationList: [
+      {
+        _type: SelfDeclarationMultiType.multi,
+        code: ulid(),
+        description: "<devi selezionare un’opzione di ISEE>",
+        value: [
+          "Avere un ISEE inferiore a 25.000€",
+          "Avere un ISEE superiore a 25.000€",
+          "Non avere un ISEE"
+        ]
+      },
+      {
+        _type: SelfDeclarationBoolType.boolean,
+        code: ulid(),
+        description:
+          "Usare il bonus per sostituire un elettrodomestico e smaltire quello attuale",
+        value: false
+      }
+    ]
   }
 };
 

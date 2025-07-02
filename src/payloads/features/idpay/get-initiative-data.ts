@@ -49,6 +49,15 @@ const initiativeData: {
     initiativeId: initiativeIdToString(IDPayInitiativeID.OK_GUIDONIA),
     initiativeName: "Iniziativa GUIDONIA"
   },
+
+  [IDPayServiceID.BONUS_ELETTRODOMESTICI]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.BONUS_ELETTRODOMESTICI
+    ),
+    initiativeName: "BONUS ELETTRODOMESTICI"
+  },
+
   [IDPayServiceID.KO_STATUS_NOT_ELIGIBLE]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
