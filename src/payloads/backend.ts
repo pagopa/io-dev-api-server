@@ -137,6 +137,12 @@ export const backendStatus: BackendStatus = {
           ios: "3.0.0",
           android: "3.0.0"
         }
+      },
+      cie_payments: {
+        min_app_version: {
+          ios: "4.0.0",
+          android: "4.0.0"
+        }
       }
     },
     newPaymentSection: {
