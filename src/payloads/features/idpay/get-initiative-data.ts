@@ -105,6 +105,13 @@ const initiativeData: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(IDPayInitiativeID.KO_NOT_STARTED),
     initiativeName: "Iniziativa - Non iniziata"
+  },
+  [IDPayServiceID.KO_STATUS_TOO_MANY_REQUESTS]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.KO_STATUS_TOO_MANY_REQUESTS
+    ),
+    initiativeName: "Iniziativa - Troppe richieste"
   }
 };
 
