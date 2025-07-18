@@ -187,6 +187,10 @@ const prerequisitesErrors: {
   [IDPayInitiativeID.KO_BUDGET_EXHAUSTED]: {
     code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
     message: ""
+  },
+  [IDPayInitiativeID.KO_STATUS_TOO_MANY_REQUESTS]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_TOO_MANY_REQUESTS,
+    message: ""
   }
 };
 

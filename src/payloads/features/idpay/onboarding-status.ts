@@ -36,6 +36,10 @@ const onboardingStatuses: {
   [IDPayInitiativeID.KO_STATUS_ON_EVALUATION]: {
     status: OnboardingStatusEnum.ON_EVALUATION,
     statusDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.KO_STATUS_TOO_MANY_REQUESTS]: {
+    status: OnboardingStatusEnum.TOO_MANY_REQUESTS,
+    statusDate: faker.date.recent(1)
   }
 };
 
