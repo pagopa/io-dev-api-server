@@ -536,7 +536,7 @@ range(0, walletConfig.discountCount).forEach(() => {
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
-    amountCents: 100000,
+    amountCents: 10000,
     organizationName: "Ministero delle Imprese e del Made in Italy",
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
