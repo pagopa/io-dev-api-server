@@ -151,18 +151,19 @@ const checkPrerequisites: {
       {
         _type: SelfDeclarationMultiType.multi,
         code: ulid(),
-        description: "<devi selezionare un’opzione di ISEE>",
+        description:
+          "Se dichiari di avere un ISEE inferiore a 25.000€, verificheremo l’informazione con INPS",
         value: [
-          "Avere un ISEE inferiore a 25.000€",
-          "Avere un ISEE superiore a 25.000€",
-          "Non avere un ISEE"
+          "Sì, inferiore a 25.000€",
+          "Sì, uguale o superiore a 25.000€",
+          "No, non ho un ISEE "
         ]
       },
       {
         _type: SelfDeclarationBoolType.boolean,
         code: ulid(),
         description:
-          "Usare il bonus per sostituire un elettrodomestico e smaltire quello attuale",
+          "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
         value: false
       }
     ]
