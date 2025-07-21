@@ -11,10 +11,10 @@ import {
 import { IDPayServiceID } from "./types";
 
 export const generateIDPayServices = (): ServiceDetails[] =>
-  Object.values(IDPayServiceID).map(serviceId => ({
+  Object.values(IDPayServiceID).map((serviceId, index) => ({
     ...createServiceFromFactory(`TESTSRV${serviceId}` as string),
     organization: {
-      fiscal_code: "00000009898" as OrganizationFiscalCode,
+      fiscal_code: index.toString().padStart(11, "0") as OrganizationFiscalCode,
       name: `TESTSRV${serviceId}` as NonEmptyString
     },
     metadata: {
