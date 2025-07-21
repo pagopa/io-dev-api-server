@@ -2,6 +2,7 @@ import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
+import { generateIDPayServices } from "../../../payloads/features/idpay/generateIDPayServices";
 import { isCgnActivated } from "../../../routers/features/cgn";
 import { IoDevServerConfig } from "../../../types/config";
 import {
@@ -43,7 +44,8 @@ const createServices = (config: IoDevServerConfig) => {
       nationalServiceCount,
       localServiceCount
     ),
-    createPnOptInService()
+    createPnOptInService(),
+    ...generateIDPayServices()
   ];
 
   const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
