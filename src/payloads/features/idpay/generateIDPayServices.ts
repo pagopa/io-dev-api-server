@@ -10,8 +10,12 @@ import {
 } from "../../../features/services/persistence/services/factory";
 import { IDPayServiceID } from "./types";
 
+const serviceIds = Object.values(IDPayServiceID).filter(
+  v => typeof v === "number"
+) as number[];
+
 export const generateIDPayServices = (): ServiceDetails[] =>
-  Object.values(IDPayServiceID).map((serviceId, index) => ({
+  serviceIds.map((serviceId, index) => ({
     ...createServiceFromFactory(`TESTSRV${serviceId}` as string),
     organization: {
       fiscal_code: index.toString().padStart(11, "0") as OrganizationFiscalCode,
