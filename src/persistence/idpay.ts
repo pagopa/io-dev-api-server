@@ -532,17 +532,20 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 });
 
 range(0, walletConfig.discountCount).forEach(() => {
-  const initiativeName = `${faker.company.name()} [D]`;
+  const initiativeName = `Bonus Elettrodomestici [D]`;
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
+    amountCents: 100000,
+    organizationName: "Ministero delle Imprese e del Made in Italy",
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
     status: InitiativeStatus.REFUNDABLE,
     iban: undefined,
     nInstr: 0,
     accruedCents: 0,
-    refundedCents: 0
+    refundedCents: 0,
+    lastCounterUpdate: undefined
   };
 
   const { initiativeId } = initiative;
@@ -565,48 +568,8 @@ range(0, walletConfig.discountCount).forEach(() => {
     [initiativeId]: [
       generateRandomTransactionOperationDTO({
         operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.AUTHORIZED,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        businessName: undefined,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.AUTHORIZED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined,
-        businessName: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.AUTHORIZED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
         status: TransactionStatusEnum.REWARDED,
         channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.CANCELLED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.REVERSAL,
-        status: TransactionStatusEnum.REWARDED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomInstrumentOperationDTO({
-        operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
-        instrumentType: OperationInstrumentTypeEnum.IDPAYCODE,
         brand: undefined
       }),
       generateRandomOnboardingOperationDTO()
@@ -740,7 +703,7 @@ export const getIdPayBarcodeTransaction = (
       trxDate: new Date(),
       trxExpirationSeconds,
       initiativeName: faker.company.name(),
-      residualBudgetCents: 100000
+      residualBudgetCents: 10000
     };
     barcodeTransactions = {
       ...barcodeTransactions,

@@ -55,7 +55,7 @@ const initiativeData: {
     initiativeId: initiativeIdToString(
       IDPayInitiativeID.BONUS_ELETTRODOMESTICI
     ),
-    initiativeName: "BONUS ELETTRODOMESTICI"
+    initiativeName: "Bonus Elettrodomestici"
   },
 
   [IDPayServiceID.KO_STATUS_NOT_ELIGIBLE]: {
