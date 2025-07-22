@@ -56,7 +56,10 @@ const createServices = (config: IoDevServerConfig) => {
   ];
   specialServices = ServiceFactory.createSpecialServices(
     specialServiceGenerators,
-    localServiceCount + nationalServiceCount + 1 // + 1 for the pn opt-in service
+    localServiceCount +
+      nationalServiceCount +
+      1 + // + 1 for the pn opt-in service
+      generateIDPayServices().length // + IDPay services
   );
 
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
