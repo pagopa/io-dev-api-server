@@ -145,7 +145,7 @@ const checkPrerequisites: {
     pdndCriteria: [],
     selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
-  [IDPayInitiativeID.BONUS_ELETTRODOMESTICI]: {
+  [IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI]: {
     pdndCriteria,
     selfDeclarationList: [
       {
@@ -186,6 +186,14 @@ const prerequisitesErrors: {
   },
   [IDPayInitiativeID.KO_BUDGET_EXHAUSTED]: {
     code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
+    message: ""
+  },
+  [IDPayInitiativeID.KO_FAMILY_UNIT_ALREADY_JOINED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_FAMILY_UNIT_ALREADY_JOINED,
+    message: ""
+  },
+  [IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_WAITING_LIST,
     message: ""
   }
 };
