@@ -2,14 +2,15 @@ import { faker } from "@faker-js/faker/locale/it";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
 import { InitiativeDataDTO } from "../../../../generated/definitions/idpay/InitiativeDataDTO";
+import { generateRandomInitiativeId } from "../../../persistence/idpay";
 import { IDPayInitiativeID, IDPayServiceID } from "./types";
 import { initiativeIdToString } from "./utils";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
-  initiativeId: ulid(),
+  initiativeId: generateRandomInitiativeId(),
   initiativeName: faker.company.catchPhrase(),
   description: faker.lorem.paragraphs(6),
-  organizationId: ulid(),
+  organizationId: ulid().replace(/[^a-zA-Z0-9]/g, ""),
   organizationName: faker.company.name(),
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),

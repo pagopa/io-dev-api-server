@@ -8,8 +8,11 @@ export const getWalletDetailResponse = (
 ): O.Option<InitiativeDTO> =>
   pipe(
     O.fromNullable<InitiativeDTO>(initiatives[initiativeId]),
-    O.map(initiative => ({
-      ...initiative,
-      nInstr: instruments[initiativeId]?.length ?? 0
-    }))
+    O.map(
+      initiative =>
+        ({
+          ...initiative,
+          nInstr: instruments[initiativeId]?.length ?? 0
+        } as InitiativeDTO)
+    )
   );

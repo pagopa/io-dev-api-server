@@ -27,7 +27,7 @@ const generateRandomOperationDetailDTO = (
         accruedCents: operation.accruedCents || faker.datatype.number(10000),
         idTrxAcquirer: ulid(),
         idTrxIssuer: ulid()
-      };
+      } as OperationDTO;
   }
 };
 
