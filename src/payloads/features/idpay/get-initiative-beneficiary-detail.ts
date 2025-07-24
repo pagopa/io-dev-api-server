@@ -3,7 +3,10 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { AccumulatedTypeEnum } from "../../../../generated/definitions/idpay/AccumulatedAmountDTO";
 import { InitiativeDTO } from "../../../../generated/definitions/idpay/InitiativeDTO";
-import { InitiativeDetailDTO } from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
+import {
+  InitiativeDetailDTO,
+  StatusEnum
+} from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
 import { RewardValueTypeEnum } from "../../../../generated/definitions/idpay/RewardValueDTO";
 import { TimeTypeEnum } from "../../../../generated/definitions/idpay/TimeParameterDTO";
 import { initiatives } from "../../../persistence/idpay";
@@ -11,14 +14,14 @@ import { getRandomEnumValue } from "../../utils/random";
 
 import ServicesDB from "../../../features/services/persistence/servicesDatabase";
 
-const generateRandomInitiativeDetailDTO = (
+const generateRandomBeneficiaryInitiativeDetailDTO = (
   initiative: InitiativeDTO
 ): InitiativeDetailDTO => {
   const serviceSummaries = ServicesDB.getSummaries();
 
   return {
     initiativeName: initiative.initiativeName,
-    status: initiative.status,
+    status: getRandomEnumValue(StatusEnum),
     description: faker.lorem.paragraphs(6),
     ruleDescription: faker.lorem.paragraphs(4),
     onboardingStartDate: faker.date.past(6),
@@ -50,5 +53,5 @@ export const getInitiativeBeneficiaryDetailResponse = (
   pipe(
     initiatives[initiativeId],
     O.fromNullable,
-    O.map(generateRandomInitiativeDetailDTO)
+    O.map(generateRandomBeneficiaryInitiativeDetailDTO)
   );

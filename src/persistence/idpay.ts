@@ -1,8 +1,12 @@
 import { faker } from "@faker-js/faker/locale/it";
 import { range } from "lodash";
 import { ulid } from "ulid";
-import { IbanDTO } from "../../generated/definitions/idpay/IbanDTO";
 import {
+  CheckIbanStatusEnum,
+  IbanDTO
+} from "../../generated/definitions/idpay/IbanDTO";
+import {
+  ChannelEnum,
   IbanOperationDTO,
   OperationTypeEnum as IbanOperationTypeEnum
 } from "../../generated/definitions/idpay/IbanOperationDTO";
@@ -74,7 +78,7 @@ const generateRandomInitiativeDTO = (): InitiativeDTO => {
     initiativeId: ulid(),
     initiativeName: faker.company.name(),
     status: getRandomEnumValue(InitiativeStatus),
-    endDate: faker.date.future(1),
+    voucherEndDate: faker.date.future(1),
     amountCents,
     accruedCents,
     initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
@@ -84,12 +88,12 @@ const generateRandomInitiativeDTO = (): InitiativeDTO => {
     nInstr: 1,
     logoURL: faker.image.image(480, 480, true),
     organizationName: faker.company.name()
-  };
+  } as InitiativeDTO;
 };
 
 const generateRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban(false, "IT"),
-  checkIbanStatus: faker.datatype.string(),
+  checkIbanStatus: getRandomEnumValue(CheckIbanStatusEnum),
   holderBank: faker.company.name(),
   description: faker.company.bs(),
   channel: faker.datatype.string()
@@ -119,40 +123,42 @@ const generateRandomTransactionOperationDTO = (
     businessName: faker.company.name(),
     eventId: ulid(),
     ...withInfo
-  };
+  } as TransactionOperationDTO;
 };
 
 const generateRandomTransactionOperationExpenseDTO = (
   withInfo?: Partial<TransactionOperationDTO>
-): TransactionOperationDTO => ({
-  operationType: getRandomEnumValue(TransactionOperationTypeEnum),
-  operationDate: new Date(),
-  operationId: ulid(),
-  accruedCents: faker.datatype.number({ min: 500, max: 2500 }),
-  amountCents: faker.datatype.number({ min: 5000, max: 10000 }),
-  circuitType: "01",
-  status: getRandomEnumValue(TransactionStatusEnum),
-  businessName: faker.company.name(),
-  eventId: ulid(),
-  ...withInfo
-});
+): TransactionOperationDTO =>
+  ({
+    operationType: getRandomEnumValue(TransactionOperationTypeEnum),
+    operationDate: new Date(),
+    operationId: ulid(),
+    accruedCents: faker.datatype.number({ min: 500, max: 2500 }),
+    amountCents: faker.datatype.number({ min: 5000, max: 10000 }),
+    circuitType: "01",
+    status: getRandomEnumValue(TransactionStatusEnum),
+    businessName: faker.company.name(),
+    eventId: ulid(),
+    ...withInfo
+  } as TransactionOperationDTO);
 
 const generateRandomRefundOperationDTO = (
   withInfo?: Partial<RefundOperationDTO>
-): RefundOperationDTO => ({
-  operationType: getRandomEnumValue(RefundOperationTypeEnum),
-  operationDate: new Date(),
-  operationId: ulid(),
-  eventId: ulid(),
-  amountCents: faker.datatype.number({ min: 500, max: 10000 }),
-  ...withInfo
-});
+): RefundOperationDTO =>
+  ({
+    operationType: getRandomEnumValue(RefundOperationTypeEnum),
+    operationDate: new Date(),
+    operationId: ulid(),
+    eventId: ulid(),
+    amountCents: faker.datatype.number({ min: 500, max: 10000 }),
+    ...withInfo
+  } as RefundOperationDTO);
 
 const generateRandomIbanOperationDTO = (): IbanOperationDTO => ({
   operationType: IbanOperationTypeEnum.ADD_IBAN,
   operationDate: new Date(),
   operationId: ulid(),
-  channel: faker.datatype.string(),
+  channel: getRandomEnumValue(ChannelEnum),
   iban: faker.helpers.arrayElement(ibanList)?.iban || ""
 });
 
@@ -433,14 +439,14 @@ range(0, walletConfig.refundCount).forEach(() => {
 range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [NC]`;
 
-  const initiative: InitiativeDTO = {
+  const initiative = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatus.NOT_REFUNDABLE,
     iban: undefined,
     nInstr: 0
-  };
+  } as InitiativeDTO;
 
   const { initiativeId } = initiative;
 
@@ -534,7 +540,7 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 range(0, walletConfig.discountCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [D]`;
 
-  const initiative: InitiativeDTO = {
+  const initiative = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
@@ -543,7 +549,7 @@ range(0, walletConfig.discountCount).forEach(() => {
     nInstr: 0,
     accruedCents: 0,
     refundedCents: 0
-  };
+  } as InitiativeDTO;
 
   const { initiativeId } = initiative;
 
@@ -741,7 +747,7 @@ export const getIdPayBarcodeTransaction = (
       trxExpirationSeconds,
       initiativeName: faker.company.name(),
       residualBudgetCents: 100000
-    };
+    } as TransactionBarCodeResponse;
     barcodeTransactions = {
       ...barcodeTransactions,
       [initiativeId]: newBarcodeTransaction

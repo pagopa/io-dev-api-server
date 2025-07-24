@@ -5,6 +5,7 @@ import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { getTimelineResponse } from "../../../payloads/features/idpay/get-timeline";
 import { getTimelineDetailResponse } from "../../../payloads/features/idpay/get-timeline-detail";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/get-wallet-detail";
+import { CodeEnum } from "../../../../generated/definitions/idpay/TimelineErrorDTO";
 import { addIdPayHandler } from "./router";
 
 type Query = string | qs.ParsedQs | string[] | qs.ParsedQs[] | undefined;
@@ -37,7 +38,8 @@ addIdPayHandler("get", "/timeline/:initiativeId", (req, res) =>
       )
     ),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res.status(404).json(getIdPayError(CodeEnum.TIMELINE_DETAIL_NOT_FOUND)),
       timeline => res.status(200).json(timeline)
     )
   )
@@ -59,7 +61,8 @@ addIdPayHandler("get", "/timeline/:initiativeId/:operationId", (req, res) =>
     ),
     O.chain(args => getTimelineDetailResponse(...args)),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res.status(404).json(getIdPayError(CodeEnum.TIMELINE_DETAIL_NOT_FOUND)),
       operation => res.status(200).json(operation)
     )
   )

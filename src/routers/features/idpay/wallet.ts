@@ -25,6 +25,7 @@ import {
   updateInitiative
 } from "../../../persistence/idpay";
 import { getWalletV2 } from "../../walletsV2";
+import { CodeEnum } from "../../../../generated/definitions/idpay/WalletErrorDTO";
 import { addIdPayHandler } from "./router";
 
 const getWalletInstrument = (id: string) =>
@@ -59,7 +60,10 @@ addIdPayHandler("post", "/wallet/code/generate", (req, res) => {
       O.fromNullable,
       O.chain(getWalletDetailResponse),
       O.fold(
-        () => res.status(404).json(getIdPayError(404)),
+        () =>
+          res
+            .status(404)
+            .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
         ({ initiativeId }) => {
           generateIdPayCode();
           const result = enrollCodeToInitiative(initiativeId);
@@ -85,7 +89,10 @@ addIdPayHandler("get", "/wallet/instrument/:walletId/initiatives", (req, res) =>
     O.fromNullable,
     O.chain(getInitiativeWithInstrumentResponse),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       data => res.status(200).json(data)
     )
   )
@@ -100,7 +107,10 @@ addIdPayHandler("get", "/wallet/:initiativeId", (req, res) =>
     O.fromNullable,
     O.chain(getWalletDetailResponse),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       initiative => res.status(200).json(initiative)
     )
   )
@@ -115,7 +125,10 @@ addIdPayHandler("get", "/wallet/:initiativeId/detail", (req, res) =>
     O.fromNullable,
     O.chain(getInitiativeBeneficiaryDetailResponse),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       initiative => res.status(200).json(initiative)
     )
   )
@@ -130,7 +143,10 @@ addIdPayHandler("get", "/wallet/:initiativeId/status", (req, res) =>
     O.fromNullable,
     O.chain(getWalletStatusResponse),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       status => res.status(200).json(status)
     )
   )
@@ -146,14 +162,22 @@ addIdPayHandler("delete", "/wallet/:initiativeId/unsubscribe", (req, res) =>
     O.chain(getWalletDetailResponse),
     O.map(({ initiativeId }) => initiatives[initiativeId]),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       flow(
         O.of,
         O.filter(
           initiative => initiative.status !== InitiativeStatusEnum.UNSUBSCRIBED
         ),
         O.fold(
-          () => res.status(403).json(getIdPayError(403)),
+          () =>
+            res
+              .status(403)
+              .json(
+                getIdPayError(CodeEnum.WALLET_INSTRUMENT_DELETE_NOT_ALLOWED)
+              ),
           initiative => {
             updateInitiative({
               ...initiative,
@@ -176,18 +200,31 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
     O.fromNullable,
     O.chain(getWalletDetailResponse),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       ({ initiativeId }) =>
         pipe(
           IbanPutDTO.decode(req.body),
           O.fromEither,
           O.fold(
-            () => res.status(400).json(getIdPayError(400)),
+            () =>
+              res
+                .status(400)
+                .json(getIdPayError(CodeEnum.WALLET_GENERIC_ERROR)),
             ({ iban, description }) =>
               pipe(
                 Iban.decode(iban),
                 E.fold(
-                  () => res.status(403).json(getIdPayError(403)),
+                  () =>
+                    res
+                      .status(403)
+                      .json(
+                        getIdPayError(
+                          CodeEnum.WALLET_ENROLL_INSTRUMENT_NOT_ALLOWED_FOR_REFUND_INITIATIVE
+                        )
+                      ),
                   () => {
                     updateInitiative({ ...initiatives[initiativeId], iban });
                     storeIban(iban, description);
@@ -211,7 +248,10 @@ addIdPayHandler("get", "/wallet/:initiativeId/instruments", (req, res) =>
     O.chain(getWalletDetailResponse),
     O.map(({ initiativeId }) => initiativeId),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       flow(
         getInstrumentListResponse,
         O.fold(
@@ -232,7 +272,10 @@ addIdPayHandler("put", "/wallet/:initiativeId/code/instruments", (req, res) =>
     O.fromNullable,
     O.chain(getWalletDetailResponse),
     O.fold(
-      () => res.status(404).json(getIdPayError(404)),
+      () =>
+        res
+          .status(404)
+          .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
       ({ initiativeId }) => {
         const result = enrollCodeToInitiative(initiativeId);
         return res.sendStatus(result ? 200 : 403);
@@ -253,14 +296,20 @@ addIdPayHandler(
       O.fromNullable,
       O.chain(getWalletDetailResponse),
       O.fold(
-        () => res.status(404).json(getIdPayError(404)),
+        () =>
+          res
+            .status(404)
+            .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
         ({ initiativeId }) =>
           pipe(
             req.params.walletId,
             O.fromNullable,
             O.chain(getWalletInstrument),
             O.fold(
-              () => res.status(404).json(getIdPayError(404)),
+              () =>
+                res
+                  .status(404)
+                  .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
               wallet => {
                 const result = enrollInstrumentToInitiative(
                   initiativeId,
@@ -286,13 +335,19 @@ addIdPayHandler(
       O.fromNullable,
       O.chain(getWalletDetailResponse),
       O.fold(
-        () => res.status(404).json(getIdPayError(404)),
+        () =>
+          res
+            .status(404)
+            .json(getIdPayError(CodeEnum.WALLET_INSTRUMENT_NOT_FOUND)),
         ({ initiativeId }) =>
           pipe(
             req.params.instrumentId,
             O.fromNullable,
             O.fold(
-              () => res.status(400).json(getIdPayError(400)),
+              () =>
+                res
+                  .status(400)
+                  .json(getIdPayError(CodeEnum.WALLET_GENERIC_ERROR)),
               instrumentId => {
                 const result = deleteInstrumentFromInitiative(
                   initiativeId,

@@ -22,6 +22,7 @@ import {
 } from "../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
 import { _typeEnum as SelfDeclarationTextDTO } from "../../../../generated/definitions/idpay/SelfDeclarationTextDTO";
 import { getRandomEnumValue } from "../../utils/random";
+import { RowDataDTO } from "../../../../generated/definitions/idpay/RowDataDTO";
 import { IDPayInitiativeID } from "./types";
 
 const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
@@ -56,7 +57,17 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
   }
 ];
 
-const criterionArray = ["Criterio 1", "Criterio 2", "Criterio 3"];
+const criterionArray: ReadonlyArray<RowDataDTO> = [
+  {
+    description: "Criterio 1"
+  },
+  {
+    description: "Criterio 2"
+  },
+  {
+    description: "Criterio 3"
+  }
+];
 const selfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
   {
     _type: SelfDeclarationMultiType.multi,
@@ -79,7 +90,14 @@ const guidoniaSelfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
     description: "Costituire una famiglia monogenitoriale:",
-    value: ["Sì", "No"]
+    value: [
+      {
+        description: "Sì"
+      },
+      {
+        description: "No"
+      }
+    ]
   }
 ];
 
@@ -153,9 +171,18 @@ const checkPrerequisites: {
         code: ulid(),
         description: "<devi selezionare un’opzione di ISEE>",
         value: [
-          "Avere un ISEE inferiore a 25.000€",
-          "Avere un ISEE superiore a 25.000€",
-          "Non avere un ISEE"
+          {
+            description: "Sì, inferiore a 25.000€",
+            subDescription: "Hai diritto fino a 200€"
+          },
+          {
+            description: "Sì, uguale o superiore a 25.000€",
+            subDescription: "Hai diritto fino a 100€"
+          },
+          {
+            description: "No, non ho un ISEE",
+            subDescription: "Hai diritto fino a 100€"
+          }
         ]
       },
       {

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import { ProblemJson } from "@pagopa/ts-commons/lib/responses";
 import { isSessionTokenValid } from "../persistence/sessionInfo";
-import { ErrorDTO } from "../../generated/definitions/idpay/ErrorDTO";
+import { ErrorDto } from "../payloads/features/idpay/error";
 
-type FastLoginMiddleware401Response = ErrorDTO & ProblemJson;
+type FastLoginMiddleware401Response = ErrorDto | ProblemJson;
 const responseFor401: FastLoginMiddleware401Response = {
   code: 401,
   message: "Unauthorized"

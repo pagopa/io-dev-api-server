@@ -14,7 +14,7 @@ import { getRandomEnumValue } from "../../../payloads/utils/random";
 import { initiatives } from "../../../persistence/idpay";
 import { addIdPayHandler } from "./router";
 
-const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
+const generateRandomAuthPaymentResponseDTO = () => {
   const amount = faker.datatype.number({
     min: 10000,
     max: 1000000
@@ -34,7 +34,7 @@ const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
       min: 1000,
       max: 20000
     })
-  };
+  } as AuthPaymentResponseDTO;
 };
 
 const generateRandomTransactionError = (
