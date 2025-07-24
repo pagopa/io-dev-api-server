@@ -36,6 +36,14 @@ const onboardingStatuses: {
   [IDPayInitiativeID.KO_STATUS_ON_EVALUATION]: {
     status: OnboardingStatusEnum.ON_EVALUATION,
     statusDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST]: {
+    status: OnboardingStatusEnum.ONBOARDING_WAITING_LIST,
+    statusDate: faker.date.recent(1)
+  },
+  [IDPayInitiativeID.KO_FAMILY_UNIT_ALREADY_JOINED]: {
+    status: OnboardingStatusEnum.ONBOARDING_FAMILY_UNIT_ALREADY_JOINED,
+    statusDate: faker.date.recent(1)
   }
 };
 

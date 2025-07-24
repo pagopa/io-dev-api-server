@@ -50,10 +50,10 @@ const initiativeData: {
     initiativeName: "Iniziativa GUIDONIA"
   },
 
-  [IDPayServiceID.BONUS_ELETTRODOMESTICI]: {
+  [IDPayServiceID.OK_BONUS_ELETTRODOMESTICI]: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(
-      IDPayInitiativeID.BONUS_ELETTRODOMESTICI
+      IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI
     ),
     initiativeName: "BONUS ELETTRODOMESTICI"
   },
@@ -105,6 +105,20 @@ const initiativeData: {
     ...createRandomInitiativeDataDTO(),
     initiativeId: initiativeIdToString(IDPayInitiativeID.KO_NOT_STARTED),
     initiativeName: "Iniziativa - Non iniziata"
+  },
+  [IDPayServiceID.KO_FAMILY_UNIT_ALREADY_JOINED]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.KO_FAMILY_UNIT_ALREADY_JOINED
+    ),
+    initiativeName: "Iniziativa - Nucleo familiare già aderente"
+  },
+  [IDPayServiceID.KO_ONBOARDING_WAITING_LIST]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: initiativeIdToString(
+      IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST
+    ),
+    initiativeName: "Iniziativa - Lista d'attesa"
   }
 };
 
