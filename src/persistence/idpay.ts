@@ -69,21 +69,39 @@ const { idPay: walletConfig } = ioDevServerConfig.wallet;
 
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
 
+export const generateRandomInitiativeId = (length = 10): string => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const resultArray = Array.from({ length }, () =>
+    chars.charAt(Math.floor(Math.random() * chars.length))
+  );
+  return resultArray.join("");
+};
+
 const generateRandomInitiativeDTO = (): InitiativeDTO => {
-  const amountCents = faker.datatype.number({ min: 5000, max: 20000 });
-  const accruedCents = faker.datatype.number({ max: 20000 });
-  const refundedCents = faker.datatype.number({ max: accruedCents });
+  const initiativeId = generateRandomInitiativeId();
+
+  const initiativeEndDate = faker.date.future(1);
+  const voucherEndDate = faker.date.future(1);
+  const initiativeEndDateStr = initiativeEndDate.toISOString().slice(0, 10); // YYYY-MM-DD
+  const voucherEndDateStr = voucherEndDate.toISOString().slice(0, 10); // YYYY-MM-DD
+
+  const accruedCents = faker.datatype.number({ min: 0, max: 999 });
+  const refundedCents = faker.datatype.number({ min: 0, max: 999 });
+
+  const lastCounterUpdate = faker.date.recent(1).toISOString().slice(0, 19);
 
   return {
-    initiativeId: ulid(),
+    initiativeId,
     initiativeName: faker.company.name(),
     status: getRandomEnumValue(InitiativeStatus),
-    voucherEndDate: faker.date.future(1),
-    amountCents,
+    initiativeEndDate: initiativeEndDateStr,
+    voucherEndDate: voucherEndDateStr,
+    amountCents: faker.datatype.number({ min: 5000, max: 20000 }),
     accruedCents,
     initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
     refundedCents,
-    lastCounterUpdate: faker.date.recent(1),
+    lastCounterUpdate,
     iban: faker.helpers.arrayElement(ibanList)?.iban || "",
     nInstr: 1,
     logoURL: faker.image.image(480, 480, true),

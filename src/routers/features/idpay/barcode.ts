@@ -2,10 +2,9 @@ import * as O from "fp-ts/lib/Option";
 
 import { pipe } from "fp-ts/lib/function";
 import { TransactionBarCodeRequest } from "../../../../generated/definitions/idpay/TransactionBarCodeRequest";
+import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { getWalletDetailResponse } from "../../../payloads/features/idpay/get-wallet-detail";
 import { getIdPayBarcodeTransaction } from "../../../persistence/idpay";
-import { CodeEnum } from "../../../../generated/definitions/idpay/PaymentInstrumentErrorDTO";
-import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { addIdPayHandler } from "./router";
 
 const SECONDS_TO_EXPIRE_BARCODE = 120;
@@ -16,18 +15,12 @@ addIdPayHandler("post", "/payment/bar-code", (req, res) =>
     O.fromEither,
     O.map(data => data.initiativeId),
     O.fold(
-      () =>
-        res
-          .status(400)
-          .json(getIdPayError(CodeEnum.PAYMENT_INSTRUMENT_NOT_FOUND)),
+      () => res.status(400).json(getIdPayError(400)),
       initiativeId =>
         pipe(
           getWalletDetailResponse(initiativeId),
           O.fold(
-            () =>
-              res
-                .status(404)
-                .json(getIdPayError(CodeEnum.PAYMENT_INSTRUMENT_NOT_FOUND)),
+            () => res.status(404).json(getIdPayError(404)),
             () => {
               const barcodeTransaction = getIdPayBarcodeTransaction(
                 initiativeId,

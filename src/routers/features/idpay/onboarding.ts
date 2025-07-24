@@ -28,14 +28,7 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
     O.chain(serviceIdFromString),
     O.chain(getInitiativeDataResponseByServiceId),
     O.fold(
-      () =>
-        res
-          .status(404)
-          .json(
-            getIdPayError(
-              OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_FOUND
-            )
-          ),
+      () => res.status(404).json(getIdPayError(404)),
       initiative => res.status(200).json(initiative)
     )
   )
@@ -68,25 +61,13 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
     OnboardingPutDTO.decode(req.body),
     O.fromEither,
     O.fold(
-      () =>
-        res
-          .status(400)
-          .json(
-            getIdPayError(OnboardingErrorCodeEnum.ONBOARDING_GENERIC_ERROR)
-          ),
+      () => res.status(400).json(getIdPayError(400)),
       flow(
         O.some,
         O.map(({ initiativeId }) => initiativeId),
         O.chain(initiativeIdFromString),
         O.fold(
-          () =>
-            res
-              .status(404)
-              .json(
-                getIdPayError(
-                  OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_FOUND
-                )
-              ), // Initiative not found
+          () => res.status(404).json(getIdPayError(404)), // Initiative not found
           flow(
             O.some,
             O.chain(getPrerequisitesErrorByInitiativeId),
@@ -109,25 +90,13 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
     OnboardingPutDTO.decode(req.body),
     O.fromEither,
     O.fold(
-      () =>
-        res
-          .status(400)
-          .json(
-            getIdPayError(OnboardingErrorCodeEnum.ONBOARDING_GENERIC_ERROR)
-          ), // Wrong request body
+      () => res.status(400).json(getIdPayError(400)), // Wrong request body
       flow(
         O.some,
         O.map(({ initiativeId }) => initiativeId),
         O.chain(initiativeIdFromString),
         O.fold(
-          () =>
-            res
-              .status(404)
-              .json(
-                getIdPayError(
-                  OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_FOUND
-                )
-              ), // Initiative not found
+          () => res.status(404).json(getIdPayError(404)), // Initiative not found
           initiativeId =>
             pipe(
               initiativeId,
@@ -161,25 +130,13 @@ addIdPayHandler("put", "/onboarding/consent", (req, res) =>
     OnboardingPutDTO.decode(req.body),
     O.fromEither,
     O.fold(
-      () =>
-        res
-          .status(400)
-          .json(
-            getIdPayError(OnboardingErrorCodeEnum.ONBOARDING_GENERIC_ERROR)
-          ),
+      () => res.status(400).json(getIdPayError(400)),
       flow(
         O.some,
         O.map(({ initiativeId }) => initiativeId),
         O.chain(initiativeIdFromString),
         O.fold(
-          () =>
-            res
-              .status(404)
-              .json(
-                getIdPayError(
-                  OnboardingErrorCodeEnum.ONBOARDING_INITIATIVE_NOT_FOUND
-                )
-              ),
+          () => res.status(404).json(getIdPayError(404)),
           _ => res.sendStatus(202)
         )
       )
