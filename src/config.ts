@@ -69,6 +69,13 @@ const defaultConfig: IoDevServerConfig = {
     firstOnboarding: false,
     allowRandomValues: true
   },
+  send: {
+    sendAARs: [],
+    sendMandates: [],
+    sendMessages: [],
+    sendNotifications: [],
+    sendOptInMessage: true
+  },
   messages: {
     response: {
       getMessagesResponseCode: 200,
@@ -116,7 +123,6 @@ const defaultConfig: IoDevServerConfig = {
     attachmentAvailableAfterSeconds: 5,
     attachmentExpiredAfterSeconds: 10,
     attachmentRetryAfterSeconds: 2,
-    pnOptInMessage: true,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,

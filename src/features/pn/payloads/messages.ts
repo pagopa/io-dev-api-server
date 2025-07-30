@@ -52,7 +52,7 @@ export const createPNOptInMessage = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
   pipe(
-    customConfig.messages.pnOptInMessage ?? false,
+    customConfig.send.sendOptInMessage,
     B.fold(
       () => [],
       () => [

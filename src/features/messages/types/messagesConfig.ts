@@ -61,9 +61,7 @@ export const MessagesConfig = t.intersection([
     // number of messages with remote content
     messageTemplateWrappers: t.readonlyArray(MessageTemplateWrapper),
     // number of messages coming from PN (aka Piattaforma Notifiche)
-    pnMessageTemplateWrappers: t.readonlyArray(PNMessageTemplateWrapper),
-    // PN Opt In message
-    pnOptInMessage: t.boolean
+    pnMessageTemplateWrappers: t.readonlyArray(PNMessageTemplateWrapper)
   })
 ]);
 

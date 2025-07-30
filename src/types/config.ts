@@ -19,6 +19,7 @@ import { MessagesConfig } from "../features/messages/types/messagesConfig";
 import { WalletConfiguration } from "../features/payments/types/configuration";
 import { ServiceConfiguration } from "../features/services/types/configuration";
 import { FIMSConfig } from "../features/fims/types/config";
+import { SendConfig } from "../features/pn/types/sendConfig";
 import { AllowRandomValue } from "./allowRandomValue";
 import { HttpResponseCode } from "./httpResponseCode";
 
@@ -148,6 +149,7 @@ export const IoDevServerConfig = t.interface({
     AllowRandomValue
   ]),
   messages: MessagesConfig,
+  send: SendConfig,
   services: ServicesConfig,
   wallet: t.intersection([
     t.interface({
