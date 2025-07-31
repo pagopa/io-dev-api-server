@@ -15,7 +15,7 @@ const generateRandomOperationDetailDTO = (
       return {
         ...operation,
         cro: ulid(),
-        iban: faker.finance.iban({ countryCode: "IT", formatted: false }),
+        iban: faker.finance.iban({ formatted: false }),
         startDate: faker.date.recent(),
         endDate: faker.date.recent(),
         transferDate: faker.date.recent()

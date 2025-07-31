@@ -151,7 +151,7 @@ addHandler(
   addPrefix("/discount-bucket-code/:discountId"),
   (req, res) => {
     const discountBucketCode: DiscountBucketCode = {
-      code: faker.string.alphanumeric() as NonEmptyString
+      code: faker.string.sample() as NonEmptyString
     };
     res.json(discountBucketCode);
   }

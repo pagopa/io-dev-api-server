@@ -104,8 +104,7 @@ describe("IDPay Wallet API", () => {
       const body: IbanPutDTO = {
         description: "A",
         iban: faker.finance.iban({
-          formatted: false,
-          countryCode: "IT"
+          formatted: false
         })
       };
 
@@ -120,8 +119,7 @@ describe("IDPay Wallet API", () => {
       const body: IbanPutDTO = {
         description: "A",
         iban: faker.finance.iban({
-          formatted: false,
-          countryCode: "IT"
+          formatted: false
         })
       };
 

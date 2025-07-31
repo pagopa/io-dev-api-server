@@ -88,7 +88,7 @@ const generateRandomInitiativeDTO = (): InitiativeDTO => {
 };
 
 const generateRandomIbanDTO = (): IbanDTO => ({
-  iban: faker.finance.iban({ countryCode: "IT", formatted: false }),
+  iban: faker.finance.iban({ formatted: false }),
   checkIbanStatus: faker.string.sample(),
   holderBank: faker.company.name(),
   description: faker.company.buzzPhrase(),

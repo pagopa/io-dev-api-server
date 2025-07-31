@@ -24,7 +24,7 @@ const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
     id: ulid(),
     initiativeId: Object.values(initiatives)[0]?.initiativeId ?? ulid(),
     status: getRandomEnumValue(PaymentStatusEnum),
-    trxCode: faker.string.alphanumeric(),
+    trxCode: faker.string.sample(),
     rewardCents: amount,
     amountCents: amount,
     businessName: faker.commerce.productName(),
