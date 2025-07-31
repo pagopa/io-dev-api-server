@@ -1,6 +1,6 @@
 import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import { Address } from "../../../../generated/definitions/cgn/merchants/Address";
 import { Discount } from "../../../../generated/definitions/cgn/merchants/Discount";
@@ -47,11 +47,11 @@ let millis = new Date().getTime();
 const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
   const categoriesArray = range(
     0,
-    faker.datatype.number({ min: 1, max: 3 })
+    faker.number.int({ min: 1, max: 3 })
   ).map<ProductCategory>(
     __ =>
       availableCategories[
-        faker.datatype.number({
+        faker.number.int({
           min: 0,
           max: availableCategories.length - 1
         })
@@ -63,56 +63,54 @@ const generateRandomCategoriesList = (): ReadonlyArray<ProductCategoryEnum> => {
 };
 
 export const onlineMerchants: OnlineMerchants = {
-  items: range(
-    0,
-    faker.datatype.number({ min: 1, max: 15 })
-  ).map<OnlineMerchant>(_ => {
-    faker.seed(millis++);
-    const discountType =
-      discountTypes[
-        faker.datatype.number({ min: 0, max: discountTypes.length - 1 })
-      ];
-    const newDiscounts = faker.datatype.boolean();
-    return {
-      discountCodeType: discountType,
-      id: faker.datatype.number().toString() as NonEmptyString,
-      name: `${faker.company.name()} [Online]` as NonEmptyString,
-      productCategories: generateRandomCategoriesList(),
-      websiteUrl: faker.internet.url() as NonEmptyString,
-      newDiscounts,
-      numberOfNewDiscounts: newDiscounts
-        ? faker.datatype.number({ min: 1, max: 99 })
-        : undefined
-    };
-  })
+  items: range(0, faker.number.int({ min: 1, max: 15 })).map<OnlineMerchant>(
+    _ => {
+      faker.seed(millis++);
+      const discountType =
+        discountTypes[
+          faker.number.int({ min: 0, max: discountTypes.length - 1 })
+        ];
+      const newDiscounts = faker.datatype.boolean();
+      return {
+        discountCodeType: discountType,
+        id: faker.number.int().toString() as NonEmptyString,
+        name: `${faker.company.name()} [Online]` as NonEmptyString,
+        productCategories: generateRandomCategoriesList(),
+        websiteUrl: faker.internet.url() as NonEmptyString,
+        newDiscounts,
+        numberOfNewDiscounts: newDiscounts
+          ? faker.number.int({ min: 1, max: 99 })
+          : undefined
+      };
+    }
+  )
 };
 
 export const offlineMerchants: OfflineMerchants = {
-  items: range(
-    0,
-    faker.datatype.number({ min: 1, max: 15 })
-  ).map<OfflineMerchant>(_ => {
-    faker.seed(millis++);
-    const newDiscounts = faker.datatype.boolean();
-    return {
-      id: faker.datatype.number().toString() as NonEmptyString,
-      name: `${faker.company.name()} [Offline]` as NonEmptyString,
-      productCategories: generateRandomCategoriesList(),
-      address: {
-        full_address: faker.address.streetAddress(true) as NonEmptyString,
-        latitude: parseFloat(faker.address.latitude()),
-        longitude: parseFloat(faker.address.longitude())
-      },
-      distance: faker.datatype.number({
-        min: 0,
-        max: 50000
-      }) as NonNegativeInteger,
-      newDiscounts,
-      numberOfNewDiscounts: newDiscounts
-        ? faker.datatype.number({ min: 1, max: 99 })
-        : undefined
-    };
-  })
+  items: range(0, faker.number.int({ min: 1, max: 15 })).map<OfflineMerchant>(
+    _ => {
+      faker.seed(millis++);
+      const newDiscounts = faker.datatype.boolean();
+      return {
+        id: faker.number.int().toString() as NonEmptyString,
+        name: `${faker.company.name()} [Offline]` as NonEmptyString,
+        productCategories: generateRandomCategoriesList(),
+        address: {
+          full_address: faker.location.streetAddress(true) as NonEmptyString,
+          latitude: faker.location.latitude(),
+          longitude: faker.location.longitude()
+        },
+        distance: faker.number.int({
+          min: 0,
+          max: 50000
+        }) as NonNegativeInteger,
+        newDiscounts,
+        numberOfNewDiscounts: newDiscounts
+          ? faker.number.int({ min: 1, max: 99 })
+          : undefined
+      };
+    }
+  )
 };
 
 const discountUrl =
@@ -122,14 +120,14 @@ const generateDiscountMethod = (discountCodeType: DiscountCodeTypeEnum) => {
   switch (discountCodeType) {
     case "static":
       return {
-        staticCode: faker.datatype.string().toString() as NonEmptyString,
+        staticCode: faker.string.sample().toString() as NonEmptyString,
         discountUrl: getRandomValue(false, faker.datatype.boolean(), "global")
           ? discountUrl
           : undefined
       };
     case "landingpage":
       return {
-        landingPageReferrer: faker.datatype.string(
+        landingPageReferrer: faker.string.sample(
           6
         ) as Discount["landingPageReferrer"],
         landingPageUrl: discountUrl
@@ -152,10 +150,10 @@ const generateDiscount = (
 ) => {
   const discountCategories = Array.from(
     new Set(
-      range(0, faker.datatype.number({ min: 1, max: 4 })).map<ProductCategory>(
+      range(0, faker.number.int({ min: 1, max: 4 })).map<ProductCategory>(
         __ =>
           productCategories[
-            faker.datatype.number({
+            faker.number.int({
               min: 0,
               max: productCategories.length - 1
             })
@@ -164,12 +162,12 @@ const generateDiscount = (
     )
   );
   const discount: Discount = {
-    id: faker.datatype.number().toString() as NonEmptyString,
+    id: faker.number.int().toString() as NonEmptyString,
     name: faker.commerce.productName() as NonEmptyString,
     startDate: faker.date.past(),
     endDate: faker.date.future(),
     discount: getRandomValue(false, faker.datatype.boolean(), "global")
-      ? faker.datatype.number({ min: 10, max: 30 })
+      ? faker.number.int({ min: 10, max: 30 })
       : undefined,
     description: getRandomValue(false, faker.datatype.boolean(), "global")
       ? (faker.lorem.lines(1) as NonEmptyString)
@@ -195,19 +193,20 @@ export const generateMerchantDetail = (
       id: merchant.id,
       name: merchant.name,
       websiteUrl: merchant.websiteUrl,
-      imageUrl: faker.image.imageUrl() as NonEmptyString,
+      imageUrl: faker.image.url() as NonEmptyString,
       description: faker.lorem.paragraphs(2) as NonEmptyString,
       discountCodeType: merchant.discountCodeType,
-      discounts: range(
-        0,
-        faker.datatype.number({ min: 1, max: 4 })
-      ).map<Discount>(_ =>
-        generateDiscount(merchant.productCategories, merchant.discountCodeType)
+      discounts: range(0, faker.number.int({ min: 1, max: 4 })).map<Discount>(
+        _ =>
+          generateDiscount(
+            merchant.productCategories,
+            merchant.discountCodeType
+          )
       ),
       allNationalAddresses: true
     };
   } else {
-    const addresses = range(0, faker.datatype.number({ min: 0, max: 3 }));
+    const addresses = range(0, faker.number.int({ min: 0, max: 3 }));
     return {
       id: merchant.id,
       name: merchant.name,
@@ -215,14 +214,13 @@ export const generateMerchantDetail = (
         full_address:
           addresses.length === 1
             ? (ALL_NATIONAL_ADDRESSES_TEXT as NonEmptyString)
-            : (faker.address.streetAddress(true) as NonEmptyString)
+            : (faker.location.streetAddress(true) as NonEmptyString)
       })),
-      imageUrl: faker.image.imageUrl() as NonEmptyString,
+      imageUrl: faker.image.url() as NonEmptyString,
       description: faker.lorem.paragraphs(2) as NonEmptyString,
-      discounts: range(
-        0,
-        faker.datatype.number({ min: 1, max: 4 })
-      ).map<Discount>(_ => generateDiscount(merchant.productCategories)),
+      discounts: range(0, faker.number.int({ min: 1, max: 4 })).map<Discount>(
+        _ => generateDiscount(merchant.productCategories)
+      ),
       websiteUrl: faker.internet.url() as NonEmptyString,
       allNationalAddresses: addresses.length === 1
     };

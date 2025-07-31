@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import { format } from "date-fns";
 import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
@@ -48,8 +48,8 @@ const generateUserWallet = (
     walletId,
     paymentMethodId: paymentMethodId.toString(),
     status: WalletStatusEnum.VALIDATED,
-    creationDate: faker.date.past(2),
-    updateDate: faker.date.past(1),
+    creationDate: faker.date.past({ years: 2 }),
+    updateDate: faker.date.past({ years: 1 }),
     clients: {
       IO: {
         status: WalletClientStatusEnum.ENABLED,
@@ -72,7 +72,9 @@ const generateUserWallet = (
 const generateWalletData = () => {
   generateUserWallet(2);
   generateUserWallet(1);
-  generateUserWallet(1, { expiryDate: format(faker.date.past(1), "yyyyMM") });
+  generateUserWallet(1, {
+    expiryDate: format(faker.date.past({ years: 1 }), "yyyyMM")
+  });
 };
 
 const updateUserWalletApplication = (

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { ioDevServerConfig } from "../config";
 
 /**
@@ -19,7 +19,7 @@ export const errorMiddleware = (
     next();
     return;
   }
-  const random = faker.datatype.number({ min: 0, max: 1, precision: 0.01 });
+  const random = faker.number.float({ min: 0, max: 1, fractionDigits: 2 });
   const { chance, codes } = ioDevServerConfig.global.responseError;
   // out of the chance, do nothing
   if (random > chance) {
