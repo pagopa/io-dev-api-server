@@ -4,7 +4,7 @@ import * as B from "fp-ts/lib/boolean";
 import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { IoDevServerConfig } from "../../../types/config";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";

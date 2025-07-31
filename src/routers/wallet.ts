@@ -2,7 +2,7 @@
  * this router handles all requests about wallets
  */
 import { Router } from "express";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { takeRight } from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
@@ -205,7 +205,7 @@ addHandler(
   (_, res) => {
     res.json({
       data: {
-        id: faker.datatype.number({ min: 20000, max: 30000 }),
+        id: faker.number.int({ min: 20000, max: 30000 }),
         created: "2020-10-26T08:31:49Z",
         updated: "2020-10-26T08:31:49Z",
         amount: {

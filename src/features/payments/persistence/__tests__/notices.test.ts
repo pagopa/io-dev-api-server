@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import noticesAPI from "../notices";
 import { NoticeListItem } from "../../../../../generated/definitions/pagopa/transactions/NoticeListItem";
@@ -14,7 +14,7 @@ describe("Notices API", () => {
   describe("addUserNotice", () => {
     it("should add a notice to the user notices list", () => {
       const mockNotice: NoticeListItem = {
-        eventId: faker.datatype.uuid(),
+        eventId: faker.string.uuid(),
         payeeName: faker.company.name(),
         payeeTaxCode: "12345678901",
         isDebtor: false,
@@ -40,7 +40,7 @@ describe("Notices API", () => {
 
     it("should return all user notices", () => {
       const mockNotice1: NoticeListItem = {
-        eventId: faker.datatype.uuid(),
+        eventId: faker.string.uuid(),
         payeeName: faker.company.name(),
         payeeTaxCode: "12345678901",
         isDebtor: false,
@@ -51,7 +51,7 @@ describe("Notices API", () => {
       };
 
       const mockNotice2: NoticeListItem = {
-        eventId: faker.datatype.uuid(),
+        eventId: faker.string.uuid(),
         payeeName: faker.company.name(),
         payeeTaxCode: "98765432109",
         isDebtor: false,
@@ -73,13 +73,13 @@ describe("Notices API", () => {
 
   describe("getNoticeDetails", () => {
     it("should return None when notice details don't exist", () => {
-      const eventId = faker.datatype.uuid();
+      const eventId = faker.string.uuid();
       const result = noticesAPI.getNoticeDetails(eventId);
       expect(O.isNone(result)).toBe(true);
     });
 
     it("should return notice details when they exist", () => {
-      const eventId = faker.datatype.uuid();
+      const eventId = faker.string.uuid();
       noticesAPI.generateUserNotice(eventId, 0);
       const result = noticesAPI.getNoticeDetails(eventId);
 
@@ -94,7 +94,7 @@ describe("Notices API", () => {
 
   describe("removeUserNotice", () => {
     it("should remove a notice and its details", () => {
-      const eventId = faker.datatype.uuid();
+      const eventId = faker.string.uuid();
       noticesAPI.generateUserNotice(eventId, 0);
 
       expect(noticesAPI.getUserNotices()).toHaveLength(1);
@@ -109,7 +109,7 @@ describe("Notices API", () => {
 
   describe("generateUserNotice", () => {
     it("should generate a notice with default values", () => {
-      const eventId = faker.datatype.uuid();
+      const eventId = faker.string.uuid();
       const notice = noticesAPI.generateUserNotice(eventId, 0);
 
       expect(notice).toBeDefined();
@@ -121,7 +121,7 @@ describe("Notices API", () => {
     });
 
     it("should generate cart notices when multiple items are present", () => {
-      const eventId = faker.datatype.uuid();
+      const eventId = faker.string.uuid();
       const notice = noticesAPI.generateUserNotice(eventId, 0);
 
       const details = noticesAPI.getNoticeDetails(eventId);

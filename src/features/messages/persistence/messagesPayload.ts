@@ -5,7 +5,7 @@ import * as B from "fp-ts/lib/boolean";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import * as S from "fp-ts/lib/string";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 import { CreatedMessageWithoutContent } from "../../../../generated/definitions/backend/CreatedMessageWithoutContent";
@@ -112,7 +112,7 @@ const serviceFromMessage = (
 export const withPaymentData = (
   message: CreatedMessageWithContent,
   invalidAfterDueDate: boolean = false,
-  noticeNumber: string = `0${faker.random.numeric(17)}`,
+  noticeNumber: string = `0${faker.string.numeric(17)}`,
   amount: number = getRandomIntInRange(1, 10000)
 ): E.Either<Error, CreatedMessageWithContent> =>
   pipe(
