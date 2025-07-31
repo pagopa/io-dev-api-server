@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
@@ -15,7 +15,7 @@ const generateRandomOperationDetailDTO = (
       return {
         ...operation,
         cro: ulid(),
-        iban: faker.finance.iban(false, "IT"),
+        iban: faker.finance.iban({ countryCode: "IT", formatted: false }),
         startDate: faker.date.recent(),
         endDate: faker.date.recent(),
         transferDate: faker.date.recent()
@@ -24,7 +24,7 @@ const generateRandomOperationDetailDTO = (
     case "TRANSACTION":
       return {
         ...operation,
-        accruedCents: operation.accruedCents || faker.datatype.number(10000),
+        accruedCents: operation.accruedCents || faker.number.int(10000),
         idTrxAcquirer: ulid(),
         idTrxIssuer: ulid()
       };

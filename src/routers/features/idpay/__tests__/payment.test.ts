@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import supertest from "supertest";
 import app from "../../../../server";
 import { addIdPayPrefix } from "../router";
@@ -33,9 +33,9 @@ describe("IDPay Payment API", () => {
     Object.keys(codeToFailure).forEach(key => {
       const { status, code } = codeToFailure[parseInt(key, 10)];
       it(`should return ${status} with ${code}`, async () => {
-        const trxCode = `${faker.random.alphaNumeric(
+        const trxCode = `${faker.string.alphanumeric(
           6
-        )}${key}${faker.random.alphaNumeric(1)}`;
+        )}${key}${faker.string.alphanumeric(1)}`;
 
         const response = await request.put(
           addIdPayPrefix(`/payment/qr-code/${trxCode}/relate-user`)
@@ -49,7 +49,10 @@ describe("IDPay Payment API", () => {
 
   describe("PUT putAuthPayment", () => {
     it("should return 200 with payment data", async () => {
-      const trxCode = faker.random.alphaNumeric(8, { bannedChars: "12345678" });
+      const trxCode = faker.string.alphanumeric({
+        length: 8,
+        exclude: "12345678"
+      });
 
       const response = await request.put(
         addIdPayPrefix(`/payment/qr-code/${trxCode}/authorize`)
@@ -60,7 +63,7 @@ describe("IDPay Payment API", () => {
     Object.keys(codeToFailure).forEach(key => {
       const { status, code } = codeToFailure[parseInt(key, 10)];
       it(`should return ${status} with ${code}`, async () => {
-        const trxCode = `${faker.random.alphaNumeric(7)}${key}`;
+        const trxCode = `${faker.string.alphanumeric(7)}${key}`;
 
         const response = await request.put(
           addIdPayPrefix(`/payment/qr-code/${trxCode}/authorize`)
@@ -84,7 +87,7 @@ describe("IDPay Payment API", () => {
     Object.keys(codeToFailure).forEach(key => {
       const { status, code } = codeToFailure[parseInt(key, 10)];
       it(`should return ${status} with ${code}`, async () => {
-        const trxCode = `${faker.random.alphaNumeric(7)}${key}`;
+        const trxCode = `${faker.string.alphanumeric(7)}${key}`;
 
         const response = await request.delete(
           addIdPayPrefix(`/payment/qr-code/${trxCode}`)

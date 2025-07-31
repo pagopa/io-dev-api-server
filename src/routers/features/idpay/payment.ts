@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { ulid } from "ulid";
@@ -15,7 +15,7 @@ import { initiatives } from "../../../persistence/idpay";
 import { addIdPayHandler } from "./router";
 
 const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
-  const amount = faker.datatype.number({
+  const amount = faker.number.int({
     min: 10000,
     max: 1000000
   });
@@ -24,13 +24,13 @@ const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
     id: ulid(),
     initiativeId: Object.values(initiatives)[0]?.initiativeId ?? ulid(),
     status: getRandomEnumValue(PaymentStatusEnum),
-    trxCode: faker.datatype.string(),
+    trxCode: faker.string.alphanumeric(),
     rewardCents: amount,
     amountCents: amount,
     businessName: faker.commerce.productName(),
     initiativeName: faker.company.name(),
-    trxDate: faker.date.recent(0),
-    residualBudgetCents: faker.datatype.number({
+    trxDate: faker.date.recent(),
+    residualBudgetCents: faker.number.int({
       min: 1000,
       max: 20000
     })

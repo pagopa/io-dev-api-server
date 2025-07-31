@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Router } from "express";
 import { reverse, sortBy } from "fp-ts/lib/Array";
@@ -151,7 +151,7 @@ addHandler(
   addPrefix("/discount-bucket-code/:discountId"),
   (req, res) => {
     const discountBucketCode: DiscountBucketCode = {
-      code: faker.datatype.string().toString() as NonEmptyString
+      code: faker.string.alphanumeric() as NonEmptyString
     };
     res.json(discountBucketCode);
   }
@@ -172,7 +172,7 @@ addHandler(
       res.json({
         items: Array.from(categoriesSet).map(c => ({
           productCategory: c,
-          newDiscounts: faker.datatype.number(30)
+          newDiscounts: faker.number.int(30)
         }))
       });
       return;
