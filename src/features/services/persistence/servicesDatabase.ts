@@ -2,6 +2,7 @@ import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
 import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
 import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
+import { generateIDPayServices } from "../../../payloads/features/idpay/generateIDPayServices";
 import { isCgnActivated } from "../../../routers/features/cgn";
 import { IoDevServerConfig } from "../../../types/config";
 import {
@@ -43,7 +44,8 @@ const createServices = (config: IoDevServerConfig) => {
       nationalServiceCount,
       localServiceCount
     ),
-    createPnOptInService()
+    createPnOptInService(),
+    ...generateIDPayServices()
   ];
 
   const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
@@ -54,7 +56,10 @@ const createServices = (config: IoDevServerConfig) => {
   ];
   specialServices = ServiceFactory.createSpecialServices(
     specialServiceGenerators,
-    localServiceCount + nationalServiceCount + 1 // + 1 for the pn opt-in service
+    localServiceCount +
+      nationalServiceCount +
+      1 + // + 1 for the pn opt-in service
+      generateIDPayServices().length // + IDPay services
   );
 
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
