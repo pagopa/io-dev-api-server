@@ -18,6 +18,12 @@ const lollipopInfo: LollipopInfo = {
   instantiationDate: undefined
 };
 
+const lollipopInfoEhemeral: LollipopInfo = {
+  lollipopAssertionRef: undefined,
+  lollipopPublicKey: undefined,
+  instantiationDate: undefined
+};
+
 export function getAssertionRef() {
   return lollipopInfo.lollipopAssertionRef;
 }
@@ -43,6 +49,36 @@ export function setLollipopInfo(
   lollipopInfo.lollipopPublicKey = publicKey;
   // eslint-disable-next-line functional/immutable-data
   lollipopInfo.instantiationDate = new Date();
+}
+
+export function setLollipopInfoEphemeral(
+  assertionRef: string | undefined,
+  publicKey: jose.JWK | undefined
+) {
+  // eslint-disable-next-line functional/immutable-data
+  lollipopInfoEhemeral.lollipopAssertionRef =
+    `${DEFAULT_LOLLIPOP_HASH_ALGORITHM}-${assertionRef}` as AssertionRef;
+  // eslint-disable-next-line functional/immutable-data
+  lollipopInfoEhemeral.lollipopPublicKey = publicKey;
+  // eslint-disable-next-line functional/immutable-data
+  lollipopInfoEhemeral.instantiationDate = new Date();
+}
+
+export const clearEphemeralLollipopInfo = () =>
+  Object.keys(lollipopInfoEhemeral).forEach(key => {
+    // eslint-disable-next-line functional/immutable-data
+    lollipopInfoEhemeral[key as keyof LollipopInfo] = undefined;
+  });
+
+export function concretizeEphemeralInfo() {
+  // eslint-disable-next-line functional/immutable-data
+  lollipopInfo.lollipopAssertionRef = lollipopInfoEhemeral.lollipopAssertionRef;
+  // eslint-disable-next-line functional/immutable-data
+  lollipopInfo.lollipopPublicKey = lollipopInfoEhemeral.lollipopPublicKey;
+  // eslint-disable-next-line functional/immutable-data
+  lollipopInfo.instantiationDate = lollipopInfoEhemeral.instantiationDate;
+
+  clearEphemeralLollipopInfo();
 }
 
 // if is a ttl is defined in config for assertion ref, it checks its expiration, otherwise it is considered infinite
