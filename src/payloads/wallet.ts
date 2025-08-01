@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import * as O from "fp-ts/lib/Option";
@@ -23,7 +23,7 @@ import { validatePayload } from "../utils/validator";
 
 export const sessionToken: SessionResponse = {
   data: {
-    sessionToken: faker.random.alphaNumeric(128)
+    sessionToken: faker.string.alphanumeric(128)
   }
 };
 
@@ -140,14 +140,12 @@ export const getWallets = (count: number = 4): WalletListResponse => {
     return {
       id: creditCardId,
       brand: ccBrand,
-      holder: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      pan:
-        "************" +
-        getRandomValue(
-          faker.datatype.number(9999).toString().padStart(4, "0"),
-          creditCardId.toString().padStart(4, "0"),
-          "wallet"
-        ),
+      holder: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      pan: `************${getRandomValue(
+        faker.number.int(9999).toString().padStart(4, "0"),
+        creditCardId.toString().padStart(4, "0"),
+        "wallet"
+      )}`,
       expireMonth: (expDate.getMonth() + 1).toString().padStart(2, "0"),
       expireYear: expDate.getFullYear().toString().substr(2),
       brandLogo: getCreditCardLogo(ccBrand),
@@ -188,19 +186,19 @@ export const getTransactions = (
   return count > 0
     ? range(1, count)
         .map(idx => {
-          const amount = getRandomValue(
+          const amount: number = getRandomValue(
             20000 + idx * 10,
-            faker.datatype.number({ min: 100, max: 20000 }),
+            faker.number.int({ min: 100, max: 20000 }),
             "wallet"
           );
-          const fee = getRandomValue(
+          const fee: number = getRandomValue(
             100,
-            faker.datatype.number({ min: 1, max: 150 }),
+            faker.number.int({ min: 1, max: 150 }),
             "wallet"
           );
           const transactionId = getRandomValue(
             idx,
-            faker.datatype.number(1000000),
+            faker.number.int(1000000),
             "wallet"
           );
           const transactionDescription = getRandomValue(
@@ -237,7 +235,7 @@ export const getTransactions = (
             idPsp: pipe(
               O.fromNullable(wallets),
               O.map(ws => Number(ws[idx % ws.length].idPsp)),
-              O.getOrElse(() => faker.datatype.number(10000))
+              O.getOrElse(() => faker.number.int(10000))
             ),
             idStatus: 3,
             idWallet: pipe(

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import QueryString from "qs";
 import { getRandomValue } from "../utils/random";
 import { validatePayload } from "../utils/validator";
@@ -9,7 +9,7 @@ import { IOResponse } from "./response";
 const getToken = (defaultValue: string) =>
   getRandomValue(
     defaultValue,
-    faker.random.alphaNumeric(15).toUpperCase(),
+    faker.string.alphanumeric(15).toUpperCase(),
     "global"
   );
 

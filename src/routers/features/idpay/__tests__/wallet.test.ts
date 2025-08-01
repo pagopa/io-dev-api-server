@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import supertest from "supertest";
 import { IbanPutDTO } from "../../../../../generated/definitions/idpay/IbanPutDTO";
 
@@ -103,7 +103,9 @@ describe("IDPay Wallet API", () => {
       const initiativeId = tInitiative.initiativeId;
       const body: IbanPutDTO = {
         description: "A",
-        iban: faker.finance.iban(false, "IT")
+        iban: faker.finance.iban({
+          formatted: false
+        })
       };
 
       const response = await request
@@ -116,7 +118,9 @@ describe("IDPay Wallet API", () => {
       const initiativeId = "ABC123";
       const body: IbanPutDTO = {
         description: "A",
-        iban: faker.finance.iban(false, "IT")
+        iban: faker.finance.iban({
+          formatted: false
+        })
       };
 
       const response = await request
