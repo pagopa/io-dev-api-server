@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
 import {
@@ -31,11 +31,11 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
     description: "Data di nascita",
     operator: getRandomEnumValue(OperatorEnum),
     value: faker.date
-      .between("1990-01-01", "1999-12-31")
+      .between({ from: "1990-01-01", to: "1999-12-31" })
       .getFullYear()
       .toString(),
     value2: faker.date
-      .between("1990-01-01", "2023-12-31")
+      .between({ from: "1990-01-01", to: "2023-12-31" })
       .getFullYear()
       .toString()
   },
@@ -44,15 +44,15 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
     authority: AuthorityEnum.AGID,
     description: "ISEE",
     operator: getRandomEnumValue(OperatorEnum),
-    value: faker.finance.amount(10000, 100000),
-    value2: faker.finance.amount(10000, 100000)
+    value: faker.finance.amount({ min: 10000, max: 100000 }),
+    value2: faker.finance.amount({ min: 10000, max: 100000 })
   },
   {
     code: CodeEnum.RESIDENCE,
     authority: AuthorityEnum.AGID,
     description: "Residenza",
-    operator: [OperatorEnum.EQ, OperatorEnum.NOT_EQ][faker.datatype.number(1)],
-    value: faker.address.country()
+    operator: [OperatorEnum.EQ, OperatorEnum.NOT_EQ][faker.number.int(1)],
+    value: faker.location.country()
   }
 ];
 

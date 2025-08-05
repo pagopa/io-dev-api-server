@@ -3,7 +3,7 @@ import {
   NonEmptyString,
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { validatePayload } from "../../../../utils/validator";
 import { frontMatter2CTA2 } from "../../../../utils/variables";
 import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
@@ -134,7 +134,7 @@ export const createServiceFromFactory = (serviceId: string): ServiceDetails => {
       category: StandardServiceCategoryEnum.STANDARD,
       scope: ScopeTypeEnum.LOCAL
     },
-    name: `${faker.company.bs()}`,
+    name: `${faker.company.buzzPhrase()}`,
     organization: {
       fiscal_code: "00514490010" as OrganizationFiscalCode,
       name: "dev organization name" as NonEmptyString
@@ -147,7 +147,7 @@ export const createServiceMetadataFromFactory = (
   scope: ScopeTypeEnum
 ): ServiceMetadata => ({
   scope,
-  address: faker.address.streetAddress() as NonEmptyString,
+  address: faker.location.streetAddress() as NonEmptyString,
   email: faker.internet.email() as NonEmptyString,
   pec: faker.internet.email() as NonEmptyString,
   phone: faker.phone.number() as NonEmptyString,

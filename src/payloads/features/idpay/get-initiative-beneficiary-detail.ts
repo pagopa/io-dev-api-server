@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { InitiativeDTO } from "../../../../generated/definitions/idpay/InitiativeDTO";
@@ -17,12 +17,12 @@ const generateRandomInitiativeDetailDTO = (
     status: initiative.status,
     description: faker.lorem.paragraphs(6),
     ruleDescription: faker.lorem.paragraphs(4),
-    onboardingStartDate: faker.date.past(6),
-    onboardingEndDate: faker.date.future(2),
+    onboardingStartDate: faker.date.past({ years: 6 }),
+    onboardingEndDate: faker.date.future({ years: 2 }),
     privacyLink: faker.internet.url(),
     tcLink: faker.internet.url(),
     logoURL: initiative.logoURL,
-    updateDate: faker.date.recent(1),
+    updateDate: faker.date.recent({ days: 1 }),
     serviceId: faker.helpers.arrayElement(serviceSummaries).service_id
   };
 };

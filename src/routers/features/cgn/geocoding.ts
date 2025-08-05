@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { range } from "fp-ts/lib/NonEmptyArray";
 import { AutocompleteResultItem } from "../../../../generated/definitions/cgn/geo/AutocompleteResultItem";
 import { LookupResponse } from "../../../../generated/definitions/cgn/geo/LookupResponse";
@@ -11,15 +11,15 @@ export const cgnGeoRouter = Router();
 const addPrefix = (path: string) => addApiV1Prefix(`/geo${path}`);
 
 const addresses = range(0, 10000).map<AutocompleteResultItem>(_ => ({
-  id: faker.datatype.uuid(),
-  title: faker.address.streetAddress(true),
+  id: faker.string.uuid(),
+  title: faker.location.streetAddress(true),
   address: {
-    label: faker.address.streetAddress(false),
-    city: faker.address.city(),
-    countryCode: faker.address.countryCode(),
-    countryName: faker.address.country(),
-    county: faker.address.county(),
-    postalCode: faker.address.zipCodeByState("IT")
+    label: faker.location.streetAddress(false),
+    city: faker.location.city(),
+    countryCode: faker.location.countryCode(),
+    countryName: faker.location.country(),
+    county: faker.location.county(),
+    postalCode: faker.location.zipCode()
   }
 }));
 
@@ -42,8 +42,8 @@ addHandler(cgnGeoRouter, "get", addPrefix("/lookup"), (req, res) => {
       title: foundResult.title,
       address: foundResult.address,
       position: {
-        lat: parseFloat(faker.address.latitude()),
-        lng: parseFloat(faker.address.longitude())
+        lat: faker.location.latitude(),
+        lng: faker.location.longitude()
       }
     };
 

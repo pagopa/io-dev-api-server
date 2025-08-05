@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import { ulid } from "ulid";
 import {
   InfoNotice,
@@ -49,12 +49,12 @@ export const generateRandomInfoNotice = (
   );
   return {
     eventId: eventId ?? ulid(),
-    authCode: faker.random.alphaNumeric(6),
-    rrn: faker.random.numeric(12),
+    authCode: faker.string.alphanumeric(6),
+    rrn: faker.string.numeric(12),
     noticeDate: new Date().toISOString(),
     pspName: "Intesa Sanpaolo",
     walletInfo: {
-      accountHolder: faker.name.fullName(),
+      accountHolder: faker.person.fullName(),
       brand:
         randomPaymentMethod.brand !== "PAYPAL"
           ? randomPaymentMethod.brand
@@ -70,13 +70,13 @@ export const generateRandomInfoNotice = (
     },
     paymentMethod: PaymentMethodEnum.PPAL,
     payer: {
-      name: faker.name.fullName(),
-      taxCode: faker.random.alphaNumeric(16).toLocaleUpperCase()
+      name: faker.person.fullName(),
+      taxCode: faker.string.alphanumeric(16).toLocaleUpperCase()
     },
     amount: cartList
       .reduce((acc, item) => acc + Number(item.amount), 0)
       .toString(),
-    fee: faker.finance.amount(0, 10),
+    fee: faker.finance.amount({ min: 0, max: 10 }),
     origin: OriginEnum.INTERNAL
   };
 };

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
 import { InitiativeDataDTO } from "../../../../generated/definitions/idpay/InitiativeDataDTO";
@@ -13,7 +13,7 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   organizationName: faker.company.name(),
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
-  logoURL: faker.image.image(480, 480, true)
+  logoURL: faker.image.urlLoremFlickr({ width: 480, height: 480 })
 });
 
 const initiativeData: {

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import { format } from "date-fns";
 import { PaymentMethodManagementTypeEnum } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodManagementType";
 import { PaymentMethodResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodResponse";
@@ -84,8 +84,8 @@ export const generateWalletDetailsByPaymentMethod = (
       return {
         details: {
           type: "CARDS",
-          lastFourDigits: faker.finance.mask(4, false, false),
-          expiryDate: format(faker.date.future(3), "yyyyMM"),
+          lastFourDigits: faker.string.numeric(4),
+          expiryDate: format(faker.date.future({ years: 3 }), "yyyyMM"),
           brand
         },
         paymentMethodAsset:
@@ -107,7 +107,7 @@ export const generateWalletDetailsByPaymentMethod = (
         details: {
           type: "BPAY",
           maskedNumber: faker.phone.number(),
-          instituteCode: faker.random.numeric(5),
+          instituteCode: faker.string.numeric(5),
           bankName: faker.finance.accountName()
         },
         paymentMethodAsset:

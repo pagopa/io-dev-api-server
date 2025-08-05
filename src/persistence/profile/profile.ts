@@ -1,6 +1,6 @@
 import * as R from "fp-ts/lib/Record";
 import * as E from "fp-ts/lib/Either";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { Request } from "express";
 import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
 import { getProfileInitialData } from "../../payloads/profile";
@@ -68,7 +68,7 @@ export const resetUserProfile = () =>
   (currentProfile = { ...getProfileInitialData(getAuthenticationProvider()) });
 
 const initProfile = () => {
-  const gender = faker.name.sexType();
+  const gender = faker.person.sexType();
 
   const profileFromAuthenticationProvider = getProfileInitialData(
     getAuthenticationProvider()
@@ -81,8 +81,8 @@ const initProfile = () => {
         family_name: profileFromAuthenticationProvider.family_name
       },
       {
-        name: faker.name.firstName(gender),
-        family_name: faker.name.lastName(gender)
+        name: faker.person.firstName(gender),
+        family_name: faker.person.lastName(gender)
       },
       "profile"
     )

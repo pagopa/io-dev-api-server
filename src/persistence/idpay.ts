@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { range } from "lodash";
 import { ulid } from "ulid";
 import { IbanDTO } from "../../generated/definitions/idpay/IbanDTO";
@@ -66,33 +66,33 @@ const { idPay: walletConfig } = ioDevServerConfig.wallet;
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
 
 const generateRandomInitiativeDTO = (): InitiativeDTO => {
-  const amountCents = faker.datatype.number({ min: 5000, max: 20000 });
-  const accruedCents = faker.datatype.number({ max: 20000 });
-  const refundedCents = faker.datatype.number({ max: accruedCents });
+  const amountCents = faker.number.int({ min: 5000, max: 20000 });
+  const accruedCents = faker.number.int({ max: 20000 });
+  const refundedCents = faker.number.int({ max: accruedCents });
 
   return {
     initiativeId: ulid(),
     initiativeName: faker.company.name(),
     status: getRandomEnumValue(InitiativeStatus),
-    endDate: faker.date.future(1),
+    endDate: faker.date.future({ years: 1 }),
     amountCents,
     accruedCents,
     initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
     refundedCents,
-    lastCounterUpdate: faker.date.recent(1),
+    lastCounterUpdate: faker.date.recent({ days: 1 }),
     iban: faker.helpers.arrayElement(ibanList)?.iban || "",
     nInstr: 1,
-    logoURL: faker.image.image(480, 480, true),
+    logoURL: faker.image.urlLoremFlickr({ width: 480, height: 480 }),
     organizationName: faker.company.name()
   };
 };
 
 const generateRandomIbanDTO = (): IbanDTO => ({
-  iban: faker.finance.iban(false, "IT"),
-  checkIbanStatus: faker.datatype.string(),
+  iban: faker.finance.iban({ formatted: false }),
+  checkIbanStatus: faker.string.sample(),
   holderBank: faker.company.name(),
-  description: faker.company.bs(),
-  channel: faker.datatype.string()
+  description: faker.company.buzzPhrase(),
+  channel: faker.string.sample()
 });
 
 const generateRandomTransactionOperationDTO = (
@@ -108,8 +108,8 @@ const generateRandomTransactionOperationDTO = (
     operationType: getRandomEnumValue(TransactionOperationTypeEnum),
     operationDate: new Date(),
     operationId: ulid(),
-    accruedCents: faker.datatype.number({ min: 500, max: 2500 }),
-    amountCents: faker.datatype.number({ min: 5000, max: 10000 }),
+    accruedCents: faker.number.int({ min: 500, max: 2500 }),
+    amountCents: faker.number.int({ min: 5000, max: 10000 }),
     brand,
     circuitType: "01",
     brandLogo,
@@ -128,8 +128,8 @@ const generateRandomTransactionOperationExpenseDTO = (
   operationType: getRandomEnumValue(TransactionOperationTypeEnum),
   operationDate: new Date(),
   operationId: ulid(),
-  accruedCents: faker.datatype.number({ min: 500, max: 2500 }),
-  amountCents: faker.datatype.number({ min: 5000, max: 10000 }),
+  accruedCents: faker.number.int({ min: 500, max: 2500 }),
+  amountCents: faker.number.int({ min: 5000, max: 10000 }),
   circuitType: "01",
   status: getRandomEnumValue(TransactionStatusEnum),
   businessName: faker.company.name(),
@@ -144,7 +144,7 @@ const generateRandomRefundOperationDTO = (
   operationDate: new Date(),
   operationId: ulid(),
   eventId: ulid(),
-  amountCents: faker.datatype.number({ min: 500, max: 10000 }),
+  amountCents: faker.number.int({ min: 500, max: 10000 }),
   ...withInfo
 });
 
@@ -152,7 +152,7 @@ const generateRandomIbanOperationDTO = (): IbanOperationDTO => ({
   operationType: IbanOperationTypeEnum.ADD_IBAN,
   operationDate: new Date(),
   operationId: ulid(),
-  channel: faker.datatype.string(),
+  channel: faker.string.sample(),
   iban: faker.helpers.arrayElement(ibanList)?.iban || ""
 });
 
@@ -532,7 +532,7 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 });
 
 range(0, walletConfig.discountCount).forEach(() => {
-  const initiativeName = `Bonus Elettrodomestici [D]`;
+  const initiativeName = `Bonus Elettrodomestici`;
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
@@ -632,7 +632,7 @@ range(0, walletConfig.expenseCount).forEach(() => {
 export let idPayCode: string | undefined;
 
 export const generateIdPayCode = () => {
-  idPayCode = faker.random.numeric(5);
+  idPayCode = faker.string.numeric(5);
 };
 
 export const enrollCodeToInitiative = (initiativeId: string): boolean => {
@@ -697,7 +697,7 @@ export const getIdPayBarcodeTransaction = (
   if (currentBarcode === undefined) {
     const newBarcodeTransaction: TransactionBarCodeResponse = {
       id: ulid(),
-      trxCode: faker.random.alphaNumeric(8),
+      trxCode: faker.string.alphanumeric(8),
       initiativeId,
       status: StatusEnum.CREATED,
       trxDate: new Date(),
