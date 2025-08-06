@@ -51,7 +51,10 @@ export const backendStatus: BackendStatus = {
     cgn: {
       enabled: true,
       merchants_v2: false,
-      show_cgn_categories_modal: false
+      show_cgn_categories_modal: {
+        android: "5.0.0.0",
+        ios: "5.0.0.0"
+      }
     },
     fims: {
       domain: `${serverUrl}/fims/provider/`,
