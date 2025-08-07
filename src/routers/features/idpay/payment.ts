@@ -34,7 +34,7 @@ const generateRandomAuthPaymentResponseDTO = (): AuthPaymentResponseDTO => {
       min: 1000,
       max: 20000
     })
-  };
+  } as AuthPaymentResponseDTO;
 };
 
 const generateRandomTransactionError = (

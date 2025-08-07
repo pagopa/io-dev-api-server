@@ -13,6 +13,7 @@ const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
   organizationName: faker.company.name(),
   privacyLink: faker.internet.url(),
   tcLink: faker.internet.url(),
+  thumbnailUrl: faker.image.urlLoremFlickr({ width: 480, height: 480 }),
   logoURL: faker.image.urlLoremFlickr({ width: 480, height: 480 })
 });
 
@@ -55,7 +56,7 @@ const initiativeData: {
     initiativeId: initiativeIdToString(
       IDPayInitiativeID.BONUS_ELETTRODOMESTICI
     ),
-    initiativeName: "BONUS ELETTRODOMESTICI"
+    initiativeName: "Bonus Elettrodomestici"
   },
 
   [IDPayServiceID.KO_STATUS_NOT_ELIGIBLE]: {
