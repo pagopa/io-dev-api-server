@@ -7,7 +7,7 @@ import { initiativeTimeline } from "../../../persistence/idpay";
 
 export const getTimelineResponse = (
   initiativeId: string,
-  pageNo: number = 0,
+  pageNo: number = 1,
   pageSize: number = 3
 ): O.Option<TimelineDTO> =>
   pipe(
@@ -17,7 +17,7 @@ export const getTimelineResponse = (
       const totalElements = timeline.length;
       const totalPages = Math.ceil(totalElements / pageSize);
 
-      const startIndex = pageNo * pageSize;
+      const startIndex = (pageNo - 1) * pageSize;
       const endIndex = startIndex + pageSize;
       const operationList = _.slice(timeline, startIndex, endIndex);
 

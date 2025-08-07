@@ -294,7 +294,7 @@ paths:
           schema:
             type: string
             maxLength: 50
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: Accept-Language
           in: header
           description: 'ENG: Language - IT: Lingua'
@@ -439,7 +439,7 @@ paths:
               ENG: Unique identifier of the subscribed initiative - IT:
               Identificativo univoco dell'iniziativa sottoscritta
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -726,7 +726,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Check successful
@@ -970,14 +970,14 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: operationType
           in: query
           description: 'ENG: Operation type filter - IT: Filtro tipologia dell''operazione'
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: page
           in: query
           description: 'ENG: The number of the page - IT: Numero della pagina'
@@ -1126,7 +1126,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: operationId
           description: 'ENG: The operation ID - IT: Identificativo dell''operazione'
           in: path
@@ -1134,7 +1134,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -1359,7 +1359,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: Accept-Language
           description: 'ENG: Language - IT: Lingua'
           in: header
@@ -1501,7 +1501,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -1632,7 +1632,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       requestBody:
         description: >-
           ENG: Unique identifier of the subscribed initiative, IBAN of the
@@ -1772,7 +1772,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: idWallet
           in: path
           description: >-
@@ -1782,7 +1782,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Enrollment OK
@@ -1934,7 +1934,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -2047,7 +2047,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
         - name: instrumentId
           in: path
           description: >-
@@ -2058,7 +2058,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Delete OK
@@ -2207,7 +2207,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '204':
           description: Unsubscribe OK
@@ -2336,7 +2336,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Check successful
@@ -2470,7 +2470,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -2839,7 +2839,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Enrollment OK
@@ -2955,7 +2955,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -3096,7 +3096,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Ok
@@ -3237,7 +3237,7 @@ paths:
           schema:
             type: string
             maxLength: 24
-            pattern: '$ ^[a-zA-Z0-9]+$'
+            pattern: '^[a-zA-Z0-9]+$'
       responses:
         '200':
           description: Cancel Ok
@@ -3936,7 +3936,7 @@ components:
             ENG: Unique identifier of the subscribed initiative - IT:
             Identificativo univoco dell'iniziativa sottoscritta
           maxLength: 24
-          pattern: '$ ^[a-zA-Z0-9]+$'
+          pattern: '^[a-zA-Z0-9]+$'
         confirmedTos:
           type: boolean
           description: >-
@@ -4827,7 +4827,7 @@ components:
             ENG: Unique identifier of the subscribed initiative - IT:
             Identificativo univoco dell'iniziativa sottoscritta
           maxLength: 24
-          pattern: '$ ^[a-zA-Z0-9]+$'
+          pattern: '^[a-zA-Z0-9]+$'
     GenerateCodeRespDTO:
       type: object
       properties:
@@ -5442,29 +5442,23 @@ components:
         trxCode:
           type: string
           maxLength: 24
-          pattern: '$ ^[a-zA-Z0-9]+$'
+          pattern: '^[a-zA-Z0-9]+$'
           description: 'ENG: Transaction code - IT: Codice della transazione'
         trxDate:
           type: string
           format: date-time
-          minLength: 19
-          maxLength: 19
           description: 'ENG: Transaction date - IT: Data della transazione'
         initiativeId:
           type: string
           maxLength: 24
-          pattern: '$ ^[a-zA-Z0-9]+$'
+          pattern: '^[a-zA-Z0-9]+$'
           description: 'ENG: Id of the initiative - IT: Identificativo dell''iniziativa'
         initiativeName:
           type: string
-          pattern: '^[ -~]{1,255}$'
-          maxLength: 255
           description: 'ENG: Name of the initiative - IT: Nome della iniziativa'
           example: Bonus Elettrodomestici
         businessName:
           type: string
-          pattern: '^[ -~]{1,255}$'
-          maxLength: 255
           description: 'ENG: Business name - IT: Nome dell''esercente'
         status:
           type: string
@@ -5713,7 +5707,7 @@ components:
         id:
           type: string
           maxLength: 24
-          pattern: '$ ^[a-zA-Z0-9]+$'
+          pattern: '^[a-zA-Z0-9]+$'
           description: 'ENG: Id of the payment - IT: Identificativo del pagamento'
         trxCode:
           type: string
@@ -5734,8 +5728,6 @@ components:
         trxDate:
           type: string
           format: date-time
-          minLength: 19
-          maxLength: 19
           description: 'ENG: Transaction date - IT: Data della transazione'
         trxExpirationSeconds:
           type: number

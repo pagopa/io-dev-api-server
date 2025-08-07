@@ -34,6 +34,42 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
   )
 );
 
+addIdPayHandler("get", "/onboarding/:initiativeId/detail", (req, res) =>
+  pipe(
+    req.params.initiativeId,
+    O.fromNullable,
+    O.fold(
+      () => res.status(400).json(getIdPayError(400)), // Wrong request body
+      flow(
+        O.some,
+        O.chain(initiativeIdFromString),
+        O.fold(
+          () => res.status(404).json(getIdPayError(404)), // Initiative not found
+          initiativeId =>
+            pipe(
+              initiativeId,
+              O.some,
+              O.chain(getPrerequisitesErrorByInitiativeId),
+              O.fold(
+                () =>
+                  pipe(
+                    initiativeId,
+                    O.some,
+                    O.chain(getCheckPrerequisitesResponseByInitiativeId),
+                    O.fold(
+                      () => res.sendStatus(202), // Initiative without prerequisites
+                      prerequisites => res.status(200).json(prerequisites) // Prerequisites found
+                    )
+                  ),
+                prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
+              )
+            )
+        )
+      )
+    )
+  )
+);
+
 /**
  * Returns the actual onboarding status
  */
@@ -74,16 +110,7 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
               O.some,
               O.chain(getPrerequisitesErrorByInitiativeId),
               O.fold(
-                () =>
-                  pipe(
-                    initiativeId,
-                    O.some,
-                    O.chain(getCheckPrerequisitesResponseByInitiativeId),
-                    O.fold(
-                      () => res.sendStatus(202), // Initiative without prerequisites
-                      prerequisites => res.status(200).json(prerequisites) // Prerequisites found
-                    )
-                  ),
+                () => res.sendStatus(202),
                 prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
               )
             )

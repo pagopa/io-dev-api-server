@@ -81,6 +81,8 @@ const generateRandomInitiativeDTO = (): InitiativeDTO1 => {
     voucherStatus: getRandomEnumValue(VoucherStatusEnum),
     status: getRandomEnumValue(InitiativeStatusEnum),
     initiativeEndDate: faker.date.future({ years: 1 }),
+    voucherEndDate: faker.date.future({ years: 1 }),
+    voucherStartDate: faker.date.past({ years: 1 }),
     amountCents,
     accruedCents,
     initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
@@ -542,6 +544,7 @@ range(0, walletConfig.discountCount).forEach(() => {
 
   const initiative: InitiativeDTO1 = {
     ...generateRandomInitiativeDTO(),
+    voucherStatus: VoucherStatusEnum.ACTIVE,
     amountCents: 10000,
     organizationName: "Ministero delle Imprese e del Made in Italy",
     initiativeName,
@@ -552,7 +555,8 @@ range(0, walletConfig.discountCount).forEach(() => {
     accruedCents: 0,
     refundedCents: 0,
     lastCounterUpdate: undefined,
-    logoURL: undefined
+    logoURL: undefined,
+    webViewUrl: "https://www.google.it/"
   };
 
   const { initiativeId } = initiative;
