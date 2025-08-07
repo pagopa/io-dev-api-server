@@ -4,7 +4,6 @@ import {
   CodeEnum as OnboardingErrorCodeEnum,
   OnboardingErrorDTO
 } from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
-import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
 import {
   getCheckPrerequisitesResponseByInitiativeId,
   getPrerequisitesErrorByInitiativeId
@@ -16,6 +15,7 @@ import {
   initiativeIdFromString,
   serviceIdFromString
 } from "../../../payloads/features/idpay/utils";
+import { OnboardingDTO } from "../../../../generated/definitions/idpay/OnboardingDTO";
 import { addIdPayHandler } from "./router";
 
 /**
@@ -54,40 +54,11 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
 );
 
 /**
- * Acceptance of Terms & Conditions
+ * Check the initiative prerequisites
  */
 addIdPayHandler("put", "/onboarding/", (req, res) =>
   pipe(
-    OnboardingPutDTO.decode(req.body),
-    O.fromEither,
-    O.fold(
-      () => res.status(400).json(getIdPayError(400)),
-      flow(
-        O.some,
-        O.map(({ initiativeId }) => initiativeId),
-        O.chain(initiativeIdFromString),
-        O.fold(
-          () => res.status(404).json(getIdPayError(404)), // Initiative not found
-          flow(
-            O.some,
-            O.chain(getPrerequisitesErrorByInitiativeId),
-            O.fold(
-              () => res.sendStatus(204),
-              prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
-            )
-          )
-        )
-      )
-    )
-  )
-);
-
-/**
- * Check the initiative prerequisites
- */
-addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
-  pipe(
-    OnboardingPutDTO.decode(req.body),
+    OnboardingDTO.decode(req.body),
     O.fromEither,
     O.fold(
       () => res.status(400).json(getIdPayError(400)), // Wrong request body
@@ -116,28 +87,6 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
                 prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
               )
             )
-        )
-      )
-    )
-  )
-);
-
-/**
- * Save the consensus of both PDND and self-declaration
- */
-addIdPayHandler("put", "/onboarding/consent", (req, res) =>
-  pipe(
-    OnboardingPutDTO.decode(req.body),
-    O.fromEither,
-    O.fold(
-      () => res.status(400).json(getIdPayError(400)),
-      flow(
-        O.some,
-        O.map(({ initiativeId }) => initiativeId),
-        O.chain(initiativeIdFromString),
-        O.fold(
-          () => res.status(404).json(getIdPayError(404)),
-          _ => res.sendStatus(202)
         )
       )
     )

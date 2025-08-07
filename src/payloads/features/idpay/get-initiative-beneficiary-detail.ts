@@ -1,20 +1,24 @@
 import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { InitiativeDTO } from "../../../../generated/definitions/idpay/InitiativeDTO";
-import { InitiativeDetailDTO } from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
+import {
+  InitiativeDetailDTO,
+  StatusEnum
+} from "../../../../generated/definitions/idpay/InitiativeDetailDTO";
 import { initiatives } from "../../../persistence/idpay";
 
 import ServicesDB from "../../../features/services/persistence/servicesDatabase";
+import { InitiativeDTO1 } from "../../../../generated/definitions/idpay/InitiativeDTO1";
 
 const generateRandomInitiativeDetailDTO = (
-  initiative: InitiativeDTO
+  initiative: InitiativeDTO1
 ): InitiativeDetailDTO => {
   const serviceSummaries = ServicesDB.getSummaries();
 
   return {
+    initiativeId: initiative.initiativeId,
     initiativeName: initiative.initiativeName,
-    status: initiative.status,
+    status: StatusEnum.APPROVED,
     description: faker.lorem.paragraphs(6),
     ruleDescription: faker.lorem.paragraphs(4),
     onboardingStartDate: faker.date.past({ years: 6 }),
