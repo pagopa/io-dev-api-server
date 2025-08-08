@@ -6,8 +6,8 @@ import { generateIDPayServices } from "../../../payloads/features/idpay/generate
 import { isCgnActivated } from "../../../routers/features/cgn";
 import { IoDevServerConfig } from "../../../types/config";
 import {
-  createPnOptInService,
-  createPnService
+  createSENDOptInService,
+  createSENDService
 } from "../../pn/services/services";
 import ServiceFactory, { SpecialServiceGenerator } from "./services/factory";
 import { createCdcService } from "./services/special/cdc-service";
@@ -44,23 +44,25 @@ const createServices = (config: IoDevServerConfig) => {
       nationalServiceCount,
       localServiceCount
     ),
-    createPnOptInService(),
+    createSENDOptInService(),
     ...generateIDPayServices()
   ];
 
   const specialServiceGenerators: Array<[boolean, SpecialServiceGenerator]> = [
     [specialServicesConfig.cgn, createCgnService],
     [specialServicesConfig.cdc, createCdcService],
-    [specialServicesConfig.fci, createFciService],
-    [specialServicesConfig.pn, createPnService]
+    [specialServicesConfig.fci, createFciService]
   ];
-  specialServices = ServiceFactory.createSpecialServices(
-    specialServiceGenerators,
-    localServiceCount +
-      nationalServiceCount +
-      1 + // + 1 for the pn opt-in service
-      generateIDPayServices().length // + IDPay services
-  );
+  specialServices = [
+    ...ServiceFactory.createSpecialServices(
+      specialServiceGenerators,
+      localServiceCount +
+        nationalServiceCount +
+        1 + // + 1 for the pn opt-in service
+        generateIDPayServices().length // + IDPay services
+    ),
+    createSENDService()
+  ];
 
   const customPreferenceEnabledGenerators = new Map<ServiceId, () => boolean>();
   customPreferenceEnabledGenerators.set(cgnServiceId, isCgnActivated);

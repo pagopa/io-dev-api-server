@@ -13,7 +13,7 @@ import { ZendeskSubcategoriesErrors } from "../../generated/definitions/content/
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../config";
-import { pnServiceId } from "../features/pn/services/services";
+import { sendServiceId } from "../features/pn/services/services";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";
@@ -47,7 +47,7 @@ const organizationLogoMap = new Map<string, string>();
 
 export const initializeServiceLogoMap = () => {
   serviceLogoMap.set(
-    `${pnServiceId.toLowerCase()}.png`,
+    `${sendServiceId.toLowerCase()}.png`,
     `${serviceLogoBaseRelativePathGenerator()}specialServices/service_send.png`
   );
   serviceLogoMap.set(
