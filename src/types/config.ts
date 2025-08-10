@@ -6,7 +6,6 @@ import {
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { enumType } from "@pagopa/ts-commons/lib/types";
 import * as t from "io-ts";
-
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
@@ -94,7 +93,6 @@ const responseError = t.interface({
 export const SpecialServicesConfig = t.interface({
   cgn: t.boolean,
   cdc: t.boolean,
-  pn: t.boolean,
   fci: t.boolean
 });
 

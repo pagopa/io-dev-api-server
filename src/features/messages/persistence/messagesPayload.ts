@@ -18,19 +18,20 @@ import { assetsFolder } from "../../../config";
 import { contentTypeMapping, listDir } from "../../../utils/file";
 import { getRandomIntInRange } from "../../../utils/id";
 import { validatePayload } from "../../../utils/validator";
-import { thirdPartyMessagePreconditionMarkdown } from "../../../utils/variables";
 import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import PaymentsDB from "../../../persistence/payments";
+import { PaymentsDatabase } from "../../../persistence/payments";
 import { AttachmentCategory } from "../types/attachmentCategory";
 import { rptIdFromPaymentDataWithRequiredPayee } from "../../../utils/payment";
-import { MessageTemplate } from "../types/messageTemplate";
+import {
+  MessageTemplate,
+  MessageTemplatePreconditions
+} from "../types/messageTemplate";
 import { LegacyGreenPass } from "../types/LegacyGreenPass";
-
-// eslint-disable-next-line functional/no-let
-let messageIdIndex = 0;
+import { nextMessageIdAndCreationDate } from "../utils";
+import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
 
 /**
  * Generate basic message data based on fiscal code, sender ID, and time to live
@@ -43,10 +44,9 @@ export const createMessage = (
   senderServiceId: string,
   timeToLive: number = 3600
 ): CreatedMessageWithoutContent => {
-  const id = messageIdIndex.toString().padStart(26, "0");
-  messageIdIndex++;
+  const { id, created_at } = nextMessageIdAndCreationDate();
   return validatePayload(CreatedMessageWithoutContent, {
-    created_at: new Date(new Date().getTime() + messageIdIndex * 1000),
+    created_at,
     fiscal_code: fiscalCode,
     id,
     sender_service_id: senderServiceId,
@@ -74,7 +74,10 @@ export const withRemoteContent = (
       ...message.content.third_party_data,
       id: message.id as NonEmptyString,
       has_attachments: template.attachmentCount > 0,
-      has_remote_content: template.hasRemoteContent
+      has_remote_content: template.hasRemoteContent,
+      has_precondition: fromTemplateHasPreconditionsToEnumHasPreconditions(
+        template.hasPreconditions
+      )
     }
   },
   third_party_message: {
@@ -120,7 +123,7 @@ export const withPaymentData = (
     serviceFromMessage,
     E.chain(service =>
       pipe(
-        PaymentsDB.createPaymentData(
+        PaymentsDatabase.createPaymentData(
           service.organization.fiscal_code,
           invalidAfterDueDate,
           noticeNumber as PaymentNoticeNumber,
@@ -128,7 +131,7 @@ export const withPaymentData = (
         ),
         E.map(paymentDataWithRequiredPayee =>
           pipe(
-            PaymentsDB.createProcessablePayment(
+            PaymentsDatabase.createProcessablePayment(
               rptIdFromPaymentDataWithRequiredPayee(
                 paymentDataWithRequiredPayee
               ),
@@ -229,8 +232,20 @@ export const getRemoteAttachments = (
   );
 
 export const getThirdPartyMessagePrecondition =
-  (): ThirdPartyMessagePrecondition =>
-    validatePayload(ThirdPartyMessagePrecondition, {
-      title: "Questo messaggio contiene una comunicazione a valore legale",
-      markdown: thirdPartyMessagePreconditionMarkdown
-    });
+  (): ThirdPartyMessagePrecondition => ({
+    title: "Comunicazione a valore legale",
+    markdown: `\nAprire il messaggio su IO equivale a firmare la ricevuta di ritorno di una raccomandata tradizionale.\n\n:u[Questo è il testo che non viene sottolineato con il nuovo markdown]\n\n**Mittente**: Comune di Inesistente\n**Oggetto**: Infrazione al codice della strada\n**Data e ora**: 12 Luglio 2022 - 12.36  \n**Codice ATTO**: YYYYMM-1-ABCD-EFGH-X`
+  });
+
+const fromTemplateHasPreconditionsToEnumHasPreconditions = (
+  preconditions: MessageTemplatePreconditions | undefined
+): HasPreconditionEnum => {
+  switch (preconditions) {
+    case "ALWAYS":
+      return HasPreconditionEnum.ALWAYS;
+    case "ONCE":
+      return HasPreconditionEnum.ONCE;
+    default:
+      return HasPreconditionEnum.NEVER;
+  }
+};

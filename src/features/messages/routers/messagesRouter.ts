@@ -1,17 +1,15 @@
 import * as path from "path";
 import { Router } from "express";
-import { identity, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
 import * as A from "fp-ts/lib/ReadonlyArray";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import _ from "lodash";
-import { TagEnum as PNCategoryTagEnum } from "../../../../generated/definitions/backend/MessageCategoryPN";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../../../config";
 import { getProblemJson } from "../../../payloads/error";
-import { getThirdPartyMessagePrecondition } from "../persistence/messagesPayload";
 import { addHandler } from "../../../payloads/response";
 import MessagesDB from "../persistence/messagesDatabase";
 import { GetMessagesParameters } from "../../../types/parameters";
@@ -22,10 +20,8 @@ import {
 } from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
-import MessagesService, {
-  getMessageCategory
-} from "../services/messagesService";
-import PaymentsDB from "../../../persistence/payments";
+import MessagesService from "../services/messagesService";
+import { PaymentsDatabase } from "../../../persistence/payments";
 import {
   isProcessedPayment,
   ProcessablePayment,
@@ -44,6 +40,17 @@ import {
 import { PaymentInfoConflictResponse } from "../../../../generated/definitions/backend/PaymentInfoConflictResponse";
 import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/backend/PaymentInfoBadGatewayResponse";
 import { PaymentInfoUnavailableResponse } from "../../../../generated/definitions/backend/PaymentInfoUnavailableResponse";
+import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { sendServiceId } from "../../pn/services/services";
+import { serverUrl } from "../../../utils/server";
+import {
+  getNotificationDisclaimerPath,
+  getNotificationPath
+} from "../../pn/routers/notificationsRouter";
+import { unknownToString } from "../utils";
+import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
+import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { getThirdPartyMessagePrecondition } from "../persistence/messagesPayload";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -207,26 +214,92 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:id"),
-  lollipopMiddleware((req, res) =>
-    pipe(
-      configResponse.getThirdPartyMessageResponseCode === 200,
-      B.fold(
-        () => res.sendStatus(configResponse.getThirdPartyMessageResponseCode),
-        () =>
-          pipe(
-            MessagesDB.getMessageById(req.params.id),
-            O.chain(message =>
-              pipe(ThirdPartyMessageWithContent.decode(message), O.fromEither)
-            ),
-            O.fold(
-              () =>
-                res.status(404).json(getProblemJson(404, messageNotFoundError)),
-              message => res.json(message)
+  lollipopMiddleware(async (req, res) => {
+    if (configResponse.getThirdPartyMessageResponseCode !== 200) {
+      res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
+      return;
+    }
+    const messageOption = MessagesDB.getMessageById(req.params.id);
+    if (O.isNone(messageOption)) {
+      res.status(404).json(getProblemJson(404, messageNotFoundError));
+      return;
+    }
+    const message = messageOption.value;
+    if (message.sender_service_id === sendServiceId) {
+      const sendMessageId = message.content.third_party_data?.id;
+      if (sendMessageId == null) {
+        res
+          .status(500)
+          .json(
+            getProblemJson(
+              500,
+              "Missing id",
+              `The Third Party Message does not contain an id property for the SEND Notification (id: ${sendMessageId})`
             )
-          )
-      )
-    )
-  )
+          );
+        return;
+      }
+      const sendNotificationUrl = `${serverUrl}${getNotificationPath}/${sendMessageId}`;
+      try {
+        const sendNotificationResponse = await fetch(sendNotificationUrl);
+        if (sendNotificationResponse.status !== 200) {
+          throw Error(
+            `Expected 200 HTTP Status code from SEND (received ${sendNotificationResponse.status})`
+          );
+        }
+
+        const sendThirdPartyMessageJSON = await sendNotificationResponse.json();
+        const sendThidPartyMessageEither = ThirdPartyMessage.decode(
+          sendThirdPartyMessageJSON
+        );
+        if (E.isLeft(sendThidPartyMessageEither)) {
+          throw Error(
+            `Invalid SEND response data structure (${readableReport(
+              sendThidPartyMessageEither.left
+            )})`
+          );
+        }
+
+        const thirdPartyMessageWithContentEither =
+          ThirdPartyMessageWithContent.decode({
+            ...message,
+            third_party_message: sendThidPartyMessageEither.right
+          });
+        if (E.isLeft(thirdPartyMessageWithContentEither)) {
+          throw Error(readableReport(thirdPartyMessageWithContentEither.left));
+        }
+        res.status(200).json(thirdPartyMessageWithContentEither.right);
+      } catch (e) {
+        const errorMessage = unknownToString(e);
+        res
+          .status(500)
+          .json(
+            getProblemJson(
+              500,
+              "Unexpected error",
+              `Unexpected error while contacting SEND notification endpoint (iun: ${sendMessageId} reason: ${errorMessage})`
+            )
+          );
+      }
+    } else {
+      const thirdPartyMessageEither =
+        ThirdPartyMessageWithContent.decode(message);
+      if (E.isLeft(thirdPartyMessageEither)) {
+        res
+          .status(500)
+          .json(
+            getProblemJson(
+              500,
+              "Format failure",
+              "The Third Party Message was found but its schema is not valid"
+            )
+          );
+        return;
+      }
+      res.json(thirdPartyMessageEither.right);
+    }
+  }),
+  () => Math.random() * 500
 );
 
 addHandler(
@@ -374,35 +447,89 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:id/precondition"),
-  lollipopMiddleware((req, res) =>
-    pipe(
-      req.params.id,
-      MessagesDB.getMessageById,
-      O.fold(
-        () => res.status(404).json(getProblemJson(404, messageNotFoundError)),
-        message =>
-          pipe(
-            message,
-            getMessageCategory,
-            O.fromNullable,
-            O.chainNullableK(category => category.tag),
-            // TODO: we must replace this check with a more generic one
-            // see https://pagopa.atlassian.net/browse/IOCOM-188
-            O.map(tag => tag === PNCategoryTagEnum.PN),
-            O.chain(O.fromPredicate(identity)),
-            O.fold(
-              () =>
-                res
-                  .status(500)
-                  .json(
-                    getProblemJson(500, "requested message is not of pn type")
-                  ),
-              () => res.status(200).json(getThirdPartyMessagePrecondition())
-            )
+  lollipopMiddleware(async (req, res) => {
+    const ioMessageId = req.params.id;
+    const ioMessageOption = MessagesDB.getMessageById(ioMessageId);
+    if (O.isNone(ioMessageOption)) {
+      res.status(404).json(getProblemJson(404, messageNotFoundError));
+      return;
+    }
+
+    const ioMessage = ioMessageOption.value;
+    const hasPreconditionsValue =
+      ioMessage.content.third_party_data?.has_precondition ??
+      HasPreconditionEnum.NEVER;
+    const messageHasNoPreconditions =
+      hasPreconditionsValue === HasPreconditionEnum.NEVER;
+    if (messageHasNoPreconditions) {
+      res
+        .status(400)
+        .json(
+          getProblemJson(
+            400,
+            "Bad request",
+            `There are no preconditions for Message with id ${ioMessageId}`
           )
-      )
-    )
-  )
+        );
+      return;
+    }
+
+    const isSendService = ioMessage.sender_service_id === sendServiceId;
+    if (isSendService) {
+      const thirdPartyMessageId = ioMessage.content.third_party_data?.id;
+      if (thirdPartyMessageId == null) {
+        res
+          .status(500)
+          .json(
+            getProblemJson(
+              500,
+              "Internal Server Error",
+              `Third Party Message ID is not set for Message with id ${ioMessageId}`
+            )
+          );
+        return;
+      }
+      const sendNotificationUrl = `${serverUrl}${getNotificationDisclaimerPath}/${thirdPartyMessageId}`;
+      try {
+        const sendNotificationPreconditionResponse = await fetch(
+          sendNotificationUrl
+        );
+        if (sendNotificationPreconditionResponse.status !== 200) {
+          throw Error(
+            `Expected 200 HTTP Status code from SEND (received ${sendNotificationPreconditionResponse.status})`
+          );
+        }
+
+        const sendPreconditionContentJSON =
+          await sendNotificationPreconditionResponse.json();
+        const sendThirdPartyMessagePreconditionEither =
+          ThirdPartyMessagePrecondition.decode(sendPreconditionContentJSON);
+        if (E.isLeft(sendThirdPartyMessagePreconditionEither)) {
+          throw Error(
+            `Invalid SEND response data structure (${readableReport(
+              sendThirdPartyMessagePreconditionEither.left
+            )})`
+          );
+        }
+        res.status(200).json(sendThirdPartyMessagePreconditionEither.right);
+      } catch (e) {
+        const errorMessage = unknownToString(e);
+        res
+          .status(500)
+          .json(
+            getProblemJson(
+              500,
+              "Unexpected error",
+              `Unexpected error while contacting SEND notification endpoint (iun: ${thirdPartyMessageId} reason: ${errorMessage})`
+            )
+          );
+      }
+    } else {
+      const thirdPartyMessagePreconditions = getThirdPartyMessagePrecondition();
+      res.status(200).json(thirdPartyMessagePreconditions);
+    }
+  }),
+  () => Math.random() * 500
 );
 
 addHandler(messageRouter, "post", addApiV1Prefix("/message"), (_, res) =>
@@ -417,7 +544,7 @@ addHandler(
   addApiV1Prefix("/payment-requests/:rptId"),
   (req, res) => {
     const rptId = req.params.rptId;
-    const maybePaymentStatus = PaymentsDB.getPaymentStatus(rptId);
+    const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
     if (O.isNone(maybePaymentStatus)) {
       res
         .status(404)
@@ -451,7 +578,7 @@ addHandler(
   addApiV1Prefix("/payment-info/:rptId"),
   (req, res) => {
     const rptId = req.params.rptId;
-    const maybePaymentStatus = PaymentsDB.getPaymentStatus(rptId);
+    const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
     if (O.isNone(maybePaymentStatus)) {
       const fakeProcessedPayment: ProcessedPayment = {
         status: {

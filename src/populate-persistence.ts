@@ -42,8 +42,8 @@ import {
   messageMarkdown
 } from "./utils/variables";
 import {
-  createPNMessages,
-  createPNOptInMessage
+  createSENDMessagesOnIO,
+  createSENDOptInMessage
 } from "./features/pn/payloads/messages";
 import { MessageTemplateWrapper } from "./features/messages/types/messageTemplateWrapper";
 import { MessageTemplate } from "./features/messages/types/messageTemplate";
@@ -484,8 +484,8 @@ const createMessages = (
     ...createMessagesWithPaymentWithValidDueDate(customConfig, now),
     ...createMessagesWithPayments(customConfig),
 
-    ...createPNOptInMessage(customConfig),
-    ...createPNMessages(customConfig),
+    ...createSENDOptInMessage(customConfig),
+    ...createSENDMessagesOnIO(customConfig),
 
     ...createMessagesWithRemoteContent(customConfig)
   ];

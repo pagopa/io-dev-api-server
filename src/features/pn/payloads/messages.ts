@@ -1,54 +1,28 @@
-import * as path from "path";
-import { identity, pipe } from "fp-ts/lib/function";
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-let */
+import { pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
-import * as A from "fp-ts/lib/Array";
-import * as O from "fp-ts/lib/Option";
-import * as E from "fp-ts/lib/Either";
 import { fakerIT as faker } from "@faker-js/faker";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { IoDevServerConfig } from "../../../types/config";
-import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
-import ServicesDB from "../../services/persistence/servicesDatabase";
-import PaymentDB from "../../../persistence/payments";
-import { messageMarkdown } from "../../../utils/variables";
-import {
-  createMessage,
-  thirdPartyAttachmentFromAbsolutePathArray,
-  withContent
-} from "../../messages/persistence/messagesPayload";
-import { getRandomValue } from "../../../utils/random";
-import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
-import { OrganizationName } from "../../../../generated/definitions/backend/OrganizationName";
-import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode";
-import { OrganizationFiscalCode } from "../../../../generated/definitions/backend/OrganizationFiscalCode";
-import { NotificationRecipient } from "../types/notificationRecipient";
-import { PaymentDataWithRequiredPayee } from "../../../../generated/definitions/backend/PaymentDataWithRequiredPayee";
-import { PaymentStatus, fold } from "../../../types/PaymentStatus";
-import { eitherMakeBy } from "../../../utils/array";
-import {
-  isPaid,
-  rptIdFromNotificationPaymentInfo,
-  rptIdFromPaymentDataWithRequiredPayee
-} from "../../../utils/payment";
-import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
-import { listDir } from "../../../utils/file";
-import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
-import { assetsFolder } from "../../../config";
 import {
   pnOptInCTA,
   sendOptInServiceId,
-  sendServiceId
+  sendServiceId,
+  sendServiceName
 } from "../services/services";
 import { getNewMessage } from "../../../populate-persistence";
-import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
-import { PNMessageTemplate } from "../types/messageTemplate";
-import { PNMessageTemplateWrapper } from "../types/messageTemplateWrapper";
-import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
-import { getAuthenticationProvider } from "../../../persistence/sessionInfo";
-import { getProfileInitialData } from "../../../payloads/profile";
-import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
+import { initializeSENDRepositoriesIfNeeded } from "../repositories/utils";
+import { NotificationRepository } from "../repositories/notificationRepository";
+import {
+  ioOrganizationFiscalCode,
+  ioOrganizationName
+} from "../../services/persistence/services/factory";
+import { validatePayload } from "../../../utils/validator";
+import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { nextMessageIdAndCreationDate } from "../../messages/utils";
 
-export const createPNOptInMessage = (
+export const createSENDOptInMessage = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] =>
   pipe(
@@ -58,8 +32,9 @@ export const createPNOptInMessage = (
       () => [
         getNewMessage(
           customConfig,
-          `PN OptIn CTA`,
-          pnOptInCTA + messageMarkdown,
+          `Hai una comunicazione a valore legale da SEND`,
+          pnOptInCTA +
+            "\nCiao,\n\nhai ricevuto una **notifica SEND**, cioè una comunicazione a valore legale emessa da un'amministrazione.\n\nPer leggere la notifica in app, **attiva il servizio SEND entro 5 giorni**: eviterai una raccomandata e i relativi costi.\n\nSe attivi il servizio dopo, dovrai consultare questa comunicazione tramite altri canali, ma riceverai in app le notifiche SEND future.\n\nPremendo “Attiva per leggere la notifica” accetti i **[Termini e condizioni d’uso](https://cittadini.notifichedigitali.it/termini-di-servizio)** e confermi di avere letto l’**[Informativa privacy](https://cittadini.notifichedigitali.it/informativa-privacy)**.",
           undefined,
           sendOptInServiceId
         )
@@ -67,452 +42,60 @@ export const createPNOptInMessage = (
     )
   );
 
-export const createPNMessages = (
+export const createSENDMessagesOnIO = (
   customConfig: IoDevServerConfig
-): CreatedMessageWithContentAndAttachments[] =>
-  pipe(
-    customConfig.services.specialServices.pn,
-    O.fromPredicate(identity),
-    O.chain(_ =>
-      pipe(
-        customConfig.messages.pnMessageTemplateWrappers,
-        O.fromNullable,
-        O.map(pnMessageTemplateWrappers =>
-          A.flatten(
-            pipe(
-              pnMessageTemplateWrappers as PNMessageTemplateWrapper[],
-              A.mapWithIndex((templateIndex, pnMessageTemplateWrapper) =>
-                A.makeBy(pnMessageTemplateWrapper.count, messageIndex =>
-                  createPnMessage(
-                    pnMessageTemplateWrapper.template,
-                    customConfig.profile.attrs.fiscal_code,
-                    templateIndex,
-                    messageIndex,
-                    messageMarkdown
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    ),
-    O.getOrElse(() => [] as CreatedMessageWithContentAndAttachments[])
-  );
+): CreatedMessageWithContentAndAttachments[] => {
+  initializeSENDRepositoriesIfNeeded();
 
-const createPnMessage = (
-  template: PNMessageTemplate,
-  fiscalCode: FiscalCode,
-  templateIndex: number,
-  messageIndex: number,
-  markdown: string
-): ThirdPartyMessageWithContent =>
-  pipe(
-    ServicesDB.getService(sendServiceId),
-    O.fromNullable,
-    O.fold(
-      () => {
-        throw Error(
-          `getNewPnMessage: unable to find service PN service with id (${sendServiceId})`
-        );
-      },
-      pnService =>
-        pipe(
-          {
-            sender: `Comune di Milano - ${templateIndex} / ${messageIndex}`,
-            subject: "infrazione al codice della strada"
-          },
-          sharedData =>
-            pipe(
-              createMessage(fiscalCode, sendServiceId),
-              createdMessageWithoutContent =>
-                withContent(
-                  createdMessageWithoutContent,
-                  `${sharedData.sender}: ${sharedData.subject}`,
-                  markdown
-                ),
-              createdMessageWithContent =>
-                pipe(
-                  createPNMessageWithContent(
-                    template,
-                    createdMessageWithContent,
-                    pnService.organization.fiscal_code,
-                    pnService.organization.name,
-                    faker.helpers.replaceSymbols("######-#-####-####-#"),
-                    sharedData.sender,
-                    sharedData.subject,
-                    "È stata notificata una infrazione al codice per un veicolo intestato a te: i dettagli saranno consultabili nei documenti allegati.",
-                    getRandomValue(new Date(), faker.date.past(), "messages")
-                  ),
-                  E.fold(
-                    errors => {
-                      throw Error(errors.toString());
-                    },
-                    _ => _
-                  )
-                )
-            )
-        )
-    )
-  );
+  const sendMessagesOnIO: CreatedMessageWithContentAndAttachments[] = [];
 
-const createPNMessageWithContent = (
-  template: PNMessageTemplate,
-  message: CreatedMessageWithContent,
-  organization_fiscal_code: OrganizationFiscalCode,
-  organizationName: OrganizationName,
-  iun: string,
-  senderDenomination: string | undefined,
-  subject: string,
-  abstract: string | undefined,
-  sentAt: Date
-): E.Either<string[], ThirdPartyMessageWithContent> =>
-  pipe(getAuthenticationProvider(), getProfileInitialData, currentProfile =>
-    pipe(
-      createPNRecipients(
-        organization_fiscal_code,
-        organizationName,
-        currentProfile,
-        template
-      ),
-      E.map(pnRecipients => ({
-        ...message,
-        third_party_message: {
-          attachments: createPNAttachmentsAndF24s(
-            template.attachmentCount,
-            template.f24Count
-          ),
-          details: {
-            iun,
-            senderDenomination,
-            subject,
-            abstract,
-            sentAt,
-            isCancelled: template.isCancelled,
-            completedPayments: createPNCompletedPayments(
-              template.isCancelled,
-              pnRecipients
-            ),
-            notificationStatusHistory: pipe(
-              pnRecipients,
-              noticeCodesFromNotificationRecipients,
-              createPNTimeline(template.isCancelled)
-            ),
-            recipients: pnRecipients
+  const sendMessagesConfiguration = customConfig.send.sendMessages;
+  for (const { iun, ioTitle } of sendMessagesConfiguration) {
+    const notification = NotificationRepository.getNotification(iun);
+    if (notification == null) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `An IO message for a SEND notification has been created but such Notification does not exist on SEND (iun: ${iun})`
+      );
+    }
+
+    const { id, created_at } = nextMessageIdAndCreationDate();
+    const hasAttachments = (notification?.attachments?.length ?? 0) > 0;
+    const sendMessageOnIO = validatePayload(
+      CreatedMessageWithContentAndAttachments,
+      {
+        category: {
+          id: iun,
+          tag: "PN"
+        },
+        content: {
+          subject:
+            ioTitle ?? faker.word.words(faker.number.int({ min: 3, max: 5 })),
+          markdown:
+            "This markdown is not used but it has to be at least eighty characters long to pass",
+          third_party_data: {
+            id: iun,
+            has_attachments: hasAttachments,
+            has_remote_content: true,
+            has_precondition: HasPreconditionEnum.ALWAYS
           }
-        }
-      }))
-    )
-  );
-
-const createPNRecipients = (
-  organizationFiscalCode: OrganizationFiscalCode,
-  organizationName: OrganizationName,
-  profile: InitializedProfile,
-  template: PNMessageTemplate
-): E.Either<string[], NotificationRecipient[]> =>
-  pipe(
-    E.right([] as NotificationRecipient[]),
-    E.chain(accumulator =>
-      createPNRecipientsAndAccumulate(
-        accumulator,
-        template.unrelatedPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessablePayment(
-            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
-            paymentDataWithRequiredPayee.amount,
-            paymentDataWithRequiredPayee.payee.fiscal_code,
-            organizationName
-          )
-        ),
-        `Valoroso Cosimo Damiano`,
-        "VLRCMD74S01B655P" as FiscalCode
-      )
-    ),
-    E.chain(accumulator =>
-      createPNRecipientsAndAccumulate(
-        accumulator,
-        template.unpaidValidPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessablePayment(
-            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
-            paymentDataWithRequiredPayee.amount,
-            paymentDataWithRequiredPayee.payee.fiscal_code,
-            organizationName
-          )
-        ),
-        `${profile.name} ${profile.family_name}`,
-        profile.fiscal_code
-      )
-    ),
-    E.chain(accumulator =>
-      createPNRecipientsAndAccumulate(
-        accumulator,
-        template.unpaidExpiredPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode, true),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessedPayment(
-            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
-            Detail_v2Enum.PAA_PAGAMENTO_SCADUTO
-          )
-        ),
-        `${profile.name} ${profile.family_name}`,
-        profile.fiscal_code
-      )
-    ),
-    E.chain(accumulator =>
-      createPNRecipientsAndAccumulate(
-        accumulator,
-        template.failedPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessedPayment(
-            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
-            Detail_v2Enum.PPT_IBAN_NON_CENSITO
-          )
-        ),
-        `${profile.name} ${profile.family_name}`,
-        profile.fiscal_code
-      )
-    ),
-    E.chain(accumulator =>
-      createPNRecipientsAndAccumulate(
-        accumulator,
-        template.paidPayments,
-        () => PaymentDB.createPaymentData(organizationFiscalCode),
-        O.some(paymentDataWithRequiredPayee =>
-          PaymentDB.createProcessedPayment(
-            rptIdFromPaymentDataWithRequiredPayee(paymentDataWithRequiredPayee),
-            Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
-          )
-        ),
-        `${profile.name} ${profile.family_name}`,
-        profile.fiscal_code
-      )
-    )
-  );
-
-const createPNRecipientsAndAccumulate = (
-  accumulator: NotificationRecipient[],
-  count: number,
-  paymentDataGenerator: () => E.Either<string[], PaymentDataWithRequiredPayee>,
-  maybePaymentStatusGenerator: O.Option<
-    (input: PaymentDataWithRequiredPayee) => PaymentStatus
-  >,
-  denomination: string,
-  fiscalCode: FiscalCode
-) =>
-  pipe(
-    eitherMakeBy(count, _ =>
-      createPNMessageRecipient(
-        pipe(
-          paymentDataGenerator(),
-          E.map(paymentDataWithRequiredPayee =>
-            pipe(
-              maybePaymentStatusGenerator,
-              O.map(paymentStatusGenerator =>
-                paymentStatusGenerator(paymentDataWithRequiredPayee)
-              ),
-              _ => paymentDataWithRequiredPayee
-            )
-          )
-        ),
-        denomination,
-        fiscalCode
-      )
-    ),
-    E.map(notificationRecipients => [...accumulator, ...notificationRecipients])
-  );
-
-const createPNMessageRecipient = (
-  paymentDataWithRequiredPayee: E.Either<
-    string[],
-    PaymentDataWithRequiredPayee
-  >,
-  denomination: string,
-  fiscalCode: FiscalCode
-): E.Either<string[], NotificationRecipient> =>
-  pipe(
-    paymentDataWithRequiredPayee,
-    E.map(paymentDataWithRequiredPayee => ({
-      recipientType: "unknownContent",
-      taxId: fiscalCode,
-      denomination,
-      payment: {
-        noticeCode: paymentDataWithRequiredPayee.notice_number,
-        creditorTaxId: paymentDataWithRequiredPayee.payee.fiscal_code
+        },
+        created_at,
+        fiscal_code: customConfig.profile.attrs.fiscal_code,
+        has_attachments: hasAttachments,
+        has_precondition: true,
+        id,
+        is_archived: false,
+        is_read: false,
+        organization_fiscal_code: ioOrganizationFiscalCode,
+        organization_name: ioOrganizationName,
+        message_title: notification?.subject ?? "This message has no title",
+        sender_service_id: sendServiceId,
+        service_name: sendServiceName
       }
-    }))
-  );
-
-const createPNCompletedPayments = (
-  isCancelled: boolean | undefined,
-  recipients: NotificationRecipient[]
-): PaymentNoticeNumber[] | undefined =>
-  pipe(
-    isCancelled,
-    O.fromPredicate(undefinedBoolean => !!undefinedBoolean),
-    O.fold(
-      () => undefined,
-      () =>
-        pipe(
-          recipients,
-          A.filterMap(recipient =>
-            pipe(
-              recipient.payment,
-              rptIdFromNotificationPaymentInfo,
-              PaymentDB.getPaymentStatus,
-              O.chain(paymentStatus =>
-                pipe(
-                  paymentStatus,
-                  fold(
-                    processedPayment =>
-                      isPaid(processedPayment.status)
-                        ? O.some(recipient.payment.noticeCode)
-                        : O.none,
-                    _ => O.none
-                  )
-                )
-              )
-            )
-          )
-        )
-    )
-  );
-
-const createPNAttachmentsAndF24s = (
-  attachmentCount: number,
-  f24Count: number
-): ReadonlyArray<ThirdPartyAttachment> =>
-  pipe(
-    path.join(assetsFolder, "messages", "pn", "attachments"),
-    attachmentFolderAbsolutePath =>
-      pipe(
-        attachmentFolderAbsolutePath,
-        listDir,
-        A.map(fileNameWithExtension =>
-          path.join(attachmentFolderAbsolutePath, fileNameWithExtension)
-        ),
-        thirdPartyAttachmentFromAbsolutePathArray(attachmentCount),
-        pnAttachments =>
-          pipe(
-            path.join(assetsFolder, "messages", "pn", "f24"),
-            f24FolderAbsolutePath =>
-              pipe(
-                f24FolderAbsolutePath,
-                listDir,
-                A.map(fileNameWithExtension =>
-                  path.join(f24FolderAbsolutePath, fileNameWithExtension)
-                ),
-                thirdPartyAttachmentFromAbsolutePathArray(
-                  f24Count,
-                  attachmentCount,
-                  "F24"
-                ),
-                pnF24s => [...pnAttachments, ...pnF24s]
-              )
-          )
-      )
-  );
-
-const createPNTimeline =
-  (isCancelled: boolean = false) =>
-  (paidNoticeCodes: string[] = []): NotificationStatusHistoryElement[] =>
-    pipe(
-      [] as NotificationStatusHistoryElement[],
-      addPNTimelineEvent({
-        status: "ACCEPTED",
-        activeFrom: "2022-07-07T13:26:59.494+00:00",
-        relatedTimelineElements: [
-          "TPAK-PJUT-RALE-202207-X-1_request_accepted",
-          "TPAK-PJUT-RALE-202207-X-1_aar_gen_0",
-          "TPAK-PJUT-RALE-202207-X-1_send_courtesy_message_0_index_0",
-          "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.PLATFORM(value=PLATFORM)_attempt_0"
-        ]
-      }),
-      addPNTimelineEvent({
-        status: "DELIVERING",
-        activeFrom: "2022-07-07T13:27:15.913+00:00",
-        relatedTimelineElements: [
-          "TPAK-PJUT-RALE-202207-X-1_send_digital_domicile0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_1",
-          "TPAK-PJUT-RALE-202207-X-1_get_address0_source_DigitalAddressSourceInt.SPECIAL(value=SPECIAL)_attempt_0"
-        ]
-      }),
-      addPNTimelineEvent({
-        status: "VIEWED",
-        activeFrom: "2022-07-07T14:26:22.669+00:00",
-        relatedTimelineElements: [
-          "TPAK-PJUT-RALE-202207-X-1_notification_viewed_0"
-        ]
-      }),
-      addMultiplePNTimelineEvent(
-        "PAID",
-        paidNoticeCodes,
-        "2022-07-07T14:27:22.669+00:00"
-      ),
-      accumulator =>
-        isCancelled
-          ? addPNTimelineEvent({
-              status: "CANCELLED",
-              activeFrom: "2023-08-31T23:59:59.999+00:00",
-              relatedTimelineElements: [
-                "TPAK-PJUT-RALE-202207-X-1_notification_cancelled_0"
-              ]
-            })(accumulator)
-          : accumulator
     );
+    sendMessagesOnIO.push(sendMessageOnIO);
+  }
 
-const addPNTimelineEvent =
-  (timelineEvent: NotificationStatusHistoryElement) =>
-  (
-    accumulator: NotificationStatusHistoryElement[]
-  ): NotificationStatusHistoryElement[] =>
-    [...accumulator, timelineEvent];
-
-const addMultiplePNTimelineEvent =
-  (status: string, paidNoticeCodes: string[], utcStartDateString: string) =>
-  (
-    accumulator: NotificationStatusHistoryElement[]
-  ): NotificationStatusHistoryElement[] =>
-    [
-      ...accumulator,
-      ...A.makeBy(paidNoticeCodes.length, index => ({
-        status,
-        activeFrom: pipe(
-          new Date(Date.parse(utcStartDateString) + index * 60000),
-          utcDate => `${utcDate.toISOString().slice(0, -1)}+00:00`
-        ),
-        relatedTimelineElements: [
-          "TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_0",
-          `TPAK-PJUT-RALE-202207-X-2_notification_payment_paid_${paidNoticeCodes[index]}`
-        ]
-      }))
-    ];
-
-const noticeCodesFromNotificationRecipients = (
-  notificationRecipients: NotificationRecipient[]
-): PaymentNoticeNumber[] =>
-  pipe(
-    notificationRecipients,
-    A.filterMap(notificationRecipient =>
-      pipe(
-        notificationRecipient.payment,
-        rptIdFromNotificationPaymentInfo,
-        PaymentDB.getPaymentStatus,
-        O.chain(paymentStatus =>
-          pipe(
-            paymentStatus,
-            fold(
-              processedPayment =>
-                isPaid(processedPayment.status)
-                  ? O.some(notificationRecipient.payment.noticeCode)
-                  : O.none,
-              _ => O.none
-            )
-          )
-        )
-      )
-    )
-  );
+  return sendMessagesOnIO;
+};

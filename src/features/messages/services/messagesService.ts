@@ -1,8 +1,8 @@
-import { ulid } from "ulid";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as S from "fp-ts/lib/string";
 import * as B from "fp-ts/lib/boolean";
 import * as O from "fp-ts/lib/Option";
+import { isRight } from "fp-ts/lib/Either";
 import { __, match, not } from "ts-pattern";
 import { IoDevServerConfig } from "../../../types/config";
 import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
@@ -24,10 +24,25 @@ import {
 } from "../../../../generated/definitions/backend/MessageCategoryPN";
 import { rptIdFromServiceAndPaymentData } from "../../../utils/payment";
 import { ioDevServerConfig } from "../../../config";
+import { nextMessageIdAndCreationDate } from "../utils";
+import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
 ): MessageCategory => {
+  if ("category" in message) {
+    const messageCategoryEither = MessageCategory.decode(message.category);
+    if (isRight(messageCategoryEither)) {
+      const messageCategory = messageCategoryEither.right;
+      if (messageCategory.tag === "PN") {
+        return {
+          id: messageCategory.id,
+          tag: messageCategory.tag
+        };
+      }
+      return messageCategoryEither.right;
+    }
+  }
   const { eu_covid_cert, payment_data } = message.content;
   const serviceId = message.sender_service_id;
   const senderService = ServicesDB.getService(serviceId);
@@ -97,7 +112,12 @@ const getPublicMessages = (
             is_read,
             is_archived,
             has_attachments,
-            has_precondition: senderService.id === sendServiceId
+            has_precondition:
+              message.content.third_party_data?.has_precondition ===
+                HasPreconditionEnum.ALWAYS ||
+              (message.content.third_party_data?.has_precondition ===
+                HasPreconditionEnum.ONCE &&
+                !is_read)
           };
         }
       )
@@ -189,16 +209,20 @@ const createMessage = () =>
         randomServiceIndex => localServices[randomServiceIndex]
       ),
     localService =>
-      ({
-        id: ulid(),
-        fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
-        created_at: new Date(),
-        content: {
-          subject: `Created on ${new Date().toTimeString()}`,
-          markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
-        },
-        sender_service_id: localService.id
-      } as CreatedMessageWithContentAndAttachments)
+      pipe(
+        nextMessageIdAndCreationDate(),
+        ({ id, created_at }) =>
+          ({
+            id,
+            fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
+            created_at,
+            content: {
+              subject: `Created on ${new Date().toTimeString()}`,
+              markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
+            },
+            sender_service_id: localService.id
+          } as CreatedMessageWithContentAndAttachments)
+      )
   );
 
 const handleAttachment = (

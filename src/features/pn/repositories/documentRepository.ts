@@ -1,18 +1,42 @@
-/* eslint-disable functional/no-let */
+/* eslint-disable functional/immutable-data */
 import { createHash } from "crypto";
-import { createReadStream } from "fs";
-import { readdir } from "fs/promises";
+import { readdirSync, readFileSync } from "fs";
 import { cwd } from "process";
 import path from "path";
 import { Either, left, right } from "fp-ts/lib/Either";
 import { Document, DocumentCategory } from "../models/Document";
+import { unknownToString } from "../../messages/utils";
 
-const documents = new Map<string, Document>();
+export interface IDocumentsRepository {
+  documentAtIndex: (index: number) => Either<string, Document>;
+  f24AtIndex: (index: number) => Either<string, Document>;
+  initializeIfNeeded: () => Either<string, boolean>;
+}
 
-export const initializeIfNeeded = async (): Promise<
-  Either<string, boolean>
-> => {
-  if (documents.size > 0) {
+const documents = new Array<Document>();
+const f24s = new Array<Document>();
+
+const documentAtIndex = (index: number): Either<string, Document> => {
+  if (documents.length === 0) {
+    return left("There are no documents");
+  }
+  const safeIndex = index % documents.length;
+  return right(documents[safeIndex]);
+};
+
+const f24AtIndex = (index: number): Either<string, Document> => {
+  if (f24s.length === 0) {
+    return left("There are no F24");
+  }
+  const safeIndex = index % f24s.length;
+  return right(f24s[safeIndex]);
+};
+
+const initializeIfNeeded = (): Either<string, boolean> => {
+  const shouldInitializeDocuments = documents.length === 0;
+  const shouldInitializeF24 = f24s.length === 0;
+
+  if (!shouldInitializeDocuments && !shouldInitializeF24) {
     return right(false);
   }
 
@@ -24,18 +48,17 @@ export const initializeIfNeeded = async (): Promise<
       "messages",
       "pn"
     );
-    await populateDocumentsFromFolder(
-      "DOCUMENT",
-      baseAbsolutePath,
-      "attachments",
-      documents
-    );
-    await populateDocumentsFromFolder(
-      "F24",
-      baseAbsolutePath,
-      "f24",
-      documents
-    );
+    if (shouldInitializeDocuments) {
+      populateDocumentsFromFolder(
+        "DOCUMENT",
+        baseAbsolutePath,
+        "attachments",
+        documents
+      );
+    }
+    if (shouldInitializeF24) {
+      populateDocumentsFromFolder("F24", baseAbsolutePath, "f24", f24s);
+    }
   } catch (error) {
     const errorMessage = unknownToString(error);
     return left(errorMessage);
@@ -43,25 +66,24 @@ export const initializeIfNeeded = async (): Promise<
   return right(true);
 };
 
-const populateDocumentsFromFolder = async (
+const populateDocumentsFromFolder = (
   category: DocumentCategory,
   baseAbsolutePath: string,
   folder: string,
-  map: Map<string, Document>
-): Promise<void> => {
+  array: Document[]
+): void => {
   const folderAbsolutePath = path.join(baseAbsolutePath, folder);
-  const folderFileList = await readdir(folderAbsolutePath);
+  const folderFileList = readdirSync(folderAbsolutePath);
 
   for (const [index, fileNameWithExtension] of folderFileList.entries()) {
     const fileNameWithExtensionAbsolutePath = path.join(
       folderAbsolutePath,
       fileNameWithExtension
     );
-    const fileSizeAndSHA256 = await getFileSizeAndSHA256(
+    const fileSizeAndSHA256 = getFileSizeAndSHA256(
       fileNameWithExtensionAbsolutePath
     );
     const filename = removeExtension(fileNameWithExtension);
-    const documentId = getDocumentId(category, index);
     const document: Document = {
       category,
       contentLength: fileSizeAndSHA256.byteSize,
@@ -70,7 +92,7 @@ const populateDocumentsFromFolder = async (
       index,
       sha256: fileSizeAndSHA256.sha256
     };
-    map.set(documentId, document);
+    array.push(document);
   }
 };
 
@@ -79,23 +101,18 @@ interface CustomFileInfo {
   sha256: string;
 }
 
-const getFileSizeAndSHA256 = async (
-  filePath: string
-): Promise<CustomFileInfo> => {
+const getFileSizeAndSHA256 = (filePath: string): CustomFileInfo => {
+  const fileBuffer = readFileSync(filePath);
+
+  const byteSize = fileBuffer.byteLength;
+
   const hash = createHash("sha256");
-
-  const stream = createReadStream(filePath);
-  let totalSize: number = 0;
-
-  for await (const chunkAny of stream) {
-    const typedChunk: Buffer = chunkAny;
-    hash.update(typedChunk);
-    totalSize += typedChunk.length;
-  }
+  hash.update(fileBuffer);
+  const sha256 = hash.digest("hex");
 
   return {
-    byteSize: totalSize,
-    sha256: hash.digest("hex")
+    byteSize,
+    sha256
   };
 };
 
@@ -107,34 +124,8 @@ const removeExtension = (filename: string): string => {
   return path.basename(filename, extension);
 };
 
-const getDocumentId = (category: DocumentCategory, index: number) =>
-  `${category}_${index}`;
-
-const unknownToString = (input: unknown): string => {
-  // 1. Handle null and undefined explicitly for consistent output
-  if (input === null) {
-    return "Null";
-  }
-  if (input === undefined) {
-    return "Undefined";
-  }
-
-  // 2. Handle Error instances to get the core message
-  if (input instanceof Error) {
-    return input.message;
-  }
-
-  // 3. For other objects (including arrays), use JSON.stringify
-  if (typeof input === "object") {
-    try {
-      // This is far more informative than '[object Object]'
-      return JSON.stringify(input);
-    } catch {
-      // This handles errors like circular references
-      return "Unserializable Object";
-    }
-  }
-
-  // 4. Fallback for primitives (string, number, boolean, etc.)
-  return String(input);
+export const DocumentsRepository: IDocumentsRepository = {
+  documentAtIndex,
+  f24AtIndex,
+  initializeIfNeeded
 };

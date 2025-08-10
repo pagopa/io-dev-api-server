@@ -1,27 +1,29 @@
+import { Document } from "./Document";
+
 export interface Notification {
   abstract: string;
   acknowledged: boolean;
-  attachments: Document[];
+  attachments: ReadonlyArray<Document> | undefined;
   cancelled: boolean;
+  history: ReadonlyArray<NotificationHistory>;
   iun: string;
   recipientFiscalCode: string;
-  recipients: NotificationRecipient[];
+  recipients: ReadonlyArray<NotificationRecipient> | undefined;
   senderDenomination: string;
   subject: string;
 }
 
 export type NotificationHistoryStatus =
-  | "IN_VALIDATION"
   | "ACCEPTED"
-  | "REFUSED"
-  | "DELIVERING"
+  | "CANCELLED"
   | "DELIVERED"
-  | "VIEWED"
+  | "DELIVERING"
   | "EFFECTIVE_DATE"
+  | "IN_VALIDATION"
   | "PAID"
+  | "REFUSED"
   | "UNREACHABLE"
-  | "CANCELLED";
-
+  | "VIEWED";
 export interface NotificationHistory {
   activeFrom: Date;
   relatedTimelineElements: string[];
@@ -32,7 +34,7 @@ export type NotificationRecipientType = "PF" | "PG";
 
 export interface NotificationRecipient {
   denomination: string;
-  paymentId: string;
+  paymentId: string | undefined;
   recipientFiscalCode: string;
   type: NotificationRecipientType;
 }

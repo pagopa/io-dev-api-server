@@ -80,7 +80,15 @@ function unarchive(id: string): boolean {
 // eslint-disable-next-line: readonly-array no-let
 function persist(messages: CreatedMessageWithContentAndAttachments[]): void {
   inboxMessages = inboxMessages
-    .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
+    .concat(
+      messages.map(m =>
+        pipe(
+          m,
+          m => addBooleanPropertyIfNeeded(m, "is_read"),
+          m => addBooleanPropertyIfNeeded(m, "is_archived")
+        )
+      )
+    )
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
@@ -168,6 +176,19 @@ function setReadMessage(id: string) {
     O.getOrElse(() => false)
   );
 }
+
+const addBooleanPropertyIfNeeded = (
+  message: CreatedMessageWithContentAndAttachments,
+  property: string
+) => {
+  if (property in message) {
+    return message;
+  }
+  return {
+    ...message,
+    [property]: false
+  };
+};
 
 export default {
   addNewMessage,
