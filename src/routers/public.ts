@@ -22,7 +22,13 @@ import { WALLET_ONBOARDING_PATH } from "../features/payments/utils/onboarding";
 import { addHandler } from "../payloads/response";
 import { clearSessionTokens } from "../payloads/session";
 import { clearAppInfo, setAppInfo } from "../persistence/appInfo";
-import { clearLollipopInfo, setLollipopInfo } from "../persistence/lollipop";
+import {
+  clearEphemeralLollipopInfo,
+  clearLollipopInfo,
+  concretizeEphemeralInfo,
+  setLollipopInfo,
+  setLollipopInfoEphemeral
+} from "../persistence/lollipop";
 import {
   clearLoginSessionTokenInfo,
   createOrRefreshEverySessionToken,
@@ -73,7 +79,7 @@ addHandler(publicRouter, "get", "/login", async (req, res) => {
     DEFAULT_LOLLIPOP_HASH_ALGORITHM
   );
 
-  setLollipopInfo(thumbprint, jwkPK.right);
+  setLollipopInfoEphemeral(thumbprint, jwkPK.right);
 
   const samlRequest = getSamlRequest(
     DEFAULT_LOLLIPOP_HASH_ALGORITHM,
@@ -88,6 +94,7 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     : AppUrlLoginScheme.webview;
 
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
+    concretizeEphemeralInfo();
     createOrRefreshEverySessionToken();
     const url = `${urlLoginScheme}://${
       req.headers.host
@@ -96,6 +103,7 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     return;
   }
   if (req.query.error && typeof req.query.error === "string") {
+    clearEphemeralLollipopInfo();
     // eslint-disable-next-line functional/no-let
     let redirectUrl;
     // eslint-disable-next-line functional/no-let
