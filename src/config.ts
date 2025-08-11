@@ -162,7 +162,7 @@ const defaultConfig: IoDevServerConfig = {
     paymentOutCode: 0,
     // IDPay initiatives show in wallet
     idPay: {
-      refundCount: 0,
+      refundCount: 1,
       refundNotConfiguredCount: 0,
       refundUnsubscribedCount: 0,
       refundSuspendedCount: 0,

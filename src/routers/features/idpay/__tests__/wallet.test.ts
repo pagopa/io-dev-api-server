@@ -176,7 +176,9 @@ describe("IDPay Wallet API", () => {
       const walletId = getWalletV2()[1].idWallet;
 
       const response = await request.put(
-        addIdPayPrefix(`/wallet/${initiativeId}/instruments/${walletId}`)
+        addIdPayPrefix(
+          `/wallet/${initiativeId}/instruments/by-wallet/${walletId}`
+        )
       );
       expect(response.status).toBe(200);
     });
@@ -186,7 +188,9 @@ describe("IDPay Wallet API", () => {
       const walletId = 2;
 
       const response = await request.put(
-        addIdPayPrefix(`/wallet/${initiativeId}/instruments/${walletId}`)
+        addIdPayPrefix(
+          `/wallet/${initiativeId}/instruments/by-wallet/${walletId}`
+        )
       );
       expect(response.status).toBe(404);
     });
@@ -196,7 +200,9 @@ describe("IDPay Wallet API", () => {
       const walletId = 9999;
 
       const response = await request.put(
-        addIdPayPrefix(`/wallet/${initiativeId}/instruments/${walletId}`)
+        addIdPayPrefix(
+          `/wallet/${initiativeId}/instruments/by-wallet/${walletId}`
+        )
       );
       expect(response.status).toBe(404);
     });
@@ -206,7 +212,9 @@ describe("IDPay Wallet API", () => {
       const walletId = 2;
 
       const response = await request.put(
-        addIdPayPrefix(`/wallet/${initiativeId}/instruments/${walletId}`)
+        addIdPayPrefix(
+          `/wallet/${initiativeId}/instruments/by-wallet/${walletId}`
+        )
       );
       expect(response.status).toBe(403);
     });

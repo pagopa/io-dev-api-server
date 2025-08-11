@@ -243,7 +243,7 @@ addIdPayHandler("put", "/wallet/:initiativeId/code/instruments", (req, res) =>
  */
 addIdPayHandler(
   "put",
-  "/wallet/:initiativeId/instruments/:walletId",
+  "/wallet/:initiativeId/instruments/by-wallet/:walletId",
   (req, res) =>
     pipe(
       req.params.initiativeId,
