@@ -3,7 +3,7 @@ import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
 import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { IbanPutDTO } from "../../../../generated/definitions/idpay/IbanPutDTO";
-import { StatusEnum as InitiativeStatusEnum } from "../../../../generated/definitions/idpay/InitiativeDTO1";
+import { StatusEnum as InitiativeStatusEnum } from "../../../../generated/definitions/idpay/InitiativeDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
 import { getInitiativeBeneficiaryDetailResponse } from "../../../payloads/features/idpay/get-initiative-beneficiary-detail";
 import { getInitiativeWithInstrumentResponse } from "../../../payloads/features/idpay/get-initiatives-with-instrument";

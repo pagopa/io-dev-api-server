@@ -59,18 +59,18 @@ import {
 } from "../../generated/definitions/idpay/TransactionBarCodeResponse";
 import { serverUrl } from "../utils/server";
 import {
-  InitiativeDTO1,
+  InitiativeDTO,
   InitiativeRewardTypeEnum,
   VoucherStatusEnum,
   StatusEnum as InitiativeStatusEnum
-} from "../../generated/definitions/idpay/InitiativeDTO1";
+} from "../../generated/definitions/idpay/InitiativeDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
 
 const pagoPaWallet: WalletV2 = getWalletV2()[0];
 
-const generateRandomInitiativeDTO = (): InitiativeDTO1 => {
+const generateRandomInitiativeDTO = (): InitiativeDTO => {
   const amountCents = faker.number.int({ min: 5000, max: 20000 });
   const accruedCents = faker.number.int({ max: 20000 });
   const refundedCents = faker.number.int({ max: accruedCents });
@@ -227,7 +227,7 @@ const generateRandomReadmittedOperationDTO = (): ReadmittedOperationDTO => ({
 });
 
 // eslint-disable-next-line functional/no-let
-export let initiatives: { [id: string]: InitiativeDTO1 } = {};
+export let initiatives: { [id: string]: InitiativeDTO } = {};
 
 // eslint-disable-next-line functional/no-let
 export let initiativeTimeline: {
@@ -349,11 +349,11 @@ export const deleteInstrumentFromInitiative = (
   return true;
 };
 
-export const updateInitiative = (initiative: InitiativeDTO1) =>
+export const updateInitiative = (initiative: InitiativeDTO) =>
   (initiatives = { ...initiatives, [initiative.initiativeId]: initiative });
 
 range(0, walletConfig.refundCount).forEach(() => {
-  const initiative: InitiativeDTO1 = {
+  const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     status: InitiativeStatusEnum.REFUNDABLE
@@ -441,7 +441,7 @@ range(0, walletConfig.refundCount).forEach(() => {
 range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [NC]`;
 
-  const initiative: InitiativeDTO1 = {
+  const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
@@ -463,7 +463,7 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
 range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [U]`;
 
-  const initiative: InitiativeDTO1 = {
+  const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
@@ -494,7 +494,7 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
 range(0, walletConfig.refundSuspendedCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [S]`;
 
-  const initiative: InitiativeDTO1 = {
+  const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
@@ -542,7 +542,7 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 range(0, walletConfig.discountCount).forEach(() => {
   const initiativeName = `Bonus Elettrodomestici`;
 
-  const initiative: InitiativeDTO1 = {
+  const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     voucherStatus: VoucherStatusEnum.ACTIVE,
     amountCents: 10000,
@@ -590,7 +590,7 @@ range(0, walletConfig.discountCount).forEach(() => {
 
 range(0, walletConfig.expenseCount).forEach(() => {
   const initiativeName = `${faker.company.name()} [E]`;
-  const initiative: InitiativeDTO1 = {
+  const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.EXPENSE,

@@ -7,7 +7,8 @@ import {
 } from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
 import {
   CodeEnum as AutomatedCriteriaCodeEnum,
-  AutomatedCriteriaDTO
+  AutomatedCriteriaDTO,
+  OperatorEnum
 } from "../../../../generated/definitions/idpay/AutomatedCriteriaDTO";
 import {
   SelfCriteriaMultiDTO,
@@ -20,13 +21,14 @@ import {
 import { _typeEnum as SelfDeclaratioTextType } from "../../../../generated/definitions/idpay/SelfCriteriaTextDTO";
 import { InitiativeBeneficiaryRuleDTO } from "../../../../generated/definitions/idpay/InitiativeBeneficiaryRuleDTO";
 import { RowDataDTO } from "../../../../generated/definitions/idpay/RowDataDTO";
+import { getRandomEnumValue } from "../../utils/random";
 import { IDPayInitiativeID } from "./types";
 
 const automatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
   {
     code: AutomatedCriteriaCodeEnum.BIRTHDAY,
     authority: "INPS",
-    operator: faker.string.binary({ length: 3 }),
+    operator: getRandomEnumValue(OperatorEnum),
     value: faker.date
       .between({ from: "1990-01-01", to: "1999-12-31" })
       .getFullYear()
@@ -39,14 +41,14 @@ const automatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
   {
     code: AutomatedCriteriaCodeEnum.ISEE,
     authority: "AGID",
-    operator: faker.string.binary({ length: 3 }),
+    operator: getRandomEnumValue(OperatorEnum),
     value: faker.finance.amount({ min: 10000, max: 100000 }),
     value2: faker.finance.amount({ min: 10000, max: 100000 })
   },
   {
     code: AutomatedCriteriaCodeEnum.RESIDENCE,
     authority: "AGID",
-    operator: faker.string.binary({ length: 3 }),
+    operator: getRandomEnumValue(OperatorEnum),
     value: faker.location.country()
   }
 ];

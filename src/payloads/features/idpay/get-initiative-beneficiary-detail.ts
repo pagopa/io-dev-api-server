@@ -8,15 +8,14 @@ import {
 import { initiatives } from "../../../persistence/idpay";
 
 import ServicesDB from "../../../features/services/persistence/servicesDatabase";
-import { InitiativeDTO1 } from "../../../../generated/definitions/idpay/InitiativeDTO1";
+import { InitiativeDTO } from "../../../../generated/definitions/idpay/InitiativeDTO";
 
 const generateRandomInitiativeDetailDTO = (
-  initiative: InitiativeDTO1
+  initiative: InitiativeDTO
 ): InitiativeDetailDTO => {
   const serviceSummaries = ServicesDB.getSummaries();
 
   return {
-    initiativeId: initiative.initiativeId,
     initiativeName: initiative.initiativeName,
     status: StatusEnum.APPROVED,
     description: faker.lorem.paragraphs(6),
