@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { isLeft } from "fp-ts/lib/Either";
+import { Either, isLeft, Left } from "fp-ts/lib/Either";
 import { addHandler } from "../../../payloads/response";
 import { initializeSENDRepositoriesIfNeeded } from "../repositories/utils";
 import {
@@ -7,6 +7,12 @@ import {
   notificationToThirdPartyMessage,
   preconditionsForNotification
 } from "../services/notificationsService";
+import { checkAndValidateLollipopHeaders } from "../services/lollipopService";
+import { ExpressFailure } from "../types/expressFailure";
+
+export const getNotificationDisclaimerPath =
+  "/ext-registry-private/io/v1/notification-disclaimer";
+export const getNotificationPath = "/delivery/notifications/received";
 
 export const sendNotificationsRouter = Router();
 
@@ -17,20 +23,17 @@ sendNotificationsRouter.use(
   }
 );
 
-export const getNotificationDisclaimerPath =
-  "/ext-registry-private/io/v1/notification-disclaimer";
-export const getNotificationPath = "/delivery/notifications/received";
-
 addHandler(
   sendNotificationsRouter,
   "get",
   `${getNotificationPath}/:iun`,
   (req: Request, res: Response) => {
+    const lollipopHeadersEither = checkAndValidateLollipopHeaders(req.headers);
+    if (handleLeftEitherIfNeeded(lollipopHeadersEither, res)) {
+      return;
+    }
     const notificationEither = notificationFromRequestParams(req);
-    if (isLeft(notificationEither)) {
-      res
-        .status(notificationEither.left.httpStatusCode)
-        .json(notificationEither.left.reason);
+    if (handleLeftEitherIfNeeded(notificationEither, res)) {
       return;
     }
     const { notification } = notificationEither.right;
@@ -45,11 +48,12 @@ addHandler(
   "get",
   `${getNotificationDisclaimerPath}/:iun`,
   (req: Request, res: Response) => {
+    const lollipopHeadersEither = checkAndValidateLollipopHeaders(req.headers);
+    if (handleLeftEitherIfNeeded(lollipopHeadersEither, res)) {
+      return;
+    }
     const notificationEither = notificationFromRequestParams(req);
-    if (isLeft(notificationEither)) {
-      res
-        .status(notificationEither.left.httpStatusCode)
-        .json(notificationEither.left.reason);
+    if (handleLeftEitherIfNeeded(notificationEither, res)) {
       return;
     }
     const { notification } = notificationEither.right;
@@ -58,3 +62,14 @@ addHandler(
   },
   () => 500 + 1000 * Math.random()
 );
+
+const handleLeftEitherIfNeeded = (
+  inputEither: Either<ExpressFailure, unknown>,
+  res: Response
+): inputEither is Left<ExpressFailure> => {
+  if (isLeft(inputEither)) {
+    res.status(inputEither.left.httpStatusCode).json(inputEither.left.reason);
+    return true;
+  }
+  return false;
+};

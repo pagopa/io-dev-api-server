@@ -1,3 +1,4 @@
+import { fakerIT as faker } from "@faker-js/faker";
 import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { ServiceId } from "../../../../generated/definitions/services/ServiceId";
@@ -8,13 +9,20 @@ import {
 } from "../../services/persistence/services/factory";
 import { validatePayload } from "../../../utils/validator";
 import { StandardServiceCategoryEnum } from "../../../../generated/definitions/services/StandardServiceCategory";
+import { IoDevServerConfig } from "../../../types/config";
+import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { initializeSENDRepositoriesIfNeeded } from "../repositories/utils";
+import { NotificationRepository } from "../repositories/notificationRepository";
+import { nextMessageIdAndCreationDate } from "../../messages/utils";
+import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { getNewMessage } from "../../../populate-persistence";
 
 export const sendOptInServiceId = "01G74SW1PSM6XY2HM5EGZHZZET" as ServiceId;
 export const sendOptInServiceName = "SEND - Novità e aggiornamenti";
 export const sendServiceId = "01G40DWQGKY5GRWSNM4303VNRP" as ServiceId;
 export const sendServiceName = "SEND - Notifiche digitali";
 
-export const pnOptInCTA = `---
+const sendOptInMessageCTA = `---
 it:
     cta_1: 
         text: "Attiva per leggere la notifica"
@@ -69,4 +77,77 @@ export const createSENDOptInService = (): ServiceDetails => {
     }
   };
   return validatePayload(ServiceDetails, sendOptInService);
+};
+
+export const createSENDOptInMessage = (
+  customConfig: IoDevServerConfig
+): CreatedMessageWithContentAndAttachments[] => {
+  if (!customConfig.send.sendOptInMessage) {
+    return [];
+  }
+  return [
+    getNewMessage(
+      customConfig,
+      `Hai una comunicazione a valore legale da SEND`,
+      `${sendOptInMessageCTA}\nCiao,\n\nhai ricevuto una **notifica SEND**, cioè una comunicazione a valore legale emessa da un'amministrazione.\n\nPer leggere la notifica in app, **attiva il servizio SEND entro 5 giorni**: eviterai una raccomandata e i relativi costi.\n\nSe attivi il servizio dopo, dovrai consultare questa comunicazione tramite altri canali, ma riceverai in app le notifiche SEND future.\n\nPremendo “Attiva per leggere la notifica” accetti i **[Termini e condizioni d’uso](https://cittadini.notifichedigitali.it/termini-di-servizio)** e confermi di avere letto l’**[Informativa privacy](https://cittadini.notifichedigitali.it/informativa-privacy)**.`,
+      undefined,
+      sendOptInServiceId
+    )
+  ];
+};
+
+export const createSENDMessagesOnIO = (
+  customConfig: IoDevServerConfig
+): CreatedMessageWithContentAndAttachments[] => {
+  initializeSENDRepositoriesIfNeeded();
+  const sendMessagesConfiguration = customConfig.send.sendMessages;
+  return sendMessagesConfiguration.reduce<
+    CreatedMessageWithContentAndAttachments[]
+  >((sendMessagesOnIO, sendMessageConfiguration) => {
+    const { iun, ioTitle } = sendMessageConfiguration;
+    const notification = NotificationRepository.getNotification(iun);
+    if (notification == null) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `An IO message for a SEND notification has been created but such Notification does not exist on SEND (iun: ${iun})`
+      );
+    }
+
+    const { id, created_at } = nextMessageIdAndCreationDate();
+    const hasAttachments = (notification?.attachments?.length ?? 0) > 0;
+    const sendMessageOnIO = validatePayload(
+      CreatedMessageWithContentAndAttachments,
+      {
+        category: {
+          id: iun,
+          tag: "PN"
+        },
+        content: {
+          subject:
+            ioTitle ?? faker.word.words(faker.number.int({ min: 3, max: 5 })),
+          markdown:
+            "This markdown is not used but it has to be at least eighty characters long to pass",
+          third_party_data: {
+            id: iun,
+            has_attachments: hasAttachments,
+            has_remote_content: true,
+            has_precondition: HasPreconditionEnum.ALWAYS
+          }
+        },
+        created_at,
+        fiscal_code: customConfig.profile.attrs.fiscal_code,
+        has_attachments: hasAttachments,
+        has_precondition: true,
+        id,
+        is_archived: false,
+        is_read: false,
+        organization_fiscal_code: ioOrganizationFiscalCode,
+        organization_name: ioOrganizationName,
+        message_title: notification?.subject ?? "This message has no title",
+        sender_service_id: sendServiceId,
+        service_name: sendServiceName
+      }
+    );
+    return [...sendMessagesOnIO, sendMessageOnIO];
+  }, []);
 };

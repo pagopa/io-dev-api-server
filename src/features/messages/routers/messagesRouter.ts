@@ -41,7 +41,7 @@ import { PaymentInfoConflictResponse } from "../../../../generated/definitions/b
 import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/backend/PaymentInfoBadGatewayResponse";
 import { PaymentInfoUnavailableResponse } from "../../../../generated/definitions/backend/PaymentInfoUnavailableResponse";
 import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
-import { sendServiceId } from "../../pn/services/services";
+import { sendServiceId } from "../../pn/services/dataService";
 import { serverUrl } from "../../../utils/server";
 import {
   getNotificationDisclaimerPath,
@@ -241,7 +241,14 @@ addHandler(
       }
       const sendNotificationUrl = `${serverUrl}${getNotificationPath}/${sendMessageId}`;
       try {
-        const sendNotificationResponse = await fetch(sendNotificationUrl);
+        const sendNotificationResponse = await fetch(sendNotificationUrl, {
+          headers: {
+            ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
+            ...MessagesService.generateFakeLollipopServerHeaders(
+              ioDevServerConfig.profile.attrs.fiscal_code
+            )
+          }
+        });
         if (sendNotificationResponse.status !== 200) {
           throw Error(
             `Expected 200 HTTP Status code from SEND (received ${sendNotificationResponse.status})`
@@ -492,7 +499,15 @@ addHandler(
       const sendNotificationUrl = `${serverUrl}${getNotificationDisclaimerPath}/${thirdPartyMessageId}`;
       try {
         const sendNotificationPreconditionResponse = await fetch(
-          sendNotificationUrl
+          sendNotificationUrl,
+          {
+            headers: {
+              ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
+              ...MessagesService.generateFakeLollipopServerHeaders(
+                ioDevServerConfig.profile.attrs.fiscal_code
+              )
+            }
+          }
         );
         if (sendNotificationPreconditionResponse.status !== 200) {
           throw Error(

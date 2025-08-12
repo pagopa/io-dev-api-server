@@ -44,7 +44,7 @@ import {
 import {
   createSENDMessagesOnIO,
   createSENDOptInMessage
-} from "./features/pn/payloads/messages";
+} from "./features/pn/services/dataService";
 import { MessageTemplateWrapper } from "./features/messages/types/messageTemplateWrapper";
 import { MessageTemplate } from "./features/messages/types/messageTemplate";
 import { initializeServiceLogoMap } from "./routers/services_metadata";

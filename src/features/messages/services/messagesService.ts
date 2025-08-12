@@ -1,3 +1,4 @@
+import { IncomingHttpHeaders } from "node:http";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as S from "fp-ts/lib/string";
 import * as B from "fp-ts/lib/boolean";
@@ -11,7 +12,7 @@ import { CreatedMessageWithContentAndAttachments } from "../../../../generated/d
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
 import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import { sendServiceId } from "../../pn/services/services";
+import { sendServiceId } from "../../pn/services/dataService";
 import { GetMessagesParameters } from "../../../types/parameters";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 import { MessageCategory } from "../../../../generated/definitions/backend/MessageCategory";
@@ -352,10 +353,47 @@ const generateExpirationDate = (
       new Date(pollingStartDate.getTime() + 1000 * expiredDelaySeconds)
   );
 
+const lollipopClientHeadersFromHeaders = (
+  headers: IncomingHttpHeaders
+): Record<string, string> =>
+  [
+    "x-pagopa-lollipop-original-method",
+    "x-pagopa-lollipop-original-url",
+    "signature-input",
+    "signature"
+  ].reduce((accumulatedHeaders, headerName) => {
+    const headerValue = headers[headerName];
+    if (headerValue != null) {
+      return {
+        ...accumulatedHeaders,
+        [headerName]: headerValue
+      };
+    }
+    return accumulatedHeaders;
+  }, {});
+
+const generateFakeLollipopServerHeaders = (
+  fiscalCode: string
+): Record<string, string> => ({
+  // (sha256-[A-Za-z0-9-_=]{1,44}) | (sha384-[A-Za-z0-9-_=]{1,66}) | (sha512-[A-Za-z0-9-_=]{1,88})
+  "x-pagopa-lollipop-assertion-ref":
+    "sha256-olqj0f6xO-LHyWM1sTOK-c17Qdi37g_MvefmdjMlZAg",
+  // SAML | OIDC
+  "x-pagopa-lollipop-assertion-type": "SAML",
+  "x-pagopa-lollipop-auth-jwt":
+    "eyJrdHkiOiJFQyIsInkiOiJPa01mUXpTTE9iQ24xcjZlYm1nQUFYemIxbkRpSlozV0VwdEVEQ1JUaVNrPSIsImNydiI6IlAtMjU2IiwieCI6IlQ2dDBTSWJCd0pBdy9ON2N4ZjhldTdEYlJmbTQyZkZCL0pGVjBCcjVYSGs9In0=",
+  //  Base64url encode of a JWK Public Key
+  "x-pagopa-lollipop-public-key":
+    "e2t0eToiRUMiLHk6Ik9rTWZRelNMT2JDbjFyNmVibWdBQVh6YjFuRGlKWjNXRXB0RURDUlRpU2s9IixjcnY6IlAtMjU2Iix4OiJUNnQwU0liQndKQXcvTjdjeGY4ZXU3RGJSZm00MmZGQi9KRlYwQnI1WEhrPSJ9",
+  "x-pagopa-lollipop-user-id": fiscalCode
+});
+
 export default {
   computeGetMessagesQueryIndexes,
   createMessage,
+  generateFakeLollipopServerHeaders,
   getMessageCategory,
   getPublicMessages,
-  handleAttachment
+  handleAttachment,
+  lollipopClientHeadersFromHeaders
 };

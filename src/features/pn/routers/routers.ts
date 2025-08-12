@@ -5,7 +5,7 @@ import { PNActivation } from "../../../../generated/definitions/pn/PNActivation"
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import { sendServiceId } from "../services/services";
+import { sendServiceId } from "../services/dataService";
 
 export const pnRouter = Router();
 

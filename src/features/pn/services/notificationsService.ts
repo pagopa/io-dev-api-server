@@ -1,8 +1,8 @@
 import { Request } from "express";
 import { Either, left, right } from "fp-ts/lib/Either";
-import { ProblemJson } from "@pagopa/ts-commons/lib/responses";
 import { isSome } from "fp-ts/lib/Option";
 import { fakerIT as faker } from "@faker-js/faker";
+import { ExpressFailure } from "../types/expressFailure";
 import { PaymentsDatabase } from "../../../persistence/payments";
 import { isProcessedPayment } from "../../../types/PaymentStatus";
 import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
@@ -17,10 +17,7 @@ import {
 
 export const notificationFromRequestParams = (
   req: Request
-): Either<
-  { httpStatusCode: number; reason: ProblemJson },
-  { iun: string; notification: Notification }
-> => {
+): Either<ExpressFailure, { iun: string; notification: Notification }> => {
   const iun = req.params.iun;
   const notification = NotificationRepository.getNotification(iun);
   if (notification == null) {
