@@ -27,6 +27,7 @@ import { rptIdFromServiceAndPaymentData } from "../../../utils/payment";
 import { ioDevServerConfig } from "../../../config";
 import { nextMessageIdAndCreationDate } from "../utils";
 import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { APIKey } from "../../pn/models/APIKey";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
@@ -388,6 +389,14 @@ const generateFakeLollipopServerHeaders = (
   "x-pagopa-lollipop-user-id": fiscalCode
 });
 
+const sendAPIKeyHeader = (): Record<string, string> => ({
+  "x-api-key": APIKey
+});
+
+const sendTaxIdHeader = (fiscalCode: string): Record<string, string> => ({
+  "x-pagopa-cx-taxid": fiscalCode
+});
+
 export default {
   computeGetMessagesQueryIndexes,
   createMessage,
@@ -395,5 +404,7 @@ export default {
   getMessageCategory,
   getPublicMessages,
   handleAttachment,
-  lollipopClientHeadersFromHeaders
+  lollipopClientHeadersFromHeaders,
+  sendAPIKeyHeader,
+  sendTaxIdHeader
 };

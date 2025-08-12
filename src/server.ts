@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { ioDevServerConfig } from "./config";
 import { messageRouter } from "./features/messages/routers/messagesRouter";
-import { pnRouter } from "./features/pn/routers/routers";
+import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { cgnRouter } from "./routers/features/cgn";
@@ -78,7 +78,7 @@ app.use(fastLoginMiddleware);
   cgnMerchantsRouter,
   cgnGeoRouter,
   fciRouter,
-  pnRouter,
+  sendServiceRouter,
   sendNotificationsRouter,
   idpayRouter,
   lollipopRouter,

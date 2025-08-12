@@ -246,6 +246,10 @@ addHandler(
             ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
             ...MessagesService.generateFakeLollipopServerHeaders(
               ioDevServerConfig.profile.attrs.fiscal_code
+            ),
+            ...MessagesService.sendAPIKeyHeader(),
+            ...MessagesService.sendTaxIdHeader(
+              ioDevServerConfig.profile.attrs.fiscal_code
             )
           }
         });
@@ -504,6 +508,10 @@ addHandler(
             headers: {
               ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
               ...MessagesService.generateFakeLollipopServerHeaders(
+                ioDevServerConfig.profile.attrs.fiscal_code
+              ),
+              ...MessagesService.sendAPIKeyHeader(),
+              ...MessagesService.sendTaxIdHeader(
                 ioDevServerConfig.profile.attrs.fiscal_code
               )
             }
