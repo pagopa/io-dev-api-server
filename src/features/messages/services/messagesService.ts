@@ -1,6 +1,5 @@
 import { IncomingHttpHeaders } from "node:http";
-import { identity, pipe } from "fp-ts/lib/function";
-import * as S from "fp-ts/lib/string";
+import { pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
 import * as O from "fp-ts/lib/Option";
 import { isRight } from "fp-ts/lib/Either";
@@ -233,46 +232,37 @@ const handleAttachment = (
   config: IoDevServerConfig,
   sendAttachmentCallback: (contentType: string, relativePath: string) => void,
   sendRetryAfterCallback: (retryAfterSeconds: number) => void
-) =>
-  pipe(
-    attachment.url,
-    S.includes("/f24/"),
-    B.fold(
-      () =>
-        sendAttachment(
-          attachment.url,
-          attachment.content_type,
-          sendAttachmentCallback
-        ),
-      () =>
-        pipe(
-          getPollingAndExpirationTuple(
-            attachment.url,
-            attachmentPollingData,
-            config
-          ),
-          O.fromPredicate(
-            pollingAndExpirationDatesTuple =>
-              pollingAndExpirationDatesTuple[0] < new Date()
-          ),
-          O.fold(
-            () =>
-              pipe(
-                config.messages.attachmentRetryAfterSeconds,
-                O.fromNullable,
-                O.getOrElse(() => 3),
-                sendRetryAfterCallback
-              ),
-            () =>
-              sendAttachment(
-                attachment.url,
-                attachment.content_type,
-                sendAttachmentCallback
-              )
-          )
-        )
-    )
-  );
+) => {
+  const url = attachment.url;
+  const isF24 = url.includes("/f24/");
+  if (isF24) {
+    // The getter also checks for expiration (if so, it generates a whole
+    // new tuple so that the attachment is not ready for download yet)
+    const pollingAndExpirationDatesTuple = getPollingAndExpirationTuple(
+      attachment.url,
+      attachmentPollingData,
+      config
+    );
+    const isReadyForDownload = pollingAndExpirationDatesTuple[0] < new Date();
+    if (isReadyForDownload) {
+      sendAttachment(
+        attachment.url,
+        attachment.content_type,
+        sendAttachmentCallback
+      );
+    } else {
+      const retryAfterSeconds =
+        config.messages.attachmentRetryAfterSeconds ?? 3;
+      sendRetryAfterCallback(retryAfterSeconds);
+    }
+  } else {
+    sendAttachment(
+      attachment.url,
+      attachment.content_type,
+      sendAttachmentCallback
+    );
+  }
+};
 
 const sendAttachment = (
   attachmentUrl: string,
@@ -290,69 +280,54 @@ const getPollingAndExpirationTuple = (
   attachmentUrl: string,
   attachmentPollingData: Map<string, [Date, Date]>,
   config: IoDevServerConfig
-) =>
-  pipe(
-    attachmentPollingData.get(attachmentUrl),
-    O.fromNullable,
-    O.chain(
-      O.fromPredicate(
-        pollingAndExpirationDatesTuple =>
-          new Date() < pollingAndExpirationDatesTuple[1]
-      )
-    ),
-    O.fold(
-      () =>
-        generateAndSavePollingAndExpirationTuple(
-          attachmentUrl,
-          attachmentPollingData,
-          config
-        ),
-      identity
-    )
+) => {
+  const pollingAndExpirationDatesTuple =
+    attachmentPollingData.get(attachmentUrl);
+  if (pollingAndExpirationDatesTuple != null) {
+    const hasNotExpiredYet = new Date() < pollingAndExpirationDatesTuple[1];
+    if (hasNotExpiredYet) {
+      return pollingAndExpirationDatesTuple;
+    }
+  }
+  return generateAndSavePollingAndExpirationTuple(
+    attachmentUrl,
+    attachmentPollingData,
+    config
   );
+};
 
 const generateAndSavePollingAndExpirationTuple = (
   attachmentUrl: string,
   attachmentPollingData: Map<string, [Date, Date]>,
   config: IoDevServerConfig
-) =>
-  pipe(config, generatePollingAndExpirationTuple, pollingAndExpirationTuple =>
-    pipe(
-      attachmentPollingData.set(attachmentUrl, pollingAndExpirationTuple),
-      () => pollingAndExpirationTuple
-    )
-  );
+) => {
+  const pollingAndExpirationTuple = generatePollingAndExpirationTuple(config);
+  attachmentPollingData.set(attachmentUrl, pollingAndExpirationTuple);
+  return pollingAndExpirationTuple;
+};
 
 const generatePollingAndExpirationTuple = (
   config: IoDevServerConfig
-): [Date, Date] =>
-  pipe(config, generatePollingDate, pollingDate =>
-    pipe(generateExpirationDate(pollingDate, config), expirationDate => [
-      pollingDate,
-      expirationDate
-    ])
-  );
+): [Date, Date] => {
+  const pollingDate = generatePollingDate(config);
+  const expirationDate = generateExpirationDate(pollingDate, config);
+  return [pollingDate, expirationDate];
+};
 
-const generatePollingDate = (config: IoDevServerConfig) =>
-  pipe(
-    config.messages.attachmentAvailableAfterSeconds,
-    O.fromNullable,
-    O.getOrElse(() => 0),
-    pollingDelaySeconds =>
-      new Date(new Date().getTime() + 1000 * pollingDelaySeconds)
-  );
+const generatePollingDate = (config: IoDevServerConfig) => {
+  const pollingDelaySeconds =
+    config.messages.attachmentAvailableAfterSeconds ?? 0;
+  return new Date(new Date().getTime() + 1000 * pollingDelaySeconds);
+};
 
 const generateExpirationDate = (
   pollingStartDate: Date,
   config: IoDevServerConfig
-) =>
-  pipe(
-    config.messages.attachmentExpiredAfterSeconds,
-    O.fromNullable,
-    O.getOrElse(() => 24 * 60 * 60),
-    expiredDelaySeconds =>
-      new Date(pollingStartDate.getTime() + 1000 * expiredDelaySeconds)
-  );
+) => {
+  const expiredDelaySeconds =
+    config.messages.attachmentExpiredAfterSeconds ?? 24 * 60 * 60;
+  return new Date(pollingStartDate.getTime() + 1000 * expiredDelaySeconds);
+};
 
 const lollipopClientHeadersFromHeaders = (
   headers: IncomingHttpHeaders

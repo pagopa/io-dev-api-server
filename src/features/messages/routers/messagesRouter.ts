@@ -1,8 +1,6 @@
 import * as path from "path";
 import { Router } from "express";
 import { pipe } from "fp-ts/lib/function";
-import * as B from "fp-ts/lib/boolean";
-import * as A from "fp-ts/lib/ReadonlyArray";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
@@ -317,141 +315,88 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
-  lollipopMiddleware((req, res) =>
-    pipe(
-      req.params.messageId,
-      MessagesDB.getMessageById,
-      O.fold(
-        () => res.status(404).json(getProblemJson(404, messageNotFoundError)),
-        message =>
-          pipe(
-            ThirdPartyMessageWithContent.decode(message),
-            E.fold(
-              errors =>
-                res
-                  .status(500)
-                  .json(
-                    getProblemJson(
-                      500,
-                      `Decode failed for message with id (${req.params.messageId})`,
-                      JSON.stringify(errors)
-                    )
-                  ),
-              thirdPartyMessageWithContent =>
-                pipe(
-                  thirdPartyMessageWithContent.third_party_message,
-                  O.fromNullable,
-                  O.chainNullableK(
-                    thirdPartyMessage => thirdPartyMessage.attachments
-                  ),
-                  O.map(attachments =>
-                    pipe(
-                      attachments,
-                      A.findFirst(attachment =>
-                        attachment.url.endsWith(req.params[0])
-                      )
-                    )
-                  ),
-                  O.flatten,
-                  O.fold(
-                    () =>
-                      res
-                        .status(404)
-                        .json(
-                          getProblemJson(
-                            404,
-                            `Attachment not found for url (${req.params[0]})`
-                          )
-                        ),
-                    attachment =>
-                      pipe(
-                        path.resolve("."),
-                        executionFolderAbsolutePath =>
-                          path.join(
-                            executionFolderAbsolutePath,
-                            attachment.url
-                          ),
-                        attachmentAbsolutePath =>
-                          pipe(
-                            fileExists(attachmentAbsolutePath),
-                            B.fold(
-                              () =>
-                                res
-                                  .status(500)
-                                  .json(
-                                    getProblemJson(
-                                      500,
-                                      `Attachment file does not exist (${attachmentAbsolutePath})`
-                                    )
-                                  ),
-                              () =>
-                                pipe(
-                                  isPDFFile(attachmentAbsolutePath),
-                                  E.fold(
-                                    error =>
-                                      res
-                                        .status(500)
-                                        .json(
-                                          getProblemJson(
-                                            500,
-                                            `Unable to check requested attachment (${attachmentAbsolutePath})`,
-                                            JSON.stringify(error)
-                                          )
-                                        ),
-                                    B.foldW(
-                                      () =>
-                                        res
-                                          .status(415)
-                                          .json(
-                                            getProblemJson(
-                                              415,
-                                              "Not a supported PDF attachment"
-                                            )
-                                          ),
-                                      () =>
-                                        MessagesService.handleAttachment(
-                                          attachment,
-                                          attachmentPollingData,
-                                          ioDevServerConfig,
-                                          (contentType, fileRelativePath) =>
-                                            pipe(
-                                              res.setHeader(
-                                                "Content-Type",
-                                                contentType
-                                              ),
-                                              resWithHeaders =>
-                                                sendFileFromRootPath(
-                                                  fileRelativePath,
-                                                  resWithHeaders
-                                                )
-                                            ),
-                                          retryAfterSeconds =>
-                                            res
-                                              .setHeader(
-                                                "retry-after",
-                                                retryAfterSeconds
-                                              )
-                                              .status(503)
-                                              .json(
-                                                getProblemJson(
-                                                  503,
-                                                  `Retry-after: ${retryAfterSeconds}s`
-                                                )
-                                              )
-                                        )
-                                    )
-                                  )
-                                )
-                            )
-                          )
-                      )
-                  )
-                )
-            )
+  lollipopMiddleware((req, res) => {
+    const messageId = req.params.messageId;
+    const message = MessagesDB.getMessageById(messageId);
+    if (message == null) {
+      res.status(404).json(getProblemJson(404, messageNotFoundError));
+      return;
+    }
+    const thirdPartyMessageWithContentEither =
+      ThirdPartyMessageWithContent.decode(message);
+    if (E.isLeft(thirdPartyMessageWithContentEither)) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            `Decode failed for message with id (${req.params.messageId})`,
+            JSON.stringify(thirdPartyMessageWithContentEither.left)
           )
-      )
-    )
-  )
+        );
+      return;
+    }
+    const attachmentsOrUndefined =
+      thirdPartyMessageWithContentEither.right.third_party_message.attachments;
+    const attachment = attachmentsOrUndefined?.find(attachment =>
+      attachment.url.endsWith(req.params[0])
+    );
+    if (attachment == null) {
+      res
+        .status(404)
+        .json(
+          getProblemJson(404, `Attachment not found for url (${req.params[0]})`)
+        );
+      return;
+    }
+    const attachmentAbsolutePath = path.join(path.resolve("."), attachment.url);
+    if (!fileExists(attachmentAbsolutePath)) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            `Attachment file does not exist (${attachmentAbsolutePath})`
+          )
+        );
+      return;
+    }
+    const isPDFFileEither = isPDFFile(attachmentAbsolutePath);
+    if (E.isLeft(isPDFFileEither)) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            `Unable to check requested attachment (${attachmentAbsolutePath})`,
+            JSON.stringify(isPDFFileEither.left)
+          )
+        );
+      return;
+    }
+    if (!isPDFFileEither.right) {
+      res
+        .status(415)
+        .json(getProblemJson(415, "Not a supported PDF attachment"));
+      return;
+    }
+
+    MessagesService.handleAttachment(
+      attachment,
+      attachmentPollingData,
+      ioDevServerConfig,
+      (contentType, fileRelativePath) => {
+        const resWithHeaders = res.setHeader("Content-Type", contentType);
+        sendFileFromRootPath(fileRelativePath, resWithHeaders);
+      },
+      retryAfterSeconds =>
+        res
+          .setHeader("retry-after", retryAfterSeconds)
+          .status(503)
+          .json(getProblemJson(503, `Retry-after: ${retryAfterSeconds}s`))
+    );
+  }),
+  () => Math.random() * 500
 );
 
 addHandler(
