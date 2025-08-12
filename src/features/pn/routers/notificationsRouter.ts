@@ -1,16 +1,16 @@
 import { Request, Response, Router } from "express";
-import { Either, isLeft, Left } from "fp-ts/lib/Either";
 import { addHandler } from "../../../payloads/response";
 import {
-  checkAndValidateTaxIdHeader,
   notificationFromRequestParams,
   notificationToThirdPartyMessage,
   preconditionsForNotification
 } from "../services/notificationsService";
-import { checkAndValidateLollipopHeaders } from "../services/lollipopService";
-import { ExpressFailure } from "../types/expressFailure";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
+import {
+  checkAndValidateLollipopAndTaxId,
+  handleLeftEitherIfNeeded
+} from "../services/commonService";
 
 export const getNotificationDisclaimerPath =
   "/ext-registry-private/io/v1/notification-disclaimer";
@@ -27,17 +27,7 @@ addHandler(
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      const lollipopHeadersEither = checkAndValidateLollipopHeaders(
-        req.headers
-      );
-      if (handleLeftEitherIfNeeded(lollipopHeadersEither, res)) {
-        return;
-      }
-      const taxIdEither = checkAndValidateTaxIdHeader(
-        req.headers,
-        lollipopHeadersEither.right
-      );
-      if (handleLeftEitherIfNeeded(taxIdEither, res)) {
+      if (!checkAndValidateLollipopAndTaxId(req, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);
@@ -58,17 +48,7 @@ addHandler(
   `${getNotificationDisclaimerPath}/:iun`,
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      const lollipopHeadersEither = checkAndValidateLollipopHeaders(
-        req.headers
-      );
-      if (handleLeftEitherIfNeeded(lollipopHeadersEither, res)) {
-        return;
-      }
-      const taxIdEither = checkAndValidateTaxIdHeader(
-        req.headers,
-        lollipopHeadersEither.right
-      );
-      if (handleLeftEitherIfNeeded(taxIdEither, res)) {
+      if (!checkAndValidateLollipopAndTaxId(req, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);
@@ -82,14 +62,3 @@ addHandler(
   ),
   () => 500 + 1000 * Math.random()
 );
-
-const handleLeftEitherIfNeeded = (
-  inputEither: Either<ExpressFailure, unknown>,
-  res: Response
-): inputEither is Left<ExpressFailure> => {
-  if (isLeft(inputEither)) {
-    res.status(inputEither.left.httpStatusCode).json(inputEither.left.reason);
-    return true;
-  }
-  return false;
-};
