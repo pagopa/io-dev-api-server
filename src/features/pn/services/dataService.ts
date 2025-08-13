@@ -11,8 +11,6 @@ import { validatePayload } from "../../../utils/validator";
 import { StandardServiceCategoryEnum } from "../../../../generated/definitions/services/StandardServiceCategory";
 import { IoDevServerConfig } from "../../../types/config";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import { initializeSENDRepositoriesIfNeeded } from "../repositories/utils";
-import { NotificationRepository } from "../repositories/notificationRepository";
 import { nextMessageIdAndCreationDate } from "../../messages/utils";
 import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
 import { getNewMessage } from "../../../populate-persistence";
@@ -99,14 +97,16 @@ export const createSENDOptInMessage = (
 export const createSENDMessagesOnIO = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] => {
-  initializeSENDRepositoriesIfNeeded();
   const sendMessagesConfiguration = customConfig.send.sendMessages;
+  const sendNotificationsConfiguration = customConfig.send.sendNotifications;
   return sendMessagesConfiguration.reduce<
     CreatedMessageWithContentAndAttachments[]
   >((sendMessagesOnIO, sendMessageConfiguration) => {
     const { iun, ioTitle } = sendMessageConfiguration;
-    const notification = NotificationRepository.getNotification(iun);
-    if (notification == null) {
+    const sendNotificationConfiguration = sendNotificationsConfiguration.find(
+      sendNotificationConfiguration => sendNotificationConfiguration.iun === iun
+    );
+    if (sendNotificationConfiguration == null) {
       // eslint-disable-next-line no-console
       console.warn(
         `An IO message for a SEND notification has been created but such Notification does not exist on SEND (iun: ${iun})`
@@ -114,7 +114,8 @@ export const createSENDMessagesOnIO = (
     }
 
     const { id, created_at } = nextMessageIdAndCreationDate();
-    const hasAttachments = (notification?.attachments?.length ?? 0) > 0;
+    const hasAttachments =
+      (sendNotificationConfiguration?.attachments?.length ?? 0) > 0;
     const sendMessageOnIO = validatePayload(
       CreatedMessageWithContentAndAttachments,
       {
@@ -143,7 +144,8 @@ export const createSENDMessagesOnIO = (
         is_read: false,
         organization_fiscal_code: ioOrganizationFiscalCode,
         organization_name: ioOrganizationName,
-        message_title: notification?.subject ?? "This message has no title",
+        message_title:
+          sendNotificationConfiguration?.subject ?? "This message has no title",
         sender_service_id: sendServiceId,
         service_name: sendServiceName
       }

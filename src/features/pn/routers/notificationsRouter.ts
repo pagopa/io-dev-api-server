@@ -12,16 +12,21 @@ import {
   handleLeftEitherIfNeeded
 } from "../services/commonService";
 
-export const getNotificationDisclaimerPath =
-  "/ext-registry-private/io/v1/notification-disclaimer";
-export const getNotificationPath = "/delivery/notifications/received";
+const notificationDisclaimerPath =
+  "/ext-registry-private/io/v1/notification-disclaimer/:iun";
+const notificationPath = "/delivery/notifications/received/:iun";
+
+export const generateNotificationDisclaimerPath = (iun: string) =>
+  notificationPath.replace(":iun", iun);
+export const generateNotificationPath = (iun: string) =>
+  notificationPath.replace(":iun", iun);
 
 export const sendNotificationsRouter = Router();
 
 addHandler(
   sendNotificationsRouter,
   "get",
-  `${getNotificationPath}/:iun`,
+  notificationPath,
   // Middleware have to be used like this (instead of directly giving the middleware to the router via use)
   // because supertest (when testing) calls every middleware upon test initialization, even if it not in a
   // router directly called by the test, thus making every test fail due to the authentication middleware
@@ -45,7 +50,7 @@ addHandler(
 addHandler(
   sendNotificationsRouter,
   "get",
-  `${getNotificationDisclaimerPath}/:iun`,
+  notificationDisclaimerPath,
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
       if (!checkAndValidateLollipopAndTaxId(req, res)) {

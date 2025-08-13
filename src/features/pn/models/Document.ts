@@ -8,5 +8,6 @@ export interface Document {
   contentType: string;
   filename: string;
   index: number;
+  relativePath: string;
   sha256: string;
 }

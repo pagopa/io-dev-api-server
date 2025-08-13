@@ -38,6 +38,7 @@ import { fimsHistoryRouter } from "./features/fims/routers/historyRouter";
 import { trialSystemRouter } from "./features/trialSystem/routers";
 import { productionCrawlerRouter } from "./features/messages/routers/productionCrawlerRouter";
 import { sendNotificationsRouter } from "./features/pn/routers/notificationsRouter";
+import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUrisRouter";
 
 // create express server
 const app: Application = express();
@@ -78,8 +79,9 @@ app.use(fastLoginMiddleware);
   cgnMerchantsRouter,
   cgnGeoRouter,
   fciRouter,
-  sendServiceRouter,
   sendNotificationsRouter,
+  sendPrevalidatedUrisRouter,
+  sendServiceRouter,
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,

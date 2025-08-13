@@ -42,22 +42,24 @@ const initializeIfNeeded = (): Either<string, boolean> => {
 
   try {
     const currentWorkingDirectory = cwd();
-    const baseAbsolutePath = path.join(
-      currentWorkingDirectory,
-      "assets",
-      "messages",
-      "pn"
-    );
+    const baseRelativePath = path.join("assets", "messages", "pn");
     if (shouldInitializeDocuments) {
       populateDocumentsFromFolder(
         "DOCUMENT",
-        baseAbsolutePath,
+        currentWorkingDirectory,
+        baseRelativePath,
         "attachments",
         documents
       );
     }
     if (shouldInitializeF24) {
-      populateDocumentsFromFolder("F24", baseAbsolutePath, "f24", f24s);
+      populateDocumentsFromFolder(
+        "F24",
+        currentWorkingDirectory,
+        baseRelativePath,
+        "f24",
+        f24s
+      );
     }
   } catch (error) {
     const errorMessage = unknownToString(error);
@@ -68,17 +70,27 @@ const initializeIfNeeded = (): Either<string, boolean> => {
 
 const populateDocumentsFromFolder = (
   category: DocumentCategory,
-  baseAbsolutePath: string,
+  workingDirectory: string,
+  baseRelativePath: string,
   folder: string,
   array: Document[]
 ): void => {
-  const folderAbsolutePath = path.join(baseAbsolutePath, folder);
+  const folderAbsolutePath = path.join(
+    workingDirectory,
+    baseRelativePath,
+    folder
+  );
   const folderFileList = readdirSync(folderAbsolutePath);
 
   for (const [index, fileNameWithExtension] of folderFileList.entries()) {
-    const fileNameWithExtensionAbsolutePath = path.join(
-      folderAbsolutePath,
+    const fileNameWithExtensionRelativePath = path.join(
+      baseRelativePath,
+      folder,
       fileNameWithExtension
+    );
+    const fileNameWithExtensionAbsolutePath = path.join(
+      workingDirectory,
+      fileNameWithExtensionRelativePath
     );
     const fileSizeAndSHA256 = getFileSizeAndSHA256(
       fileNameWithExtensionAbsolutePath
@@ -90,6 +102,7 @@ const populateDocumentsFromFolder = (
       contentType: "application/pdf",
       filename,
       index,
+      relativePath: fileNameWithExtensionRelativePath,
       sha256: fileSizeAndSHA256.sha256
     };
     array.push(document);

@@ -1,7 +1,7 @@
 import { IncomingHttpHeaders } from "node:http";
 import { Request, Response } from "express";
 import { Either, isLeft, left, Left, right } from "fp-ts/lib/Either";
-import { ExpressFailure } from "../types/expressFailure";
+import { ExpressFailure } from "../types/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import {
   checkAndValidateLollipopHeaders,

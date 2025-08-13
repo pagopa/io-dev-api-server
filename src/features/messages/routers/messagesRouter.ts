@@ -42,8 +42,8 @@ import { HasPreconditionEnum } from "../../../../generated/definitions/backend/H
 import { sendServiceId } from "../../pn/services/dataService";
 import { serverUrl } from "../../../utils/server";
 import {
-  getNotificationDisclaimerPath,
-  getNotificationPath
+  generateNotificationDisclaimerPath,
+  generateNotificationPath
 } from "../../pn/routers/notificationsRouter";
 import { unknownToString } from "../utils";
 import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
@@ -237,7 +237,9 @@ addHandler(
           );
         return;
       }
-      const sendNotificationUrl = `${serverUrl}${getNotificationPath}/${sendMessageId}`;
+      const sendNotificationUrl = `${serverUrl}${generateNotificationPath(
+        sendMessageId
+      )}`;
       try {
         const sendNotificationResponse = await fetch(sendNotificationUrl, {
           headers: {
@@ -445,7 +447,9 @@ addHandler(
           );
         return;
       }
-      const sendNotificationUrl = `${serverUrl}${getNotificationDisclaimerPath}/${thirdPartyMessageId}`;
+      const sendNotificationUrl = `${serverUrl}${generateNotificationDisclaimerPath(
+        thirdPartyMessageId
+      )}`;
       try {
         const sendNotificationPreconditionResponse = await fetch(
           sendNotificationUrl,

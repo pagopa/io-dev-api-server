@@ -25,42 +25,45 @@ const SendTimelineConfig = t.union([
 ]);
 export type SendTimelineConfig = t.TypeOf<typeof SendTimelineConfig>;
 
-export const SendConfig = t.type({
-  sendAARs: t.array(t.string),
-  sendMessages: t.array(
-    t.intersection([
-      t.type({
-        iun: t.string
-      }),
-      t.partial({
-        ioTitle: t.string
-      })
-    ])
-  ),
-  sendNotifications: t.array(
-    t.intersection([
-      t.type({}),
-      t.partial({
-        abstract: t.string,
-        acknowledged: t.boolean,
-        attachments: t.array(
-          t.union([
-            t.literal("DOCUMENT"),
-            t.literal("F24"),
-            t.literal("PAGOPA")
-          ])
-        ),
-        cancelled: t.boolean,
-        iun: t.string,
-        payments: t.array(SendPaymentConfig),
-        senderDenomination: t.string,
-        subject: t.string,
-        timeline: t.array(SendTimelineConfig),
-        userIsRecipient: t.boolean
-      })
-    ])
-  ),
-  sendOptInMessage: t.boolean,
-  sendMandates: t.array(t.string)
-});
+export const SendConfig = t.intersection([
+  t.type({
+    sendAARs: t.array(t.string),
+    sendMessages: t.array(
+      t.intersection([
+        t.type({
+          iun: t.string
+        }),
+        t.partial({
+          ioTitle: t.string
+        })
+      ])
+    ),
+    sendNotifications: t.array(
+      t.intersection([
+        t.type({}),
+        t.partial({
+          abstract: t.string,
+          acknowledged: t.boolean,
+          attachments: t.array(
+            t.union([
+              t.literal("DOCUMENT"),
+              t.literal("F24"),
+              t.literal("PAGOPA")
+            ])
+          ),
+          cancelled: t.boolean,
+          iun: t.string,
+          payments: t.array(SendPaymentConfig),
+          senderDenomination: t.string,
+          subject: t.string,
+          timeline: t.array(SendTimelineConfig),
+          userIsRecipient: t.boolean
+        })
+      ])
+    ),
+    sendOptInMessage: t.boolean,
+    sendMandates: t.array(t.string)
+  }),
+  t.partial({ prevalidatedUrlDurationSeconds: t.number })
+]);
 export type SendConfig = t.TypeOf<typeof SendConfig>;

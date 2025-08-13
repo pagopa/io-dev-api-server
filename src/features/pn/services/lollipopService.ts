@@ -1,7 +1,7 @@
 import { IncomingHttpHeaders } from "node:http";
 import { Either, left, right } from "fp-ts/lib/Either";
 import { getProblemJson } from "../../../payloads/error";
-import { ExpressFailure } from "../types/expressFailure";
+import { ExpressFailure } from "../types/expressDTO";
 
 export type LollipopHeaders = {
   signature: string;
