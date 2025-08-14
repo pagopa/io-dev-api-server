@@ -123,7 +123,7 @@ const attachmentsFromAttachmentConfig = (
   const attachments: Document[] = [];
   for (const [index, attachmentConfig] of attachmentsConfig.entries()) {
     if (attachmentConfig === "F24") {
-      const f24Either = documentsRepository.f24AtIndex(index);
+      const f24Either = documentsRepository.paymentDocumentAtIndex(index);
       if (isLeft(f24Either)) {
         return f24Either;
       }

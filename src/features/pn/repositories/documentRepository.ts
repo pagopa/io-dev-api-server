@@ -3,41 +3,112 @@ import { createHash } from "crypto";
 import { readdirSync, readFileSync } from "fs";
 import { cwd } from "process";
 import path from "path";
-import { Either, left, right } from "fp-ts/lib/Either";
+import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import { Document, DocumentCategory } from "../models/Document";
 import { unknownToString } from "../../messages/utils";
+import { SendConfig } from "../types/sendConfig";
+
+const defaultPaymentDocumentGenerationTimeSeconds = 5;
+const defaultPaymentDocumentExpirationTimeSeconds = 10;
+const defaultPaymentDocumentRetryAfterSeconds = 2;
+const repositoryConfiguration = new Map<
+  | "paymentDocumentGenerationTimeSeconds"
+  | "paymentDocumentExpirationTimeSeconds"
+  | "paymentDocumentRetryAfterSeconds",
+  number
+>();
+
+const getPaymentDocumentGenerationTimeSeconds = () =>
+  repositoryConfiguration.get("paymentDocumentGenerationTimeSeconds") ??
+  defaultPaymentDocumentGenerationTimeSeconds;
+const getPaymentDocumentExpirationTimeSeconds = () =>
+  repositoryConfiguration.get("paymentDocumentExpirationTimeSeconds") ??
+  defaultPaymentDocumentExpirationTimeSeconds;
+const getPaymentDocumentRetryAfterSeconds = () =>
+  repositoryConfiguration.get("paymentDocumentRetryAfterSeconds") ??
+  defaultPaymentDocumentRetryAfterSeconds;
 
 export interface IDocumentsRepository {
   documentAtIndex: (index: number) => Either<string, Document>;
-  f24AtIndex: (index: number) => Either<string, Document>;
-  initializeIfNeeded: () => Either<string, boolean>;
+  paymentDocumentAtIndex: (index: number) => Either<string, Document>;
+  getPaymentDocumentRetryAfterSeconds: () => number;
+  initializeIfNeeded: (configuration: SendConfig) => Either<string, boolean>;
+  updateAvailabilityRangeForPaymentDocumentAtIndex: (
+    index: number
+  ) => Either<string, Document>;
 }
 
 const documents = new Array<Document>();
-const f24s = new Array<Document>();
+const paymentDocuments = new Array<Document>();
 
 const documentAtIndex = (index: number): Either<string, Document> => {
   if (documents.length === 0) {
     return left("There are no documents");
   }
   const safeIndex = index % documents.length;
+  documents[safeIndex].contentLength = 2;
   return right(documents[safeIndex]);
 };
 
-const f24AtIndex = (index: number): Either<string, Document> => {
-  if (f24s.length === 0) {
-    return left("There are no F24");
+const paymentDocumentAtIndex = (index: number): Either<string, Document> => {
+  if (paymentDocuments.length === 0) {
+    return left("There are no Payment Documents");
   }
-  const safeIndex = index % f24s.length;
-  return right(f24s[safeIndex]);
+  const safeIndex = index % paymentDocuments.length;
+  return right(paymentDocuments[safeIndex]);
 };
 
-const initializeIfNeeded = (): Either<string, boolean> => {
-  const shouldInitializeDocuments = documents.length === 0;
-  const shouldInitializeF24 = f24s.length === 0;
+const updateAvailabilityRangeForPaymentDocumentAtIndex = (
+  index: number
+): Either<string, Document> => {
+  const paymentDocumentEither = paymentDocumentAtIndex(index);
+  if (isLeft(paymentDocumentEither)) {
+    return paymentDocumentEither;
+  }
 
-  if (!shouldInitializeDocuments && !shouldInitializeF24) {
+  const availableFromDate = new Date();
+  availableFromDate.setTime(
+    availableFromDate.getTime() +
+      1000 * getPaymentDocumentGenerationTimeSeconds()
+  );
+
+  const availableUntilDate = new Date();
+  availableUntilDate.setTime(
+    availableFromDate.getTime() +
+      1000 * getPaymentDocumentExpirationTimeSeconds()
+  );
+
+  paymentDocumentEither.right.availableFrom = availableFromDate;
+  paymentDocumentEither.right.availableUntil = availableUntilDate;
+
+  return paymentDocumentEither;
+};
+
+const initializeIfNeeded = (
+  configuration: SendConfig
+): Either<string, boolean> => {
+  const shouldInitializeDocuments = documents.length === 0;
+  const shouldInitializePaymentDocuments = paymentDocuments.length === 0;
+  const shouldInitializeConfiguration = repositoryConfiguration.size === 0;
+  if (
+    !shouldInitializeDocuments &&
+    !shouldInitializePaymentDocuments &&
+    !shouldInitializeConfiguration
+  ) {
     return right(false);
+  }
+
+  if (shouldInitializeConfiguration) {
+    repositoryConfiguration.set(
+      "paymentDocumentExpirationTimeSeconds",
+      configuration.paymentDocumentExpirationTimeSeconds ??
+        defaultPaymentDocumentGenerationTimeSeconds
+    );
+    repositoryConfiguration.set(
+      "paymentDocumentGenerationTimeSeconds",
+      configuration.paymentDocumentGenerationTimeSeconds ??
+        defaultPaymentDocumentExpirationTimeSeconds
+    );
   }
 
   try {
@@ -52,13 +123,13 @@ const initializeIfNeeded = (): Either<string, boolean> => {
         documents
       );
     }
-    if (shouldInitializeF24) {
+    if (shouldInitializePaymentDocuments) {
       populateDocumentsFromFolder(
         "F24",
         currentWorkingDirectory,
         baseRelativePath,
         "f24",
-        f24s
+        paymentDocuments
       );
     }
   } catch (error) {
@@ -139,6 +210,8 @@ const removeExtension = (filename: string): string => {
 
 export const DocumentsRepository: IDocumentsRepository = {
   documentAtIndex,
-  f24AtIndex,
-  initializeIfNeeded
+  paymentDocumentAtIndex,
+  getPaymentDocumentRetryAfterSeconds,
+  initializeIfNeeded,
+  updateAvailabilityRangeForPaymentDocumentAtIndex
 };

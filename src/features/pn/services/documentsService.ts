@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { Request } from "express";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
@@ -103,7 +104,8 @@ export const notificationAttachmentDownloadMetadataResponseForDocument = (
     }
     const notificationAttachmentDownloadMetadataResponseEither =
       documentToNotificationAttachmentDownloadMetadataResponse(
-        documentEither.right
+        documentEither.right,
+        false
       );
     if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
       return left({
@@ -117,8 +119,9 @@ export const notificationAttachmentDownloadMetadataResponseForDocument = (
     }
     return right(notificationAttachmentDownloadMetadataResponseEither.right);
   } else {
-    const f24Either = DocumentsRepository.f24AtIndex(index);
-    if (isLeft(f24Either)) {
+    const paymentDocumentEither =
+      DocumentsRepository.paymentDocumentAtIndex(index);
+    if (isLeft(paymentDocumentEither)) {
       return left({
         httpStatusCode: 400,
         reason: getProblemJson(
@@ -128,16 +131,68 @@ export const notificationAttachmentDownloadMetadataResponseForDocument = (
         )
       });
     }
-    // TODO retry-after and generation
-    return left({
-      httpStatusCode: 500,
-      reason: getProblemJson(500, `Not implemented yet`, `Not implemented yet`)
-    });
+    const f24 = paymentDocumentEither.right;
+
+    const now = new Date();
+    const isRetryAfter =
+      f24.availableFrom == null ||
+      f24.availableUntil == null ||
+      now < f24.availableFrom;
+    if (isRetryAfter) {
+      const shouldUpdateAvailabilityRange =
+        f24.availableFrom == null ||
+        f24.availableUntil == null ||
+        f24.availableUntil < now;
+      if (shouldUpdateAvailabilityRange) {
+        const updatedF24Either =
+          DocumentsRepository.updateAvailabilityRangeForPaymentDocumentAtIndex(
+            index
+          );
+        if (isLeft(updatedF24Either)) {
+          return left({
+            httpStatusCode: 500,
+            reason: getProblemJson(
+              500,
+              `Availability range update failed`,
+              `Unable to updated availability range for payment document at index (${index})`
+            )
+          });
+        }
+      }
+      const notificationAttachmentDownloadMetadataResponseEither =
+        documentToNotificationAttachmentDownloadMetadataResponse(f24, true);
+      if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
+        return left({
+          httpStatusCode: 500,
+          reason: getProblemJson(
+            500,
+            "Invalid data structure for NotificationAttachmentDownloadMetadataResponse",
+            `Conversion from Document to NotificationAttachmentDownloadMetadataResponse produced ad invalid data structure (${notificationAttachmentDownloadMetadataResponseEither.left})`
+          )
+        });
+      }
+      return right(notificationAttachmentDownloadMetadataResponseEither.right);
+    }
+
+    const notificationAttachmentDownloadMetadataResponseEither =
+      documentToNotificationAttachmentDownloadMetadataResponse(f24, false);
+    if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
+      return left({
+        httpStatusCode: 500,
+        reason: getProblemJson(
+          500,
+          "Invalid data structure for NotificationAttachmentDownloadMetadataResponse",
+          `Conversion from Document to NotificationAttachmentDownloadMetadataResponse produced ad invalid data structure (${notificationAttachmentDownloadMetadataResponseEither.left})`
+        )
+      });
+    }
+    return right(notificationAttachmentDownloadMetadataResponseEither.right);
   }
 };
 
 const documentToNotificationAttachmentDownloadMetadataResponse = (
-  document: Document
+  document: Document,
+  isRetryAfter: boolean
 ): Either<string, NotificationAttachmentDownloadMetadataResponse> => {
   const uri = generateUriForRelativePath(document.relativePath);
   const prevalidatedUriPath = generatePrevalidatedUriPath(uri);
@@ -147,8 +202,11 @@ const documentToNotificationAttachmentDownloadMetadataResponse = (
     contentLength: document.contentLength,
     contentType: document.contentType,
     filename: document.filename,
+    retryAfter: isRetryAfter
+      ? DocumentsRepository.getPaymentDocumentRetryAfterSeconds()
+      : undefined,
     sha256: document.sha256,
-    url
+    url: !isRetryAfter ? url : undefined
   };
   const notificationAttachmentDownloadMetadataResponseEither =
     NotificationAttachmentDownloadMetadataResponse.decode(responseDocument);
@@ -158,7 +216,9 @@ const documentToNotificationAttachmentDownloadMetadataResponse = (
     );
   }
 
-  PrevalidatedUrisRepository.setPrevalidatedUri(uri);
+  if (!isRetryAfter) {
+    PrevalidatedUrisRepository.setPrevalidatedUri(uri);
+  }
 
   return notificationAttachmentDownloadMetadataResponseEither;
 };

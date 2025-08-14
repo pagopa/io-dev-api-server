@@ -64,6 +64,11 @@ export const SendConfig = t.intersection([
     sendOptInMessage: t.boolean,
     sendMandates: t.array(t.string)
   }),
-  t.partial({ prevalidatedUrlDurationSeconds: t.number })
+  t.partial({
+    paymentDocumentExpirationTimeSeconds: t.number,
+    paymentDocumentGenerationTimeSeconds: t.number,
+    paymentDocumentRetryAfterSeconds: t.number,
+    prevalidatedUrlDurationSeconds: t.number
+  })
 ]);
 export type SendConfig = t.TypeOf<typeof SendConfig>;

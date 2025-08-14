@@ -42,7 +42,7 @@ const initializeSENDRepositoriesIfNeeded = (
   userFiscalCode: string = ioDevServerConfig.profile.attrs.fiscal_code
 ): Either<string, boolean> => {
   const documentsInitializationEither =
-    DocumentsRepository.initializeIfNeeded();
+    DocumentsRepository.initializeIfNeeded(sendConfig);
   if (isLeft(documentsInitializationEither)) {
     return documentsInitializationEither;
   }
