@@ -3,7 +3,10 @@ import { Router } from "express";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
-import { readableReport } from "@pagopa/ts-commons/lib/reporters";
+import {
+  readableReport,
+  readableReportSimplified
+} from "@pagopa/ts-commons/lib/reporters";
 import _ from "lodash";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../../../config";
@@ -48,13 +51,15 @@ import {
 import { unknownToString } from "../utils";
 import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
 import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
-import { getThirdPartyMessagePrecondition } from "../persistence/messagesPayload";
+import {
+  defaultContentType,
+  getThirdPartyMessagePrecondition
+} from "../persistence/messagesPayload";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
 
 const messageNotFoundError = "message not found";
-const attachmentPollingData = new Map<string, [Date, Date]>();
 
 addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
   if (configResponse.getMessagesResponseCode !== 200) {
@@ -141,12 +146,12 @@ addHandler(
     }
     // retrieve the messageIndex from id
     const message = MessagesDB.getMessageById(req.params.id);
-    if (O.isNone(message)) {
+    if (message == null) {
       res.status(404).json(getProblemJson(404, messageNotFoundError));
       return;
     }
     const response = MessagesService.getPublicMessages(
-      [message.value],
+      [message],
       req.query.public_message === "true",
       true,
       ioDevServerConfig
@@ -217,12 +222,11 @@ addHandler(
       res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
       return;
     }
-    const messageOption = MessagesDB.getMessageById(req.params.id);
-    if (O.isNone(messageOption)) {
+    const message = MessagesDB.getMessageById(req.params.id);
+    if (message == null) {
       res.status(404).json(getProblemJson(404, messageNotFoundError));
       return;
     }
-    const message = messageOption.value;
     if (message.sender_service_id === sendServiceId) {
       const sendMessageId = message.content.third_party_data?.id;
       if (sendMessageId == null) {
@@ -318,6 +322,7 @@ addHandler(
   "get",
   addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
   lollipopMiddleware((req, res) => {
+    // TODO add support for SEND attachments
     const messageId = req.params.messageId;
     const message = MessagesDB.getMessageById(messageId);
     if (message == null) {
@@ -333,14 +338,14 @@ addHandler(
           getProblemJson(
             500,
             `Decode failed for message with id (${req.params.messageId})`,
-            JSON.stringify(thirdPartyMessageWithContentEither.left)
+            readableReportSimplified(thirdPartyMessageWithContentEither.left)
           )
         );
       return;
     }
-    const attachmentsOrUndefined =
+    const attachments =
       thirdPartyMessageWithContentEither.right.third_party_message.attachments;
-    const attachment = attachmentsOrUndefined?.find(attachment =>
+    const attachment = attachments?.find(attachment =>
       attachment.url.endsWith(req.params[0])
     );
     if (attachment == null) {
@@ -383,20 +388,9 @@ addHandler(
       return;
     }
 
-    MessagesService.handleAttachment(
-      attachment,
-      attachmentPollingData,
-      ioDevServerConfig,
-      (contentType, fileRelativePath) => {
-        const resWithHeaders = res.setHeader("Content-Type", contentType);
-        sendFileFromRootPath(fileRelativePath, resWithHeaders);
-      },
-      retryAfterSeconds =>
-        res
-          .setHeader("retry-after", retryAfterSeconds)
-          .status(503)
-          .json(getProblemJson(503, `Retry-after: ${retryAfterSeconds}s`))
-    );
+    const contentType = attachment.content_type ?? defaultContentType;
+    const resWithHeaders = res.setHeader("Content-Type", contentType);
+    sendFileFromRootPath(attachment.url, resWithHeaders);
   }),
   () => Math.random() * 500
 );
@@ -407,13 +401,12 @@ addHandler(
   addApiV1Prefix("/third-party-messages/:id/precondition"),
   lollipopMiddleware(async (req, res) => {
     const ioMessageId = req.params.id;
-    const ioMessageOption = MessagesDB.getMessageById(ioMessageId);
-    if (O.isNone(ioMessageOption)) {
+    const ioMessage = MessagesDB.getMessageById(ioMessageId);
+    if (ioMessage == null) {
       res.status(404).json(getProblemJson(404, messageNotFoundError));
       return;
     }
 
-    const ioMessage = ioMessageOption.value;
     const hasPreconditionsValue =
       ioMessage.content.third_party_data?.has_precondition ??
       HasPreconditionEnum.NEVER;

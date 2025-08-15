@@ -129,9 +129,6 @@ const defaultConfig: IoDevServerConfig = {
         }
       }
     ],
-    attachmentAvailableAfterSeconds: 5,
-    attachmentExpiredAfterSeconds: 10,
-    attachmentRetryAfterSeconds: 2,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,

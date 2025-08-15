@@ -1,12 +1,9 @@
 import { IncomingHttpHeaders } from "node:http";
 import { pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
-import * as O from "fp-ts/lib/Option";
 import { isRight } from "fp-ts/lib/Either";
 import { __, match, not } from "ts-pattern";
 import { IoDevServerConfig } from "../../../types/config";
-import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
-import { defaultContentType } from "../persistence/messagesPayload";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
 import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
@@ -226,109 +223,6 @@ const createMessage = () =>
       )
   );
 
-const handleAttachment = (
-  attachment: ThirdPartyAttachment,
-  attachmentPollingData: Map<string, [Date, Date]>,
-  config: IoDevServerConfig,
-  sendAttachmentCallback: (contentType: string, relativePath: string) => void,
-  sendRetryAfterCallback: (retryAfterSeconds: number) => void
-) => {
-  const url = attachment.url;
-  const isF24 = url.includes("/f24/");
-  if (isF24) {
-    // The getter also checks for expiration (if so, it generates a whole
-    // new tuple so that the attachment is not ready for download yet)
-    const pollingAndExpirationDatesTuple = getPollingAndExpirationTuple(
-      attachment.url,
-      attachmentPollingData,
-      config
-    );
-    const isReadyForDownload = pollingAndExpirationDatesTuple[0] < new Date();
-    if (isReadyForDownload) {
-      sendAttachment(
-        attachment.url,
-        attachment.content_type,
-        sendAttachmentCallback
-      );
-    } else {
-      const retryAfterSeconds =
-        config.messages.attachmentRetryAfterSeconds ?? 3;
-      sendRetryAfterCallback(retryAfterSeconds);
-    }
-  } else {
-    sendAttachment(
-      attachment.url,
-      attachment.content_type,
-      sendAttachmentCallback
-    );
-  }
-};
-
-const sendAttachment = (
-  attachmentUrl: string,
-  contentType: string | undefined,
-  sendAttachmentCallback: (contentType: string, relativePath: string) => void
-) =>
-  pipe(
-    contentType,
-    O.fromNullable,
-    O.getOrElse(() => defaultContentType),
-    contentType => sendAttachmentCallback(contentType, attachmentUrl)
-  );
-
-const getPollingAndExpirationTuple = (
-  attachmentUrl: string,
-  attachmentPollingData: Map<string, [Date, Date]>,
-  config: IoDevServerConfig
-) => {
-  const pollingAndExpirationDatesTuple =
-    attachmentPollingData.get(attachmentUrl);
-  if (pollingAndExpirationDatesTuple != null) {
-    const hasNotExpiredYet = new Date() < pollingAndExpirationDatesTuple[1];
-    if (hasNotExpiredYet) {
-      return pollingAndExpirationDatesTuple;
-    }
-  }
-  return generateAndSavePollingAndExpirationTuple(
-    attachmentUrl,
-    attachmentPollingData,
-    config
-  );
-};
-
-const generateAndSavePollingAndExpirationTuple = (
-  attachmentUrl: string,
-  attachmentPollingData: Map<string, [Date, Date]>,
-  config: IoDevServerConfig
-) => {
-  const pollingAndExpirationTuple = generatePollingAndExpirationTuple(config);
-  attachmentPollingData.set(attachmentUrl, pollingAndExpirationTuple);
-  return pollingAndExpirationTuple;
-};
-
-const generatePollingAndExpirationTuple = (
-  config: IoDevServerConfig
-): [Date, Date] => {
-  const pollingDate = generatePollingDate(config);
-  const expirationDate = generateExpirationDate(pollingDate, config);
-  return [pollingDate, expirationDate];
-};
-
-const generatePollingDate = (config: IoDevServerConfig) => {
-  const pollingDelaySeconds =
-    config.messages.attachmentAvailableAfterSeconds ?? 0;
-  return new Date(new Date().getTime() + 1000 * pollingDelaySeconds);
-};
-
-const generateExpirationDate = (
-  pollingStartDate: Date,
-  config: IoDevServerConfig
-) => {
-  const expiredDelaySeconds =
-    config.messages.attachmentExpiredAfterSeconds ?? 24 * 60 * 60;
-  return new Date(pollingStartDate.getTime() + 1000 * expiredDelaySeconds);
-};
-
 const lollipopClientHeadersFromHeaders = (
   headers: IncomingHttpHeaders
 ): Record<string, string> =>
@@ -378,7 +272,6 @@ export default {
   generateFakeLollipopServerHeaders,
   getMessageCategory,
   getPublicMessages,
-  handleAttachment,
   lollipopClientHeadersFromHeaders,
   sendAPIKeyHeader,
   sendTaxIdHeader

@@ -54,9 +54,6 @@ export const MessagesConfig = t.intersection([
   AllowRandomValue,
   t.partial({
     liveMode: LiveModeMessages,
-    attachmentAvailableAfterSeconds: t.number,
-    attachmentExpiredAfterSeconds: t.number,
-    attachmentRetryAfterSeconds: t.number,
     // number of messages with remote content
     messageTemplateWrappers: t.readonlyArray(MessageTemplateWrapper)
   })

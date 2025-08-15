@@ -110,20 +110,20 @@ function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndAttachments> 
 function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndAttachments> {
   return archivedMessages;
 }
-
 /**
  * Find one message given its ID, whether it is in the inbox or archived.
  */
 const getMessageById = (
   id: string
-): O.Option<CreatedMessageWithContentAndAttachments> =>
+): CreatedMessageWithContentAndAttachments | undefined =>
   pipe(
     inboxMessages,
     A.findFirst(message => message.id === id),
-    O.orElse(() =>
+    O.getOrElse(() =>
       pipe(
         archivedMessages,
-        A.findFirst(message => message.id === id)
+        A.findFirst(message => message.id === id),
+        O.toUndefined
       )
     )
   );
