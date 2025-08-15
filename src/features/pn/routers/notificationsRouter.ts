@@ -7,10 +7,8 @@ import {
 } from "../services/notificationsService";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
-import {
-  checkAndValidateLollipopAndTaxId,
-  handleLeftEitherIfNeeded
-} from "../services/commonService";
+import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
+import { handleLeftEitherIfNeeded } from "../../../utils/error";
 
 const notificationDisclaimerPath =
   "/ext-registry-private/io/v1/notification-disclaimer/:iun";

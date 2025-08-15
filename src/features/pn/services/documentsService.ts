@@ -2,7 +2,7 @@
 import { Request } from "express";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
-import { ExpressFailure } from "../types/expressDTO";
+import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import { Notification } from "../models/Notification";
 import { Document, DocumentCategory } from "../models/Document";

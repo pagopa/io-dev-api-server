@@ -5,7 +5,7 @@ import { cwd } from "process";
 import path from "path";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import { Document, DocumentCategory } from "../models/Document";
-import { unknownToString } from "../../messages/utils";
+import { unknownToString } from "../../../utils/error";
 import { SendConfig } from "../types/sendConfig";
 
 const defaultPaymentDocumentGenerationTimeSeconds = 5;

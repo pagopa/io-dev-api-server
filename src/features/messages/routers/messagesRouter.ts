@@ -1,12 +1,8 @@
-import * as path from "path";
 import { Router } from "express";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
-import {
-  readableReport,
-  readableReportSimplified
-} from "@pagopa/ts-commons/lib/reporters";
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import _ from "lodash";
 import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../../../config";
@@ -14,11 +10,6 @@ import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import MessagesDB from "../persistence/messagesDatabase";
 import { GetMessagesParameters } from "../../../types/parameters";
-import {
-  fileExists,
-  isPDFFile,
-  sendFileFromRootPath
-} from "../../../utils/file";
 import { addApiV1Prefix } from "../../../utils/strings";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import MessagesService from "../services/messagesService";
@@ -48,13 +39,17 @@ import {
   generateNotificationDisclaimerPath,
   generateNotificationPath
 } from "../../pn/routers/notificationsRouter";
-import { unknownToString } from "../utils";
 import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
 import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
 import {
   defaultContentType,
   getThirdPartyMessagePrecondition
 } from "../persistence/messagesPayload";
+import {
+  handleLeftEitherIfNeeded,
+  unknownToString
+} from "../../../utils/error";
+import { sendFileFromRootPath } from "../../../utils/file";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -322,72 +317,17 @@ addHandler(
   "get",
   addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
   lollipopMiddleware((req, res) => {
-    // TODO add support for SEND attachments
     const messageId = req.params.messageId;
-    const message = MessagesDB.getMessageById(messageId);
-    if (message == null) {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-      return;
-    }
-    const thirdPartyMessageWithContentEither =
-      ThirdPartyMessageWithContent.decode(message);
-    if (E.isLeft(thirdPartyMessageWithContentEither)) {
-      res
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            `Decode failed for message with id (${req.params.messageId})`,
-            readableReportSimplified(thirdPartyMessageWithContentEither.left)
-          )
-        );
-      return;
-    }
-    const attachments =
-      thirdPartyMessageWithContentEither.right.third_party_message.attachments;
-    const attachment = attachments?.find(attachment =>
-      attachment.url.endsWith(req.params[0])
+    const attachmentUrl = req.params[0];
+    // TODO add support for SEND attachments
+    const attachmentEither = MessagesService.verifyAttachment(
+      messageId,
+      attachmentUrl
     );
-    if (attachment == null) {
-      res
-        .status(404)
-        .json(
-          getProblemJson(404, `Attachment not found for url (${req.params[0]})`)
-        );
+    if (handleLeftEitherIfNeeded(attachmentEither, res)) {
       return;
     }
-    const attachmentAbsolutePath = path.join(path.resolve("."), attachment.url);
-    if (!fileExists(attachmentAbsolutePath)) {
-      res
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            `Attachment file does not exist (${attachmentAbsolutePath})`
-          )
-        );
-      return;
-    }
-    const isPDFFileEither = isPDFFile(attachmentAbsolutePath);
-    if (E.isLeft(isPDFFileEither)) {
-      res
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            `Unable to check requested attachment (${attachmentAbsolutePath})`,
-            JSON.stringify(isPDFFileEither.left)
-          )
-        );
-      return;
-    }
-    if (!isPDFFileEither.right) {
-      res
-        .status(415)
-        .json(getProblemJson(415, "Not a supported PDF attachment"));
-      return;
-    }
-
+    const attachment = attachmentEither.right;
     const contentType = attachment.content_type ?? defaultContentType;
     const resWithHeaders = res.setHeader("Content-Type", contentType);
     sendFileFromRootPath(attachment.url, resWithHeaders);

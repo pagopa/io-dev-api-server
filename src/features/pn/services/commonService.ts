@@ -1,8 +1,9 @@
 import { IncomingHttpHeaders } from "node:http";
 import { Request, Response } from "express";
-import { Either, isLeft, left, Left, right } from "fp-ts/lib/Either";
-import { ExpressFailure } from "../types/expressDTO";
+import { Either, left, right } from "fp-ts/lib/Either";
+import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
+import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import {
   checkAndValidateLollipopHeaders,
   LollipopHeaders
@@ -23,17 +24,6 @@ export const checkAndValidateLollipopAndTaxId = (
     lollipopHeadersEither.right
   );
   return !handleLeftEitherIfNeeded(taxIdEither, response);
-};
-
-export const handleLeftEitherIfNeeded = (
-  inputEither: Either<ExpressFailure, unknown>,
-  res: Response
-): inputEither is Left<ExpressFailure> => {
-  if (isLeft(inputEither)) {
-    res.status(inputEither.left.httpStatusCode).json(inputEither.left.reason);
-    return true;
-  }
-  return false;
 };
 
 const checkAndValidateTaxIdHeader = (

@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { addHandler } from "../../../payloads/response";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { checkValidateAndGetRelativePath } from "../services/prevalidatedUrisService";
-import { handleLeftEitherIfNeeded } from "../services/commonService";
+import { handleLeftEitherIfNeeded } from "../../../utils/error";
 
 const prevalidatedUriPath = "/prevalidated/uri/*";
 

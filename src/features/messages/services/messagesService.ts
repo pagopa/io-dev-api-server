@@ -1,8 +1,10 @@
+import path from "path";
 import { IncomingHttpHeaders } from "node:http";
 import { pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
-import { isRight } from "fp-ts/lib/Either";
+import { Either, isLeft, isRight, left, right } from "fp-ts/lib/Either";
 import { __, match, not } from "ts-pattern";
+import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { IoDevServerConfig } from "../../../types/config";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
@@ -24,6 +26,11 @@ import { ioDevServerConfig } from "../../../config";
 import { nextMessageIdAndCreationDate } from "../utils";
 import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
 import { APIKey } from "../../pn/models/APIKey";
+import MessagesDB from "../persistence/messagesDatabase";
+import { ExpressFailure } from "../../../utils/expressDTO";
+import { getProblemJson } from "../../../payloads/error";
+import { fileExists, isPDFFile } from "../../../utils/file";
+import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
@@ -223,6 +230,86 @@ const createMessage = () =>
       )
   );
 
+const verifyAttachment = (
+  messageId: string,
+  attachmentUrl: string
+): Either<ExpressFailure, ThirdPartyAttachment> => {
+  const message = MessagesDB.getMessageById(messageId);
+  if (message == null) {
+    return left({
+      httpStatusCode: 404,
+      reason: getProblemJson(
+        400,
+        "Message not found",
+        `Unable to found message with id (${messageId})`
+      )
+    });
+  }
+  const thirdPartyMessageWithContentEither =
+    ThirdPartyMessageWithContent.decode(message);
+  if (isLeft(thirdPartyMessageWithContentEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "ThirdPartMessageWithContent decode failed",
+        `Unable to decode from Message to ThirdPartMessageWithContent (${messageId} (${readableReportSimplified(
+          thirdPartyMessageWithContentEither.left
+        )}))`
+      )
+    });
+  }
+  const attachments =
+    thirdPartyMessageWithContentEither.right.third_party_message.attachments;
+  const attachment = attachments?.find(attachment =>
+    attachment.url.endsWith(attachmentUrl)
+  );
+  if (attachment == null) {
+    return left({
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        "Attachment not found",
+        `Unable to find attachment for message with id (${messageId}) (${attachmentUrl})`
+      )
+    });
+  }
+  const attachmentAbsolutePath = path.join(path.resolve("."), attachment.url);
+  if (!fileExists(attachmentAbsolutePath)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Attachment file not found",
+        `Attachment file does not exist (${attachmentAbsolutePath})`
+      )
+    });
+  }
+  const isPDFFileEither = isPDFFile(attachmentAbsolutePath);
+  if (isLeft(isPDFFileEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Unable to verify PDF format",
+        `Unable to check if requested attachment is a PDF file (${attachmentAbsolutePath}) (${isPDFFileEither.left})`
+      )
+    });
+  }
+  if (!isPDFFileEither.right) {
+    return left({
+      httpStatusCode: 415,
+      reason: getProblemJson(
+        415,
+        "PDF check failed",
+        `Attachment is not a PDF file (${attachmentAbsolutePath})`
+      )
+    });
+  }
+
+  return right(attachment);
+};
+
 const lollipopClientHeadersFromHeaders = (
   headers: IncomingHttpHeaders
 ): Record<string, string> =>
@@ -274,5 +361,6 @@ export default {
   getPublicMessages,
   lollipopClientHeadersFromHeaders,
   sendAPIKeyHeader,
-  sendTaxIdHeader
+  sendTaxIdHeader,
+  verifyAttachment
 };

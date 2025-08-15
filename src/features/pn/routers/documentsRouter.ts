@@ -4,16 +4,14 @@ import { authenticationMiddleware } from "../middlewares/authenticationMiddlewar
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { notificationFromRequestParams } from "../services/notificationsService";
-import {
-  checkAndValidateLollipopAndTaxId,
-  handleLeftEitherIfNeeded
-} from "../services/commonService";
+import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
 import {
   checkAndValidateAttachmentIndex,
   checkAndValidateAttachmentName,
   notificationAttachmentDownloadMetadataResponseForAttachment
 } from "../services/documentsService";
 import { DocumentCategory } from "../models/Document";
+import { handleLeftEitherIfNeeded } from "../../../utils/error";
 
 const documentPath =
   "/delivery/notifications/received/:iun/attachments/documents/:docIdx";

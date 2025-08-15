@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { Either, left, right } from "fp-ts/lib/Either";
 import { ulid } from "ulid";
-import { ExpressFailure } from "../types/expressDTO";
+import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import { PrevalidatedUrisRepository } from "../repositories/prevalidatedUrisRepository";
 

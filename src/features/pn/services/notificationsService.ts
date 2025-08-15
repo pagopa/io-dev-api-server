@@ -2,7 +2,7 @@ import { Request } from "express";
 import { Either, left, right } from "fp-ts/lib/Either";
 import { isSome } from "fp-ts/lib/Option";
 import { fakerIT as faker } from "@faker-js/faker";
-import { ExpressFailure } from "../types/expressDTO";
+import { ExpressFailure } from "../../../utils/expressDTO";
 import { PaymentsDatabase } from "../../../persistence/payments";
 import { isProcessedPayment } from "../../../types/PaymentStatus";
 import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
