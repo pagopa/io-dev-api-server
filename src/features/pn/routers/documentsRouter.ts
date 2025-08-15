@@ -11,7 +11,7 @@ import {
 import {
   checkAndValidateAttachmentIndex,
   checkAndValidateAttachmentName,
-  notificationAttachmentDownloadMetadataResponseForDocument
+  notificationAttachmentDownloadMetadataResponseForAttachment
 } from "../services/documentsService";
 import { DocumentCategory } from "../models/Document";
 
@@ -60,7 +60,7 @@ addHandler(
       }
       const docIdx = docIdxEither.right;
       const notificationAttachmentDownloadMetadataResponseEither =
-        notificationAttachmentDownloadMetadataResponseForDocument(
+        notificationAttachmentDownloadMetadataResponseForAttachment(
           docIdx,
           "DOCUMENT"
         );
@@ -114,7 +114,7 @@ addHandler(
       }
       const atachmentIdx = attachmentIdxEither.right;
       const notificationAttachmentDownloadMetadataResponseEither =
-        notificationAttachmentDownloadMetadataResponseForDocument(
+        notificationAttachmentDownloadMetadataResponseForAttachment(
           atachmentIdx,
           attachmentCategoryEither.right
         );

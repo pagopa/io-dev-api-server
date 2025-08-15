@@ -86,114 +86,97 @@ export const checkAndValidateAttachmentIndex = (
   return right(attachmentIndex);
 };
 
-export const notificationAttachmentDownloadMetadataResponseForDocument = (
+export const notificationAttachmentDownloadMetadataResponseForAttachment = (
   index: number,
   category: DocumentCategory
 ): Either<ExpressFailure, NotificationAttachmentDownloadMetadataResponse> => {
   if (category === "DOCUMENT") {
-    const documentEither = DocumentsRepository.documentAtIndex(index);
-    if (isLeft(documentEither)) {
-      return left({
-        httpStatusCode: 400,
-        reason: getProblemJson(
-          400,
-          "Document not found",
-          `Document not found for index (${index})`
-        )
-      });
-    }
-    const notificationAttachmentDownloadMetadataResponseEither =
-      documentToNotificationAttachmentDownloadMetadataResponse(
-        documentEither.right,
-        false
-      );
-    if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-      return left({
-        httpStatusCode: 500,
-        reason: getProblemJson(
-          500,
-          "Invalid data structure for NotificationAttachmentDownloadMetadataResponse",
-          `Conversion from Document to NotificationAttachmentDownloadMetadataResponse produced ad invalid data structure (${notificationAttachmentDownloadMetadataResponseEither.left})`
-        )
-      });
-    }
-    return right(notificationAttachmentDownloadMetadataResponseEither.right);
-  } else {
-    const paymentDocumentEither =
-      DocumentsRepository.paymentDocumentAtIndex(index);
-    if (isLeft(paymentDocumentEither)) {
-      return left({
-        httpStatusCode: 400,
-        reason: getProblemJson(
-          400,
-          `F24 not found`,
-          `F24 not found for index (${index})`
-        )
-      });
-    }
-    const f24 = paymentDocumentEither.right;
+    return notificationAttachmentDownloadMetadataResponseForDocument(index);
+  }
+  return notificationAttachmentDownloadMetadataResponseForPaymentDocument(
+    index
+  );
+};
 
-    const now = new Date();
-    const isRetryAfter =
-      f24.availableFrom == null ||
-      f24.availableUntil == null ||
-      now < f24.availableFrom;
-    if (isRetryAfter) {
-      const shouldUpdateAvailabilityRange =
-        f24.availableFrom == null ||
-        f24.availableUntil == null ||
-        f24.availableUntil < now;
-      if (shouldUpdateAvailabilityRange) {
-        const updatedF24Either =
-          DocumentsRepository.updateAvailabilityRangeForPaymentDocumentAtIndex(
-            index
-          );
-        if (isLeft(updatedF24Either)) {
-          return left({
-            httpStatusCode: 500,
-            reason: getProblemJson(
-              500,
-              `Availability range update failed`,
-              `Unable to updated availability range for payment document at index (${index})`
-            )
-          });
-        }
-      }
-      const notificationAttachmentDownloadMetadataResponseEither =
-        documentToNotificationAttachmentDownloadMetadataResponse(f24, true);
-      if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
+const notificationAttachmentDownloadMetadataResponseForDocument = (
+  index: number
+): Either<ExpressFailure, NotificationAttachmentDownloadMetadataResponse> => {
+  const documentEither = DocumentsRepository.documentAtIndex(index);
+  if (isLeft(documentEither)) {
+    return left({
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        "Document not found",
+        `Document not found for index (${index})`
+      )
+    });
+  }
+  return documentToNotificationAttachmentDownloadMetadataResponse(
+    documentEither.right,
+    false
+  );
+};
+
+const notificationAttachmentDownloadMetadataResponseForPaymentDocument = (
+  index: number
+): Either<ExpressFailure, NotificationAttachmentDownloadMetadataResponse> => {
+  const paymentDocumentEither =
+    DocumentsRepository.paymentDocumentAtIndex(index);
+  if (isLeft(paymentDocumentEither)) {
+    return left({
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        `Payment Document not found`,
+        `Payment Document not found for index (${index})`
+      )
+    });
+  }
+  const paymentDocument = paymentDocumentEither.right;
+
+  const now = new Date();
+  const isRetryAfter =
+    paymentDocument.availableFrom == null ||
+    paymentDocument.availableUntil == null ||
+    now < paymentDocument.availableFrom;
+  if (isRetryAfter) {
+    const shouldUpdateAvailabilityRange =
+      paymentDocument.availableFrom == null ||
+      paymentDocument.availableUntil == null ||
+      paymentDocument.availableUntil < now;
+    if (shouldUpdateAvailabilityRange) {
+      const updatedF24Either =
+        DocumentsRepository.updateAvailabilityRangeForPaymentDocumentAtIndex(
+          index
+        );
+      if (isLeft(updatedF24Either)) {
         return left({
           httpStatusCode: 500,
           reason: getProblemJson(
             500,
-            "Invalid data structure for NotificationAttachmentDownloadMetadataResponse",
-            `Conversion from Document to NotificationAttachmentDownloadMetadataResponse produced ad invalid data structure (${notificationAttachmentDownloadMetadataResponseEither.left})`
+            `Availability range update failed`,
+            `Unable to updated availability range for Payment Document at index (${index})`
           )
         });
       }
-      return right(notificationAttachmentDownloadMetadataResponseEither.right);
     }
-
-    const notificationAttachmentDownloadMetadataResponseEither =
-      documentToNotificationAttachmentDownloadMetadataResponse(f24, false);
-    if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-      return left({
-        httpStatusCode: 500,
-        reason: getProblemJson(
-          500,
-          "Invalid data structure for NotificationAttachmentDownloadMetadataResponse",
-          `Conversion from Document to NotificationAttachmentDownloadMetadataResponse produced ad invalid data structure (${notificationAttachmentDownloadMetadataResponseEither.left})`
-        )
-      });
-    }
-    return right(notificationAttachmentDownloadMetadataResponseEither.right);
+    return documentToNotificationAttachmentDownloadMetadataResponse(
+      paymentDocument,
+      true
+    );
   }
+
+  return documentToNotificationAttachmentDownloadMetadataResponse(
+    paymentDocument,
+    false
+  );
 };
 
 const documentToNotificationAttachmentDownloadMetadataResponse = (
   document: Document,
   isRetryAfter: boolean
-): Either<string, NotificationAttachmentDownloadMetadataResponse> => {
+): Either<ExpressFailure, NotificationAttachmentDownloadMetadataResponse> => {
   const uri = generateUriForRelativePath(document.relativePath);
   const prevalidatedUriPath = generatePrevalidatedUriPath(uri);
   const url = `${serverUrl}${prevalidatedUriPath}`;
@@ -211,9 +194,16 @@ const documentToNotificationAttachmentDownloadMetadataResponse = (
   const notificationAttachmentDownloadMetadataResponseEither =
     NotificationAttachmentDownloadMetadataResponse.decode(responseDocument);
   if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-    return left(
-      readableReport(notificationAttachmentDownloadMetadataResponseEither.left)
-    );
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Invalid data structure for NotificationAttachmentDownloadMetadataResponse",
+        `Conversion from Document to NotificationAttachmentDownloadMetadataResponse produced ad invalid data structure (${readableReport(
+          notificationAttachmentDownloadMetadataResponseEither.left
+        )})`
+      )
+    });
   }
 
   if (!isRetryAfter) {
