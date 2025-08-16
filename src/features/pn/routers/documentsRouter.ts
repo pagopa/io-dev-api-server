@@ -25,7 +25,7 @@ export const generatePaymentDocumentPath = (
   index: string,
   category: Extract<DocumentCategory, "F24" | "PAGOPA">
 ) =>
-  `${documentPath
+  `${paymentDocumentPath
     .replace(":iun", iun)
     .replace(":attachmentName", category)}?attachmentIdx=${index}`;
 

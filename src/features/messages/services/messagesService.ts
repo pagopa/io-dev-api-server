@@ -351,7 +351,7 @@ const checkAndBuildSENDAttachmentEndpoint = (
   attachmentUrl: string
 ): Either<ExpressFailure, string> => {
   const documentPattern =
-    /^\/delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/documents\/([A-Za-z0-9_-]+)$/i;
+    /^delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/documents\/([A-Za-z0-9_-]+)$/i;
   const documentMatch = attachmentUrl.match(documentPattern);
   if (documentMatch) {
     const iun = documentMatch[1];
@@ -360,7 +360,7 @@ const checkAndBuildSENDAttachmentEndpoint = (
   }
 
   const paymentDocumentPattern =
-    /^\/delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/payment\/(pagopa|f24)\?attachmentIdx=([A-Za-z0-9_-]+)$/i;
+    /^delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/payment\/(pagopa|f24)\?attachmentIdx=([A-Za-z0-9_-]+)$/i;
   const paymentDocumentMatch = attachmentUrl.match(paymentDocumentPattern);
   if (paymentDocumentMatch) {
     const iun = paymentDocumentMatch[1];

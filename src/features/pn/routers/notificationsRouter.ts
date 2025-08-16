@@ -15,7 +15,7 @@ const notificationDisclaimerPath =
 const notificationPath = "/delivery/notifications/received/:iun";
 
 export const generateNotificationDisclaimerPath = (iun: string) =>
-  notificationPath.replace(":iun", iun);
+  notificationDisclaimerPath.replace(":iun", iun);
 export const generateNotificationPath = (iun: string) =>
   notificationPath.replace(":iun", iun);
 

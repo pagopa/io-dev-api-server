@@ -39,6 +39,7 @@ import { trialSystemRouter } from "./features/trialSystem/routers";
 import { productionCrawlerRouter } from "./features/messages/routers/productionCrawlerRouter";
 import { sendNotificationsRouter } from "./features/pn/routers/notificationsRouter";
 import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUrisRouter";
+import { sendDocumentsRouter } from "./features/pn/routers/documentsRouter";
 
 // create express server
 const app: Application = express();
@@ -79,6 +80,7 @@ app.use(fastLoginMiddleware);
   cgnMerchantsRouter,
   cgnGeoRouter,
   fciRouter,
+  sendDocumentsRouter,
   sendNotificationsRouter,
   sendPrevalidatedUrisRouter,
   sendServiceRouter,

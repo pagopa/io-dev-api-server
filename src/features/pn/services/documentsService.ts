@@ -178,7 +178,8 @@ const documentToNotificationAttachmentDownloadMetadataResponse = (
   isRetryAfter: boolean
 ): Either<ExpressFailure, NotificationAttachmentDownloadMetadataResponse> => {
   const uri = generateUriForRelativePath(document.relativePath);
-  const prevalidatedUriPath = generatePrevalidatedUriPath(uri);
+  const urlEncodedUri = encodeURIComponent(uri);
+  const prevalidatedUriPath = generatePrevalidatedUriPath(urlEncodedUri);
   const url = `${serverUrl}${prevalidatedUriPath}`;
 
   const responseDocument = {

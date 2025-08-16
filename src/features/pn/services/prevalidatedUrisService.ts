@@ -8,7 +8,7 @@ import { PrevalidatedUrisRepository } from "../repositories/prevalidatedUrisRepo
 const separator = "/relativePath/";
 
 export const generateUriForRelativePath = (relativePath: string) =>
-  encodeURIComponent(`${ulid()}${separator}${relativePath}`);
+  `${ulid()}${separator}${relativePath}`;
 
 export const checkValidateAndGetRelativePath = (
   request: Request

@@ -7,7 +7,7 @@ import { handleLeftEitherIfNeeded } from "../../../utils/error";
 const prevalidatedUriPath = "/prevalidated/uri/*";
 
 export const generatePrevalidatedUriPath = (uri: string) =>
-  `${prevalidatedUriPath}${uri}`;
+  prevalidatedUriPath.replace("*", uri);
 
 export const sendPrevalidatedUrisRouter = Router();
 
