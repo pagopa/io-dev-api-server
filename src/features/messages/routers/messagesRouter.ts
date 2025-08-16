@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
@@ -50,6 +50,7 @@ import {
   unknownToString
 } from "../../../utils/error";
 import { sendFileFromRootPath } from "../../../utils/file";
+import { NotificationAttachmentDownloadMetadataResponse } from "../../../../generated/definitions/pn/NotificationAttachmentDownloadMetadataResponse";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -286,7 +287,7 @@ addHandler(
           .json(
             getProblemJson(
               500,
-              "Unexpected error",
+              "Notification unexpected error",
               `Unexpected error while contacting SEND notification endpoint (iun: ${sendMessageId} reason: ${errorMessage})`
             )
           );
@@ -316,21 +317,38 @@ addHandler(
   messageRouter,
   "get",
   addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
-  lollipopMiddleware((req, res) => {
+  lollipopMiddleware(async (req, res) => {
     const messageId = req.params.messageId;
     const attachmentUrl = req.params[0];
-    // TODO add support for SEND attachments
-    const attachmentEither = MessagesService.verifyAttachment(
-      messageId,
-      attachmentUrl
-    );
-    if (handleLeftEitherIfNeeded(attachmentEither, res)) {
+    const message = MessagesDB.getMessageById(messageId);
+    if (message == null) {
+      res
+        .status(400)
+        .json(
+          getProblemJson(
+            400,
+            "Message not found",
+            `Unable to found message with id (${messageId})`
+          )
+        );
       return;
     }
-    const attachment = attachmentEither.right;
-    const contentType = attachment.content_type ?? defaultContentType;
-    const resWithHeaders = res.setHeader("Content-Type", contentType);
-    sendFileFromRootPath(attachment.url, resWithHeaders);
+    if (message.sender_service_id === sendServiceId) {
+      const attachmentUrl = req.params[0];
+      await handleSENDAttachment(attachmentUrl, req, res);
+    } else {
+      const attachmentEither = MessagesService.verifyAttachment(
+        message,
+        attachmentUrl
+      );
+      if (handleLeftEitherIfNeeded(attachmentEither, res)) {
+        return;
+      }
+      const attachment = attachmentEither.right;
+      const contentType = attachment.content_type ?? defaultContentType;
+      const resWithHeaders = res.setHeader("Content-Type", contentType);
+      sendFileFromRootPath(attachment.url, resWithHeaders);
+    }
   }),
   () => Math.random() * 500
 );
@@ -424,7 +442,7 @@ addHandler(
           .json(
             getProblemJson(
               500,
-              "Unexpected error",
+              "Precondition unexpected error",
               `Unexpected error while contacting SEND notification endpoint (iun: ${thirdPartyMessageId} reason: ${errorMessage})`
             )
           );
@@ -579,4 +597,84 @@ const processedPaymentToStatusCodeAndPayload = (
     return [500, payload];
   }
   return [statusCode, payload];
+};
+
+const handleSENDAttachment = async (
+  attachmentUrl: string,
+  req: Request,
+  res: Response
+) => {
+  const sendAttachmentEndpointEither =
+    MessagesService.checkAndBuildSENDAttachmentEndpoint(attachmentUrl);
+  if (handleLeftEitherIfNeeded(sendAttachmentEndpointEither, res)) {
+    return;
+  }
+  const sendAttachmentUrl = `${serverUrl}${sendAttachmentEndpointEither.right}`;
+  try {
+    const sendAttachmentUrlResponse = await fetch(sendAttachmentUrl, {
+      headers: {
+        ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
+        ...MessagesService.generateFakeLollipopServerHeaders(
+          ioDevServerConfig.profile.attrs.fiscal_code
+        ),
+        ...MessagesService.sendAPIKeyHeader(),
+        ...MessagesService.sendTaxIdHeader(
+          ioDevServerConfig.profile.attrs.fiscal_code
+        )
+      }
+    });
+    if (sendAttachmentUrlResponse.status !== 200) {
+      throw Error(
+        `Expected 200 HTTP Status code from SEND (received ${sendAttachmentUrlResponse.status})`
+      );
+    }
+
+    const sendAttachmentContentJSON = await sendAttachmentUrlResponse.json();
+    const sendAttachmentMetadataEither =
+      NotificationAttachmentDownloadMetadataResponse.decode(
+        sendAttachmentContentJSON
+      );
+    if (E.isLeft(sendAttachmentMetadataEither)) {
+      throw Error(
+        `Invalid SEND response data structure (${readableReport(
+          sendAttachmentMetadataEither.left
+        )})`
+      );
+    }
+
+    const sendAttachmentMetadata = sendAttachmentMetadataEither.right;
+    const retryAfter = sendAttachmentMetadata.retryAfter;
+    if (retryAfter != null) {
+      res.setHeader("retry-after", retryAfter).status(503).json({});
+      return;
+    }
+
+    const url = sendAttachmentMetadata.url;
+    if (url == null) {
+      throw Error(
+        `Invalid SEND response data. Both 'retryAfter' and 'url' were not set`
+      );
+    }
+
+    const urlFetchResponse = await fetch(url);
+    if (urlFetchResponse.status !== 200) {
+      throw Error(
+        `Expected 200 HTTP Status code from SEND prevalidated URL (received ${urlFetchResponse.status})`
+      );
+    }
+    const arrayBuffer = await urlFetchResponse.blob();
+    res.set("content-type", "application/octet-stream");
+    res.send(arrayBuffer);
+  } catch (e) {
+    const errorMessage = unknownToString(e);
+    res
+      .status(500)
+      .json(
+        getProblemJson(
+          500,
+          "Attachment unexpected error",
+          `Unexpected error while contacting SEND attachment endpoint (${sendAttachmentUrl}) (${errorMessage})`
+        )
+      );
+  }
 };

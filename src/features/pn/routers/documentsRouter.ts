@@ -16,13 +16,13 @@ import { handleLeftEitherIfNeeded } from "../../../utils/error";
 const documentPath =
   "/delivery/notifications/received/:iun/attachments/documents/:docIdx";
 const paymentDocumentPath =
-  "delivery/notifications/received/:iun/attachments/payment/:attachmentName";
+  "/delivery/notifications/received/:iun/attachments/payment/:attachmentName";
 
-export const generateDocumentPath = (iun: string, index: number) =>
+export const generateDocumentPath = (iun: string, index: string) =>
   documentPath.replace(":iun", iun).replace(":docIdx", index.toString());
 export const generatePaymentDocumentPath = (
   iun: string,
-  index: number,
+  index: string,
   category: Extract<DocumentCategory, "F24" | "PAGOPA">
 ) =>
   `${documentPath

@@ -26,11 +26,14 @@ import { ioDevServerConfig } from "../../../config";
 import { nextMessageIdAndCreationDate } from "../utils";
 import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
 import { APIKey } from "../../pn/models/APIKey";
-import MessagesDB from "../persistence/messagesDatabase";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import { fileExists, isPDFFile } from "../../../utils/file";
 import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
+import {
+  generateDocumentPath,
+  generatePaymentDocumentPath
+} from "../../pn/routers/documentsRouter";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
@@ -231,20 +234,9 @@ const createMessage = () =>
   );
 
 const verifyAttachment = (
-  messageId: string,
+  message: CreatedMessageWithContentAndAttachments,
   attachmentUrl: string
 ): Either<ExpressFailure, ThirdPartyAttachment> => {
-  const message = MessagesDB.getMessageById(messageId);
-  if (message == null) {
-    return left({
-      httpStatusCode: 404,
-      reason: getProblemJson(
-        400,
-        "Message not found",
-        `Unable to found message with id (${messageId})`
-      )
-    });
-  }
   const thirdPartyMessageWithContentEither =
     ThirdPartyMessageWithContent.decode(message);
   if (isLeft(thirdPartyMessageWithContentEither)) {
@@ -253,7 +245,9 @@ const verifyAttachment = (
       reason: getProblemJson(
         500,
         "ThirdPartMessageWithContent decode failed",
-        `Unable to decode from Message to ThirdPartMessageWithContent (${messageId} (${readableReportSimplified(
+        `Unable to decode from Message to ThirdPartMessageWithContent (${
+          message.id
+        } (${readableReportSimplified(
           thirdPartyMessageWithContentEither.left
         )}))`
       )
@@ -270,7 +264,7 @@ const verifyAttachment = (
       reason: getProblemJson(
         400,
         "Attachment not found",
-        `Unable to find attachment for message with id (${messageId}) (${attachmentUrl})`
+        `Unable to find attachment for message with id (${message.id}) (${attachmentUrl})`
       )
     });
   }
@@ -353,7 +347,55 @@ const sendTaxIdHeader = (fiscalCode: string): Record<string, string> => ({
   "x-pagopa-cx-taxid": fiscalCode
 });
 
+const checkAndBuildSENDAttachmentEndpoint = (
+  attachmentUrl: string
+): Either<ExpressFailure, string> => {
+  const documentPattern =
+    /^\/delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/documents\/([A-Za-z0-9_-]+)$/i;
+  const documentMatch = attachmentUrl.match(documentPattern);
+  if (documentMatch) {
+    const iun = documentMatch[1];
+    const index = documentMatch[2];
+    return right(generateDocumentPath(iun, index));
+  }
+
+  const paymentDocumentPattern =
+    /^\/delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/payment\/(pagopa|f24)\?attachmentIdx=([A-Za-z0-9_-]+)$/i;
+  const paymentDocumentMatch = attachmentUrl.match(paymentDocumentPattern);
+  if (paymentDocumentMatch) {
+    const iun = paymentDocumentMatch[1];
+    const category = stringCategoryToPaymentDocumentCategory(
+      paymentDocumentMatch[2]
+    );
+    if (category != null) {
+      const index = paymentDocumentMatch[3];
+      return right(generatePaymentDocumentPath(iun, index, category));
+    }
+  }
+
+  return left({
+    httpStatusCode: 400,
+    reason: getProblemJson(
+      400,
+      "Invalid attachment URL",
+      `Provided attachment URL in path parameter is not a valid SEND attachment url (${attachmentUrl})`
+    )
+  });
+};
+
+const stringCategoryToPaymentDocumentCategory = (
+  category: string
+): "PAGOPA" | "F24" | undefined => {
+  if (category.toUpperCase() === "PAGOPA") {
+    return "PAGOPA";
+  } else if (category.toUpperCase() === "F24") {
+    return "F24";
+  }
+  return undefined;
+};
+
 export default {
+  checkAndBuildSENDAttachmentEndpoint,
   computeGetMessagesQueryIndexes,
   createMessage,
   generateFakeLollipopServerHeaders,
