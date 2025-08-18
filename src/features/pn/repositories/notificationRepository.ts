@@ -120,20 +120,27 @@ const attachmentsFromAttachmentConfig = (
     return right(undefined);
   }
 
+  // eslint-disable-next-line functional/no-let
+  let documentCount = 0;
+  // eslint-disable-next-line functional/no-let
+  let paymentDocumentCount = 0;
   const attachments: Document[] = [];
-  for (const [index, attachmentConfig] of attachmentsConfig.entries()) {
-    if (attachmentConfig === "F24") {
-      const f24Either = documentsRepository.paymentDocumentAtIndex(index);
-      if (isLeft(f24Either)) {
-        return f24Either;
-      }
-      attachments.push(f24Either.right);
-    } else {
-      const documentEither = documentsRepository.documentAtIndex(index);
+  for (const documentCategory of attachmentsConfig) {
+    if (documentCategory === "DOCUMENT") {
+      const documentEither = documentsRepository.documentAtIndex(documentCount);
       if (isLeft(documentEither)) {
         return documentEither;
       }
       attachments.push(documentEither.right);
+      documentCount++;
+    } else {
+      const paymentDocumentEither =
+        documentsRepository.paymentDocumentAtIndex(paymentDocumentCount);
+      if (isLeft(paymentDocumentEither)) {
+        return paymentDocumentEither;
+      }
+      attachments.push(paymentDocumentEither.right);
+      paymentDocumentCount++;
     }
   }
   return right(attachments);

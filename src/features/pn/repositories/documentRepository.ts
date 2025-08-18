@@ -46,7 +46,6 @@ const documentAtIndex = (index: number): Either<string, Document> => {
     return left("There are no documents");
   }
   const safeIndex = index % documents.length;
-  documents[safeIndex].contentLength = 2;
   return right(documents[safeIndex]);
 };
 
