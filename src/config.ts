@@ -70,6 +70,10 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   send: {
+    paymentDocumentExpirationTimeSeconds: 10,
+    paymentDocumentGenerationTimeSeconds: 3,
+    paymentDocumentRetryAfterSeconds: 2,
+    prevalidatedUrlDurationSeconds: 15,
     sendAARs: [],
     sendMandates: [],
     sendMessages: [
