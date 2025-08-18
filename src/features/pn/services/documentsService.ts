@@ -51,7 +51,7 @@ export const checkAndValidateAttachmentIndex = (
   req: Request
 ): Either<ExpressFailure, number> => {
   const isDocument = documentCategory === "DOCUMENT";
-  const parameterName = isDocument ? "docIdx" : "attachmentName";
+  const parameterName = isDocument ? "docIdx" : "attachmentIdx";
   const attachmentIndexString = isDocument
     ? req.params[parameterName]
     : req.query[parameterName];

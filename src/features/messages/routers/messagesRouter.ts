@@ -334,7 +334,11 @@ addHandler(
       return;
     }
     if (message.sender_service_id === sendServiceId) {
-      const attachmentUrl = req.params[0];
+      const attachmentUrlPath = req.params[0];
+      const { attachmentIdx } = req.query;
+      const queryString =
+        attachmentIdx != null ? `?attachmentIdx=${attachmentIdx}` : "";
+      const attachmentUrl = `${attachmentUrlPath}${queryString}`;
       await handleSENDAttachment(attachmentUrl, req, res);
     } else {
       const attachmentEither = MessagesService.verifyAttachment(
@@ -662,9 +666,13 @@ const handleSENDAttachment = async (
         `Expected 200 HTTP Status code from SEND prevalidated URL (received ${urlFetchResponse.status})`
       );
     }
-    const arrayBuffer = await urlFetchResponse.blob();
-    res.set("content-type", "application/octet-stream");
-    res.send(arrayBuffer);
+    const responseBlob = await urlFetchResponse.blob();
+    const responseArrayBuffer = await responseBlob.arrayBuffer();
+    const responseBuffer = Buffer.from(responseArrayBuffer);
+
+    res.header("content-type", "application/pdf");
+    res.header("content-length", `${responseBuffer.length}`);
+    res.status(200).send(responseBuffer);
   } catch (e) {
     const errorMessage = unknownToString(e);
     res
