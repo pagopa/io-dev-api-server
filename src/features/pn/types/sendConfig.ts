@@ -68,7 +68,9 @@ export const SendConfig = t.intersection([
     paymentDocumentExpirationTimeSeconds: t.number,
     paymentDocumentGenerationTimeSeconds: t.number,
     paymentDocumentRetryAfterSeconds: t.number,
-    prevalidatedUrlDurationSeconds: t.number
+    prevalidatedUrlDurationSeconds: t.number,
+    skipIdentityVerification: t.boolean,
+    skipServerToServerAuthentication: t.boolean
   })
 ]);
 export type SendConfig = t.TypeOf<typeof SendConfig>;

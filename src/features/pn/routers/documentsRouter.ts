@@ -12,6 +12,7 @@ import {
 } from "../services/documentsService";
 import { DocumentCategory } from "../models/Document";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
+import { ioDevServerConfig } from "../../../config";
 
 const documentPath =
   "/delivery/notifications/received/:iun/attachments/documents/:docIdx";
@@ -40,7 +41,7 @@ addHandler(
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      if (!checkAndValidateLollipopAndTaxId(req, res)) {
+      if (!checkAndValidateLollipopAndTaxId(ioDevServerConfig.send, req, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);
@@ -90,7 +91,7 @@ addHandler(
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      if (!checkAndValidateLollipopAndTaxId(req, res)) {
+      if (!checkAndValidateLollipopAndTaxId(ioDevServerConfig.send, req, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);

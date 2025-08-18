@@ -69,53 +69,6 @@ const defaultConfig: IoDevServerConfig = {
     firstOnboarding: false,
     allowRandomValues: true
   },
-  send: {
-    paymentDocumentExpirationTimeSeconds: 10,
-    paymentDocumentGenerationTimeSeconds: 3,
-    paymentDocumentRetryAfterSeconds: 2,
-    prevalidatedUrlDurationSeconds: 15,
-    sendAARs: [],
-    sendMandates: [],
-    sendMessages: [
-      { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },
-      {
-        iun: "0000000000000000000002SEND",
-        ioTitle: "Nuovo avviso di ingiunzione"
-      }
-    ],
-    sendNotifications: [
-      {
-        attachments: ["DOCUMENT", "F24", "F24"],
-        cancelled: true,
-        iun: "0000000000000000000001SEND",
-        payments: [
-          "TOPAY",
-          "TOPAY",
-          "EXPIRED",
-          "PAID",
-          "FAILED",
-          "FAILED",
-          "UNRELATED"
-        ],
-        subject: "Avviso di ingiunzione - cancellato"
-      },
-      {
-        attachments: ["DOCUMENT", "F24", "DOCUMENT"],
-        iun: "0000000000000000000002SEND",
-        payments: [
-          "TOPAY",
-          "TOPAY",
-          "EXPIRED",
-          "PAID",
-          "FAILED",
-          "FAILED",
-          "UNRELATED"
-        ],
-        subject: "Nuovo avviso di ingiunzione"
-      }
-    ],
-    sendOptInMessage: true
-  },
   messages: {
     response: {
       getMessagesResponseCode: 200,
@@ -161,6 +114,55 @@ const defaultConfig: IoDevServerConfig = {
     useMessagesSavedUnderConfig: false,
     // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
+  },
+  send: {
+    paymentDocumentExpirationTimeSeconds: 10,
+    paymentDocumentGenerationTimeSeconds: 3,
+    paymentDocumentRetryAfterSeconds: 2,
+    prevalidatedUrlDurationSeconds: 15,
+    sendAARs: [],
+    sendMandates: [],
+    sendMessages: [
+      { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },
+      {
+        iun: "0000000000000000000002SEND",
+        ioTitle: "Nuovo avviso di ingiunzione"
+      }
+    ],
+    sendNotifications: [
+      {
+        attachments: ["DOCUMENT", "F24", "F24"],
+        cancelled: true,
+        iun: "0000000000000000000001SEND",
+        payments: [
+          "TOPAY",
+          "TOPAY",
+          "EXPIRED",
+          "PAID",
+          "FAILED",
+          "FAILED",
+          "UNRELATED"
+        ],
+        subject: "Avviso di ingiunzione - cancellato"
+      },
+      {
+        attachments: ["DOCUMENT", "F24", "DOCUMENT"],
+        iun: "0000000000000000000002SEND",
+        payments: [
+          "TOPAY",
+          "TOPAY",
+          "EXPIRED",
+          "PAID",
+          "FAILED",
+          "FAILED",
+          "UNRELATED"
+        ],
+        subject: "Nuovo avviso di ingiunzione"
+      }
+    ],
+    sendOptInMessage: true,
+    skipIdentityVerification: false,
+    skipServerToServerAuthentication: false
   },
   wallet: {
     methods: paymentMethods,

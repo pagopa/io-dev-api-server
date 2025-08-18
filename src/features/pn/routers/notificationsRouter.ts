@@ -9,6 +9,7 @@ import { authenticationMiddleware } from "../middlewares/authenticationMiddlewar
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
+import { ioDevServerConfig } from "../../../config";
 
 const notificationDisclaimerPath =
   "/ext-registry-private/io/v1/notification-disclaimer/:iun";
@@ -30,7 +31,7 @@ addHandler(
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      if (!checkAndValidateLollipopAndTaxId(req, res)) {
+      if (!checkAndValidateLollipopAndTaxId(ioDevServerConfig.send, req, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);
@@ -51,7 +52,7 @@ addHandler(
   notificationDisclaimerPath,
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      if (!checkAndValidateLollipopAndTaxId(req, res)) {
+      if (!checkAndValidateLollipopAndTaxId(ioDevServerConfig.send, req, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);

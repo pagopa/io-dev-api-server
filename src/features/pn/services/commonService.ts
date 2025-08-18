@@ -4,15 +4,21 @@ import { Either, left, right } from "fp-ts/lib/Either";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
+import { SendConfig } from "../types/sendConfig";
 import {
   checkAndValidateLollipopHeaders,
   LollipopHeaders
 } from "./lollipopService";
 
 export const checkAndValidateLollipopAndTaxId = (
+  configuration: SendConfig,
   request: Request,
   response: Response
 ): boolean => {
+  if (configuration.skipIdentityVerification) {
+    return true;
+  }
+
   const lollipopHeadersEither = checkAndValidateLollipopHeaders(
     request.headers
   );
