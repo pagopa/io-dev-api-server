@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { isLeft } from "fp-ts/lib/Either";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { addHandler } from "../../../payloads/response";
@@ -63,15 +62,12 @@ addHandler(
           docIdx,
           "DOCUMENT"
         );
-      if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-        res
-          .status(
-            notificationAttachmentDownloadMetadataResponseEither.left
-              .httpStatusCode
-          )
-          .json(
-            notificationAttachmentDownloadMetadataResponseEither.left.reason
-          );
+      if (
+        handleLeftEitherIfNeeded(
+          notificationAttachmentDownloadMetadataResponseEither,
+          res
+        )
+      ) {
         return;
       }
       res
@@ -117,15 +113,12 @@ addHandler(
           atachmentIdx,
           attachmentCategoryEither.right
         );
-      if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-        res
-          .status(
-            notificationAttachmentDownloadMetadataResponseEither.left
-              .httpStatusCode
-          )
-          .json(
-            notificationAttachmentDownloadMetadataResponseEither.left.reason
-          );
+      if (
+        handleLeftEitherIfNeeded(
+          notificationAttachmentDownloadMetadataResponseEither,
+          res
+        )
+      ) {
         return;
       }
       res

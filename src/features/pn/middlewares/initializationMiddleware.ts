@@ -12,6 +12,7 @@ import { NotificationRepository } from "../repositories/notificationRepository";
 import { PaymentsDatabase } from "../../../persistence/payments";
 import { PrevalidatedUrisRepository } from "../repositories/prevalidatedUrisRepository";
 import { getProblemJson } from "../../../payloads/error";
+import { logExpressWarning } from "../../../utils/logging";
 
 // Middleware have to be used like this (instead of directly giving the middleware to the router via use)
 // because supertest (when testing) calls every middleware upon test initialization, even if it not in a
@@ -21,15 +22,13 @@ export const initializationMiddleware =
   (request: Request, response: Response) => {
     const initializationEither = initializeSENDRepositoriesIfNeeded();
     if (isLeft(initializationEither)) {
-      response
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            "SEND repositories initialization failed",
-            `An error occourred while trying to initialize repositories for SEND (${initializationEither.left})`
-          )
-        );
+      const problemJson = getProblemJson(
+        500,
+        "SEND repositories initialization failed",
+        `An error occourred while trying to initialize repositories for SEND (${initializationEither.left})`
+      );
+      logExpressWarning(500, problemJson);
+      response.status(500).json();
       return;
     }
     nextRequest(request, response);
