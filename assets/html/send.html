@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script>
+        function retrieveAndShowQRCodeUrls() {
+            const tableBody = document.getElementById('sendAARQRCodeTable').getElementsByTagName('tbody')[0];
+            $.ajax({
+                type: 'GET',
+                url: "/send/private/aars",
+                contentType: "application/json"
+            }).done(function(data, textStatus, jqXHR) {                                
+                data.forEach(qrCodeContent => {
+                    const newRow = tableBody.insertRow();
+
+                    const qrCodeLinkCell = newRow.insertCell();
+                    const qrCodeLinkElement = document.createElement('a');
+                    qrCodeLinkElement.href = `https://api.qrserver.com/v1/create-qr-code/?data=${qrCodeContent}`;
+                    qrCodeLinkElement.textContent = "Generate";
+                    qrCodeLinkElement.target = '_blank';
+                    qrCodeLinkCell.appendChild(qrCodeLinkElement);
+
+                    const qrCodeCopyCell = newRow.insertCell();
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy';
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(qrCodeContent);
+                    })
+                    qrCodeCopyCell.appendChild(copyButton);
+
+                    const qrCodeContentCell = newRow.insertCell();
+                    const qrCodeContentNode = document.createTextNode(qrCodeContent);
+                    qrCodeContentCell.appendChild(qrCodeContentNode);
+                })
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                let newRow = tableBody.insertRow();
+                let newCell = newRow.insertCell();
+                let newText = document.createTextNode(`${jqXHR.status} ${jqXHR.statusText} ${jqXHR.responseText}`);
+                newCell.appendChild(newText);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', retrieveAndShowQRCodeUrls);
+    </script>
+</head>
+
+<body>
+    <table id="sendAARQRCodeTable" style="padding:16px;border: 1px solid black;margin-top:16px">
+        <thead>
+            <tr>
+                <td>
+                    <b>SEND AAR QRCodes</b>
+                </td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</body>
+
+</html>

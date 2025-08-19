@@ -28,9 +28,14 @@ export type SendTimelineConfig = t.TypeOf<typeof SendTimelineConfig>;
 export const SendConfig = t.intersection([
   t.type({
     sendAARs: t.array(
-      t.type({
-        iun: t.string
-      })
+      t.intersection([
+        t.type({
+          iun: t.string
+        }),
+        t.partial({
+          tosAccepted: t.boolean
+        })
+      ])
     ),
     sendMessages: t.array(
       t.intersection([
@@ -69,6 +74,7 @@ export const SendConfig = t.intersection([
     sendMandates: t.array(t.type({ iun: t.string }))
   }),
   t.partial({
+    aarQRCodeUrl: t.string,
     paymentDocumentExpirationTimeSeconds: t.number,
     paymentDocumentGenerationTimeSeconds: t.number,
     paymentDocumentRetryAfterSeconds: t.number,

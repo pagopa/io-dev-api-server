@@ -116,11 +116,16 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   send: {
+    aarQRCodeUrl: "https://cittadini.notifichedigitali.it/messaggi/io",
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,
     paymentDocumentRetryAfterSeconds: 2,
     prevalidatedUrlDurationSeconds: 15,
-    sendAARs: [],
+    sendAARs: [
+      { iun: "00000000000000000000000000" },
+      { iun: "0000000000000000000001SEND" },
+      { iun: "0000000000000000000002SEND" }
+    ],
     sendMandates: [],
     sendMessages: [
       { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },

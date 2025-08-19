@@ -10,6 +10,7 @@ import { ioDevServerConfig } from "../../../config";
 import { DocumentsRepository } from "../repositories/documentRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
 import { PaymentsDatabase } from "../../../persistence/payments";
+import { AARRepository } from "../repositories/aarRepository";
 import { PrevalidatedUrisRepository } from "../repositories/prevalidatedUrisRepository";
 import { getProblemJson } from "../../../payloads/error";
 import { logExpressWarning } from "../../../utils/logging";
@@ -60,6 +61,8 @@ const initializeSENDRepositoriesIfNeeded = (
   }
 
   PrevalidatedUrisRepository.initializeIfNeeded(sendConfig);
+  AARRepository.initializeIfNeeded(sendConfig);
+
   return right(
     documentsInitializationEither.right ||
       notificationsInitializationEither.right
