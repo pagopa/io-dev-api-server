@@ -75,6 +75,7 @@ export const SendConfig = t.intersection([
   }),
   t.partial({
     aarQRCodeUrl: t.string,
+    mandateTimeToLiveSeconds: t.number,
     paymentDocumentExpirationTimeSeconds: t.number,
     paymentDocumentGenerationTimeSeconds: t.number,
     paymentDocumentRetryAfterSeconds: t.number,

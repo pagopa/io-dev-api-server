@@ -14,6 +14,7 @@ import { AARRepository } from "../repositories/aarRepository";
 import { PrevalidatedUrisRepository } from "../repositories/prevalidatedUrisRepository";
 import { getProblemJson } from "../../../payloads/error";
 import { logExpressWarning } from "../../../utils/logging";
+import { MandateRepository } from "../repositories/mandateRepository";
 
 // Middleware have to be used like this (instead of directly giving the middleware to the router via use)
 // because supertest (when testing) calls every middleware upon test initialization, even if it not in a
@@ -62,6 +63,7 @@ const initializeSENDRepositoriesIfNeeded = (
 
   PrevalidatedUrisRepository.initializeIfNeeded(sendConfig);
   AARRepository.initializeIfNeeded(sendConfig);
+  MandateRepository.initializeIfNeeded(sendConfig, userFiscalCode);
 
   return right(
     documentsInitializationEither.right ||

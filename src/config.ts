@@ -27,7 +27,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   name: "Maria Giovanna",
   family_name: "Rossi",
   mobile: "5555555555" as NonEmptyString,
-  fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
+  fiscal_code: "RSSMGV80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
   accepted_tos_version: 4.91 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT],
@@ -117,6 +117,7 @@ const defaultConfig: IoDevServerConfig = {
   },
   send: {
     aarQRCodeUrl: "https://cittadini.notifichedigitali.it/messaggi/io",
+    mandateTimeToLiveSeconds: 30,
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,
     paymentDocumentRetryAfterSeconds: 2,

@@ -6,7 +6,8 @@ import { SendConfig } from "../types/sendConfig";
 const aars = new Array<AAR>();
 
 export interface IAARRepository {
-  getQRCodes: () => string[];
+  getAARByQRCodeContent: (qrCodeContent: string) => AAR | undefined;
+  getAARList: () => ReadonlyArray<AAR>;
   initializeIfNeeded: (configuration: SendConfig) => void;
 }
 
@@ -31,9 +32,13 @@ const initializeIfNeeded = (configuration: SendConfig) => {
   });
 };
 
-const getQRCodes = (): string[] => aars.map(aar => aar.qrCodeContent);
+const getAARList = (): ReadonlyArray<AAR> => aars.map(aar => aar);
+
+const getAARByQRCodeContent = (qrCodeContent: string): AAR | undefined =>
+  aars.find(aar => aar.qrCodeContent === qrCodeContent);
 
 export const AARRepository: IAARRepository = {
-  getQRCodes,
+  getAARByQRCodeContent,
+  getAARList,
   initializeIfNeeded
 };
