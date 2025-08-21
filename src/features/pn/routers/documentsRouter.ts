@@ -3,7 +3,10 @@ import { authenticationMiddleware } from "../middlewares/authenticationMiddlewar
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { notificationFromRequestParams } from "../services/notificationsService";
-import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
+import {
+  checkAndValidateLollipopAndTaxId,
+  checkSourceHeaderNonBlocking
+} from "../services/commonService";
 import {
   checkAndValidateAttachmentIndex,
   checkAndValidateAttachmentName,
@@ -53,6 +56,7 @@ addHandler(
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
+      checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
       if (notification.recipientFiscalCode !== taxIdEither.right) {
         const problemJson = getProblemJson(
@@ -114,6 +118,7 @@ addHandler(
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
+      checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
       if (notification.recipientFiscalCode !== taxIdEither.right) {
         const problemJson = getProblemJson(

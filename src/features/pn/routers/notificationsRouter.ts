@@ -7,7 +7,10 @@ import {
 } from "../services/notificationsService";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
-import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
+import {
+  checkAndValidateLollipopAndTaxId,
+  checkSourceHeaderNonBlocking
+} from "../services/commonService";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
 import { getProblemJson } from "../../../payloads/error";
@@ -44,6 +47,7 @@ addHandler(
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
+      checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
       if (notification.recipientFiscalCode !== taxIdEither.right) {
         const problemJson = getProblemJson(

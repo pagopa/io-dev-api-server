@@ -251,7 +251,8 @@ addHandler(
             ...MessagesService.sendAPIKeyHeader(),
             ...MessagesService.sendTaxIdHeader(
               ioDevServerConfig.profile.attrs.fiscal_code
-            )
+            ),
+            ...MessagesService.sendIOSourceHeader("DEFAULT")
           }
         });
         if (sendNotificationResponse.status !== 200) {
@@ -418,7 +419,8 @@ addHandler(
               ...MessagesService.sendAPIKeyHeader(),
               ...MessagesService.sendTaxIdHeader(
                 ioDevServerConfig.profile.attrs.fiscal_code
-              )
+              ),
+              ...MessagesService.sendIOSourceHeader("DEFAULT")
             }
           }
         );
@@ -672,7 +674,8 @@ const handleSENDAttachment = async (
         ...MessagesService.sendAPIKeyHeader(),
         ...MessagesService.sendTaxIdHeader(
           ioDevServerConfig.profile.attrs.fiscal_code
-        )
+        ),
+        ...MessagesService.sendIOSourceHeader("DEFAULT")
       }
     });
     if (sendAttachmentUrlResponse.status !== 200) {
