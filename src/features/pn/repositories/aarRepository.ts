@@ -32,7 +32,7 @@ const initializeIfNeeded = (configuration: SendConfig) => {
   });
 };
 
-const getAARList = (): ReadonlyArray<AAR> => aars.map(aar => aar);
+const getAARList = (): ReadonlyArray<AAR> => aars.map(aar => ({ ...aar }));
 
 const getAARByQRCodeContent = (qrCodeContent: string): AAR | undefined =>
   aars.find(aar => aar.qrCodeContent === qrCodeContent);

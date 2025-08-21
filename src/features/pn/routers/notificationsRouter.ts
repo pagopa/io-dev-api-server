@@ -1,15 +1,16 @@
 import { Request, Response, Router } from "express";
 import { addHandler } from "../../../payloads/response";
 import {
-  notificationFromRequestParams,
-  notificationToThirdPartyMessage,
-  preconditionsForNotification
+  notificationFromIUN,
+  preconditionsForNotification,
+  thirdPartyMessageFromIUNTaxIdAndMandateId
 } from "../services/notificationsService";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import {
   checkAndValidateLollipopAndTaxId,
-  checkSourceHeaderNonBlocking
+  checkSourceHeaderNonBlocking,
+  mandateIdFromQuery
 } from "../services/commonService";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
@@ -43,24 +44,18 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
-      if (handleLeftEitherIfNeeded(notificationEither, res)) {
-        return;
-      }
       checkSourceHeaderNonBlocking(req.headers);
-      const { notification } = notificationEither.right;
-      if (notification.recipientFiscalCode !== taxIdEither.right) {
-        const problemJson = getProblemJson(
-          400,
-          "User mismatch",
-          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
-        );
-        logExpressWarning(400, problemJson);
-        res.status(400).json(problemJson);
+      const requestIUN = req.params.iun;
+      const mandateId = mandateIdFromQuery(req);
+      const thirdPartyMessageEither = thirdPartyMessageFromIUNTaxIdAndMandateId(
+        requestIUN,
+        taxIdEither.right,
+        mandateId
+      );
+      if (handleLeftEitherIfNeeded(thirdPartyMessageEither, res)) {
         return;
       }
-      const thirdPartyMessage = notificationToThirdPartyMessage(notification);
-      res.status(200).json(thirdPartyMessage);
+      res.status(200).json(thirdPartyMessageEither.right);
     })
   ),
   () => 500 + 1000 * Math.random()
@@ -79,7 +74,8 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
+      const requestIUN = req.params.iun;
+      const notificationEither = notificationFromIUN(requestIUN);
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }

@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { addHandler } from "../../../payloads/response";
-import { notificationFromRequestParams } from "../services/notificationsService";
+import { notificationFromIUN } from "../services/notificationsService";
 import {
   checkAndValidateLollipopAndTaxId,
   checkSourceHeaderNonBlocking
@@ -52,7 +52,8 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
+      const requestIUN = req.params.iun;
+      const notificationEither = notificationFromIUN(requestIUN);
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
@@ -114,7 +115,8 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
+      const requestIUN = req.params.iun;
+      const notificationEither = notificationFromIUN(requestIUN);
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }

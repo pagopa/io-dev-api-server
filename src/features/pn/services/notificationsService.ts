@@ -1,5 +1,5 @@
-import { Request } from "express";
-import { Either, left, right } from "fp-ts/lib/Either";
+import { Either, isLeft, left, right } from "fp-ts/lib/Either";
+import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { isSome } from "fp-ts/lib/Option";
 import { fakerIT as faker } from "@faker-js/faker";
 import { ExpressFailure } from "../../../utils/expressDTO";
@@ -9,16 +9,17 @@ import { Detail_v2Enum } from "../../../../generated/definitions/backend/Payment
 import { NotificationRepository } from "../repositories/notificationRepository";
 import { getProblemJson } from "../../../payloads/error";
 import { PreconditionContent } from "../../../../generated/definitions/pn/PreconditionContent";
+import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
+import { MandateRepository } from "../repositories/mandateRepository";
 import {
   Notification,
   NotificationHistory,
   NotificationRecipient
 } from "./../models/Notification";
 
-export const notificationFromRequestParams = (
-  req: Request
+export const notificationFromIUN = (
+  iun: string
 ): Either<ExpressFailure, { iun: string; notification: Notification }> => {
-  const iun = req.params.iun;
   const notification = NotificationRepository.getNotification(iun);
   if (notification == null) {
     return left({
@@ -60,23 +61,83 @@ export const preconditionsForNotification = (
   };
 };
 
-export const notificationToThirdPartyMessage = (
-  notification: Notification
-) => ({
-  attachments: attachmentsFromNotification(notification),
-  details: {
-    abstract: notification.abstract,
-    completedPayments: completedPaymentsFromNotification(notification),
-    iun: notification.iun,
-    isCancelled: notification.cancelled,
-    notificationStatusHistory: notificationStatusHistoryFromHistory(
-      notification.history
-    ),
-    recipients: recipientsFromRecipients(notification.recipients),
-    senderDenomination: notification.senderDenomination,
-    subject: notification.subject
+export const thirdPartyMessageFromIUNTaxIdAndMandateId = (
+  iun: string,
+  taxId: string,
+  mandateId?: string
+): Either<ExpressFailure, ThirdPartyMessage> => {
+  const notificationEither = notificationFromIUN(iun);
+  if (isLeft(notificationEither)) {
+    return notificationEither;
   }
-});
+
+  const { notification } = notificationEither.right;
+  if (notification.recipientFiscalCode !== taxId) {
+    if (mandateId == null) {
+      return left({
+        httpStatusCode: 400,
+        reason: getProblemJson(
+          400,
+          "User mismatch",
+          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxId})`
+        )
+      });
+    }
+
+    const mandate = MandateRepository.getFirstValidMandate(
+      mandateId,
+      iun,
+      taxId
+    );
+    if (mandate == null) {
+      return left({
+        httpStatusCode: 400,
+        reason: getProblemJson(
+          400,
+          "No valid mandate",
+          `There is no valid mandate to access the requested notification (${mandateId}) (${notification.iun}) (${taxId})`
+        )
+      });
+    }
+  }
+  const thirdPartyMessageEither = notificationToThirdPartyMessage(notification);
+  if (isLeft(thirdPartyMessageEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Conversion to ThirdPartyMessage failed",
+        `Unable to convert retrieved Notification to the ThirdPartyMessage data structure (${thirdPartyMessageEither.left})`
+      )
+    });
+  }
+  return thirdPartyMessageEither;
+};
+
+const notificationToThirdPartyMessage = (
+  notification: Notification
+): Either<string, ThirdPartyMessage> => {
+  const thirdPartyMessage = {
+    attachments: attachmentsFromNotification(notification),
+    details: {
+      abstract: notification.abstract,
+      completedPayments: completedPaymentsFromNotification(notification),
+      iun: notification.iun,
+      isCancelled: notification.cancelled,
+      notificationStatusHistory: notificationStatusHistoryFromHistory(
+        notification.history
+      ),
+      recipients: recipientsFromRecipients(notification.recipients),
+      senderDenomination: notification.senderDenomination,
+      subject: notification.subject
+    }
+  };
+  const thirdPartyMessageEither = ThirdPartyMessage.decode(thirdPartyMessage);
+  if (isLeft(thirdPartyMessageEither)) {
+    return left(readableReportSimplified(thirdPartyMessageEither.left));
+  }
+  return right(thirdPartyMessageEither.right);
+};
 
 const completedPaymentsFromNotification = (notification: Notification) =>
   notification.cancelled

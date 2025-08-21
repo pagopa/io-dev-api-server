@@ -98,3 +98,11 @@ export const checkSourceHeaderNonBlocking = (
     );
   }
 };
+
+export const mandateIdFromQuery = (req: Request): string | undefined => {
+  const mandateId = req.query.mandateId;
+  if (typeof mandateId === "string" && mandateId.trim().length > 0) {
+    return mandateId;
+  }
+  return undefined;
+};

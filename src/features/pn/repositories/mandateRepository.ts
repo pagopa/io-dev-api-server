@@ -15,6 +15,12 @@ export interface IMandateRepository {
     notificationIUN: string,
     representativeFiscalCode: string
   ) => ReadonlyArray<Mandate>;
+  getFirstValidMandate: (
+    mandateId: string,
+    notificationIUN: string,
+    fiscalCode: string
+  ) => Mandate | undefined;
+  getMandateList: () => ReadonlyArray<Mandate>;
 }
 
 const initializeIfNeeded = (
@@ -48,7 +54,25 @@ const getActiveMandates = (
       new Date() < mandate.timeToLive
   );
 
+const getFirstValidMandate = (
+  mandateId: string,
+  notificationIUN: string,
+  fiscalCode: string
+): Mandate | undefined =>
+  mandates.find(
+    mandate =>
+      mandate.notificationIUN === notificationIUN &&
+      mandate.mandateId === mandateId &&
+      mandate.representativeFiscalCode === fiscalCode &&
+      new Date() < mandate.timeToLive
+  );
+
+const getMandateList = (): ReadonlyArray<Mandate> =>
+  mandates.map(mandate => ({ ...mandate }));
+
 export const MandateRepository: IMandateRepository = {
   initializeIfNeeded,
-  getActiveMandates
+  getActiveMandates,
+  getFirstValidMandate,
+  getMandateList
 };
