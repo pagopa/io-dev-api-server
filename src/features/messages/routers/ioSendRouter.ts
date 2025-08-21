@@ -4,7 +4,10 @@ import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { serverUrl } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { generateCheckQRPath } from "../../pn/routers/aarRouter";
+import {
+  generateAcceptToSPath,
+  generateCheckQRPath
+} from "../../pn/routers/aarRouter";
 import MessagesService from "../services/messagesService";
 import { ioDevServerConfig } from "../../../config";
 import {
@@ -13,7 +16,10 @@ import {
 } from "../../../utils/error";
 import { getProblemJson } from "../../../payloads/error";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
-import { mandateIdOrUndefinedFromRequest } from "../services/ioSendService";
+import {
+  mandateIdOrUndefinedFromQuery,
+  tosVersionOrUndefinedFromQuery
+} from "../services/ioSendService";
 
 export const ioSendRouter = Router();
 
@@ -37,11 +43,36 @@ addHandler(
 
 addHandler(
   ioSendRouter,
+  "put",
+  addApiV1Prefix("/send/tos/:consentType"),
+  lollipopMiddleware(async (req, res) => {
+    const consentType = req.params.consentType;
+    const versionEither = tosVersionOrUndefinedFromQuery(req.query);
+    if (handleLeftEitherIfNeeded(versionEither, res)) {
+      return;
+    }
+    const sendAcceptToSUrl = `${serverUrl}${generateAcceptToSPath(
+      consentType,
+      versionEither.right
+    )}`;
+    const sendAcceptToSFetch = () =>
+      fetch(sendAcceptToSUrl, {
+        method: "put",
+        headers: generateRequestHeaders(req.headers, "text/plain"),
+        body: req.body
+      });
+    await fetchSENDDataAndForwardResponse(sendAcceptToSFetch, "ToS", res);
+  }),
+  () => Math.random() * 500
+);
+
+addHandler(
+  ioSendRouter,
   "get",
   addApiV1Prefix("/send/notification/:iun"),
   lollipopMiddleware(async (req, res) => {
     const iun = req.params.iun;
-    const mandateId = mandateIdOrUndefinedFromRequest(req);
+    const mandateId = mandateIdOrUndefinedFromQuery(req.query);
     const sendNotificationUrl = `${serverUrl}${generateNotificationPath(
       iun,
       mandateId
@@ -69,7 +100,7 @@ addHandler(
       attachmentUrlPath,
       req.query
     );
-    const mandateId = mandateIdOrUndefinedFromRequest(req);
+    const mandateId = mandateIdOrUndefinedFromQuery(req.query);
     const sendAttachmentEndpointEither =
       MessagesService.checkAndBuildSENDAttachmentEndpoint(
         attachmentUrl,
@@ -92,7 +123,10 @@ addHandler(
   () => Math.random() * 500
 );
 
-const generateRequestHeaders = (headers: IncomingHttpHeaders) => ({
+const generateRequestHeaders = (
+  headers: IncomingHttpHeaders,
+  contentType: string = "application/json"
+) => ({
   ...MessagesService.lollipopClientHeadersFromHeaders(headers),
   ...MessagesService.generateFakeLollipopServerHeaders(
     ioDevServerConfig.profile.attrs.fiscal_code
@@ -102,7 +136,7 @@ const generateRequestHeaders = (headers: IncomingHttpHeaders) => ({
     ioDevServerConfig.profile.attrs.fiscal_code
   ),
   // Don't send the default IO Source Header, it must come from the client
-  "Content-Type": "application/json"
+  "Content-Type": contentType
 });
 
 const fetchSENDDataAndForwardResponse = async (
