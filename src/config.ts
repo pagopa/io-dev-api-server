@@ -121,13 +121,14 @@ const defaultConfig: IoDevServerConfig = {
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,
     paymentDocumentRetryAfterSeconds: 2,
-    prevalidatedUrlDurationSeconds: 15,
+    prevalidatedUrlDurationSeconds: 30,
     sendAARs: [
       { iun: "00000000000000000000000000" },
       { iun: "0000000000000000000001SEND" },
-      { iun: "0000000000000000000002SEND" }
+      { iun: "0000000000000000000002SEND" },
+      { iun: "0000000000000000000003SEND" }
     ],
-    sendMandates: [],
+    sendMandates: [{ iun: "0000000000000000000003SEND" }],
     sendMessages: [
       { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },
       {
@@ -164,6 +165,16 @@ const defaultConfig: IoDevServerConfig = {
           "UNRELATED"
         ],
         subject: "Nuovo avviso di ingiunzione"
+      },
+      {
+        abstract:
+          "Gentile Utente,\nogni anno l'Agenzia dei Controlli esegue delle verifiche automatizzate sulle dichiarazioni presentate per verificare che i dati in esse indicati siano corretti e che i versamenti siano stati effettuati esattamente e nei termini previsti.\n\nLe comunichiamo che, dai controlli effettuati sulla sua dichiarazione, sono emerse alcune incongruenze.",
+        attachments: ["F24", "DOCUMENT", "F24"],
+        iun: "0000000000000000000003SEND",
+        payments: ["PAID", "UNRELATED", "TOPAY"],
+        senderDenomination: "Agenzia dei Controlli",
+        subject: "Controllo dichiarazione completato",
+        userIsRecipient: false
       }
     ],
     sendOptInMessage: true,

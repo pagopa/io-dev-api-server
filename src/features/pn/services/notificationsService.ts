@@ -10,12 +10,12 @@ import { NotificationRepository } from "../repositories/notificationRepository";
 import { getProblemJson } from "../../../payloads/error";
 import { PreconditionContent } from "../../../../generated/definitions/pn/PreconditionContent";
 import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
-import { MandateRepository } from "../repositories/mandateRepository";
 import {
   Notification,
   NotificationHistory,
   NotificationRecipient
 } from "./../models/Notification";
+import { checkAndVerifyExistingMandate } from "./mandateService";
 
 export const notificationFromIUN = (
   iun: string
@@ -73,31 +73,13 @@ export const thirdPartyMessageFromIUNTaxIdAndMandateId = (
 
   const { notification } = notificationEither.right;
   if (notification.recipientFiscalCode !== taxId) {
-    if (mandateId == null) {
-      return left({
-        httpStatusCode: 400,
-        reason: getProblemJson(
-          400,
-          "User mismatch",
-          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxId})`
-        )
-      });
-    }
-
-    const mandate = MandateRepository.getFirstValidMandate(
+    const mandateEither = checkAndVerifyExistingMandate(
+      notification.iun,
       mandateId,
-      iun,
       taxId
     );
-    if (mandate == null) {
-      return left({
-        httpStatusCode: 400,
-        reason: getProblemJson(
-          400,
-          "No valid mandate",
-          `There is no valid mandate to access the requested notification (${mandateId}) (${notification.iun}) (${taxId})`
-        )
-      });
+    if (isLeft(mandateEither)) {
+      return mandateEither;
     }
   }
   const thirdPartyMessageEither = notificationToThirdPartyMessage(notification);

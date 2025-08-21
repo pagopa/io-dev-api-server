@@ -5,7 +5,8 @@ import { addHandler } from "../../../payloads/response";
 import { notificationFromIUN } from "../services/notificationsService";
 import {
   checkAndValidateLollipopAndTaxId,
-  checkSourceHeaderNonBlocking
+  checkSourceHeaderNonBlocking,
+  mandateIdFromQuery
 } from "../services/commonService";
 import {
   checkAndValidateAttachmentIndex,
@@ -15,24 +16,40 @@ import {
 import { DocumentCategory } from "../models/Document";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
-import { getProblemJson } from "../../../payloads/error";
-import { logExpressWarning } from "../../../utils/logging";
+import { checkAndVerifyExistingMandate } from "../services/mandateService";
 
 const documentPath =
   "/delivery/notifications/received/:iun/attachments/documents/:docIdx";
 const paymentDocumentPath =
   "/delivery/notifications/received/:iun/attachments/payment/:attachmentName";
 
-export const generateDocumentPath = (iun: string, index: string) =>
-  documentPath.replace(":iun", iun).replace(":docIdx", index.toString());
+export const generateDocumentPath = (
+  iun: string,
+  index: string,
+  mandateId?: string
+) => {
+  const path = documentPath
+    .replace(":iun", iun)
+    .replace(":docIdx", index.toString());
+  if (mandateId == null || mandateId.trim().length === 0) {
+    return path;
+  }
+  return `${path}?mandateId=${mandateId}`;
+};
 export const generatePaymentDocumentPath = (
   iun: string,
   index: string,
-  category: Extract<DocumentCategory, "F24" | "PAGOPA">
-) =>
-  `${paymentDocumentPath
+  category: Extract<DocumentCategory, "F24" | "PAGOPA">,
+  mandateId?: string
+) => {
+  const path = `${paymentDocumentPath
     .replace(":iun", iun)
     .replace(":attachmentName", category)}?attachmentIdx=${index}`;
+  if (mandateId == null || mandateId.trim().length === 0) {
+    return path;
+  }
+  return `${path}&mandateId=${mandateId}`;
+};
 
 export const sendDocumentsRouter = Router();
 
@@ -60,14 +77,15 @@ addHandler(
       checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
       if (notification.recipientFiscalCode !== taxIdEither.right) {
-        const problemJson = getProblemJson(
-          400,
-          "User mismatch",
-          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        const mandateId = mandateIdFromQuery(req);
+        const mandateEither = checkAndVerifyExistingMandate(
+          notification.iun,
+          mandateId,
+          taxIdEither.right
         );
-        logExpressWarning(400, problemJson);
-        res.status(400).json(problemJson);
-        return;
+        if (handleLeftEitherIfNeeded(mandateEither, res)) {
+          return;
+        }
       }
       const docIdxEither = checkAndValidateAttachmentIndex(
         "DOCUMENT",
@@ -123,14 +141,15 @@ addHandler(
       checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
       if (notification.recipientFiscalCode !== taxIdEither.right) {
-        const problemJson = getProblemJson(
-          400,
-          "User mismatch",
-          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        const mandateId = mandateIdFromQuery(req);
+        const mandateEither = checkAndVerifyExistingMandate(
+          notification.iun,
+          mandateId,
+          taxIdEither.right
         );
-        logExpressWarning(400, problemJson);
-        res.status(400).json(problemJson);
-        return;
+        if (handleLeftEitherIfNeeded(mandateEither, res)) {
+          return;
+        }
       }
       const attachmentCategoryEither = checkAndValidateAttachmentName(req);
       if (handleLeftEitherIfNeeded(attachmentCategoryEither, res)) {

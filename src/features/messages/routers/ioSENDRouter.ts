@@ -1,4 +1,5 @@
-import { Router } from "express";
+import { IncomingHttpHeaders } from "http";
+import { Response, Router } from "express";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { serverUrl } from "../../../utils/server";
@@ -6,107 +7,128 @@ import { addApiV1Prefix } from "../../../utils/strings";
 import { generateCheckQRPath } from "../../pn/routers/aarRouter";
 import MessagesService from "../services/messagesService";
 import { ioDevServerConfig } from "../../../config";
-import { unknownToString } from "../../../utils/error";
+import {
+  handleLeftEitherIfNeeded,
+  unknownToString
+} from "../../../utils/error";
 import { getProblemJson } from "../../../payloads/error";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
+import { mandateIdOrUndefinedFromRequest } from "../services/ioSendService";
 
-export const ioSENDRouter = Router();
+export const ioSendRouter = Router();
 
 addHandler(
-  ioSENDRouter,
+  ioSendRouter,
   "post",
   addApiV1Prefix("/send/aar"),
   lollipopMiddleware(async (req, res) => {
     const sendQRCodeUrl = `${serverUrl}${generateCheckQRPath()}`;
     const sendQRCodeBody = JSON.stringify(req.body);
-    try {
-      const sendQRCodeResponse = await fetch(sendQRCodeUrl, {
+    const sendQRCodeFetch = () =>
+      fetch(sendQRCodeUrl, {
         method: "post",
-        headers: {
-          ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
-          ...MessagesService.generateFakeLollipopServerHeaders(
-            ioDevServerConfig.profile.attrs.fiscal_code
-          ),
-          ...MessagesService.sendAPIKeyHeader(),
-          ...MessagesService.sendTaxIdHeader(
-            ioDevServerConfig.profile.attrs.fiscal_code
-          ),
-          "Content-Type": "application/json"
-        },
+        headers: generateRequestHeaders(req.headers),
         body: sendQRCodeBody
       });
-
-      const contentType = sendQRCodeResponse.headers.get("content-type");
-      const responseBodyBuffer = await sendQRCodeResponse.arrayBuffer();
-      const body = Buffer.from(responseBodyBuffer);
-      if (contentType) {
-        res.setHeader("Content-Type", contentType);
-      }
-      res.status(sendQRCodeResponse.status).send(body);
-    } catch (e) {
-      const errorMessage = unknownToString(e);
-      res
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            "QRCode unexpected error",
-            `Unexpected error while contacting SEND QRCode endpoint (${errorMessage})`
-          )
-        );
-    }
+    await fetchSENDDataAndForwardResponse(sendQRCodeFetch, "QRCode", res);
   }),
   () => Math.random() * 500
 );
 
 addHandler(
-  ioSENDRouter,
+  ioSendRouter,
   "get",
   addApiV1Prefix("/send/notification/:iun"),
   lollipopMiddleware(async (req, res) => {
     const iun = req.params.iun;
-    const requestMandateId = req.query.mandateId;
-    const mandateId =
-      typeof requestMandateId === "string" ? requestMandateId : undefined;
+    const mandateId = mandateIdOrUndefinedFromRequest(req);
     const sendNotificationUrl = `${serverUrl}${generateNotificationPath(
       iun,
       mandateId
     )}`;
-    try {
-      const sendNotificationResponse = await fetch(sendNotificationUrl, {
-        headers: {
-          ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
-          ...MessagesService.generateFakeLollipopServerHeaders(
-            ioDevServerConfig.profile.attrs.fiscal_code
-          ),
-          ...MessagesService.sendAPIKeyHeader(),
-          ...MessagesService.sendTaxIdHeader(
-            ioDevServerConfig.profile.attrs.fiscal_code
-          ),
-          ...MessagesService.sendIOSourceHeader("QRCODE"),
-          "Content-Type": "application/json"
-        }
+    const sendNotificationFetch = () =>
+      fetch(sendNotificationUrl, {
+        headers: generateRequestHeaders(req.headers)
       });
-
-      const contentType = sendNotificationResponse.headers.get("content-type");
-      const responseBodyBuffer = await sendNotificationResponse.arrayBuffer();
-      const body = Buffer.from(responseBodyBuffer);
-      if (contentType) {
-        res.setHeader("Content-Type", contentType);
-      }
-      res.status(sendNotificationResponse.status).send(body);
-    } catch (e) {
-      const errorMessage = unknownToString(e);
+    await fetchSENDDataAndForwardResponse(
+      sendNotificationFetch,
+      "Notification",
       res
-        .status(500)
-        .json(
-          getProblemJson(
-            500,
-            "Notification unexpected error",
-            `Unexpected error while contacting SEND Notification endpoint (${errorMessage})`
-          )
-        );
-    }
+    );
   }),
   () => Math.random() * 500
 );
+
+addHandler(
+  ioSendRouter,
+  "get",
+  addApiV1Prefix("/send/notification/attachment/*"),
+  lollipopMiddleware(async (req, res) => {
+    const attachmentUrlPath = req.params[0];
+    const attachmentUrl = MessagesService.appendAttachmentIdxToAttachmentUrl(
+      attachmentUrlPath,
+      req.query
+    );
+    const mandateId = mandateIdOrUndefinedFromRequest(req);
+    const sendAttachmentEndpointEither =
+      MessagesService.checkAndBuildSENDAttachmentEndpoint(
+        attachmentUrl,
+        mandateId
+      );
+    if (handleLeftEitherIfNeeded(sendAttachmentEndpointEither, res)) {
+      return;
+    }
+    const sendAttachmentUrl = `${serverUrl}${sendAttachmentEndpointEither.right}`;
+    const sendAttachmentFetch = () =>
+      fetch(sendAttachmentUrl, {
+        headers: generateRequestHeaders(req.headers)
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendAttachmentFetch,
+      "Attachment",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
+const generateRequestHeaders = (headers: IncomingHttpHeaders) => ({
+  ...MessagesService.lollipopClientHeadersFromHeaders(headers),
+  ...MessagesService.generateFakeLollipopServerHeaders(
+    ioDevServerConfig.profile.attrs.fiscal_code
+  ),
+  ...MessagesService.sendAPIKeyHeader(),
+  ...MessagesService.sendTaxIdHeader(
+    ioDevServerConfig.profile.attrs.fiscal_code
+  ),
+  "Content-Type": "application/json"
+});
+
+const fetchSENDDataAndForwardResponse = async (
+  fetchFunction: () => Promise<globalThis.Response>,
+  endpointName: string,
+  res: Response
+) => {
+  try {
+    const sendQResponse = await fetchFunction();
+
+    const contentType = sendQResponse.headers.get("content-type");
+    const responseBodyBuffer = await sendQResponse.arrayBuffer();
+    const body = Buffer.from(responseBodyBuffer);
+    if (contentType) {
+      res.setHeader("Content-Type", contentType);
+    }
+    res.status(sendQResponse.status).send(body);
+  } catch (e) {
+    const errorMessage = unknownToString(e);
+    res
+      .status(500)
+      .json(
+        getProblemJson(
+          500,
+          "QRCode unexpected error",
+          `Unexpected error while contacting SEND ${endpointName} endpoint (${errorMessage})`
+        )
+      );
+  }
+};

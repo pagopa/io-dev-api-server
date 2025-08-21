@@ -336,10 +336,10 @@ addHandler(
     }
     if (message.sender_service_id === sendServiceId) {
       const attachmentUrlPath = req.params[0];
-      const { attachmentIdx } = req.query;
-      const queryString =
-        attachmentIdx != null ? `?attachmentIdx=${attachmentIdx}` : "";
-      const attachmentUrl = `${attachmentUrlPath}${queryString}`;
+      const attachmentUrl = MessagesService.appendAttachmentIdxToAttachmentUrl(
+        attachmentUrlPath,
+        req.query
+      );
       await handleSENDAttachment(attachmentUrl, req, res);
     } else {
       const attachmentEither = MessagesService.verifyAttachment(
