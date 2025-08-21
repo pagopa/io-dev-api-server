@@ -101,6 +101,7 @@ const generateRequestHeaders = (headers: IncomingHttpHeaders) => ({
   ...MessagesService.sendTaxIdHeader(
     ioDevServerConfig.profile.attrs.fiscal_code
   ),
+  // Don't send the default IO Source Header, it must come from the client
   "Content-Type": "application/json"
 });
 

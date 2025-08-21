@@ -18,7 +18,7 @@ export const checkAndValidateLollipopAndTaxId = (
   }
 
   const taxId = taxIdEither.right;
-  if (configuration.skipIdentityVerification) {
+  if (configuration.skipLollipopVerification) {
     return right(taxId);
   }
 

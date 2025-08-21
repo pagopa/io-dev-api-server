@@ -80,7 +80,7 @@ export const SendConfig = t.intersection([
     paymentDocumentGenerationTimeSeconds: t.number,
     paymentDocumentRetryAfterSeconds: t.number,
     prevalidatedUrlDurationSeconds: t.number,
-    skipIdentityVerification: t.boolean,
+    skipLollipopVerification: t.boolean,
     skipServerToServerAuthentication: t.boolean
   })
 ]);

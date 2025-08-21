@@ -178,7 +178,7 @@ const defaultConfig: IoDevServerConfig = {
       }
     ],
     sendOptInMessage: true,
-    skipIdentityVerification: false,
+    skipLollipopVerification: false,
     skipServerToServerAuthentication: false
   },
   wallet: {

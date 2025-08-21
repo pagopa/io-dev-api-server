@@ -351,10 +351,11 @@ const sendTaxIdHeader = (fiscalCode: string): Record<string, string> => ({
 // 'DEFAULT' is not a values that's sent in production. It is here
 // just to be able to differentiate and log a warning if the header
 // is not provided
-const sendIOSourceHeader = (
-  type: "DEFAULT" | "QRCODE"
-): Record<"x-pagopa-pn-io-src", "DEFAULT" | "QRCODE"> => ({
-  "x-pagopa-pn-io-src": type
+const sendDefaultIOSourceHeader = (): Record<
+  "x-pagopa-pn-io-src",
+  "DEFAULT"
+> => ({
+  "x-pagopa-pn-io-src": "DEFAULT"
 });
 
 const checkAndBuildSENDAttachmentEndpoint = (
@@ -428,7 +429,7 @@ export default {
   getPublicMessages,
   lollipopClientHeadersFromHeaders,
   sendAPIKeyHeader,
-  sendIOSourceHeader,
+  sendDefaultIOSourceHeader,
   sendTaxIdHeader,
   verifyAttachment
 };
