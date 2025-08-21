@@ -12,6 +12,8 @@ import {
 import { DocumentCategory } from "../models/Document";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
+import { getProblemJson } from "../../../payloads/error";
+import { logExpressWarning } from "../../../utils/logging";
 
 const documentPath =
   "/delivery/notifications/received/:iun/attachments/documents/:docIdx";
@@ -52,6 +54,16 @@ addHandler(
         return;
       }
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const problemJson = getProblemJson(
+          400,
+          "User mismatch",
+          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        );
+        logExpressWarning(400, problemJson);
+        res.status(400).json(problemJson);
+        return;
+      }
       const docIdxEither = checkAndValidateAttachmentIndex(
         "DOCUMENT",
         notification,
@@ -103,6 +115,16 @@ addHandler(
         return;
       }
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const problemJson = getProblemJson(
+          400,
+          "User mismatch",
+          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        );
+        logExpressWarning(400, problemJson);
+        res.status(400).json(problemJson);
+        return;
+      }
       const attachmentCategoryEither = checkAndValidateAttachmentName(req);
       if (handleLeftEitherIfNeeded(attachmentCategoryEither, res)) {
         return;

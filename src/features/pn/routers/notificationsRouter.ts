@@ -10,6 +10,8 @@ import { initializationMiddleware } from "../middlewares/initializationMiddlewar
 import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
+import { getProblemJson } from "../../../payloads/error";
+import { logExpressWarning } from "../../../utils/logging";
 
 const notificationDisclaimerPath =
   "/ext-registry-private/io/v1/notification-disclaimer/:iun";
@@ -43,6 +45,16 @@ addHandler(
         return;
       }
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const problemJson = getProblemJson(
+          400,
+          "User mismatch",
+          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        );
+        logExpressWarning(400, problemJson);
+        res.status(400).json(problemJson);
+        return;
+      }
       const thirdPartyMessage = notificationToThirdPartyMessage(notification);
       res.status(200).json(thirdPartyMessage);
     })
@@ -68,6 +80,16 @@ addHandler(
         return;
       }
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const problemJson = getProblemJson(
+          400,
+          "User mismatch",
+          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        );
+        logExpressWarning(400, problemJson);
+        res.status(400).json(problemJson);
+        return;
+      }
       const preconditions = preconditionsForNotification(notification);
       res.status(200).json(preconditions);
     })
