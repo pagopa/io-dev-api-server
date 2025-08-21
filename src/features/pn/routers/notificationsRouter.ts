@@ -23,8 +23,13 @@ const notificationPath = "/delivery/notifications/received/:iun";
 
 export const generateNotificationDisclaimerPath = (iun: string) =>
   notificationDisclaimerPath.replace(":iun", iun);
-export const generateNotificationPath = (iun: string) =>
-  notificationPath.replace(":iun", iun);
+export const generateNotificationPath = (iun: string, mandateId?: string) => {
+  const path = notificationPath.replace(":iun", iun);
+  if (mandateId == null || mandateId.trim().length === 0) {
+    return path;
+  }
+  return `${path}?mandateId=${mandateId}`;
+};
 
 export const sendNotificationsRouter = Router();
 

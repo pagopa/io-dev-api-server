@@ -42,6 +42,7 @@ import { sendNotificationsRouter } from "./features/pn/routers/notificationsRout
 import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUrisRouter";
 import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
 import { sendMandatesRouter } from "./features/pn/routers/mandatesRouter";
+import { ioSENDRouter } from "./features/messages/routers/ioSENDRouter";
 
 // create express server
 const app: Application = express();
@@ -88,6 +89,7 @@ app.use(fastLoginMiddleware);
   sendNotificationsRouter,
   sendPrevalidatedUrisRouter,
   sendServiceRouter,
+  ioSENDRouter,
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
