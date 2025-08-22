@@ -117,7 +117,7 @@ const defaultConfig: IoDevServerConfig = {
   },
   send: {
     aarQRCodeUrl: "https://cittadini.notifichedigitali.it/messaggi/io",
-    mandateTimeToLiveSeconds: 30,
+    mandateTimeToLiveSeconds: 120,
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,
     paymentDocumentRetryAfterSeconds: 2,
@@ -126,7 +126,8 @@ const defaultConfig: IoDevServerConfig = {
       { iun: "00000000000000000000000000" },
       { iun: "0000000000000000000001SEND", tosAccepted: true },
       { iun: "0000000000000000000002SEND" },
-      { iun: "0000000000000000000003SEND" }
+      { iun: "0000000000000000000003SEND" },
+      { iun: "0000000000000000000004SEND" }
     ],
     sendMandates: [{ iun: "0000000000000000000003SEND" }],
     sendMessages: [
@@ -175,11 +176,18 @@ const defaultConfig: IoDevServerConfig = {
         senderDenomination: "Agenzia dei Controlli",
         subject: "Controllo dichiarazione completato",
         userIsRecipient: false
+      },
+      {
+        attachments: ["F24", "DOCUMENT"],
+        iun: "0000000000000000000004SEND",
+        payments: ["TOPAY"],
+        userIsRecipient: false
       }
     ],
     sendOptInMessage: true,
     skipLollipopVerification: false,
-    skipServerToServerAuthentication: false
+    skipServerToServerAuthentication: false,
+    validationCodeTimeToLiveSeconds: 60
   },
   wallet: {
     methods: paymentMethods,

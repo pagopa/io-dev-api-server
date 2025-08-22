@@ -6,6 +6,7 @@ import { SendConfig } from "../types/sendConfig";
 const aars = new Array<AAR>();
 
 export interface IAARRepository {
+  getAAR: (notificationIun: string, qrCodeContent: string) => AAR | undefined;
   getAARByQRCodeContent: (qrCodeContent: string) => AAR | undefined;
   getAARList: () => ReadonlyArray<AAR>;
   initializeIfNeeded: (configuration: SendConfig) => void;
@@ -34,6 +35,13 @@ const initializeIfNeeded = (configuration: SendConfig) => {
   });
 };
 
+const getAAR = (notificationIun: string, qrCodeContent: string) =>
+  aars.find(
+    aar =>
+      aar.notificationIUN === notificationIun &&
+      aar.qrCodeContent === qrCodeContent
+  );
+
 const getAARList = (): ReadonlyArray<AAR> => aars.map(aar => ({ ...aar }));
 
 const updateAARTOSByInternalId = (internalId: string): AAR | undefined => {
@@ -49,6 +57,7 @@ const getAARByQRCodeContent = (qrCodeContent: string): AAR | undefined =>
   aars.find(aar => aar.qrCodeContent === qrCodeContent);
 
 export const AARRepository: IAARRepository = {
+  getAAR,
   getAARByQRCodeContent,
   getAARList,
   initializeIfNeeded,

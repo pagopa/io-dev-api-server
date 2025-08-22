@@ -20,6 +20,7 @@ import {
   mandateIdOrUndefinedFromQuery,
   tosVersionOrUndefinedFromQuery
 } from "../services/ioSendService";
+import { generateCreateMandatePath } from "../../pn/routers/mandatesRouter";
 
 export const ioSendRouter = Router();
 
@@ -123,6 +124,28 @@ addHandler(
   () => Math.random() * 500
 );
 
+addHandler(
+  ioSendRouter,
+  "post",
+  addApiV1Prefix("/send/mandate/create"),
+  lollipopMiddleware(async (req, res) => {
+    const sendCreateMandateUrl = `${serverUrl}${generateCreateMandatePath()}`;
+    const sendCreateMandateBody = JSON.stringify(req.body);
+    const sendCreateMandateFetch = () =>
+      fetch(sendCreateMandateUrl, {
+        method: "post",
+        headers: generateRequestHeaders(req.headers),
+        body: sendCreateMandateBody
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendCreateMandateFetch,
+      "Mandate/Create",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
 const generateRequestHeaders = (
   headers: IncomingHttpHeaders,
   contentType: string = "application/json"
@@ -135,8 +158,8 @@ const generateRequestHeaders = (
   ...MessagesService.sendTaxIdHeader(
     ioDevServerConfig.profile.attrs.fiscal_code
   ),
-  // Don't send the default IO Source Header, it must come from the client
   "Content-Type": contentType
+  // Don't send the default IO Source Header, it must come from the client
 });
 
 const fetchSENDDataAndForwardResponse = async (
@@ -161,7 +184,7 @@ const fetchSENDDataAndForwardResponse = async (
       .json(
         getProblemJson(
           500,
-          "QRCode unexpected error",
+          `${endpointName} unexpected error`,
           `Unexpected error while contacting SEND ${endpointName} endpoint (${errorMessage})`
         )
       );
