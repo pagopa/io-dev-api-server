@@ -8,6 +8,7 @@ import { CreateMandateBody } from "../types/createMandateBody";
 import { AARRepository } from "../repositories/aarRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
 import { ValidationCode } from "../models/ValidationCode";
+import { AcceptMandateBody } from "../types/acceptMandateBody";
 
 export const checkAndVerifyExistingMandate = (
   iun: string,
@@ -40,6 +41,75 @@ export const checkAndVerifyExistingMandate = (
   return right(mandate);
 };
 
+export const checkAndCreateTemporaryMandate = (
+  body: object,
+  mandateId: string,
+  taxId: string
+): Either<ExpressFailure, Mandate> => {
+  const acceptMandateBodyEither = AcceptMandateBody.decode(body);
+  if (isLeft(acceptMandateBodyEither)) {
+    return left({
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        "Bad body",
+        `Unable to decode request body: it's either missing or has a bad data structure (${readableReportSimplified(
+          acceptMandateBodyEither.left
+        )})`
+      )
+    });
+  }
+
+  const validationCode = MandateRepository.getValidationCode(mandateId);
+  if (validationCode == null) {
+    return left({
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        "Validation Code not found",
+        `Unable to find a Validation Code associated with the provided 'mandateId' (${mandateId})`
+      )
+    });
+  }
+
+  // TODO CIE data validation
+
+  const signedVerificationCode =
+    acceptMandateBodyEither.right.signed_verification_code;
+  // TODO decode signedVerificationCode
+  if (signedVerificationCode !== validationCode.validationCode) {
+    MandateRepository.deleteValidationCode(mandateId);
+    return left({
+      httpStatusCode: 403,
+      reason: getProblemJson(
+        403,
+        "Bad signed verification code",
+        `Provided signed verification code does not match the original validation code (${signedVerificationCode})`
+      )
+    });
+  }
+
+  if (validationCode.timeToLive <= new Date()) {
+    MandateRepository.deleteValidationCode(mandateId);
+    return left({
+      httpStatusCode: 403,
+      reason: getProblemJson(
+        403,
+        "Validation Code expired",
+        `Provided signed verification code has expired (${signedVerificationCode})`
+      )
+    });
+  }
+
+  MandateRepository.deleteValidationCode(mandateId);
+  const temporaryMandate = MandateRepository.createTemporaryMandate(
+    mandateId,
+    validationCode.notificationIUN,
+    taxId
+  );
+  return right(temporaryMandate);
+};
+
 export const checkAndCreateValidationCode = (
   body: object,
   taxId: string
@@ -51,7 +121,7 @@ export const checkAndCreateValidationCode = (
       reason: getProblemJson(
         400,
         "Bad body",
-        `Unable to decode request body: it's either missing or in a bad data structure (${readableReportSimplified(
+        `Unable to decode request body: it's either missing or has a bad data structure (${readableReportSimplified(
           createMandateBodyEither.left
         )})`
       )

@@ -17,10 +17,16 @@ const settings = new Map<
 const validationCodes = new Map<string, ValidationCode>();
 
 export interface IMandateRepository {
+  createTemporaryMandate: (
+    mandateId: string,
+    notificationIun: string,
+    taxId: string
+  ) => Mandate;
   createValidationCode: (
     notificationIun: string,
     qrCodeContent: string
   ) => ValidationCode;
+  deleteValidationCode: (mandateId: string) => void;
   initializeIfNeeded: (
     configuration: SendConfig,
     profileFiscalCode: string
@@ -35,11 +41,33 @@ export interface IMandateRepository {
     representativeFiscalCode: string
   ) => Mandate | undefined;
   getMandateList: () => ReadonlyArray<Mandate>;
+  getValidationCode: (mandateId: string) => ValidationCode | undefined;
 }
+
+const getMandateTimeToLiveSeconds = (): number =>
+  settings.get("mandateTimeToLiveSeconds") ?? defaultMandateTimeToLiveSeconds;
 
 const getValidationCodeTimeToLiveSeconds = (): number =>
   settings.get("validationCodeTimeToLiveSeconds") ??
   defaultValidationCodeTimeToLiveSeconds;
+
+const createTemporaryMandate = (
+  mandateId: string,
+  notificationIun: string,
+  taxId: string
+): Mandate => {
+  const mandateTimeToLiveSeconds = getMandateTimeToLiveSeconds();
+  const timeToLive = new Date();
+  timeToLive.setTime(timeToLive.getTime() + 1000 * mandateTimeToLiveSeconds);
+  const mandate: Mandate = {
+    mandateId,
+    notificationIUN: notificationIun,
+    representativeFiscalCode: taxId,
+    timeToLive
+  };
+  mandates.push(mandate);
+  return mandate;
+};
 
 const createValidationCode = (
   notificationIun: string,
@@ -59,6 +87,10 @@ const createValidationCode = (
   };
   validationCodes.set(validationCode.mandateId, validationCode);
   return validationCode;
+};
+
+const deleteValidationCode = (mandateId: string): void => {
+  validationCodes.delete(mandateId);
 };
 
 const initializeIfNeeded = (
@@ -120,10 +152,16 @@ const getFirstValidMandate = (
 const getMandateList = (): ReadonlyArray<Mandate> =>
   mandates.map(mandate => ({ ...mandate }));
 
+const getValidationCode = (mandateId: string): ValidationCode | undefined =>
+  validationCodes.get(mandateId);
+
 export const MandateRepository: IMandateRepository = {
+  createTemporaryMandate,
   createValidationCode,
+  deleteValidationCode,
   initializeIfNeeded,
   getActiveMandates,
   getFirstValidMandate,
-  getMandateList
+  getMandateList,
+  getValidationCode
 };

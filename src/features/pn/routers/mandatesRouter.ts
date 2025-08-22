@@ -6,7 +6,10 @@ import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { ioDevServerConfig } from "../../../config";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
-import { checkAndCreateValidationCode } from "../services/mandateService";
+import {
+  checkAndCreateTemporaryMandate,
+  checkAndCreateValidationCode
+} from "../services/mandateService";
 
 const createMandatePath = "/mandate/api/v2/mandate";
 export const generateCreateMandatePath = () => createMandatePath;
@@ -46,6 +49,36 @@ addHandler(
         timeToLive: validationCode.timeToLive,
         validationCode: validationCode.validationCode
       });
+    })
+  )
+);
+
+addHandler(
+  sendMandatesRouter,
+  "patch",
+  acceptMandatePath,
+  // Middleware have to be used like this (instead of directly giving the middleware to the router via use)
+  // because supertest (when testing) calls every middleware upon test initialization, even if it not in a
+  // router directly called by the test, thus making every test fail due to the authentication middleware
+  authenticationMiddleware(
+    initializationMiddleware((req: Request, res: Response) => {
+      const taxIdEither = checkAndValidateLollipopAndTaxId(
+        ioDevServerConfig.send,
+        req
+      );
+      if (handleLeftEitherIfNeeded(taxIdEither, res)) {
+        return;
+      }
+      const mandateId = req.params.mandateId;
+      const temporaryMandateEither = checkAndCreateTemporaryMandate(
+        req.body,
+        mandateId,
+        taxIdEither.right
+      );
+      if (handleLeftEitherIfNeeded(temporaryMandateEither, res)) {
+        return;
+      }
+      res.status(200).json();
     })
   )
 );

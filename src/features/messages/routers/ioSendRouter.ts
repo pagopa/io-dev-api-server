@@ -20,7 +20,10 @@ import {
   mandateIdOrUndefinedFromQuery,
   tosVersionOrUndefinedFromQuery
 } from "../services/ioSendService";
-import { generateCreateMandatePath } from "../../pn/routers/mandatesRouter";
+import {
+  generateAcceptMandatePath,
+  generateCreateMandatePath
+} from "../../pn/routers/mandatesRouter";
 
 export const ioSendRouter = Router();
 
@@ -140,6 +143,31 @@ addHandler(
     await fetchSENDDataAndForwardResponse(
       sendCreateMandateFetch,
       "Mandate/Create",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
+addHandler(
+  ioSendRouter,
+  "patch",
+  addApiV1Prefix("/send/mandate/accept/:mandateId"),
+  lollipopMiddleware(async (req, res) => {
+    const mandateId = req.params.mandateId;
+    const sendAcceptMandateUrl = `${serverUrl}${generateAcceptMandatePath(
+      mandateId
+    )}`;
+    const sendAcceptMandateBody = JSON.stringify(req.body);
+    const sendCreateMandateFetch = () =>
+      fetch(sendAcceptMandateUrl, {
+        method: "PATCH",
+        headers: generateRequestHeaders(req.headers),
+        body: sendAcceptMandateBody
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendCreateMandateFetch,
+      "Mandate/Accept",
       res
     );
   }),
