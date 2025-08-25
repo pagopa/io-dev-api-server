@@ -4,8 +4,8 @@ import { BackendStatus } from "../../generated/definitions/content/BackendStatus
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 import { baseRelyingPartyPath } from "../features/fims/services/relyingPartyService";
 import {
-  pnOptInServiceId,
-  pnServiceId
+  sendOptInServiceId,
+  sendServiceId
 } from "../features/pn/services/services";
 import { serverUrl } from "../utils/server";
 
@@ -120,8 +120,8 @@ export const backendStatus: BackendStatus = {
         android: "2.35.0.1"
       },
       frontend_url: "https://cittadini.notifichedigitali.it",
-      optInServiceId: pnOptInServiceId,
-      notificationServiceId: pnServiceId,
+      optInServiceId: sendOptInServiceId,
+      notificationServiceId: sendServiceId,
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
       privacy_url: "https://cittadini.notifichedigitali.it/informativa-privacy",
       aarQRCodeRegex:

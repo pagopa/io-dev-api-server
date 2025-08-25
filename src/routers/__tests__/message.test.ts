@@ -12,7 +12,7 @@ import ServicesDB from "../../features/services/persistence/servicesDatabase";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
 import * as lollipopMid from "../../middleware/lollipopMiddleware";
-import { pnServiceId } from "../../features/pn/services/services";
+import { sendServiceId } from "../../features/pn/services/services";
 
 const request = supertest(app);
 
@@ -339,7 +339,7 @@ describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
   it("should return 200 with the remoted precondition", async () => {
     const inboxMessages = MessagesDB.findAllInbox();
     const pnMessage = inboxMessages.find(
-      message => message.sender_service_id === pnServiceId
+      message => message.sender_service_id === sendServiceId
     );
     expect(pnMessage).toBeDefined();
 
