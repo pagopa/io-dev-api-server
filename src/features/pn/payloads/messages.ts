@@ -36,8 +36,8 @@ import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/
 import { assetsFolder } from "../../../config";
 import {
   pnOptInCTA,
-  pnOptInServiceId,
-  pnServiceId
+  sendOptInServiceId,
+  sendServiceId
 } from "../services/services";
 import { getNewMessage } from "../../../populate-persistence";
 import { NotificationStatusHistoryElement } from "../types/notificationStatusHistoryElement";
@@ -61,7 +61,7 @@ export const createPNOptInMessage = (
           `PN OptIn CTA`,
           pnOptInCTA + messageMarkdown,
           undefined,
-          pnOptInServiceId
+          sendOptInServiceId
         )
       ]
     )
@@ -108,12 +108,12 @@ const createPnMessage = (
   markdown: string
 ): ThirdPartyMessageWithContent =>
   pipe(
-    ServicesDB.getService(pnServiceId),
+    ServicesDB.getService(sendServiceId),
     O.fromNullable,
     O.fold(
       () => {
         throw Error(
-          `getNewPnMessage: unable to find service PN service with id (${pnServiceId})`
+          `getNewPnMessage: unable to find service PN service with id (${sendServiceId})`
         );
       },
       pnService =>
@@ -124,7 +124,7 @@ const createPnMessage = (
           },
           sharedData =>
             pipe(
-              createMessage(fiscalCode, pnServiceId),
+              createMessage(fiscalCode, sendServiceId),
               createdMessageWithoutContent =>
                 withContent(
                   createdMessageWithoutContent,
