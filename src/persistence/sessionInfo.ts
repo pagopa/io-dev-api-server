@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import { Request } from "express";
 
 import { ioDevServerConfig } from "../config";
@@ -45,7 +45,7 @@ const setLoginSessionToken = (newToken: string) => {
   loginSessionTokenInfo.instantiationDate = new Date();
 };
 
-const generateNewLoginToken = () => faker.random.alphaNumeric(11).toUpperCase();
+const generateNewLoginToken = () => faker.string.alphanumeric(11).toUpperCase();
 
 export const createOrRefreshEverySessionToken = () => {
   setLoginSessionToken(generateNewLoginToken());

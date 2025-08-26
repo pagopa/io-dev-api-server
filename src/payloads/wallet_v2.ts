@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { range } from "fp-ts/lib/NonEmptyArray";
@@ -217,7 +217,7 @@ export const abiData = range(1, abiCodes.length - 1).map<Abi>(_ => {
   faker.seed(millis++);
   return {
     abi: abiCodes[
-      faker.datatype.number({ min: 0, max: abiCodes.length - 1 })
+      faker.number.int({ min: 0, max: abiCodes.length - 1 })
     ].replace(".png", ""),
     name: faker.company.name()
   };

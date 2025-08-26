@@ -4,8 +4,8 @@ import { BackendStatus } from "../../generated/definitions/content/BackendStatus
 import { LevelEnum } from "../../generated/definitions/content/SectionStatus";
 import { baseRelyingPartyPath } from "../features/fims/services/relyingPartyService";
 import {
-  pnOptInServiceId,
-  pnServiceId
+  sendOptInServiceId,
+  sendServiceId
 } from "../features/pn/services/services";
 import { serverUrl } from "../utils/server";
 
@@ -50,7 +50,11 @@ export const backendStatus: BackendStatus = {
     },
     cgn: {
       enabled: true,
-      merchants_v2: false
+      merchants_v2: false,
+      show_cgn_categories_modal: {
+        android: "5.0.0.0",
+        ios: "5.0.0.0"
+      }
     },
     fims: {
       domain: `${serverUrl}/fims/provider/`,
@@ -116,12 +120,12 @@ export const backendStatus: BackendStatus = {
         android: "2.35.0.1"
       },
       frontend_url: "https://cittadini.notifichedigitali.it",
-      optInServiceId: pnOptInServiceId,
-      notificationServiceId: pnServiceId,
+      optInServiceId: sendOptInServiceId,
+      notificationServiceId: sendServiceId,
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
       privacy_url: "https://cittadini.notifichedigitali.it/informativa-privacy",
       aarQRCodeRegex:
-        "^\\s*https:\\/\\/(dev\\.|test\\.|hotfix\\.|uat\\.)?cittadini\\.notifichedigitali\\.it(\\/[^?]*)?\\?aar=[^\\s]+"
+        "^\\s*https:\\/\\/(dev\\.|test\\.|hotfix\\.|uat\\.)?(cittadini|login)\\.notifichedigitali\\.it(\\/[^?]*)?\\?aar=[^\\s]+"
     },
     idPay: {
       min_app_version: {

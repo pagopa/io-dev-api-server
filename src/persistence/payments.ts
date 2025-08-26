@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import {
   NonEmptyString,
   OrganizationFiscalCode
@@ -50,7 +50,7 @@ const addOrUpdatePaymentStatus = (
 const createPaymentData = (
   organizationFiscalCode: OrganizationFiscalCode,
   invalidAfterDueDate: boolean = false,
-  noticeNumber: PaymentNoticeNumber = `0${faker.random.numeric(
+  noticeNumber: PaymentNoticeNumber = `0${faker.string.numeric(
     17
   )}` as PaymentNoticeNumber,
   amount: PaymentAmount = getRandomIntInRange(1, 10000) as PaymentAmount
@@ -75,10 +75,10 @@ const createProcessablePayment = (
   organizationFiscalCode: OrganizationFiscalCode,
   organizationName: OrganizationName,
   nativeDueDate: Date = faker.date.soon(),
-  organizationUnitName: NonEmptyString = faker.random.alphaNumeric(
+  organizationUnitName: NonEmptyString = faker.string.alphanumeric(
     3
   ) as NonEmptyString,
-  paymentContextCode: CodiceContestoPagamento = faker.random.alphaNumeric(
+  paymentContextCode: CodiceContestoPagamento = faker.string.alphanumeric(
     32
   ) as CodiceContestoPagamento,
   iban: Iban = faker.finance.iban() as Iban,

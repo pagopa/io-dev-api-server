@@ -1,5 +1,5 @@
 import { OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 
 import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
 import { Iban } from "../../generated/definitions/backend/Iban";
@@ -263,13 +263,13 @@ export const getPaymentRequestsGetResponse = (
   importoSingoloVersamento: getRandomValue(
     ioDevServerConfig.wallet.payment
       ?.amount as PaymentRequestsGetResponse["importoSingoloVersamento"],
-    faker.datatype.number({
+    faker.number.int({
       min: 1,
       max: 9999
     }) as PaymentRequestsGetResponse["importoSingoloVersamento"],
     "wallet"
   ),
-  codiceContestoPagamento: faker.random.alphaNumeric(
+  codiceContestoPagamento: faker.string.alphanumeric(
     32
   ) as PaymentRequestsGetResponse["codiceContestoPagamento"],
   ibanAccredito:

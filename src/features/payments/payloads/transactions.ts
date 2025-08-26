@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
 import { CalculateFeeResponse } from "../../../../generated/definitions/pagopa/ecommerce/CalculateFeeResponse";
@@ -61,7 +61,7 @@ export const getTransactionInfoPayload = (
     payments: [
       {
         rptId: "77777777777302012387654312384" as RptId,
-        amount: faker.datatype.number({
+        amount: faker.number.int({
           min: 1,
           max: 9999
         }) as PaymentInfo["amount"]

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
@@ -17,7 +17,7 @@ export const getPaymentRequestsGetResponse = (
     O.fromNullable,
     O.map((randomService: ServiceDetails) => ({
       rptId,
-      amount: faker.datatype.number({
+      amount: faker.number.int({
         min: 1,
         max: 9999
       }) as PaymentRequestsGetResponse["amount"],

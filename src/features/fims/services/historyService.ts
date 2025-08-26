@@ -4,7 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { ulid } from "ulid";
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { Access } from "../../../../generated/definitions/fims_history/Access";
