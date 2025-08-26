@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import _ from "lodash";
@@ -22,7 +22,7 @@ export const getTimelineResponse = (
       const operationList = _.slice(timeline, startIndex, endIndex);
 
       return {
-        lastUpdate: faker.date.recent(0.05),
+        lastUpdate: faker.date.recent({ days: 0.05 }),
         operationList,
         pageNo,
         pageSize,

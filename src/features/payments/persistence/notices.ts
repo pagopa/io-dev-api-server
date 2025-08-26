@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerIT as faker } from "@faker-js/faker";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import { NoticeListItem } from "../../../../generated/definitions/pagopa/transactions/NoticeListItem";
@@ -48,7 +48,7 @@ const generateUserNotice = (
 ) => {
   const payeeTaxCode =
     mockedTaxCodes[
-      faker.datatype.number({ min: 0, max: mockedTaxCodes.length - 1 })
+      faker.number.int({ min: 0, max: mockedTaxCodes.length - 1 })
     ];
   const randomNotice: NoticeListItem = {
     eventId,
@@ -64,21 +64,21 @@ const generateUserNotice = (
   };
 
   const cartList = Array.from(
-    { length: faker.datatype.number({ min: 1, max: 2 }) },
+    { length: faker.number.int({ min: 1, max: 2 }) },
     () => ({
-      subject: faker.lorem.sentence(faker.datatype.number({ min: 2, max: 4 })),
-      amount: faker.finance.amount(1, 1000),
+      subject: faker.lorem.sentence(faker.number.int({ min: 2, max: 4 })),
+      amount: faker.finance.amount({ min: 1, max: 1000 }),
       payee: {
         name: randomNotice.payeeName,
         taxCode: randomNotice.payeeTaxCode
       },
       debtor: {
-        name: faker.name.fullName(),
-        taxCode: faker.random.alphaNumeric(16).toUpperCase()
+        name: faker.person.fullName(),
+        taxCode: faker.string.alphanumeric(16).toUpperCase()
       },
       refNumberType: "IBAN",
-      refNumberValue: faker.datatype
-        .number({ min: 100000000000, max: 999999999999 })
+      refNumberValue: faker.number
+        .int({ min: 100000000000, max: 999999999999 })
         .toString()
     })
   );
@@ -103,7 +103,7 @@ const generateUserNoticeData = () => {
   for (const i of Array(
     ioDevServerConfig.features.payments.numberOfTransactions
   ).keys()) {
-    generateUserNotice(faker.datatype.uuid(), i);
+    generateUserNotice(faker.string.uuid(), i);
   }
 };
 

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/it";
+import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
 import {
@@ -13,37 +13,37 @@ const onboardingStatuses: {
 } = {
   [IDPayInitiativeID.OK_INVITED]: {
     status: OnboardingStatusEnum.INVITED,
-    statusDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_STATUS_NOT_ELIGIBLE]: {
     status: OnboardingStatusEnum.ELIGIBLE_KO,
-    statusDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_STATUS_NO_REQUIREMENTS]: {
     status: OnboardingStatusEnum.ELIGIBLE_KO,
-    statusDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_STATUS_ONBOARDED]: {
     status: OnboardingStatusEnum.ONBOARDING_OK,
-    statusDate: faker.date.recent(1),
-    onboardingOkDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 }),
+    onboardingOkDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_STATUS_UNSUBSCRIBED]: {
     status: OnboardingStatusEnum.UNSUBSCRIBED,
-    statusDate: faker.date.recent(1),
-    onboardingOkDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 }),
+    onboardingOkDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_STATUS_ON_EVALUATION]: {
     status: OnboardingStatusEnum.ON_EVALUATION,
-    statusDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST]: {
     status: OnboardingStatusEnum.ONBOARDING_WAITING_LIST,
-    statusDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 })
   },
   [IDPayInitiativeID.KO_FAMILY_UNIT_ALREADY_JOINED]: {
     status: OnboardingStatusEnum.ONBOARDING_FAMILY_UNIT_ALREADY_JOINED,
-    statusDate: faker.date.recent(1)
+    statusDate: faker.date.recent({ days: 1 })
   }
 };
 

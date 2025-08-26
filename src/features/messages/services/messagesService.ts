@@ -11,7 +11,7 @@ import { CreatedMessageWithContentAndAttachments } from "../../../../generated/d
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
 import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import { pnServiceId } from "../../pn/services/services";
+import { sendServiceId } from "../../pn/services/services";
 import { GetMessagesParameters } from "../../../types/parameters";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 import { MessageCategory } from "../../../../generated/definitions/backend/MessageCategory";
@@ -38,7 +38,7 @@ export const getMessageCategory = (
   }
   if (
     ThirdPartyMessageWithContent.is(message) &&
-    senderService.id === pnServiceId
+    senderService.id === sendServiceId
   ) {
     return {
       tag: TagEnumPN.PN,
@@ -97,7 +97,7 @@ const getPublicMessages = (
             is_read,
             is_archived,
             has_attachments,
-            has_precondition: senderService.id === pnServiceId
+            has_precondition: senderService.id === sendServiceId
           };
         }
       )
