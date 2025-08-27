@@ -53,6 +53,15 @@ const automatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
   }
 ];
 
+const familyUnityOnlyAutomatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
+  {
+    code: AutomatedCriteriaCodeEnum.FAMILY_UNIT,
+    authority: "Ministero dell'interno",
+    operator: OperatorEnum.EQ,
+    value: "Mnistero dell'Interno"
+  }
+];
+
 const criterionArray: ReadonlyArray<RowDataDTO> = [
   {
     description: "Criterion 1",
@@ -151,17 +160,27 @@ const checkPrerequisites: {
     selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
   [IDPayInitiativeID.BONUS_ELETTRODOMESTICI]: {
-    automatedCriteria,
+    automatedCriteria: familyUnityOnlyAutomatedCriteria,
     selfDeclarationCriteria: [
       {
         _type: SelfDeclarationMultiType.multi,
         code: ulid(),
-        description:
-          "Se dichiari di avere un ISEE inferiore a 25.000€, verificheremo l’informazione con INPS",
+        description: "Hai un ISEE 2025 in corso di validità?",
+        subDescription: "[Quando un ISEE è valido?](https://google.com)",
         value: [
-          "Sì, inferiore a 25.000€",
-          "Sì, uguale o superiore a 25.000€",
-          "No, non ho un ISEE "
+          {
+            description: "Sì, inferiore a 25.000€",
+            subDescription:
+              "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
+          },
+          {
+            description: "Sì, inferiore a 25.000€",
+            subDescription: "Hai diritto fino a 100€"
+          },
+          {
+            description: "Non ho un ISEE o preferisco non rispondere",
+            subDescription: "Hai diritto fino a 100€"
+          }
         ]
       },
       {
@@ -169,6 +188,7 @@ const checkPrerequisites: {
         code: ulid(),
         description:
           "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
+        subDescription: "Ai sensi del D.P.R. 28 dicembre 2000, n. 445",
         value: false
       }
     ]
