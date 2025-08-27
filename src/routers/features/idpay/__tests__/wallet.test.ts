@@ -101,11 +101,25 @@ describe("IDPay Wallet API", () => {
     it("should return 200", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
+      const iban = `IT${faker.number
+        .int({ min: 0, max: 99 })
+        .toString()
+        .padStart(2, "0")}${faker.string.alpha({
+        length: 1,
+        casing: "upper"
+      })}${faker.number
+        .int({ min: 0, max: 99999 })
+        .toString()
+        .padStart(5, "0")}${faker.number
+        .int({ min: 0, max: 99999 })
+        .toString()
+        .padStart(5, "0")}${faker.string.alphanumeric({
+        length: 12,
+        casing: "upper"
+      })}`;
       const body: IbanPutDTO = {
         description: "A",
-        iban: faker.finance.iban({
-          formatted: false
-        })
+        iban
       };
 
       const response = await request
@@ -116,11 +130,25 @@ describe("IDPay Wallet API", () => {
     // eslint-disable-next-line sonarjs/no-duplicate-string
     it("should return 404 if initiative ID does not exist", async () => {
       const initiativeId = "ABC123";
+      const iban404 = `IT${faker.number
+        .int({ min: 0, max: 99 })
+        .toString()
+        .padStart(2, "0")}${faker.string.alpha({
+        length: 1,
+        casing: "upper"
+      })}${faker.number
+        .int({ min: 0, max: 99999 })
+        .toString()
+        .padStart(5, "0")}${faker.number
+        .int({ min: 0, max: 99999 })
+        .toString()
+        .padStart(5, "0")}${faker.string.alphanumeric({
+        length: 12,
+        casing: "upper"
+      })}`;
       const body: IbanPutDTO = {
         description: "A",
-        iban: faker.finance.iban({
-          formatted: false
-        })
+        iban: iban404
       };
 
       const response = await request
@@ -128,7 +156,7 @@ describe("IDPay Wallet API", () => {
         .send(body);
       expect(response.status).toBe(404);
     });
-    it("should return 403 if invalid IBAN", async () => {
+    it("should return 400 if invalid IBAN", async () => {
       const tInitiative = initiatives[0];
       const initiativeId = tInitiative.initiativeId;
       const body: IbanPutDTO = { description: "A", iban: "123" };
@@ -136,7 +164,7 @@ describe("IDPay Wallet API", () => {
       const response = await request
         .put(addIdPayPrefix(`/wallet/${initiativeId}/iban`))
         .send(body);
-      expect(response.status).toBe(403);
+      expect(response.status).toBe(400);
     });
     it("should return 400 if request body is malformed", async () => {
       const tInitiative = initiatives[0];
