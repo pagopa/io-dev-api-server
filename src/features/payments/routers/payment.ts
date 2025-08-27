@@ -30,7 +30,7 @@ import {
 } from "../types/failure";
 import { generateOnboardablePaymentMethods } from "../utils/onboarding";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
-import PaymentsDB from "../../../persistence/payments";
+import { PaymentsDatabase } from "../../../persistence/payments";
 import { fold } from "../../../types/PaymentStatus";
 import { getProblemJson } from "../../../payloads/error";
 import { addPaymentHandler } from "./router";
@@ -54,7 +54,7 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
             () =>
               pipe(
                 rptId,
-                PaymentsDB.getPaymentStatus,
+                PaymentsDatabase.getPaymentStatus,
                 O.fold(
                   () =>
                     pipe(
@@ -296,7 +296,7 @@ addPaymentHandler("post", "/private/finalizePayment", (req, res) => {
       return;
     }
     const outcomeDetailV2Enum = mapOutcomeCodeToDetailsV2Enum(outcomeNumber);
-    PaymentsDB.createProcessedPayment(
+    PaymentsDatabase.createProcessedPayment(
       latestPaymentRequestId,
       outcomeDetailV2Enum
     );

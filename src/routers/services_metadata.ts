@@ -13,7 +13,7 @@ import { ZendeskSubcategoriesErrors } from "../../generated/definitions/content/
 import { CoBadgeServices } from "../../generated/definitions/pagopa/cobadge/configuration/CoBadgeServices";
 import { PrivativeServices } from "../../generated/definitions/pagopa/privative/configuration/PrivativeServices";
 import { assetsFolder, staticContentRootPath } from "../config";
-import { sendServiceId } from "../features/pn/services/services";
+import { sendServiceId } from "../features/pn/services/dataService";
 import { backendStatus } from "../payloads/backend";
 import { municipality } from "../payloads/municipality";
 import { addHandler } from "../payloads/response";

@@ -5,13 +5,13 @@ import { PNActivation } from "../../../../generated/definitions/pn/PNActivation"
 import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import { sendServiceId } from "../services/services";
+import { sendServiceId } from "../services/dataService";
 
-export const pnRouter = Router();
+export const sendServiceRouter = Router();
 
 const addPrefix = (path: string) => addApiV1Prefix(`/pn${path}`);
 
-addHandler(pnRouter, "post", addPrefix("/activation"), (req, res) => {
+addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
   const maybeActivation = PNActivation.decode(req.body);
   if (E.isLeft(maybeActivation)) {
     res.sendStatus(400);

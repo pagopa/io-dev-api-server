@@ -80,7 +80,15 @@ function unarchive(id: string): boolean {
 // eslint-disable-next-line: readonly-array no-let
 function persist(messages: CreatedMessageWithContentAndAttachments[]): void {
   inboxMessages = inboxMessages
-    .concat(messages.map(m => ({ ...m, is_read: false, is_archived: false })))
+    .concat(
+      messages.map(m =>
+        pipe(
+          m,
+          m => addBooleanPropertyIfNeeded(m, "is_read"),
+          m => addBooleanPropertyIfNeeded(m, "is_archived")
+        )
+      )
+    )
     .sort((a, b) => (a.id < b.id ? 1 : -1));
 }
 
@@ -102,20 +110,20 @@ function findAllInbox(): ReadonlyArray<CreatedMessageWithContentAndAttachments> 
 function findAllArchived(): ReadonlyArray<CreatedMessageWithContentAndAttachments> {
   return archivedMessages;
 }
-
 /**
  * Find one message given its ID, whether it is in the inbox or archived.
  */
 const getMessageById = (
   id: string
-): O.Option<CreatedMessageWithContentAndAttachments> =>
+): CreatedMessageWithContentAndAttachments | undefined =>
   pipe(
     inboxMessages,
     A.findFirst(message => message.id === id),
-    O.orElse(() =>
+    O.getOrElse(() =>
       pipe(
         archivedMessages,
-        A.findFirst(message => message.id === id)
+        A.findFirst(message => message.id === id),
+        O.toUndefined
       )
     )
   );
@@ -168,6 +176,19 @@ function setReadMessage(id: string) {
     O.getOrElse(() => false)
   );
 }
+
+const addBooleanPropertyIfNeeded = (
+  message: CreatedMessageWithContentAndAttachments,
+  property: string
+) => {
+  if (property in message) {
+    return message;
+  }
+  return {
+    ...message,
+    [property]: false
+  };
+};
 
 export default {
   addNewMessage,
