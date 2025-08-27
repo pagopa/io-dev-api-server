@@ -1,5 +1,4 @@
 import * as t from "io-ts";
-import { PNMessageTemplateWrapper } from "../../pn/types/messageTemplateWrapper";
 import { HttpResponseCode } from "../../../types/httpResponseCode";
 import { AllowRandomValue } from "../../../types/allowRandomValue";
 import { LiveModeMessages } from "./liveModeMessages";
@@ -55,15 +54,8 @@ export const MessagesConfig = t.intersection([
   AllowRandomValue,
   t.partial({
     liveMode: LiveModeMessages,
-    attachmentAvailableAfterSeconds: t.number,
-    attachmentExpiredAfterSeconds: t.number,
-    attachmentRetryAfterSeconds: t.number,
     // number of messages with remote content
-    messageTemplateWrappers: t.readonlyArray(MessageTemplateWrapper),
-    // number of messages coming from PN (aka Piattaforma Notifiche)
-    pnMessageTemplateWrappers: t.readonlyArray(PNMessageTemplateWrapper),
-    // PN Opt In message
-    pnOptInMessage: t.boolean
+    messageTemplateWrappers: t.readonlyArray(MessageTemplateWrapper)
   })
 ]);
 

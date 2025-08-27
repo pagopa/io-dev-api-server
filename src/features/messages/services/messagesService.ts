@@ -1,17 +1,16 @@
-import { ulid } from "ulid";
-import { identity, pipe } from "fp-ts/lib/function";
-import * as S from "fp-ts/lib/string";
+import path from "path";
+import { IncomingHttpHeaders } from "node:http";
+import { pipe } from "fp-ts/lib/function";
 import * as B from "fp-ts/lib/boolean";
-import * as O from "fp-ts/lib/Option";
+import { Either, isLeft, isRight, left, right } from "fp-ts/lib/Either";
 import { __, match, not } from "ts-pattern";
+import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { IoDevServerConfig } from "../../../types/config";
-import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
-import { defaultContentType } from "../persistence/messagesPayload";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
 import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
 import ServicesDB from "../../services/persistence/servicesDatabase";
-import { pnServiceId } from "../../pn/services/services";
+import { sendServiceId } from "../../pn/services/dataService";
 import { GetMessagesParameters } from "../../../types/parameters";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 import { MessageCategory } from "../../../../generated/definitions/backend/MessageCategory";
@@ -24,10 +23,34 @@ import {
 } from "../../../../generated/definitions/backend/MessageCategoryPN";
 import { rptIdFromServiceAndPaymentData } from "../../../utils/payment";
 import { ioDevServerConfig } from "../../../config";
+import { nextMessageIdAndCreationDate } from "../utils";
+import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { APIKey } from "../../pn/models/APIKey";
+import { ExpressFailure } from "../../../utils/expressDTO";
+import { getProblemJson } from "../../../payloads/error";
+import { fileExists, isPDFFile } from "../../../utils/file";
+import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
+import {
+  generateDocumentPath,
+  generatePaymentDocumentPath
+} from "../../pn/routers/documentsRouter";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
 ): MessageCategory => {
+  if ("category" in message) {
+    const messageCategoryEither = MessageCategory.decode(message.category);
+    if (isRight(messageCategoryEither)) {
+      const messageCategory = messageCategoryEither.right;
+      if (messageCategory.tag === "PN") {
+        return {
+          id: messageCategory.id,
+          tag: messageCategory.tag
+        };
+      }
+      return messageCategoryEither.right;
+    }
+  }
   const { eu_covid_cert, payment_data } = message.content;
   const serviceId = message.sender_service_id;
   const senderService = ServicesDB.getService(serviceId);
@@ -38,7 +61,7 @@ export const getMessageCategory = (
   }
   if (
     ThirdPartyMessageWithContent.is(message) &&
-    senderService.id === pnServiceId
+    senderService.id === sendServiceId
   ) {
     return {
       tag: TagEnumPN.PN,
@@ -97,7 +120,12 @@ const getPublicMessages = (
             is_read,
             is_archived,
             has_attachments,
-            has_precondition: senderService.id === pnServiceId
+            has_precondition:
+              message.content.third_party_data?.has_precondition ===
+                HasPreconditionEnum.ALWAYS ||
+              (message.content.third_party_data?.has_precondition ===
+                HasPreconditionEnum.ONCE &&
+                !is_read)
           };
         }
       )
@@ -189,149 +217,192 @@ const createMessage = () =>
         randomServiceIndex => localServices[randomServiceIndex]
       ),
     localService =>
-      ({
-        id: ulid(),
-        fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
-        created_at: new Date(),
-        content: {
-          subject: `Created on ${new Date().toTimeString()}`,
-          markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
-        },
-        sender_service_id: localService.id
-      } as CreatedMessageWithContentAndAttachments)
-  );
-
-const handleAttachment = (
-  attachment: ThirdPartyAttachment,
-  attachmentPollingData: Map<string, [Date, Date]>,
-  config: IoDevServerConfig,
-  sendAttachmentCallback: (contentType: string, relativePath: string) => void,
-  sendRetryAfterCallback: (retryAfterSeconds: number) => void
-) =>
-  pipe(
-    attachment.url,
-    S.includes("/f24/"),
-    B.fold(
-      () =>
-        sendAttachment(
-          attachment.url,
-          attachment.content_type,
-          sendAttachmentCallback
-        ),
-      () =>
-        pipe(
-          getPollingAndExpirationTuple(
-            attachment.url,
-            attachmentPollingData,
-            config
-          ),
-          O.fromPredicate(
-            pollingAndExpirationDatesTuple =>
-              pollingAndExpirationDatesTuple[0] < new Date()
-          ),
-          O.fold(
-            () =>
-              pipe(
-                config.messages.attachmentRetryAfterSeconds,
-                O.fromNullable,
-                O.getOrElse(() => 3),
-                sendRetryAfterCallback
-              ),
-            () =>
-              sendAttachment(
-                attachment.url,
-                attachment.content_type,
-                sendAttachmentCallback
-              )
-          )
-        )
-    )
-  );
-
-const sendAttachment = (
-  attachmentUrl: string,
-  contentType: string | undefined,
-  sendAttachmentCallback: (contentType: string, relativePath: string) => void
-) =>
-  pipe(
-    contentType,
-    O.fromNullable,
-    O.getOrElse(() => defaultContentType),
-    contentType => sendAttachmentCallback(contentType, attachmentUrl)
-  );
-
-const getPollingAndExpirationTuple = (
-  attachmentUrl: string,
-  attachmentPollingData: Map<string, [Date, Date]>,
-  config: IoDevServerConfig
-) =>
-  pipe(
-    attachmentPollingData.get(attachmentUrl),
-    O.fromNullable,
-    O.chain(
-      O.fromPredicate(
-        pollingAndExpirationDatesTuple =>
-          new Date() < pollingAndExpirationDatesTuple[1]
+      pipe(
+        nextMessageIdAndCreationDate(),
+        ({ id, created_at }) =>
+          ({
+            id,
+            fiscal_code: ioDevServerConfig.profile.attrs.fiscal_code,
+            created_at,
+            content: {
+              subject: `Created on ${new Date().toTimeString()}`,
+              markdown: `Message content that was created on ${new Date().toTimeString()}\n\nJust some more content to make sure that it has a viable length`
+            },
+            sender_service_id: localService.id
+          } as CreatedMessageWithContentAndAttachments)
       )
-    ),
-    O.fold(
-      () =>
-        generateAndSavePollingAndExpirationTuple(
-          attachmentUrl,
-          attachmentPollingData,
-          config
-        ),
-      identity
+  );
+
+const verifyAttachment = (
+  message: CreatedMessageWithContentAndAttachments,
+  attachmentUrl: string
+): Either<ExpressFailure, ThirdPartyAttachment> => {
+  const thirdPartyMessageWithContentEither =
+    ThirdPartyMessageWithContent.decode(message);
+  if (isLeft(thirdPartyMessageWithContentEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "ThirdPartMessageWithContent decode failed",
+        `Unable to decode from Message to ThirdPartMessageWithContent (${
+          message.id
+        } (${readableReportSimplified(
+          thirdPartyMessageWithContentEither.left
+        )}))`
+      )
+    });
+  }
+  const attachments =
+    thirdPartyMessageWithContentEither.right.third_party_message.attachments;
+  const attachment = attachments?.find(attachment =>
+    attachment.url.endsWith(attachmentUrl)
+  );
+  if (attachment == null) {
+    return left({
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        "Attachment not found",
+        `Unable to find attachment for message with id (${message.id}) (${attachmentUrl})`
+      )
+    });
+  }
+  const attachmentAbsolutePath = path.join(path.resolve("."), attachment.url);
+  if (!fileExists(attachmentAbsolutePath)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Attachment file not found",
+        `Attachment file does not exist (${attachmentAbsolutePath})`
+      )
+    });
+  }
+  const isPDFFileEither = isPDFFile(attachmentAbsolutePath);
+  if (isLeft(isPDFFileEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Unable to verify PDF format",
+        `Unable to check if requested attachment is a PDF file (${attachmentAbsolutePath}) (${isPDFFileEither.left})`
+      )
+    });
+  }
+  if (!isPDFFileEither.right) {
+    return left({
+      httpStatusCode: 415,
+      reason: getProblemJson(
+        415,
+        "PDF check failed",
+        `Attachment is not a PDF file (${attachmentAbsolutePath})`
+      )
+    });
+  }
+
+  return right(attachment);
+};
+
+const lollipopClientHeadersFromHeaders = (
+  headers: IncomingHttpHeaders
+): Record<string, string> =>
+  [
+    "x-pagopa-lollipop-original-method",
+    "x-pagopa-lollipop-original-url",
+    "signature-input",
+    "signature"
+  ].reduce((accumulatedHeaders, headerName) => {
+    const headerValue = headers[headerName];
+    if (headerValue != null) {
+      return {
+        ...accumulatedHeaders,
+        [headerName]: headerValue
+      };
+    }
+    return accumulatedHeaders;
+  }, {});
+
+const generateFakeLollipopServerHeaders = (
+  fiscalCode: string
+): Record<string, string> => ({
+  // (sha256-[A-Za-z0-9-_=]{1,44}) | (sha384-[A-Za-z0-9-_=]{1,66}) | (sha512-[A-Za-z0-9-_=]{1,88})
+  "x-pagopa-lollipop-assertion-ref":
+    "sha256-olqj0f6xO-LHyWM1sTOK-c17Qdi37g_MvefmdjMlZAg",
+  // SAML | OIDC
+  "x-pagopa-lollipop-assertion-type": "SAML",
+  "x-pagopa-lollipop-auth-jwt":
+    "eyJrdHkiOiJFQyIsInkiOiJPa01mUXpTTE9iQ24xcjZlYm1nQUFYemIxbkRpSlozV0VwdEVEQ1JUaVNrPSIsImNydiI6IlAtMjU2IiwieCI6IlQ2dDBTSWJCd0pBdy9ON2N4ZjhldTdEYlJmbTQyZkZCL0pGVjBCcjVYSGs9In0=",
+  //  Base64url encode of a JWK Public Key
+  "x-pagopa-lollipop-public-key":
+    "e2t0eToiRUMiLHk6Ik9rTWZRelNMT2JDbjFyNmVibWdBQVh6YjFuRGlKWjNXRXB0RURDUlRpU2s9IixjcnY6IlAtMjU2Iix4OiJUNnQwU0liQndKQXcvTjdjeGY4ZXU3RGJSZm00MmZGQi9KRlYwQnI1WEhrPSJ9",
+  "x-pagopa-lollipop-user-id": fiscalCode
+});
+
+const sendAPIKeyHeader = (): Record<string, string> => ({
+  "x-api-key": APIKey
+});
+
+const sendTaxIdHeader = (fiscalCode: string): Record<string, string> => ({
+  "x-pagopa-cx-taxid": fiscalCode
+});
+
+const checkAndBuildSENDAttachmentEndpoint = (
+  attachmentUrl: string
+): Either<ExpressFailure, string> => {
+  const documentPattern =
+    /^delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/documents\/([A-Za-z0-9_-]+)$/i;
+  const documentMatch = attachmentUrl.match(documentPattern);
+  if (documentMatch) {
+    const iun = documentMatch[1];
+    const index = documentMatch[2];
+    return right(generateDocumentPath(iun, index));
+  }
+
+  const paymentDocumentPattern =
+    /^delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/payment\/(pagopa|f24)\?attachmentIdx=([A-Za-z0-9_-]+)$/i;
+  const paymentDocumentMatch = attachmentUrl.match(paymentDocumentPattern);
+  if (paymentDocumentMatch) {
+    const iun = paymentDocumentMatch[1];
+    const category = stringCategoryToPaymentDocumentCategory(
+      paymentDocumentMatch[2]
+    );
+    if (category != null) {
+      const index = paymentDocumentMatch[3];
+      return right(generatePaymentDocumentPath(iun, index, category));
+    }
+  }
+
+  return left({
+    httpStatusCode: 400,
+    reason: getProblemJson(
+      400,
+      "Invalid attachment URL",
+      `Provided attachment URL in path parameter is not a valid SEND attachment url (${attachmentUrl})`
     )
-  );
+  });
+};
 
-const generateAndSavePollingAndExpirationTuple = (
-  attachmentUrl: string,
-  attachmentPollingData: Map<string, [Date, Date]>,
-  config: IoDevServerConfig
-) =>
-  pipe(config, generatePollingAndExpirationTuple, pollingAndExpirationTuple =>
-    pipe(
-      attachmentPollingData.set(attachmentUrl, pollingAndExpirationTuple),
-      () => pollingAndExpirationTuple
-    )
-  );
-
-const generatePollingAndExpirationTuple = (
-  config: IoDevServerConfig
-): [Date, Date] =>
-  pipe(config, generatePollingDate, pollingDate =>
-    pipe(generateExpirationDate(pollingDate, config), expirationDate => [
-      pollingDate,
-      expirationDate
-    ])
-  );
-
-const generatePollingDate = (config: IoDevServerConfig) =>
-  pipe(
-    config.messages.attachmentAvailableAfterSeconds,
-    O.fromNullable,
-    O.getOrElse(() => 0),
-    pollingDelaySeconds =>
-      new Date(new Date().getTime() + 1000 * pollingDelaySeconds)
-  );
-
-const generateExpirationDate = (
-  pollingStartDate: Date,
-  config: IoDevServerConfig
-) =>
-  pipe(
-    config.messages.attachmentExpiredAfterSeconds,
-    O.fromNullable,
-    O.getOrElse(() => 24 * 60 * 60),
-    expiredDelaySeconds =>
-      new Date(pollingStartDate.getTime() + 1000 * expiredDelaySeconds)
-  );
+const stringCategoryToPaymentDocumentCategory = (
+  category: string
+): "PAGOPA" | "F24" | undefined => {
+  if (category.toUpperCase() === "PAGOPA") {
+    return "PAGOPA";
+  } else if (category.toUpperCase() === "F24") {
+    return "F24";
+  }
+  return undefined;
+};
 
 export default {
+  checkAndBuildSENDAttachmentEndpoint,
   computeGetMessagesQueryIndexes,
   createMessage,
+  generateFakeLollipopServerHeaders,
   getMessageCategory,
   getPublicMessages,
-  handleAttachment
+  lollipopClientHeadersFromHeaders,
+  sendAPIKeyHeader,
+  sendTaxIdHeader,
+  verifyAttachment
 };

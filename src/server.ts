@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { ioDevServerConfig } from "./config";
 import { messageRouter } from "./features/messages/routers/messagesRouter";
-import { pnRouter } from "./features/pn/routers/routers";
+import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { cgnRouter } from "./routers/features/cgn";
@@ -37,6 +37,9 @@ import { fimsRelyingPartyRouter } from "./features/fims/routers/relyingPartyRout
 import { fimsHistoryRouter } from "./features/fims/routers/historyRouter";
 import { trialSystemRouter } from "./features/trialSystem/routers";
 import { productionCrawlerRouter } from "./features/messages/routers/productionCrawlerRouter";
+import { sendNotificationsRouter } from "./features/pn/routers/notificationsRouter";
+import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUrisRouter";
+import { sendDocumentsRouter } from "./features/pn/routers/documentsRouter";
 
 // create express server
 const app: Application = express();
@@ -77,7 +80,10 @@ app.use(fastLoginMiddleware);
   cgnMerchantsRouter,
   cgnGeoRouter,
   fciRouter,
-  pnRouter,
+  sendDocumentsRouter,
+  sendNotificationsRouter,
+  sendPrevalidatedUrisRouter,
+  sendServiceRouter,
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,

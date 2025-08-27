@@ -1,4 +1,4 @@
-import { ProblemJson } from "../../generated/definitions/backend/ProblemJson";
+import { ProblemJson } from "@pagopa/ts-commons/lib/responses";
 import { IOResponse } from "./response";
 
 export const getProblemJson = (

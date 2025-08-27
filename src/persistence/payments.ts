@@ -120,7 +120,32 @@ const createProcessedPayment = (
 const getPaymentStatus = (rptId: RptId): O.Option<PaymentStatus> =>
   pipe(paymentStatuses.get(rptId), O.fromNullable);
 
-export default {
+export interface IPaymentsDatabase {
+  createPaymentData: (
+    organizationFiscalCode: OrganizationFiscalCode,
+    invalidAfterDueDate?: boolean,
+    noticeNumber?: PaymentNoticeNumber,
+    amount?: PaymentAmount
+  ) => E.Either<string[], PaymentDataWithRequiredPayee>;
+  createProcessablePayment: (
+    rptId: RptId,
+    amount: PaymentAmount,
+    organizationFiscalCode: OrganizationFiscalCode,
+    organizationName: OrganizationName,
+    nativeDueDate?: Date,
+    organizationUnitName?: NonEmptyString,
+    paymentContextCode?: CodiceContestoPagamento,
+    iban?: Iban,
+    paymentShortReason?: SpezzoniCausaleVersamentoItem
+  ) => PaymentStatus;
+  createProcessedPayment: (
+    rptId: RptId,
+    details: Detail_v2Enum
+  ) => PaymentStatus;
+  getPaymentStatus: (rptId: RptId) => O.Option<PaymentStatus>;
+}
+
+export const PaymentsDatabase: IPaymentsDatabase = {
   createPaymentData,
   createProcessablePayment,
   createProcessedPayment,

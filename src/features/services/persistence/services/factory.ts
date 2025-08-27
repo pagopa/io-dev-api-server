@@ -14,6 +14,9 @@ import { StandardServiceCategoryEnum } from "../../../../../generated/definition
 import { ScopeTypeEnum } from "../../../../../generated/definitions/services/ScopeType";
 import { ServiceMetadata } from "../../../../../generated/definitions/services/ServiceMetadata";
 
+export const ioOrganizationFiscalCode = "15376371009" as OrganizationFiscalCode;
+export const ioOrganizationName = "IO - L'app dei servizi pubblici";
+
 const createLocalServices = (
   count: number,
   serviceStartIndex: number,

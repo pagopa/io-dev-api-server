@@ -6,7 +6,6 @@ import {
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { enumType } from "@pagopa/ts-commons/lib/types";
 import * as t from "io-ts";
-
 import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
@@ -19,6 +18,7 @@ import { MessagesConfig } from "../features/messages/types/messagesConfig";
 import { WalletConfiguration } from "../features/payments/types/configuration";
 import { ServiceConfiguration } from "../features/services/types/configuration";
 import { FIMSConfig } from "../features/fims/types/config";
+import { SendConfig } from "../features/pn/types/sendConfig";
 import { AllowRandomValue } from "./allowRandomValue";
 import { HttpResponseCode } from "./httpResponseCode";
 
@@ -93,7 +93,6 @@ const responseError = t.interface({
 export const SpecialServicesConfig = t.interface({
   cgn: t.boolean,
   cdc: t.boolean,
-  pn: t.boolean,
   fci: t.boolean
 });
 
@@ -148,6 +147,7 @@ export const IoDevServerConfig = t.interface({
     AllowRandomValue
   ]),
   messages: MessagesConfig,
+  send: SendConfig,
   services: ServicesConfig,
   wallet: t.intersection([
     t.interface({

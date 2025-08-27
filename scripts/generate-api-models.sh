@@ -2,7 +2,7 @@
 
 IO_BACKEND_VERSION=v16.17.0
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.75
+IO_SERVICES_METADATA_VERSION=1.0.77
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.4.0
 
@@ -40,6 +40,7 @@ declare -a noStrictRequestTypesRespondeDecoders=(
 declare -a noRMNoMKDirNoStrict=(
   "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_backend.yaml"
   "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/internal.yaml"
+  "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/consumed/api-piattaforma-notifiche.yaml"
 )
 
 for elem in "${noParams[@]}"; do
