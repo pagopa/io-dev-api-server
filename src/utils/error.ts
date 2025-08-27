@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { Either, isLeft, Left } from "fp-ts/lib/Either";
+import { logExpressWarning } from "./logging";
 import { ExpressFailure } from "./expressDTO";
 
 export const handleLeftEitherIfNeeded = (
@@ -7,7 +8,10 @@ export const handleLeftEitherIfNeeded = (
   res: Response
 ): inputEither is Left<ExpressFailure> => {
   if (isLeft(inputEither)) {
-    res.status(inputEither.left.httpStatusCode).json(inputEither.left.reason);
+    const httpStatusCode = inputEither.left.httpStatusCode;
+    const problemJson = inputEither.left.reason;
+    logExpressWarning(httpStatusCode, problemJson);
+    res.status(httpStatusCode).json(problemJson);
     return true;
   }
   return false;

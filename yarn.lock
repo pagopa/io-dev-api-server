@@ -1374,12 +1374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/morgan@npm:^1.9.3":
-  version: 1.9.9
-  resolution: "@types/morgan@npm:1.9.9"
+"@types/morgan@npm:^1.9.10":
+  version: 1.9.10
+  resolution: "@types/morgan@npm:1.9.10"
   dependencies:
     "@types/node": "*"
-  checksum: 54bcb432f6ddb82b94bc1970204bedb3465a9afdcced6c2c6b481cf5f276266663ba3edc2b728b0118aa9720bfe5d8561c0259daaad6b027017e35936b107db0
+  checksum: 7d8608b482538e9f589ea7ecd4a397e60675c646be66ee610668f239f75a6425a197d4d9c1b49bd93d1c81b2bb43bb3a2a619b07d371c18646ed710bd83e916e
   languageName: node
   linkType: hard
 
@@ -4406,7 +4406,7 @@ __metadata:
     "@types/figlet": ^1.5.4
     "@types/jest": ^27.4.0
     "@types/lodash": ^4.14.178
-    "@types/morgan": ^1.9.3
+    "@types/morgan": ^1.9.10
     "@types/node": ^22.15.32
     "@types/sha256": ^0.2.0
     "@types/supertest": ^2.0.8
@@ -4437,7 +4437,7 @@ __metadata:
     jose: ^4.15.5
     jsontokens: ^4.0.1
     lodash: ^4.17.21
-    morgan: ^1.10.0
+    morgan: ^1.10.1
     nodemon: ^2.0.15
     npm-run-all: ^4.1.5
     prettier: 2.8.8
@@ -4447,7 +4447,7 @@ __metadata:
     ts-jest: ^27.1.3
     ts-node: ^10.4.0
     ts-pattern: ^3.3.4
-    typescript: ^5.8.3
+    typescript: ^5.9.2
     ulid: ^2.3.0
     uuid: ^9.0.1
     xml2js: ^0.5.0
@@ -5922,16 +5922,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"morgan@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "morgan@npm:1.10.0"
+"morgan@npm:^1.10.1":
+  version: 1.10.1
+  resolution: "morgan@npm:1.10.1"
   dependencies:
     basic-auth: ~2.0.1
     debug: 2.6.9
     depd: ~2.0.0
     on-finished: ~2.3.0
-    on-headers: ~1.0.2
-  checksum: fb41e226ab5a1abf7e8909e486b387076534716d60207e361acfb5df78b84d703a7b7ea58f3046a9fd0b83d3c94bfabde32323341a1f1b26ce50680abd2ea5dd
+    on-headers: ~1.1.0
+  checksum: 8e637a2795d0f6dafb7dbc6a3ef6870731d160123cd56c496d305f1a185c9b0831699c456081328c107b3be49f25fade40519fa1b4990546040595fa44312fe3
   languageName: node
   linkType: hard
 
@@ -6239,10 +6239,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"on-headers@npm:~1.0.2":
-  version: 1.0.2
-  resolution: "on-headers@npm:1.0.2"
-  checksum: 2bf13467215d1e540a62a75021e8b318a6cfc5d4fc53af8e8f84ad98dbcea02d506c6d24180cd62e1d769c44721ba542f3154effc1f7579a8288c9f7873ed8e5
+"on-headers@npm:~1.1.0":
+  version: 1.1.0
+  resolution: "on-headers@npm:1.1.0"
+  checksum: 98aa64629f986fb8cc4517dd8bede73c980e31208cba97f4442c330959f60ced3dc6214b83420491f5111fc7c4f4343abe2ea62c85f505cf041d67850f238776
   languageName: node
   linkType: hard
 
@@ -7919,23 +7919,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.8.3":
-  version: 5.8.3
-  resolution: "typescript@npm:5.8.3"
+"typescript@npm:^5.9.2":
+  version: 5.9.2
+  resolution: "typescript@npm:5.9.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: cb1d081c889a288b962d3c8ae18d337ad6ee88a8e81ae0103fa1fecbe923737f3ba1dbdb3e6d8b776c72bc73bfa6d8d850c0306eed1a51377d2fccdfd75d92c4
+  checksum: f619cf6773cfe31409279711afd68cdf0859780006c50bc2a7a0c3227f85dea89a3b97248846326f3a17dad72ea90ec27cf61a8387772c680b2252fd02d8497b
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.8.3#~builtin<compat/typescript>":
-  version: 5.8.3
-  resolution: "typescript@patch:typescript@npm%3A5.8.3#~builtin<compat/typescript>::version=5.8.3&hash=5786d5"
+"typescript@patch:typescript@^5.9.2#~builtin<compat/typescript>":
+  version: 5.9.2
+  resolution: "typescript@patch:typescript@npm%3A5.9.2#~builtin<compat/typescript>::version=5.9.2&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f1743b6850976b3debf7cbd53d2bc0b67e75d47eb6410db564c8bb475e92a8a48f8a3fcd14d89cf93426835281c31a8f8a94dad90be4dc899279a898532ba97f
+  checksum: f2327af06fce458b53e02df26b880528636c333bce22e557ff6723cdd0576a2cec75daed37eeb8d330b94fef22be4f19b06d8922793ada5d322b8197efd9391e
   languageName: node
   linkType: hard
 

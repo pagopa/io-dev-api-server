@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { isLeft } from "fp-ts/lib/Either";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { addHandler } from "../../../payloads/response";
@@ -41,7 +40,11 @@ addHandler(
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      if (!checkAndValidateLollipopAndTaxId(ioDevServerConfig.send, req, res)) {
+      const taxIdEither = checkAndValidateLollipopAndTaxId(
+        ioDevServerConfig.send,
+        req
+      );
+      if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);
@@ -63,15 +66,12 @@ addHandler(
           docIdx,
           "DOCUMENT"
         );
-      if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-        res
-          .status(
-            notificationAttachmentDownloadMetadataResponseEither.left
-              .httpStatusCode
-          )
-          .json(
-            notificationAttachmentDownloadMetadataResponseEither.left.reason
-          );
+      if (
+        handleLeftEitherIfNeeded(
+          notificationAttachmentDownloadMetadataResponseEither,
+          res
+        )
+      ) {
         return;
       }
       res
@@ -91,7 +91,11 @@ addHandler(
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
     initializationMiddleware((req: Request, res: Response) => {
-      if (!checkAndValidateLollipopAndTaxId(ioDevServerConfig.send, req, res)) {
+      const taxIdEither = checkAndValidateLollipopAndTaxId(
+        ioDevServerConfig.send,
+        req
+      );
+      if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
       const notificationEither = notificationFromRequestParams(req);
@@ -117,15 +121,12 @@ addHandler(
           atachmentIdx,
           attachmentCategoryEither.right
         );
-      if (isLeft(notificationAttachmentDownloadMetadataResponseEither)) {
-        res
-          .status(
-            notificationAttachmentDownloadMetadataResponseEither.left
-              .httpStatusCode
-          )
-          .json(
-            notificationAttachmentDownloadMetadataResponseEither.left.reason
-          );
+      if (
+        handleLeftEitherIfNeeded(
+          notificationAttachmentDownloadMetadataResponseEither,
+          res
+        )
+      ) {
         return;
       }
       res

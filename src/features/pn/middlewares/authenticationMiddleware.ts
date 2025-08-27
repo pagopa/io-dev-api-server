@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { APIKey } from "../models/APIKey";
 import { getProblemJson } from "../../../payloads/error";
 import { ioDevServerConfig } from "../../../config";
+import { logExpressWarning } from "../../../utils/logging";
 
 // Middleware have to be used like this (instead of directly giving the middleware to the router via use)
 // because supertest (when testing) calls every middleware upon test initialization, even if it not in a
@@ -14,15 +15,13 @@ export const authenticationMiddleware =
     if (verifyServerToServerAuthentication) {
       const apiKey = request.headers["x-api-key"];
       if (apiKey !== APIKey) {
-        response
-          .status(401)
-          .json(
-            getProblemJson(
-              401,
-              "Unauthorized API Access",
-              `Missing or invalid value for header 'x-api-key'`
-            )
-          );
+        const problemJson = getProblemJson(
+          401,
+          "Unauthorized API Access",
+          `Missing or invalid value for header 'x-api-key'`
+        );
+        logExpressWarning(401, problemJson);
+        response.status(401).json(problemJson);
         return;
       }
     }
