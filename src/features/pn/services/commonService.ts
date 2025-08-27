@@ -1,43 +1,55 @@
 import { IncomingHttpHeaders } from "node:http";
-import { Request, Response } from "express";
-import { Either, left, right } from "fp-ts/lib/Either";
+import { Request } from "express";
+import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
-import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { SendConfig } from "../types/sendConfig";
-import {
-  checkAndValidateLollipopHeaders,
-  LollipopHeaders
-} from "./lollipopService";
+import { logExpressWarning } from "../../../utils/logging";
+import { checkAndValidateLollipopHeaders } from "./lollipopService";
 
 export const checkAndValidateLollipopAndTaxId = (
   configuration: SendConfig,
-  request: Request,
-  response: Response
-): boolean => {
+  request: Request
+): Either<ExpressFailure, string> => {
+  const headers = request.headers;
+  const taxIdEither = checkTaxIdHeader(headers);
+  if (isLeft(taxIdEither)) {
+    return taxIdEither;
+  }
+
+  const taxId = taxIdEither.right;
   if (configuration.skipIdentityVerification) {
-    return true;
+    return right(taxId);
   }
 
   const lollipopHeadersEither = checkAndValidateLollipopHeaders(
     request.headers
   );
-  if (handleLeftEitherIfNeeded(lollipopHeadersEither, response)) {
-    return false;
+  if (isLeft(lollipopHeadersEither)) {
+    return lollipopHeadersEither;
   }
-  const taxIdEither = checkAndValidateTaxIdHeader(
-    request.headers,
-    lollipopHeadersEither.right
+
+  const lollipopUserId =
+    lollipopHeadersEither.right["x-pagopa-lollipop-user-id"];
+  const taxIdAndLollipopUserIdEither = compareTaxIdToLollipopUserId(
+    lollipopUserId,
+    taxId
   );
-  return !handleLeftEitherIfNeeded(taxIdEither, response);
+  if (isLeft(taxIdAndLollipopUserIdEither)) {
+    return taxIdAndLollipopUserIdEither;
+  }
+  return right(taxId);
 };
 
-const checkAndValidateTaxIdHeader = (
-  headers: IncomingHttpHeaders,
-  lollipopHeaders: LollipopHeaders
+const checkTaxIdHeader = (
+  headers: IncomingHttpHeaders
 ): Either<ExpressFailure, string> => {
   const taxIdHeader = headers["x-pagopa-cx-taxid"];
-  if (taxIdHeader == null || typeof taxIdHeader !== "string") {
+  if (
+    taxIdHeader == null ||
+    typeof taxIdHeader !== "string" ||
+    taxIdHeader.trim().length === 0
+  ) {
     return left({
       httpStatusCode: 400,
       reason: getProblemJson(
@@ -47,16 +59,41 @@ const checkAndValidateTaxIdHeader = (
       )
     });
   }
-  const lollipopTaxId = lollipopHeaders["x-pagopa-lollipop-user-id"];
-  if (taxIdHeader.toUpperCase() !== lollipopTaxId.toUpperCase()) {
+  return right(taxIdHeader);
+};
+
+const compareTaxIdToLollipopUserId = (
+  lollipopTaxId: string,
+  taxId: string
+): Either<ExpressFailure, true> => {
+  if (taxId.toUpperCase() !== lollipopTaxId.toUpperCase()) {
     return left({
       httpStatusCode: 400,
       reason: getProblemJson(
         400,
         "Bad value for 'x-pagopa-cx-taxid' header",
-        `Value for header 'x-pagopa-cd-taxid' does not match value of header 'x-pagopa-lollipop-user-id' (${taxIdHeader} != ${lollipopTaxId})`
+        `Value for header 'x-pagopa-cd-taxid' does not match value of header 'x-pagopa-lollipop-user-id' (${taxId} != ${lollipopTaxId})`
       )
     });
   }
-  return right(taxIdHeader);
+  return right(true);
+};
+
+export const checkSourceHeaderNonBlocking = (
+  headers: IncomingHttpHeaders
+): void => {
+  const sourceHeader = headers["x-pagopa-pn-io-src"];
+  if (
+    typeof sourceHeader !== "string" ||
+    sourceHeader.toUpperCase() !== "QRCODE"
+  ) {
+    logExpressWarning(
+      400,
+      getProblemJson(
+        400,
+        "Non-Blocking bad value x-pagopa-pn-io-src",
+        `Bad value for header 'x-pagopa-pn-io-src'. While this is just a warning and not a blocking error, make sure that your final API provide such header (${sourceHeader})`
+      )
+    );
+  }
 };

@@ -1,6 +1,6 @@
 export interface Mandate {
-  recipientFiscalCode: string;
   mandateId: string;
   notificationIUN: string;
+  representativeFiscalCode: string;
   timeToLive: Date;
 }
