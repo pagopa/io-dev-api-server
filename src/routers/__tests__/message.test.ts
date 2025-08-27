@@ -11,8 +11,6 @@ import MessagesDB from "../../features/messages/persistence/messagesDatabase";
 import ServicesDB from "../../features/services/persistence/servicesDatabase";
 import populatePersistence from "../../populate-persistence";
 import app from "../../server";
-import * as lollipopMid from "../../middleware/lollipopMiddleware";
-import { sendServiceId } from "../../features/pn/services/services";
 
 const request = supertest(app);
 
@@ -29,7 +27,7 @@ function assertResponseIsRight<T>(body: T): PaginatedPublicMessagesCollection {
   throw new TypeError("invalid body found for messages");
 }
 
-const customConfig = _.merge(ioDevServerConfig, {
+const baseConfig = _.merge(ioDevServerConfig, {
   // testing messages with a heavily populated DB
   messages: {
     paymentsCount: 10,
@@ -42,20 +40,7 @@ const customConfig = _.merge(ioDevServerConfig, {
     withValidDueDateCount: 10,
     withInValidDueDateCount: 2,
     standardMessageCount: 10,
-    archivedMessageCount: 40,
-    pnMessageTemplateWrappers: [
-      {
-        count: 1,
-        template: {
-          unpaidValidPayments: 1,
-          unpaidExpiredPayments: 0,
-          paidPayments: 0,
-          failedPayments: 0,
-          unrelatedPayments: 0,
-          f24Count: 0
-        }
-      }
-    ]
+    archivedMessageCount: 40
   },
   services: {
     specialServices: {
@@ -63,6 +48,18 @@ const customConfig = _.merge(ioDevServerConfig, {
     }
   }
 });
+const customConfig: typeof baseConfig = {
+  ...baseConfig,
+  send: {
+    sendAARs: [],
+    sendMandates: [],
+    sendMessages: [{ iun: "0000000000000000000001SEND" }],
+    sendNotifications: [
+      { iun: "0000000000000000000001SEND", payments: ["TOPAY"] }
+    ],
+    sendOptInMessage: false
+  }
+};
 
 describe("given the `/messages` endpoint", () => {
   beforeAll(() => {
@@ -320,43 +317,5 @@ describe("given the `/messages/:id` endpoint", () => {
       expect(message.organization_name).toBeUndefined();
       expect(message.service_name).toBeUndefined();
     });
-  });
-});
-
-describe("given the `/third-party-messages/:id/precondition` endpoint", () => {
-  beforeAll(() => {
-    jest.spyOn(lollipopMid, "isLollipopConfigEnabled").mockReturnValue(false);
-    populatePersistence(customConfig);
-  });
-
-  afterAll(() => {
-    MessagesDB.dropAll();
-    ServicesDB.deleteServices();
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
-
-  it("should return 200 with the remoted precondition", async () => {
-    const inboxMessages = MessagesDB.findAllInbox();
-    const pnMessage = inboxMessages.find(
-      message => message.sender_service_id === sendServiceId
-    );
-    expect(pnMessage).toBeDefined();
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const pnMessageId = pnMessage!.id;
-    const response = await request.get(
-      `${basePath}/third-party-messages/${pnMessageId}/precondition`
-    );
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("title");
-    expect(response.body).toHaveProperty("markdown");
-  });
-
-  it("should return 404 if the message is not found", async () => {
-    const response = await request.get(
-      `${basePath}/third-party-messages/NOT_FOUND/precondition`
-    );
-    expect(response.status).toBe(404);
   });
 });

@@ -56,7 +56,7 @@ export const getOnboardingStatusResponseByInitiativeId = (
       // In case of randomly generated ulid, the status returned is ONBOARDING_OK
       flow(
         initiativeIdFromString,
-        O.getOrElse(() => IDPayInitiativeID.KO_STATUS_ONBOARDED)
+        O.getOrElseW(() => IDPayInitiativeID.KO_STATUS_ONBOARDED)
       )
     ),
     O.chain(id => O.fromNullable(onboardingStatuses[id]))

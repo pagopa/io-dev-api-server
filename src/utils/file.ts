@@ -2,9 +2,9 @@ import fs from "fs";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Response } from "express";
 import { pipe } from "fp-ts/lib/function";
-import * as B from "fp-ts/lib/boolean";
 import * as E from "fp-ts/lib/Either";
 import { Validation } from "io-ts";
+import { unknownToString } from "./error";
 
 export const sendFileFromRootPath = (filePath: string, res: Response) => {
   res.sendFile(filePath, {
@@ -12,59 +12,32 @@ export const sendFileFromRootPath = (filePath: string, res: Response) => {
   });
 };
 
-const safeThrowableFunction = <A>(f: () => A) => {
-  try {
-    return E.right<Error, A>(f());
-  } catch (e) {
-    return E.left<Error, A>(e as Error);
-  }
-};
-
 export const readBinaryFileSegment = (
   filename: string,
   length: number
-): E.Either<Error, Buffer> =>
-  pipe(
-    () => fs.openSync(filename, "r"),
-    safeThrowableFunction,
-    E.chain(fileDescriptor =>
-      pipe(
-        () => Buffer.alloc(length),
-        safeThrowableFunction,
-        E.chain(buffer =>
-          pipe(
-            () => fs.readSync(fileDescriptor, buffer),
-            safeThrowableFunction,
-            E.chain(byteRead =>
-              pipe(
-                byteRead > 0,
-                B.fold(
-                  () =>
-                    E.left(
-                      new Error(
-                        `Unable to read (${length}) bytes from file (${filename})`
-                      )
-                    ),
-                  () => E.right(buffer)
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  );
+): E.Either<string, Buffer> => {
+  try {
+    const fileDescriptor = fs.openSync(filename, "r");
+    const buffer = Buffer.alloc(length);
+    const byteRead = fs.readSync(fileDescriptor, buffer);
+    if (byteRead === 0) {
+      return E.left(`Unable to read (${length}) bytes from file (${filename})`);
+    }
+    return E.right(buffer);
+  } catch (e) {
+    return E.left(unknownToString(e));
+  }
+};
 
-export const isPDFFile = (fileName: string): E.Either<Error, boolean> =>
-  pipe(
-    readBinaryFileSegment(fileName, 4),
-    E.map(buffer =>
-      pipe(
-        buffer.toString("utf8", 0, buffer.length),
-        header => header === "%PDF"
-      )
-    )
-  );
+export const isPDFFile = (fileName: string): E.Either<string, boolean> => {
+  const bufferEither = readBinaryFileSegment(fileName, 4);
+  if (E.isLeft(bufferEither)) {
+    return bufferEither;
+  }
+  const buffer = bufferEither.right;
+  const fileHeader = buffer.toString("utf8", 0, buffer.length);
+  return E.right(fileHeader === "%PDF");
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const readFileAsJSON = (fileName: string): any =>
