@@ -8,7 +8,7 @@ import { IoDevServerConfig } from "../../../types/config";
 import {
   createSENDOptInService,
   createSENDService
-} from "../../pn/services/services";
+} from "../../pn/services/dataService";
 import ServiceFactory, { SpecialServiceGenerator } from "./services/factory";
 import { createCdcService } from "./services/special/cdc-service";
 import { cgnServiceId, createCgnService } from "./services/special/cgn-service";

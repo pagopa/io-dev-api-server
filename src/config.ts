@@ -27,7 +27,7 @@ const defaultProfileAttrs: ProfileAttrs = {
   name: "Maria Giovanna",
   family_name: "Rossi",
   mobile: "5555555555" as NonEmptyString,
-  fiscal_code: "TAMMRA80A41H501I" as FiscalCode,
+  fiscal_code: "RSSMGV80A41H501I" as FiscalCode,
   email: "maria.giovanna.rossi@email.it" as EmailAddress,
   accepted_tos_version: 4.91 as NonNegativeNumber,
   preferred_languages: [PreferredLanguageEnum.it_IT],
@@ -80,43 +80,12 @@ const defaultConfig: IoDevServerConfig = {
         count: 1,
         template: {
           subjectWordCount: 5,
+          hasPreconditions: "NEVER",
           hasRemoteContent: true,
           attachmentCount: 5
         }
       }
     ],
-    pnMessageTemplateWrappers: [
-      {
-        count: 1,
-        template: {
-          unpaidValidPayments: 2,
-          unpaidExpiredPayments: 1,
-          paidPayments: 1,
-          failedPayments: 2,
-          unrelatedPayments: 1,
-          isCancelled: true,
-          attachmentCount: 1,
-          f24Count: 2
-        }
-      },
-      {
-        count: 1,
-        template: {
-          unpaidValidPayments: 2,
-          unpaidExpiredPayments: 1,
-          paidPayments: 1,
-          failedPayments: 2,
-          unrelatedPayments: 1,
-          isCancelled: false,
-          attachmentCount: 2,
-          f24Count: 1
-        }
-      }
-    ],
-    attachmentAvailableAfterSeconds: 5,
-    attachmentExpiredAfterSeconds: 10,
-    attachmentRetryAfterSeconds: 2,
-    pnOptInMessage: true,
     paymentsCount: 1,
     paymentInvalidAfterDueDateWithValidDueDateCount: 0,
     paymentInvalidAfterDueDateWithExpiredDueDateCount: 0,
@@ -145,6 +114,61 @@ const defaultConfig: IoDevServerConfig = {
     useMessagesSavedUnderConfig: false,
     // atm it has effect only on message flow (pr welcome)
     allowRandomValues: true
+  },
+  send: {
+    aarQRCodeUrl: "https://cittadini.notifichedigitali.it/io",
+    mandateTimeToLiveSeconds: 30,
+    paymentDocumentExpirationTimeSeconds: 10,
+    paymentDocumentGenerationTimeSeconds: 3,
+    paymentDocumentRetryAfterSeconds: 2,
+    prevalidatedUrlDurationSeconds: 15,
+    sendAARs: [
+      { iun: "00000000000000000000000000" },
+      { iun: "0000000000000000000001SEND" },
+      { iun: "0000000000000000000002SEND" }
+    ],
+    sendMandates: [],
+    sendMessages: [
+      { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },
+      {
+        iun: "0000000000000000000002SEND",
+        ioTitle: "Nuovo avviso di ingiunzione"
+      }
+    ],
+    sendNotifications: [
+      {
+        attachments: ["DOCUMENT", "F24", "F24"],
+        cancelled: true,
+        iun: "0000000000000000000001SEND",
+        payments: [
+          "TOPAY",
+          "TOPAY",
+          "EXPIRED",
+          "PAID",
+          "FAILED",
+          "FAILED",
+          "UNRELATED"
+        ],
+        subject: "Avviso di ingiunzione - cancellato"
+      },
+      {
+        attachments: ["DOCUMENT", "F24", "DOCUMENT"],
+        iun: "0000000000000000000002SEND",
+        payments: [
+          "TOPAY",
+          "TOPAY",
+          "EXPIRED",
+          "PAID",
+          "FAILED",
+          "FAILED",
+          "UNRELATED"
+        ],
+        subject: "Nuovo avviso di ingiunzione"
+      }
+    ],
+    sendOptInMessage: true,
+    skipIdentityVerification: false,
+    skipServerToServerAuthentication: false
   },
   wallet: {
     methods: paymentMethods,
@@ -180,7 +204,6 @@ const defaultConfig: IoDevServerConfig = {
     specialServices: {
       cgn: true,
       cdc: true,
-      pn: true,
       fci: true
     },
     // it has partially effect (pr welcome)

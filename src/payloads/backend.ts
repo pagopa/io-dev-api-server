@@ -6,7 +6,7 @@ import { baseRelyingPartyPath } from "../features/fims/services/relyingPartyServ
 import {
   sendOptInServiceId,
   sendServiceId
-} from "../features/pn/services/services";
+} from "../features/pn/services/dataService";
 import { serverUrl } from "../utils/server";
 
 export const backendInfo = {

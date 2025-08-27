@@ -14,11 +14,16 @@ const getValueGlobalRandomOn: RandomValueFunc = <T>(
   defaultValue: T,
   randomValue: T,
   configSectionKey: AllorRandomValueKeys
-) =>
-  ioDevServerConfig[configSectionKey].allowRandomValues ||
-  defaultValue === undefined
-    ? randomValue
-    : defaultValue;
+) => {
+  const isDefaultValueUndefined = defaultValue === undefined;
+  if ("allowRandomValues" in ioDevServerConfig[configSectionKey]) {
+    return ioDevServerConfig[configSectionKey].allowRandomValues ||
+      isDefaultValueUndefined
+      ? randomValue
+      : defaultValue;
+  }
+  return isDefaultValueUndefined ? randomValue : defaultValue;
+};
 
 /**
  * if global random (allowRandomValues) is OFF this will be a function that will always return the default value

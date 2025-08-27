@@ -217,16 +217,6 @@ I documenti che hai firmato sono pronti!\n\n
 Hai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo. 
 `;
 
-export const thirdPartyMessagePreconditionMarkdown = `
-
-Se continui, la notifica risulterà legalmente recapitata a te. Aprire il messaggio su IO equivale infatti a firmare la ricevuta di ritorno di una raccomandata tradizionale.
-
-:u[Questo è il testo che deve essere sottolineato]
-
-**Mittente**: Comune di Milano  \n**Oggetto**: Infrazione al codice della strada  \n**Data e ora**: 12 Luglio 2022 - 12.36  \n**Codice IUN**: YYYYMM-1-ABCD-EFGH-X  \n
-
-`;
-
 export const messageMarkdown = `
 # H1 
 
