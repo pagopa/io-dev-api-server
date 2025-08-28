@@ -1,4 +1,3 @@
-import { IncomingHttpHeaders } from "http";
 import { Response, Router } from "express";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import { addHandler } from "../../../payloads/response";
@@ -9,7 +8,6 @@ import {
   generateCheckQRPath
 } from "../../pn/routers/aarRouter";
 import MessagesService from "../services/messagesService";
-import { ioDevServerConfig } from "../../../config";
 import {
   handleLeftEitherIfNeeded,
   unknownToString
@@ -17,9 +15,11 @@ import {
 import { getProblemJson } from "../../../payloads/error";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
 import {
+  generateRequestHeaders,
   mandateIdOrUndefinedFromQuery,
   tosVersionOrUndefinedFromQuery
 } from "../services/ioSendService";
+import { bodyToString } from "../utils";
 
 export const ioSendRouter = Router();
 
@@ -29,12 +29,15 @@ addHandler(
   addApiV1Prefix("/send/aar"),
   lollipopMiddleware(async (req, res) => {
     const sendQRCodeUrl = `${serverUrl}${generateCheckQRPath()}`;
-    const sendQRCodeBody = JSON.stringify(req.body);
+    const sendQRCodeBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendQRCodeBodyEither, res)) {
+      return;
+    }
     const sendQRCodeFetch = () =>
       fetch(sendQRCodeUrl, {
         method: "post",
         headers: generateRequestHeaders(req.headers),
-        body: sendQRCodeBody
+        body: sendQRCodeBodyEither.right
       });
     await fetchSENDDataAndForwardResponse(sendQRCodeFetch, "QRCode", res);
   }),
@@ -55,11 +58,15 @@ addHandler(
       consentType,
       versionEither.right
     )}`;
+    const sendAcceptToSBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendAcceptToSBodyEither, res)) {
+      return;
+    }
     const sendAcceptToSFetch = () =>
       fetch(sendAcceptToSUrl, {
         method: "put",
         headers: generateRequestHeaders(req.headers, "text/plain"),
-        body: req.body
+        body: sendAcceptToSBodyEither.right
       });
     await fetchSENDDataAndForwardResponse(sendAcceptToSFetch, "ToS", res);
   }),
@@ -122,22 +129,6 @@ addHandler(
   }),
   () => Math.random() * 500
 );
-
-const generateRequestHeaders = (
-  headers: IncomingHttpHeaders,
-  contentType: string = "application/json"
-) => ({
-  ...MessagesService.lollipopClientHeadersFromHeaders(headers),
-  ...MessagesService.generateFakeLollipopServerHeaders(
-    ioDevServerConfig.profile.attrs.fiscal_code
-  ),
-  ...MessagesService.sendAPIKeyHeader(),
-  ...MessagesService.sendTaxIdHeader(
-    ioDevServerConfig.profile.attrs.fiscal_code
-  ),
-  // Don't send the default IO Source Header, it must come from the client
-  "Content-Type": contentType
-});
 
 const fetchSENDDataAndForwardResponse = async (
   fetchFunction: () => Promise<globalThis.Response>,

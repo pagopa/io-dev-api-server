@@ -109,7 +109,7 @@ export const acceptToSForAAR = (
         400,
         "Bad body",
         `Body in request is either missing or in a bad format/value (${unknownToString(
-          requestBody
+          body
         )})`
       )
     });
