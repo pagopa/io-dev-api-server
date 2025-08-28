@@ -266,7 +266,7 @@ const profileFullnameOrDefault = () => {
 const tosFromAAR = (aar: AAR) => ({
   httpStatusCode: 403,
   reason: {
-    content_type: aar.internalId,
+    consent_type: aar.internalId,
     consent_id: aar.internalId,
     consent_version: "1.0"
   }
