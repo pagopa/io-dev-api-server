@@ -41,6 +41,8 @@ import { sendDocumentsRouter } from "./features/pn/routers/documentsRouter";
 import { sendNotificationsRouter } from "./features/pn/routers/notificationsRouter";
 import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUrisRouter";
 import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
+import { sendMandatesRouter } from "./features/pn/routers/mandatesRouter";
+import { ioSendRouter } from "./features/messages/routers/ioSendRouter";
 
 // create express server
 const app: Application = express();
@@ -83,9 +85,11 @@ app.use(fastLoginMiddleware);
   fciRouter,
   sendAARRouter,
   sendDocumentsRouter,
+  sendMandatesRouter,
   sendNotificationsRouter,
   sendPrevalidatedUrisRouter,
   sendServiceRouter,
+  ioSendRouter,
   idpayRouter,
   lollipopRouter,
   fastLoginRouter,
