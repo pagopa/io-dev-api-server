@@ -1,19 +1,25 @@
-import { IncomingHttpHeaders } from "http";
 import { Response, Router } from "express";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { serverUrl } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
-import { generateCheckQRPath } from "../../pn/routers/aarRouter";
+import {
+  generateAcceptToSPath,
+  generateCheckQRPath
+} from "../../pn/routers/aarRouter";
 import MessagesService from "../services/messagesService";
-import { ioDevServerConfig } from "../../../config";
 import {
   handleLeftEitherIfNeeded,
   unknownToString
 } from "../../../utils/error";
 import { getProblemJson } from "../../../payloads/error";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
-import { mandateIdOrUndefinedFromRequest } from "../services/ioSendService";
+import {
+  generateRequestHeaders,
+  mandateIdOrUndefinedFromQuery,
+  tosVersionOrUndefinedFromQuery
+} from "../services/ioSendService";
+import { bodyToString } from "../utils";
 
 export const ioSendRouter = Router();
 
@@ -23,14 +29,46 @@ addHandler(
   addApiV1Prefix("/send/aar"),
   lollipopMiddleware(async (req, res) => {
     const sendQRCodeUrl = `${serverUrl}${generateCheckQRPath()}`;
-    const sendQRCodeBody = JSON.stringify(req.body);
+    const sendQRCodeBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendQRCodeBodyEither, res)) {
+      return;
+    }
     const sendQRCodeFetch = () =>
       fetch(sendQRCodeUrl, {
         method: "post",
         headers: generateRequestHeaders(req.headers),
-        body: sendQRCodeBody
+        body: sendQRCodeBodyEither.right
       });
     await fetchSENDDataAndForwardResponse(sendQRCodeFetch, "QRCode", res);
+  }),
+  () => Math.random() * 500
+);
+
+addHandler(
+  ioSendRouter,
+  "put",
+  addApiV1Prefix("/send/tos/:consentType"),
+  lollipopMiddleware(async (req, res) => {
+    const consentType = req.params.consentType;
+    const versionEither = tosVersionOrUndefinedFromQuery(req.query);
+    if (handleLeftEitherIfNeeded(versionEither, res)) {
+      return;
+    }
+    const sendAcceptToSUrl = `${serverUrl}${generateAcceptToSPath(
+      consentType,
+      versionEither.right
+    )}`;
+    const sendAcceptToSBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendAcceptToSBodyEither, res)) {
+      return;
+    }
+    const sendAcceptToSFetch = () =>
+      fetch(sendAcceptToSUrl, {
+        method: "put",
+        headers: generateRequestHeaders(req.headers, "text/plain"),
+        body: sendAcceptToSBodyEither.right
+      });
+    await fetchSENDDataAndForwardResponse(sendAcceptToSFetch, "ToS", res);
   }),
   () => Math.random() * 500
 );
@@ -41,7 +79,7 @@ addHandler(
   addApiV1Prefix("/send/notification/:iun"),
   lollipopMiddleware(async (req, res) => {
     const iun = req.params.iun;
-    const mandateId = mandateIdOrUndefinedFromRequest(req);
+    const mandateId = mandateIdOrUndefinedFromQuery(req.query);
     const sendNotificationUrl = `${serverUrl}${generateNotificationPath(
       iun,
       mandateId
@@ -69,7 +107,7 @@ addHandler(
       attachmentUrlPath,
       req.query
     );
-    const mandateId = mandateIdOrUndefinedFromRequest(req);
+    const mandateId = mandateIdOrUndefinedFromQuery(req.query);
     const sendAttachmentEndpointEither =
       MessagesService.checkAndBuildSENDAttachmentEndpoint(
         attachmentUrl,
@@ -91,19 +129,6 @@ addHandler(
   }),
   () => Math.random() * 500
 );
-
-const generateRequestHeaders = (headers: IncomingHttpHeaders) => ({
-  ...MessagesService.lollipopClientHeadersFromHeaders(headers),
-  ...MessagesService.generateFakeLollipopServerHeaders(
-    ioDevServerConfig.profile.attrs.fiscal_code
-  ),
-  ...MessagesService.sendAPIKeyHeader(),
-  ...MessagesService.sendTaxIdHeader(
-    ioDevServerConfig.profile.attrs.fiscal_code
-  ),
-  // Don't send the default IO Source Header, it must come from the client
-  "Content-Type": "application/json"
-});
 
 const fetchSENDDataAndForwardResponse = async (
   fetchFunction: () => Promise<globalThis.Response>,

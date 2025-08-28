@@ -48,6 +48,7 @@ import { ioSendRouter } from "./features/messages/routers/ioSendRouter";
 const app: Application = express();
 // parse body request as json
 app.use(bodyParser.json());
+app.use(express.text());
 app.use(bodyParser.urlencoded({ extended: true }));
 // set middlewares
 // if you want to add a delay in your server, use a global delayer (utils/delay_middleware)
