@@ -140,12 +140,15 @@ addHandler(
   addApiV1Prefix("/send/mandate/create"),
   lollipopMiddleware(async (req, res) => {
     const sendCreateMandateUrl = `${serverUrl}${generateCreateMandatePath()}`;
-    const sendCreateMandateBody = JSON.stringify(req.body);
+    const sendCreateMandateBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendCreateMandateBodyEither, res)) {
+      return;
+    }
     const sendCreateMandateFetch = () =>
       fetch(sendCreateMandateUrl, {
         method: "post",
         headers: generateRequestHeaders(req.headers),
-        body: sendCreateMandateBody
+        body: sendCreateMandateBodyEither.right
       });
     await fetchSENDDataAndForwardResponse(
       sendCreateMandateFetch,
@@ -165,12 +168,15 @@ addHandler(
     const sendAcceptMandateUrl = `${serverUrl}${generateAcceptMandatePath(
       mandateId
     )}`;
-    const sendAcceptMandateBody = JSON.stringify(req.body);
+    const sendAcceptMandateBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendAcceptMandateBodyEither, res)) {
+      return;
+    }
     const sendCreateMandateFetch = () =>
       fetch(sendAcceptMandateUrl, {
         method: "PATCH",
         headers: generateRequestHeaders(req.headers),
-        body: sendAcceptMandateBody
+        body: sendAcceptMandateBodyEither.right
       });
     await fetchSENDDataAndForwardResponse(
       sendCreateMandateFetch,
