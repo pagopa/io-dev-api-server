@@ -17,9 +17,9 @@ export const checkAndVerifyExistingMandate = (
 ): Either<ExpressFailure, Mandate> => {
   if (mandateId == null) {
     return left({
-      httpStatusCode: 400,
+      httpStatusCode: 403,
       reason: getProblemJson(
-        400,
+        403,
         "User mismatch",
         `The specified notification does not belong to the user that is requesting it (${iun}) (${taxId})`
       )
@@ -29,9 +29,9 @@ export const checkAndVerifyExistingMandate = (
   const mandate = MandateRepository.getFirstValidMandate(mandateId, iun, taxId);
   if (mandate == null) {
     return left({
-      httpStatusCode: 400,
+      httpStatusCode: 403,
       reason: getProblemJson(
-        400,
+        403,
         "No valid mandate",
         `There is no valid mandate to access requested data belonging to notification (${mandateId}) (${iun}) (${taxId})`
       )
