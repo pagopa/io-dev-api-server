@@ -19,6 +19,10 @@ import {
   mandateIdOrUndefinedFromQuery,
   tosVersionOrUndefinedFromQuery
 } from "../services/ioSendService";
+import {
+  generateAcceptMandatePath,
+  generateCreateMandatePath
+} from "../../pn/routers/mandatesRouter";
 import { bodyToString } from "../utils";
 
 export const ioSendRouter = Router();
@@ -130,6 +134,59 @@ addHandler(
   () => Math.random() * 500
 );
 
+addHandler(
+  ioSendRouter,
+  "post",
+  addApiV1Prefix("/send/mandate/create"),
+  lollipopMiddleware(async (req, res) => {
+    const sendCreateMandateUrl = `${serverUrl}${generateCreateMandatePath()}`;
+    const sendCreateMandateBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendCreateMandateBodyEither, res)) {
+      return;
+    }
+    const sendCreateMandateFetch = () =>
+      fetch(sendCreateMandateUrl, {
+        method: "post",
+        headers: generateRequestHeaders(req.headers),
+        body: sendCreateMandateBodyEither.right
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendCreateMandateFetch,
+      "Mandate/Create",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
+addHandler(
+  ioSendRouter,
+  "patch",
+  addApiV1Prefix("/send/mandate/accept/:mandateId"),
+  lollipopMiddleware(async (req, res) => {
+    const mandateId = req.params.mandateId;
+    const sendAcceptMandateUrl = `${serverUrl}${generateAcceptMandatePath(
+      mandateId
+    )}`;
+    const sendAcceptMandateBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendAcceptMandateBodyEither, res)) {
+      return;
+    }
+    const sendCreateMandateFetch = () =>
+      fetch(sendAcceptMandateUrl, {
+        method: "PATCH",
+        headers: generateRequestHeaders(req.headers),
+        body: sendAcceptMandateBodyEither.right
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendCreateMandateFetch,
+      "Mandate/Accept",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
 const fetchSENDDataAndForwardResponse = async (
   fetchFunction: () => Promise<globalThis.Response>,
   endpointName: string,
@@ -152,7 +209,7 @@ const fetchSENDDataAndForwardResponse = async (
       .json(
         getProblemJson(
           500,
-          "QRCode unexpected error",
+          `${endpointName} unexpected error`,
           `Unexpected error while contacting SEND ${endpointName} endpoint (${errorMessage})`
         )
       );
