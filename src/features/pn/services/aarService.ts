@@ -9,6 +9,7 @@ import { ioDevServerConfig } from "../../../config";
 import { getProfile } from "../../../persistence/profile/profile";
 import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
 import { AAR } from "../models/AAR";
+import { unknownToString } from "../../../utils/error";
 
 export type NotificationOrMandateData = {
   iun: string;
@@ -107,7 +108,9 @@ export const acceptToSForAAR = (
       reason: getProblemJson(
         400,
         "Bad body",
-        `Body in request is either missing or in a bad format/value (${requestBody})`
+        `Body in request is either missing or in a bad format/value (${unknownToString(
+          body
+        )})`
       )
     });
   }
@@ -266,7 +269,7 @@ const profileFullnameOrDefault = () => {
 const tosFromAAR = (aar: AAR) => ({
   httpStatusCode: 403,
   reason: {
-    content_type: aar.internalId,
+    consent_type: aar.internalId,
     consent_id: aar.internalId,
     consent_version: "1.0"
   }
