@@ -210,7 +210,7 @@ const defaultConfig: IoDevServerConfig = {
       refundUnsubscribedCount: 0,
       refundSuspendedCount: 0,
       discountCount: 1,
-      expenseCount: 1
+      expenseCount: 0
     }
   },
   services: {

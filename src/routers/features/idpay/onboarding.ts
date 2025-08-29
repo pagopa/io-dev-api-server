@@ -4,7 +4,6 @@ import {
   CodeEnum as OnboardingErrorCodeEnum,
   OnboardingErrorDTO
 } from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
-import { OnboardingPutDTO } from "../../../../generated/definitions/idpay/OnboardingPutDTO";
 import {
   getCheckPrerequisitesResponseByInitiativeId,
   getPrerequisitesErrorByInitiativeId
@@ -16,6 +15,7 @@ import {
   initiativeIdFromString,
   serviceIdFromString
 } from "../../../payloads/features/idpay/utils";
+import { OnboardingDTO } from "../../../../generated/definitions/idpay/OnboardingDTO";
 import { addIdPayHandler } from "./router";
 
 /**
@@ -34,66 +34,14 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
   )
 );
 
-/**
- * Returns the actual onboarding status
- */
-addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
+addIdPayHandler("get", "/onboarding/:initiativeId/detail", (req, res) =>
   pipe(
     req.params.initiativeId,
     O.fromNullable,
-    O.chain(getOnboardingStatusResponseByInitiativeId),
-    O.fold(
-      () =>
-        res.status(404).json({
-          code: OnboardingErrorCodeEnum.ONBOARDING_USER_NOT_ONBOARDED,
-          message: ""
-        } as OnboardingErrorDTO),
-      status => res.status(200).json(status)
-    )
-  )
-);
-
-/**
- * Acceptance of Terms & Conditions
- */
-addIdPayHandler("put", "/onboarding/", (req, res) =>
-  pipe(
-    OnboardingPutDTO.decode(req.body),
-    O.fromEither,
-    O.fold(
-      () => res.status(400).json(getIdPayError(400)),
-      flow(
-        O.some,
-        O.map(({ initiativeId }) => initiativeId),
-        O.chain(initiativeIdFromString),
-        O.fold(
-          () => res.status(404).json(getIdPayError(404)), // Initiative not found
-          flow(
-            O.some,
-            O.chain(getPrerequisitesErrorByInitiativeId),
-            O.fold(
-              () => res.sendStatus(204),
-              prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
-            )
-          )
-        )
-      )
-    )
-  )
-);
-
-/**
- * Check the initiative prerequisites
- */
-addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
-  pipe(
-    OnboardingPutDTO.decode(req.body),
-    O.fromEither,
     O.fold(
       () => res.status(400).json(getIdPayError(400)), // Wrong request body
       flow(
         O.some,
-        O.map(({ initiativeId }) => initiativeId),
         O.chain(initiativeIdFromString),
         O.fold(
           () => res.status(404).json(getIdPayError(404)), // Initiative not found
@@ -123,21 +71,49 @@ addIdPayHandler("put", "/onboarding/initiative", (req, res) =>
 );
 
 /**
- * Save the consensus of both PDND and self-declaration
+ * Returns the actual onboarding status
  */
-addIdPayHandler("put", "/onboarding/consent", (req, res) =>
+addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
   pipe(
-    OnboardingPutDTO.decode(req.body),
+    req.params.initiativeId,
+    O.fromNullable,
+    O.chain(getOnboardingStatusResponseByInitiativeId),
+    O.fold(
+      () =>
+        res.status(404).json({
+          code: OnboardingErrorCodeEnum.ONBOARDING_USER_NOT_ONBOARDED,
+          message: ""
+        } as OnboardingErrorDTO),
+      status => res.status(200).json(status)
+    )
+  )
+);
+
+/**
+ * Check the initiative prerequisites
+ */
+addIdPayHandler("put", "/onboarding/", (req, res) =>
+  pipe(
+    OnboardingDTO.decode(req.body),
     O.fromEither,
     O.fold(
-      () => res.status(400).json(getIdPayError(400)),
+      () => res.status(400).json(getIdPayError(400)), // Wrong request body
       flow(
         O.some,
         O.map(({ initiativeId }) => initiativeId),
         O.chain(initiativeIdFromString),
         O.fold(
-          () => res.status(404).json(getIdPayError(404)),
-          _ => res.sendStatus(202)
+          () => res.status(404).json(getIdPayError(404)), // Initiative not found
+          initiativeId =>
+            pipe(
+              initiativeId,
+              O.some,
+              O.chain(getPrerequisitesErrorByInitiativeId),
+              O.fold(
+                () => res.sendStatus(202),
+                prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
+              )
+            )
         )
       )
     )

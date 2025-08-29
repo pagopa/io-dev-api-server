@@ -1,16 +1,15 @@
 import { fakerIT as faker } from "@faker-js/faker";
 import { range } from "lodash";
 import { ulid } from "ulid";
-import { IbanDTO } from "../../generated/definitions/idpay/IbanDTO";
 import {
+  CheckIbanStatusEnum,
+  IbanDTO
+} from "../../generated/definitions/idpay/IbanDTO";
+import {
+  ChannelEnum,
   IbanOperationDTO,
   OperationTypeEnum as IbanOperationTypeEnum
 } from "../../generated/definitions/idpay/IbanOperationDTO";
-import {
-  InitiativeDTO,
-  InitiativeRewardTypeEnum,
-  StatusEnum as InitiativeStatus
-} from "../../generated/definitions/idpay/InitiativeDTO";
 import {
   InstrumentDTO,
   StatusEnum as InstrumentStatus,
@@ -59,6 +58,12 @@ import {
   TransactionBarCodeResponse
 } from "../../generated/definitions/idpay/TransactionBarCodeResponse";
 import { serverUrl } from "../utils/server";
+import {
+  InitiativeDTO,
+  InitiativeRewardTypeEnum,
+  VoucherStatusEnum,
+  StatusEnum as InitiativeStatusEnum
+} from "../../generated/definitions/idpay/InitiativeDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -73,8 +78,11 @@ const generateRandomInitiativeDTO = (): InitiativeDTO => {
   return {
     initiativeId: ulid(),
     initiativeName: faker.company.name(),
-    status: getRandomEnumValue(InitiativeStatus),
-    endDate: faker.date.future({ years: 1 }),
+    voucherStatus: getRandomEnumValue(VoucherStatusEnum),
+    status: getRandomEnumValue(InitiativeStatusEnum),
+    initiativeEndDate: faker.date.future({ years: 1 }),
+    voucherEndDate: faker.date.future({ years: 1 }),
+    voucherStartDate: faker.date.past({ years: 1 }),
     amountCents,
     accruedCents,
     initiativeRewardType: getRandomEnumValue(InitiativeRewardTypeEnum),
@@ -89,7 +97,7 @@ const generateRandomInitiativeDTO = (): InitiativeDTO => {
 
 const generateRandomIbanDTO = (): IbanDTO => ({
   iban: faker.finance.iban({ formatted: false }),
-  checkIbanStatus: faker.string.sample(),
+  checkIbanStatus: getRandomEnumValue(CheckIbanStatusEnum),
   holderBank: faker.company.name(),
   description: faker.company.buzzPhrase(),
   channel: faker.string.sample()
@@ -152,7 +160,7 @@ const generateRandomIbanOperationDTO = (): IbanOperationDTO => ({
   operationType: IbanOperationTypeEnum.ADD_IBAN,
   operationDate: new Date(),
   operationId: ulid(),
-  channel: faker.string.sample(),
+  channel: getRandomEnumValue(ChannelEnum),
   iban: faker.helpers.arrayElement(ibanList)?.iban || ""
 });
 
@@ -348,7 +356,7 @@ range(0, walletConfig.refundCount).forEach(() => {
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
-    status: InitiativeStatus.REFUNDABLE
+    status: InitiativeStatusEnum.REFUNDABLE
   };
 
   const { initiativeId } = initiative;
@@ -437,7 +445,7 @@ range(0, walletConfig.refundNotConfiguredCount).forEach(() => {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
-    status: InitiativeStatus.NOT_REFUNDABLE,
+    status: InitiativeStatusEnum.NOT_REFUNDABLE,
     iban: undefined,
     nInstr: 0
   };
@@ -459,7 +467,7 @@ range(0, walletConfig.refundUnsubscribedCount).forEach(() => {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
-    status: InitiativeStatus.UNSUBSCRIBED
+    status: InitiativeStatusEnum.UNSUBSCRIBED
   };
 
   const { initiativeId } = initiative;
@@ -490,7 +498,7 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
-    status: InitiativeStatus.SUSPENDED
+    status: InitiativeStatusEnum.SUSPENDED
   };
 
   const { initiativeId } = initiative;
@@ -532,17 +540,23 @@ range(0, walletConfig.refundSuspendedCount).forEach(() => {
 });
 
 range(0, walletConfig.discountCount).forEach(() => {
-  const initiativeName = `${faker.company.name()} [D]`;
+  const initiativeName = `Bonus Elettrodomestici`;
 
   const initiative: InitiativeDTO = {
     ...generateRandomInitiativeDTO(),
+    voucherStatus: VoucherStatusEnum.ACTIVE,
+    amountCents: 10000,
+    organizationName: "Ministero delle Imprese e del Made in Italy",
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.DISCOUNT,
-    status: InitiativeStatus.REFUNDABLE,
+    status: InitiativeStatusEnum.REFUNDABLE,
     iban: undefined,
     nInstr: 0,
     accruedCents: 0,
-    refundedCents: 0
+    refundedCents: 0,
+    lastCounterUpdate: undefined,
+    logoURL: undefined,
+    webViewUrl: "https://www.google.it/"
   };
 
   const { initiativeId } = initiative;
@@ -565,48 +579,8 @@ range(0, walletConfig.discountCount).forEach(() => {
     [initiativeId]: [
       generateRandomTransactionOperationDTO({
         operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.AUTHORIZED,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        businessName: undefined,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.AUTHORIZED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined,
-        businessName: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.AUTHORIZED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
         status: TransactionStatusEnum.REWARDED,
         channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.TRANSACTION,
-        status: TransactionStatusEnum.CANCELLED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomTransactionOperationDTO({
-        operationType: TransactionOperationTypeEnum.REVERSAL,
-        status: TransactionStatusEnum.REWARDED,
-        channel: TransactionChannelEnum.QRCODE,
-        brand: undefined
-      }),
-      generateRandomInstrumentOperationDTO({
-        operationType: InstrumentOperationTypeEnum.ADD_INSTRUMENT,
-        instrumentType: OperationInstrumentTypeEnum.IDPAYCODE,
         brand: undefined
       }),
       generateRandomOnboardingOperationDTO()
@@ -620,7 +594,7 @@ range(0, walletConfig.expenseCount).forEach(() => {
     ...generateRandomInitiativeDTO(),
     initiativeName,
     initiativeRewardType: InitiativeRewardTypeEnum.EXPENSE,
-    status: InitiativeStatus.REFUNDABLE,
+    status: InitiativeStatusEnum.REFUNDABLE,
     webViewUrl: `iosso://${serverUrl}/fims/relyingParty/1/landingPage`
   };
 
@@ -740,7 +714,8 @@ export const getIdPayBarcodeTransaction = (
       trxDate: new Date(),
       trxExpirationSeconds,
       initiativeName: faker.company.name(),
-      residualBudgetCents: 100000
+      residualBudgetCents:
+        10000 as TransactionBarCodeResponse["residualBudgetCents"]
     };
     barcodeTransactions = {
       ...barcodeTransactions,
