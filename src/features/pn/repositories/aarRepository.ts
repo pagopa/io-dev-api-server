@@ -10,7 +10,6 @@ export interface IAARRepository {
   getAARByQRCodeContent: (qrCodeContent: string) => AAR | undefined;
   getAARList: () => ReadonlyArray<AAR>;
   initializeIfNeeded: (configuration: SendConfig) => void;
-  updateAARTOSByInternalId: (internalId: string) => AAR | undefined;
 }
 
 const initializeIfNeeded = (configuration: SendConfig) => {
@@ -28,8 +27,7 @@ const initializeIfNeeded = (configuration: SendConfig) => {
     const aar: AAR = {
       internalId: uuid(),
       notificationIUN,
-      qrCodeContent,
-      tosAccepted: !!aarConfiguration.tosAccepted
+      qrCodeContent
     };
     aars.push(aar);
   });
@@ -44,15 +42,6 @@ const getAAR = (notificationIun: string, qrCodeContent: string) =>
 
 const getAARList = (): ReadonlyArray<AAR> => aars.map(aar => ({ ...aar }));
 
-const updateAARTOSByInternalId = (internalId: string): AAR | undefined => {
-  const aar = aars.find(aar => aar.internalId === internalId);
-  if (aar == null) {
-    return undefined;
-  }
-  aar.tosAccepted = true;
-  return aar;
-};
-
 const getAARByQRCodeContent = (qrCodeContent: string): AAR | undefined =>
   aars.find(aar => aar.qrCodeContent === qrCodeContent);
 
@@ -60,6 +49,5 @@ export const AARRepository: IAARRepository = {
   getAAR,
   getAARByQRCodeContent,
   getAARList,
-  initializeIfNeeded,
-  updateAARTOSByInternalId
+  initializeIfNeeded
 };
