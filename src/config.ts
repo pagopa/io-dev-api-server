@@ -124,7 +124,7 @@ const defaultConfig: IoDevServerConfig = {
     prevalidatedUrlDurationSeconds: 30,
     sendAARs: [
       { iun: "00000000000000000000000000" },
-      { iun: "0000000000000000000001SEND", tosAccepted: true },
+      { iun: "0000000000000000000001SEND" },
       { iun: "0000000000000000000002SEND" },
       { iun: "0000000000000000000003SEND" },
       { iun: "0000000000000000000004SEND" }
