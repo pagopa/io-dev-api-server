@@ -58,7 +58,7 @@ const familyUnityOnlyAutomatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
     code: AutomatedCriteriaCodeEnum.FAMILY_UNIT,
     authority: "Ministero dell'interno",
     operator: OperatorEnum.EQ,
-    value: "Mnistero dell'Interno"
+    value: "Ministero dell'Interno"
   }
 ];
 
