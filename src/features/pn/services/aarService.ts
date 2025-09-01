@@ -1,5 +1,4 @@
 import { Either, isRight, left, right } from "fp-ts/lib/Either";
-import { ParsedQs } from "qs";
 import { AARRepository } from "../repositories/aarRepository";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
@@ -8,8 +7,6 @@ import { MandateRepository } from "../repositories/mandateRepository";
 import { ioDevServerConfig } from "../../../config";
 import { getProfile } from "../../../persistence/profile/profile";
 import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
-import { AAR } from "../models/AAR";
-import { unknownToString } from "../../../utils/error";
 
 export type NotificationOrMandateData = {
   iun: string;
@@ -62,71 +59,16 @@ export const notificationOrMandateDataFromQRCode = (
     }
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
-    if (!aar.tosAccepted) {
-      return left(tosFromAAR(aar));
-    }
     return right({
       denomination: profileFullnameOrDefault(),
       iun: notificationIUN,
       mandateId: firstValidMandateId
     });
   }
-  if (!aar.tosAccepted) {
-    return left(tosFromAAR(aar));
-  }
   return right({
     denomination: profileFullnameOrDefault(),
     iun: notificationIUN
   });
-};
-
-export const acceptToSForAAR = (
-  internalId: string,
-  query: ParsedQs,
-  body: unknown
-): Either<ExpressFailure, AAR> => {
-  const { version: versionQueryParam } = query;
-  const version =
-    typeof versionQueryParam === "string" && versionQueryParam.trim().length > 0
-      ? versionQueryParam
-      : undefined;
-  if (version == null) {
-    return left({
-      httpStatusCode: 400,
-      reason: getProblemJson(
-        400,
-        "Bad version",
-        `Query parameter 'version' is either missing or in a bad format (${version})`
-      )
-    });
-  }
-
-  const requestBody = typeof body === "string" ? body : undefined;
-  if (requestBody?.toUpperCase() !== "ACCEPTED") {
-    return left({
-      httpStatusCode: 400,
-      reason: getProblemJson(
-        400,
-        "Bad body",
-        `Body in request is either missing or in a bad format/value (${unknownToString(
-          body
-        )})`
-      )
-    });
-  }
-
-  const aar = AARRepository.updateAARTOSByInternalId(internalId);
-  if (aar == null) {
-    return left({
-      httpStatusCode: 400,
-      reason: getProblemJson(
-        400,
-        "Bad consentType",
-        `Path parameter 'consentType' is either missing or in a bad format/value (${internalId})`
-      )
-    });
-  }
-  return right(aar);
 };
 
 export const fakeDenominationFromFiscalCode = (fiscalCode: string) => {
@@ -265,12 +207,3 @@ const profileFullnameOrDefault = () => {
   }
   return `${ioDevServerConfig.profile.attrs.name} ${ioDevServerConfig.profile.attrs.family_name}`;
 };
-
-const tosFromAAR = (aar: AAR) => ({
-  httpStatusCode: 403,
-  reason: {
-    consent_type: aar.internalId,
-    consent_id: aar.internalId,
-    consent_version: "1.0"
-  }
-});

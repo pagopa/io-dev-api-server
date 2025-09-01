@@ -28,14 +28,9 @@ export type SendTimelineConfig = t.TypeOf<typeof SendTimelineConfig>;
 export const SendConfig = t.intersection([
   t.type({
     sendAARs: t.array(
-      t.intersection([
-        t.type({
-          iun: t.string
-        }),
-        t.partial({
-          tosAccepted: t.boolean
-        })
-      ])
+      t.type({
+        iun: t.string
+      })
     ),
     sendMessages: t.array(
       t.intersection([

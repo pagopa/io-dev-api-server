@@ -3,10 +3,7 @@ import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { serverUrl } from "../../../utils/server";
 import { addApiV1Prefix } from "../../../utils/strings";
-import {
-  generateAcceptToSPath,
-  generateCheckQRPath
-} from "../../pn/routers/aarRouter";
+import { generateCheckQRPath } from "../../pn/routers/aarRouter";
 import MessagesService from "../services/messagesService";
 import {
   handleLeftEitherIfNeeded,
@@ -16,8 +13,7 @@ import { getProblemJson } from "../../../payloads/error";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
 import {
   generateRequestHeaders,
-  mandateIdOrUndefinedFromQuery,
-  tosVersionOrUndefinedFromQuery
+  mandateIdOrUndefinedFromQuery
 } from "../services/ioSendService";
 import {
   generateAcceptMandatePath,
@@ -44,35 +40,6 @@ addHandler(
         body: sendQRCodeBodyEither.right
       });
     await fetchSENDDataAndForwardResponse(sendQRCodeFetch, "QRCode", res);
-  }),
-  () => Math.random() * 500
-);
-
-addHandler(
-  ioSendRouter,
-  "put",
-  addApiV1Prefix("/send/tos/:consentType"),
-  lollipopMiddleware(async (req, res) => {
-    const consentType = req.params.consentType;
-    const versionEither = tosVersionOrUndefinedFromQuery(req.query);
-    if (handleLeftEitherIfNeeded(versionEither, res)) {
-      return;
-    }
-    const sendAcceptToSUrl = `${serverUrl}${generateAcceptToSPath(
-      consentType,
-      versionEither.right
-    )}`;
-    const sendAcceptToSBodyEither = bodyToString(req.body);
-    if (handleLeftEitherIfNeeded(sendAcceptToSBodyEither, res)) {
-      return;
-    }
-    const sendAcceptToSFetch = () =>
-      fetch(sendAcceptToSUrl, {
-        method: "put",
-        headers: generateRequestHeaders(req.headers, "text/plain"),
-        body: sendAcceptToSBodyEither.right
-      });
-    await fetchSENDDataAndForwardResponse(sendAcceptToSFetch, "ToS", res);
   }),
   () => Math.random() * 500
 );
