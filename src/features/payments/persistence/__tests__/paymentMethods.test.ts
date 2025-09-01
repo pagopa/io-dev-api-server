@@ -148,7 +148,7 @@ describe("Payment Methods", () => {
 
     it("should generate different details on multiple calls", () => {
       const result1 = generateWalletDetailsByPaymentMethod(1);
-      const result2 = generateWalletDetailsByPaymentMethod(1);
+      const result2 = generateWalletDetailsByPaymentMethod(2);
       if (isCardDetails(result1.details) && isCardDetails(result2.details)) {
         expect(result1.details.lastFourDigits).not.toBe(
           result2.details.lastFourDigits
