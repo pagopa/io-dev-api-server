@@ -24,10 +24,14 @@
         .col-clipboard { width: 12%; }
         .col-iun { width: 18%; }
         .col-qrcode { width: 58%; }
+
+        .col-mandate { width: 20%; }
+        .col-fiscalcode { width: 20%; }
+        .col-expiration { width: 42%; }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script>
-        function retrieveAndShowQRCodeUrls() {
+        function retrieveAndShowQRCodes() {
             const tableBody = document.getElementById('sendAARQRCodeTable').getElementsByTagName('tbody')[0];
             $.ajax({
                 type: 'GET',
@@ -69,8 +73,49 @@
                 let newText = document.createTextNode(`${jqXHR.status} ${jqXHR.statusText} ${jqXHR.responseText}`);
                 newCell.appendChild(newText);
             });
-        }
-        document.addEventListener('DOMContentLoaded', retrieveAndShowQRCodeUrls);
+        };
+        function retrieveAndShowMandates() {
+            const tableBody = document.getElementById('sendAARMandatesTable').getElementsByTagName('tbody')[0];
+            $.ajax({
+                type: 'GET',
+                url: "/send/private/mandates",
+                contentType: "application/json"
+            }).done(function(data, textStatus, jqXHR) {                                
+                data.forEach(mandate => {
+                    const newRow = tableBody.insertRow();
+                    
+                    const mandateId = mandate.mandateId;
+                    const mandateIdCell = newRow.insertCell();
+                    const mandateIdTextNode = document.createTextNode(mandateId);
+                    mandateIdCell.appendChild(mandateIdTextNode);
+
+                    const notificationIUN = mandate.notificationIUN;
+                    const notificationIUNCell = newRow.insertCell();
+                    const notificationIUNTextNode = document.createTextNode(notificationIUN);
+                    notificationIUNCell.appendChild(notificationIUNTextNode);
+
+                    const representativeFiscaCode = mandate.representativeFiscalCode;
+                    const representativeFiscalCodeCell = newRow.insertCell();
+                    const representativeFiscalTextNode = document.createTextNode(representativeFiscaCode);
+                    representativeFiscalCodeCell.appendChild(representativeFiscalTextNode);
+
+                    const timeToLive = mandate.timeToLive;
+                    const timeToLiveCell = newRow.insertCell();
+                    const timeToLiveTextNode = document.createTextNode(timeToLive);
+                    timeToLiveCell.appendChild(timeToLiveTextNode);
+                })
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                let newRow = tableBody.insertRow();
+                let newCell = newRow.insertCell();
+                let newText = document.createTextNode(`${jqXHR.status} ${jqXHR.statusText} ${jqXHR.responseText}`);
+                newCell.appendChild(newText);
+            });
+        };
+        function retrieveData() {
+            retrieveAndShowQRCodes();
+            retrieveAndShowMandates();
+        };
+        document.addEventListener('DOMContentLoaded', retrieveData);
     </script>
 </head>
 
@@ -91,6 +136,28 @@
                     </th>
                     <th class="col-qrcode">
                         <b>QRCode Content</b>
+                    </th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div style="margin:16px;margin-top:32px;"><b>SEND AAR Mandates</b></div>
+    <div>
+        <table id="sendAARMandatesTable" class="aar-table">
+            <thead>
+                <tr>
+                    <th class="col-mandate">
+                        <b>Mandate ID</b>
+                    </th>
+                    <th class="col-iun">
+                        <b>IUN</b>
+                    </th>
+                    <th class="col-fiscalcode">
+                        <b>Representative Fiscal Code</b>
+                    </th>
+                    <th class="col-expiration">
+                        <b>Expiration</b>
                     </th>
                 </tr>
             </thead>

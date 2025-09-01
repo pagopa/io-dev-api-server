@@ -2,8 +2,12 @@ import { Request, Response, Router } from "express";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
 import { addHandler } from "../../../payloads/response";
-import { notificationFromRequestParams } from "../services/notificationsService";
-import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
+import { notificationFromIUN } from "../services/notificationsService";
+import {
+  checkAndValidateLollipopAndTaxId,
+  checkSourceHeaderNonBlocking,
+  mandateIdFromQuery
+} from "../services/commonService";
 import {
   checkAndValidateAttachmentIndex,
   checkAndValidateAttachmentName,
@@ -12,22 +16,40 @@ import {
 import { DocumentCategory } from "../models/Document";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
+import { checkAndVerifyExistingMandate } from "../services/mandateService";
 
 const documentPath =
   "/delivery/notifications/received/:iun/attachments/documents/:docIdx";
 const paymentDocumentPath =
   "/delivery/notifications/received/:iun/attachments/payment/:attachmentName";
 
-export const generateDocumentPath = (iun: string, index: string) =>
-  documentPath.replace(":iun", iun).replace(":docIdx", index.toString());
+export const generateDocumentPath = (
+  iun: string,
+  index: string,
+  mandateId?: string
+) => {
+  const path = documentPath
+    .replace(":iun", iun)
+    .replace(":docIdx", index.toString());
+  if (mandateId == null || mandateId.trim().length === 0) {
+    return path;
+  }
+  return `${path}?mandateId=${mandateId}`;
+};
 export const generatePaymentDocumentPath = (
   iun: string,
   index: string,
-  category: Extract<DocumentCategory, "F24" | "PAGOPA">
-) =>
-  `${paymentDocumentPath
+  category: Extract<DocumentCategory, "F24" | "PAGOPA">,
+  mandateId?: string
+) => {
+  const path = `${paymentDocumentPath
     .replace(":iun", iun)
     .replace(":attachmentName", category)}?attachmentIdx=${index}`;
+  if (mandateId == null || mandateId.trim().length === 0) {
+    return path;
+  }
+  return `${path}&mandateId=${mandateId}`;
+};
 
 export const sendDocumentsRouter = Router();
 
@@ -47,11 +69,24 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
+      const requestIUN = req.params.iun;
+      const notificationEither = notificationFromIUN(requestIUN);
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
+      checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const mandateId = mandateIdFromQuery(req);
+        const mandateEither = checkAndVerifyExistingMandate(
+          notification.iun,
+          mandateId,
+          taxIdEither.right
+        );
+        if (handleLeftEitherIfNeeded(mandateEither, res)) {
+          return;
+        }
+      }
       const docIdxEither = checkAndValidateAttachmentIndex(
         "DOCUMENT",
         notification,
@@ -98,11 +133,24 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
+      const requestIUN = req.params.iun;
+      const notificationEither = notificationFromIUN(requestIUN);
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
+      checkSourceHeaderNonBlocking(req.headers);
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const mandateId = mandateIdFromQuery(req);
+        const mandateEither = checkAndVerifyExistingMandate(
+          notification.iun,
+          mandateId,
+          taxIdEither.right
+        );
+        if (handleLeftEitherIfNeeded(mandateEither, res)) {
+          return;
+        }
+      }
       const attachmentCategoryEither = checkAndValidateAttachmentName(req);
       if (handleLeftEitherIfNeeded(attachmentCategoryEither, res)) {
         return;
