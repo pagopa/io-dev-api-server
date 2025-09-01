@@ -61,7 +61,7 @@ addIdPayHandler("get", "/onboarding/:initiativeId/detail", (req, res) =>
                       prerequisites => res.status(200).json(prerequisites) // Prerequisites found
                     )
                   ),
-                prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
+                prerequisitesError => res.status(400).json(prerequisitesError) // Initiative with prerequisites error
               )
             )
         )
