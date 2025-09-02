@@ -9,13 +9,13 @@ import {
 } from "../payloads/session";
 import { getAssertionRef } from "../persistence/lollipop";
 import { getRandomValue } from "../utils/random";
-import { addApiV1Prefix, addAuthV1Prefix } from "../utils/strings";
+import { addApiV1Prefix, addApiAuthV1Prefix } from "../utils/strings";
 export const sessionRouter = Router();
 
 addHandler(
   sessionRouter,
   "get",
-  addAuthV1Prefix("/session"),
+  addApiAuthV1Prefix("/session"),
   ({ query }, res) =>
     pipe(
       getCustomSession(query),

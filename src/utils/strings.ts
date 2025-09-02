@@ -17,8 +17,8 @@ export const uuidv4 = () =>
  * @returns A function that takes a path and returns the full API endpoint
  *
  * @example
- * const addAuthV1Prefix = createNamespaceVersionPrefixer("auth");
- * addAuthV1Prefix("/login"); // "/api/auth/v1/login"
+ * const addApiAuthV1Prefix = createNamespaceVersionPrefixer("auth");
+ * addApiAuthV1Prefix("/login"); // "/api/auth/v1/login"
  */
 const createNamespaceVersionPrefixer =
   (namespace: string, version = "v1") =>
@@ -26,4 +26,4 @@ const createNamespaceVersionPrefixer =
     `/api/${namespace}/${version}${path}`;
 
 export const addApiV1Prefix = (path: string) => `${basePath}${path}`;
-export const addAuthV1Prefix = createNamespaceVersionPrefixer("auth");
+export const addApiAuthV1Prefix = createNamespaceVersionPrefixer("auth");

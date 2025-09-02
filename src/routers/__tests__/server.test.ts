@@ -4,7 +4,7 @@ import { PublicSession } from "../../../generated/definitions/session_manager/Pu
 import { AppUrlLoginScheme } from "../../payloads/login";
 import app from "../../server";
 import { getLoginSessionToken } from "../../persistence/sessionInfo";
-import { addAuthV1Prefix } from "../../utils/strings";
+import { addApiAuthV1Prefix } from "../../utils/strings";
 
 const request = supertest(app);
 
@@ -15,7 +15,7 @@ const testForPng = async (url: string) => {
 };
 
 it("login should response with a welcome page", async () => {
-  const response = await request.get(addAuthV1Prefix("/login"));
+  const response = await request.get(addApiAuthV1Prefix("/login"));
   expect(response.status).toBe(302);
 });
 
@@ -31,7 +31,7 @@ it("login with auth should response with a redirect and the token as param", asy
 });
 
 it("session should return a valid session", async () => {
-  const response = await request.get(addAuthV1Prefix("/session"));
+  const response = await request.get(addApiAuthV1Prefix("/session"));
   expect(response.status).toBe(200);
   const session = PublicSession.decode(response.body);
   expect(E.isRight(session)).toBeTruthy();
@@ -39,7 +39,7 @@ it("session should return a valid session", async () => {
 
 it("test-login for LEGACY /test-login should always return sessionToken", async () => {
   const result = await request
-    .post(addAuthV1Prefix("/test-login"))
+    .post(addApiAuthV1Prefix("/test-login"))
     .set("x-pagopa-lollipop-pub-key-hash-algo", "sha256")
     .set(
       "x-pagopa-lollipop-pub-key",
@@ -53,7 +53,7 @@ it("test-login for LEGACY /test-login should always return sessionToken", async 
 
 it("test-login for FL /test-login should always return sessionToken", async () => {
   const result = await request
-    .post(addAuthV1Prefix("/test-login"))
+    .post(addApiAuthV1Prefix("/test-login"))
     .set("x-pagopa-lollipop-pub-key-hash-algo", "sha256")
     .set(
       "x-pagopa-lollipop-pub-key",
@@ -81,6 +81,6 @@ it("Reset route should response 200 and contain reset text", async () => {
 });
 
 it("logout should response 200", async () => {
-  const response = await request.post(addAuthV1Prefix("/logout"));
+  const response = await request.post(addApiAuthV1Prefix("/logout"));
   expect(response.status).toBe(200);
 });

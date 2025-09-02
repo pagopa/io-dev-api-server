@@ -13,7 +13,7 @@ import {
 } from "../../../features/fastLogin/nonceHandler";
 import { refreshTokenWithFastLogin } from "../../../features/fastLogin/fastLoginHandler";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
-import { addAuthV1Prefix } from "../../../utils/strings";
+import { addApiAuthV1Prefix } from "../../../utils/strings";
 import { FastLoginResponse } from "../../../../generated/definitions/session_manager/FastLoginResponse";
 
 export const fastLoginRouter = Router();
@@ -21,7 +21,7 @@ export const fastLoginRouter = Router();
 addHandler(
   fastLoginRouter,
   "post",
-  addAuthV1Prefix("/fast-login/nonce/generate"),
+  addApiAuthV1Prefix("/fast-login/nonce/generate"),
   (_, res) => {
     generateNewNonce();
     const nonce = getNonceInfo().nonce;
@@ -32,7 +32,7 @@ addHandler(
 addHandler(
   fastLoginRouter,
   "post",
-  addAuthV1Prefix("/fast-login"),
+  addApiAuthV1Prefix("/fast-login"),
   lollipopMiddleware((req, res) =>
     pipe(
       refreshTokenWithFastLogin(req),

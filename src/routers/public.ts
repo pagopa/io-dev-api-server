@@ -42,7 +42,7 @@ import {
   setProfileEmailAlreadyTaken,
   setProfileEmailValidated
 } from "../persistence/profile/profile";
-import { addAuthV1Prefix } from "../utils/strings";
+import { addApiAuthV1Prefix } from "../utils/strings";
 import { resetCgn } from "./features/cgn";
 import { isFeatureFlagWithMinVersionEnabled } from "./features/featureFlagUtils";
 import { resetProfile } from "./profile";
@@ -53,41 +53,48 @@ export const publicRouter = Router();
 export const DEFAULT_LOLLIPOP_HASH_ALGORITHM = "sha256";
 const DEFAULT_HEADER_LOLLIPOP_PUB_KEY = "x-pagopa-lollipop-pub-key";
 
-addHandler(publicRouter, "get", addAuthV1Prefix("/login"), async (req, res) => {
-  setAppInfo(req);
-  setSessionLoginType(req);
-  setSessionAuthenticationProvider(req);
+addHandler(
+  publicRouter,
+  "get",
+  addApiAuthV1Prefix("/login"),
+  async (req, res) => {
+    setAppInfo(req);
+    setSessionLoginType(req);
+    setSessionAuthenticationProvider(req);
 
-  const lollipopPublicKeyHeaderValue = req.get(DEFAULT_HEADER_LOLLIPOP_PUB_KEY);
-  const lollipopHashAlgorithmHeaderValue = req.get(
-    "x-pagopa-lollipop-pub-key-hash-algo"
-  );
-  if (!lollipopPublicKeyHeaderValue || !lollipopHashAlgorithmHeaderValue) {
-    const samlRequest = getSamlRequest();
-    handleLollipopLoginRedirect(res, samlRequest);
-    return;
+    const lollipopPublicKeyHeaderValue = req.get(
+      DEFAULT_HEADER_LOLLIPOP_PUB_KEY
+    );
+    const lollipopHashAlgorithmHeaderValue = req.get(
+      "x-pagopa-lollipop-pub-key-hash-algo"
+    );
+    if (!lollipopPublicKeyHeaderValue || !lollipopHashAlgorithmHeaderValue) {
+      const samlRequest = getSamlRequest();
+      handleLollipopLoginRedirect(res, samlRequest);
+      return;
+    }
+
+    const jwkPK = parseJwkOrError(lollipopPublicKeyHeaderValue);
+
+    if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const thumbprint = await jose.calculateJwkThumbprint(
+      jwkPK.right,
+      DEFAULT_LOLLIPOP_HASH_ALGORITHM
+    );
+
+    setLollipopInfoEphemeral(thumbprint, jwkPK.right);
+
+    const samlRequest = getSamlRequest(
+      DEFAULT_LOLLIPOP_HASH_ALGORITHM,
+      thumbprint
+    );
+    handleLollipopLoginRedirect(res, samlRequest, thumbprint);
   }
-
-  const jwkPK = parseJwkOrError(lollipopPublicKeyHeaderValue);
-
-  if (E.isLeft(jwkPK) || !JwkPublicKey.is(jwkPK.right)) {
-    res.sendStatus(400);
-    return;
-  }
-
-  const thumbprint = await jose.calculateJwkThumbprint(
-    jwkPK.right,
-    DEFAULT_LOLLIPOP_HASH_ALGORITHM
-  );
-
-  setLollipopInfoEphemeral(thumbprint, jwkPK.right);
-
-  const samlRequest = getSamlRequest(
-    DEFAULT_LOLLIPOP_HASH_ALGORITHM,
-    thumbprint
-  );
-  handleLollipopLoginRedirect(res, samlRequest, thumbprint);
-});
+);
 
 addHandler(publicRouter, "get", "/idp-login", (req, res) => {
   const urlLoginScheme = isFeatureFlagWithMinVersionEnabled("nativeLogin")
@@ -139,7 +146,7 @@ addHandler(publicRouter, "get", "/assets/imgs/how_to_login.png", (_, res) => {
   sendFileFromRootPath("assets/imgs/how_to_login.png", res);
 });
 
-addHandler(publicRouter, "post", addAuthV1Prefix("/logout"), (_, res) => {
+addHandler(publicRouter, "post", addApiAuthV1Prefix("/logout"), (_, res) => {
   clearAppInfo();
   clearLollipopInfo();
   clearLoginSessionTokenInfo();
@@ -156,7 +163,7 @@ addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
 addHandler(
   publicRouter,
   "post",
-  addAuthV1Prefix("/test-login"),
+  addApiAuthV1Prefix("/test-login"),
   async (req, res) => {
     const { password } = req.body;
     if (password === "error") {
