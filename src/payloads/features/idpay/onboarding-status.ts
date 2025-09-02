@@ -5,7 +5,6 @@ import {
   OnboardingStatusDTO,
   StatusEnum as OnboardingStatusEnum
 } from "../../../../generated/definitions/idpay/OnboardingStatusDTO";
-
 import { IDPayInitiativeID } from "./types";
 import { initiativeIdFromString } from "./utils";
 
