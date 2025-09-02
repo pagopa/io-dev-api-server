@@ -9,4 +9,21 @@ export const uuidv4 = () =>
     return b.toString(16);
   });
 
+/**
+ * Creates a function that prefixes API endpoints with a namespace and version.
+ *
+ * @param namespace - The endpoint namespace prefix (e.g. "auth")
+ * @param version - The endpoint version (default is "v1")
+ * @returns A function that takes a path and returns the full API endpoint
+ *
+ * @example
+ * const addApiAuthV1Prefix = createNamespaceVersionPrefixer("auth");
+ * addApiAuthV1Prefix("/login"); // "/api/auth/v1/login"
+ */
+const createNamespaceVersionPrefixer =
+  (namespace: string, version = "v1") =>
+  (path: `/${string}`) =>
+    `/api/${namespace}/${version}${path}`;
+
 export const addApiV1Prefix = (path: string) => `${basePath}${path}`;
+export const addApiAuthV1Prefix = createNamespaceVersionPrefixer("auth");

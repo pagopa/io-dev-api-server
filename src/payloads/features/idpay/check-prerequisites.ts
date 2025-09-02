@@ -6,29 +6,28 @@ import {
   OnboardingErrorDTO
 } from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
 import {
-  AuthorityEnum,
-  CodeEnum,
-  OperatorEnum,
-  PDNDCriteriaDTO
-} from "../../../../generated/definitions/idpay/PDNDCriteriaDTO";
-import { RequiredCriteriaDTO } from "../../../../generated/definitions/idpay/RequiredCriteriaDTO";
+  CodeEnum as AutomatedCriteriaCodeEnum,
+  AutomatedCriteriaDTO,
+  OperatorEnum
+} from "../../../../generated/definitions/idpay/AutomatedCriteriaDTO";
 import {
-  SelfDeclarationBoolDTO,
-  _typeEnum as SelfDeclarationBoolType
-} from "../../../../generated/definitions/idpay/SelfDeclarationBoolDTO";
-import {
-  SelfDeclarationMultiDTO,
+  SelfCriteriaMultiDTO,
   _typeEnum as SelfDeclarationMultiType
-} from "../../../../generated/definitions/idpay/SelfDeclarationMultiDTO";
-import { _typeEnum as SelfDeclarationTextDTO } from "../../../../generated/definitions/idpay/SelfDeclarationTextDTO";
+} from "../../../../generated/definitions/idpay/SelfCriteriaMultiDTO";
+import {
+  SelfCriteriaBoolDTO,
+  _typeEnum as SelfDeclarationBoolType
+} from "../../../../generated/definitions/idpay/SelfCriteriaBoolDTO";
+import { _typeEnum as SelfDeclaratioTextType } from "../../../../generated/definitions/idpay/SelfCriteriaTextDTO";
+import { InitiativeBeneficiaryRuleDTO } from "../../../../generated/definitions/idpay/InitiativeBeneficiaryRuleDTO";
+import { RowDataDTO } from "../../../../generated/definitions/idpay/RowDataDTO";
 import { getRandomEnumValue } from "../../utils/random";
 import { IDPayInitiativeID } from "./types";
 
-const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
+const automatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
   {
-    code: CodeEnum.BIRTHDATE,
-    authority: AuthorityEnum.INPS,
-    description: "Data di nascita",
+    code: AutomatedCriteriaCodeEnum.BIRTHDAY,
+    authority: "INPS",
     operator: getRandomEnumValue(OperatorEnum),
     value: faker.date
       .between({ from: "1990-01-01", to: "1999-12-31" })
@@ -40,24 +39,44 @@ const pdndCriteria: ReadonlyArray<PDNDCriteriaDTO> = [
       .toString()
   },
   {
-    code: CodeEnum.ISEE,
-    authority: AuthorityEnum.AGID,
-    description: "ISEE",
+    code: AutomatedCriteriaCodeEnum.ISEE,
+    authority: "AGID",
     operator: getRandomEnumValue(OperatorEnum),
     value: faker.finance.amount({ min: 10000, max: 100000 }),
     value2: faker.finance.amount({ min: 10000, max: 100000 })
   },
   {
-    code: CodeEnum.RESIDENCE,
-    authority: AuthorityEnum.AGID,
-    description: "Residenza",
-    operator: [OperatorEnum.EQ, OperatorEnum.NOT_EQ][faker.number.int(1)],
+    code: AutomatedCriteriaCodeEnum.RESIDENCE,
+    authority: "AGID",
+    operator: getRandomEnumValue(OperatorEnum),
     value: faker.location.country()
   }
 ];
 
-const criterionArray = ["Criterio 1", "Criterio 2", "Criterio 3"];
-const selfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
+const familyUnityOnlyAutomatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
+  {
+    code: AutomatedCriteriaCodeEnum.FAMILY_UNIT,
+    authority: "Ministero dell'interno",
+    operator: OperatorEnum.EQ,
+    value: "Ministero dell'Interno"
+  }
+];
+
+const criterionArray: ReadonlyArray<RowDataDTO> = [
+  {
+    description: "Criterion 1",
+    subDescription: "Subtitle criterion 1"
+  },
+  {
+    description: "Criterion 2",
+    subDescription: "Subtitle criterion 2"
+  },
+  {
+    description: "Criterion 3",
+    subDescription: "Subtitle criterion 3"
+  }
+];
+const selfDeclarationMulti: ReadonlyArray<SelfCriteriaMultiDTO> = [
   {
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
@@ -74,63 +93,58 @@ const selfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
   }
 ];
 
-const guidoniaSelfDeclarationMulti: ReadonlyArray<SelfDeclarationMultiDTO> = [
+const guidoniaSelfDeclarationMulti: ReadonlyArray<SelfCriteriaMultiDTO> = [
   {
     _type: SelfDeclarationMultiType.multi,
     code: ulid(),
     description: "Costituire una famiglia monogenitoriale:",
-    value: ["Sì", "No"]
+    value: [
+      {
+        description: "Sì"
+      },
+      {
+        description: "No"
+      }
+    ]
   }
 ];
 
-const selfDeclarationBool: ReadonlyArray<SelfDeclarationBoolDTO> = [
-  {
+const selfDeclarationBool: ReadonlyArray<SelfCriteriaBoolDTO> =
+  criterionArray.map(criterion => ({
     _type: SelfDeclarationBoolType.boolean,
     code: ulid(),
-    description: criterionArray[0],
+    description: criterion.description,
+    subDescription: criterion.subDescription,
     value: false
-  },
-  {
-    _type: SelfDeclarationBoolType.boolean,
-    code: ulid(),
-    description: criterionArray[1],
-    value: false
-  },
-  {
-    _type: SelfDeclarationBoolType.boolean,
-    code: ulid(),
-    description: criterionArray[2],
-    value: false
-  }
-];
+  }));
 
 const checkPrerequisites: {
-  [id: number]: RequiredCriteriaDTO;
+  [id: number]: InitiativeBeneficiaryRuleDTO;
 } = {
   [IDPayInitiativeID.OK]: {
-    pdndCriteria,
-    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+    automatedCriteria,
+    selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
   [IDPayInitiativeID.OK_GUIDONIA]: {
-    pdndCriteria,
-    selfDeclarationList: [
+    automatedCriteria,
+    selfDeclarationCriteria: [
       ...guidoniaSelfDeclarationMulti,
       {
-        _type: SelfDeclarationTextDTO.text,
+        _type: SelfDeclaratioTextType.text,
         code: ulid(),
         description:
           "Avere un ISEE valido al 31\\12\\2024 con un valore pari a:",
         value: "valore ISEE"
       },
       {
-        _type: SelfDeclarationTextDTO.text,
+        _type: SelfDeclaratioTextType.text,
         code: ulid(),
         description:
           "Aver già presentato una Dichiarazione Sostitutive Unica (DSU) con numero di protocollo:",
         value: "Numero di protocollo DSU"
       },
       {
-        _type: SelfDeclarationTextDTO.text,
+        _type: SelfDeclaratioTextType.text,
         code: ulid(),
         description: "Voler ricevere il rimborso al seguente IBAN:",
         value: "IBAN"
@@ -138,31 +152,43 @@ const checkPrerequisites: {
     ]
   },
   [IDPayInitiativeID.OK_PDND_ONLY]: {
-    pdndCriteria,
-    selfDeclarationList: []
+    automatedCriteria,
+    selfDeclarationCriteria: []
   },
   [IDPayInitiativeID.OK_SELF_ONLY]: {
-    pdndCriteria: [],
-    selfDeclarationList: [...selfDeclarationMulti, ...selfDeclarationBool]
+    automatedCriteria: [],
+    selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
   [IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI]: {
-    pdndCriteria,
-    selfDeclarationList: [
+    automatedCriteria: familyUnityOnlyAutomatedCriteria,
+    selfDeclarationCriteria: [
       {
         _type: SelfDeclarationMultiType.multi,
         code: ulid(),
-        description: "<devi selezionare un’opzione di ISEE>",
+        description: "Hai un ISEE 2025 in corso di validità?",
+        subDescription: "[Quando un ISEE è valido?](https://google.com)",
         value: [
-          "Avere un ISEE inferiore a 25.000€",
-          "Avere un ISEE superiore a 25.000€",
-          "Non avere un ISEE"
+          {
+            description: "Sì, inferiore a 25.000€",
+            subDescription:
+              "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
+          },
+          {
+            description: "Sì, inferiore a 25.000€",
+            subDescription: "Hai diritto fino a 100€"
+          },
+          {
+            description: "Non ho un ISEE o preferisco non rispondere",
+            subDescription: "Hai diritto fino a 100€"
+          }
         ]
       },
       {
         _type: SelfDeclarationBoolType.boolean,
         code: ulid(),
         description:
-          "Usare il bonus per sostituire un elettrodomestico e smaltire quello attuale",
+          "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
+        subDescription: "Ai sensi del D.P.R. 28 dicembre 2000, n. 445",
         value: false
       }
     ]
@@ -200,7 +226,8 @@ const prerequisitesErrors: {
 
 export const getCheckPrerequisitesResponseByInitiativeId = (
   id: IDPayInitiativeID
-): O.Option<RequiredCriteriaDTO> => O.fromNullable(checkPrerequisites[id]);
+): O.Option<InitiativeBeneficiaryRuleDTO> =>
+  O.fromNullable(checkPrerequisites[id]);
 
 export const getPrerequisitesErrorByInitiativeId = (
   id: IDPayInitiativeID

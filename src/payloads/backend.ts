@@ -125,7 +125,13 @@ export const backendStatus: BackendStatus = {
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
       privacy_url: "https://cittadini.notifichedigitali.it/informativa-privacy",
       aarQRCodeRegex:
-        "^\\s*https:\\/\\/(dev\\.|test\\.|hotfix\\.|uat\\.)?(cittadini|login)\\.notifichedigitali\\.it(\\/[^?]*)?\\?aar=[^\\s]+"
+        "^\\s*https:\\/\\/(dev\\.|test\\.|hotfix\\.|uat\\.)?(cittadini|login)\\.notifichedigitali\\.it(\\/[^?]*)?\\?aar=[^\\s]+",
+      aar: {
+        min_app_version: {
+          ios: "3.13.0.0",
+          android: "3.13.0.0"
+        }
+      }
     },
     idPay: {
       min_app_version: {
