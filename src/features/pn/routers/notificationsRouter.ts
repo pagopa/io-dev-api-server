@@ -1,15 +1,21 @@
 import { Request, Response, Router } from "express";
 import { addHandler } from "../../../payloads/response";
 import {
-  notificationFromRequestParams,
-  notificationToThirdPartyMessage,
-  preconditionsForNotification
+  notificationFromIUN,
+  preconditionsForNotification,
+  thirdPartyMessageFromIUNTaxIdAndMandateId
 } from "../services/notificationsService";
 import { authenticationMiddleware } from "../middlewares/authenticationMiddleware";
 import { initializationMiddleware } from "../middlewares/initializationMiddleware";
-import { checkAndValidateLollipopAndTaxId } from "../services/commonService";
+import {
+  checkAndValidateLollipopAndTaxId,
+  checkSourceHeaderNonBlocking,
+  mandateIdFromQuery
+} from "../services/commonService";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
+import { getProblemJson } from "../../../payloads/error";
+import { logExpressWarning } from "../../../utils/logging";
 
 const notificationDisclaimerPath =
   "/ext-registry-private/io/v1/notification-disclaimer/:iun";
@@ -17,8 +23,13 @@ const notificationPath = "/delivery/notifications/received/:iun";
 
 export const generateNotificationDisclaimerPath = (iun: string) =>
   notificationDisclaimerPath.replace(":iun", iun);
-export const generateNotificationPath = (iun: string) =>
-  notificationPath.replace(":iun", iun);
+export const generateNotificationPath = (iun: string, mandateId?: string) => {
+  const path = notificationPath.replace(":iun", iun);
+  if (mandateId == null || mandateId.trim().length === 0) {
+    return path;
+  }
+  return `${path}?mandateId=${mandateId}`;
+};
 
 export const sendNotificationsRouter = Router();
 
@@ -38,13 +49,18 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
-      if (handleLeftEitherIfNeeded(notificationEither, res)) {
+      checkSourceHeaderNonBlocking(req.headers);
+      const requestIUN = req.params.iun;
+      const mandateId = mandateIdFromQuery(req);
+      const thirdPartyMessageEither = thirdPartyMessageFromIUNTaxIdAndMandateId(
+        requestIUN,
+        taxIdEither.right,
+        mandateId
+      );
+      if (handleLeftEitherIfNeeded(thirdPartyMessageEither, res)) {
         return;
       }
-      const { notification } = notificationEither.right;
-      const thirdPartyMessage = notificationToThirdPartyMessage(notification);
-      res.status(200).json(thirdPartyMessage);
+      res.status(200).json(thirdPartyMessageEither.right);
     })
   ),
   () => 500 + 1000 * Math.random()
@@ -63,11 +79,22 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const notificationEither = notificationFromRequestParams(req);
+      const requestIUN = req.params.iun;
+      const notificationEither = notificationFromIUN(requestIUN);
       if (handleLeftEitherIfNeeded(notificationEither, res)) {
         return;
       }
       const { notification } = notificationEither.right;
+      if (notification.recipientFiscalCode !== taxIdEither.right) {
+        const problemJson = getProblemJson(
+          400,
+          "User mismatch",
+          `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
+        );
+        logExpressWarning(400, problemJson);
+        res.status(400).json(problemJson);
+        return;
+      }
       const preconditions = preconditionsForNotification(notification);
       res.status(200).json(preconditions);
     })

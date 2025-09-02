@@ -59,14 +59,12 @@ export const notificationOrMandateDataFromQRCode = (
     }
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
-    // TODO check ToS on AAR
     return right({
       denomination: profileFullnameOrDefault(),
       iun: notificationIUN,
       mandateId: firstValidMandateId
     });
   }
-  // TODO check ToS on AAR
   return right({
     denomination: profileFullnameOrDefault(),
     iun: notificationIUN

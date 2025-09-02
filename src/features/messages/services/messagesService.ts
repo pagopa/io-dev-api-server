@@ -5,6 +5,7 @@ import * as B from "fp-ts/lib/boolean";
 import { Either, isLeft, isRight, left, right } from "fp-ts/lib/Either";
 import { __, match, not } from "ts-pattern";
 import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
+import { ParsedQs } from "qs";
 import { IoDevServerConfig } from "../../../types/config";
 import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
 import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
@@ -347,8 +348,19 @@ const sendTaxIdHeader = (fiscalCode: string): Record<string, string> => ({
   "x-pagopa-cx-taxid": fiscalCode
 });
 
+// 'DEFAULT' is not a values that's sent in production. It is here
+// just to be able to differentiate and log a warning if the header
+// is not provided
+const sendDefaultIOSourceHeader = (): Record<
+  "x-pagopa-pn-io-src",
+  "DEFAULT"
+> => ({
+  "x-pagopa-pn-io-src": "DEFAULT"
+});
+
 const checkAndBuildSENDAttachmentEndpoint = (
-  attachmentUrl: string
+  attachmentUrl: string,
+  mandateId?: string
 ): Either<ExpressFailure, string> => {
   const documentPattern =
     /^delivery\/notifications\/received\/([A-Za-z0-9_-]+)\/attachments\/documents\/([A-Za-z0-9_-]+)$/i;
@@ -356,7 +368,7 @@ const checkAndBuildSENDAttachmentEndpoint = (
   if (documentMatch) {
     const iun = documentMatch[1];
     const index = documentMatch[2];
-    return right(generateDocumentPath(iun, index));
+    return right(generateDocumentPath(iun, index, mandateId));
   }
 
   const paymentDocumentPattern =
@@ -369,7 +381,9 @@ const checkAndBuildSENDAttachmentEndpoint = (
     );
     if (category != null) {
       const index = paymentDocumentMatch[3];
-      return right(generatePaymentDocumentPath(iun, index, category));
+      return right(
+        generatePaymentDocumentPath(iun, index, category, mandateId)
+      );
     }
   }
 
@@ -394,7 +408,19 @@ const stringCategoryToPaymentDocumentCategory = (
   return undefined;
 };
 
+const appendAttachmentIdxToAttachmentUrlIfNeeded = (
+  attachmentUrlPath: string,
+  query: ParsedQs
+) => {
+  const { attachmentIdx } = query;
+  const queryString =
+    attachmentIdx != null ? `?attachmentIdx=${attachmentIdx}` : "";
+  return `${attachmentUrlPath}${queryString}`;
+};
+
 export default {
+  appendAttachmentIdxToAttachmentUrl:
+    appendAttachmentIdxToAttachmentUrlIfNeeded,
   checkAndBuildSENDAttachmentEndpoint,
   computeGetMessagesQueryIndexes,
   createMessage,
@@ -403,6 +429,7 @@ export default {
   getPublicMessages,
   lollipopClientHeadersFromHeaders,
   sendAPIKeyHeader,
+  sendDefaultIOSourceHeader,
   sendTaxIdHeader,
   verifyAttachment
 };

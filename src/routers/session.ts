@@ -9,24 +9,28 @@ import {
 } from "../payloads/session";
 import { getAssertionRef } from "../persistence/lollipop";
 import { getRandomValue } from "../utils/random";
-import { addApiV1Prefix } from "../utils/strings";
+import { addApiV1Prefix, addApiAuthV1Prefix } from "../utils/strings";
 export const sessionRouter = Router();
 
-addHandler(sessionRouter, "get", addApiV1Prefix("/session"), ({ query }, res) =>
-  pipe(
-    getCustomSession(query),
-    O.fromNullable,
-    O.fold(
-      () => res.sendStatus(401),
-      customSession =>
-        res.json({
-          ...customSession.payload,
-          ...(shouldAddLollipopAssertionRef(query) && {
-            lollipopAssertionRef: getAssertionRef()
+addHandler(
+  sessionRouter,
+  "get",
+  addApiAuthV1Prefix("/session"),
+  ({ query }, res) =>
+    pipe(
+      getCustomSession(query),
+      O.fromNullable,
+      O.fold(
+        () => res.sendStatus(401),
+        customSession =>
+          res.json({
+            ...customSession.payload,
+            ...(shouldAddLollipopAssertionRef(query) && {
+              lollipopAssertionRef: getAssertionRef()
+            })
           })
-        })
+      )
     )
-  )
 );
 
 addHandler(sessionRouter, "get", addApiV1Prefix("/token/support"), (_, res) =>
