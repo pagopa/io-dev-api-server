@@ -123,6 +123,11 @@ const initiativeData: {
       IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST
     ),
     initiativeName: "Iniziativa - Lista d'attesa"
+  },
+  [IDPayServiceID.KO_TOO_MANY_REQUESTS]: {
+    ...createRandomInitiativeDataDTO(),
+    initiativeId: initiativeIdToString(IDPayInitiativeID.KO_TOO_MANY_REQUESTS),
+    initiativeName: "Iniziativa - Troppe richieste"
   }
 };
 

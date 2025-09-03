@@ -221,6 +221,10 @@ const prerequisitesErrors: {
   [IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST]: {
     code: OnboardingErrorCodeEnum.ONBOARDING_WAITING_LIST,
     message: ""
+  },
+  [IDPayInitiativeID.KO_TOO_MANY_REQUESTS]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_TOO_MANY_REQUESTS,
+    message: ""
   }
 };
 
