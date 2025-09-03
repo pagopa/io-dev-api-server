@@ -159,7 +159,7 @@ const checkPrerequisites: {
     automatedCriteria: [],
     selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
-  [IDPayInitiativeID.BONUS_ELETTRODOMESTICI]: {
+  [IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI]: {
     automatedCriteria: familyUnityOnlyAutomatedCriteria,
     selfDeclarationCriteria: [
       {
@@ -214,7 +214,15 @@ const prerequisitesErrors: {
     code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
     message: ""
   },
-  [IDPayInitiativeID.KO_STATUS_TOO_MANY_REQUESTS]: {
+  [IDPayInitiativeID.KO_FAMILY_UNIT_ALREADY_JOINED]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_FAMILY_UNIT_ALREADY_JOINED,
+    message: ""
+  },
+  [IDPayInitiativeID.KO_ONBOARDING_WAITING_LIST]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_WAITING_LIST,
+    message: ""
+  },
+  [IDPayInitiativeID.KO_TOO_MANY_REQUESTS]: {
     code: OnboardingErrorCodeEnum.ONBOARDING_TOO_MANY_REQUESTS,
     message: ""
   }
