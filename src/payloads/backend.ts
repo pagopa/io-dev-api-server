@@ -288,6 +288,33 @@ export const backendStatus: BackendStatus = {
         ios: "3.0.0.0",
         android: "3.0.0.0"
       }
+    },
+    zendeskCacBanner: {
+      min_app_version: {
+        ios: "0.0.0.0",
+        android: "0.0.0.0"
+      },
+      title: {
+        "it-IT": "Serve aiuto?",
+        "en-EN": "Serve aiuto?",
+        "de-DE": "Serve aiuto?"
+      },
+      description: {
+        "it-IT":
+          "Abbiamo preparato una guida per aiutarti a risolvere velocemente il tuo problema.",
+        "en-EN":
+          "Abbiamo preparato una guida per aiutarti a risolvere velocemente il tuo problema.",
+        "de-DE":
+          "Abbiamo preparato una guida per aiutarti a risolvere velocemente il tuo problema."
+      },
+      action: {
+        label: {
+          "it-IT": "Vai al Centro assistenza",
+          "en-EN": "Vai al Centro assistenza",
+          "de-DE": "Vai al Centro assistenza"
+        },
+        url: "https://assistenza.ioapp.it/hc/it"
+      }
     }
   },
   sections: {
