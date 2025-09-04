@@ -313,7 +313,11 @@ export const backendStatus: BackendStatus = {
           "en-EN": "Vai al Centro assistenza",
           "de-DE": "Vai al Centro assistenza"
         },
-        url: "https://assistenza.ioapp.it/hc/it"
+        url: {
+          "it-IT": "https://assistenza.ioapp.it/hc/it",
+          "en-EN": "https://assistenza.ioapp.it/hc/it",
+          "de-DE": "https://assistenza.ioapp.it/hc/it"
+        }
       }
     }
   },
