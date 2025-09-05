@@ -1,5 +1,96 @@
-import { Either, left, right } from "fp-ts/lib/Either";
+import { cwd } from "process";
+import fs from "fs";
+import path from "path";
 import forge from "node-forge";
+import { Either, left, right } from "fp-ts/lib/Either";
+import { unknownToString } from "../../../../utils/error";
+
+export const verifyNISSOD = (
+  sodIasHexString: string,
+  logDebugMessages: boolean = false
+): Either<string, void> => {
+  try {
+    // Extract the Document Signing Certificate (DSC)
+    const sodIasBuffer = Buffer.from(sodIasHexString, "hex");
+    const sodIasByteStringBuffer = new forge.util.ByteStringBuffer(
+      sodIasBuffer
+    );
+    const sodIasASN1Der = forge.asn1.fromDer(sodIasByteStringBuffer, {
+      parseAllBytes: false
+    });
+    const certificate =
+      eIdentityCardSignerCertificateFromASN1DER(sodIasASN1Der);
+    if (logDebugMessages) {
+      const dscSubject = certificate.subject.attributes
+        .map(attr => `${attr.shortName ?? attr.name}=${attr.value}`)
+        .join(", ");
+      const dscIssuer = certificate.issuer.attributes
+        .map(attr => `${attr.shortName ?? attr.name}=${attr.value}`)
+        .join(", ");
+      consoleLogIfNeeed(
+        `   -> SOD IAS Signer (Subject): ${dscSubject}`,
+        logDebugMessages
+      );
+      consoleLogIfNeeed(
+        `   -> Emitted by (Issuer):   ${dscIssuer}`,
+        logDebugMessages
+      );
+    }
+
+    // Build the Trust Store (Trust Bundle) from CSCA certificates
+    const cscaFolderAbsolutePath = getCSCAFolderAbsolutePath();
+    if (!fs.existsSync(cscaFolderAbsolutePath)) {
+      return commonFailureHandling(
+        `CSCA folder with certificates does not exist (${cscaFolderAbsolutePath})`,
+        logDebugMessages
+      );
+    }
+    const caStore = forge.pki.createCaStore();
+    const cscaCertificateFiles = fs
+      .readdirSync(cscaFolderAbsolutePath)
+      .filter(file => file.toLowerCase().endsWith(".cer"));
+
+    if (cscaCertificateFiles.length === 0) {
+      return commonFailureHandling(
+        `There are no .cer files in the CSCA folder (${cscaFolderAbsolutePath})`,
+        logDebugMessages
+      );
+    }
+
+    for (const certFile of cscaCertificateFiles) {
+      const certPath = path.join(cscaFolderAbsolutePath, certFile);
+      const certDer = fs.readFileSync(certPath);
+      const certDerBytes = certDer.toString("binary");
+      const certDerASN1 = forge.asn1.fromDer(certDerBytes);
+      const cert = forge.pki.certificateFromAsn1(certDerASN1);
+      caStore.addCertificate(cert);
+
+      // Check if this CSCA is the issuer of our DSC (only for logging)
+      if (logDebugMessages && certificate.isIssuer(cert)) {
+        consoleLogIfNeeed(
+          `Parent CSCA certificate found (${certFile})`,
+          logDebugMessages
+        );
+      }
+    }
+
+    // Verify the certificate chain
+    if (!forge.pki.verifyCertificateChain(caStore, [certificate])) {
+      return commonFailureHandling(
+        `DSC chain of trust is invalid`,
+        logDebugMessages
+      );
+    }
+    consoleLogIfNeeed(
+      `DSC chain of trust verified successfully`,
+      logDebugMessages
+    );
+    return right(undefined);
+  } catch (error) {
+    const reason = unknownToString(error);
+    return commonFailureHandling(reason, logDebugMessages);
+  }
+};
 
 export const verifyNIS = (
   expectedSignatureHex: string,
@@ -511,4 +602,9 @@ const commonFailureHandling = (
     console.warn(reason);
   }
   return left(reason);
+};
+
+const getCSCAFolderAbsolutePath = () => {
+  const workingDirectory = cwd();
+  return path.join(workingDirectory, "assets", "send", "aar", "csca");
 };
