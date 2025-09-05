@@ -10,6 +10,23 @@ export const mandateIdOrUndefinedFromQuery = (
   return typeof requestMandateId === "string" ? requestMandateId : undefined;
 };
 
+export const isTestOrUndefinedFromQuery = (
+  query: ParsedQs
+): boolean | undefined => {
+  const { isTest } = query;
+  if (typeof isTest !== "string") {
+    return undefined;
+  }
+  switch (isTest.toLowerCase()) {
+    case "true":
+      return true;
+    case "false":
+      return false;
+    default:
+      return undefined;
+  }
+};
+
 export const generateRequestHeaders = (
   headers: IncomingHttpHeaders,
   contentType: string = "application/json"

@@ -8,7 +8,7 @@ import { ioDevServerConfig } from "../../../config";
 import { getProblemJson } from "../../../payloads/error";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { notificationOrMandateDataFromQRCode } from "../services/aarService";
-import { logExpressWarning } from "../../../utils/logging";
+import { logExpressResponseWarning } from "../../../utils/logging";
 
 const checkQRCodePath = "/delivery/notifications/received/check-qr-code";
 
@@ -39,7 +39,7 @@ addHandler(
           "Bad body value",
           `Request body does not contain a valid JSON with the 'qrcode' property (${inputQRCodeContent})`
         );
-        logExpressWarning(400, problemJson);
+        logExpressResponseWarning(400, problemJson);
         res.status(400).json(problemJson);
         return;
       }

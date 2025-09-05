@@ -1,4 +1,4 @@
-import { Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import { addHandler } from "../../../payloads/response";
 import { serverUrl } from "../../../utils/server";
@@ -13,6 +13,7 @@ import { getProblemJson } from "../../../payloads/error";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
 import {
   generateRequestHeaders,
+  isTestOrUndefinedFromQuery,
   mandateIdOrUndefinedFromQuery
 } from "../services/ioSendService";
 import {
@@ -20,6 +21,7 @@ import {
   generateCreateMandatePath
 } from "../../pn/routers/mandatesRouter";
 import { bodyToString } from "../utils";
+import { logWarning } from "../../../utils/logging";
 
 export const ioSendRouter = Router();
 
@@ -33,6 +35,7 @@ addHandler(
     if (handleLeftEitherIfNeeded(sendQRCodeBodyEither, res)) {
       return;
     }
+    commonHandleIsTestQueryParam(req);
     const sendQRCodeFetch = () =>
       fetch(sendQRCodeUrl, {
         method: "post",
@@ -55,6 +58,7 @@ addHandler(
       iun,
       mandateId
     )}`;
+    commonHandleIsTestQueryParam(req);
     const sendNotificationFetch = () =>
       fetch(sendNotificationUrl, {
         headers: generateRequestHeaders(req.headers)
@@ -88,6 +92,7 @@ addHandler(
       return;
     }
     const sendAttachmentUrl = `${serverUrl}${sendAttachmentEndpointEither.right}`;
+    commonHandleIsTestQueryParam(req);
     const sendAttachmentFetch = () =>
       fetch(sendAttachmentUrl, {
         headers: generateRequestHeaders(req.headers)
@@ -111,6 +116,7 @@ addHandler(
     if (handleLeftEitherIfNeeded(sendCreateMandateBodyEither, res)) {
       return;
     }
+    commonHandleIsTestQueryParam(req);
     const sendCreateMandateFetch = () =>
       fetch(sendCreateMandateUrl, {
         method: "post",
@@ -139,6 +145,7 @@ addHandler(
     if (handleLeftEitherIfNeeded(sendAcceptMandateBodyEither, res)) {
       return;
     }
+    commonHandleIsTestQueryParam(req);
     const sendCreateMandateFetch = () =>
       fetch(sendAcceptMandateUrl, {
         method: "PATCH",
@@ -180,5 +187,14 @@ const fetchSENDDataAndForwardResponse = async (
           `Unexpected error while contacting SEND ${endpointName} endpoint (${errorMessage})`
         )
       );
+  }
+};
+
+const commonHandleIsTestQueryParam = (req: Request) => {
+  const isTest = isTestOrUndefinedFromQuery(req.query);
+  if (isTest == null) {
+    logWarning(
+      `\n  API is missing "isTest" parameter in query string (${req.query.isTest})\n`
+    );
   }
 };
