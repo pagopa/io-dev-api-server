@@ -15,7 +15,7 @@ declare -a noParams=(
   "./generated/definitions/pagopa/walletv2 https://raw.githubusercontent.com/pagopa/io-services-metadata/$IO_SERVICES_METADATA_VERSION/bonus/specs/bpd/pm/walletv2.json"
   "./generated/definitions/pagopa/walletv3 https://raw.githubusercontent.com/pagopa/pagopa-infra/v1.202.0/src/domains/pay-wallet-app/api/io-payment-wallet/v1/_openapi.json.tpl"
   "./generated/definitions/pagopa/ecommerce https://raw.githubusercontent.com/pagopa/pagopa-infra/v1.202.0/src/domains/ecommerce-app/api/ecommerce-io/v2/_openapi.json.tpl"
-  "./generated/definitions/pagopa/transactions https://raw.githubusercontent.com/pagopa/pagopa-biz-events-service/0.1.57/openapi/openapi_io_patch_lap.json"
+  "./generated/definitions/pagopa/transactions https://raw.githubusercontent.com/pagopa/pagopa-biz-events-service/refs/tags/0.1.87/openapi/openapi_lap_jwt.json"
   "./generated/definitions/pagopa/platform https://raw.githubusercontent.com/pagopa/pagopa-infra/v1.64.0/src/domains/shared-app/api/session-wallet/v1/_openapi.json.tpl"
   "./generated/definitions/pagopa https://raw.githubusercontent.com/pagopa/io-app/master/assets/paymentManager/spec.json"
   "./generated/definitions/cgn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_cgn.yaml"
