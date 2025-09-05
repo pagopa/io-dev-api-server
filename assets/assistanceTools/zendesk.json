@@ -41,24 +41,24 @@
           "bannerEducational": {
             "title": {
               "it-IT": "Non riesci ad accedere?",
-              "en-EN": "Non riesci ad accedere?",
-              "de-DE": "Non riesci ad accedere?"
+              "en-EN": "Can't log in?",
+              "de-DE": "Kein Zugriff möglich?"
             },
             "content": {
               "it-IT": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE.",
-              "en-EN": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE.",
-              "de-DE": "Abbiamo preparato una guida per aiutarti passo passo con il tuo accesso tramite SPID o CIE."
+              "en-EN": "To help you access with SPID or CIE, we have prepared a step-by-step guide.",
+              "de-DE": "Wir haben eine Schritt-für-Schritt-Anleitung vorbereitet, um Ihnen den Zugang über SPID oder CIE zu erleichtern."
             },
             "action": {
               "label": {
                 "it-IT": "Leggi come fare",
-                "en-EN": "Leggi come fare",
-                "de-DE": "Leggi come fare"
+                "en-EN": "Read more",
+                "de-DE": "Mehr lesen"
               },
               "href": {
-                "it-IT":"https://assistenza.ioapp.it/hc/it",
-                "en-EN":"https://assistenza.ioapp.it/hc/it",
-                "de-DE":"https://assistenza.ioapp.it/hc/it"
+                "it-IT": "https://assistenza.ioapp.it/hc/it",
+                "en-EN": "https://assistenza.ioapp.it/hc/it",
+                "de-DE": "https://assistenza.ioapp.it/hc/it"
               }
             }
           }
@@ -363,6 +363,14 @@
         "zendeskSubCategories": {
           "id": "8086481365265",
           "subCategories": [
+            {
+              "value": "bonus_elettrodomestici",
+              "description": {
+                "it-IT": "Bonus elettrodomestici",
+                "en-EN": "Bonus elettrodomestici",
+                "de-DE": "Bonus elettrodomestici"
+              }
+            },
             {
               "value": "bonus_pc",
               "description": {
