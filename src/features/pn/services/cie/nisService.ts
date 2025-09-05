@@ -100,137 +100,142 @@ export const verifyNIS = (
   sodHexString: string,
   logDebugMessages: boolean = false
 ): Either<string, void> => {
-  const buffer = Buffer.from(sodHexString, "hex");
-  const byteStringBuffer = new forge.util.ByteStringBuffer(buffer);
-  const asn1Der = forge.asn1.fromDer(byteStringBuffer, {
-    parseAllBytes: false
-  });
+  try {
+    const buffer = Buffer.from(sodHexString, "hex");
+    const byteStringBuffer = new forge.util.ByteStringBuffer(buffer);
+    const asn1Der = forge.asn1.fromDer(byteStringBuffer, {
+      parseAllBytes: false
+    });
 
-  const hashesOctectBlockBytes = signedDataGroupHashesFromASN1DER(asn1Der);
-  const sha256MD = forge.md.sha256.create();
-  sha256MD.update(hashesOctectBlockBytes);
-  const calculatedDigestHex = sha256MD.digest().toHex().toUpperCase();
+    const hashesOctectBlockBytes = signedDataGroupHashesFromASN1DER(asn1Der);
+    const sha256MD = forge.md.sha256.create();
+    sha256MD.update(hashesOctectBlockBytes);
+    const calculatedDigestHex = sha256MD.digest().toHex().toUpperCase();
 
-  const digestOctetBlockBytes = messageDigestFromASN1DER(asn1Der);
-  const digestOctetBlockHex = bytesToUppercaseHex(digestOctetBlockBytes);
-  if (digestOctetBlockHex !== calculatedDigestHex) {
-    return commonFailureHandling(
-      `The calculated SHA-256 digest does NOT match the expected one\nExpected: ${digestOctetBlockHex}\nComputed: ${calculatedDigestHex}`,
+    const digestOctetBlockBytes = messageDigestFromASN1DER(asn1Der);
+    const digestOctetBlockHex = bytesToUppercaseHex(digestOctetBlockBytes);
+    if (digestOctetBlockHex !== calculatedDigestHex) {
+      return commonFailureHandling(
+        `The calculated SHA-256 digest does NOT match the expected one\nExpected: ${digestOctetBlockHex}\nComputed: ${calculatedDigestHex}`,
+        logDebugMessages
+      );
+    }
+    consoleLogIfNeeed(
+      "The calculated SHA-256 digest matches the expected one",
       logDebugMessages
     );
-  }
-  consoleLogIfNeeed(
-    "The calculated SHA-256 digest matches the expected one",
-    logDebugMessages
-  );
 
-  const hashedDataGroups = hashedDataGroupsFromASN1DER(asn1Der);
-  const hashesASN1Der = forge.asn1.fromDer(hashedDataGroups, {
-    parseAllBytes: false
-  });
+    const hashedDataGroups = hashedDataGroupsFromASN1DER(asn1Der);
+    const hashesASN1Der = forge.asn1.fromDer(hashedDataGroups, {
+      parseAllBytes: false
+    });
 
-  const decodedNisStringBytes = forge.util.hexToBytes(nisInputHex);
-  const sha256MDNIS = forge.md.sha256.create();
-  sha256MDNIS.update(decodedNisStringBytes);
-  const calculatedNishHashHex = sha256MDNIS.digest().toHex().toUpperCase();
+    const decodedNisStringBytes = forge.util.hexToBytes(nisInputHex);
+    const sha256MDNIS = forge.md.sha256.create();
+    sha256MDNIS.update(decodedNisStringBytes);
+    const calculatedNishHashHex = sha256MDNIS.digest().toHex().toUpperCase();
 
-  const foundDataGroupASN1 = dataGroupMatchingFromHashesAS1DR(
-    hashesASN1Der,
-    calculatedNishHashHex
-  );
+    const foundDataGroupASN1 = dataGroupMatchingFromHashesAS1DR(
+      hashesASN1Der,
+      calculatedNishHashHex
+    );
 
-  if (foundDataGroupASN1 == null) {
-    return commonFailureHandling(
-      `Calculated hash (NIS) NOT found in the SOD`,
+    if (foundDataGroupASN1 == null) {
+      return commonFailureHandling(
+        `Calculated hash (NIS) NOT found in the SOD`,
+        logDebugMessages
+      );
+    }
+    const dataGroupNIS = dataGroupBytesFromASN1DER(foundDataGroupASN1);
+    consoleLogIfNeeed(
+      `Calculated hash (NIS) found in the SOD, DG: ${
+        dataGroupNIS != null ? bytesToUppercaseHex(dataGroupNIS) : undefined
+      }`,
       logDebugMessages
     );
-  }
-  const dataGroupNIS = dataGroupBytesFromASN1DER(foundDataGroupASN1);
-  consoleLogIfNeeed(
-    `Calculated hash (NIS) found in the SOD, DG: ${
-      dataGroupNIS != null ? bytesToUppercaseHex(dataGroupNIS) : undefined
-    }`,
-    logDebugMessages
-  );
 
-  const nisPublicKeyBytes = forge.util.hexToBytes(nisPublicKeyHex);
-  const sha256PublicKeyMD = forge.md.sha256.create();
-  sha256PublicKeyMD.update(nisPublicKeyBytes);
-  const calculatedInputPublicKeyHashHex = sha256PublicKeyMD
-    .digest()
-    .toHex()
-    .toUpperCase();
+    const nisPublicKeyBytes = forge.util.hexToBytes(nisPublicKeyHex);
+    const sha256PublicKeyMD = forge.md.sha256.create();
+    sha256PublicKeyMD.update(nisPublicKeyBytes);
+    const calculatedInputPublicKeyHashHex = sha256PublicKeyMD
+      .digest()
+      .toHex()
+      .toUpperCase();
 
-  const foundInputPublicKeyASN1 = dataGroupMatchingFromHashesAS1DR(
-    hashesASN1Der,
-    calculatedInputPublicKeyHashHex
-  );
-  if (foundInputPublicKeyASN1 == null) {
-    return commonFailureHandling(
-      `Calculated hash (PubK) NOT found in the SOD`,
+    const foundInputPublicKeyASN1 = dataGroupMatchingFromHashesAS1DR(
+      hashesASN1Der,
+      calculatedInputPublicKeyHashHex
+    );
+    if (foundInputPublicKeyASN1 == null) {
+      return commonFailureHandling(
+        `Calculated hash (PubK) NOT found in the SOD`,
+        logDebugMessages
+      );
+    }
+    const dataGroupPubK = dataGroupBytesFromASN1DER(foundInputPublicKeyASN1);
+    consoleLogIfNeeed(
+      `Calculated hash (PubK) found in the SOD, DG: ${
+        dataGroupPubK != null ? bytesToUppercaseHex(dataGroupPubK) : undefined
+      }`,
       logDebugMessages
     );
-  }
-  const dataGroupPubK = dataGroupBytesFromASN1DER(foundInputPublicKeyASN1);
-  consoleLogIfNeeed(
-    `Calculated hash (PubK) found in the SOD, DG: ${
-      dataGroupPubK != null ? bytesToUppercaseHex(dataGroupPubK) : undefined
-    }`,
-    logDebugMessages
-  );
 
-  const canonizedSignedAttributes = canonizeSignedAttributes(asn1Der);
-  const canonizedSignedAttributesHex = forge.asn1
-    .toDer(canonizedSignedAttributes)
-    .toHex()
-    .toUpperCase();
-  if (canonizedSignedAttributesHex !== expectedSignedAttributesHex) {
-    return commonFailureHandling(
-      `Content of signed_attrs_set DIFFERENT from expected\nExpected: ${expectedSignedAttributesHex}\nComputed: ${canonizedSignedAttributesHex}\n`,
+    const canonizedSignedAttributes = canonizeSignedAttributes(asn1Der);
+    const canonizedSignedAttributesHex = forge.asn1
+      .toDer(canonizedSignedAttributes)
+      .toHex()
+      .toUpperCase();
+    if (canonizedSignedAttributesHex !== expectedSignedAttributesHex) {
+      return commonFailureHandling(
+        `Content of signed_attrs_set DIFFERENT from expected\nExpected: ${expectedSignedAttributesHex}\nComputed: ${canonizedSignedAttributesHex}\n`,
+        logDebugMessages
+      );
+    }
+    consoleLogIfNeeed(
+      "Content of signed_attrs_set matches the expected value",
       logDebugMessages
     );
-  }
-  consoleLogIfNeeed(
-    "Content of signed_attrs_set matches the expected value",
-    logDebugMessages
-  );
 
-  const signatureBytes = signatureFromASN1DER(asn1Der);
-  const signatureHex = bytesToUppercaseHex(signatureBytes);
-  if (signatureHex !== expectedSignatureHex) {
-    return commonFailureHandling(
-      `Content of signature DIFFERENT from expected\nExpected: ${expectedSignatureHex}\nComputed: ${signatureHex}\n`,
+    const signatureBytes = signatureFromASN1DER(asn1Der);
+    const signatureHex = bytesToUppercaseHex(signatureBytes);
+    if (signatureHex !== expectedSignatureHex) {
+      return commonFailureHandling(
+        `Content of signature DIFFERENT from expected\nExpected: ${expectedSignatureHex}\nComputed: ${signatureHex}\n`,
+        logDebugMessages
+      );
+    }
+    consoleLogIfNeeed(
+      "Content of signature matches the expected value",
       logDebugMessages
     );
-  }
-  consoleLogIfNeeed(
-    "Content of signature matches the expected value",
-    logDebugMessages
-  );
 
-  const replacedSignedAttributesWrapperBytes = forge.util.hexToBytes(
-    canonizedSignedAttributesHex
-  );
-  const sha1ReplaceSignedAttributesMD = forge.md.sha1.create();
-  sha1ReplaceSignedAttributesMD.update(replacedSignedAttributesWrapperBytes);
-  const replacedSignedAttributesSHA1Bytes = sha1ReplaceSignedAttributesMD
-    .digest()
-    .getBytes();
+    const replacedSignedAttributesWrapperBytes = forge.util.hexToBytes(
+      canonizedSignedAttributesHex
+    );
+    const sha1ReplaceSignedAttributesMD = forge.md.sha1.create();
+    sha1ReplaceSignedAttributesMD.update(replacedSignedAttributesWrapperBytes);
+    const replacedSignedAttributesSHA1Bytes = sha1ReplaceSignedAttributesMD
+      .digest()
+      .getBytes();
 
-  const certificate = eIdentityCardSignerCertificateFromASN1DER(asn1Der);
-  const publicKey = certificate.publicKey as forge.pki.rsa.PublicKey;
-  if (!publicKey.verify(replacedSignedAttributesSHA1Bytes, signatureBytes)) {
-    return commonFailureHandling(
-      "Signature verification failed! The digital signature of the SOD is not valid",
+    const certificate = eIdentityCardSignerCertificateFromASN1DER(asn1Der);
+    const publicKey = certificate.publicKey as forge.pki.rsa.PublicKey;
+    if (!publicKey.verify(replacedSignedAttributesSHA1Bytes, signatureBytes)) {
+      return commonFailureHandling(
+        "Signature verification failed! The digital signature of the SOD is not valid",
+        logDebugMessages
+      );
+    }
+    consoleLogIfNeeed(
+      "Signature verification passed! The digital signature of the Document Security Object is valid",
       logDebugMessages
     );
-  }
-  consoleLogIfNeeed(
-    "Signature verification passed! The digital signature of the Document Security Object is valid",
-    logDebugMessages
-  );
 
-  return right(undefined);
+    return right(undefined);
+  } catch (error) {
+    const reason = unknownToString(error);
+    return commonFailureHandling(reason, logDebugMessages);
+  }
 };
 
 /**
