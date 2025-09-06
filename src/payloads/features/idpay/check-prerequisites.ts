@@ -109,6 +109,41 @@ const guidoniaSelfDeclarationMulti: ReadonlyArray<SelfCriteriaMultiDTO> = [
   }
 ];
 
+const BONUS_ELETTRODOMESTICI_DATA = {
+  automatedCriteria: familyUnityOnlyAutomatedCriteria,
+  selfDeclarationCriteria: [
+    {
+      _type: SelfDeclarationMultiType.multi,
+      code: ulid(),
+      description: "Hai un ISEE 2025 in corso di validità?",
+      subDescription: "[Quando un ISEE è valido?](https://google.com)",
+      value: [
+        {
+          description: "Sì, inferiore a 25.000€",
+          subDescription:
+            "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
+        },
+        {
+          description: "Sì, inferiore a 25.000€",
+          subDescription: "Hai diritto fino a 100€"
+        },
+        {
+          description: "Non ho un ISEE o preferisco non rispondere",
+          subDescription: "Hai diritto fino a 100€"
+        }
+      ]
+    },
+    {
+      _type: SelfDeclarationBoolType.boolean,
+      code: ulid(),
+      description:
+        "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
+      subDescription: "Ai sensi del D.P.R. 28 dicembre 2000, n. 445",
+      value: false
+    }
+  ]
+};
+
 const selfDeclarationBool: ReadonlyArray<SelfCriteriaBoolDTO> =
   criterionArray.map(criterion => ({
     _type: SelfDeclarationBoolType.boolean,
@@ -159,40 +194,8 @@ const checkPrerequisites: {
     automatedCriteria: [],
     selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
   },
-  [IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI]: {
-    automatedCriteria: familyUnityOnlyAutomatedCriteria,
-    selfDeclarationCriteria: [
-      {
-        _type: SelfDeclarationMultiType.multi,
-        code: ulid(),
-        description: "Hai un ISEE 2025 in corso di validità?",
-        subDescription: "[Quando un ISEE è valido?](https://google.com)",
-        value: [
-          {
-            description: "Sì, inferiore a 25.000€",
-            subDescription:
-              "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
-          },
-          {
-            description: "Sì, inferiore a 25.000€",
-            subDescription: "Hai diritto fino a 100€"
-          },
-          {
-            description: "Non ho un ISEE o preferisco non rispondere",
-            subDescription: "Hai diritto fino a 100€"
-          }
-        ]
-      },
-      {
-        _type: SelfDeclarationBoolType.boolean,
-        code: ulid(),
-        description:
-          "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
-        subDescription: "Ai sensi del D.P.R. 28 dicembre 2000, n. 445",
-        value: false
-      }
-    ]
-  }
+  [IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI]: BONUS_ELETTRODOMESTICI_DATA,
+  [IDPayInitiativeID.KO_TOO_MANY_REQUESTS]: BONUS_ELETTRODOMESTICI_DATA
 };
 
 const prerequisitesErrors: {

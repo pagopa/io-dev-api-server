@@ -18,6 +18,10 @@ import {
 import { OnboardingDTO } from "../../../../generated/definitions/idpay/OnboardingDTO";
 import { addIdPayHandler } from "./router";
 
+// Global counter to track API calls for testing retry behavior
+// eslint-disable-next-line functional/no-let
+let [apiCallCounter, skipFailure] = [0, false];
+
 /**
  * Retrieves the initiative ID starting from the corresponding service ID
  */
@@ -34,8 +38,26 @@ addIdPayHandler("get", "/onboarding/service/:serviceId", (req, res) =>
   )
 );
 
-addIdPayHandler("get", "/onboarding/:initiativeId/detail", (req, res) =>
-  pipe(
+addIdPayHandler("get", "/onboarding/:initiativeId/detail", (req, res) => {
+  apiCallCounter++;
+
+  // After 2 calls, return success and reset counter
+  if (apiCallCounter === 2) {
+    apiCallCounter = 0;
+    skipFailure = true;
+    return pipe(
+      req.params.initiativeId,
+      O.fromNullable,
+      O.chain(initiativeIdFromString),
+      O.chain(getCheckPrerequisitesResponseByInitiativeId),
+      O.fold(
+        () => res.sendStatus(202),
+        prerequisites => res.status(200).json(prerequisites)
+      )
+    );
+  }
+
+  return pipe(
     req.params.initiativeId,
     O.fromNullable,
     O.fold(
@@ -67,8 +89,8 @@ addIdPayHandler("get", "/onboarding/:initiativeId/detail", (req, res) =>
         )
       )
     )
-  )
-);
+  );
+});
 
 /**
  * Returns the actual onboarding status
@@ -92,8 +114,13 @@ addIdPayHandler("get", "/onboarding/:initiativeId/status", (req, res) =>
 /**
  * Check the initiative prerequisites
  */
-addIdPayHandler("put", "/onboarding/", (req, res) =>
-  pipe(
+addIdPayHandler("put", "/onboarding/", (req, res) => {
+  if (skipFailure) {
+    skipFailure = false;
+    return res.sendStatus(202);
+  }
+
+  return pipe(
     OnboardingDTO.decode(req.body),
     O.fromEither,
     O.fold(
@@ -117,5 +144,5 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
         )
       )
     )
-  )
-);
+  );
+});
