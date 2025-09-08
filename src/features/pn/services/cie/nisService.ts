@@ -63,6 +63,32 @@ export const verifyNISSOD = (
       const certDerBytes = certDer.toString("binary");
       const certDerASN1 = forge.asn1.fromDer(certDerBytes);
       const cert = forge.pki.certificateFromAsn1(certDerASN1);
+
+      // Compute the SHA1 of the certificate
+      const certSHA1MD = forge.md.sha1.create();
+      certSHA1MD.update(certDerBytes);
+      const certificateSha1Hex = certSHA1MD.digest().toHex().toUpperCase();
+
+      // Read the stored SHA1 (it must be stored in a file that has the
+      // same name as the certificate's file but with the .sha1 extension)
+      const sha1FilenameWithExtension = `${path.basename(
+        certFile,
+        path.extname(certFile)
+      )}.sha1`;
+      const sha1FileAbsolutePath = path.join(
+        cscaFolderAbsolutePath,
+        sha1FilenameWithExtension
+      );
+      const sha1 = fs.readFileSync(sha1FileAbsolutePath, "utf8").toUpperCase();
+
+      // Compare computed SHA1 and stored SHA1
+      if (certificateSha1Hex !== sha1) {
+        return commonFailureHandling(
+          `Certificate SHA1 does not match with expected one\nActual:   ${certificateSha1Hex}\nExpected: ${sha1}`,
+          logDebugMessages
+        );
+      }
+
       caStore.addCertificate(cert);
 
       // Check if this CSCA is the issuer of our DSC (only for logging)
