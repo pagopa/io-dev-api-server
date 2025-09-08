@@ -239,6 +239,101 @@ export const verifyNIS = (
 };
 
 /**
+ * Verifies a challenge by decrypting a signature with an RSA public key and comparing
+ * the result to the original challenge. This function replicates the low-level
+ * behavior of `openssl rsautl -verify`.
+ *
+ * @param signedChallengeHex The RSA signature, as a hexadecimal string. This is the
+ * original challenge encrypted with the corresponding private key.
+ * @param publicKeyHex The RSA public key in DER format, encoded as a hexadecimal string.
+ * @param originalChallenge The original, unmodified challenge data, as a hexadecimal string,
+ * used for final comparison.
+ */
+export const verifyChallenge = (
+  signedChallengeHex: string,
+  publicKeyHex: string,
+  originalChallenge: string,
+  logDebugMessages: boolean = false
+): Either<string, void> => {
+  try {
+    // --- 1. Prepare the Public Key ---
+    // The public key is provided as a hex string representing its DER format.
+    // It must be converted into a node-forge public key object to be used.
+
+    // Convert the hex-encoded public key into a binary string.
+    const publicKeyDer = forge.util.hexToBytes(publicKeyHex);
+    // Parse the binary DER string into an ASN.1 object structure.
+    const ans1 = forge.asn1.fromDer(publicKeyDer);
+    // Create a usable public key object from the parsed ASN.1 data.
+    const publicKey = forge.pki.publicKeyFromAsn1(ans1);
+
+    // --- 2. Perform Raw RSA Public Key Operation (Decryption) ---
+    // This process manually reverses the private key encryption (signing)
+    // using the mathematical formula: m = c^e mod n.
+
+    // Convert the hex signature into a BigInteger, treating it as the ciphertext (c).
+    const signatureBI = new forge.jsbn.BigInteger(signedChallengeHex, 16);
+    // Perform the modular exponentiation to get the decrypted message (m).
+    const decryptedBI = signatureBI.modPow(publicKey.e, publicKey.n);
+    // Convert the resulting BigInteger into an array of byte values (number[]).
+    const decryptedBytes = decryptedBI.toByteArray();
+    // Convert the number[] to a Uint8Array, as required by node-forge's encode function.
+    const decryptedUint8Array = Uint8Array.from(decryptedBytes);
+
+    // --- 3. Handle PKCS#1 v1.5 Padding ---
+    // The raw decrypted data includes PKCS#1 padding, which must be removed to
+    // recover the original message. The padding format is: 0x00 || 0x01 || PS || 0x00 || DATA
+    // where PS is a series of 0xFF bytes.
+
+    // Calculate the key size in bytes (e.g., 2048 bits = 256 bytes).
+    const keySize = Math.ceil(publicKey.n.bitLength() / 8);
+    // Convert the decrypted bytes to a binary string and left-pad it with null bytes
+    // to ensure it matches the full key length, as RSA operations expect.
+    const paddedDataBytes = forge.util.binary.raw
+      .encode(decryptedUint8Array)
+      .padStart(keySize, "\x00");
+
+    // Find the 0x00 separator that marks the end of the padding block.
+    const separatorIndex = paddedDataBytes.indexOf("\x00", 2);
+    // Validate that the padding starts with the correct markers (0x00, 0x01).
+    if (
+      paddedDataBytes.charCodeAt(0) !== 0 ||
+      paddedDataBytes.charCodeAt(1) !== 1 ||
+      separatorIndex === -1
+    ) {
+      return commonFailureHandling(
+        "Invalid PKCS#1 v1.5 padding.",
+        logDebugMessages
+      );
+    }
+    // Extract the original data by taking the substring after the padding separator.
+    const dataBytes = paddedDataBytes.substring(separatorIndex + 1);
+
+    // --- 4. Compare Challenges ---
+    // The final step is to compare the extracted data with the original challenge.
+
+    // Convert the extracted binary data to a hex string for comparison.
+    const extractedChallenge = forge.util.bytesToHex(dataBytes).toUpperCase();
+
+    // Check if the extracted challenge matches the original.
+    if (extractedChallenge !== originalChallenge) {
+      return commonFailureHandling(
+        `Challenge signature is invalid\nExtracted data do not match the original challenge\nOriginal:  ${originalChallenge}\nExtracted: ${extractedChallenge}`,
+        logDebugMessages
+      );
+    }
+    consoleLogIfNeeed(
+      `Challenge signature is valid\nExtracted data match original challenge`,
+      logDebugMessages
+    );
+    return right(undefined);
+  } catch (error) {
+    const reason = unknownToString(error);
+    return commonFailureHandling(reason, logDebugMessages);
+  }
+};
+
+/**
  * Canonizes the SignedAttributes ASN.1 object for cryptographic verification.
  *
  * @param input The original global parsed ASN.1 object, containing the `signedAttributes`
