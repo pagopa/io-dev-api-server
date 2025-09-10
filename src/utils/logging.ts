@@ -1,7 +1,7 @@
 import { ProblemJson } from "@pagopa/ts-commons/lib/responses";
 import { unknownToString } from "./error";
 
-export const logExpressWarning = (
+export const logExpressResponseWarning = (
   statusCode: number,
   problemJson: ProblemJson | object
 ) => {
@@ -10,16 +10,18 @@ export const logExpressWarning = (
     "title" in problemJson ||
     "detail" in problemJson
   ) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `\x1b[1;38;5;202m\n  Http Status Code: ${statusCode}\n  Http Body:\n    Status: ${problemJson.status}\n    Title: ${problemJson.title}\n    Details: ${problemJson.detail}\n\x1b[0m`
+    logWarning(
+      `\n  Http Status Code: ${statusCode}\n  Http Body:\n    Status: ${problemJson.status}\n    Title: ${problemJson.title}\n    Details: ${problemJson.detail}\n`
     );
   } else {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `\x1b[1;38;5;202m\n  Http Status Code: ${statusCode}\n  Http Body:\n    ${unknownToString(
+    logWarning(
+      `\n  Http Status Code: ${statusCode}\n  Http Body:\n    ${unknownToString(
         problemJson
-      )}\n\x1b[0m`
+      )}\n`
     );
   }
 };
+
+export const logWarning = (
+  message: string // eslint-disable-next-line no-console
+) => console.warn(`\x1b[1;38;5;202m${message}\x1b[0m`);
