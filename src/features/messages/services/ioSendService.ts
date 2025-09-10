@@ -22,9 +22,21 @@ export const generateRequestHeaders = (
   ...MessagesService.sendTaxIdHeader(
     ioDevServerConfig.profile.attrs.fiscal_code
   ),
-  // Don't send the default IO Source Header, it must come from the client
-  "Content-Type": contentTypeHeaderFromHeaders(headers, contentType)
+  "Content-Type": contentTypeHeaderFromHeaders(headers, contentType),
+  ...ioSourceHeaderFromRequestHeaders(headers)
 });
+
+export const ioSourceHeaderFromRequestHeaders = (
+  headers: IncomingHttpHeaders
+): Record<string, string> => {
+  const ioSourceHeader = headers["x-pagopa-pn-io-src"];
+  if (ioSourceHeader != null && typeof ioSourceHeader === "string") {
+    return {
+      "x-pagopa-pn-io-src": ioSourceHeader
+    };
+  }
+  return {};
+};
 
 export const contentTypeHeaderFromHeaders = (
   headers: IncomingHttpHeaders,
