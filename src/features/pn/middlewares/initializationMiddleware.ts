@@ -13,7 +13,7 @@ import { PaymentsDatabase } from "../../../persistence/payments";
 import { AARRepository } from "../repositories/aarRepository";
 import { PrevalidatedUrisRepository } from "../repositories/prevalidatedUrisRepository";
 import { getProblemJson } from "../../../payloads/error";
-import { logExpressWarning } from "../../../utils/logging";
+import { logExpressResponseWarning } from "../../../utils/logging";
 import { MandateRepository } from "../repositories/mandateRepository";
 
 // Middleware have to be used like this (instead of directly giving the middleware to the router via use)
@@ -29,7 +29,7 @@ export const initializationMiddleware =
         "SEND repositories initialization failed",
         `An error occourred while trying to initialize repositories for SEND (${initializationEither.left})`
       );
-      logExpressWarning(500, problemJson);
+      logExpressResponseWarning(500, problemJson);
       response.status(500).json();
       return;
     }
