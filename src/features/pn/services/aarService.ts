@@ -48,7 +48,7 @@ export const notificationOrMandateDataFromQRCode = (
     );
     if (mandates.length === 0) {
       return left({
-        httpStatusCode: 401,
+        httpStatusCode: 403,
         reason: {
           iun: notificationIUN,
           denomination: fakeDenominationFromFiscalCode(
