@@ -4,7 +4,7 @@ import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import { SendConfig } from "../types/sendConfig";
-import { logExpressWarning } from "../../../utils/logging";
+import { logWarning } from "../../../utils/logging";
 import { checkAndValidateLollipopHeaders } from "./lollipopService";
 
 export const checkAndValidateLollipopAndTaxId = (
@@ -88,13 +88,8 @@ export const checkSourceHeaderNonBlocking = (
     (sourceHeader.toUpperCase() !== "QRCODE" &&
       sourceHeader.toUpperCase() !== "DEFAULT")
   ) {
-    logExpressWarning(
-      400,
-      getProblemJson(
-        400,
-        "Non-Blocking bad value x-pagopa-pn-io-src",
-        `Bad value for header 'x-pagopa-pn-io-src'. While this is just a warning and not a blocking error, make sure that your final API provide such header. Allowed values: DEFAULT | QRCODE (${sourceHeader})`
-      )
+    logWarning(
+      `\n  Bad value for header 'x-pagopa-pn-io-src'. While this is just a warning and not a blocking error, make sure that your final API provide such header. Allowed values: DEFAULT | QRCODE (${sourceHeader})\n`
     );
   }
 };

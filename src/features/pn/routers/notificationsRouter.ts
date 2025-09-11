@@ -15,7 +15,7 @@ import {
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { ioDevServerConfig } from "../../../config";
 import { getProblemJson } from "../../../payloads/error";
-import { logExpressWarning } from "../../../utils/logging";
+import { logExpressResponseWarning } from "../../../utils/logging";
 
 const notificationDisclaimerPath =
   "/ext-registry-private/io/v1/notification-disclaimer/:iun";
@@ -91,7 +91,7 @@ addHandler(
           "User mismatch",
           `The specified notification does not belong to the user that is requesting it (${notification.iun}) (${taxIdEither.right})`
         );
-        logExpressWarning(400, problemJson);
+        logExpressResponseWarning(400, problemJson);
         res.status(400).json(problemJson);
         return;
       }
