@@ -348,7 +348,7 @@ export const verifyChallenge = (
         logDebugMessages
       );
     }
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       `Challenge signature is valid\nExtracted data match original challenge`,
       logDebugMessages
     );
