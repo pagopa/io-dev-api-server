@@ -27,11 +27,11 @@ export const verifyNISSOD = (
       const dscIssuer = certificate.issuer.attributes
         .map(attr => `${attr.shortName ?? attr.name}=${attr.value}`)
         .join(", ");
-      consoleLogIfNeeed(
+      consoleLogIfNeeded(
         `   -> SOD IAS Signer (Subject): ${dscSubject}`,
         logDebugMessages
       );
-      consoleLogIfNeeed(
+      consoleLogIfNeeded(
         `   -> Emitted by (Issuer):   ${dscIssuer}`,
         logDebugMessages
       );
@@ -93,7 +93,7 @@ export const verifyNISSOD = (
 
       // Check if this CSCA is the issuer of our DSC (only for logging)
       if (logDebugMessages && certificate.isIssuer(cert)) {
-        consoleLogIfNeeed(
+        consoleLogIfNeeded(
           `Parent CSCA certificate found (${certFile})`,
           logDebugMessages
         );
@@ -107,7 +107,7 @@ export const verifyNISSOD = (
         logDebugMessages
       );
     }
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       `DSC chain of trust verified successfully`,
       logDebugMessages
     );
