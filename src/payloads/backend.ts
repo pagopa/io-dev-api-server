@@ -125,7 +125,7 @@ export const backendStatus: BackendStatus = {
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
       privacy_url: "https://cittadini.notifichedigitali.it/informativa-privacy",
       aarQRCodeRegex:
-        "^\\s*https:\\/\\/(dev\\.|test\\.|hotfix\\.|uat\\.)?(cittadini|login)\\.notifichedigitali\\.it(\\/[^?]*)?\\?aar=[^\\s]+",
+        "^\\s*https:\\/\\/(cittadini|login)\\.(uat\\.|dev\\.)?notifichedigitali\\.it(\\/[^?]*)?\\?aar=[^\\s]+",
       aar: {
         min_app_version: {
           ios: "3.13.0.0",
@@ -287,6 +287,37 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "3.0.0.0",
         android: "3.0.0.0"
+      }
+    },
+    zendeskCacBanner: {
+      min_app_version: {
+        ios: "0.0.0.0",
+        android: "0.0.0.0"
+      },
+      title: {
+        "it-IT": "Serve aiuto?",
+        "en-EN": "Serve aiuto?",
+        "de-DE": "Serve aiuto?"
+      },
+      description: {
+        "it-IT":
+          "Abbiamo preparato una guida per aiutarti a risolvere velocemente il tuo problema.",
+        "en-EN":
+          "Abbiamo preparato una guida per aiutarti a risolvere velocemente il tuo problema.",
+        "de-DE":
+          "Abbiamo preparato una guida per aiutarti a risolvere velocemente il tuo problema."
+      },
+      action: {
+        label: {
+          "it-IT": "Vai al Centro assistenza",
+          "en-EN": "Vai al Centro assistenza",
+          "de-DE": "Vai al Centro assistenza"
+        },
+        url: {
+          "it-IT": "https://assistenza.ioapp.it/hc/it",
+          "en-EN": "https://assistenza.ioapp.it/hc/it",
+          "de-DE": "https://assistenza.ioapp.it/hc/it"
+        }
       }
     }
   },

@@ -10,6 +10,23 @@ export const mandateIdOrUndefinedFromQuery = (
   return typeof requestMandateId === "string" ? requestMandateId : undefined;
 };
 
+export const isTestOrUndefinedFromQuery = (
+  query: ParsedQs
+): boolean | undefined => {
+  const { isTest } = query;
+  if (typeof isTest !== "string") {
+    return undefined;
+  }
+  switch (isTest.toLowerCase()) {
+    case "true":
+      return true;
+    case "false":
+      return false;
+    default:
+      return undefined;
+  }
+};
+
 export const generateRequestHeaders = (
   headers: IncomingHttpHeaders,
   contentType: string = "application/json"
@@ -22,9 +39,21 @@ export const generateRequestHeaders = (
   ...MessagesService.sendTaxIdHeader(
     ioDevServerConfig.profile.attrs.fiscal_code
   ),
-  // Don't send the default IO Source Header, it must come from the client
-  "Content-Type": contentTypeHeaderFromHeaders(headers, contentType)
+  "Content-Type": contentTypeHeaderFromHeaders(headers, contentType),
+  ...ioSourceHeaderFromRequestHeaders(headers)
 });
+
+export const ioSourceHeaderFromRequestHeaders = (
+  headers: IncomingHttpHeaders
+): Record<string, string> => {
+  const ioSourceHeader = headers["x-pagopa-pn-io-src"];
+  if (ioSourceHeader != null && typeof ioSourceHeader === "string") {
+    return {
+      "x-pagopa-pn-io-src": ioSourceHeader
+    };
+  }
+  return {};
+};
 
 export const contentTypeHeaderFromHeaders = (
   headers: IncomingHttpHeaders,

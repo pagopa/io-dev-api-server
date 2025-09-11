@@ -7,7 +7,7 @@ import { addHandler } from "../../../payloads/response";
 import { addApiV1Prefix } from "../../../utils/strings";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import { sendServiceId } from "../services/dataService";
-import { logExpressWarning } from "../../../utils/logging";
+import { logExpressResponseWarning } from "../../../utils/logging";
 import { getProblemJson } from "../../../payloads/error";
 
 export const sendServiceRouter = Router();
@@ -24,7 +24,7 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
         maybeActivation.left
       )})`
     );
-    logExpressWarning(400, problemJson);
+    logExpressResponseWarning(400, problemJson);
     res.status(400).json(problemJson);
     return;
   }
@@ -35,7 +35,7 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
       "sendServiceId not found",
       `Unable to retrieve Service preferences for sendServiceId (${sendServiceId})`
     );
-    logExpressWarning(500, problemJson);
+    logExpressResponseWarning(500, problemJson);
     res.status(500).json(problemJson);
     return;
   }
@@ -55,7 +55,7 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
       "Preferences not updated",
       `Unable to update service preference for sendServiceId (${sendServiceId})`
     );
-    logExpressWarning(500, problemJson);
+    logExpressResponseWarning(500, problemJson);
     res.status(500).json(problemJson);
     return;
   }
