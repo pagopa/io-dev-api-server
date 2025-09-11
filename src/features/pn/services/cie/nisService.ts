@@ -30,7 +30,7 @@ export const verifyNIS = (
         logDebugMessages
       );
     }
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       "The calculated SHA-256 digest matches the expected one",
       logDebugMessages
     );
@@ -45,7 +45,7 @@ export const verifyNIS = (
     sha256MDNIS.update(decodedNisStringBytes);
     const calculatedNishHashHex = sha256MDNIS.digest().toHex().toUpperCase();
 
-    const foundDataGroupASN1 = dataGroupMatchingFromHashesAS1DR(
+    const foundDataGroupASN1 = dataGroupMatchingFromHashesAS1DER(
       hashesASN1Der,
       calculatedNishHashHex
     );
@@ -57,7 +57,7 @@ export const verifyNIS = (
       );
     }
     const dataGroupNIS = dataGroupBytesFromASN1DER(foundDataGroupASN1);
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       `Calculated hash (NIS) found in the SOD, DG: ${
         dataGroupNIS != null ? bytesToUppercaseHex(dataGroupNIS) : undefined
       }`,
@@ -72,7 +72,7 @@ export const verifyNIS = (
       .toHex()
       .toUpperCase();
 
-    const foundInputPublicKeyASN1 = dataGroupMatchingFromHashesAS1DR(
+    const foundInputPublicKeyASN1 = dataGroupMatchingFromHashesAS1DER(
       hashesASN1Der,
       calculatedInputPublicKeyHashHex
     );
@@ -83,7 +83,7 @@ export const verifyNIS = (
       );
     }
     const dataGroupPubK = dataGroupBytesFromASN1DER(foundInputPublicKeyASN1);
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       `Calculated hash (PubK) found in the SOD, DG: ${
         dataGroupPubK != null ? bytesToUppercaseHex(dataGroupPubK) : undefined
       }`,
@@ -101,7 +101,7 @@ export const verifyNIS = (
         logDebugMessages
       );
     }
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       "Content of signed_attrs_set matches the expected value",
       logDebugMessages
     );
@@ -114,7 +114,7 @@ export const verifyNIS = (
         logDebugMessages
       );
     }
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       "Content of signature matches the expected value",
       logDebugMessages
     );
@@ -136,7 +136,7 @@ export const verifyNIS = (
         logDebugMessages
       );
     }
-    consoleLogIfNeeed(
+    consoleLogIfNeeded(
       "Signature verification passed! The digital signature of the Document Security Object is valid",
       logDebugMessages
     );
@@ -222,7 +222,7 @@ export const dataGroupBytesFromASN1DER = (
   return undefined;
 };
 
-export const dataGroupMatchingFromHashesAS1DR = (
+export const dataGroupMatchingFromHashesAS1DER = (
   input: forge.asn1.Asn1,
   match: string
 ): forge.asn1.Asn1 | undefined => {
@@ -243,7 +243,7 @@ export const dataGroupMatchingFromHashesAS1DR = (
   }
 
   for (const child of children) {
-    const maybeMatchNode = dataGroupMatchingFromHashesAS1DR(child, match);
+    const maybeMatchNode = dataGroupMatchingFromHashesAS1DER(child, match);
     if (maybeMatchNode) {
       return maybeMatchNode;
     }
@@ -501,7 +501,7 @@ const signedDataSequenceFromASN1DER = (
 const bytesToUppercaseHex = (bytesString: string) =>
   forge.util.bytesToHex(bytesString).toUpperCase();
 
-const consoleLogIfNeeed = (line: string, shouldLog: boolean) => {
+const consoleLogIfNeeded = (line: string, shouldLog: boolean) => {
   if (shouldLog) {
     // eslint-disable-next-line no-console
     console.log(line);
