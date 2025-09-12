@@ -64,6 +64,10 @@ import {
   VoucherStatusEnum,
   StatusEnum as InitiativeStatusEnum
 } from "../../generated/definitions/idpay/InitiativeDTO";
+import {
+  StatusEnum as OnboardedInitiativeStatusEnum,
+  UserOnboardingStatusDTO
+} from "../../generated/definitions/idpay/UserOnboardingStatusDTO";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -733,4 +737,32 @@ export const getIdPayBarcodeTransaction = (
     }
     return currentBarcode;
   }
+};
+
+// ==== Onboarded Initiative Statuses ====
+// eslint-disable-next-line functional/no-let
+export let onboardedInitiativeStatuses: UserOnboardingStatusDTO[] = [];
+
+export const addOnboardedInitiativeStatus = (
+  initiative: InitiativeDTO,
+  status: OnboardedInitiativeStatusEnum
+) => {
+  if (
+    onboardedInitiativeStatuses.find(
+      onboardedInitiative =>
+        onboardedInitiative.initiativeId === initiative.initiativeId
+    )
+  ) {
+    return;
+  }
+  onboardedInitiativeStatuses = [
+    ...onboardedInitiativeStatuses,
+    {
+      initiativeId: initiative.initiativeId,
+      initiativeName: initiative.initiativeName ?? "",
+      serviceId: initiative.serviceId ?? "",
+      status,
+      statusDate: new Date()
+    }
+  ];
 };

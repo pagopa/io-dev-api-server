@@ -174,7 +174,7 @@ const checkPrerequisites: {
               "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
           },
           {
-            description: "Sì, inferiore a 25.000€",
+            description: "Sì, uguale o superiore a 25.000€",
             subDescription: "Hai diritto fino a 100€"
           },
           {

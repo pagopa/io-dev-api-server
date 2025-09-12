@@ -16,6 +16,12 @@ import {
   serviceIdFromString
 } from "../../../payloads/features/idpay/utils";
 import { OnboardingDTO } from "../../../../generated/definitions/idpay/OnboardingDTO";
+import {
+  addOnboardedInitiativeStatus,
+  initiatives
+} from "../../../persistence/idpay";
+import { StatusEnum as OnboardedInitiativeStatusEnum } from "../../../../generated/definitions/idpay/UserOnboardingStatusDTO";
+import { getOnboardingInitiativeUserStatus } from "../../../payloads/features/idpay/get-onboarding-initiative-user-status";
 import { addIdPayHandler } from "./router";
 
 /**
@@ -110,12 +116,35 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
               O.some,
               O.chain(getPrerequisitesErrorByInitiativeId),
               O.fold(
-                () => res.sendStatus(202),
+                () => {
+                  addOnboardedInitiativeStatus(
+                    initiatives[initiativeId],
+                    OnboardedInitiativeStatusEnum.ON_WAITING_LIST
+                  );
+                  return res.sendStatus(202);
+                },
                 prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
               )
             )
         )
       )
+    )
+  )
+);
+
+/**
+ * Returns all initiatives that the user is in waiting list or in evaluation status
+ */
+addIdPayHandler("get", "/onboarding/user/initiative/status", (req, res) =>
+  pipe(
+    getOnboardingInitiativeUserStatus(),
+    O.fold(
+      () =>
+        res.status(404).json({
+          code: OnboardingErrorCodeEnum.ONBOARDING_INVALID_REQUEST,
+          message: ""
+        } as OnboardingErrorDTO),
+      status => res.status(200).json(status)
     )
   )
 );
