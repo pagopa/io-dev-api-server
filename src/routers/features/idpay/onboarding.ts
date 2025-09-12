@@ -9,17 +9,17 @@ import {
   getPrerequisitesErrorByInitiativeId
 } from "../../../payloads/features/idpay/check-prerequisites";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
-import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/get-initiative-data";
+import {
+  getInitiativeDataResponseByInitiativeId,
+  getInitiativeDataResponseByServiceId
+} from "../../../payloads/features/idpay/get-initiative-data";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding-status";
 import {
   initiativeIdFromString,
   serviceIdFromString
 } from "../../../payloads/features/idpay/utils";
 import { OnboardingDTO } from "../../../../generated/definitions/idpay/OnboardingDTO";
-import {
-  addOnboardedInitiativeStatus,
-  initiatives
-} from "../../../persistence/idpay";
+import { addOnboardedInitiativeStatus } from "../../../persistence/idpay";
 import { StatusEnum as OnboardedInitiativeStatusEnum } from "../../../../generated/definitions/idpay/UserOnboardingStatusDTO";
 import { getOnboardingInitiativeUserStatus } from "../../../payloads/features/idpay/get-onboarding-initiative-user-status";
 import { addIdPayHandler } from "./router";
@@ -118,7 +118,7 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
               O.fold(
                 () => {
                   addOnboardedInitiativeStatus(
-                    initiatives[initiativeId],
+                    getInitiativeDataResponseByInitiativeId(initiativeId),
                     OnboardedInitiativeStatusEnum.ON_WAITING_LIST
                   );
                   return res.sendStatus(202);
@@ -144,7 +144,7 @@ addIdPayHandler("get", "/onboarding/user/initiative/status", (req, res) =>
           code: OnboardingErrorCodeEnum.ONBOARDING_INVALID_REQUEST,
           message: ""
         } as OnboardingErrorDTO),
-      status => res.status(200).json(status)
+      response => res.status(200).json(response)
     )
   )
 );

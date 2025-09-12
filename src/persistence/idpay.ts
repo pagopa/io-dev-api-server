@@ -68,6 +68,7 @@ import {
   StatusEnum as OnboardedInitiativeStatusEnum,
   UserOnboardingStatusDTO
 } from "../../generated/definitions/idpay/UserOnboardingStatusDTO";
+import { InitiativeDataDTOWithServiceId } from "../payloads/features/idpay/types";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -744,10 +745,11 @@ export const getIdPayBarcodeTransaction = (
 export let onboardedInitiativeStatuses: UserOnboardingStatusDTO[] = [];
 
 export const addOnboardedInitiativeStatus = (
-  initiative: InitiativeDTO,
+  initiative: InitiativeDataDTOWithServiceId | undefined,
   status: OnboardedInitiativeStatusEnum
 ) => {
   if (
+    !initiative ||
     onboardedInitiativeStatuses.find(
       onboardedInitiative =>
         onboardedInitiative.initiativeId === initiative.initiativeId

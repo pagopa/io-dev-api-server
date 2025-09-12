@@ -1,3 +1,5 @@
+import { InitiativeDataDTO } from "../../../../generated/definitions/idpay/InitiativeDataDTO";
+
 export enum IDPayServiceID {
   OK = 1,
 
@@ -49,3 +51,7 @@ export enum IDPayInitiativeID {
   KO_FAMILY_UNIT_ALREADY_JOINED,
   KO_TOO_MANY_REQUESTS
 }
+
+export type InitiativeDataDTOWithServiceId = InitiativeDataDTO & {
+  serviceId: string;
+};
