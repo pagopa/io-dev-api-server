@@ -9,13 +9,19 @@ import {
   getPrerequisitesErrorByInitiativeId
 } from "../../../payloads/features/idpay/check-prerequisites";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
-import { getInitiativeDataResponseByServiceId } from "../../../payloads/features/idpay/get-initiative-data";
+import {
+  getInitiativeDataResponseByInitiativeId,
+  getInitiativeDataResponseByServiceId
+} from "../../../payloads/features/idpay/get-initiative-data";
 import { getOnboardingStatusResponseByInitiativeId } from "../../../payloads/features/idpay/onboarding-status";
 import {
   initiativeIdFromString,
   serviceIdFromString
 } from "../../../payloads/features/idpay/utils";
 import { OnboardingDTO } from "../../../../generated/definitions/idpay/OnboardingDTO";
+import { addOnboardedInitiativeStatus } from "../../../persistence/idpay";
+import { StatusEnum as OnboardedInitiativeStatusEnum } from "../../../../generated/definitions/idpay/UserOnboardingStatusDTO";
+import { getOnboardingInitiativeUserStatus } from "../../../payloads/features/idpay/get-onboarding-initiative-user-status";
 import { addIdPayHandler } from "./router";
 
 /**
@@ -110,12 +116,35 @@ addIdPayHandler("put", "/onboarding/", (req, res) =>
               O.some,
               O.chain(getPrerequisitesErrorByInitiativeId),
               O.fold(
-                () => res.sendStatus(202),
+                () => {
+                  addOnboardedInitiativeStatus(
+                    getInitiativeDataResponseByInitiativeId(initiativeId),
+                    OnboardedInitiativeStatusEnum.ON_WAITING_LIST
+                  );
+                  return res.sendStatus(202);
+                },
                 prerequisitesError => res.status(403).json(prerequisitesError) // Initiative with prerequisites error
               )
             )
         )
       )
+    )
+  )
+);
+
+/**
+ * Returns all initiatives that the user is in waiting list or in evaluation status
+ */
+addIdPayHandler("get", "/onboarding/user/initiative/status", (req, res) =>
+  pipe(
+    getOnboardingInitiativeUserStatus(),
+    O.fold(
+      () =>
+        res.status(404).json({
+          code: OnboardingErrorCodeEnum.ONBOARDING_INVALID_REQUEST,
+          message: ""
+        } as OnboardingErrorDTO),
+      response => res.status(200).json(response)
     )
   )
 );
