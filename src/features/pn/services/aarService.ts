@@ -1,18 +1,15 @@
 import { Either, isRight, left, right } from "fp-ts/lib/Either";
-import { AARRepository } from "../repositories/aarRepository";
-import { ExpressFailure } from "../../../utils/expressDTO";
-import { getProblemJson } from "../../../payloads/error";
-import { NotificationRepository } from "../repositories/notificationRepository";
-import { MandateRepository } from "../repositories/mandateRepository";
-import { ioDevServerConfig } from "../../../config";
-import { getProfile } from "../../../persistence/profile/profile";
 import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
+import { AARQRCodeCheckResponse } from "../../../../generated/definitions/pn/aar/AARQRCodeCheckResponse";
+import { ioDevServerConfig } from "../../../config";
+import { getProblemJson } from "../../../payloads/error";
+import { getProfile } from "../../../persistence/profile/profile";
+import { ExpressFailure } from "../../../utils/expressDTO";
+import { AARRepository } from "../repositories/aarRepository";
+import { MandateRepository } from "../repositories/mandateRepository";
+import { NotificationRepository } from "../repositories/notificationRepository";
 
-export type NotificationOrMandateData = {
-  iun: string;
-  denomination: string;
-  mandateId?: string;
-};
+export type NotificationOrMandateData = AARQRCodeCheckResponse;
 
 export const notificationOrMandateDataFromQRCode = (
   inputQRCodeContent: string,
@@ -60,13 +57,13 @@ export const notificationOrMandateDataFromQRCode = (
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
     return right({
-      denomination: profileFullnameOrDefault(),
+      recipientInfo: recipientInfoFromprofileOrDefault,
       iun: notificationIUN,
       mandateId: firstValidMandateId
     });
   }
   return right({
-    denomination: profileFullnameOrDefault(),
+    recipientInfo: recipientInfoFromprofileOrDefault,
     iun: notificationIUN
   });
 };
@@ -199,11 +196,17 @@ const fakeSurnameFromCharacter = (character: string) => {
   }
 };
 
-const profileFullnameOrDefault = () => {
+const recipientInfoFromprofileOrDefault = () => {
   const profileObject = getProfile().payload;
   const initializedProfile = InitializedProfile.decode(profileObject);
   if (isRight(initializedProfile)) {
-    return `${initializedProfile.right.name} ${initializedProfile.right.family_name}`;
+    return {
+      denomination: `${initializedProfile.right.name} ${initializedProfile.right.family_name}`,
+      taxId: initializedProfile.right.fiscal_code
+    };
   }
-  return `${ioDevServerConfig.profile.attrs.name} ${ioDevServerConfig.profile.attrs.family_name}`;
+  return {
+    denomination: `${ioDevServerConfig.profile.attrs.name} ${ioDevServerConfig.profile.attrs.family_name}`,
+    taxId: ioDevServerConfig.profile.attrs.fiscal_code
+  };
 };
