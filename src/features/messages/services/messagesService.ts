@@ -35,6 +35,7 @@ import {
   generateDocumentPath,
   generatePaymentDocumentPath
 } from "../../pn/routers/documentsRouter";
+import { unknownToString } from "../../../utils/error";
 
 export const getMessageCategory = (
   message: CreatedMessageWithContent
@@ -418,9 +419,30 @@ const appendAttachmentIdxToAttachmentUrlIfNeeded = (
   return `${attachmentUrlPath}${queryString}`;
 };
 
+const urlAttachmentFromUrlEncodedBase64UrlIfNeeded = (
+  urlEncodedBase64Url: string
+): Either<ExpressFailure, string> => {
+  try {
+    const base64Url = decodeURIComponent(urlEncodedBase64Url);
+    const base64UrlBuffer = Buffer.from(base64Url, "base64");
+    const url = base64UrlBuffer.toString("utf8");
+    return right(url);
+  } catch (e) {
+    const reason = unknownToString(e);
+    const expressFailure: ExpressFailure = {
+      httpStatusCode: 400,
+      reason: getProblemJson(
+        400,
+        "Bad path parameter",
+        `Unable to decode url-encoded-base-64 attachment url (${reason})`
+      )
+    };
+    return left(expressFailure);
+  }
+};
+
 export default {
-  appendAttachmentIdxToAttachmentUrl:
-    appendAttachmentIdxToAttachmentUrlIfNeeded,
+  appendAttachmentIdxToAttachmentUrlIfNeeded,
   checkAndBuildSENDAttachmentEndpoint,
   computeGetMessagesQueryIndexes,
   createMessage,
@@ -431,5 +453,6 @@ export default {
   sendAPIKeyHeader,
   sendDefaultIOSourceHeader,
   sendTaxIdHeader,
+  urlAttachmentFromUrlEncodedBase64UrlIfNeeded,
   verifyAttachment
 };
