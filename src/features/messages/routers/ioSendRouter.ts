@@ -77,15 +77,18 @@ addHandler(
   "get",
   addApiV1Prefix("/send/notification/attachment/*"),
   lollipopMiddleware(async (req, res) => {
-    const attachmentUrlPath = req.params[0];
-    const attachmentUrl = MessagesService.appendAttachmentIdxToAttachmentUrl(
-      attachmentUrlPath,
-      req.query
-    );
+    const urlEncodedBase64AttachmentUrl = req.params[0];
+    const attachmentUrlEither =
+      MessagesService.urlAttachmentFromUrlEncodedBase64UrlIfNeeded(
+        urlEncodedBase64AttachmentUrl
+      );
+    if (handleLeftEitherIfNeeded(attachmentUrlEither, res)) {
+      return;
+    }
     const mandateId = mandateIdOrUndefinedFromQuery(req.query);
     const sendAttachmentEndpointEither =
       MessagesService.checkAndBuildSENDAttachmentEndpoint(
-        attachmentUrl,
+        attachmentUrlEither.right,
         mandateId
       );
     if (handleLeftEitherIfNeeded(sendAttachmentEndpointEither, res)) {

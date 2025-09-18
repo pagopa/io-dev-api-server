@@ -2,7 +2,11 @@ import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
 import { InitiativeDataDTO } from "../../../../generated/definitions/idpay/InitiativeDataDTO";
-import { IDPayInitiativeID, IDPayServiceID } from "./types";
+import {
+  IDPayInitiativeID,
+  IDPayServiceID,
+  InitiativeDataDTOWithServiceId
+} from "./types";
 import { initiativeIdToString } from "./utils";
 
 const createRandomInitiativeDataDTO = (): InitiativeDataDTO => ({
@@ -134,3 +138,22 @@ const initiativeData: {
 export const getInitiativeDataResponseByServiceId = (
   id: IDPayServiceID
 ): O.Option<InitiativeDataDTO> => O.fromNullable(initiativeData[id]);
+
+export const getInitiativeDataResponseByInitiativeId = (
+  initiativeId: number
+): InitiativeDataDTOWithServiceId | undefined => {
+  const entry = Object.entries(initiativeData).find(
+    ([, data]) => data.initiativeId === initiativeIdToString(initiativeId)
+  );
+
+  if (!entry) {
+    return undefined;
+  }
+
+  const [serviceId, data] = entry;
+
+  return {
+    ...data,
+    serviceId
+  };
+};

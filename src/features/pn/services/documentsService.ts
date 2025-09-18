@@ -136,31 +136,34 @@ const notificationAttachmentDownloadMetadataResponseForPaymentDocument = (
   const paymentDocument = paymentDocumentEither.right;
 
   const now = new Date();
-  const isRetryAfter =
+
+  const isGeneratingPaymentDocument =
     paymentDocument.availableFrom == null ||
-    paymentDocument.availableUntil == null ||
     now < paymentDocument.availableFrom;
-  if (isRetryAfter) {
-    const shouldUpdateAvailabilityRange =
-      paymentDocument.availableFrom == null ||
-      paymentDocument.availableUntil == null ||
-      paymentDocument.availableUntil < now;
-    if (shouldUpdateAvailabilityRange) {
-      const updatedF24Either =
-        DocumentsRepository.updateAvailabilityRangeForPaymentDocumentAtIndex(
-          index
-        );
-      if (isLeft(updatedF24Either)) {
-        return left({
-          httpStatusCode: 500,
-          reason: getProblemJson(
-            500,
-            `Availability range update failed`,
-            `Unable to updated availability range for Payment Document at index (${index})`
-          )
-        });
-      }
+  const isPaymentDocumentExpired =
+    paymentDocument.availableUntil == null ||
+    now > paymentDocument.availableUntil;
+
+  const shouldUpdateAvailabilityRange =
+    paymentDocument.availableFrom == null || isPaymentDocumentExpired;
+  if (shouldUpdateAvailabilityRange) {
+    const updatedF24Either =
+      DocumentsRepository.updateAvailabilityRangeForPaymentDocumentAtIndex(
+        index
+      );
+    if (isLeft(updatedF24Either)) {
+      return left({
+        httpStatusCode: 500,
+        reason: getProblemJson(
+          500,
+          `Availability range update failed`,
+          `Unable to updated availability range for Payment Document at index (${index})`
+        )
+      });
     }
+  }
+
+  if (isGeneratingPaymentDocument || isPaymentDocumentExpired) {
     return documentToNotificationAttachmentDownloadMetadataResponse(
       paymentDocument,
       true
