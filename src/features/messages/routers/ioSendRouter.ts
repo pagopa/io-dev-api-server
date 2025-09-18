@@ -28,7 +28,7 @@ export const ioSendRouter = Router();
 addHandler(
   ioSendRouter,
   "post",
-  addApiV1Prefix("/send/aar"),
+  addApiV1Prefix("/send/aar/qr-code-check"),
   lollipopMiddleware(async (req, res) => {
     const sendQRCodeUrl = `${serverUrl}${generateCheckQRPath()}`;
     const sendQRCodeBodyEither = bodyToString(req.body);
@@ -50,7 +50,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "get",
-  addApiV1Prefix("/send/notification/:iun"),
+  addApiV1Prefix("/send/aar/notifications/:iun"),
   lollipopMiddleware(async (req, res) => {
     const iun = req.params.iun;
     const mandateId = mandateIdOrUndefinedFromQuery(req.query);
@@ -75,7 +75,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "get",
-  addApiV1Prefix("/send/notification/attachment/*"),
+  addApiV1Prefix("/send/aar/attachments/*"),
   lollipopMiddleware(async (req, res) => {
     const urlEncodedBase64AttachmentUrl = req.params[0];
     const attachmentUrlEither =
