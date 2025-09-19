@@ -1383,6 +1383,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node-forge@npm:1.3.14":
+  version: 1.3.14
+  resolution: "@types/node-forge@npm:1.3.14"
+  dependencies:
+    "@types/node": "*"
+  checksum: ff621803390e723e56b289a89fca3a06f9f8b438add1b843203a0f64bcbc7ac03d457136b3c15010b5bc89d81f57b35f62964e6e980f6290597bb21b4463c009
+  languageName: node
+  linkType: hard
+
+"@types/node-forge@patch:@types/node-forge@npm%3A1.3.14#./.yarn/patches/@types-node-forge-npm-1.3.14-f9a6a859dc.patch::locator=io-dev-api-server%40workspace%3A.":
+  version: 1.3.14
+  resolution: "@types/node-forge@patch:@types/node-forge@npm%3A1.3.14#./.yarn/patches/@types-node-forge-npm-1.3.14-f9a6a859dc.patch::version=1.3.14&hash=36d968&locator=io-dev-api-server%40workspace%3A."
+  dependencies:
+    "@types/node": "*"
+  checksum: bfe510edfc5472dff1dc3ac67a650795564735619c162e3ebe6d6531f454f60a1ed455e756b94f9ffd2bf74c361b5fc3eadf233e151714acb6a3b25cee27a843
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 22.13.2
   resolution: "@types/node@npm:22.13.2"
@@ -4408,6 +4426,7 @@ __metadata:
     "@types/lodash": ^4.14.178
     "@types/morgan": ^1.9.10
     "@types/node": ^22.15.32
+    "@types/node-forge": ^1.3.14
     "@types/sha256": ^0.2.0
     "@types/supertest": ^2.0.8
     "@types/uuid": ^9.0.8
@@ -4438,6 +4457,7 @@ __metadata:
     jsontokens: ^4.0.1
     lodash: ^4.17.21
     morgan: ^1.10.1
+    node-forge: ^1.3.1
     nodemon: ^2.0.15
     npm-run-all: ^4.1.5
     prettier: 2.8.8
@@ -6009,6 +6029,13 @@ __metadata:
     encoding:
       optional: true
   checksum: d76d2f5edb451a3f05b15115ec89fc6be39de37c6089f1b6368df03b91e1633fd379a7e01b7ab05089a25034b2023d959b47e59759cb38d88341b2459e89d6e5
+  languageName: node
+  linkType: hard
+
+"node-forge@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "node-forge@npm:1.3.1"
+  checksum: 08fb072d3d670599c89a1704b3e9c649ff1b998256737f0e06fbd1a5bf41cae4457ccaee32d95052d80bbafd9ffe01284e078c8071f0267dc9744e51c5ed42a9
   languageName: node
   linkType: hard
 
