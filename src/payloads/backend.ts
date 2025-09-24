@@ -130,7 +130,9 @@ export const backendStatus: BackendStatus = {
         min_app_version: {
           ios: "3.13.0.0",
           android: "3.13.0.0"
-        }
+        },
+        delegate_url:
+          "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche"
       }
     },
     idPay: {

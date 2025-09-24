@@ -2,7 +2,7 @@
 
 IO_BACKEND_VERSION=v16.17.0
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.79
+IO_SERVICES_METADATA_VERSION=1.0.83
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.8.0
 
@@ -25,7 +25,7 @@ declare -a noParams=(
 
 declare -a noStrict=(
   "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_sign.yaml"
-  "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v2.15.1/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
+  "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v2.30.0/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
   "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_services_app_backend.yaml"
 )
 
