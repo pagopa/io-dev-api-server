@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import * as path from "path";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
@@ -116,24 +117,24 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   send: {
-    aarQRCodeUrl: "https://cittadini.notifichedigitali.it/io",
+    aarQRCodeUrl: "https://cittadini.dev.notifichedigitali.it/io",
     mandateTimeToLiveSeconds: 120,
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,
     paymentDocumentRetryAfterSeconds: 2,
     prevalidatedUrlDurationSeconds: 30,
     sendAARs: [
-      { iun: "00000000000000000000000000" },
-      { iun: "0000000000000000000001SEND" },
-      { iun: "0000000000000000000002SEND" },
-      { iun: "0000000000000000000003SEND" },
-      { iun: "0000000000000000000004SEND" }
+      { iun: "ABCD-EFGH-IJKL-123456-M-7" },
+      { iun: "QWER-TYUI-OPAS-987654-Z-0" },
+      { iun: "ZXCV-BNML-KJHG-001122-A-5" },
+      { iun: "WXYZ-ABCD-EFGH-987654-P-9" },
+      { iun: "ANOT-HERO-NESQ-555888-D-4" }
     ],
-    sendMandates: [{ iun: "0000000000000000000003SEND" }],
+    sendMandates: [{ iun: "WXYZ-ABCD-EFGH-987654-P-9" }],
     sendMessages: [
-      { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },
+      { iun: "QWER-TYUI-OPAS-987654-Z-0", ioTitle: "Avviso di ingiunzione" },
       {
-        iun: "0000000000000000000002SEND",
+        iun: "ZXCV-BNML-KJHG-001122-A-5",
         ioTitle: "Nuovo avviso di ingiunzione"
       }
     ],
@@ -141,7 +142,7 @@ const defaultConfig: IoDevServerConfig = {
       {
         attachments: ["DOCUMENT", "F24", "F24"],
         cancelled: true,
-        iun: "0000000000000000000001SEND",
+        iun: "QWER-TYUI-OPAS-987654-Z-0",
         payments: [
           "TOPAY",
           "TOPAY",
@@ -155,7 +156,7 @@ const defaultConfig: IoDevServerConfig = {
       },
       {
         attachments: ["DOCUMENT", "F24", "DOCUMENT"],
-        iun: "0000000000000000000002SEND",
+        iun: "ZXCV-BNML-KJHG-001122-A-5",
         payments: [
           "TOPAY",
           "TOPAY",
@@ -165,27 +166,28 @@ const defaultConfig: IoDevServerConfig = {
           "FAILED",
           "UNRELATED"
         ],
-        subject: "Nuovo avviso di ingiunzione"
+        subject: "Nuovo avviso di ingiunzione",
+        userIsRecipient: true
       },
       {
         abstract:
           "Gentile Utente,\nogni anno l'Agenzia dei Controlli esegue delle verifiche automatizzate sulle dichiarazioni presentate per verificare che i dati in esse indicati siano corretti e che i versamenti siano stati effettuati esattamente e nei termini previsti.\n\nLe comunichiamo che, dai controlli effettuati sulla sua dichiarazione, sono emerse alcune incongruenze.",
         attachments: ["F24", "DOCUMENT", "F24"],
-        iun: "0000000000000000000003SEND",
+        iun: "WXYZ-ABCD-EFGH-987654-P-9",
         payments: ["PAID", "UNRELATED", "TOPAY"],
         senderDenomination: "Agenzia dei Controlli",
         subject: "Controllo dichiarazione completato",
-        userIsRecipient: false
+        userIsRecipient: true
       },
       {
         attachments: ["F24", "DOCUMENT"],
-        iun: "0000000000000000000004SEND",
+        iun: "ANOT-HERO-NESQ-555888-D-4",
         payments: ["TOPAY"],
         userIsRecipient: false
       }
     ],
     sendOptInMessage: true,
-    skipLollipopVerification: false,
+    skipLollipopVerification: true,
     skipServerToServerAuthentication: false,
     validationCodeTimeToLiveSeconds: 60
   },

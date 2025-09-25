@@ -8,6 +8,7 @@ import { ExpressFailure } from "../../../utils/expressDTO";
 import { AARRepository } from "../repositories/aarRepository";
 import { MandateRepository } from "../repositories/mandateRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
+import { UserInfo } from "../../../../generated/definitions/pn/aar/UserInfo";
 
 export type NotificationOrMandateData = AARQRCodeCheckResponse;
 
@@ -26,7 +27,7 @@ export const notificationOrMandateDataFromQRCode = (
       )
     });
   }
-  const notificationIUN = aar.notificationIUN;
+  const notificationIUN = aar.notificationIUN as AARQRCodeCheckResponse["iun"];
   const notification = NotificationRepository.getNotification(notificationIUN);
   if (notification == null) {
     return left({
@@ -57,13 +58,13 @@ export const notificationOrMandateDataFromQRCode = (
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
     return right({
-      recipientInfo: recipientInfoFromprofileOrDefault,
+      recipientInfo: recipientInfoFromprofileOrDefault(),
       iun: notificationIUN,
       mandateId: firstValidMandateId
     });
   }
   return right({
-    recipientInfo: recipientInfoFromprofileOrDefault,
+    recipientInfo: recipientInfoFromprofileOrDefault(),
     iun: notificationIUN
   });
 };
@@ -196,7 +197,7 @@ const fakeSurnameFromCharacter = (character: string) => {
   }
 };
 
-const recipientInfoFromprofileOrDefault = () => {
+const recipientInfoFromprofileOrDefault = (): UserInfo => {
   const profileObject = getProfile().payload;
   const initializedProfile = InitializedProfile.decode(profileObject);
   if (isRight(initializedProfile)) {
