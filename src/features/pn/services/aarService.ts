@@ -15,7 +15,7 @@ export type NotificationOrMandateData = AARQRCodeCheckResponse;
 export const notificationOrMandateDataFromQRCode = (
   inputQRCodeContent: string,
   taxId: string
-): Either<ExpressFailure, NotificationOrMandateData> => {
+): Either<ExpressFailure, AARQRCodeCheckResponse> => {
   const aar = AARRepository.getAARByQRCodeContent(inputQRCodeContent);
   if (aar == null) {
     return left({
@@ -49,7 +49,7 @@ export const notificationOrMandateDataFromQRCode = (
         httpStatusCode: 403,
         reason: {
           iun: notificationIUN,
-          denomination: fakeDenominationFromFiscalCode(
+          recipientInfo: fakeRecipientInfoFromFiscalCode(
             notification.recipientFiscalCode
           )
         }
@@ -69,7 +69,7 @@ export const notificationOrMandateDataFromQRCode = (
   });
 };
 
-export const fakeDenominationFromFiscalCode = (
+export const fakeRecipientInfoFromFiscalCode = (
   fiscalCode: string
 ): UserInfo => {
   const nameInitial = fiscalCode.length > 0 ? fiscalCode[0] : "J";
