@@ -69,12 +69,17 @@ export const notificationOrMandateDataFromQRCode = (
   });
 };
 
-export const fakeDenominationFromFiscalCode = (fiscalCode: string) => {
+export const fakeDenominationFromFiscalCode = (
+  fiscalCode: string
+): UserInfo => {
   const nameInitial = fiscalCode.length > 0 ? fiscalCode[0] : "J";
   const surnameInitial = fiscalCode.length > 3 ? fiscalCode[3] : "S";
-  return `${fakeNameFromCharacter(nameInitial)} ${fakeSurnameFromCharacter(
-    surnameInitial
-  )}`;
+  return {
+    denomination: `${fakeNameFromCharacter(
+      nameInitial
+    )} ${fakeSurnameFromCharacter(surnameInitial)}`,
+    taxId: fiscalCode
+  };
 };
 
 // eslint-disable-next-line complexity
