@@ -64,7 +64,7 @@
     "valid_to": "2022-12-31T00:00:00.000Z",
     "cover": "https://assets.cdn.io.pagopa.it/bonus/cdc/logo/logo-cdc.png",
     "hero_image": "https://assets.cdn.io.pagopa.it/bonus/cdc/logo/hero-cdc.png",
-    "hero_image_dark": "https://raw.githubusercontent.com/pagopa/io-services-metadata/refs/heads/IOBP-2024-dark-hero-image/bonus/cdc/logo/hero-cdc-dark.png",
+    "hero_image_dark": "https://raw.githubusercontent.com/pagopa/io-services-metadata/refs/heads/master/bonus/cdc/logo/hero-cdc-dark.png",
     "sponsorship_description": "Ministero della Cultura",
     "sponsorship_cover": "https://assets.cdn.io.pagopa.it/bonus/cdc/logo/logo-cdc.png"
   }
