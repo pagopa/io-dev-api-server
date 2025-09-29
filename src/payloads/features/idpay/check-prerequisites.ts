@@ -2,25 +2,29 @@ import { fakerIT as faker } from "@faker-js/faker";
 import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
 import {
-  CodeEnum as OnboardingErrorCodeEnum,
-  OnboardingErrorDTO
-} from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
-import {
   CodeEnum as AutomatedCriteriaCodeEnum,
   AutomatedCriteriaDTO,
   OperatorEnum
 } from "../../../../generated/definitions/idpay/AutomatedCriteriaDTO";
 import {
-  SelfCriteriaMultiDTO,
-  _typeEnum as SelfDeclarationMultiType
-} from "../../../../generated/definitions/idpay/SelfCriteriaMultiDTO";
+  CodeEnum as OnboardingErrorCodeEnum,
+  OnboardingErrorDTO
+} from "../../../../generated/definitions/idpay/OnboardingErrorDTO";
+import { OnboardingInitiativeDTO } from "../../../../generated/definitions/idpay/OnboardingInitiativeDTO";
+import { RowDataDTO } from "../../../../generated/definitions/idpay/RowDataDTO";
 import {
   SelfCriteriaBoolDTO,
   _typeEnum as SelfDeclarationBoolType
 } from "../../../../generated/definitions/idpay/SelfCriteriaBoolDTO";
+import {
+  SelfCriteriaMultiDTO,
+  _typeEnum as SelfDeclarationMultiType
+} from "../../../../generated/definitions/idpay/SelfCriteriaMultiDTO";
+import {
+  _typeEnum as SelfCriteriaMultiTypeDTO,
+  CodeEnum as SelfCriteriaMultiCodeEnum
+} from "../../../../generated/definitions/idpay/SelfCriteriaMultiTypeDTO";
 import { _typeEnum as SelfDeclaratioTextType } from "../../../../generated/definitions/idpay/SelfCriteriaTextDTO";
-import { InitiativeBeneficiaryRuleDTO } from "../../../../generated/definitions/idpay/InitiativeBeneficiaryRuleDTO";
-import { RowDataDTO } from "../../../../generated/definitions/idpay/RowDataDTO";
 import { getRandomEnumValue } from "../../utils/random";
 import { IDPayInitiativeID } from "./types";
 
@@ -119,79 +123,89 @@ const selfDeclarationBool: ReadonlyArray<SelfCriteriaBoolDTO> =
   }));
 
 const checkPrerequisites: {
-  [id: number]: InitiativeBeneficiaryRuleDTO;
+  [id: number]: OnboardingInitiativeDTO;
 } = {
   [IDPayInitiativeID.OK]: {
-    automatedCriteria,
-    selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
+    beneficiaryRule: {
+      automatedCriteria,
+      selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
+    }
   },
   [IDPayInitiativeID.OK_GUIDONIA]: {
-    automatedCriteria,
-    selfDeclarationCriteria: [
-      ...guidoniaSelfDeclarationMulti,
-      {
-        _type: SelfDeclaratioTextType.text,
-        code: ulid(),
-        description:
-          "Avere un ISEE valido al 31\\12\\2024 con un valore pari a:",
-        value: "valore ISEE"
-      },
-      {
-        _type: SelfDeclaratioTextType.text,
-        code: ulid(),
-        description:
-          "Aver già presentato una Dichiarazione Sostitutive Unica (DSU) con numero di protocollo:",
-        value: "Numero di protocollo DSU"
-      },
-      {
-        _type: SelfDeclaratioTextType.text,
-        code: ulid(),
-        description: "Voler ricevere il rimborso al seguente IBAN:",
-        value: "IBAN"
-      }
-    ]
+    beneficiaryRule: {
+      automatedCriteria,
+      selfDeclarationCriteria: [
+        ...guidoniaSelfDeclarationMulti,
+        {
+          _type: SelfDeclaratioTextType.text,
+          code: ulid(),
+          description:
+            "Avere un ISEE valido al 31\\12\\2024 con un valore pari a:",
+          value: "valore ISEE"
+        },
+        {
+          _type: SelfDeclaratioTextType.text,
+          code: ulid(),
+          description:
+            "Aver già presentato una Dichiarazione Sostitutive Unica (DSU) con numero di protocollo:",
+          value: "Numero di protocollo DSU"
+        },
+        {
+          _type: SelfDeclaratioTextType.text,
+          code: ulid(),
+          description: "Voler ricevere il rimborso al seguente IBAN:",
+          value: "IBAN"
+        }
+      ]
+    }
   },
   [IDPayInitiativeID.OK_PDND_ONLY]: {
-    automatedCriteria,
-    selfDeclarationCriteria: []
+    beneficiaryRule: {
+      automatedCriteria,
+      selfDeclarationCriteria: []
+    }
   },
   [IDPayInitiativeID.OK_SELF_ONLY]: {
-    automatedCriteria: [],
-    selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
+    beneficiaryRule: {
+      automatedCriteria: [],
+      selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
+    }
   },
   [IDPayInitiativeID.OK_BONUS_ELETTRODOMESTICI]: {
-    automatedCriteria: familyUnityOnlyAutomatedCriteria,
-    selfDeclarationCriteria: [
-      {
-        _type: SelfDeclarationMultiType.multi,
-        code: ulid(),
-        description: "Hai un ISEE 2025 in corso di validità?",
-        subDescription: "[Quando un ISEE è valido?](https://google.com)",
-        value: [
-          {
-            description: "Sì, inferiore a 25.000€",
-            subDescription:
-              "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
-          },
-          {
-            description: "Sì, uguale o superiore a 25.000€",
-            subDescription: "Hai diritto fino a 100€"
-          },
-          {
-            description: "Non ho un ISEE o preferisco non rispondere",
-            subDescription: "Hai diritto fino a 100€"
-          }
-        ]
-      },
-      {
-        _type: SelfDeclarationBoolType.boolean,
-        code: ulid(),
-        description:
-          "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
-        subDescription: "Ai sensi del D.P.R. 28 dicembre 2000, n. 445",
-        value: false
-      }
-    ]
+    beneficiaryRule: {
+      automatedCriteria: familyUnityOnlyAutomatedCriteria,
+      selfDeclarationCriteria: [
+        {
+          _type: SelfCriteriaMultiTypeDTO.multi_consent,
+          code: SelfCriteriaMultiCodeEnum.isee,
+          description: "Hai un ISEE 2025 in corso di validità?",
+          subDescription: "Quando un ISEE è valido?",
+          value: [
+            {
+              description: "Sì, inferiore a 25.000€",
+              subDescription:
+                "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
+            },
+            {
+              description: "Sì, uguale o superiore a 25.000€",
+              subDescription: "Hai diritto fino a 100€"
+            },
+            {
+              description: "Non ho un ISEE o preferisco non rispondere",
+              subDescription: "Hai diritto fino a 100€"
+            }
+          ]
+        },
+        {
+          _type: SelfDeclarationBoolType.boolean,
+          code: ulid(),
+          subDescription: "Ai sensi del  D.P.R. 28 dicembre 2000, n. 445",
+          description:
+            "Userò il bonus per l'acquisto di un elettrodomestico di classe energetica superiore destinato a sostituire un altro della stessa tipologia",
+          value: false
+        }
+      ]
+    }
   }
 };
 
@@ -214,6 +228,10 @@ const prerequisitesErrors: {
     code: OnboardingErrorCodeEnum.ONBOARDING_BUDGET_EXHAUSTED,
     message: ""
   },
+  [IDPayInitiativeID.KO_STATUS_ON_EVALUATION]: {
+    code: OnboardingErrorCodeEnum.ONBOARDING_ON_EVALUATION,
+    message: ""
+  },
   [IDPayInitiativeID.KO_FAMILY_UNIT_ALREADY_JOINED]: {
     code: OnboardingErrorCodeEnum.ONBOARDING_FAMILY_UNIT_ALREADY_JOINED,
     message: ""
@@ -230,8 +248,7 @@ const prerequisitesErrors: {
 
 export const getCheckPrerequisitesResponseByInitiativeId = (
   id: IDPayInitiativeID
-): O.Option<InitiativeBeneficiaryRuleDTO> =>
-  O.fromNullable(checkPrerequisites[id]);
+): O.Option<OnboardingInitiativeDTO> => O.fromNullable(checkPrerequisites[id]);
 
 export const getPrerequisitesErrorByInitiativeId = (
   id: IDPayInitiativeID
