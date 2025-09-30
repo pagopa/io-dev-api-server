@@ -9,9 +9,9 @@ export const handleLeftEitherIfNeeded = (
 ): inputEither is Left<ExpressFailure> => {
   if (isLeft(inputEither)) {
     const httpStatusCode = inputEither.left.httpStatusCode;
-    const problemJson = inputEither.left.reason;
-    logExpressResponseWarning(httpStatusCode, problemJson);
-    res.status(httpStatusCode).json(problemJson);
+    const problemJsonOrCustomData = inputEither.left.reason;
+    logExpressResponseWarning(httpStatusCode, problemJsonOrCustomData);
+    res.status(httpStatusCode).json(problemJsonOrCustomData);
     return true;
   }
   return false;
