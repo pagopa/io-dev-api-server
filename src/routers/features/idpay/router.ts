@@ -3,7 +3,7 @@ import { addHandler, SupportedMethod } from "../../../payloads/response";
 
 export const idpayRouter = Router();
 
-export const addIdPayPrefix = (path: string) => `/idpay-itn/wallet${path}`;
+export const addIdPayPrefix = (path: string) => `/idpay-itn${path}`;
 
 export const addIdPayHandler = (
   method: SupportedMethod,

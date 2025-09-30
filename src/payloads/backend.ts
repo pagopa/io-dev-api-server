@@ -276,8 +276,8 @@ export const backendStatus: BackendStatus = {
     },
     app_feedback: {
       min_app_version: {
-        ios: "0.0.0.0",
-        android: "0.0.0.0"
+        ios: "2.0.0.0",
+        android: "2.0.0.0"
       },
       feedback_uri: {
         general: "https://pagopa.qualtrics.com/jfe/form/SV_dg0CZHTfsBN56aG",
