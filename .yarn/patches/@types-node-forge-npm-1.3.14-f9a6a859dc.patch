@@ -1,0 +1,13 @@
+diff --git a/index.d.ts b/index.d.ts
+index 04e1aa15110db516b7e2b0a79901f75c658ff717..2a7dc3d33a25bbb21453b7058ce6b0dd1efb7b5c 100644
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -826,7 +826,7 @@ declare module "node-forge" {
+         }
+ 
+         function create(tagClass: Class, type: Type, constructed: boolean, value: Bytes | Asn1[]): Asn1;
+-        function fromDer(bytes: Bytes | util.ByteBuffer, strict?: boolean): Asn1;
++        function fromDer(bytes: Bytes | util.ByteBuffer, options?: { parseAllBytes: false }): Asn1;
+         function toDer(obj: Asn1): util.ByteBuffer;
+ 
+         /**
