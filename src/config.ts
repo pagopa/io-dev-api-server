@@ -124,17 +124,17 @@ const defaultConfig: IoDevServerConfig = {
     paymentDocumentRetryAfterSeconds: 2,
     prevalidatedUrlDurationSeconds: 30,
     sendAARs: [
-      { iun: "ABCD-EFGH-IJKL-123456-M-7" },
-      { iun: "QWER-TYUI-OPAS-987654-Z-0" },
-      { iun: "ZXCV-BNML-KJHG-001122-A-5" },
-      { iun: "WXYZ-ABCD-EFGH-987654-P-9" },
-      { iun: "ANOT-HERO-NESQ-555888-D-4" }
+      { iun: "SEND-SEND-SEND-000000-A-0" },
+      { iun: "SEND-SEND-SEND-000001-A-0" },
+      { iun: "SEND-SEND-SEND-000002-A-0" },
+      { iun: "SEND-SEND-SEND-000003-A-0" },
+      { iun: "SEND-SEND-SEND-000004-A-0" }
     ],
-    sendMandates: [{ iun: "WXYZ-ABCD-EFGH-987654-P-9" }],
+    sendMandates: [{ iun: "SEND-SEND-SEND-000003-A-0" }],
     sendMessages: [
-      { iun: "QWER-TYUI-OPAS-987654-Z-0", ioTitle: "Avviso di ingiunzione" },
+      { iun: "SEND-SEND-SEND-000001-A-0", ioTitle: "Avviso di ingiunzione" },
       {
-        iun: "ZXCV-BNML-KJHG-001122-A-5",
+        iun: "SEND-SEND-SEND-000002-A-0",
         ioTitle: "Nuovo avviso di ingiunzione"
       }
     ],
@@ -142,7 +142,7 @@ const defaultConfig: IoDevServerConfig = {
       {
         attachments: ["DOCUMENT", "F24", "F24"],
         cancelled: true,
-        iun: "QWER-TYUI-OPAS-987654-Z-0",
+        iun: "SEND-SEND-SEND-000001-A-0",
         payments: [
           "TOPAY",
           "TOPAY",
@@ -156,7 +156,7 @@ const defaultConfig: IoDevServerConfig = {
       },
       {
         attachments: ["DOCUMENT", "F24", "DOCUMENT"],
-        iun: "ZXCV-BNML-KJHG-001122-A-5",
+        iun: "SEND-SEND-SEND-000002-A-0",
         payments: [
           "TOPAY",
           "TOPAY",
@@ -173,15 +173,15 @@ const defaultConfig: IoDevServerConfig = {
         abstract:
           "Gentile Utente,\nogni anno l'Agenzia dei Controlli esegue delle verifiche automatizzate sulle dichiarazioni presentate per verificare che i dati in esse indicati siano corretti e che i versamenti siano stati effettuati esattamente e nei termini previsti.\n\nLe comunichiamo che, dai controlli effettuati sulla sua dichiarazione, sono emerse alcune incongruenze.",
         attachments: ["F24", "DOCUMENT", "F24"],
-        iun: "WXYZ-ABCD-EFGH-987654-P-9",
+        iun: "SEND-SEND-SEND-000003-A-0",
         payments: ["PAID", "UNRELATED", "TOPAY"],
         senderDenomination: "Agenzia dei Controlli",
         subject: "Controllo dichiarazione completato",
-        userIsRecipient: true
+        userIsRecipient: false
       },
       {
         attachments: ["F24", "DOCUMENT"],
-        iun: "ANOT-HERO-NESQ-555888-D-4",
+        iun: "SEND-SEND-SEND-000004-A-0",
         payments: ["TOPAY"],
         userIsRecipient: false
       }

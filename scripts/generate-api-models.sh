@@ -30,7 +30,7 @@ declare -a noStrict=(
 )
 
 declare -a noStrictRequestTypesRespondeDecoders=(
-  "./generated/definitions/pn/aar https://raw.githubusercontent.com/pagopa/io-messages/refs/heads/main/apps/send-func/openapi/aar-notification.yaml"
+  "./generated/definitions/pn/aar https://raw.githubusercontent.com/pagopa/io-messages/ed902158c99345dde8e1a37c78252d360e6d6c34/apps/send-func/openapi/aar-notification.yaml"
   "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_pn.yaml"
   "./generated/definitions/trial_system https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_trial_system.yaml"
   "./generated/definitions/fims_history https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_fims.yaml"

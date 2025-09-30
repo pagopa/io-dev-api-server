@@ -9,7 +9,6 @@ import { getProblemJson } from "../../../payloads/error";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import { notificationOrMandateDataFromQRCode } from "../services/aarService";
 import { logExpressResponseWarning } from "../../../utils/logging";
-import { RequestCheckQrMandateDto } from "../../../../generated/definitions/pn/aar/RequestCheckQrMandateDto";
 
 const checkQRCodePath = "/delivery/notifications/received/check-qr-code";
 
@@ -25,37 +24,35 @@ addHandler(
   // because supertest (when testing) calls every middleware upon test initialization, even if it not in a
   // router directly called by the test, thus making every test fail due to the authentication middleware
   authenticationMiddleware(
-    initializationMiddleware(
-      (req: Request & { body: RequestCheckQrMandateDto }, res: Response) => {
-        const taxIdEither = checkAndValidateLollipopAndTaxId(
-          ioDevServerConfig.send,
-          req
-        );
-        if (handleLeftEitherIfNeeded(taxIdEither, res)) {
-          return;
-        }
-        const { aarQrCodeValue: inputQRCodeContent } = req.body;
-        if (typeof inputQRCodeContent !== "string") {
-          const problemJson = getProblemJson(
-            400,
-            "Bad body value",
-            `Request body does not contain a valid JSON with the 'qrcode' property (${inputQRCodeContent})`
-          );
-          logExpressResponseWarning(400, problemJson);
-          res.status(400).json(problemJson);
-          return;
-        }
-        const notificationOrMandateDataEither =
-          notificationOrMandateDataFromQRCode(
-            inputQRCodeContent,
-            taxIdEither.right
-          );
-        if (handleLeftEitherIfNeeded(notificationOrMandateDataEither, res)) {
-          return;
-        }
-        res.status(200).json(notificationOrMandateDataEither.right);
+    initializationMiddleware((req: Request, res: Response) => {
+      const taxIdEither = checkAndValidateLollipopAndTaxId(
+        ioDevServerConfig.send,
+        req
+      );
+      if (handleLeftEitherIfNeeded(taxIdEither, res)) {
+        return;
       }
-    )
+      const { aarQrCodeValue: inputQRCodeContent } = req.body;
+      if (typeof inputQRCodeContent !== "string") {
+        const problemJson = getProblemJson(
+          400,
+          "Bad body value",
+          `Request body does not contain a valid JSON with the 'aarQrCodeValue' property (${inputQRCodeContent})`
+        );
+        logExpressResponseWarning(400, problemJson);
+        res.status(400).json(problemJson);
+        return;
+      }
+      const notificationOrMandateDataEither =
+        notificationOrMandateDataFromQRCode(
+          inputQRCodeContent,
+          taxIdEither.right
+        );
+      if (handleLeftEitherIfNeeded(notificationOrMandateDataEither, res)) {
+        return;
+      }
+      res.status(200).json(notificationOrMandateDataEither.right);
+    })
   )
 );
 

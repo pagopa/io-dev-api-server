@@ -1,4 +1,5 @@
-import { Either, isRight, left, right } from "fp-ts/lib/Either";
+import { Either, isLeft, isRight, left } from "fp-ts/lib/Either";
+import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
 import { AARQRCodeCheckResponse } from "../../../../generated/definitions/pn/aar/AARQRCodeCheckResponse";
 import { ioDevServerConfig } from "../../../config";
@@ -8,9 +9,6 @@ import { ExpressFailure } from "../../../utils/expressDTO";
 import { AARRepository } from "../repositories/aarRepository";
 import { MandateRepository } from "../repositories/mandateRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
-import { UserInfo } from "../../../../generated/definitions/pn/aar/UserInfo";
-
-export type NotificationOrMandateData = AARQRCodeCheckResponse;
 
 export const notificationOrMandateDataFromQRCode = (
   inputQRCodeContent: string,
@@ -27,7 +25,7 @@ export const notificationOrMandateDataFromQRCode = (
       )
     });
   }
-  const notificationIUN = aar.notificationIUN as AARQRCodeCheckResponse["iun"];
+  const notificationIUN = aar.notificationIUN;
   const notification = NotificationRepository.getNotification(notificationIUN);
   if (notification == null) {
     return left({
@@ -39,47 +37,53 @@ export const notificationOrMandateDataFromQRCode = (
       )
     });
   }
-  if (notification.recipientFiscalCode.toUpperCase() !== taxId.toUpperCase()) {
+  const recipientFiscalCode = notification.recipientFiscalCode;
+  if (recipientFiscalCode.toUpperCase() !== taxId.toUpperCase()) {
     const mandates = MandateRepository.getActiveMandates(
       notificationIUN,
       taxId
     );
     if (mandates.length === 0) {
+      const denomination = fakeDenominationFromFiscalCode(recipientFiscalCode);
+      const aarQrCodeCheckResponseEither = aarQRCodeCheckResponseFromData(
+        notificationIUN,
+        denomination,
+        recipientFiscalCode
+      );
+      // Conversion failed, this is an internal server error
+      if (isLeft(aarQrCodeCheckResponseEither)) {
+        return aarQrCodeCheckResponseEither;
+      }
+      // Conversion succeeeded but the access is denied
       return left({
         httpStatusCode: 403,
-        reason: {
-          iun: notificationIUN,
-          recipientInfo: fakeRecipientInfoFromFiscalCode(
-            notification.recipientFiscalCode
-          )
-        }
+        reason: aarQrCodeCheckResponseEither.right
       });
     }
+    const denomination = profileFullNameOrDefault();
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
-    return right({
-      recipientInfo: recipientInfoFromprofileOrDefault(),
-      iun: notificationIUN,
-      mandateId: firstValidMandateId
-    });
+    return aarQRCodeCheckResponseFromData(
+      notificationIUN,
+      denomination,
+      recipientFiscalCode,
+      firstValidMandateId
+    );
   }
-  return right({
-    recipientInfo: recipientInfoFromprofileOrDefault(),
-    iun: notificationIUN
-  });
+  const denomination = profileFullNameOrDefault();
+  return aarQRCodeCheckResponseFromData(
+    notificationIUN,
+    denomination,
+    recipientFiscalCode
+  );
 };
 
-export const fakeRecipientInfoFromFiscalCode = (
-  fiscalCode: string
-): UserInfo => {
+export const fakeDenominationFromFiscalCode = (fiscalCode: string) => {
   const nameInitial = fiscalCode.length > 0 ? fiscalCode[0] : "J";
   const surnameInitial = fiscalCode.length > 3 ? fiscalCode[3] : "S";
-  return {
-    denomination: `${fakeNameFromCharacter(
-      nameInitial
-    )} ${fakeSurnameFromCharacter(surnameInitial)}`,
-    taxId: fiscalCode
-  };
+  return `${fakeNameFromCharacter(nameInitial)} ${fakeSurnameFromCharacter(
+    surnameInitial
+  )}`;
 };
 
 // eslint-disable-next-line complexity
@@ -202,17 +206,40 @@ const fakeSurnameFromCharacter = (character: string) => {
   }
 };
 
-const recipientInfoFromprofileOrDefault = (): UserInfo => {
+const profileFullNameOrDefault = () => {
   const profileObject = getProfile().payload;
   const initializedProfile = InitializedProfile.decode(profileObject);
   if (isRight(initializedProfile)) {
-    return {
-      denomination: `${initializedProfile.right.name} ${initializedProfile.right.family_name}`,
-      taxId: initializedProfile.right.fiscal_code
-    };
+    return `${initializedProfile.right.name} ${initializedProfile.right.family_name}`;
   }
-  return {
-    denomination: `${ioDevServerConfig.profile.attrs.name} ${ioDevServerConfig.profile.attrs.family_name}`,
-    taxId: ioDevServerConfig.profile.attrs.fiscal_code
-  };
+  return `${ioDevServerConfig.profile.attrs.name} ${ioDevServerConfig.profile.attrs.family_name}`;
+};
+
+const aarQRCodeCheckResponseFromData = (
+  iun: string,
+  denomination: string,
+  fiscalCode: string,
+  mandateId?: string
+): Either<ExpressFailure, AARQRCodeCheckResponse> => {
+  const aarQRCodeCheckResponseEither = AARQRCodeCheckResponse.decode({
+    iun,
+    recipientInfo: {
+      denomination,
+      taxId: fiscalCode
+    },
+    mandateId
+  });
+  if (isLeft(aarQRCodeCheckResponseEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Conversion to AARQRCodeCheckResponse failed",
+        `Unable to convert input data to the AARQRCodeCheckResponse data structure (${readableReportSimplified(
+          aarQRCodeCheckResponseEither.left
+        )})`
+      )
+    });
+  }
+  return aarQRCodeCheckResponseEither;
 };
