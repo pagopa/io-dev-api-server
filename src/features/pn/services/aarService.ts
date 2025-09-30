@@ -60,7 +60,7 @@ export const notificationOrMandateDataFromQRCode = (
         reason: aarQrCodeCheckResponseEither.right
       });
     }
-    const denomination = profileFullNameOrDefault();
+    const denomination = profileFullnameOrDefault();
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
     return aarQRCodeCheckResponseFromData(
@@ -70,7 +70,7 @@ export const notificationOrMandateDataFromQRCode = (
       firstValidMandateId
     );
   }
-  const denomination = profileFullNameOrDefault();
+  const denomination = profileFullnameOrDefault();
   return aarQRCodeCheckResponseFromData(
     notificationIUN,
     denomination,
@@ -206,7 +206,7 @@ const fakeSurnameFromCharacter = (character: string) => {
   }
 };
 
-const profileFullNameOrDefault = () => {
+const profileFullnameOrDefault = () => {
   const profileObject = getProfile().payload;
   const initializedProfile = InitializedProfile.decode(profileObject);
   if (isRight(initializedProfile)) {

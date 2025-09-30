@@ -166,8 +166,7 @@ const defaultConfig: IoDevServerConfig = {
           "FAILED",
           "UNRELATED"
         ],
-        subject: "Nuovo avviso di ingiunzione",
-        userIsRecipient: true
+        subject: "Nuovo avviso di ingiunzione"
       },
       {
         abstract:
@@ -187,7 +186,7 @@ const defaultConfig: IoDevServerConfig = {
       }
     ],
     sendOptInMessage: true,
-    skipLollipopVerification: true,
+    skipLollipopVerification: false,
     skipServerToServerAuthentication: false,
     validationCodeTimeToLiveSeconds: 60
   },
