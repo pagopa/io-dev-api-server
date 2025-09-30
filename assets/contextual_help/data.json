@@ -1687,6 +1687,11 @@
                   "body": "Vai alla pagina [stato delle firme](ioit://fci/signature-requests) per verificare se la richiesta è in corso o se hai già firmato un documento. Se hai bisogno di assistenza, seleziona la firma interessata dal problema e contatta l’assistenza."
                }
             ]
+         },
+         {
+            "route_name": "CDC_INFORMATION_TOS",
+            "title": "Carta della Cultura",
+            "content": "Qui trovi le informazioni su come funziona Carta della Cultura."
          }
       ],
       "idps": {
@@ -2393,6 +2398,11 @@
                   "body": "For information on how to participate in the initiative, email affari.istituzionali@pagopa.it."
                }
             ]
+         },
+         {
+            "route_name": "CDC_INFORMATION_TOS",
+            "title": "Carta della Cultura",
+            "content": "Qui trovi le informazioni su come funziona Carta della Cultura."
          }
       ],
       "idps": {
@@ -3466,6 +3476,11 @@
                   "body": "Ruf die Seite [Signaturstatus](ioit://fci/signature-requests) auf, um zu prüfen, ob die Anfrage in Bearbeitung ist oder ob du bereits das Dokument signiert hast. Wenn du Hilfe benötigst, wähle die vom Problem betroffene Signatur aus und kontaktiere den Support."
                }
             ]
+         },
+         {
+            "route_name": "CDC_INFORMATION_TOS",
+            "title": "Carta della Cultura",
+            "content": "Qui trovi le informazioni su come funziona Carta della Cultura."
          }
       ],
       "idps": {
