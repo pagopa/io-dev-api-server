@@ -32,12 +32,12 @@ addHandler(
       if (handleLeftEitherIfNeeded(taxIdEither, res)) {
         return;
       }
-      const { qrcode: inputQRCodeContent } = req.body;
+      const { aarQrCodeValue: inputQRCodeContent } = req.body;
       if (typeof inputQRCodeContent !== "string") {
         const problemJson = getProblemJson(
           400,
           "Bad body value",
-          `Request body does not contain a valid JSON with the 'qrcode' property (${inputQRCodeContent})`
+          `Request body does not contain a valid JSON with the 'aarQrCodeValue' property (${inputQRCodeContent})`
         );
         logExpressResponseWarning(400, problemJson);
         res.status(400).json(problemJson);
