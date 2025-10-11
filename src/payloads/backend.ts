@@ -162,6 +162,12 @@ export const backendStatus: BackendStatus = {
           ios: "4.0.0",
           android: "4.0.0"
         }
+      },
+      scan_screen: {
+        min_app_version: {
+          ios: "4.0.0",
+          android: "4.0.0"
+        }
       }
     },
     newPaymentSection: {
