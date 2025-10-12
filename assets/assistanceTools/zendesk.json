@@ -56,9 +56,9 @@
                 "de-DE": "Mehr lesen"
               },
               "href": {
-                "it-IT": "https://assistenza.ioapp.it/hc/it",
-                "en-EN": "https://assistenza.ioapp.it/hc/it",
-                "de-DE": "https://assistenza.ioapp.it/hc/it"
+                "it-IT":"https://assistenza.ioapp.it/hc/it",
+                "en-EN":"https://assistenza.ioapp.it/hc/it",
+                "de-DE":"https://assistenza.ioapp.it/hc/it"
               }
             }
           }
@@ -380,19 +380,27 @@
               }
             },
             {
-              "value": "cashback",
-              "description": {
-                "it-IT": "Cashback",
-                "en-EN": "Cashback",
-                "de-DE": "Cashback"
-              }
-            },
-            {
               "value": "bonus_vacanze",
               "description": {
                 "it-IT": "Bonus Vacanze",
                 "en-EN": "Bonus Vacanze",
                 "de-DE": "Ferienbonus"
+              }
+            },
+            {
+              "value": "carta_della_cultura",
+              "description": {
+                "it-IT": "Carta della Cultura",
+                "en-EN": "Carta della Cultura",
+                "de-DE": "Carta della Cultura"
+              }
+            },
+            {
+              "value": "cashback",
+              "description": {
+                "it-IT": "Cashback",
+                "en-EN": "Cashback",
+                "de-DE": "Cashback"
               }
             },
             {
