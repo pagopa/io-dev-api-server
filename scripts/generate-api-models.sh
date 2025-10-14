@@ -26,7 +26,7 @@ declare -a noParams=(
 declare -a noStrict=(
   "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_sign.yaml"
   "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v2.30.0/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
-  "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_services_app_backend.yaml"
+  "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-backend/3e06f698840fd607b26378fdcca5e68f4f15f117/api_services_app_backend.yaml"
 )
 
 declare -a noStrictRequestTypesRespondeDecoders=(

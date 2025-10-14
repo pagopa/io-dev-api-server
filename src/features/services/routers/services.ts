@@ -7,7 +7,7 @@ import { getFeaturedServicesResponsePayload } from "../payloads/get-featured-ser
 import ServicesDB from "../persistence/servicesDatabase";
 import { addApiV2Prefix, serviceRouter } from "./router";
 
-const serviceConfig = ioDevServerConfig.features.service;
+const serviceConfig = ioDevServerConfig.features.services;
 
 // Retrieve featured services
 addHandler(
@@ -16,7 +16,7 @@ addHandler(
   addApiV2Prefix("/services/featured"),
   (_, res) =>
     pipe(
-      serviceConfig.response.featuredServicesResponseCode,
+      serviceConfig.response.getFeaturedServicesResponseCode,
       O.fromPredicate(statusCode => statusCode !== 200),
       O.fold(
         () =>
@@ -39,7 +39,7 @@ addHandler(
   addApiV2Prefix("/services/:serviceId"),
   (req, res) =>
     pipe(
-      serviceConfig.response.serviceByIdResponseCode,
+      serviceConfig.response.getServiceByIdResponseCode,
       O.fromPredicate(statusCode => statusCode !== 200),
       O.fold(
         () =>

@@ -1,3 +1,4 @@
+import "./favourites";
 import "./institutions";
 import "./services";
 

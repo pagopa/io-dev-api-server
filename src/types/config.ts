@@ -16,7 +16,7 @@ import { SubscriptionState } from "../../generated/definitions/trial_system/Subs
 import { TrialId } from "../../generated/definitions/trial_system/TrialId";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
 import { WalletConfiguration } from "../features/payments/types/configuration";
-import { ServiceConfiguration } from "../features/services/types/configuration";
+import { ServicesConfiguration } from "../features/services/types/configuration";
 import { FIMSConfig } from "../features/fims/types/config";
 import { SendConfig } from "../features/pn/types/sendConfig";
 import { AllowRandomValue } from "./allowRandomValue";
@@ -216,7 +216,7 @@ export const IoDevServerConfig = t.interface({
           assertionRefValidityMS: t.number
         })
       ]),
-      service: ServiceConfiguration,
+      services: ServicesConfiguration,
       fims: FIMSConfig
     }),
     t.partial({

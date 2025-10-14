@@ -7,24 +7,15 @@ import { addHandler } from "../../../payloads/response";
 import { getFeaturedInstitutionsResponsePayload } from "../payloads/get-featured-institutions";
 import { getInstitutionsResponsePayload } from "../payloads/get-institutions";
 import { getServicesByInstitutionIdResponsePayload } from "../payloads/get-services";
+import { extractQuery, Query } from "../utils";
 import { addApiV2Prefix, serviceRouter } from "./router";
 
-const serviceConfig = ioDevServerConfig.features.service;
-
-type Query = string | qs.ParsedQs | string[] | qs.ParsedQs[] | undefined;
-
-const extractQuery = (query: Query) =>
-  pipe(
-    query,
-    O.fromNullable,
-    O.map(s => parseInt(s as string, 10)),
-    O.toUndefined
-  );
+const serviceConfig = ioDevServerConfig.features.services;
 
 // Find institutions
 addHandler(serviceRouter, "get", addApiV2Prefix("/institutions"), (req, res) =>
   pipe(
-    serviceConfig.response.institutionsResponseCode,
+    serviceConfig.response.getInstitutionsResponseCode,
     O.fromPredicate(statusCode => statusCode !== 200),
     O.fold(
       () =>
@@ -62,7 +53,7 @@ addHandler(
   addApiV2Prefix("/institutions/:institutionId/services"),
   (req, res) =>
     pipe(
-      serviceConfig.response.servicesByInstitutionIdResponseCode,
+      serviceConfig.response.getServicesByInstitutionIdResponseCode,
       O.fromPredicate(statusCode => statusCode !== 200),
       O.fold(
         () =>
@@ -90,7 +81,7 @@ addHandler(
   addApiV2Prefix("/institutions/featured"),
   (_, res) =>
     pipe(
-      serviceConfig.response.featuredInstitutionsResponseCode,
+      serviceConfig.response.getFeaturedInstitutionsResponseCode,
       O.fromPredicate(statusCode => statusCode !== 200),
       O.fold(
         () =>
