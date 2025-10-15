@@ -251,15 +251,24 @@ const defaultConfig: IoDevServerConfig = {
     fastLogin: {
       sessionTTLinMS: 60000
     },
-    service: {
+    services: {
+      favourites: {
+        services: {
+          count: 1
+        }
+      },
       featuredInstitutionsSize: 5,
       featuredServicesSize: 5,
       response: {
-        featuredInstitutionsResponseCode: 200,
-        featuredServicesResponseCode: 200,
-        institutionsResponseCode: 200,
-        servicesByInstitutionIdResponseCode: 200,
-        serviceByIdResponseCode: 200
+        getFeaturedInstitutionsResponseCode: 200,
+        getFeaturedServicesResponseCode: 200,
+        getInstitutionsResponseCode: 200,
+        getServicesByInstitutionIdResponseCode: 200,
+        getServiceByIdResponseCode: 200,
+        getFavouriteServicesResponseCode: 200,
+        getFavouriteServiceResponseCode: 200,
+        deleteFavouriteServiceResponseCode: 200,
+        putFavouriteServiceResponseCode: 200
       }
     },
     fims: {

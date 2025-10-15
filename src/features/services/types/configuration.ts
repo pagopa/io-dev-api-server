@@ -2,24 +2,31 @@ import { WithinRangeNumber } from "@pagopa/ts-commons/lib/numbers";
 import * as t from "io-ts";
 import { HttpResponseCode } from "../../../types/httpResponseCode";
 
-export const ServiceConfiguration = t.type({
+export const FavouritesConfiguration = t.type({
+  services: t.type({
+    count: t.number
+  })
+});
+
+export const ServicesConfiguration = t.type({
+  // configure favourites feature
+  favourites: FavouritesConfiguration,
   // configure number of featured institutions
   featuredInstitutionsSize: WithinRangeNumber(0, 6),
   // configure number of featured services
   featuredServicesSize: WithinRangeNumber(0, 6),
   // configure some API response error code
   response: t.type({
-    // 200 success with payload
-    featuredInstitutionsResponseCode: HttpResponseCode,
-    // 200 success with payload
-    featuredServicesResponseCode: HttpResponseCode,
-    // 200 success with payload
-    institutionsResponseCode: HttpResponseCode,
-    // 200 success with payload
-    servicesByInstitutionIdResponseCode: HttpResponseCode,
-    // 200 success with payload
-    serviceByIdResponseCode: HttpResponseCode
+    getFeaturedInstitutionsResponseCode: HttpResponseCode,
+    getFeaturedServicesResponseCode: HttpResponseCode,
+    getInstitutionsResponseCode: HttpResponseCode,
+    getServicesByInstitutionIdResponseCode: HttpResponseCode,
+    getServiceByIdResponseCode: HttpResponseCode,
+    getFavouriteServicesResponseCode: HttpResponseCode,
+    deleteFavouriteServiceResponseCode: HttpResponseCode,
+    getFavouriteServiceResponseCode: HttpResponseCode,
+    putFavouriteServiceResponseCode: HttpResponseCode
   })
 });
 
-export type ServiceConfiguration = t.TypeOf<typeof ServiceConfiguration>;
+export type ServicesConfiguration = t.TypeOf<typeof ServicesConfiguration>;
