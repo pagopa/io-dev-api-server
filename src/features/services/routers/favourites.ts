@@ -55,7 +55,7 @@ addHandler(
             ),
             O.fold(
               () => res.sendStatus(404),
-              favouriteService => res.sendStatus(204).json(favouriteService)
+              favouriteService => res.status(200).json(favouriteService)
             )
           ),
         statusCode => res.sendStatus(statusCode)
@@ -118,9 +118,9 @@ addHandler(
             O.fold(
               () => res.sendStatus(500),
               serviceId => {
-                const hasBeenDelete =
+                const hasBeenDeleted =
                   FavouritesRepository.removeService(serviceId);
-                return res.sendStatus(hasBeenDelete ? 204 : 500);
+                return res.sendStatus(hasBeenDeleted ? 204 : 500);
               }
             )
           ),
