@@ -146,12 +146,14 @@ export const backendStatus: BackendStatus = {
         android: "1.2.3"
       },
       onboarding: {
+        enabled: true,
         min_app_version: {
           ios: "3.0.0",
           android: "3.0.0"
         }
       },
       initiative_details: {
+        enabled: true,
         min_app_version: {
           ios: "3.0.0",
           android: "3.0.0"
