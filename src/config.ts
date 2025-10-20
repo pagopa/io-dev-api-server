@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import * as path from "path";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
@@ -116,24 +117,24 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   send: {
-    aarQRCodeUrl: "https://cittadini.notifichedigitali.it/io",
+    aarQRCodeUrl: "https://cittadini.dev.notifichedigitali.it/io",
     mandateTimeToLiveSeconds: 120,
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,
     paymentDocumentRetryAfterSeconds: 2,
     prevalidatedUrlDurationSeconds: 30,
     sendAARs: [
-      { iun: "00000000000000000000000000" },
-      { iun: "0000000000000000000001SEND" },
-      { iun: "0000000000000000000002SEND" },
-      { iun: "0000000000000000000003SEND" },
-      { iun: "0000000000000000000004SEND" }
+      { iun: "SEND-SEND-SEND-000000-A-0" },
+      { iun: "SEND-SEND-SEND-000001-A-0" },
+      { iun: "SEND-SEND-SEND-000002-A-0" },
+      { iun: "SEND-SEND-SEND-000003-A-0" },
+      { iun: "SEND-SEND-SEND-000004-A-0" }
     ],
-    sendMandates: [{ iun: "0000000000000000000003SEND" }],
+    sendMandates: [{ iun: "SEND-SEND-SEND-000003-A-0" }],
     sendMessages: [
-      { iun: "0000000000000000000001SEND", ioTitle: "Avviso di ingiunzione" },
+      { iun: "SEND-SEND-SEND-000001-A-0", ioTitle: "Avviso di ingiunzione" },
       {
-        iun: "0000000000000000000002SEND",
+        iun: "SEND-SEND-SEND-000002-A-0",
         ioTitle: "Nuovo avviso di ingiunzione"
       }
     ],
@@ -141,7 +142,7 @@ const defaultConfig: IoDevServerConfig = {
       {
         attachments: ["DOCUMENT", "F24", "F24"],
         cancelled: true,
-        iun: "0000000000000000000001SEND",
+        iun: "SEND-SEND-SEND-000001-A-0",
         payments: [
           "TOPAY",
           "TOPAY",
@@ -155,7 +156,7 @@ const defaultConfig: IoDevServerConfig = {
       },
       {
         attachments: ["DOCUMENT", "F24", "DOCUMENT"],
-        iun: "0000000000000000000002SEND",
+        iun: "SEND-SEND-SEND-000002-A-0",
         payments: [
           "TOPAY",
           "TOPAY",
@@ -171,7 +172,7 @@ const defaultConfig: IoDevServerConfig = {
         abstract:
           "Gentile Utente,\nogni anno l'Agenzia dei Controlli esegue delle verifiche automatizzate sulle dichiarazioni presentate per verificare che i dati in esse indicati siano corretti e che i versamenti siano stati effettuati esattamente e nei termini previsti.\n\nLe comunichiamo che, dai controlli effettuati sulla sua dichiarazione, sono emerse alcune incongruenze.",
         attachments: ["F24", "DOCUMENT", "F24"],
-        iun: "0000000000000000000003SEND",
+        iun: "SEND-SEND-SEND-000003-A-0",
         payments: ["PAID", "UNRELATED", "TOPAY"],
         senderDenomination: "Agenzia dei Controlli",
         subject: "Controllo dichiarazione completato",
@@ -179,7 +180,7 @@ const defaultConfig: IoDevServerConfig = {
       },
       {
         attachments: ["F24", "DOCUMENT"],
-        iun: "0000000000000000000004SEND",
+        iun: "SEND-SEND-SEND-000004-A-0",
         payments: ["TOPAY"],
         userIsRecipient: false
       }

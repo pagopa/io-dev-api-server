@@ -133,7 +133,12 @@ export const backendStatus: BackendStatus = {
         },
         delegate_url:
           "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche"
-      }
+      },
+      abstractShown: false,
+      customerServiceCenterUrl: "https://assistenza.notifichedigitali.it/hc",
+      estimateTimelinesUrl: "https://notifichedigitali.it/perfezionamento",
+      visitTheSENDWebsiteUrl:
+        "https://cittadini.notifichedigitali.it/auth/login"
     },
     idPay: {
       min_app_version: {
@@ -153,6 +158,12 @@ export const backendStatus: BackendStatus = {
         }
       },
       cie_payments: {
+        min_app_version: {
+          ios: "4.0.0",
+          android: "4.0.0"
+        }
+      },
+      scan_screen: {
         min_app_version: {
           ios: "4.0.0",
           android: "4.0.0"
