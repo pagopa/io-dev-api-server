@@ -8,6 +8,8 @@ export const FavouritesConfiguration = t.type({
   })
 });
 
+export type FavouritesConfiguration = t.TypeOf<typeof FavouritesConfiguration>;
+
 export const ServicesConfiguration = t.type({
   // configure favourites feature
   favourites: FavouritesConfiguration,

@@ -4,8 +4,8 @@ import { pipe } from "fp-ts/lib/function";
 import { ServiceId } from "../../../../generated/definitions/services/ServiceId";
 import { ioDevServerConfig } from "../../../config";
 import { addHandler } from "../../../payloads/response";
-import FavouritesRepository from "../persistence/favouritesRepository";
 import ServicesDB from "../persistence/servicesDatabase";
+import favouriteServicesRepository from "../persistence";
 import { getFavouriteServicesResponsePayload } from "../payloads/get-favourite-services";
 import { extractQuery, Query } from "../utils";
 import { addApiV2Prefix, serviceRouter } from "./router";
@@ -51,7 +51,10 @@ addHandler(
             req.params.serviceId as ServiceId,
             O.fromNullable,
             O.chain(serviceId =>
-              pipe(serviceId, FavouritesRepository.getService, O.fromNullable)
+              pipe(
+                favouriteServicesRepository.findById(serviceId),
+                O.fromNullable
+              )
             ),
             O.fold(
               () => res.sendStatus(404),
@@ -83,7 +86,7 @@ addHandler(
             O.fold(
               () => res.sendStatus(404),
               ({ id, name, organization }) => {
-                FavouritesRepository.addService({
+                favouriteServicesRepository.create({
                   id,
                   name,
                   institution: {
@@ -119,7 +122,7 @@ addHandler(
               () => res.sendStatus(500),
               serviceId => {
                 const hasBeenDeleted =
-                  FavouritesRepository.removeService(serviceId);
+                  favouriteServicesRepository.delete(serviceId);
                 return res.sendStatus(hasBeenDeleted ? 204 : 500);
               }
             )
