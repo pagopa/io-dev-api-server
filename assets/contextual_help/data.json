@@ -1692,6 +1692,11 @@
             "route_name": "CDC_INFORMATION_TOS",
             "title": "Carta della Cultura",
             "content": "Qui trovi le informazioni su come funziona Carta della Cultura."
+         },
+         {
+            "route_name": "IDPAY_DETAILS_MONITORING",
+            "title": "Bonus Elettrodomestici",
+            "content": " "
          }
       ],
       "idps": {
