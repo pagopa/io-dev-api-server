@@ -117,6 +117,7 @@ const defaultConfig: IoDevServerConfig = {
     allowRandomValues: true
   },
   send: {
+    isServiceUpsertRateLimited: false,
     aarQRCodeUrl: "https://cittadini.dev.notifichedigitali.it/io",
     mandateTimeToLiveSeconds: 120,
     paymentDocumentExpirationTimeSeconds: 10,
