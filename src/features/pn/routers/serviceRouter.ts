@@ -40,6 +40,10 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
     res.status(500).json(problemJson);
     return;
   }
+  if (ioDevServerConfig.send.isServiceUpsertRateLimited) {
+    res.status(429).json({});
+    return;
+  }
 
   const persistedServicePreference = ServicesDB.updatePreference(
     sendServiceId,
@@ -58,18 +62,6 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
     );
     logExpressResponseWarning(500, problemJson);
     res.status(500).json(problemJson);
-    return;
-  }
-  if (ioDevServerConfig.send.isServiceUpsertRateLimited) {
-    res
-      .status(429)
-      .json(
-        getProblemJson(
-          429,
-          "Too Many Requests",
-          "Service upsert rate limit exceeded"
-        )
-      );
     return;
   }
   res.status(204).send();
