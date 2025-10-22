@@ -9,7 +9,6 @@ import ServicesDB from "../../services/persistence/servicesDatabase";
 import { sendServiceId } from "../services/dataService";
 import { logExpressResponseWarning } from "../../../utils/logging";
 import { getProblemJson } from "../../../payloads/error";
-import { ioDevServerConfig } from "../../../config";
 
 export const sendServiceRouter = Router();
 
@@ -38,10 +37,6 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
     );
     logExpressResponseWarning(500, problemJson);
     res.status(500).json(problemJson);
-    return;
-  }
-  if (ioDevServerConfig.send.isServiceUpsertRateLimited) {
-    res.status(429).json({});
     return;
   }
 
