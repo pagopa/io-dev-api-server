@@ -1,34 +1,33 @@
 import { Request, Response, Router } from "express";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
+import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
-import { serverUrl } from "../../../utils/server";
-import { addApiV1Prefix } from "../../../utils/strings";
-import { generateCheckQRPath } from "../../pn/routers/aarRouter";
-import MessagesService from "../services/messagesService";
 import {
   handleLeftEitherIfNeeded,
   unknownToString
 } from "../../../utils/error";
-import { getProblemJson } from "../../../payloads/error";
+import { logWarning } from "../../../utils/logging";
+import { serverUrl } from "../../../utils/server";
+import { generateCheckQRPath } from "../../pn/routers/aarRouter";
+import {
+  generateAcceptMandatePath,
+  generateCreateMandatePath
+} from "../../pn/routers/mandatesRouter";
 import { generateNotificationPath } from "../../pn/routers/notificationsRouter";
 import {
   generateRequestHeaders,
   isTestOrUndefinedFromQuery,
   mandateIdOrUndefinedFromQuery
 } from "../services/ioSendService";
-import {
-  generateAcceptMandatePath,
-  generateCreateMandatePath
-} from "../../pn/routers/mandatesRouter";
+import MessagesService from "../services/messagesService";
 import { bodyToString } from "../utils";
-import { logWarning } from "../../../utils/logging";
 
 export const ioSendRouter = Router();
 
 addHandler(
   ioSendRouter,
   "post",
-  addApiV1Prefix("/send/aar/qr-code-check"),
+  "/api/com/v1/send/aar/qr-code-check",
   lollipopMiddleware(async (req, res) => {
     const sendQRCodeUrl = `${serverUrl}${generateCheckQRPath()}`;
     const sendQRCodeBodyEither = bodyToString(req.body);
@@ -50,7 +49,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "get",
-  addApiV1Prefix("/send/aar/notifications/:iun"),
+  "/api/com/v1/send/aar/notifications/:iun",
   lollipopMiddleware(async (req, res) => {
     const iun = req.params.iun;
     const mandateId = mandateIdOrUndefinedFromQuery(req.query);
@@ -75,7 +74,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "get",
-  addApiV1Prefix("/send/aar/attachments/*"),
+  "/api/com/v1/send/aar/attachments/*",
   lollipopMiddleware(async (req, res) => {
     const urlEncodedBase64AttachmentUrl = req.params[0];
     const attachmentUrlEither =
@@ -112,7 +111,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "post",
-  addApiV1Prefix("/send/mandate/create"),
+  "/api/com/v1/send/mandate/create",
   lollipopMiddleware(async (req, res) => {
     const sendCreateMandateUrl = `${serverUrl}${generateCreateMandatePath()}`;
     const sendCreateMandateBodyEither = bodyToString(req.body);
@@ -138,7 +137,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "patch",
-  addApiV1Prefix("/send/mandate/accept/:mandateId"),
+  "/api/com/v1/send/mandate/accept/:mandateId",
   lollipopMiddleware(async (req, res) => {
     const mandateId = req.params.mandateId;
     const sendAcceptMandateUrl = `${serverUrl}${generateAcceptMandatePath(
