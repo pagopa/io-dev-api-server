@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IO_BACKEND_VERSION=v16.17.0
+IO_BACKEND_VERSION=v17.5.1
 # need to change after merge on io-services-metadata
 IO_SERVICES_METADATA_VERSION=1.0.87
 # Session manager version
@@ -31,7 +31,8 @@ declare -a noStrict=(
 
 declare -a noStrictRequestTypesRespondeDecoders=(
   "./generated/definitions/pn/aar https://raw.githubusercontent.com/pagopa/io-messages/send-func@1.3.3/apps/send-func/openapi/aar-notification.yaml"
-  "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/d5e69f58fd1e0e00b079816aff92e5baa72f6d28/openapi/generated/api_pn.yaml"
+  "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_pn.yaml"
+  "./generated/definitions/trial_system https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_trial_system.yaml"
   "./generated/definitions/fims_history https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_fims.yaml"
   "./generated/definitions/fims_sso https://raw.githubusercontent.com/pagopa/io-fims/a93f1a1abf5230f103d9f489b139902b87288061/apps/op-app/openapi.yaml"
 )
