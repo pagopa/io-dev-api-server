@@ -170,6 +170,12 @@ export const backendStatus: BackendStatus = {
           ios: "4.0.0",
           android: "4.0.0"
         }
+      },
+      qr_code_payments: {
+        min_app_version: {
+          ios: "4.0.0",
+          android: "4.0.0"
+        }
       }
     },
     newPaymentSection: {
