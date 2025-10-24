@@ -22,6 +22,7 @@ import {
 } from "./features/messages/persistence/messagesPayload";
 import ServicesDB from "./features/services/persistence/servicesDatabase";
 import MessagesDB from "./features/messages/persistence/messagesDatabase";
+import favouriteServicesRepository from "./features/services/persistence";
 import { IoDevServerConfig } from "./types/config";
 import { getRandomValue } from "./utils/random";
 import {
@@ -575,6 +576,11 @@ const attributesFromCreatedMessageWithContentAndAttachments = (
 export default function init(customConfig = ioDevServerConfig) {
   initializeServiceLogoMap();
   ServicesDB.createServices(customConfig);
+  const allServices = ServicesDB.getAllServices();
+  favouriteServicesRepository.initialize(
+    customConfig.features.services.favourites.services,
+    allServices
+  );
 
   if (customConfig.messages.useMessagesSavedUnderConfig) {
     loadProductionInboxAndArchive(customConfig);

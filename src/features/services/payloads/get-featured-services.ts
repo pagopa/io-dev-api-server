@@ -8,7 +8,7 @@ import ServicesDB from "../persistence/servicesDatabase";
 import { cgnServiceId } from "../persistence/services/special/cgn-service";
 
 const featuredServicesSize =
-  ioDevServerConfig.features.service.featuredServicesSize;
+  ioDevServerConfig.features.services.featuredServicesSize;
 
 export const getFeaturedServicesResponsePayload = (): FeaturedServices => {
   // take some casual national service

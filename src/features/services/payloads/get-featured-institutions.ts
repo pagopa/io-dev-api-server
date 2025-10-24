@@ -7,7 +7,7 @@ import ServicesDB from "../persistence/servicesDatabase";
 import { getInstitutions } from "../utils/institutions";
 
 const featuredInstitutionsSize =
-  ioDevServerConfig.features.service.featuredInstitutionsSize;
+  ioDevServerConfig.features.services.featuredInstitutionsSize;
 
 export const getFeaturedInstitutionsResponsePayload = (): Institutions => {
   // take some casual institutions
