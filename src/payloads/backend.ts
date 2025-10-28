@@ -132,7 +132,13 @@ export const backendStatus: BackendStatus = {
           android: "3.13.0.0"
         },
         delegate_url:
-          "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche"
+          "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche",
+        in_app_delegation: {
+          min_app_version: {
+            ios: "3.18.0.0",
+            android: "3.18.0.0"
+          }
+        }
       },
       abstractShown: false,
       customerServiceCenterUrl: "https://assistenza.notifichedigitali.it/hc",
