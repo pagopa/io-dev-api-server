@@ -1,4 +1,5 @@
 import { fakerIT as faker } from "@faker-js/faker";
+import * as O from "fp-ts/lib/Option";
 import { range } from "lodash";
 import { ulid } from "ulid";
 import {
@@ -11,14 +12,20 @@ import {
   OperationTypeEnum as IbanOperationTypeEnum
 } from "../../generated/definitions/idpay/IbanOperationDTO";
 import {
+  InitiativeDTO,
+  InitiativeRewardTypeEnum,
+  StatusEnum as InitiativeStatusEnum,
+  VoucherStatusEnum
+} from "../../generated/definitions/idpay/InitiativeDTO";
+import {
   InstrumentDTO,
   StatusEnum as InstrumentStatus,
   InstrumentTypeEnum
 } from "../../generated/definitions/idpay/InstrumentDTO";
 import {
   InstrumentOperationDTO,
-  OperationTypeEnum as InstrumentOperationTypeEnum,
-  InstrumentTypeEnum as InstrumentOperationInstrumentTypeEnum
+  InstrumentTypeEnum as InstrumentOperationInstrumentTypeEnum,
+  OperationTypeEnum as InstrumentOperationTypeEnum
 } from "../../generated/definitions/idpay/InstrumentOperationDTO";
 import {
   OnboardingOperationDTO,
@@ -43,32 +50,26 @@ import {
   OperationTypeEnum as SuspendOperationTypeEnum
 } from "../../generated/definitions/idpay/SuspendOperationDTO";
 import {
+  StatusEnum,
+  TransactionBarCodeResponse
+} from "../../generated/definitions/idpay/TransactionBarCodeResponse";
+import {
   ChannelEnum as TransactionChannelEnum,
   TransactionOperationDTO,
   OperationTypeEnum as TransactionOperationTypeEnum,
   StatusEnum as TransactionStatusEnum
 } from "../../generated/definitions/idpay/TransactionOperationDTO";
-import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
-import { ioDevServerConfig } from "../config";
-import { getRandomEnumValue } from "../payloads/utils/random";
-import { getWalletV2 } from "../routers/walletsV2";
-import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
-import {
-  StatusEnum,
-  TransactionBarCodeResponse
-} from "../../generated/definitions/idpay/TransactionBarCodeResponse";
-import { serverUrl } from "../utils/server";
-import {
-  InitiativeDTO,
-  InitiativeRewardTypeEnum,
-  VoucherStatusEnum,
-  StatusEnum as InitiativeStatusEnum
-} from "../../generated/definitions/idpay/InitiativeDTO";
 import {
   StatusEnum as OnboardedInitiativeStatusEnum,
   UserOnboardingStatusDTO
 } from "../../generated/definitions/idpay/UserOnboardingStatusDTO";
+import { WalletV2 } from "../../generated/definitions/pagopa/WalletV2";
+import { ioDevServerConfig } from "../config";
 import { InitiativeDataDTOWithServiceId } from "../payloads/features/idpay/types";
+import { getRandomEnumValue } from "../payloads/utils/random";
+import { getWalletV2 } from "../routers/walletsV2";
+import { creditCardBrands, getCreditCardLogo } from "../utils/payment";
+import { serverUrl } from "../utils/server";
 
 const idPayConfig = ioDevServerConfig.features.idpay;
 const { idPay: walletConfig } = ioDevServerConfig.wallet;
@@ -768,3 +769,17 @@ export const addOnboardedInitiativeStatus = (
     }
   ];
 };
+
+export const getIDPayStaticCode = (
+  initiativeId: string
+): O.Option<TransactionBarCodeResponse> =>
+  O.fromNullable({
+    id: ulid(),
+    trxCode: faker.string.alphanumeric(8),
+    initiativeId,
+    initiativeName: faker.company.name(),
+    trxDate: new Date(),
+    status: StatusEnum.CREATED,
+    trxExpirationSeconds: 1296000, // 15 days
+    residualBudgetCents: 0 as TransactionBarCodeResponse["residualBudgetCents"]
+  });

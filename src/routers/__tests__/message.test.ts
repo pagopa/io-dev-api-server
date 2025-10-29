@@ -57,7 +57,8 @@ const customConfig: typeof baseConfig = {
     sendNotifications: [
       { iun: "0000000000000000000001SEND", payments: ["TOPAY"] }
     ],
-    sendOptInMessage: false
+    sendOptInMessage: false,
+    isServiceUpsertRateLimited: false
   }
 };
 

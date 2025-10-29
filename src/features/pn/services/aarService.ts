@@ -1,23 +1,19 @@
-import { Either, isRight, left, right } from "fp-ts/lib/Either";
-import { AARRepository } from "../repositories/aarRepository";
-import { ExpressFailure } from "../../../utils/expressDTO";
-import { getProblemJson } from "../../../payloads/error";
-import { NotificationRepository } from "../repositories/notificationRepository";
-import { MandateRepository } from "../repositories/mandateRepository";
-import { ioDevServerConfig } from "../../../config";
-import { getProfile } from "../../../persistence/profile/profile";
+import { Either, isLeft, isRight, left } from "fp-ts/lib/Either";
+import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
-
-export type NotificationOrMandateData = {
-  iun: string;
-  denomination: string;
-  mandateId?: string;
-};
+import { AARQRCodeCheckResponse } from "../../../../generated/definitions/pn/aar/AARQRCodeCheckResponse";
+import { ioDevServerConfig } from "../../../config";
+import { getProblemJson } from "../../../payloads/error";
+import { getProfile } from "../../../persistence/profile/profile";
+import { ExpressFailure } from "../../../utils/expressDTO";
+import { AARRepository } from "../repositories/aarRepository";
+import { MandateRepository } from "../repositories/mandateRepository";
+import { NotificationRepository } from "../repositories/notificationRepository";
 
 export const notificationOrMandateDataFromQRCode = (
   inputQRCodeContent: string,
   taxId: string
-): Either<ExpressFailure, NotificationOrMandateData> => {
+): Either<ExpressFailure, AARQRCodeCheckResponse> => {
   const aar = AARRepository.getAARByQRCodeContent(inputQRCodeContent);
   if (aar == null) {
     return left({
@@ -41,34 +37,45 @@ export const notificationOrMandateDataFromQRCode = (
       )
     });
   }
-  if (notification.recipientFiscalCode.toUpperCase() !== taxId.toUpperCase()) {
+  const recipientFiscalCode = notification.recipientFiscalCode;
+  if (recipientFiscalCode.toUpperCase() !== taxId.toUpperCase()) {
     const mandates = MandateRepository.getActiveMandates(
       notificationIUN,
       taxId
     );
     if (mandates.length === 0) {
+      const denomination = fakeDenominationFromFiscalCode(recipientFiscalCode);
+      const aarQrCodeCheckResponseEither = aarQRCodeCheckResponseFromData(
+        notificationIUN,
+        denomination,
+        recipientFiscalCode
+      );
+      // Conversion failed, this is an internal server error
+      if (isLeft(aarQrCodeCheckResponseEither)) {
+        return aarQrCodeCheckResponseEither;
+      }
+      // Conversion succeeeded but the access is denied
       return left({
         httpStatusCode: 403,
-        reason: {
-          iun: notificationIUN,
-          denomination: fakeDenominationFromFiscalCode(
-            notification.recipientFiscalCode
-          )
-        }
+        reason: aarQrCodeCheckResponseEither.right
       });
     }
+    const denomination = profileFullnameOrDefault();
     const firstValidMandate = mandates[0];
     const firstValidMandateId = firstValidMandate.mandateId;
-    return right({
-      denomination: profileFullnameOrDefault(),
-      iun: notificationIUN,
-      mandateId: firstValidMandateId
-    });
+    return aarQRCodeCheckResponseFromData(
+      notificationIUN,
+      denomination,
+      recipientFiscalCode,
+      firstValidMandateId
+    );
   }
-  return right({
-    denomination: profileFullnameOrDefault(),
-    iun: notificationIUN
-  });
+  const denomination = profileFullnameOrDefault();
+  return aarQRCodeCheckResponseFromData(
+    notificationIUN,
+    denomination,
+    recipientFiscalCode
+  );
 };
 
 export const fakeDenominationFromFiscalCode = (fiscalCode: string) => {
@@ -206,4 +213,33 @@ const profileFullnameOrDefault = () => {
     return `${initializedProfile.right.name} ${initializedProfile.right.family_name}`;
   }
   return `${ioDevServerConfig.profile.attrs.name} ${ioDevServerConfig.profile.attrs.family_name}`;
+};
+
+const aarQRCodeCheckResponseFromData = (
+  iun: string,
+  denomination: string,
+  fiscalCode: string,
+  mandateId?: string
+): Either<ExpressFailure, AARQRCodeCheckResponse> => {
+  const aarQRCodeCheckResponseEither = AARQRCodeCheckResponse.decode({
+    iun,
+    recipientInfo: {
+      denomination,
+      taxId: fiscalCode
+    },
+    mandateId
+  });
+  if (isLeft(aarQRCodeCheckResponseEither)) {
+    return left({
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Conversion to AARQRCodeCheckResponse failed",
+        `Unable to convert input data to the AARQRCodeCheckResponse data structure (${readableReportSimplified(
+          aarQRCodeCheckResponseEither.left
+        )})`
+      )
+    });
+  }
+  return aarQRCodeCheckResponseEither;
 };

@@ -132,8 +132,19 @@ export const backendStatus: BackendStatus = {
           android: "3.13.0.0"
         },
         delegate_url:
-          "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche"
-      }
+          "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche",
+        in_app_delegation: {
+          min_app_version: {
+            ios: "3.18.0.0",
+            android: "3.18.0.0"
+          }
+        }
+      },
+      abstractShown: false,
+      customerServiceCenterUrl: "https://assistenza.notifichedigitali.it/hc",
+      estimateTimelinesUrl: "https://notifichedigitali.it/perfezionamento",
+      visitTheSENDWebsiteUrl:
+        "https://cittadini.notifichedigitali.it/auth/login"
     },
     idPay: {
       min_app_version: {
@@ -141,12 +152,14 @@ export const backendStatus: BackendStatus = {
         android: "1.2.3"
       },
       onboarding: {
+        enabled: true,
         min_app_version: {
           ios: "3.0.0",
           android: "3.0.0"
         }
       },
       initiative_details: {
+        enabled: true,
         min_app_version: {
           ios: "3.0.0",
           android: "3.0.0"
@@ -158,18 +171,16 @@ export const backendStatus: BackendStatus = {
           android: "4.0.0"
         }
       },
-      initiative_config_map: {
-        bonusElettrodomestici: {
-          min_app_version: {
-            ios: "0.0.0.0",
-            android: "0.0.0.0"
-          },
-          cac: {
-            "it-IT":
-              "https://assistenza.ioapp.it/hc/it/articles/35337442750225-Non-riesco-ad-aggiungere-un-metodo-di-pagamento",
-            "en-EN":
-              "https://assistenza.ioapp.it/hc/it/articles/35337442750225-Non-riesco-ad-aggiungere-un-metodo-di-pagamento"
-          }
+      scan_screen: {
+        min_app_version: {
+          ios: "4.0.0",
+          android: "4.0.0"
+        }
+      },
+      qr_code_payments: {
+        min_app_version: {
+          ios: "4.0.0",
+          android: "4.0.0"
         }
       }
     },
