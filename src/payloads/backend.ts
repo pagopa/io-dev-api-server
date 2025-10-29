@@ -182,6 +182,20 @@ export const backendStatus: BackendStatus = {
           ios: "4.0.0",
           android: "4.0.0"
         }
+      },
+      initiative_config_map: {
+        TESTINIT19: {
+          min_app_version: {
+            ios: "0.0.0.0",
+            android: "0.0.0.0"
+          },
+          cac: {
+            "it-IT":
+              "https://assistenza.ioapp.it/hc/it/articles/35337442750225-Non-riesco-ad-aggiungere-un-metodo-di-pagamento",
+            "en-EN":
+              "https://assistenza.ioapp.it/hc/it/articles/35337442750225-Non-riesco-ad-aggiungere-un-metodo-di-pagamento"
+          }
+        }
       }
     },
     newPaymentSection: {
