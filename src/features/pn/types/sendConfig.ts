@@ -66,7 +66,8 @@ export const SendConfig = t.intersection([
       ])
     ),
     sendOptInMessage: t.boolean,
-    sendMandates: t.array(t.type({ iun: t.string }))
+    sendMandates: t.array(t.type({ iun: t.string })),
+    isServiceUpsertRateLimited: t.boolean
   }),
   t.partial({
     aarQRCodeUrl: t.string,
