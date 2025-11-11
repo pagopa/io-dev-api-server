@@ -43,7 +43,7 @@ import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUr
 import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
 import { sendMandatesRouter } from "./features/pn/routers/mandatesRouter";
 import { ioSendRouter } from "./features/messages/routers/ioSendRouter";
-import { cdcRouter } from "./features/cdc/utils";
+import { cdcRouter } from "./features/cdc/routers";
 
 // create express server
 const app: Application = express();

@@ -1,8 +1,8 @@
-import { addCdcHandler } from "../utils";
 import { getCdcStatus } from "../services/statusService";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
+import { addCdcHandler } from "./router";
 
-addCdcHandler("get", "/status", (req, res) => {
+addCdcHandler("get", "/status", (_, res) => {
   const statusEither = getCdcStatus();
   if (handleLeftEitherIfNeeded(statusEither, res)) {
     return;

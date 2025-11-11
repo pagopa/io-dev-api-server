@@ -3,9 +3,9 @@ import { addHandler, SupportedMethod } from "../../../payloads/response";
 
 export const cdcRouter = Router();
 
-const cdcPrefix = "/api/v1/cdc";
+export const CDC_PREFIX = "/api/v1/cdc";
 
-const addCdcPrefix = (path: string) => `${cdcPrefix}${path}`;
+const addCdcPrefix = (path: string) => `${CDC_PREFIX}${path}`;
 
 export const addCdcHandler = (
   method: SupportedMethod,
