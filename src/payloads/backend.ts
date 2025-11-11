@@ -94,6 +94,12 @@ export const backendStatus: BackendStatus = {
       cta_onboarding_config: {
         url: `${serverUrl}${baseRelyingPartyPath()}/2/landingPage`,
         includeDeviceId: true
+      },
+      walletVisibility: {
+        min_app_version: {
+          ios: "3.18.0.0",
+          android: "3.18.0.0"
+        }
       }
     },
     barcodesScanner: {
