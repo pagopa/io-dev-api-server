@@ -202,7 +202,11 @@ export const IoDevServerConfig = t.interface({
             hangOnActivation: t.boolean
           }),
           AllowRandomValue
-        ])
+        ]),
+        cdc: t.interface({
+          // if true the user is eligible to see the CdC from the wallet section
+          enabled: t.boolean
+        })
       }),
       idpay: t.interface({
         // The size of the IBAN list to generate

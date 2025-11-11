@@ -241,6 +241,9 @@ const defaultConfig: IoDevServerConfig = {
         isEycaEligible: true,
         allowRandomValues: true,
         hangOnActivation: false
+      },
+      cdc: {
+        enabled: true
       }
     },
     idpay: {
