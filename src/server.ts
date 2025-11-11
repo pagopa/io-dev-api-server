@@ -43,6 +43,7 @@ import { sendPrevalidatedUrisRouter } from "./features/pn/routers/prevalidatedUr
 import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
 import { sendMandatesRouter } from "./features/pn/routers/mandatesRouter";
 import { ioSendRouter } from "./features/messages/routers/ioSendRouter";
+import { cdcRouter } from "./features/cdc/utils";
 
 // create express server
 const app: Application = express();
@@ -99,7 +100,8 @@ app.use(fastLoginMiddleware);
   fimsRelyingPartyRouter,
   fimsProviderRouter,
   fimsHistoryRouter,
-  trialSystemRouter
+  trialSystemRouter,
+  cdcRouter
 ].forEach(r => app.use(r));
 
 export default app;
