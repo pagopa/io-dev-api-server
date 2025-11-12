@@ -2,7 +2,7 @@
 
 IO_BACKEND_VERSION=v17.5.1
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.90
+IO_SERVICES_METADATA_VERSION=1.0.91
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.8.0
 
@@ -21,6 +21,7 @@ declare -a noParams=(
   "./generated/definitions/cgn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_cgn.yaml"
   "./generated/definitions/cgn/merchants https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_cgn_operator_search.yaml"
   "./generated/definitions/cgn/geo https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml"
+  "./generated/definitions/cdc https://raw.githubusercontent.com/pagopa/io-backend/refs/tags/$IO_BACKEND_VERSION/openapi/generated/api_cdc.yaml"
 )
 
 declare -a noStrict=(
