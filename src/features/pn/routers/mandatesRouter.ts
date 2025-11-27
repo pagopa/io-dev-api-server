@@ -8,13 +8,14 @@ import { ioDevServerConfig } from "../../../config";
 import { handleLeftEitherIfNeeded } from "../../../utils/error";
 import {
   checkAndCreateTemporaryMandate,
-  checkAndCreateValidationCode
+  checkAndCreateValidationCode,
+  validationCodeToMandateCreationResponse
 } from "../services/mandateService";
 
 const createMandatePath = "/mandate/api/v2/mandate";
 export const generateCreateMandatePath = () => createMandatePath;
 
-const acceptMandatePath = "/mandate/api/v2/cie/:mandateId/accept";
+const acceptMandatePath = "/mandate/api/v2/mandate/:mandateId";
 export const generateAcceptMandatePath = (mandateId: string) =>
   acceptMandatePath.replace(":mandateId", mandateId);
 
@@ -44,11 +45,12 @@ addHandler(
         return;
       }
       const validationCode = validationCodeEither.right;
-      res.status(200).json({
-        mandateId: validationCode.mandateId,
-        timeToLive: validationCode.timeToLive,
-        validationCode: validationCode.validationCode
-      });
+      const responseBodyEither =
+        validationCodeToMandateCreationResponse(validationCode);
+      if (handleLeftEitherIfNeeded(responseBodyEither, res)) {
+        return;
+      }
+      res.status(201).json(responseBodyEither.right);
     })
   )
 );
@@ -78,7 +80,7 @@ addHandler(
       if (handleLeftEitherIfNeeded(temporaryMandateEither, res)) {
         return;
       }
-      res.status(200).json();
+      res.status(204).json();
     })
   )
 );

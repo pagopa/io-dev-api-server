@@ -111,7 +111,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "post",
-  "/api/com/v1/send/mandate/create",
+  "/api/com/v1/send/aar/mandates",
   lollipopMiddleware(async (req, res) => {
     const sendCreateMandateUrl = `${serverUrl}${generateCreateMandatePath()}`;
     const sendCreateMandateBodyEither = bodyToString(req.body);
@@ -137,7 +137,7 @@ addHandler(
 addHandler(
   ioSendRouter,
   "patch",
-  "/api/com/v1/send/mandate/accept/:mandateId",
+  "/api/com/v1/send/aar/mandates/:mandateId",
   lollipopMiddleware(async (req, res) => {
     const mandateId = req.params.mandateId;
     const sendAcceptMandateUrl = `${serverUrl}${generateAcceptMandatePath(

@@ -4,11 +4,12 @@ import { getProblemJson } from "../../../payloads/error";
 import { MandateRepository } from "../repositories/mandateRepository";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { Mandate } from "../models/Mandate";
-import { CreateMandateBody } from "../types/createMandateBody";
 import { AARRepository } from "../repositories/aarRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
 import { ValidationCode } from "../models/ValidationCode";
-import { AcceptMandateBody } from "../types/acceptMandateBody";
+import { RequestCheckQrMandateDto } from "../../../../generated/definitions/pn/aar/RequestCheckQrMandateDto";
+import { MandateCreationResponse } from "../../../../generated/definitions/pn/aar/MandateCreationResponse";
+import { CIEValidationData } from "../../../../generated/definitions/pn/aar/CIEValidationData";
 
 export const checkAndVerifyExistingMandate = (
   iun: string,
@@ -46,19 +47,21 @@ export const checkAndCreateTemporaryMandate = (
   mandateId: string,
   taxId: string
 ): Either<ExpressFailure, Mandate> => {
-  const acceptMandateBodyEither = AcceptMandateBody.decode(body);
-  if (isLeft(acceptMandateBodyEither)) {
+  const cieValidationDataBodyEither = CIEValidationData.decode(body);
+  if (isLeft(cieValidationDataBodyEither)) {
     return left({
       httpStatusCode: 400,
       reason: getProblemJson(
         400,
         "Bad body",
         `Unable to decode request body: it's either missing or has a bad data structure (${readableReportSimplified(
-          acceptMandateBodyEither.left
+          cieValidationDataBodyEither.left
         )})`
       )
     });
   }
+
+  // No CIE checks are done here
 
   const validationCode = MandateRepository.getValidationCode(mandateId);
   if (validationCode == null) {
@@ -72,31 +75,14 @@ export const checkAndCreateTemporaryMandate = (
     });
   }
 
-  // TODO CIE data validation
-
-  const signedVerificationCode =
-    acceptMandateBodyEither.right.signed_verification_code;
-  // TODO decode signedVerificationCode
-  if (signedVerificationCode !== validationCode.validationCode) {
+  if (validationCode.validationCodeTimeToLive <= new Date()) {
     MandateRepository.deleteValidationCode(mandateId);
     return left({
-      httpStatusCode: 403,
+      httpStatusCode: 500,
       reason: getProblemJson(
-        403,
-        "Bad signed verification code",
-        `Provided signed verification code does not match the original validation code (${signedVerificationCode})`
-      )
-    });
-  }
-
-  if (validationCode.timeToLive <= new Date()) {
-    MandateRepository.deleteValidationCode(mandateId);
-    return left({
-      httpStatusCode: 403,
-      reason: getProblemJson(
-        403,
+        500,
         "Validation Code expired",
-        `Provided signed verification code has expired (${signedVerificationCode})`
+        `Provided signed verification code has expired (${cieValidationDataBodyEither.right.signedNonce})`
       )
     });
   }
@@ -105,7 +91,8 @@ export const checkAndCreateTemporaryMandate = (
   const temporaryMandate = MandateRepository.createTemporaryMandate(
     mandateId,
     validationCode.notificationIUN,
-    taxId
+    taxId,
+    validationCode.mandateTimeToLive
   );
   return right(temporaryMandate);
 };
@@ -114,7 +101,7 @@ export const checkAndCreateValidationCode = (
   body: object,
   taxId: string
 ): Either<ExpressFailure, ValidationCode> => {
-  const createMandateBodyEither = CreateMandateBody.decode(body);
+  const createMandateBodyEither = RequestCheckQrMandateDto.decode(body);
   if (isLeft(createMandateBodyEither)) {
     return left({
       httpStatusCode: 400,
@@ -127,20 +114,20 @@ export const checkAndCreateValidationCode = (
       )
     });
   }
-  const notificationIun = createMandateBodyEither.right.iun;
-  const qrCodeContent = createMandateBodyEither.right.qrcode;
-  const aar = AARRepository.getAAR(notificationIun, qrCodeContent);
+  const qrCodeContent = createMandateBodyEither.right.aarQrCodeValue;
+  const aar = AARRepository.getAAR(qrCodeContent);
   if (aar == null) {
     return left({
       httpStatusCode: 400,
       reason: getProblemJson(
         400,
         "Bad 'iun' and/or 'qrcode'",
-        `Unable to find an AAR associated with provided 'iun' and 'qrcode' (${notificationIun}) (${qrCodeContent})`
+        `Unable to find an AAR associated with provided 'qrcode' (${qrCodeContent})`
       )
     });
   }
 
+  const notificationIun = aar.notificationIUN;
   const notification = NotificationRepository.getNotification(notificationIun);
   if (notification == null) {
     return left({
@@ -148,15 +135,15 @@ export const checkAndCreateValidationCode = (
       reason: getProblemJson(
         500,
         "Notification not found",
-        `Unable to find a Notification associated to the AAR. Check you config file for any IUN mismatch between 'sendAARs' and 'sendNotifications' (${notificationIun})`
+        `Unable to find a Notification associated to the AAR. Check you config file for any IUN mismatch between 'sendAARs' and 'sendNotifications' (${notificationIun}) (${qrCodeContent})`
       )
     });
   }
   if (notification.recipientFiscalCode === taxId) {
     return left({
-      httpStatusCode: 403,
+      httpStatusCode: 500,
       reason: getProblemJson(
-        403,
+        500,
         "No mandate needed",
         `Requested Notification already belong to this user. There is no need to create a mandate (${notificationIun}) (${taxId})`
       )
@@ -169,9 +156,9 @@ export const checkAndCreateValidationCode = (
   );
   if (activeMandates.length > 0) {
     return left({
-      httpStatusCode: 403,
+      httpStatusCode: 500,
       reason: getProblemJson(
-        403,
+        500,
         "Existing mandate",
         `There is already an existing Mandate for the requested notification and user (${notificationIun}) (${taxId})`
       )
@@ -183,4 +170,31 @@ export const checkAndCreateValidationCode = (
     qrCodeContent
   );
   return right(validationCode);
+};
+
+export const validationCodeToMandateCreationResponse = (
+  validationCode: ValidationCode
+): Either<ExpressFailure, MandateCreationResponse> => {
+  const mandateCreationResponseEither = MandateCreationResponse.decode({
+    requestTTL: MandateRepository.getValidationCodeTimeToLiveSeconds(),
+    mandate: {
+      mandateId: validationCode.mandateId,
+      verificationCode: validationCode.validationCode,
+      dateTo: validationCode.mandateTimeToLive.toISOString()
+    }
+  });
+  if (isLeft(mandateCreationResponseEither)) {
+    const expressFailure: ExpressFailure = {
+      httpStatusCode: 500,
+      reason: getProblemJson(
+        500,
+        "Failed conversion to MandateCreationResponse",
+        `Conversion of input ValidationCode to output MandateCreationResponse failed (${readableReportSimplified(
+          mandateCreationResponseEither.left
+        )})`
+      )
+    };
+    return left(expressFailure);
+  }
+  return right(mandateCreationResponseEither.right);
 };
