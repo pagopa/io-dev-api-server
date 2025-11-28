@@ -1,5 +1,5 @@
 /* eslint-disable functional/immutable-data */
-import { ulid } from "ulid";
+import { v4 } from "uuid";
 import { fakerIT as faker } from "@faker-js/faker";
 import { Mandate } from "../models/Mandate";
 import { SendConfig } from "../types/sendConfig";
@@ -20,7 +20,8 @@ export interface IMandateRepository {
   createTemporaryMandate: (
     mandateId: string,
     notificationIun: string,
-    taxId: string
+    taxId: string,
+    timeToLive: Date
   ) => Mandate;
   createValidationCode: (
     notificationIun: string,
@@ -41,7 +42,9 @@ export interface IMandateRepository {
     representativeFiscalCode: string
   ) => Mandate | undefined;
   getMandateList: () => ReadonlyArray<Mandate>;
+  getMandateTimeToLiveSeconds: () => number;
   getValidationCode: (mandateId: string) => ValidationCode | undefined;
+  getValidationCodeTimeToLiveSeconds: () => number;
 }
 
 const getMandateTimeToLiveSeconds = (): number =>
@@ -54,11 +57,9 @@ const getValidationCodeTimeToLiveSeconds = (): number =>
 const createTemporaryMandate = (
   mandateId: string,
   notificationIun: string,
-  taxId: string
+  taxId: string,
+  timeToLive: Date
 ): Mandate => {
-  const mandateTimeToLiveSeconds = getMandateTimeToLiveSeconds();
-  const timeToLive = new Date();
-  timeToLive.setTime(timeToLive.getTime() + 1000 * mandateTimeToLiveSeconds);
   const mandate: Mandate = {
     mandateId,
     notificationIUN: notificationIun,
@@ -74,16 +75,22 @@ const createValidationCode = (
   qrCodeContent: string
 ): ValidationCode => {
   const validationCodeTimeToLiveSeconds = getValidationCodeTimeToLiveSeconds();
-  const timeToLive = new Date();
-  timeToLive.setTime(
-    timeToLive.getTime() + 1000 * validationCodeTimeToLiveSeconds
+  const validationCodeTimeToLive = new Date();
+  validationCodeTimeToLive.setTime(
+    validationCodeTimeToLive.getTime() + 1000 * validationCodeTimeToLiveSeconds
+  );
+  const mandateTimeToLive = new Date();
+  const mandateTimeToLiveSeconds = getMandateTimeToLiveSeconds();
+  mandateTimeToLive.setTime(
+    mandateTimeToLive.getTime() + 1000 * mandateTimeToLiveSeconds
   );
   const validationCode: ValidationCode = {
-    mandateId: ulid(),
+    mandateId: v4(),
+    mandateTimeToLive,
     notificationIUN: notificationIun,
     qrCodeContent,
-    timeToLive,
-    validationCode: faker.word.sample()
+    validationCodeTimeToLive,
+    validationCode: faker.number.int({ min: 0, max: 99999 }).toString()
   };
   validationCodes.set(validationCode.mandateId, validationCode);
   return validationCode;
@@ -112,7 +119,7 @@ const initializeIfNeeded = (
   configuration.sendMandates.forEach(mandateConfiguration => {
     const iun = mandateConfiguration.iun;
     const mandate: Mandate = {
-      mandateId: ulid(),
+      mandateId: v4(),
       notificationIUN: iun,
       representativeFiscalCode: profileFiscalCode,
       // This is a permant mandate, so it does not use the
@@ -163,5 +170,7 @@ export const MandateRepository: IMandateRepository = {
   getActiveMandates,
   getFirstValidMandate,
   getMandateList,
-  getValidationCode
+  getMandateTimeToLiveSeconds,
+  getValidationCode,
+  getValidationCodeTimeToLiveSeconds
 };

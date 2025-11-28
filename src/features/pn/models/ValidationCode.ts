@@ -1,7 +1,8 @@
 export interface ValidationCode {
   mandateId: string;
+  mandateTimeToLive: Date;
   notificationIUN: string;
   qrCodeContent: string;
-  timeToLive: Date;
   validationCode: string;
+  validationCodeTimeToLive: Date;
 }
