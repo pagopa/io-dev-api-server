@@ -12,10 +12,10 @@ import {
   validationCodeToMandateCreationResponse
 } from "../services/mandateService";
 
-const createMandatePath = "/mandate/api/v2/mandate";
+const createMandatePath = "/mandate/api/v2/mandates";
 export const generateCreateMandatePath = () => createMandatePath;
 
-const acceptMandatePath = "/mandate/api/v2/mandate/:mandateId";
+const acceptMandatePath = "/mandate/api/v2/mandates/:mandateId";
 export const generateAcceptMandatePath = (mandateId: string) =>
   acceptMandatePath.replace(":mandateId", mandateId);
 
