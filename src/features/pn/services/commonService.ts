@@ -85,11 +85,11 @@ export const checkSourceHeaderNonBlocking = (
   const sourceHeader = headers["x-pagopa-pn-io-src"];
   if (
     typeof sourceHeader !== "string" ||
-    (sourceHeader.toUpperCase() !== "QRCODE" &&
+    (sourceHeader.toUpperCase() !== "QR_CODE" &&
       sourceHeader.toUpperCase() !== "DEFAULT")
   ) {
     logWarning(
-      `\n  Bad value for header 'x-pagopa-pn-io-src'. While this is just a warning and not a blocking error, make sure that your final API provide such header. Allowed values: DEFAULT | QRCODE (${sourceHeader})\n`
+      `\n  Bad value for header 'x-pagopa-pn-io-src'. While this is just a warning and not a blocking error, make sure that your final API provide such header. Allowed values: DEFAULT | QR_CODE (${sourceHeader})\n`
     );
   }
 };
