@@ -14,7 +14,7 @@ export const paymentMethodsDB: ReadonlyArray<PaymentMethodResponse> = [
   {
     id: "1",
     name: "CARDS",
-    description: "Carte di credito o debito",
+    description: "Carta di debito/credito",
     asset: "https://assets.cdn.platform.pagopa.it/creditcard/generic.png",
     status: PaymentMethodStatusEnum.ENABLED,
     paymentTypeCode: "CP",

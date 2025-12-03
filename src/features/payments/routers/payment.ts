@@ -28,11 +28,15 @@ import {
   httpStatusCodeFromDetailV2Enum,
   payloadFromDetailV2Enum
 } from "../types/failure";
-import { generateOnboardablePaymentMethods } from "../utils/onboarding";
+import {
+  generateOnboardablePaymentMethods,
+  generateOnboardingWalletData
+} from "../utils/onboarding";
 import { WALLET_PAYMENT_PATH } from "../utils/payment";
 import { PaymentsDatabase } from "../../../persistence/payments";
 import { fold } from "../../../types/PaymentStatus";
 import { getProblemJson } from "../../../payloads/error";
+import { RedirectUrlResponse } from "../../../../generated/definitions/pagopa/ecommerce/RedirectUrlResponse";
 import { addPaymentHandler } from "./router";
 
 // eslint-disable-next-line functional/no-let
@@ -283,6 +287,26 @@ addPaymentHandler("get", "/user/lastPaymentMethodUsed", (req, res) => {
  */
 addPaymentHandler("get", "/payment-methods", (req, res) => {
   res.json(generateOnboardablePaymentMethods());
+});
+
+/**
+ * API to retrieve the redirect URL to open in the app browser for the given payment method id
+ */
+addPaymentHandler("get", "/payment-methods/:id/redirectUrl", (req, res) => {
+  const { id } = req.params;
+  pipe(
+    id,
+    O.fromNullable,
+    O.map(paymentMethodId =>
+      res.json({
+        redirectUrl: generateOnboardingWalletData({
+          paymentMethodId,
+          contextualOnboarding: true
+        })?.redirectUrl
+      } as RedirectUrlResponse)
+    ),
+    O.getOrElse(() => res.sendStatus(400))
+  );
 });
 
 addPaymentHandler("post", "/private/finalizePayment", (req, res) => {

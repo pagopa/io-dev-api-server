@@ -4,6 +4,11 @@ import { serverUrl } from "../../../utils/server";
 import { PaymentMethodsResponse } from "../../../../generated/definitions/pagopa/walletv3/PaymentMethodsResponse";
 import { allPaymentMethods } from "../payloads/paymentMethods";
 
+type GenerateOnboardingWalletDataParams = {
+  paymentMethodId: string;
+  contextualOnboarding: boolean;
+};
+
 export const generateOnboardablePaymentMethods = (): PaymentMethodsResponse =>
   allPaymentMethods;
 
@@ -14,8 +19,9 @@ export const getWalletTypeFromPaymentMethodId = (
     ?.paymentTypeCode || "CARDS";
 
 export const WALLET_ONBOARDING_PATH = "/wallets/outcomes";
-export const generateOnboardingWalletData = (
-  paymentMethodId: string
-): WalletCreateResponse => ({
-  redirectUrl: `${serverUrl}${WALLET_ONBOARDING_PATH}?paymentMethodId=${paymentMethodId}#sessionToken=${faker.string.uuid()}`
+export const generateOnboardingWalletData = ({
+  paymentMethodId,
+  contextualOnboarding = false
+}: GenerateOnboardingWalletDataParams): WalletCreateResponse => ({
+  redirectUrl: `${serverUrl}${WALLET_ONBOARDING_PATH}?paymentMethodId=${paymentMethodId}&contextualOnboarding=${contextualOnboarding}#sessionToken=${faker.string.uuid()}`
 });
