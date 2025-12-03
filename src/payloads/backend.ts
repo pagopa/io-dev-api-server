@@ -370,6 +370,15 @@ export const backendStatus: BackendStatus = {
           "de-DE": "https://assistenza.ioapp.it/hc/it"
         }
       }
+    },
+    services: {
+      favouriteServices: {
+        limit: 20,
+        min_app_version: {
+          android: "3.21.0.0",
+          ios: "3.21.0.0"
+        }
+      }
     }
   },
   sections: {
