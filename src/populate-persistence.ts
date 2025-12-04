@@ -53,6 +53,7 @@ import {
   AggregatedMessage,
   productionMessagesFileRelativePath
 } from "./features/messages/routers/productionCrawlerRouter";
+import { createCDCMessages } from "./features/cdc/services/messageService";
 
 const getServiceId = (): string => {
   const servicesSummaries = ServicesDB.getSummaries(true);
@@ -487,7 +488,9 @@ const createMessages = (
     ...createSENDOptInMessage(customConfig),
     ...createSENDMessagesOnIO(customConfig),
 
-    ...createMessagesWithRemoteContent(customConfig)
+    ...createMessagesWithRemoteContent(customConfig),
+
+    ...createCDCMessages(customConfig)
   ];
 };
 

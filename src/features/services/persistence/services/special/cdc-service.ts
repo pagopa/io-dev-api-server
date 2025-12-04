@@ -10,7 +10,7 @@ import { SpecialServiceCategoryEnum } from "../../../../../../generated/definiti
 import { SpecialServiceMetadata } from "../../../../../../generated/definitions/services/SpecialServiceMetadata";
 import { ServiceId } from "../../../../../../generated/definitions/services/ServiceId";
 
-const cdcServiceId = "01G2AFTME08TS0QD2P2S682CJ0" as ServiceId;
+export const cdcServiceId = "01G2AFTME08TS0QD2P2S682CJ0" as ServiceId;
 
 export const createCdcService: SpecialServiceGenerator = (
   createService: (serviceId: string) => ServiceDetails,
