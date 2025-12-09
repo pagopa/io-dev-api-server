@@ -13,13 +13,6 @@ it:
   cta_1:
     text: "Vai alla Carta della Cultura"
     action: "ioit://main/wallet"
-en:
-  cta_2:
-    text: "Dove puoi usarla"
-    action: "https://www.cartadellacultura.it/cartaculturaEsercente/#/doveUsareBuoni"
-  cta_1:
-    text: "Vai alla Carta della Cultura"
-    action: "iohandledlink://https://ec.europa.eu/eusurvey/runner/Questionario_comportamenti_giovanili"
 ---`;
 
 const createCdcMessageTemplates = [
