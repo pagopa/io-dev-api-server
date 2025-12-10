@@ -37,7 +37,7 @@ export const createCDCMessages = (
     return [];
   }
 
-  const fiscalCode = customConfig.profile.attrs.fiscal_code;
+  const fiscal_code = customConfig.profile.attrs.fiscal_code;
 
   return createCdcMessageTemplates.map(template => {
     const { id, created_at } = nextMessageIdAndCreationDate();
@@ -45,7 +45,7 @@ export const createCDCMessages = (
     return validatePayload(CreatedMessageWithContent, {
       content: template.content,
       created_at,
-      fiscal_code: fiscalCode,
+      fiscal_code,
       id,
       message_title: template.content.subject ?? "This message has no title",
       sender_service_id: cdcServiceId,
