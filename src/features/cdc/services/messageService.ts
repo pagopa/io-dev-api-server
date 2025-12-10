@@ -5,62 +5,27 @@ import { validatePayload } from "../../../utils/validator";
 import { cdcServiceId } from "../../services/persistence/services/special/cdc-service";
 import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
 
-const successCtasMarkdown = `---
-it:
-  cta_2:
-    text: "Dove puoi usarla"
-    action: "iohandledlink://https://www.cartadellacultura.it/cartaculturaEsercente/#/doveUsareBuoni"
-  cta_1:
-    text: "Vai alla Carta della Cultura"
-    action: "ioit://main/wallet"
----`;
-
 const createCdcMessageTemplates = [
   {
-    subject: "La tua Carta della Cultura è pronta!",
-    markdown: `${successCtasMarkdown}
-Ciao!
-Il tuo **nucleo familiare** ha ottenuto la Carta della Cultura per il:
-* **202Y**
-* **202Z**
-
-È disponibile ora nella sezione Portafoglio.
-
-Puoi usarla per acquistare libri, sia cartacei che digitali, generando uno o più buoni in base al credito disponibile.
-
-Vuoi avere più informazioni su come usare i buoni? [Leggi come fare](https://link.alla.guida.come.fare)
-`
+    content: {
+      subject: "La tua Carta della Cultura è pronta!",
+      markdown:
+        '---\nit:\n  cta_2:\n    text: "Dove puoi usarla"\n    action: "iohandledlink://https://www.cartadellacultura.it/cartaculturaEsercente/#/doveUsareBuoni"\n  cta_1:\n    text: "Vai alla Carta della Cultura"\n    action: "ioit://main/wallet"\n---\nCiao!\nIl tuo **nucleo familiare** ha ottenuto la Carta della Cultura per il:\n* **202Y**\n* **202Z**\n\nÈ disponibile ora nella sezione Portafoglio.\n\nPuoi usarla per acquistare libri, sia cartacei che digitali, generando uno o più buoni in base al credito disponibile.\n\nVuoi avere più informazioni su come usare i buoni? [Leggi come fare](https://pagopa.zendesk.com/auth/v2/login/signin?auth_origin=30056501290385%2Ctrue%2Ctrue&brand_id=30056501290385&locale=22&return_to=https%3A%2F%2Fassistenza.ioapp.it%2Fhc&role=agent&theme=hc)\n'
+    }
   },
   {
-    subject: "Non è stato possibile assegnarti la Carta della Cultura",
-    markdown: `Ciao!
-Purtroppo non è stato possibile assegnarti la Carta della Cultura.
-
-La richiesta non è stata accolta, ecco perché:
-* **202X** : <ISEE non presente>
-* **202V** : <ISEE non conforme>
-* **202K** : <non rientri in graduatoria per fondi insufficienti.>
-
-Grazie per aver partecipato all’iniziativa.
-`
+    content: {
+      subject: "Non è stato possibile assegnarti la Carta della Cultura",
+      markdown:
+        "Ciao!\nPurtroppo non è stato possibile assegnarti la Carta della Cultura.\n\nLa richiesta non è stata accolta, ecco perché:\n* **202X** : <ISEE non presente>\n* **202V** : <ISEE non conforme>\n* **202K** : <non rientri in graduatoria per fondi insufficienti.>\n\nGrazie per aver partecipato all’iniziativa."
+    }
   },
   {
-    subject: "Carta della Cultura: abbiamo aggiornamenti sulla tua richiesta",
-    markdown: `${successCtasMarkdown}
-Ciao!
-Ecco l’esito delle tue richieste per l’ottenimento della Carta della Cultura.
-
-Il tuo **nucleo familiare** ha ottenuto la Carta della Cultura per il:
-* **202Y**
-* **202Z**
-
-Per gli altri anni, invece, la richiesta non è stata accolta:
-* **202X** : <ISEE non presente>
-* **202V** : <ISEE non conforme>
-* **202K** : <non rientri in graduatoria per fondi insufficienti.>
-
-Puoi trovare la tua Carta nella sezione Portafoglio e usarla per acquistare libri, generando uno o più buoni in base al credito disponibile.
-`
+    content: {
+      subject: "Carta della Cultura: abbiamo aggiornamenti sulla tua richiesta",
+      markdown:
+        '---\nit:\n  cta_2:\n    text: "Dove puoi usarla"\n    action: "iohandledlink://https://www.cartadellacultura.it/cartaculturaEsercente/#/doveUsareBuoni"\n  cta_1:\n    text: "Vai alla Carta della Cultura"\n    action: "ioit://main/wallet"\n---\nCiao!\nEcco l’esito delle tue richieste per l’ottenimento della Carta della Cultura.\n\nIl tuo **nucleo familiare** ha ottenuto la Carta della Cultura per il:\n* **202Y**\n* **202Z**\n\nPer gli altri anni, invece, la richiesta non è stata accolta:\n* **202X** : <ISEE non presente>\n* **202V** : <ISEE non conforme>\n* **202K** : <non rientri in graduatoria per fondi insufficienti.>\n\nPuoi trovare la tua Carta nella sezione Portafoglio e usarla per acquistare libri, generando uno o più buoni in base al credito disponibile.'
+    }
   }
 ];
 
@@ -78,11 +43,11 @@ export const createCDCMessages = (
     const { id, created_at } = nextMessageIdAndCreationDate();
 
     return validatePayload(CreatedMessageWithContent, {
-      content: template,
+      content: template.content,
       created_at,
       fiscal_code: fiscalCode,
       id,
-      message_title: template.subject ?? "This message has no title",
+      message_title: template.content.subject ?? "This message has no title",
       sender_service_id: cdcServiceId,
       service_name: "Ministero della Cultura"
     });
