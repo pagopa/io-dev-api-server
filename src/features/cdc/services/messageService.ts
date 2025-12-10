@@ -33,7 +33,7 @@ export const createCDCMessages = (
   customConfig: IoDevServerConfig
 ): CreatedMessageWithContentAndAttachments[] => {
   // feature flag guard
-  if (!customConfig.features?.bonus?.cdc?.enabled) {
+  if (!customConfig.features.bonus.cdc.enabled) {
     return [];
   }
 
