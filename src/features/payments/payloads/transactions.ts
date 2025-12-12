@@ -48,7 +48,7 @@ export const getNewTransactionResponsePayload = (
   O.some({
     transactionId: ulid(),
     payments,
-    status: TransactionStatusEnum.ACTIVATION_REQUESTED,
+    status: TransactionStatusEnum.ACTIVATED,
     clientId: ClientIdEnum.IO,
     sendPaymentResultOutcome: SendPaymentResultOutcomeEnum.OK
   });
