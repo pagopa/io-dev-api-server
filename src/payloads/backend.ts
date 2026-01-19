@@ -144,6 +144,8 @@ export const backendStatus: BackendStatus = {
         delegate_url:
           "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche",
         in_app_delegation: {
+          helpCenter_url:
+            "https://assistenza.notifichedigitali.it/hc/it/#categories",
           min_app_version: {
             ios: "3.18.0.0",
             android: "3.18.0.0"
@@ -368,6 +370,15 @@ export const backendStatus: BackendStatus = {
           "it-IT": "https://assistenza.ioapp.it/hc/it",
           "en-EN": "https://assistenza.ioapp.it/hc/it",
           "de-DE": "https://assistenza.ioapp.it/hc/it"
+        }
+      }
+    },
+    services: {
+      favouriteServices: {
+        limit: 20,
+        min_app_version: {
+          android: "3.21.0.0",
+          ios: "3.21.0.0"
         }
       }
     }

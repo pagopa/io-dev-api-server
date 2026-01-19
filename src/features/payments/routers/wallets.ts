@@ -8,6 +8,7 @@ import {
   generateOnboardablePaymentMethods,
   generateOnboardingWalletData
 } from "../utils/onboarding";
+import { uuidv4 } from "../../../utils/strings";
 import { addPaymentWalletHandler } from "./router";
 
 addPaymentWalletHandler("get", "/wallets", (req, res) => {
@@ -88,11 +89,17 @@ addPaymentWalletHandler(
  * This API is used to start an onboarding process for a new method of payment
  */
 addPaymentWalletHandler("post", "/wallets/mock", (req, res) => {
-  const { paymentMethodId } = req.body;
-  const generatedWallet = WalletDB.generateUserWallet(
+  const { paymentMethodId, isContextualOnboarding, wantsToOnboard } = req.body;
+
+  const { walletId: generatedWalletId } = WalletDB.generateUserWallet(
     parseInt(paymentMethodId, 10)
   );
-  res.json(generatedWallet);
+  res.json({
+    walletId: generatedWalletId,
+    transactionId:
+      isContextualOnboarding && wantsToOnboard ? uuidv4() : undefined,
+    orderId: isContextualOnboarding && !wantsToOnboard ? uuidv4() : undefined
+  });
 });
 
 /**
