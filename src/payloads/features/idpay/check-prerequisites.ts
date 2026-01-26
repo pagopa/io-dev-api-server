@@ -69,15 +69,18 @@ const familyUnityOnlyAutomatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
 const criterionArray: ReadonlyArray<RowDataDTO> = [
   {
     description: "Criterion 1",
-    subDescription: "Subtitle criterion 1"
+    subDescription: "Subtitle criterion 1",
+    value: "1"
   },
   {
     description: "Criterion 2",
-    subDescription: "Subtitle criterion 2"
+    subDescription: "Subtitle criterion 2",
+    value: "2"
   },
   {
     description: "Criterion 3",
-    subDescription: "Subtitle criterion 3"
+    subDescription: "Subtitle criterion 3",
+    value: "3"
   }
 ];
 const selfDeclarationMulti: ReadonlyArray<SelfCriteriaMultiDTO> = [
