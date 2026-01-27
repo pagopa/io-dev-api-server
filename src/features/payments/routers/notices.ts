@@ -1,15 +1,15 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { sendFileFromRootPath } from "../../../utils/file";
-import NoticesDB from "../persistence/notices";
-
 import { NoticeListWrapResponse } from "../../../../generated/definitions/pagopa/transactions/NoticeListWrapResponse";
 import { ioDevServerConfig } from "../../../config";
+import { sendFileFromRootPath } from "../../../utils/file";
+import NoticesDB from "../persistence/notices";
 import { addNoticesHandler } from "./router";
 
 const CONTINUATION_TOKEN_HEADER = "x-continuation-token";
 const DEFAULT_SIZE = 10;
 const { hideReceiptResponseCode } = ioDevServerConfig.features.payments;
+const { pdfNotFoundResponse } = ioDevServerConfig.features.receipts;
 
 addNoticesHandler("get", "/paids", (req, res) => {
   const size = req.query.size ? Number(req.query.size) : DEFAULT_SIZE;
@@ -71,11 +71,23 @@ addNoticesHandler("get", "/paids/:eventId/pdf", (req, res) => {
     O.fold(
       () => res.sendStatus(400),
       eventId => {
+        if (pdfNotFoundResponse) {
+          return res
+            .status(pdfNotFoundResponse.status)
+            .json(pdfNotFoundResponse);
+        }
         const transaction = NoticesDB.getNoticeDetails(eventId);
         return pipe(
           transaction,
           O.fold(
-            () => res.sendStatus(404),
+            () =>
+              res.status(404).json({
+                title: "Attachment not found",
+                status: 404,
+                detail:
+                  "Attachment of 321 for bizEvent with id 123 is still generating",
+                code: "AT_404_002"
+              }),
             _ => {
               sendFileFromRootPath(
                 "assets/payments/receipts/loremIpsum.pdf",

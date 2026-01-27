@@ -190,6 +190,18 @@ export const IoDevServerConfig = t.interface({
         // the response code when hiding a receipt
         hideReceiptResponseCode: HttpResponseCode
       }),
+      receipts: t.interface({
+        // if defined, the PDF endpoint returns this 404 response instead of the file
+        pdfNotFoundResponse: t.union([
+          t.interface({
+            title: t.string,
+            status: t.number,
+            detail: t.string,
+            code: t.string
+          }),
+          t.undefined
+        ])
+      }),
       bonus: t.interface({
         // defines the special configuration for cgn eligibility
         cgn: t.intersection([

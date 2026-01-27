@@ -235,6 +235,15 @@ const defaultConfig: IoDevServerConfig = {
       numberOfTransactions: 12,
       hideReceiptResponseCode: 400
     },
+    receipts: {
+      pdfNotFoundResponse: {
+        title: "Attachment not found",
+        status: 404,
+        detail:
+          "Attachment of 321 for bizEvent with id 123 is still generating",
+        code: "AT_404_002"
+      }
+    },
     bonus: {
       cgn: {
         isCgnEligible: true,
