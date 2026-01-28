@@ -109,7 +109,9 @@ addNoticesHandler("post", "/paids/:eventId/disable", (req, res) => {
     O.fold(
       () => res.sendStatus(400),
       eventId => {
-        NoticesDB.removeUserNotice(eventId);
+        if (hideReceiptResponseCode === 200) {
+          NoticesDB.removeUserNotice(eventId);
+        }
         return res.sendStatus(hideReceiptResponseCode);
       }
     )
