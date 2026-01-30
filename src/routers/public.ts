@@ -13,8 +13,7 @@ import { WALLET_PAYMENT_PATH } from "../features/payments/utils/payment";
 import { backendInfo } from "../payloads/backend";
 import {
   AppUrlLoginScheme,
-  errorCodeRedirectUrl,
-  errorMessageRedirectUrl,
+  errorRedirectUrl,
   loginLolliPopRedirect,
   redirectUrl
 } from "../payloads/login";
@@ -101,29 +100,39 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
     ? AppUrlLoginScheme.native
     : AppUrlLoginScheme.webview;
 
+  const baseURL = `${urlLoginScheme}://${req.headers.host}`;
+
   if (req.query.authorized === "1" || ioDevServerConfig.global.autoLogin) {
     concretizeEphemeralInfo();
     createOrRefreshEverySessionToken();
 
-    const token = getLoginSessionToken();
-    const url = `${urlLoginScheme}://${req.headers.host}${redirectUrl}?token=${token}#token=${token}`;
+    const token = getLoginSessionToken() ?? "";
+    const urlInstance = new URL(redirectUrl, baseURL);
+    // eslint-disable-next-line functional/immutable-data
+    urlInstance.searchParams.append("token", token);
+    // eslint-disable-next-line functional/immutable-data
+    urlInstance.hash = `token=${token}`;
+
+    const url = urlInstance.toString();
     res.redirect(url);
     return;
   }
   if (req.query.error && typeof req.query.error === "string") {
     clearEphemeralLollipopInfo();
-    // eslint-disable-next-line functional/no-let
-    let redirectUrl;
-    // eslint-disable-next-line functional/no-let
-    let errorCodeOrMessage;
+
+    const urlInstance = new URL(errorRedirectUrl, baseURL);
+
     if (req.query.error.includes("errorMessage:")) {
-      redirectUrl = errorMessageRedirectUrl;
-      errorCodeOrMessage = req.query.error.split(":")[1];
+      const errorMessage = req.query.error.split(":")[1];
+      // eslint-disable-next-line functional/immutable-data
+      urlInstance.searchParams.append("errorMessage", errorMessage);
     } else {
-      redirectUrl = errorCodeRedirectUrl;
-      errorCodeOrMessage = req.query.error;
+      const errorCode = req.query.error;
+      // eslint-disable-next-line functional/immutable-data
+      urlInstance.searchParams.append("errorCode", errorCode);
     }
-    const url = `${urlLoginScheme}://${req.headers.host}${redirectUrl}${errorCodeOrMessage}`;
+
+    const url = urlInstance.toString();
     res.redirect(url);
     return;
   }
