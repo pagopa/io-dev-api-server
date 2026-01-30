@@ -19,14 +19,15 @@ it("login should response with a welcome page", async () => {
   expect(response.status).toBe(302);
 });
 
-it("login with auth should response with a redirect and the token as param", async () => {
+it("login with auth should response with a redirect and the token as param and fragment", async () => {
   const response = await request.get("/idp-login?authorized=1");
   const hostAndPort = response.text.match(/\/\/(.*?)\//);
+  const token = getLoginSessionToken();
   expect(response.status).toBe(302);
   expect(response.text).toBe(
     `Found. Redirecting to ${AppUrlLoginScheme.webview}://${
       hostAndPort ? hostAndPort[1] : ""
-    }/profile.html?token=${getLoginSessionToken()}`
+    }/profile.html?token=${token}#token=${token}`
   );
 });
 
