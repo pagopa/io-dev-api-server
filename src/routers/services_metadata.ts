@@ -285,6 +285,19 @@ addHandler(
   }
 );
 
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/locales/:language/:namespace.json"),
+  (req, res) => {
+    const content = readFileAsJSON(
+      assetsFolder +
+        `/locales/${req.params.language}/${req.params.namespace}.json`
+    );
+    res.json(content);
+  }
+);
+
 const getOrLoadAndInitializeLogoRelativePath = (
   fileNameWithExtension: string,
   map: Map<string, string>,
