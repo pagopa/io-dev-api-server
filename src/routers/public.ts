@@ -108,8 +108,11 @@ addHandler(publicRouter, "get", "/idp-login", (req, res) => {
 
     const token = getLoginSessionToken() ?? "";
     const urlInstance = new URL(redirectUrl, baseURL);
-    // eslint-disable-next-line functional/immutable-data
-    urlInstance.searchParams.append("token", token);
+
+    if (ioDevServerConfig.global.sendSessionTokenAsQueryParam) {
+      // eslint-disable-next-line functional/immutable-data
+      urlInstance.searchParams.append("token", token);
+    }
     // eslint-disable-next-line functional/immutable-data
     urlInstance.hash = `token=${token}`;
 
