@@ -21,6 +21,7 @@ import {
 } from "../services/ioSendService";
 import MessagesService from "../services/messagesService";
 import { bodyToString } from "../utils";
+import { generateLollipopLambdaGetPath } from "../../pn/routers/lollipopLambda";
 
 export const ioSendRouter = Router();
 
@@ -163,21 +164,68 @@ addHandler(
   () => Math.random() * 500
 );
 
+addHandler(
+  ioSendRouter,
+  "get",
+  "/api/com/v1/send/lollipop-check/test",
+  lollipopMiddleware(async (req, res) => {
+    const sendLollipopLambdaGetUrl = `${serverUrl}${generateLollipopLambdaGetPath()}`;
+    commonHandleIsTestQueryParam(req);
+    const sendLollipopLambdaGetFetch = () =>
+      fetch(sendLollipopLambdaGetUrl, {
+        method: "get",
+        headers: generateRequestHeaders(req.headers, "application/json", true)
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendLollipopLambdaGetFetch,
+      "lollipop-test",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
+addHandler(
+  ioSendRouter,
+  "post",
+  "/api/com/v1/send/lollipop-check/test",
+  lollipopMiddleware(async (req, res) => {
+    const sendLollipopLambdaPostUrl = `${serverUrl}${generateLollipopLambdaGetPath()}`;
+    const sendLollipopLambdaPostBodyEither = bodyToString(req.body);
+    if (handleLeftEitherIfNeeded(sendLollipopLambdaPostBodyEither, res)) {
+      return;
+    }
+    commonHandleIsTestQueryParam(req);
+    const sendLambdaLollipopPostFetch = () =>
+      fetch(sendLollipopLambdaPostUrl, {
+        method: "post",
+        headers: generateRequestHeaders(req.headers, "application/json", true),
+        body: sendLollipopLambdaPostBodyEither.right
+      });
+    await fetchSENDDataAndForwardResponse(
+      sendLambdaLollipopPostFetch,
+      "lollipop-test",
+      res
+    );
+  }),
+  () => Math.random() * 500
+);
+
 const fetchSENDDataAndForwardResponse = async (
   fetchFunction: () => Promise<globalThis.Response>,
   endpointName: string,
   res: Response
 ) => {
   try {
-    const sendQResponse = await fetchFunction();
+    const sendResponse = await fetchFunction();
 
-    const contentType = sendQResponse.headers.get("content-type");
-    const responseBodyBuffer = await sendQResponse.arrayBuffer();
+    const contentType = sendResponse.headers.get("content-type");
+    const responseBodyBuffer = await sendResponse.arrayBuffer();
     const body = Buffer.from(responseBodyBuffer);
     if (contentType) {
       res.setHeader("Content-Type", contentType);
     }
-    res.status(sendQResponse.status).send(body);
+    res.status(sendResponse.status).send(body);
   } catch (e) {
     const errorMessage = unknownToString(e);
     res

@@ -156,7 +156,8 @@ export const backendStatus: BackendStatus = {
       customerServiceCenterUrl: "https://assistenza.notifichedigitali.it/hc",
       estimateTimelinesUrl: "https://notifichedigitali.it/perfezionamento",
       visitTheSENDWebsiteUrl:
-        "https://cittadini.notifichedigitali.it/auth/login"
+        "https://cittadini.notifichedigitali.it/auth/login",
+      lollipopPlaygroundEnabled: true
     },
     idPay: {
       min_app_version: {
