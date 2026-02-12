@@ -15,7 +15,7 @@ describe("suite to test validatePayload function", () => {
 
   it("test with io-ts codec. an error should be thrown", () => {
     const payload = "abc";
-    expect(() => validatePayload(t.Int, payload)).toThrowError();
+    expect(() => validatePayload(t.Int, payload)).toThrow();
   });
 
   it("test with io-backend codec codec (EmailAddress)", () => {
@@ -26,7 +26,7 @@ describe("suite to test validatePayload function", () => {
 
   it("test with io-backend codec codec (EmailAddress)", () => {
     const invalidEmail = "invalid@email@email.com";
-    expect(() => validatePayload(EmailAddress, invalidEmail)).toThrowError();
+    expect(() => validatePayload(EmailAddress, invalidEmail)).toThrow();
   });
 
   it("test with validateAndCreatePayload with valid email", () => {
@@ -40,7 +40,7 @@ describe("suite to test validatePayload function", () => {
     const invalidEmail = "invalid@email@email.com";
     expect(() =>
       validateAndCreatePayload(EmailAddress, invalidEmail)
-    ).toThrowError();
+    ).toThrow();
   });
 
   it("test toPayload with json data", () => {

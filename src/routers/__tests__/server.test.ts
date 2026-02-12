@@ -21,13 +21,6 @@ it("login should response with a welcome page", async () => {
 });
 
 describe("login with auth should response with a redirect url", () => {
-  const originalValue = ioDevServerConfig.global.sendSessionTokenAsQueryParam;
-
-  afterAll(() => {
-    // eslint-disable-next-line functional/immutable-data
-    ioDevServerConfig.global.sendSessionTokenAsQueryParam = originalValue;
-  });
-
   it.each([
     {
       description: "with token only in fragment when flag is disabled",
@@ -39,9 +32,11 @@ describe("login with auth should response with a redirect url", () => {
       sendSessionTokenAsQueryParam: true
     }
   ])("$description", async ({ sendSessionTokenAsQueryParam }) => {
-    // eslint-disable-next-line functional/immutable-data
-    ioDevServerConfig.global.sendSessionTokenAsQueryParam =
-      sendSessionTokenAsQueryParam;
+    jest.replaceProperty(
+      ioDevServerConfig.global,
+      "sendSessionTokenAsQueryParam",
+      sendSessionTokenAsQueryParam
+    );
 
     const response = await request.get("/idp-login?authorized=1");
     const hostAndPort = response.text.match(/\/\/(.*?)\//);
