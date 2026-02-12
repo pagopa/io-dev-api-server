@@ -29,16 +29,19 @@ export const isTestOrUndefinedFromQuery = (
 
 export const generateRequestHeaders = (
   headers: IncomingHttpHeaders,
-  contentType: string = "application/json"
+  contentType: string = "application/json",
+  excludeTaxId: boolean = false
 ): Record<string, string> => ({
   ...MessagesService.lollipopClientHeadersFromHeaders(headers),
   ...MessagesService.generateFakeLollipopServerHeaders(
     ioDevServerConfig.profile.attrs.fiscal_code
   ),
   ...MessagesService.sendAPIKeyHeader(),
-  ...MessagesService.sendTaxIdHeader(
-    ioDevServerConfig.profile.attrs.fiscal_code
-  ),
+  ...(excludeTaxId
+    ? {}
+    : MessagesService.sendTaxIdHeader(
+        ioDevServerConfig.profile.attrs.fiscal_code
+      )),
   "Content-Type": contentTypeHeaderFromHeaders(headers, contentType),
   ...ioSourceHeaderFromRequestHeaders(headers)
 });

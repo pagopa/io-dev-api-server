@@ -2,9 +2,11 @@
 
 IO_BACKEND_VERSION=v17.5.2
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.93
+IO_SERVICES_METADATA_VERSION=1.0.95
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.8.0
+# Send Functions
+IO_SEND_FUNC=1.5.5
 
 declare -a noParams=(
   "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_public.yaml"
@@ -31,7 +33,8 @@ declare -a noStrict=(
 )
 
 declare -a noStrictRequestTypesRespondeDecoders=(
-  "./generated/definitions/pn/aar https://raw.githubusercontent.com/pagopa/io-messages/send-func@1.4.1/apps/send-func/openapi/aar-notification.yaml"
+  "./generated/definitions/pn/aar https://raw.githubusercontent.com/pagopa/io-messages/send-func@$IO_SEND_FUNC/apps/send-func/openapi/aar-notification.yaml"
+  "./generated/definitions/pn/lollipopLambda https://raw.githubusercontent.com/pagopa/io-messages/send-func@$IO_SEND_FUNC/apps/send-func/openapi/lollipop-integration-check.yaml"
   "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_pn.yaml"
   "./generated/definitions/trial_system https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_trial_system.yaml"
   "./generated/definitions/fims_history https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_fims.yaml"
