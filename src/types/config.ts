@@ -125,7 +125,9 @@ export const IoDevServerConfig = t.interface({
       // if false fixed values will be used
       allowRandomValues: t.boolean,
       // if true, logs the lollipop parameters generated during a login request
-      logSAMLRequest: t.boolean
+      logSAMLRequest: t.boolean,
+      // if true, sends the session token also as query param
+      sendSessionTokenAsQueryParam: t.boolean
     }),
     AllowRandomValue,
     t.partial({

@@ -62,7 +62,8 @@ const defaultConfig: IoDevServerConfig = {
     autoLogin: false,
     allowRandomValues: true,
     responseError: undefined,
-    logSAMLRequest: false
+    logSAMLRequest: false,
+    sendSessionTokenAsQueryParam: false
   },
   profile: {
     attrs: defaultProfileAttrs,
@@ -119,6 +120,7 @@ const defaultConfig: IoDevServerConfig = {
   send: {
     isServiceUpsertRateLimited: false,
     aarQRCodeUrl: "https://cittadini.notifichedigitali.it/io",
+    lollipopLambdaResponseCode: 200,
     mandateTimeToLiveSeconds: 120,
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,

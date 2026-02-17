@@ -71,6 +71,13 @@ export const SendConfig = t.intersection([
   }),
   t.partial({
     aarQRCodeUrl: t.string,
+    lollipopLambdaResponseCode: t.union([
+      t.literal(200),
+      t.literal(400),
+      t.literal(401),
+      t.literal(403),
+      t.literal(500)
+    ]),
     mandateTimeToLiveSeconds: t.number,
     paymentDocumentExpirationTimeSeconds: t.number,
     paymentDocumentGenerationTimeSeconds: t.number,

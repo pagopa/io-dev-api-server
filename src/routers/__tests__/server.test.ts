@@ -1,10 +1,11 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
 import { PublicSession } from "../../../generated/definitions/session_manager/PublicSession";
-import { AppUrlLoginScheme } from "../../payloads/login";
+import { AppUrlLoginScheme, redirectUrl } from "../../payloads/login";
 import app from "../../server";
 import { getLoginSessionToken } from "../../persistence/sessionInfo";
 import { addApiAuthV1Prefix } from "../../utils/strings";
+import { ioDevServerConfig } from "../../config";
 
 const request = supertest(app);
 
@@ -19,16 +20,43 @@ it("login should response with a welcome page", async () => {
   expect(response.status).toBe(302);
 });
 
-it("login with auth should response with a redirect and the token as param and fragment", async () => {
-  const response = await request.get("/idp-login?authorized=1");
-  const hostAndPort = response.text.match(/\/\/(.*?)\//);
-  const token = getLoginSessionToken();
-  expect(response.status).toBe(302);
-  expect(response.text).toBe(
-    `Found. Redirecting to ${AppUrlLoginScheme.webview}://${
-      hostAndPort ? hostAndPort[1] : ""
-    }/profile.html?token=${token}#token=${token}`
-  );
+describe("login with auth should response with a redirect url", () => {
+  it.each([
+    {
+      description: "with token only in fragment when flag is disabled",
+      sendSessionTokenAsQueryParam: false
+    },
+    {
+      description:
+        "with token in query param and fragment when flag is enabled",
+      sendSessionTokenAsQueryParam: true
+    }
+  ])("$description", async ({ sendSessionTokenAsQueryParam }) => {
+    jest.replaceProperty(
+      ioDevServerConfig.global,
+      "sendSessionTokenAsQueryParam",
+      sendSessionTokenAsQueryParam
+    );
+
+    const response = await request.get("/idp-login?authorized=1");
+    const hostAndPort = response.text.match(/\/\/(.*?)\//);
+    const host = hostAndPort ? hostAndPort[1] : "";
+    const token = getLoginSessionToken() ?? "";
+
+    const baseURL = `${AppUrlLoginScheme.webview}://${host}`;
+    const expectedUrlInstance = new URL(redirectUrl, baseURL);
+
+    if (sendSessionTokenAsQueryParam) {
+      expectedUrlInstance.searchParams.append("token", token);
+    }
+    // eslint-disable-next-line functional/immutable-data
+    expectedUrlInstance.hash = `token=${token}`;
+
+    expect(response.status).toBe(302);
+    expect(response.text).toBe(
+      `Found. Redirecting to ${expectedUrlInstance.toString()}`
+    );
+  });
 });
 
 it("session should return a valid session", async () => {
