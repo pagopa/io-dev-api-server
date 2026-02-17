@@ -31,7 +31,7 @@ type EventId = NoticeListItem["eventId"];
 const userNotices: NoticeListItem[] = [];
 const notices = new Map<EventId, NoticeDetailResponse>();
 
-const getUserNotices = () => userNotices;
+const getUserNotices = () => [...userNotices];
 
 const getNoticeDetails = (eventId: EventId) =>
   pipe(
