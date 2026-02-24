@@ -303,7 +303,7 @@ addHandler(
           `${assetsFolder}/locales/${req.params.language}/${req.params.namespace}.json`
         )
       });
-    } catch (_) {
+    } catch {
       return res.status(200).json({});
     }
   }
