@@ -260,8 +260,8 @@ export const backendStatus: BackendStatus = {
       },
       webViewPaymentFlow: {
         min_app_version: {
-          ios: "2.65.0.0",
-          android: "2.65.0.0"
+          ios: "5.0.0.0",
+          android: "3.8.0.9"
         }
       }
     },
