@@ -319,6 +319,7 @@ export const backendStatus: BackendStatus = {
     },
     landing_banners: {
       priority_order: [
+        "OS_DISMISSION_REMINDER",
         "PUSH_NOTIFICATIONS_REMINDER",
         "SEND_ACTIVATION_REMINDER",
         "LV_EXPIRATION_REMINDER",
@@ -382,6 +383,10 @@ export const backendStatus: BackendStatus = {
           ios: "3.21.0.0"
         }
       }
+    },
+    min_supported_os: {
+      ios: "15.1",
+      android: "26"
     }
   },
   sections: {
