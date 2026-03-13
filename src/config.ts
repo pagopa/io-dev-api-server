@@ -103,7 +103,8 @@ const defaultConfig: IoDevServerConfig = {
       canceledCount: 0,
       noSignatureFieldsCount: 0,
       response: {
-        getFciResponseCode: 200
+        getFciResponseCode: 200,
+        nonceDuration: 300 // 5 minutes as production environment
       }
     },
     withCTA: false,
