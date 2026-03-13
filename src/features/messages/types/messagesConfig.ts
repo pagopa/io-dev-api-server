@@ -36,7 +36,9 @@ export const MessagesConfig = t.intersection([
       noSignatureFieldsCount: t.number,
       response: t.type({
         // 200 success with payload
-        getFciResponseCode: HttpResponseCode
+        getFciResponseCode: HttpResponseCode,
+        // qtsp nonce duration in seconds
+        nonceDuration: t.number
       })
     }),
     // if true, messages (all available) with nested CTA will be included

@@ -6,6 +6,7 @@ import { SIGNATURE_REQUEST_ID } from "../../../../payloads/features/fci/signatur
 import app from "../../../../server";
 import { addFciPrefix } from "../index";
 import { EnvironmentEnum } from "../../../../../generated/definitions/fci/Environment";
+import { getQtspNonceExpirations } from "../../../../features/fci/qtspNonceStore";
 
 const request = supertest(app);
 
@@ -47,11 +48,30 @@ describe("io-sign API", () => {
     });
   });
   describe("GET qtsp clauses", () => {
+    beforeEach(() => {
+      getQtspNonceExpirations().clear();
+    });
+
     describe("when the signer request qtsp clauses", () => {
       it("should return 200 and the clauses list", async () => {
         const response = await request.get(addFciPrefix(`/qtsp/clauses`));
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("clauses");
+        expect(response.body.nonce).toMatch(/^devnonce-/);
+        expect(getQtspNonceExpirations().has(response.body.nonce)).toBe(true);
+      });
+
+      it("should store the nonce with an expiration date", async () => {
+        const response = await request.get(addFciPrefix(`/qtsp/clauses`));
+        const nonceExpiration = getQtspNonceExpirations().get(
+          response.body.nonce
+        );
+
+        if (nonceExpiration === undefined) {
+          throw new Error("missing nonce expiration");
+        }
+
+        expect(nonceExpiration.getTime()).toBeGreaterThan(Date.now());
       });
     });
   });
@@ -67,12 +87,53 @@ describe("io-sign API", () => {
     });
   });
   describe("POST create signature", () => {
+    beforeEach(() => {
+      getQtspNonceExpirations().clear();
+    });
+
     describe("when the signer request a signature with a valid body", () => {
-      it("should return 201", async () => {
+      it("should return 200", async () => {
+        const qtspClausesResponse = await request.get(
+          addFciPrefix(`/qtsp/clauses`)
+        );
+        const response = await request.post(addFciPrefix(`/signatures`)).send({
+          ...createSignatureBody,
+          qtsp_clauses: {
+            ...createSignatureBody.qtsp_clauses,
+            nonce: qtspClausesResponse.body.nonce
+          }
+        });
+        expect(response.status).toBe(200);
+      });
+    });
+    describe("when the signer request a signature with an invalid nonce", () => {
+      it("should return 500", async () => {
         const response = await request
           .post(addFciPrefix(`/signatures`))
           .send(createSignatureBody);
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(500);
+      });
+    });
+    describe("when the signer request a signature with an expired nonce", () => {
+      it("should return 500", async () => {
+        const qtspClausesResponse = await request.get(
+          addFciPrefix(`/qtsp/clauses`)
+        );
+        const expiredNonce = qtspClausesResponse.body.nonce;
+        getQtspNonceExpirations().set(
+          expiredNonce,
+          new Date(Date.now() - 1000)
+        );
+
+        const response = await request.post(addFciPrefix(`/signatures`)).send({
+          ...createSignatureBody,
+          qtsp_clauses: {
+            ...createSignatureBody.qtsp_clauses,
+            nonce: expiredNonce
+          }
+        });
+
+        expect(response.status).toBe(500);
       });
     });
     describe("when the signer request signature detail with a not valid body", () => {
