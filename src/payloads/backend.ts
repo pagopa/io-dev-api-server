@@ -145,7 +145,7 @@ export const backendStatus: BackendStatus = {
           "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche",
         in_app_delegation: {
           helpCenter_url:
-            "https://assistenza.notifichedigitali.it/hc/it/#categories",
+            "https://assistenza.ioapp.it/hc/it/articles/44040451905809-Come-fare-per-accedere-a-una-notifica-SEND-destinata-a-un-altra-persona",
           min_app_version: {
             ios: "3.18.0.0",
             android: "3.18.0.0"
