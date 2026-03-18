@@ -145,7 +145,7 @@ export const backendStatus: BackendStatus = {
           "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche",
         in_app_delegation: {
           helpCenter_url:
-            "https://assistenza.notifichedigitali.it/hc/it/#categories",
+            "https://assistenza.ioapp.it/hc/it/articles/44040451905809-Come-fare-per-accedere-a-una-notifica-SEND-destinata-a-un-altra-persona",
           min_app_version: {
             ios: "3.18.0.0",
             android: "3.18.0.0"
@@ -319,6 +319,7 @@ export const backendStatus: BackendStatus = {
     },
     landing_banners: {
       priority_order: [
+        "OS_DISMISSION_REMINDER",
         "PUSH_NOTIFICATIONS_REMINDER",
         "SEND_ACTIVATION_REMINDER",
         "LV_EXPIRATION_REMINDER",
@@ -382,6 +383,10 @@ export const backendStatus: BackendStatus = {
           ios: "3.21.0.0"
         }
       }
+    },
+    min_supported_os: {
+      ios: "15.1",
+      android: "26"
     }
   },
   sections: {
