@@ -47,7 +47,8 @@ addHandler(
           `?expiration=${
             now.getTime() +
             ioDevServerConfig.messages.fci.response
-              .documentExpirationDurationSeconds
+              .documentExpirationDurationSeconds *
+              1000
           }`
       }))
     };
@@ -178,7 +179,7 @@ addHandler(
   (req, res) => {
     if (typeof req.query.expiration === "string") {
       const now = Date.now();
-      const expirationTimestamp = parseInt(req.query.expiration, 10) * 1000;
+      const expirationTimestamp = parseInt(req.query.expiration, 10);
       if (isNaN(expirationTimestamp) || now > expirationTimestamp) {
         const start = new Date(
           expirationTimestamp -
@@ -200,6 +201,7 @@ RequestId:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 Time:${new Date(now).toJSON()}</Message>
   <AuthenticationErrorDetail>Signature not valid in the specified time frame: Start [${start}] - Expiry [${expiry}] - Current [${current}]</AuthenticationErrorDetail>
 </Error>`);
+        return;
       }
     }
     sendFileFromRootPath(`assets/fci/pdf/${req.params.filename}.pdf`, res);
