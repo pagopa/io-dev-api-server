@@ -4,7 +4,7 @@ IO_BACKEND_VERSION=v17.5.2
 # need to change after merge on io-services-metadata
 IO_SERVICES_METADATA_VERSION=1.0.97
 # Session manager version
-IO_SESSION_MANAGER_VERSION=1.8.0
+IO_SESSION_MANAGER_VERSION=1.23.1
 # Send Functions
 IO_SEND_FUNC=1.5.5
 
