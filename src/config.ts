@@ -103,7 +103,8 @@ const defaultConfig: IoDevServerConfig = {
       canceledCount: 0,
       noSignatureFieldsCount: 0,
       response: {
-        getFciResponseCode: 200
+        getFciResponseCode: 200,
+        documentExpirationDurationSeconds: 5 * 60 // make it 30 to allow testing expired documents without waiting too much
       }
     },
     withCTA: false,
