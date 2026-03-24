@@ -111,7 +111,7 @@ describe("io-sign API", () => {
         const response = await request
           .post(addFciPrefix(`/signatures`))
           .send(createSignatureBody);
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
       });
     });
     describe("when the signer request a signature with an expired nonce", () => {
