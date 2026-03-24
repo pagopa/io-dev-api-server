@@ -38,7 +38,7 @@ export const MessagesConfig = t.intersection([
         // 200 success with payload
         getFciResponseCode: HttpResponseCode,
         // qtsp nonce duration in seconds
-        nonceDuration: t.number,
+        nonceDurationSeconds: t.number,
         documentExpirationDurationSeconds: t.number
       })
     }),
