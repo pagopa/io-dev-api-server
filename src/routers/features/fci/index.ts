@@ -181,7 +181,12 @@ addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
         if (nonceValidationResult === "valid") {
           return res.status(200).json(mockSignatureDetailView);
         }
-        return res.sendStatus(500);
+        return res.status(400).json({
+          detail:
+            "An error occurred while validating the request body | undefined",
+          status: 400,
+          title: "Invalid request"
+        });
       }
     )
   );
