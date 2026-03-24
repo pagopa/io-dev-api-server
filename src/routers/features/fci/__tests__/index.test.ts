@@ -87,6 +87,8 @@ describe("io-sign API", () => {
     });
   });
   describe("POST create signature", () => {
+    const SHOULD_RETURN_400 = "should return 400";
+
     beforeEach(() => {
       getQtspNonceExpirations().clear();
     });
@@ -107,7 +109,7 @@ describe("io-sign API", () => {
       });
     });
     describe("when the signer request a signature with an invalid nonce", () => {
-      it("should return 500", async () => {
+      it(SHOULD_RETURN_400, async () => {
         const response = await request
           .post(addFciPrefix(`/signatures`))
           .send(createSignatureBody);
@@ -115,7 +117,7 @@ describe("io-sign API", () => {
       });
     });
     describe("when the signer request a signature with an expired nonce", () => {
-      it("should return 500", async () => {
+      it(SHOULD_RETURN_400, async () => {
         const qtspClausesResponse = await request.get(
           addFciPrefix(`/qtsp/clauses`)
         );
@@ -133,11 +135,11 @@ describe("io-sign API", () => {
           }
         });
 
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
       });
     });
     describe("when the signer request signature detail with a not valid body", () => {
-      it("should return 400", async () => {
+      it(SHOULD_RETURN_400, async () => {
         const response = await request.post(addFciPrefix(`/signatures`));
         expect(response.status).toBe(400);
       });
