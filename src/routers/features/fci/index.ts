@@ -12,7 +12,7 @@ import {
   NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
-  signatureRequestDetailViewDoc,
+  signatureRequestDetailViewDoc as originalSignatureRequestDetailViewDoc,
   SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNED_SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
@@ -38,6 +38,20 @@ addHandler(
   (req, res) => {
     const signatureRequestId = "signatureRequestId";
     const now = new Date();
+    const signatureRequestDetailViewDoc = {
+      ...originalSignatureRequestDetailViewDoc,
+      documents: originalSignatureRequestDetailViewDoc.documents.map(d => ({
+        ...d,
+        url:
+          d.url +
+          `?expiration=${
+            now.getTime() +
+            ioDevServerConfig.messages.fci.response
+              .documentExpirationDurationSeconds *
+              1000
+          }`
+      }))
+    };
     const environment = EnvironmentEnum.test;
     res.header("x-io-sign-environment", environment);
     pipe(
@@ -163,6 +177,33 @@ addHandler(
   "get",
   `${staticContentRootPath}/fci/:filename`,
   (req, res) => {
+    if (typeof req.query.expiration === "string") {
+      const now = Date.now();
+      const expirationTimestamp = parseInt(req.query.expiration, 10);
+      if (isNaN(expirationTimestamp) || now > expirationTimestamp) {
+        const start = new Date(
+          expirationTimestamp -
+            ioDevServerConfig.messages.fci.response
+              .documentExpirationDurationSeconds *
+              1000
+        ).toJSON();
+        const expiry = new Date(expirationTimestamp).toJSON();
+        const current = new Date(now).toJSON();
+        // this case reproduces the expiration mechanic when getting files from
+        // https://iopsignst.blob.core.windows.net/validated-documents/XXXXXXXXXXXXXXXXXXXXXXXXXX?sv=2023-08-03&spr=https%2Chttp&st=2026-03-16T15%3A28%3A20Z&se=2026-03-16T15%3A33%3A20Z&sr=b&sp=r&sig=kwZji8ZTRAQCf%2F2GDQPjOet8bxUTYIiJkZkFVUIjSOQ%3D&rsct=application%2Fpdf
+        res.status(403);
+        res.set("Content-Type", "application/xml");
+        res.send(`<?xml version="1.0" encoding="utf-8"?>
+<Error>
+  <Code>AuthenticationFailed</Code>
+  <Message>Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.
+RequestId:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+Time:${new Date(now).toJSON()}</Message>
+  <AuthenticationErrorDetail>Signature not valid in the specified time frame: Start [${start}] - Expiry [${expiry}] - Current [${current}]</AuthenticationErrorDetail>
+</Error>`);
+        return;
+      }
+    }
     sendFileFromRootPath(`assets/fci/pdf/${req.params.filename}.pdf`, res);
   }
 );
