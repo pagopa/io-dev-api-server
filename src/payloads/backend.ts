@@ -153,8 +153,8 @@ export const backendStatus: BackendStatus = {
         },
         feedbackBanner: {
           min_app_version: {
-            ios: "3.13.0.0",
-            android: "3.13.0.0"
+            ios: "3.27.0.0",
+            android: "3.27.0.0"
           },
           description: {
             "it-IT":
