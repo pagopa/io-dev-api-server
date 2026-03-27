@@ -25,6 +25,10 @@ import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fc
 import { EnvironmentEnum } from "../../../../generated/definitions/fci/Environment";
 import { signatureRequestList } from "../../../payloads/features/fci/signature-requests";
 import { getProblemJson } from "../../../payloads/error";
+import {
+  generateAndStoreQtspNonce,
+  getQtspNonceValidationResult
+} from "../../../features/fci/qtspNonceStore";
 
 export const fciRouter = Router();
 const configResponse = ioDevServerConfig.messages.fci.response;
@@ -142,7 +146,7 @@ addHandler(
 );
 
 addHandler(fciRouter, "get", addFciPrefix("/qtsp/clauses"), (_, res) => {
-  res.status(200).json(qtspClauses);
+  res.status(200).json({ ...qtspClauses, nonce: generateAndStoreQtspNonce() });
 });
 
 addHandler(
@@ -165,9 +169,25 @@ addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
   pipe(
     O.fromNullable(req.body),
     O.chain(cb => (isEqual(cb, {}) ? O.none : O.some(cb))),
+    O.chain(cb =>
+      pipe(
+        O.fromNullable(cb.qtsp_clauses?.nonce),
+        O.map(nonce => getQtspNonceValidationResult(nonce))
+      )
+    ),
     O.fold(
       () => res.sendStatus(400),
-      _ => res.status(200).json(mockSignatureDetailView)
+      nonceValidationResult => {
+        if (nonceValidationResult === "valid") {
+          return res.status(200).json(mockSignatureDetailView);
+        }
+        return res.status(400).json({
+          detail:
+            "An error occurred while validating the request body | undefined",
+          status: 400,
+          title: "Invalid request"
+        });
+      }
     )
   );
 });
