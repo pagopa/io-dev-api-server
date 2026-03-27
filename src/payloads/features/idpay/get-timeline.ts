@@ -14,18 +14,19 @@ export const getTimelineResponse = (
     initiativeTimeline[initiativeId],
     O.fromNullable,
     O.map(timeline => {
-      const totalElements = timeline.length;
-      const totalPages = Math.ceil(totalElements / pageSize);
+      // limits defined by TimelineDTO
+      const totalElements = Math.min(timeline.length, 10);
+      const totalPages = Math.min(Math.ceil(totalElements / pageSize), 200);
 
-      const startIndex = (pageNo - 1) * pageSize;
+      const startIndex = pageNo * pageSize;
       const endIndex = startIndex + pageSize;
       const operationList = _.slice(timeline, startIndex, endIndex);
 
       return {
         lastUpdate: faker.date.recent({ days: 0.05 }),
         operationList,
-        pageNo,
-        pageSize,
+        pageNo: Math.min(pageNo, 200),
+        pageSize: Math.min(pageSize, 50),
         totalElements,
         totalPages
       } as TimelineDTO;
