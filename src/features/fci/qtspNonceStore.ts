@@ -6,9 +6,10 @@ export const QTSP_NONCE_EXPIRING_MS =
 
 const qtspNonceExpirations = new Map<string, Date>();
 
-const cleanupExpiredQtspNonces = (referenceDate: Date) => {
+const cleanupExpiredQtspNonces = () => {
+  const now = new Date();
   qtspNonceExpirations.forEach((expiresAt, nonce) => {
-    if (expiresAt <= referenceDate) {
+    if (expiresAt <= now) {
       qtspNonceExpirations.delete(nonce);
     }
   });
@@ -18,7 +19,7 @@ const generateQtspNonce = () =>
   `devnonce-${randomUUID({ disableEntropyCache: true })}`;
 
 export const generateAndStoreQtspNonce = (now = new Date()) => {
-  cleanupExpiredQtspNonces(now);
+  cleanupExpiredQtspNonces();
   const nonce = generateQtspNonce();
   qtspNonceExpirations.set(
     nonce,
@@ -27,30 +28,10 @@ export const generateAndStoreQtspNonce = (now = new Date()) => {
   return nonce;
 };
 
-export type QtspNonceValidationResult = "valid" | "expired" | "missing";
-
-export const getQtspNonceValidationResult = (
-  nonce: string,
-  now = new Date()
-): QtspNonceValidationResult => {
+export const validateQtspNonce = (nonce: string): boolean => {
+  cleanupExpiredQtspNonces();
   const expiration = qtspNonceExpirations.get(nonce);
-
-  if (expiration === undefined) {
-    cleanupExpiredQtspNonces(now);
-    return "missing";
-  }
-
-  if (expiration <= now) {
-    qtspNonceExpirations.delete(nonce);
-    cleanupExpiredQtspNonces(now);
-    return "expired";
-  }
-
-  cleanupExpiredQtspNonces(now);
-  return "valid";
+  return !expiration === undefined;
 };
-
-export const isStoredQtspNonceValid = (nonce: string, now = new Date()) =>
-  getQtspNonceValidationResult(nonce, now) === "valid";
 
 export const getQtspNonceExpirations = () => qtspNonceExpirations;

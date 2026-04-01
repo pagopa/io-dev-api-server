@@ -27,7 +27,7 @@ import { signatureRequestList } from "../../../payloads/features/fci/signature-r
 import { getProblemJson } from "../../../payloads/error";
 import {
   generateAndStoreQtspNonce,
-  getQtspNonceValidationResult
+  validateQtspNonce
 } from "../../../features/fci/qtspNonceStore";
 
 export const fciRouter = Router();
@@ -172,13 +172,13 @@ addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
     O.chain(cb =>
       pipe(
         O.fromNullable(cb.qtsp_clauses?.nonce),
-        O.map(nonce => getQtspNonceValidationResult(nonce))
+        O.map(nonce => validateQtspNonce(nonce))
       )
     ),
     O.fold(
       () => res.sendStatus(400),
       nonceValidationResult => {
-        if (nonceValidationResult === "valid") {
+        if (nonceValidationResult) {
           return res.status(200).json(mockSignatureDetailView);
         }
         return res.status(400).json({
