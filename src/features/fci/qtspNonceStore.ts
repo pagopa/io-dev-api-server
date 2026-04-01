@@ -31,7 +31,7 @@ export const generateAndStoreQtspNonce = (now = new Date()) => {
 export const validateQtspNonce = (nonce: string): boolean => {
   cleanupExpiredQtspNonces();
   const expiration = qtspNonceExpirations.get(nonce);
-  return !expiration === undefined;
+  return expiration !== undefined;
 };
 
 export const getQtspNonceExpirations = () => qtspNonceExpirations;
