@@ -150,6 +150,24 @@ export const backendStatus: BackendStatus = {
             ios: "3.18.0.0",
             android: "3.18.0.0"
           }
+        },
+        feedbackBanner: {
+          min_app_version: {
+            ios: "3.27.0.0",
+            android: "3.27.0.0"
+          },
+          description: {
+            "it-IT":
+              "Raccontaci la tua esperienza con la notifica e aiutaci a migliorare.",
+            "en-EN": ""
+          },
+          action: {
+            label: {
+              "it-IT": "Vai al sondaggio",
+              "en-EN": ""
+            },
+            url: "https://pagopa.qualtrics.com/jfe/form/SV_3Da8BtgDTrrnAlo"
+          }
         }
       },
       abstractShown: false,
