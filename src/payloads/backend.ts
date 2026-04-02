@@ -156,6 +156,10 @@ export const backendStatus: BackendStatus = {
             ios: "3.27.0.0",
             android: "3.27.0.0"
           },
+          title: {
+            "it-IT": "Puoi dirci com'è andata?",
+            "en-EN": ""
+          },
           description: {
             "it-IT":
               "Raccontaci la tua esperienza con la notifica e aiutaci a migliorare.",
