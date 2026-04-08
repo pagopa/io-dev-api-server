@@ -61,14 +61,25 @@ export const backendStatus: BackendStatus = {
           ios: "1.0.0.0"
         },
         description: {
-          "it-IT": "TO Fill",
-          "en-EN": "TO Fill",
-          "de-DE": "TO Fill"
+          "it-IT":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!",
+          "en-EN":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!",
+          "de-DE":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!"
         },
         title: {
-          "it-IT": "TO Fill",
-          "en-EN": "TO Fill",
-          "de-DE": "TO Fill"
+          "it-IT": "Sblocca tante opportunità dedicate a te!",
+          "en-EN": "Sblocca tante opportunità dedicate a te!",
+          "de-DE": "Sblocca tante opportunità dedicate a te!"
+        },
+        action: {
+          label: {
+            "it-IT": "Attiva Carta Giovani",
+            "en-EN": "Attiva Carta Giovani",
+            "de-DE": "Attiva Carta Giovani"
+          },
+          url: ""
         }
       }
     },
