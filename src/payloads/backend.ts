@@ -145,10 +145,28 @@ export const backendStatus: BackendStatus = {
           "https://assistenza.notifichedigitali.it/hc/it/articles/32453819931537-Delegare-qualcuno-a-visualizzare-le-tue-notifiche",
         in_app_delegation: {
           helpCenter_url:
-            "https://assistenza.notifichedigitali.it/hc/it/#categories",
+            "https://assistenza.ioapp.it/hc/it/articles/44040451905809-Come-fare-per-accedere-a-una-notifica-SEND-destinata-a-un-altra-persona",
           min_app_version: {
             ios: "3.18.0.0",
             android: "3.18.0.0"
+          }
+        },
+        feedbackBanner: {
+          min_app_version: {
+            ios: "3.27.0.0",
+            android: "3.27.0.0"
+          },
+          description: {
+            "it-IT":
+              "Raccontaci la tua esperienza con la notifica e aiutaci a migliorare.",
+            "en-EN": ""
+          },
+          action: {
+            label: {
+              "it-IT": "Vai al sondaggio",
+              "en-EN": ""
+            },
+            url: "https://pagopa.qualtrics.com/jfe/form/SV_3Da8BtgDTrrnAlo"
           }
         }
       },
@@ -156,7 +174,8 @@ export const backendStatus: BackendStatus = {
       customerServiceCenterUrl: "https://assistenza.notifichedigitali.it/hc",
       estimateTimelinesUrl: "https://notifichedigitali.it/perfezionamento",
       visitTheSENDWebsiteUrl:
-        "https://cittadini.notifichedigitali.it/auth/login"
+        "https://cittadini.notifichedigitali.it/auth/login",
+      lollipopPlaygroundEnabled: true
     },
     idPay: {
       min_app_version: {
@@ -318,6 +337,7 @@ export const backendStatus: BackendStatus = {
     },
     landing_banners: {
       priority_order: [
+        "OS_DISMISSION_REMINDER",
         "PUSH_NOTIFICATIONS_REMINDER",
         "SEND_ACTIVATION_REMINDER",
         "LV_EXPIRATION_REMINDER",
@@ -381,6 +401,10 @@ export const backendStatus: BackendStatus = {
           ios: "3.21.0.0"
         }
       }
+    },
+    min_supported_os: {
+      ios: "15.1",
+      android: "26"
     }
   },
   sections: {

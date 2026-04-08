@@ -44,6 +44,7 @@ import { sendServiceRouter } from "./features/pn/routers/serviceRouter";
 import { sendMandatesRouter } from "./features/pn/routers/mandatesRouter";
 import { ioSendRouter } from "./features/messages/routers/ioSendRouter";
 import { cdcRouter } from "./features/cdc/routers";
+import { sendLollipopLambdaRouter } from "./features/pn/routers/lollipopLambda";
 
 // create express server
 const app: Application = express();
@@ -87,6 +88,7 @@ app.use(fastLoginMiddleware);
   fciRouter,
   sendAARRouter,
   sendDocumentsRouter,
+  sendLollipopLambdaRouter,
   sendMandatesRouter,
   sendNotificationsRouter,
   sendPrevalidatedUrisRouter,

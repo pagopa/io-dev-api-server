@@ -62,7 +62,8 @@ const defaultConfig: IoDevServerConfig = {
     autoLogin: false,
     allowRandomValues: true,
     responseError: undefined,
-    logSAMLRequest: false
+    logSAMLRequest: false,
+    sendSessionTokenAsQueryParam: false
   },
   profile: {
     attrs: defaultProfileAttrs,
@@ -102,7 +103,9 @@ const defaultConfig: IoDevServerConfig = {
       canceledCount: 0,
       noSignatureFieldsCount: 0,
       response: {
-        getFciResponseCode: 200
+        getFciResponseCode: 200,
+        documentExpirationDurationSeconds: 5 * 60, // make it 30 to allow testing expired documents without waiting too much
+        nonceDurationSeconds: 5 * 60 // 5 minutes as production environment
       }
     },
     withCTA: false,
@@ -119,6 +122,7 @@ const defaultConfig: IoDevServerConfig = {
   send: {
     isServiceUpsertRateLimited: false,
     aarQRCodeUrl: "https://cittadini.notifichedigitali.it/io",
+    lollipopLambdaResponseCode: 200,
     mandateTimeToLiveSeconds: 120,
     paymentDocumentExpirationTimeSeconds: 10,
     paymentDocumentGenerationTimeSeconds: 3,

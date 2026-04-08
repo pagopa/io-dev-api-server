@@ -12,7 +12,7 @@ import {
   NO_FIELDS_SIGNATURE_REQUEST_ID,
   REJECTED_SIGNATURE_REQUEST_ID,
   SIGNATURE_REQUEST_ID,
-  signatureRequestDetailViewDoc,
+  signatureRequestDetailViewDoc as originalSignatureRequestDetailViewDoc,
   SIGNED_EXPIRED_SIGNATURE_REQUEST_ID,
   SIGNED_SIGNATURE_REQUEST_ID,
   WAIT_QTSP_SIGNATURE_REQUEST_ID
@@ -25,6 +25,10 @@ import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fc
 import { EnvironmentEnum } from "../../../../generated/definitions/fci/Environment";
 import { signatureRequestList } from "../../../payloads/features/fci/signature-requests";
 import { getProblemJson } from "../../../payloads/error";
+import {
+  generateAndStoreQtspNonce,
+  validateQtspNonce
+} from "../../../features/fci/qtspNonceStore";
 
 export const fciRouter = Router();
 const configResponse = ioDevServerConfig.messages.fci.response;
@@ -38,6 +42,20 @@ addHandler(
   (req, res) => {
     const signatureRequestId = "signatureRequestId";
     const now = new Date();
+    const signatureRequestDetailViewDoc = {
+      ...originalSignatureRequestDetailViewDoc,
+      documents: originalSignatureRequestDetailViewDoc.documents.map(d => ({
+        ...d,
+        url:
+          d.url +
+          `?expiration=${
+            now.getTime() +
+            ioDevServerConfig.messages.fci.response
+              .documentExpirationDurationSeconds *
+              1000
+          }`
+      }))
+    };
     const environment = EnvironmentEnum.test;
     res.header("x-io-sign-environment", environment);
     pipe(
@@ -128,7 +146,7 @@ addHandler(
 );
 
 addHandler(fciRouter, "get", addFciPrefix("/qtsp/clauses"), (_, res) => {
-  res.status(200).json(qtspClauses);
+  res.status(200).json({ ...qtspClauses, nonce: generateAndStoreQtspNonce() });
 });
 
 addHandler(
@@ -151,9 +169,25 @@ addHandler(fciRouter, "post", addFciPrefix("/signatures"), (req, res) => {
   pipe(
     O.fromNullable(req.body),
     O.chain(cb => (isEqual(cb, {}) ? O.none : O.some(cb))),
+    O.chain(cb =>
+      pipe(
+        O.fromNullable(cb.qtsp_clauses?.nonce),
+        O.map(nonce => validateQtspNonce(nonce))
+      )
+    ),
     O.fold(
       () => res.sendStatus(400),
-      _ => res.status(200).json(mockSignatureDetailView)
+      nonceValidationResult => {
+        if (nonceValidationResult) {
+          return res.status(200).json(mockSignatureDetailView);
+        }
+        return res.status(400).json({
+          detail:
+            "An error occurred while validating the request body | undefined",
+          status: 400,
+          title: "Invalid request"
+        });
+      }
     )
   );
 });
@@ -163,6 +197,33 @@ addHandler(
   "get",
   `${staticContentRootPath}/fci/:filename`,
   (req, res) => {
+    if (typeof req.query.expiration === "string") {
+      const now = Date.now();
+      const expirationTimestamp = parseInt(req.query.expiration, 10);
+      if (isNaN(expirationTimestamp) || now > expirationTimestamp) {
+        const start = new Date(
+          expirationTimestamp -
+            ioDevServerConfig.messages.fci.response
+              .documentExpirationDurationSeconds *
+              1000
+        ).toJSON();
+        const expiry = new Date(expirationTimestamp).toJSON();
+        const current = new Date(now).toJSON();
+        // this case reproduces the expiration mechanic when getting files from
+        // https://iopsignst.blob.core.windows.net/validated-documents/XXXXXXXXXXXXXXXXXXXXXXXXXX?sv=2023-08-03&spr=https%2Chttp&st=2026-03-16T15%3A28%3A20Z&se=2026-03-16T15%3A33%3A20Z&sr=b&sp=r&sig=kwZji8ZTRAQCf%2F2GDQPjOet8bxUTYIiJkZkFVUIjSOQ%3D&rsct=application%2Fpdf
+        res.status(403);
+        res.set("Content-Type", "application/xml");
+        res.send(`<?xml version="1.0" encoding="utf-8"?>
+<Error>
+  <Code>AuthenticationFailed</Code>
+  <Message>Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.
+RequestId:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+Time:${new Date(now).toJSON()}</Message>
+  <AuthenticationErrorDetail>Signature not valid in the specified time frame: Start [${start}] - Expiry [${expiry}] - Current [${current}]</AuthenticationErrorDetail>
+</Error>`);
+        return;
+      }
+    }
     sendFileFromRootPath(`assets/fci/pdf/${req.params.filename}.pdf`, res);
   }
 );

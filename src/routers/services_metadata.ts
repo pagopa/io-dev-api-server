@@ -285,6 +285,30 @@ addHandler(
   }
 );
 
+addHandler(
+  servicesMetadataRouter,
+  "get",
+  addRoutePrefix("/locales/:language/:namespace.json"),
+  async (req, res) => {
+    const url = `https://assets.io.pagopa.it/locales/${req.params.language}/${req.params.namespace}.json`;
+    try {
+      const cdnResponse = await fetch(url);
+      if (!cdnResponse.ok) {
+        return res.status(200).json({});
+      }
+      const data = await cdnResponse.json();
+      return res.json({
+        ...data,
+        ...readFileAsJSON(
+          `${assetsFolder}/locales/${req.params.language}/${req.params.namespace}.json`
+        )
+      });
+    } catch {
+      return res.status(200).json({});
+    }
+  }
+);
+
 const getOrLoadAndInitializeLogoRelativePath = (
   fileNameWithExtension: string,
   map: Map<string, string>,
