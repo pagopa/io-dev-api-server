@@ -54,6 +54,33 @@ export const backendStatus: BackendStatus = {
       show_cgn_categories_modal: {
         android: "5.0.0.0",
         ios: "5.0.0.0"
+      },
+      show_cgn_engagement_banner: {
+        min_app_version: {
+          android: "1.0.0.0",
+          ios: "1.0.0.0"
+        },
+        description: {
+          "it-IT":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!",
+          "en-EN":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!",
+          "de-DE":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!"
+        },
+        title: {
+          "it-IT": "Sblocca tante opportunità dedicate a te!",
+          "en-EN": "Sblocca tante opportunità dedicate a te!",
+          "de-DE": "Sblocca tante opportunità dedicate a te!"
+        },
+        action: {
+          label: {
+            "it-IT": "Attiva Carta Giovani",
+            "en-EN": "Attiva Carta Giovani",
+            "de-DE": "Attiva Carta Giovani"
+          },
+          url: ""
+        }
       }
     },
     fims: {
