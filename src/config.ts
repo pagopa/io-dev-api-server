@@ -104,7 +104,8 @@ const defaultConfig: IoDevServerConfig = {
       noSignatureFieldsCount: 0,
       response: {
         getFciResponseCode: 200,
-        documentExpirationDurationSeconds: 5 * 60 // make it 30 to allow testing expired documents without waiting too much
+        documentExpirationDurationSeconds: 5 * 60, // make it 30 to allow testing expired documents without waiting too much
+        nonceDurationSeconds: 5 * 60 // 5 minutes as production environment
       }
     },
     withCTA: false,
