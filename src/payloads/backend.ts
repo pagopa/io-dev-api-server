@@ -15,7 +15,7 @@ export const backendInfo = {
   version: "2.1.2"
 };
 
-// ref https://assets.cdn.io.pagopa.it/status/backend.json
+// ref https://assets.io.pagopa.it/status/backend.json
 export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
