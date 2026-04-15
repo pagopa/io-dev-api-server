@@ -30,7 +30,7 @@ import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
 
 export const cgnRouter = Router();
- 
+
 const CGN_PREFIX = "/api/cgn-card/v1";
 
 const addPrefix = (path: string) => `${CGN_PREFIX}${path}`;
