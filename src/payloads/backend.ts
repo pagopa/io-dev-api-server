@@ -156,7 +156,8 @@ export const backendStatus: BackendStatus = {
         ios: "2.35.0.1",
         android: "2.35.0.1"
       },
-      frontend_url: "https://cittadini.notifichedigitali.it",
+      frontend_url:
+        "https://cittadini.notifichedigitali.it/?utm_source=ioapp&utm_medium=app&utm_campaign=accesso_send",
       optInServiceId: sendOptInServiceId,
       notificationServiceId: sendServiceId,
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
