@@ -141,6 +141,14 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "1.2.3",
         android: "1.2.3"
+      },
+      security_level_check: {
+        min_app_version: {
+          ios: "3.40.0.0",
+          android: "3.40.0.0"
+        },
+        helpCenter_url:
+          "https://assistenza.ioapp.it/hc/it/articles/30722976684049-Cosa-sono-i-livelli-di-sicurezza"
       }
     },
     lollipop: {
