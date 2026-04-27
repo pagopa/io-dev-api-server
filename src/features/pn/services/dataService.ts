@@ -10,9 +10,9 @@ import {
 import { validatePayload } from "../../../utils/validator";
 import { StandardServiceCategoryEnum } from "../../../../generated/definitions/services/StandardServiceCategory";
 import { IoDevServerConfig } from "../../../types/config";
-import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/communication/CreatedMessageWithContentAndAttachments";
 import { nextMessageIdAndCreationDate } from "../../messages/utils";
-import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
 import { getNewMessage } from "../../../populate-persistence";
 
 export const sendOptInServiceId = "01G74SW1PSM6XY2HM5EGZHZZET" as ServiceId;

@@ -6,7 +6,7 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import { ServicePreference } from "../../../../generated/definitions/identity/ServicePreference";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {

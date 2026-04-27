@@ -6,7 +6,7 @@ import { Iban } from "../../generated/definitions/backend/Iban";
 import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
 import { PaymentActivationsGetResponse } from "../../generated/definitions/backend/PaymentActivationsGetResponse";
 import { PaymentActivationsPostResponse } from "../../generated/definitions/backend/PaymentActivationsPostResponse";
-import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
+import { PaymentNoticeNumber } from "../../generated/definitions/communication/PaymentNoticeNumber";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { ServiceDetails } from "../../generated/definitions/services/ServiceDetails";
 import { SpezzoneStrutturatoCausaleVersamento } from "../../generated/definitions/backend/SpezzoneStrutturatoCausaleVersamento";

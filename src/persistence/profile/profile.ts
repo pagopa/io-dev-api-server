@@ -2,13 +2,13 @@ import * as R from "fp-ts/lib/Record";
 import * as E from "fp-ts/lib/Either";
 import { fakerIT as faker } from "@faker-js/faker";
 import { Request } from "express";
-import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
+import { InitializedProfile } from "../../../generated/definitions/identity/InitializedProfile";
 import { getProfileInitialData } from "../../payloads/profile";
 import { getRandomValue } from "../../utils/random";
 import { getAuthenticationProvider } from "../sessionInfo";
-import { Profile } from "../../../generated/definitions/backend/Profile";
+import { Profile } from "../../../generated/definitions/identity/Profile";
 import { getProblemJson } from "../../payloads/error";
-import { UpdateProfile412ErrorTypesEnum } from "../../../generated/definitions/backend/UpdateProfile412ErrorTypes";
+import { UpdateProfile412ErrorTypesEnum } from "../../../generated/definitions/identity/UpdateProfile412ErrorTypes";
 import { mockUserMetadata } from "../../payloads/userMetadata";
 import { CustomResponse, ResponseProblem } from "../../utils/responseTypes";
 

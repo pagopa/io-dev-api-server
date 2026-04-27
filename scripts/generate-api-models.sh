@@ -1,6 +1,9 @@
 #!/bin/bash
 
-IO_BACKEND_VERSION=v17.5.2
+IO_BACKEND_VERSION=v20.0.0
+# Legacy version kept for backward-compatibility definitions removed in v20.0.0
+# (e.g. api_trial_system.yaml, UserMetadata, ServerInfo from api_backend.yaml)
+IO_BACKEND_LEGACY_VERSION=v17.5.2
 # need to change after merge on io-services-metadata
 IO_SERVICES_METADATA_VERSION=1.0.100
 # Session manager version
@@ -9,9 +12,12 @@ IO_SESSION_MANAGER_VERSION=1.23.1
 IO_SEND_FUNC=1.5.5
 # CGN and CDC APIs are generated with a different version of io-backend, so we need to specify it separately
 IO_BACKEND_VERSION_CGN_CDC=v19.0.0
+# IO Services CMS version
+IO_SERVICES_CMS_VERSION=1.31.5
 
 declare -a noParams=(
-  "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_public.yaml"
+  "./generated/definitions/communication https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/generated/api_communication.yaml"
+  "./generated/definitions/identity      https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/generated/api_identity.yaml"
   "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/external.yaml"
   "./generated/definitions/content https://raw.githubusercontent.com/pagopa/io-services-metadata/$IO_SERVICES_METADATA_VERSION/definitions.yml"
   "./generated/definitions/pagopa/cobadge/configuration https://raw.githubusercontent.com/pagopa/io-services-metadata/$IO_SERVICES_METADATA_VERSION/pagopa/cobadge/abi_definitions.yml"
@@ -31,15 +37,15 @@ declare -a noParams=(
 declare -a noStrict=(
   "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_sign.yaml"
   "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v2.47.6/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
-  "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_services_app_backend.yaml"
+  "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-services-cms/io-services-cms-backoffice@$IO_SERVICES_CMS_VERSION/apps/app-backend/api/external.yaml"
 )
 
 declare -a noStrictRequestTypesRespondeDecoders=(
   "./generated/definitions/pn/aar https://raw.githubusercontent.com/pagopa/io-messages/send-func@$IO_SEND_FUNC/apps/send-func/openapi/aar-notification.yaml"
   "./generated/definitions/pn/lollipopLambda https://raw.githubusercontent.com/pagopa/io-messages/send-func@$IO_SEND_FUNC/apps/send-func/openapi/lollipop-integration-check.yaml"
   "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_pn.yaml"
-  "./generated/definitions/trial_system https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_trial_system.yaml"
-  "./generated/definitions/fims_history https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_fims.yaml"
+  "./generated/definitions/trial_system https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_LEGACY_VERSION/openapi/generated/api_trial_system.yaml"
+  "./generated/definitions/fims_history https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/generated/api_fims_platform.yaml"
   "./generated/definitions/fims_sso https://raw.githubusercontent.com/pagopa/io-fims/a93f1a1abf5230f103d9f489b139902b87288061/apps/op-app/openapi.yaml"
 )
 
@@ -72,5 +78,15 @@ for elem in "${noRMNoMKDirNoStrict[@]}"; do
     echo ${strarr[0]}; yarn run gen-api-models --api-spec ${strarr[1]} --out-dir ${strarr[0]} --no-strict &
 done
 wait
+
+# regenerate legacy api_backend.yaml v17.5.2 as a compatibility layer WITHOUT removing
+# the directory first, so that types removed in future versions 
+# are added back alongside the new definitions.
+
+echo "Generating legacy backend compatibility types from $IO_BACKEND_LEGACY_VERSION..."
+yarn run gen-api-models \
+  --api-spec "https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_LEGACY_VERSION/api_backend.yaml" \
+  --out-dir "./generated/definitions/backend" \
+  --no-strict
 
 yarn prepare
