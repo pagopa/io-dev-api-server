@@ -1,19 +1,19 @@
 import { fakerIT as faker } from "@faker-js/faker";
+import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/communication/CreatedMessageWithContentAndAttachments";
+import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
 import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { ServiceId } from "../../../../generated/definitions/services/ServiceId";
 import { SpecialServiceCategoryEnum } from "../../../../generated/definitions/services/SpecialServiceCategory";
+import { StandardServiceCategoryEnum } from "../../../../generated/definitions/services/StandardServiceCategory";
+import { getNewMessage } from "../../../populate-persistence";
+import { IoDevServerConfig } from "../../../types/config";
+import { validatePayload } from "../../../utils/validator";
+import { nextMessageIdAndCreationDate } from "../../messages/utils";
 import {
   ioOrganizationFiscalCode,
   ioOrganizationName
 } from "../../services/persistence/services/factory";
-import { validatePayload } from "../../../utils/validator";
-import { StandardServiceCategoryEnum } from "../../../../generated/definitions/services/StandardServiceCategory";
-import { IoDevServerConfig } from "../../../types/config";
-import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/communication/CreatedMessageWithContentAndAttachments";
-import { nextMessageIdAndCreationDate } from "../../messages/utils";
-import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
-import { getNewMessage } from "../../../populate-persistence";
 
 export const sendOptInServiceId = "01G74SW1PSM6XY2HM5EGZHZZET" as ServiceId;
 export const sendOptInServiceName = "SEND - Novità e aggiornamenti";
@@ -116,40 +116,40 @@ export const createSENDMessagesOnIO = (
     const { id, created_at } = nextMessageIdAndCreationDate();
     const hasAttachments =
       (sendNotificationConfiguration?.attachments?.length ?? 0) > 0;
-    const sendMessageOnIO = validatePayload(
-      CreatedMessageWithContentAndAttachments,
-      {
-        category: {
+    const sendMessageOnIO = {
+      category: {
+        id: iun,
+        tag: "PN"
+      },
+      time_to_live: 3600, // this is the type's default TTL
+      content: {
+        subject:
+          ioTitle ?? faker.word.words(faker.number.int({ min: 3, max: 5 })),
+        markdown:
+          "This markdown is not used but it has to be at least eighty characters long to pass",
+        third_party_data: {
           id: iun,
-          tag: "PN"
-        },
-        content: {
-          subject:
-            ioTitle ?? faker.word.words(faker.number.int({ min: 3, max: 5 })),
-          markdown:
-            "This markdown is not used but it has to be at least eighty characters long to pass",
-          third_party_data: {
-            id: iun,
-            has_attachments: hasAttachments,
-            has_remote_content: true,
-            has_precondition: HasPreconditionEnum.ALWAYS
-          }
-        },
-        created_at,
-        fiscal_code: customConfig.profile.attrs.fiscal_code,
-        has_attachments: hasAttachments,
-        has_precondition: true,
-        id,
-        is_archived: false,
-        is_read: false,
-        organization_fiscal_code: ioOrganizationFiscalCode,
-        organization_name: ioOrganizationName,
-        message_title:
-          sendNotificationConfiguration?.subject ?? "This message has no title",
-        sender_service_id: sendServiceId,
-        service_name: sendServiceName
-      }
-    );
+          has_attachments: hasAttachments,
+          has_remote_content: true,
+          has_precondition: HasPreconditionEnum.ALWAYS
+        }
+      },
+      created_at,
+      fiscal_code: customConfig.profile.attrs.fiscal_code,
+      has_attachments: hasAttachments,
+      has_precondition: true,
+      id,
+      is_archived: false,
+      is_read: false,
+      organization_fiscal_code: ioOrganizationFiscalCode,
+      organization_name: ioOrganizationName,
+      message_title:
+        sendNotificationConfiguration?.subject ?? "This message has no title",
+      sender_service_id: sendServiceId,
+      service_name: sendServiceName
+    } as unknown as CreatedMessageWithContentAndAttachments;
+    // we avoid using ValidatePayload here because the decoding is based on a `t.exact` type
+    // which, on `decode` would strip certain properties, thus breaking logic.
     return [...sendMessagesOnIO, sendMessageOnIO];
   }, []);
 };
