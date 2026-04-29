@@ -23,6 +23,6 @@ addHandler(
 addHandler(
   lollipopRouter,
   "post",
-  addApiIdentityV1Prefix("/lollipop/sign"),
+  addApiIdentityV1Prefix("/first-lollipop/sign"),
   handlePostLollipopSign
 );

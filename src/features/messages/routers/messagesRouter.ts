@@ -791,7 +791,7 @@ addHandler(
 );
 addHandler(
   communicationRouter,
-  "put",
+  "post",
   addApiCommunicationV1Prefix("/send/activation"),
   handlePutSendActivation
 );
