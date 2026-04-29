@@ -1,8 +1,8 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
-import { InitializedProfile } from "../../../generated/definitions/backend/InitializedProfile";
-import { Profile } from "../../../generated/definitions/backend/Profile";
+import { EmailAddress } from "../../../generated/definitions/identity/EmailAddress";
+import { InitializedProfile } from "../../../generated/definitions/identity/InitializedProfile";
+import { Profile } from "../../../generated/definitions/identity/Profile";
 import { UserMetadata } from "../../../generated/definitions/backend/UserMetadata";
 import { Municipality } from "../../../generated/definitions/content/Municipality";
 import { ioDevServerConfig } from "../../config";

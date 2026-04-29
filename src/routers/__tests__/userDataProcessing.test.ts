@@ -1,9 +1,9 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { ProblemJson } from "../../../generated/definitions/backend/ProblemJson";
-import { UserDataProcessing } from "../../../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/backend/UserDataProcessingChoice";
-import { UserDataProcessingStatusEnum } from "../../../generated/definitions/backend/UserDataProcessingStatus";
+import { ProblemJson } from "../../../generated/definitions/identity/ProblemJson";
+import { UserDataProcessing } from "../../../generated/definitions/identity/UserDataProcessing";
+import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/identity/UserDataProcessingChoice";
+import { UserDataProcessingStatusEnum } from "../../../generated/definitions/identity/UserDataProcessingStatus";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 

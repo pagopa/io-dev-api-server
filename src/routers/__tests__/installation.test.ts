@@ -1,6 +1,6 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { SuccessResponse } from "../../../generated/definitions/backend/SuccessResponse";
+import { SuccessResponse } from "../../../generated/definitions/communication/SuccessResponse";
 import { basePath } from "../../payloads/response";
 import app from "../../server";
 

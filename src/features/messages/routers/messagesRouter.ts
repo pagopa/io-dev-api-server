@@ -4,13 +4,16 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import _ from "lodash";
-import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
+import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/communication/ThirdPartyMessageWithContent";
 import { ioDevServerConfig } from "../../../config";
 import { getProblemJson } from "../../../payloads/error";
 import { addHandler } from "../../../payloads/response";
 import MessagesDB from "../persistence/messagesDatabase";
 import { GetMessagesParameters } from "../../../types/parameters";
-import { addApiV1Prefix } from "../../../utils/strings";
+import {
+  addApiCommunicationV1Prefix,
+  addApiV1Prefix
+} from "../../../utils/strings";
 import { lollipopMiddleware } from "../../../middleware/lollipopMiddleware";
 import MessagesService from "../services/messagesService";
 import { PaymentsDatabase } from "../../../persistence/payments";
@@ -23,16 +26,16 @@ import {
   Detail_v2Enum,
   DetailEnum
 } from "../../../../generated/definitions/backend/PaymentProblemJson";
-import { PaymentInfoNotFoundResponse } from "../../../../generated/definitions/backend/PaymentInfoNotFoundResponse";
-import { PaymentInfoResponse } from "../../../../generated/definitions/backend/PaymentInfoResponse";
+import { PaymentInfoNotFoundResponse } from "../../../../generated/definitions/communication/PaymentInfoNotFoundResponse";
+import { PaymentInfoResponse } from "../../../../generated/definitions/communication/PaymentInfoResponse";
 import {
   httpStatusCodeFromDetailV2Enum,
   payloadFromDetailV2Enum
 } from "../../payments/types/failure";
-import { PaymentInfoConflictResponse } from "../../../../generated/definitions/backend/PaymentInfoConflictResponse";
-import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/backend/PaymentInfoBadGatewayResponse";
+import { PaymentInfoConflictResponse } from "../../../../generated/definitions/communication/PaymentInfoConflictResponse";
+import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/communication/PaymentInfoBadGatewayResponse";
 import { PaymentInfoUnavailableResponse } from "../../../../generated/definitions/backend/PaymentInfoUnavailableResponse";
-import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
 import { sendServiceId } from "../../pn/services/dataService";
 import { serverUrl } from "../../../utils/server";
 import {
@@ -40,7 +43,7 @@ import {
   generateNotificationPath
 } from "../../pn/routers/notificationsRouter";
 import { ThirdPartyMessage } from "../../../../generated/definitions/pn/ThirdPartyMessage";
-import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/communication/ThirdPartyMessagePrecondition";
 import {
   defaultContentType,
   getThirdPartyMessagePrecondition
@@ -51,13 +54,15 @@ import {
 } from "../../../utils/error";
 import { sendFileFromRootPath } from "../../../utils/file";
 import { NotificationAttachmentDownloadMetadataResponse } from "../../../../generated/definitions/pn/NotificationAttachmentDownloadMetadataResponse";
+import { RouteHandler } from "../../../utils/types";
+import { SendActivation } from "../../../../generated/definitions/communication/SendActivation";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
 
 const messageNotFoundError = "message not found";
 
-addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
+const handleGetMessages: RouteHandler = (req, res) => {
   if (configResponse.getMessagesResponseCode !== 200) {
     res.sendStatus(configResponse.getMessagesResponseCode);
     return;
@@ -129,196 +134,177 @@ addHandler(messageRouter, "get", addApiV1Prefix("/messages"), (req, res) => {
       ? slice[slice.length - 1]?.id
       : undefined
   });
+};
+
+const handleGetMessage: RouteHandler = (req, res) => {
+  if (configResponse.getMessageResponseCode !== 200) {
+    res.sendStatus(configResponse.getMessagesResponseCode);
+    return;
+  }
+  // retrieve the messageIndex from id
+  const message = MessagesDB.getMessageById(req.params.id);
+  if (message == null) {
+    res.status(404).json(getProblemJson(404, messageNotFoundError));
+    return;
+  }
+  const response = MessagesService.getPublicMessages(
+    [message],
+    req.query.public_message === "true",
+    true,
+    ioDevServerConfig
+  )[0];
+  res.json(response);
+};
+
+const handlePutMessageStatus: RouteHandler = (req, res) => {
+  if (configResponse.getMessageResponseCode !== 200) {
+    res.sendStatus(configResponse.getMessagesResponseCode);
+    return;
+  }
+  const { change_type, is_archived, is_read } = req.body;
+  if (is_archived === undefined && is_read === undefined) {
+    return res.status(400).json(getProblemJson(400, "Invalid payload"));
+  }
+  // eslint-disable-next-line functional/no-let
+  let result = false;
+
+  switch (change_type) {
+    case "archiving":
+      if (is_archived === true) {
+        result = MessagesDB.archive(req.params.id);
+      }
+      if (is_archived === false) {
+        result = MessagesDB.unarchive(req.params.id);
+      }
+      break;
+    case "reading":
+      // note: is_read can only be set to true
+      if (is_read) {
+        result = MessagesDB.setReadMessage(req.params.id);
+      }
+      break;
+    case "bulk":
+      if (is_archived === true) {
+        result = MessagesDB.archive(req.params.id);
+      }
+      if (is_archived === false) {
+        result = MessagesDB.unarchive(req.params.id);
+      }
+      if (is_read) {
+        result = MessagesDB.setReadMessage(req.params.id);
+      }
+      break;
+    default:
+      return res.status(400).json(getProblemJson(400, "Invalid payload"));
+  }
+
+  if (result) {
+    return res.status(200).json({ message: "ok" });
+  }
+  return res.status(404).json({ message: "ok" });
+};
+
+const handleGetThirdPartyMessage = lollipopMiddleware(async (req, res) => {
+  if (configResponse.getThirdPartyMessageResponseCode !== 200) {
+    res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
+    return;
+  }
+  const message = MessagesDB.getMessageById(req.params.id);
+  if (message == null) {
+    res.status(404).json(getProblemJson(404, messageNotFoundError));
+    return;
+  }
+  if (message.sender_service_id === sendServiceId) {
+    const sendMessageId = message.content.third_party_data?.id;
+    if (sendMessageId == null) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            "Missing id",
+            `The Third Party Message does not contain an id property for the SEND Notification (id: ${sendMessageId})`
+          )
+        );
+      return;
+    }
+    const sendNotificationUrl = `${serverUrl}${generateNotificationPath(
+      sendMessageId
+    )}`;
+    try {
+      const sendNotificationResponse = await fetch(sendNotificationUrl, {
+        headers: {
+          ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
+          ...MessagesService.generateFakeLollipopServerHeaders(
+            ioDevServerConfig.profile.attrs.fiscal_code
+          ),
+          ...MessagesService.sendAPIKeyHeader(),
+          ...MessagesService.sendTaxIdHeader(
+            ioDevServerConfig.profile.attrs.fiscal_code
+          ),
+          ...MessagesService.sendDefaultIOSourceHeader()
+        }
+      });
+      if (sendNotificationResponse.status !== 200) {
+        throw Error(
+          `Expected 200 HTTP Status code from SEND (received ${sendNotificationResponse.status})`
+        );
+      }
+
+      const sendThirdPartyMessageJSON = await sendNotificationResponse.json();
+      const sendThidPartyMessageEither = ThirdPartyMessage.decode(
+        sendThirdPartyMessageJSON
+      );
+      if (E.isLeft(sendThidPartyMessageEither)) {
+        throw Error(
+          `Invalid SEND response data structure (${readableReport(
+            sendThidPartyMessageEither.left
+          )})`
+        );
+      }
+
+      const thirdPartyMessageWithContentEither =
+        ThirdPartyMessageWithContent.decode({
+          ...message,
+          third_party_message: sendThidPartyMessageEither.right
+        });
+      if (E.isLeft(thirdPartyMessageWithContentEither)) {
+        throw Error(readableReport(thirdPartyMessageWithContentEither.left));
+      }
+      res.status(200).json(thirdPartyMessageWithContentEither.right);
+    } catch (e) {
+      const errorMessage = unknownToString(e);
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            "Notification unexpected error",
+            `Unexpected error while contacting SEND notification endpoint (iun: ${sendMessageId} reason: ${errorMessage})`
+          )
+        );
+    }
+  } else {
+    const thirdPartyMessageEither =
+      ThirdPartyMessageWithContent.decode(message);
+    if (E.isLeft(thirdPartyMessageEither)) {
+      res
+        .status(500)
+        .json(
+          getProblemJson(
+            500,
+            "Format failure",
+            "The Third Party Message was found but its schema is not valid"
+          )
+        );
+      return;
+    }
+    res.json(thirdPartyMessageEither.right);
+  }
 });
 
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/messages/:id"),
-  (req, res) => {
-    if (configResponse.getMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getMessagesResponseCode);
-      return;
-    }
-    // retrieve the messageIndex from id
-    const message = MessagesDB.getMessageById(req.params.id);
-    if (message == null) {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-      return;
-    }
-    const response = MessagesService.getPublicMessages(
-      [message],
-      req.query.public_message === "true",
-      true,
-      ioDevServerConfig
-    )[0];
-    res.json(response);
-  }
-);
-
-addHandler(
-  messageRouter,
-  "put",
-  addApiV1Prefix("/messages/:id/message-status"),
-  (req, res) => {
-    if (configResponse.getMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getMessagesResponseCode);
-      return;
-    }
-    const { change_type, is_archived, is_read } = req.body;
-    if (is_archived === undefined && is_read === undefined) {
-      return res.status(400).json(getProblemJson(400, "Invalid payload"));
-    }
-    // eslint-disable-next-line functional/no-let
-    let result = false;
-
-    switch (change_type) {
-      case "archiving":
-        if (is_archived === true) {
-          result = MessagesDB.archive(req.params.id);
-        }
-        if (is_archived === false) {
-          result = MessagesDB.unarchive(req.params.id);
-        }
-        break;
-      case "reading":
-        // note: is_read can only be set to true
-        if (is_read) {
-          result = MessagesDB.setReadMessage(req.params.id);
-        }
-        break;
-      case "bulk":
-        if (is_archived === true) {
-          result = MessagesDB.archive(req.params.id);
-        }
-        if (is_archived === false) {
-          result = MessagesDB.unarchive(req.params.id);
-        }
-        if (is_read) {
-          result = MessagesDB.setReadMessage(req.params.id);
-        }
-        break;
-      default:
-        return res.status(400).json(getProblemJson(400, "Invalid payload"));
-    }
-
-    if (result) {
-      return res.status(200).json({ message: "ok" });
-    }
-    return res.status(404).json({ message: "ok" });
-  }
-);
-
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/third-party-messages/:id"),
-  lollipopMiddleware(async (req, res) => {
-    if (configResponse.getThirdPartyMessageResponseCode !== 200) {
-      res.sendStatus(configResponse.getThirdPartyMessageResponseCode);
-      return;
-    }
-    const message = MessagesDB.getMessageById(req.params.id);
-    if (message == null) {
-      res.status(404).json(getProblemJson(404, messageNotFoundError));
-      return;
-    }
-    if (message.sender_service_id === sendServiceId) {
-      const sendMessageId = message.content.third_party_data?.id;
-      if (sendMessageId == null) {
-        res
-          .status(500)
-          .json(
-            getProblemJson(
-              500,
-              "Missing id",
-              `The Third Party Message does not contain an id property for the SEND Notification (id: ${sendMessageId})`
-            )
-          );
-        return;
-      }
-      const sendNotificationUrl = `${serverUrl}${generateNotificationPath(
-        sendMessageId
-      )}`;
-      try {
-        const sendNotificationResponse = await fetch(sendNotificationUrl, {
-          headers: {
-            ...MessagesService.lollipopClientHeadersFromHeaders(req.headers),
-            ...MessagesService.generateFakeLollipopServerHeaders(
-              ioDevServerConfig.profile.attrs.fiscal_code
-            ),
-            ...MessagesService.sendAPIKeyHeader(),
-            ...MessagesService.sendTaxIdHeader(
-              ioDevServerConfig.profile.attrs.fiscal_code
-            ),
-            ...MessagesService.sendDefaultIOSourceHeader()
-          }
-        });
-        if (sendNotificationResponse.status !== 200) {
-          throw Error(
-            `Expected 200 HTTP Status code from SEND (received ${sendNotificationResponse.status})`
-          );
-        }
-
-        const sendThirdPartyMessageJSON = await sendNotificationResponse.json();
-        const sendThidPartyMessageEither = ThirdPartyMessage.decode(
-          sendThirdPartyMessageJSON
-        );
-        if (E.isLeft(sendThidPartyMessageEither)) {
-          throw Error(
-            `Invalid SEND response data structure (${readableReport(
-              sendThidPartyMessageEither.left
-            )})`
-          );
-        }
-
-        const thirdPartyMessageWithContentEither =
-          ThirdPartyMessageWithContent.decode({
-            ...message,
-            third_party_message: sendThidPartyMessageEither.right
-          });
-        if (E.isLeft(thirdPartyMessageWithContentEither)) {
-          throw Error(readableReport(thirdPartyMessageWithContentEither.left));
-        }
-        res.status(200).json(thirdPartyMessageWithContentEither.right);
-      } catch (e) {
-        const errorMessage = unknownToString(e);
-        res
-          .status(500)
-          .json(
-            getProblemJson(
-              500,
-              "Notification unexpected error",
-              `Unexpected error while contacting SEND notification endpoint (iun: ${sendMessageId} reason: ${errorMessage})`
-            )
-          );
-      }
-    } else {
-      const thirdPartyMessageEither =
-        ThirdPartyMessageWithContent.decode(message);
-      if (E.isLeft(thirdPartyMessageEither)) {
-        res
-          .status(500)
-          .json(
-            getProblemJson(
-              500,
-              "Format failure",
-              "The Third Party Message was found but its schema is not valid"
-            )
-          );
-        return;
-      }
-      res.json(thirdPartyMessageEither.right);
-    }
-  }),
-  () => Math.random() * 500
-);
-
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
-  lollipopMiddleware(async (req, res) => {
+const handleGetThirdPartyMessageAttachment = lollipopMiddleware(
+  async (req, res) => {
     const messageId = req.params.messageId;
     const attachmentUrl = req.params[0];
     const message = MessagesDB.getMessageById(messageId);
@@ -355,15 +341,11 @@ addHandler(
       const resWithHeaders = res.setHeader("Content-Type", contentType);
       sendFileFromRootPath(attachment.url, resWithHeaders);
     }
-  }),
-  () => Math.random() * 500
+  }
 );
 
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/third-party-messages/:id/precondition"),
-  lollipopMiddleware(async (req, res) => {
+const handleGetThirdPartyMessagePrecondition = lollipopMiddleware(
+  async (req, res) => {
     const ioMessageId = req.params.id;
     const ioMessage = MessagesDB.getMessageById(ioMessageId);
     if (ioMessage == null) {
@@ -458,94 +440,80 @@ addHandler(
       const thirdPartyMessagePreconditions = getThirdPartyMessagePrecondition();
       res.status(200).json(thirdPartyMessagePreconditions);
     }
-  }),
-  () => Math.random() * 500
+  }
 );
 
-addHandler(messageRouter, "post", addApiV1Prefix("/message"), (_, res) =>
+const handleGetPaymentInfo: RouteHandler = (req, res) => {
+  const rptId = req.params.rptId;
+  const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
+  if (O.isNone(maybePaymentStatus)) {
+    const fakeProcessedPayment: ProcessedPayment = {
+      status: {
+        detail_v2: Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO,
+        detail: DetailEnum.PAYMENT_UNKNOWN
+      },
+      type: "processed"
+    };
+    const [statusCode, payload] =
+      processedPaymentToStatusCodeAndPayload(fakeProcessedPayment);
+    res.status(statusCode).json(payload);
+    return;
+  }
+
+  const isTest = req.query.test;
+  if (isTest == null) {
+    // This is not the real backend behavior, but it is here in
+    // order to make sure that the request is properly formatted
+    res
+      .status(400)
+      .json(getProblemJson(400, "Missing 'isTest' query parameter"));
+    return;
+  }
+
+  const paymentStatus = maybePaymentStatus.value;
+  if (isProcessedPayment(paymentStatus)) {
+    const [statusCode, payload] =
+      processedPaymentToStatusCodeAndPayload(paymentStatus);
+    res.status(statusCode).json(payload);
+  } else {
+    const [statusCode, payload] =
+      processablePaymentToStatusCodeAndPayload(paymentStatus);
+    res.status(statusCode).json(payload);
+  }
+};
+
+const handleCreateMessage: RouteHandler = (_, res) =>
   pipe(MessagesService.createMessage(), MessagesDB.addNewMessage, newMessage =>
     res.status(201).json(newMessage)
-  )
-);
+  );
 
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/payment-requests/:rptId"),
-  (req, res) => {
-    const rptId = req.params.rptId;
-    const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
-    if (O.isNone(maybePaymentStatus)) {
-      res
-        .status(404)
-        .json(getProblemJson(404, `Payment with rptdId (${rptId}) not found`));
-      return;
-    }
+const handleGetPaymentRequest: RouteHandler = (req, res) => {
+  const rptId = req.params.rptId;
+  const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
+  if (O.isNone(maybePaymentStatus)) {
+    res
+      .status(404)
+      .json(getProblemJson(404, `Payment with rptdId (${rptId}) not found`));
+    return;
+  }
 
-    const isTest = req.query.test;
-    if (isTest == null) {
-      // This is not the real backend behavior, but it is here in
-      // order to make sure that the request is properly formatted
-      res
-        .status(400)
-        .json(getProblemJson(400, "Missing 'isTest' query parameter"));
-      return;
-    }
+  const isTest = req.query.test;
+  if (isTest == null) {
+    // This is not the real backend behavior, but it is here in
+    // order to make sure that the request is properly formatted
+    res
+      .status(400)
+      .json(getProblemJson(400, "Missing 'isTest' query parameter"));
+    return;
+  }
 
-    const paymentStatus = maybePaymentStatus.value;
-    if (isProcessedPayment(paymentStatus)) {
-      res.status(500).json(paymentStatus.status);
-    } else {
-      res.status(200).json(paymentStatus.data);
-    }
-  },
-  () => Math.ceil(500 + 1000 * Math.random())
-);
-
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/payment-info/:rptId"),
-  (req, res) => {
-    const rptId = req.params.rptId;
-    const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
-    if (O.isNone(maybePaymentStatus)) {
-      const fakeProcessedPayment: ProcessedPayment = {
-        status: {
-          detail_v2: Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO,
-          detail: DetailEnum.PAYMENT_UNKNOWN
-        },
-        type: "processed"
-      };
-      const [statusCode, payload] =
-        processedPaymentToStatusCodeAndPayload(fakeProcessedPayment);
-      res.status(statusCode).json(payload);
-      return;
-    }
-
-    const isTest = req.query.test;
-    if (isTest == null) {
-      // This is not the real backend behavior, but it is here in
-      // order to make sure that the request is properly formatted
-      res
-        .status(400)
-        .json(getProblemJson(400, "Missing 'isTest' query parameter"));
-      return;
-    }
-
-    const paymentStatus = maybePaymentStatus.value;
-    if (isProcessedPayment(paymentStatus)) {
-      const [statusCode, payload] =
-        processedPaymentToStatusCodeAndPayload(paymentStatus);
-      res.status(statusCode).json(payload);
-    } else {
-      const [statusCode, payload] =
-        processablePaymentToStatusCodeAndPayload(paymentStatus);
-      res.status(statusCode).json(payload);
-    }
-  },
-  () => Math.ceil(500 + 1000 * Math.random())
-);
+  const paymentStatus = maybePaymentStatus.value;
+  if (isProcessedPayment(paymentStatus)) {
+    res.status(500).json(paymentStatus.status);
+  } else {
+    res.status(200).json(paymentStatus.data);
+  }
+};
 
 const processablePaymentToStatusCodeAndPayload = (
   payment: ProcessablePayment
@@ -690,3 +658,146 @@ const handleSENDAttachment = async (
       );
   }
 };
+
+export const communicationRouter = Router();
+
+const handleGetSendActivation: RouteHandler = (_, res) => {
+  const payload: SendActivation = { activation_status: true };
+  res.status(200).json(payload);
+};
+
+const handlePutSendActivation: RouteHandler = (req, res) => {
+  res.status(200).json(req.body);
+};
+
+const handlePutInstallation: RouteHandler = (_, res) =>
+  res.json({ message: "OK" });
+
+// --- Route registrations (messageRouter) ---
+
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/messages"),
+  handleGetMessages
+);
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/messages/:id"),
+  handleGetMessage
+);
+addHandler(
+  messageRouter,
+  "put",
+  addApiV1Prefix("/messages/:id/message-status"),
+  handlePutMessageStatus
+);
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id"),
+  handleGetThirdPartyMessage,
+  () => Math.random() * 500
+);
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
+  handleGetThirdPartyMessageAttachment,
+  () => Math.random() * 500
+);
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/third-party-messages/:id/precondition"),
+  handleGetThirdPartyMessagePrecondition,
+  () => Math.random() * 500
+);
+addHandler(
+  messageRouter,
+  "post",
+  addApiV1Prefix("/message"),
+  handleCreateMessage
+);
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/payment-requests/:rptId"),
+  handleGetPaymentRequest,
+  () => Math.ceil(500 + 1000 * Math.random())
+);
+addHandler(
+  messageRouter,
+  "get",
+  addApiV1Prefix("/payment-info/:rptId"),
+  handleGetPaymentInfo,
+  () => Math.ceil(500 + 1000 * Math.random())
+);
+
+// --- Route registrations (communicationRouter) ---
+
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/messages"),
+  handleGetMessages
+);
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/messages/:id"),
+  handleGetMessage
+);
+addHandler(
+  communicationRouter,
+  "put",
+  addApiCommunicationV1Prefix("/messages/:id/status"),
+  handlePutMessageStatus
+);
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/third-party-messages/:id/precondition"),
+  handleGetThirdPartyMessagePrecondition,
+  () => Math.random() * 500
+);
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/third-party-messages/:id"),
+  handleGetThirdPartyMessage,
+  () => Math.random() * 500
+);
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/third-party-messages/:messageId/attachments/*"),
+  handleGetThirdPartyMessageAttachment,
+  () => Math.random() * 500
+);
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/payment/info/:rptId"),
+  handleGetPaymentInfo,
+  () => Math.ceil(500 + 1000 * Math.random())
+);
+addHandler(
+  communicationRouter,
+  "get",
+  addApiCommunicationV1Prefix("/send/activation"),
+  handleGetSendActivation
+);
+addHandler(
+  communicationRouter,
+  "post",
+  addApiCommunicationV1Prefix("/send/activation"),
+  handlePutSendActivation
+);
+addHandler(
+  communicationRouter,
+  "put",
+  addApiCommunicationV1Prefix("/installations/:installationID"),
+  handlePutInstallation
+);

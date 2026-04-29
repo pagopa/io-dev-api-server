@@ -7,9 +7,9 @@ import {
   OrganizationFiscalCode
 } from "@pagopa/ts-commons/lib/strings";
 import { getRandomIntInRange } from "../utils/id";
-import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
-import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
-import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
+import { PaymentNoticeNumber } from "../../generated/definitions/communication/PaymentNoticeNumber";
+import { PaymentAmount } from "../../generated/definitions/communication/PaymentAmount";
+import { PaymentDataWithRequiredPayee } from "../../generated/definitions/communication/PaymentDataWithRequiredPayee";
 import { decodePayload } from "../utils/validator";
 import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
 import { EnteBeneficiario } from "../../generated/definitions/backend/EnteBeneficiario";

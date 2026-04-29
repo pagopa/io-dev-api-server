@@ -1,6 +1,6 @@
 import { Either, isLeft, isRight, left } from "fp-ts/lib/Either";
 import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
-import { InitializedProfile } from "../../../../generated/definitions/backend/InitializedProfile";
+import { InitializedProfile } from "../../../../generated/definitions/identity/InitializedProfile";
 import { AARQRCodeCheckResponse } from "../../../../generated/definitions/pn/aar/AARQRCodeCheckResponse";
 import { ioDevServerConfig } from "../../../config";
 import { getProblemJson } from "../../../payloads/error";

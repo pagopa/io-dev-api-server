@@ -1,5 +1,5 @@
-import { ServiceId } from "../../../../generated/definitions/backend/ServiceId";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import { ServiceId } from "../../../../generated/definitions/services/ServiceId";
+import { ServicePreference } from "../../../../generated/definitions/identity/ServicePreference";
 import { ScopeTypeEnum } from "../../../../generated/definitions/services/ScopeType";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
 import { generateIDPayServices } from "../../../payloads/features/idpay/generateIDPayServices";
