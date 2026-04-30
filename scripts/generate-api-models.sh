@@ -5,7 +5,7 @@ IO_BACKEND_VERSION=v20.0.0
 # (e.g. api_trial_system.yaml, UserMetadata, ServerInfo from api_backend.yaml)
 IO_BACKEND_LEGACY_VERSION=v17.5.2
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.100
+IO_SERVICES_METADATA_VERSION=IEG-2882-eyca-definitions
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.23.1
 # Send Functions
