@@ -81,7 +81,9 @@ export const backendStatus: BackendStatus = {
           },
           url: ""
         }
-      }
+      },
+      eyca_base_url: "https://eyca.org",
+      eyca_discount_url: "https://eyca.org/discounts/it"
     },
     fims: {
       domain: `${serverUrl}/fims/provider/`,
