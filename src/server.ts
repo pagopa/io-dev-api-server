@@ -49,6 +49,8 @@ import { sendLollipopLambdaRouter } from "./features/pn/routers/lollipopLambda";
 
 // create express server
 const app: Application = express();
+// Disable ETag to prevent 304 responses (native HTTP clients cache ETags automatically)
+app.set("etag", false);
 // parse body request as json
 app.use(bodyParser.json());
 app.use(express.text());

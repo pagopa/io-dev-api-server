@@ -13,7 +13,7 @@ IO_SEND_FUNC=1.5.5
 # CGN and CDC APIs are generated with a different version of io-backend, so we need to specify it separately
 IO_BACKEND_VERSION_CGN_CDC=v19.0.0
 # IO Services CMS version
-IO_SERVICES_CMS_VERSION=1.31.5
+IO_SERVICES_APP_BACKEND=3.1.0
 
 declare -a noParams=(
   "./generated/definitions/communication https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/generated/api_communication.yaml"
@@ -37,7 +37,7 @@ declare -a noParams=(
 declare -a noStrict=(
   "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_sign.yaml"
   "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v2.47.6/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
-  "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-services-cms/io-services-cms-backoffice@$IO_SERVICES_CMS_VERSION/apps/app-backend/api/external.yaml"
+  "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-services-cms/io-services-app-backend@$IO_SERVICES_APP_BACKEND/apps/app-backend/api/external.yaml"
 )
 
 declare -a noStrictRequestTypesRespondeDecoders=(

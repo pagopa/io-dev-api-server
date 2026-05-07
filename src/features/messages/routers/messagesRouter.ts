@@ -55,7 +55,6 @@ import {
 import { sendFileFromRootPath } from "../../../utils/file";
 import { NotificationAttachmentDownloadMetadataResponse } from "../../../../generated/definitions/pn/NotificationAttachmentDownloadMetadataResponse";
 import { RouteHandler } from "../../../utils/types";
-import { SendActivation } from "../../../../generated/definitions/communication/SendActivation";
 
 export const messageRouter = Router();
 const configResponse = ioDevServerConfig.messages.response;
@@ -661,15 +660,6 @@ const handleSENDAttachment = async (
 
 export const communicationRouter = Router();
 
-const handleGetSendActivation: RouteHandler = (_, res) => {
-  const payload: SendActivation = { activation_status: true };
-  res.status(200).json(payload);
-};
-
-const handlePutSendActivation: RouteHandler = (req, res) => {
-  res.status(200).json(req.body);
-};
-
 const handlePutInstallation: RouteHandler = (_, res) =>
   res.json({ message: "OK" });
 
@@ -734,6 +724,12 @@ addHandler(
   handleGetPaymentInfo,
   () => Math.ceil(500 + 1000 * Math.random())
 );
+addHandler(
+  messageRouter,
+  "put",
+  addApiV1Prefix("/installations/:installationID"),
+  handlePutInstallation
+);
 
 // --- Route registrations (communicationRouter) ---
 
@@ -782,18 +778,6 @@ addHandler(
   addApiCommunicationV1Prefix("/payment/info/:rptId"),
   handleGetPaymentInfo,
   () => Math.ceil(500 + 1000 * Math.random())
-);
-addHandler(
-  communicationRouter,
-  "get",
-  addApiCommunicationV1Prefix("/send/activation"),
-  handleGetSendActivation
-);
-addHandler(
-  communicationRouter,
-  "post",
-  addApiCommunicationV1Prefix("/send/activation"),
-  handlePutSendActivation
 );
 addHandler(
   communicationRouter,
