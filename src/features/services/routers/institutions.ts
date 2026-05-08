@@ -9,6 +9,7 @@ import { getInstitutionsResponsePayload } from "../payloads/get-institutions";
 import { getServicesByInstitutionIdResponsePayload } from "../payloads/get-services";
 import { addApiCatalogV1Prefix } from "../../../utils/strings";
 import { RouteHandler } from "../../../utils/types";
+import { authorizationMiddleware } from "../../../middleware/authorizationMiddleware";
 import { addApiV2Prefix, serviceRouter } from "./router";
 
 const serviceConfig = ioDevServerConfig.features.service;
@@ -100,37 +101,37 @@ addHandler(
   serviceRouter,
   "get",
   addApiV2Prefix("/institutions"),
-  findInstitutionsHandler
+  authorizationMiddleware(findInstitutionsHandler)
 );
 addHandler(
   serviceRouter,
   "get",
   addApiCatalogV1Prefix("/institutions"),
-  findInstitutionsHandler
+  authorizationMiddleware(findInstitutionsHandler)
 );
 
 addHandler(
   serviceRouter,
   "get",
   addApiV2Prefix("/institutions/:institutionId/services"),
-  findInstitutionServicesHandler
+  authorizationMiddleware(findInstitutionServicesHandler)
 );
 addHandler(
   serviceRouter,
   "get",
   addApiCatalogV1Prefix("/institutions/:institutionId/services"),
-  findInstitutionServicesHandler
+  authorizationMiddleware(findInstitutionServicesHandler)
 );
 
 addHandler(
   serviceRouter,
   "get",
   addApiV2Prefix("/institutions/featured"),
-  getFeaturedInstitutionsHandler
+  authorizationMiddleware(getFeaturedInstitutionsHandler)
 );
 addHandler(
   serviceRouter,
   "get",
   addApiCatalogV1Prefix("/institutions/featured"),
-  getFeaturedInstitutionsHandler
+  authorizationMiddleware(getFeaturedInstitutionsHandler)
 );

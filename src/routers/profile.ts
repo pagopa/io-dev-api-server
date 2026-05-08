@@ -18,9 +18,6 @@ import { RouteHandler } from "../utils/types";
 export const profileRouter = Router();
 const dataProcessingUrl = "/user-data-processing/:choice";
 
-const handlePutInstallation: RouteHandler = (_, res) =>
-  res.json({ message: "OK" });
-
 const handleGetProfile: RouteHandler = (_, res) => {
   const { status, payload } = getProfile();
   res.status(status).json(payload);
@@ -58,14 +55,6 @@ const handlePostEmailValidationProcess: RouteHandler = (_, res) => {
 };
 
 // --- Route registrations ---
-
-// update installationID (useful information to target device using push notification)
-addHandler(
-  profileRouter,
-  "put",
-  addApiV1Prefix("/installations/:installationID"),
-  handlePutInstallation
-);
 
 addHandler(profileRouter, "get", addApiV1Prefix("/profile"), handleGetProfile);
 addHandler(
