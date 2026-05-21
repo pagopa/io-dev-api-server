@@ -50,7 +50,7 @@ declare -a noStrictRequestTypesRespondeDecoders=(
 )
 
 declare -a noRMNoMKDirNoStrict=(
-  "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_backend.yaml"
+  "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_public.yaml"
   "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/external.yaml"
   "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/consumed/api-piattaforma-notifiche.yaml"
 )
@@ -79,14 +79,5 @@ for elem in "${noRMNoMKDirNoStrict[@]}"; do
 done
 wait
 
-# regenerate legacy api_backend.yaml v17.5.2 as a compatibility layer WITHOUT removing
-# the directory first, so that types removed in future versions 
-# are added back alongside the new definitions.
-
-echo "Generating legacy backend compatibility types from $IO_BACKEND_LEGACY_VERSION..."
-yarn run gen-api-models \
-  --api-spec "https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_LEGACY_VERSION/api_backend.yaml" \
-  --out-dir "./generated/definitions/backend" \
-  --no-strict
 
 yarn prepare

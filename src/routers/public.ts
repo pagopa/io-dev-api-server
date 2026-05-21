@@ -168,9 +168,6 @@ addHandler(publicRouter, "post", addApiAuthV1Prefix("/logout"), (_, res) => {
 
 addHandler(publicRouter, "get", "/info", (_, res) => res.json(backendInfo));
 
-// ping (no longer needed since actually app disables network status checking)
-addHandler(publicRouter, "get", "/ping", (_, res) => res.send("ok"));
-
 // test login
 addHandler(
   publicRouter,
