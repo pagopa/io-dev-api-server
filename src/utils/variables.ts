@@ -210,20 +210,16 @@ export const messageFciMarkdown = `
 Puoi leggere e firmare i documenti direttamente in app: ti basterà confermare l'operazione con il **codice di sblocco** o 
 l’**autenticazione biometrica** del tuo dispositivo.\n\n
 Ti ricordiamo che la richiesta di firma scadrà il **12/02/2023** pertanto ti invitiamo a firmare il prima possibile.
-[io-service-management@pagopa.it](mailto:io-service-management@pagopa.it).
 `;
 
 export const messageFciSignedMarkdown = `
 I documenti che hai firmato sono pronti!\n\n
 Hai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo. 
-[io-service-management@pagopa.it](mailto:io-service-management@pagopa.it).
 `;
 
 export const messageMarkdown = `
 # H1 
-[io-service-management@pagopa.it](mailto:io-service-management@pagopa.it).
-[sms:1234567890](sms:1234567890).
-[tel:1234567890](tel:1234567890).
+
 ## H2 
 
 ### H3 
