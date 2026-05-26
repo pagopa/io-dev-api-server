@@ -17,12 +17,6 @@ const handlePostLollipopSign = lollipopMiddleware((_req, res) => {
 addHandler(
   lollipopRouter,
   "post",
-  "/first-lollipop/sign",
-  handlePostLollipopSign
-);
-addHandler(
-  lollipopRouter,
-  "post",
   addApiIdentityV1Prefix("/first-lollipop/sign"),
   handlePostLollipopSign
 );

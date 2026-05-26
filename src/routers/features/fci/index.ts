@@ -19,7 +19,7 @@ import {
 } from "../../../payloads/features/fci/signature-request";
 import { addHandler } from "../../../payloads/response";
 import { sendFileFromRootPath } from "../../../utils/file";
-import { addApiSignV1Prefix, addApiV1Prefix } from "../../../utils/strings";
+import { addApiSignV1Prefix } from "../../../utils/strings";
 import { mockFciMetadata } from "../../../payloads/features/fci/metadata";
 import { SignatureRequestStatusEnum } from "../../../../generated/definitions/fci/SignatureRequestStatus";
 import { EnvironmentEnum } from "../../../../generated/definitions/fci/Environment";
@@ -33,8 +33,6 @@ import { RouteHandler } from "../../../utils/types";
 
 export const fciRouter = Router();
 const configResponse = ioDevServerConfig.messages.fci.response;
-
-export const addFciPrefix = (path: string) => addApiV1Prefix(`/sign${path}`);
 
 const handleGetSignatureRequest: RouteHandler = (req, res) => {
   const signatureRequestId = "signatureRequestId";
@@ -227,21 +225,8 @@ const handleGetSignatureRequests: RouteHandler = (_, res) => {
 addHandler(
   fciRouter,
   "get",
-  addFciPrefix("/signature-requests/:signatureRequestId"),
-  handleGetSignatureRequest
-);
-addHandler(
-  fciRouter,
-  "get",
   addApiSignV1Prefix("/signature-requests/:signatureRequestId"),
   handleGetSignatureRequest
-);
-
-addHandler(
-  fciRouter,
-  "get",
-  addFciPrefix("/qtsp/clauses"),
-  handleGetQtspClauses
 );
 addHandler(
   fciRouter,
@@ -253,22 +238,10 @@ addHandler(
 addHandler(
   fciRouter,
   "post",
-  addFciPrefix("/qtsp/clauses/filled_document"),
-  handlePostQtspClausesFilledDocument
-);
-addHandler(
-  fciRouter,
-  "post",
   addApiSignV1Prefix("/qtsp/clauses/filled_document"),
   handlePostQtspClausesFilledDocument
 );
 
-addHandler(
-  fciRouter,
-  "post",
-  addFciPrefix("/signatures"),
-  handlePostSignatures
-);
 addHandler(
   fciRouter,
   "post",
@@ -283,7 +256,6 @@ addHandler(
   handleGetFciDocument
 );
 
-addHandler(fciRouter, "get", addFciPrefix("/metadata"), handleGetFciMetadata);
 addHandler(
   fciRouter,
   "get",
@@ -291,12 +263,6 @@ addHandler(
   handleGetFciMetadata
 );
 
-addHandler(
-  fciRouter,
-  "get",
-  addFciPrefix("/signature-requests"),
-  handleGetSignatureRequests
-);
 addHandler(
   fciRouter,
   "get",

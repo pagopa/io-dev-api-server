@@ -22,10 +22,7 @@ import {
   ProcessablePayment,
   ProcessedPayment
 } from "../../../types/PaymentStatus";
-import {
-  Detail_v2Enum,
-  DetailEnum
-} from "../../../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentFaultV2Enum } from "../../../../generated/definitions/communication/PaymentFaultV2";
 import { PaymentInfoNotFoundResponse } from "../../../../generated/definitions/communication/PaymentInfoNotFoundResponse";
 import { PaymentInfoResponse } from "../../../../generated/definitions/communication/PaymentInfoResponse";
 import {
@@ -34,7 +31,7 @@ import {
 } from "../../payments/types/failure";
 import { PaymentInfoConflictResponse } from "../../../../generated/definitions/communication/PaymentInfoConflictResponse";
 import { PaymentInfoBadGatewayResponse } from "../../../../generated/definitions/communication/PaymentInfoBadGatewayResponse";
-import { PaymentInfoUnavailableResponse } from "../../../../generated/definitions/backend/PaymentInfoUnavailableResponse";
+import { PartyConfigurationFaultPaymentProblemJson as PaymentInfoUnavailableResponse } from "../../../../generated/definitions/communication/PartyConfigurationFaultPaymentProblemJson";
 import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
 import { sendServiceId } from "../../pn/services/dataService";
 import { serverUrl } from "../../../utils/server";
@@ -448,8 +445,7 @@ const handleGetPaymentInfo: RouteHandler = (req, res) => {
   if (O.isNone(maybePaymentStatus)) {
     const fakeProcessedPayment: ProcessedPayment = {
       status: {
-        detail_v2: Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO,
-        detail: DetailEnum.PAYMENT_UNKNOWN
+        detail_v2: PaymentFaultV2Enum.PAA_PAGAMENTO_SCONOSCIUTO
       },
       type: "processed"
     };
@@ -486,51 +482,9 @@ const handleCreateMessage: RouteHandler = (_, res) =>
     res.status(201).json(newMessage)
   );
 
-const handleGetPaymentRequest: RouteHandler = (req, res) => {
-  const rptId = req.params.rptId;
-  const maybePaymentStatus = PaymentsDatabase.getPaymentStatus(rptId);
-  if (O.isNone(maybePaymentStatus)) {
-    res
-      .status(404)
-      .json(getProblemJson(404, `Payment with rptdId (${rptId}) not found`));
-    return;
-  }
-
-  const isTest = req.query.test;
-  if (isTest == null) {
-    // This is not the real backend behavior, but it is here in
-    // order to make sure that the request is properly formatted
-    res
-      .status(400)
-      .json(getProblemJson(400, "Missing 'isTest' query parameter"));
-    return;
-  }
-
-  const paymentStatus = maybePaymentStatus.value;
-  if (isProcessedPayment(paymentStatus)) {
-    res.status(500).json(paymentStatus.status);
-  } else {
-    res.status(200).json(paymentStatus.data);
-  }
-};
-
 const processablePaymentToStatusCodeAndPayload = (
   payment: ProcessablePayment
-): [number, string | PaymentInfoResponse] => {
-  const payloadEither = PaymentInfoResponse.decode({
-    amount: payment.data.importoSingoloVersamento,
-    description: payment.data.causaleVersamento,
-    dueDate: payment.data.dueDate,
-    paFiscalCode:
-      payment.data.enteBeneficiario?.identificativoUnivocoBeneficiario,
-    paName: payment.data.enteBeneficiario?.denominazioneBeneficiario,
-    rptId: payment.data.codiceContestoPagamento
-  });
-  if (E.isLeft(payloadEither)) {
-    return [500, readableReport(payloadEither.left)];
-  }
-  return [200, payloadEither.right];
-};
+): [number, string | PaymentInfoResponse] => [200, payment.data];
 
 const processedPaymentToStatusCodeAndPayload = (
   payment: ProcessedPayment
@@ -662,76 +616,12 @@ export const communicationRouter = Router();
 
 const handlePutInstallation: RouteHandler = (_, res) =>
   res.json({ message: "OK" });
-
-// --- Route registrations (messageRouter) ---
-
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/messages"),
-  handleGetMessages
-);
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/messages/:id"),
-  handleGetMessage
-);
-addHandler(
-  messageRouter,
-  "put",
-  addApiV1Prefix("/messages/:id/message-status"),
-  handlePutMessageStatus
-);
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/third-party-messages/:id"),
-  handleGetThirdPartyMessage,
-  () => Math.random() * 500
-);
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/third-party-messages/:messageId/attachments/*"),
-  handleGetThirdPartyMessageAttachment,
-  () => Math.random() * 500
-);
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/third-party-messages/:id/precondition"),
-  handleGetThirdPartyMessagePrecondition,
-  () => Math.random() * 500
-);
 addHandler(
   messageRouter,
   "post",
   addApiV1Prefix("/message"),
   handleCreateMessage
 );
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/payment-requests/:rptId"),
-  handleGetPaymentRequest,
-  () => Math.ceil(500 + 1000 * Math.random())
-);
-addHandler(
-  messageRouter,
-  "get",
-  addApiV1Prefix("/payment-info/:rptId"),
-  handleGetPaymentInfo,
-  () => Math.ceil(500 + 1000 * Math.random())
-);
-addHandler(
-  messageRouter,
-  "put",
-  addApiV1Prefix("/installations/:installationID"),
-  handlePutInstallation
-);
-
-// --- Route registrations (communicationRouter) ---
 
 addHandler(
   communicationRouter,

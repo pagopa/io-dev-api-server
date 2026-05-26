@@ -1,21 +1,21 @@
 import { Router } from "express";
-import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import { ulid } from "ulid";
-import { addHandler } from "../../../payloads/response";
-import { addApiFimsV1Prefix, addApiV1Prefix } from "../../../utils/strings";
+import { Access } from "../../../../generated/definitions/fims_history/Access";
+import { ExportRequest } from "../../../../generated/definitions/fims_history/ExportRequest";
 import { getProblemJson } from "../../../payloads/error";
+import { addHandler } from "../../../payloads/response";
+import { addApiFimsV1Prefix } from "../../../utils/strings";
+import { RouteHandler } from "../../../utils/types";
+import { getFimsConfig } from "../services/configurationService";
 import {
   generateAccessHistoryData,
   isProcessingExport,
   nextAccessHistoryPageFromRequest
 } from "../services/historyService";
-import { getFimsConfig } from "../services/configurationService";
 import { FIMSConfig } from "../types/config";
-import { Access } from "../../../../generated/definitions/fims_history/Access";
 import { LastExportRequest } from "../types/lastExportRequest";
-import { ExportRequest } from "../../../../generated/definitions/fims_history/ExportRequest";
-import { RouteHandler } from "../../../utils/types";
 
 export const fimsHistoryRouter = Router();
 
@@ -48,13 +48,6 @@ const handleGetFimsAccesses: RouteHandler = (req, res) => {
 
   res.status(200).send(nextAccessHistoryPageEither.right);
 };
-addHandler(
-  fimsHistoryRouter,
-  "get",
-  addApiV1Prefix("/fims/accesses"),
-  handleGetFimsAccesses,
-  () => Math.floor(2500 * Math.random())
-);
 addHandler(
   fimsHistoryRouter,
   "get",
@@ -93,13 +86,6 @@ const handlePostFimsExportRequests: RouteHandler = (_req, res) => {
   };
   res.status(202).send(exportRequest);
 };
-addHandler(
-  fimsHistoryRouter,
-  "post",
-  addApiV1Prefix("/fims/export-requests"),
-  handlePostFimsExportRequests,
-  () => Math.floor(2500 + 1400 * Math.random())
-);
 addHandler(
   fimsHistoryRouter,
   "post",

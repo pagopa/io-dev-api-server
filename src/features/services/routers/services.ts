@@ -8,7 +8,7 @@ import { RouteHandler } from "../../../utils/types";
 import { getFeaturedServicesResponsePayload } from "../payloads/get-featured-services";
 import ServicesDB from "../persistence/servicesDatabase";
 import { authorizationMiddleware } from "../../../middleware/authorizationMiddleware";
-import { addApiV2Prefix, serviceRouter } from "./router";
+import { serviceRouter } from "./router";
 
 const serviceConfig = ioDevServerConfig.features.service;
 
@@ -53,20 +53,8 @@ const getServiceByIdHandler: RouteHandler = (req, res) =>
 addHandler(
   serviceRouter,
   "get",
-  addApiV2Prefix("/services/featured"),
-  authorizationMiddleware(getFeaturedServicesHandler)
-);
-addHandler(
-  serviceRouter,
-  "get",
   addApiCatalogV1Prefix("/services/featured"),
   authorizationMiddleware(getFeaturedServicesHandler)
-);
-addHandler(
-  serviceRouter,
-  "get",
-  addApiV2Prefix("/services/:serviceId"),
-  authorizationMiddleware(getServiceByIdHandler)
 );
 addHandler(
   serviceRouter,

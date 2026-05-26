@@ -32,7 +32,6 @@ import {
   FaultCodeCategoryEnum as UnknownEnum,
   ValidationFaultPaymentUnknownProblemJson
 } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnknownProblemJson";
-import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
 import { PaymentDuplicatedStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentDuplicatedStatusFault";
 import { PaymentCanceledStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentCanceledStatusFault";
 import { PaymentExpiredStatusFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PaymentExpiredStatusFault";
@@ -40,6 +39,7 @@ import { PaymentOngoingStatusFaultEnum } from "../../../../generated/definitions
 import { ValidationFaultPaymentUnknownEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnknown";
 import { PartyConfigurationFaultEnum } from "../../../../generated/definitions/pagopa/ecommerce/PartyConfigurationFault";
 import { ValidationFaultPaymentUnavailableEnum } from "../../../../generated/definitions/pagopa/ecommerce/ValidationFaultPaymentUnavailable";
+import { PaymentFaultV2Enum } from "../../../../generated/definitions/communication/PaymentFaultV2";
 
 export type WalletPaymentFailure = t.TypeOf<typeof WalletPaymentFailure>;
 export const WalletPaymentFailure = t.union([
@@ -81,63 +81,63 @@ export const getStatusCodeForWalletFailure = (
   }
 };
 
-export const httpStatusCodeFromDetailV2Enum = (input: Detail_v2Enum) => {
+export const httpStatusCodeFromDetailV2Enum = (input: PaymentFaultV2Enum) => {
   switch (input) {
-    case Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO:
-    case Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO:
-    case Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO:
-    case Detail_v2Enum.PAA_PAGAMENTO_SCADUTO:
-    case Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO:
-    case Detail_v2Enum.PPT_PAGAMENTO_IN_CORSO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_DUPLICATO:
+    case PaymentFaultV2Enum.PPT_PAGAMENTO_DUPLICATO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_ANNULLATO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_SCADUTO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_IN_CORSO:
+    case PaymentFaultV2Enum.PPT_PAGAMENTO_IN_CORSO:
       return 409;
-    case Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_SCONOSCIUTO:
       return 404;
-    case Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA:
+    case PaymentFaultV2Enum.PPT_ERRORE_EMESSO_DA_PAA:
       return 503;
-    case Detail_v2Enum.PPT_AUTENTICAZIONE:
+    case PaymentFaultV2Enum.PPT_AUTENTICAZIONE:
       return 502;
     default:
       return 400;
   }
 };
 
-export const payloadFromDetailV2Enum = (input: Detail_v2Enum) => {
+export const payloadFromDetailV2Enum = (input: PaymentFaultV2Enum) => {
   switch (input) {
-    case Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO:
-    case Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_DUPLICATO:
+    case PaymentFaultV2Enum.PPT_PAGAMENTO_DUPLICATO:
       return {
         faultCodeCategory: DuplicatedEnum.PAYMENT_DUPLICATED,
         faultCodeDetail:
           PaymentDuplicatedStatusFaultEnum.PAA_PAGAMENTO_DUPLICATO
       };
-    case Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_ANNULLATO:
       return {
         faultCodeCategory: CancelledEnum.PAYMENT_CANCELED,
         faultCodeDetail: PaymentCanceledStatusFaultEnum.PAA_PAGAMENTO_ANNULLATO
       };
-    case Detail_v2Enum.PAA_PAGAMENTO_SCADUTO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_SCADUTO:
       return {
         faultCodeCategory: ExpiredEnum.PAYMENT_EXPIRED,
         faultCodeDetail: PaymentExpiredStatusFaultEnum.PAA_PAGAMENTO_SCADUTO
       };
-    case Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO:
-    case Detail_v2Enum.PPT_PAGAMENTO_IN_CORSO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_IN_CORSO:
+    case PaymentFaultV2Enum.PPT_PAGAMENTO_IN_CORSO:
       return {
         faultCodeCategory: OngoingEnum.PAYMENT_ONGOING,
         faultCodeDetail: PaymentOngoingStatusFaultEnum.PAA_PAGAMENTO_IN_CORSO
       };
-    case Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO:
+    case PaymentFaultV2Enum.PAA_PAGAMENTO_SCONOSCIUTO:
       return {
         faultCodeCategory: UnknownEnum.PAYMENT_UNKNOWN,
         faultCodeDetail:
           ValidationFaultPaymentUnknownEnum.PAA_PAGAMENTO_SCONOSCIUTO
       };
-    case Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA:
+    case PaymentFaultV2Enum.PPT_ERRORE_EMESSO_DA_PAA:
       return {
         faultCodeCategory: PartyEnum.DOMAIN_UNKNOWN,
         faultCodeDetail: PartyConfigurationFaultEnum.PPT_ERRORE_EMESSO_DA_PAA
       };
-    case Detail_v2Enum.PPT_AUTENTICAZIONE:
+    case PaymentFaultV2Enum.PPT_AUTENTICAZIONE:
       return {
         faultCodeCategory: ValidationEnum.PAYMENT_UNAVAILABLE,
         faultCodeDetail:

@@ -20,9 +20,3 @@ it("info should return a valid ServerInfo object", async () => {
   const sr = ServerInfo.decode(response.body);
   expect(E.isRight(sr)).toBeTruthy();
 });
-
-it("Ping should return 200/ok", async () => {
-  const response = await request.get("/ping");
-  expect(response.status).toBe(200);
-  expect(response.text).toBe("ok");
-});
