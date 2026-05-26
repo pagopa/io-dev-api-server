@@ -6,7 +6,7 @@ import { CreatedMessageWithoutContent } from "../../../generated/definitions/com
 import { EnrichedMessage } from "../../../generated/definitions/communication/EnrichedMessage";
 import { PaginatedPublicMessagesCollection } from "../../../generated/definitions/communication/PaginatedPublicMessagesCollection";
 import { ioDevServerConfig } from "../../config";
-import { basePath } from "../../payloads/response";
+import { addApiCommunicationV1Prefix } from "../../utils/strings";
 import MessagesDB from "../../features/messages/persistence/messagesDatabase";
 import ServicesDB from "../../features/services/persistence/servicesDatabase";
 import populatePersistence from "../../populate-persistence";
@@ -74,7 +74,9 @@ describe("given the `/messages` endpoint", () => {
 
   describe("when a valid request is sent", () => {
     it("a 200 response with the array of items is returned", async () => {
-      const response = await request.get(`${basePath}/messages`);
+      const response = await request.get(
+        addApiCommunicationV1Prefix("/messages")
+      );
       expect(response.status).toBe(200);
       const list = PaginatedPublicMessagesCollection.decode(response.body);
       expect(E.isRight(list)).toBeTruthy();
@@ -93,7 +95,7 @@ describe("given the `/messages` endpoint", () => {
     const pageSize = 1;
     it("should return exactly the page size", async () => {
       const response = await request.get(
-        `${basePath}/messages?page_size=${pageSize}`
+        addApiCommunicationV1Prefix(`/messages?page_size=${pageSize}`)
       );
       const { items } = assertResponseIsRight(response.body);
       expect(items.length).toBe(pageSize);
@@ -101,7 +103,7 @@ describe("given the `/messages` endpoint", () => {
 
     it("the `next` parameter should be defined ", async () => {
       const response = await request.get(
-        `${basePath}/messages?page_size=${pageSize}`
+        addApiCommunicationV1Prefix(`/messages?page_size=${pageSize}`)
       );
       const { next } = assertResponseIsRight(response.body);
       expect(next).toBeDefined();
@@ -109,7 +111,7 @@ describe("given the `/messages` endpoint", () => {
 
     it("the `prev` parameter should be equal to the first message's ID ", async () => {
       const response = await request.get(
-        `${basePath}/messages?page_size=${pageSize}`
+        addApiCommunicationV1Prefix(`/messages?page_size=${pageSize}`)
       );
       const { prev, items } = assertResponseIsRight(response.body);
       expect(prev).toMatch(items[0].id);
@@ -120,7 +122,7 @@ describe("given the `/messages` endpoint", () => {
     const pageSize = 100;
     it("should return fewer items or the same number as the page size", async () => {
       const response = await request.get(
-        `${basePath}/messages?page_size=${pageSize}`
+        addApiCommunicationV1Prefix(`/messages?page_size=${pageSize}`)
       );
       const { items } = assertResponseIsRight(response.body);
       expect(items.length).toBeLessThanOrEqual(pageSize);
@@ -128,7 +130,7 @@ describe("given the `/messages` endpoint", () => {
 
     it("the `next` parameter should not be defined ", async () => {
       const response = await request.get(
-        `${basePath}/messages?page_size=${pageSize}`
+        addApiCommunicationV1Prefix(`/messages?page_size=${pageSize}`)
       );
       const { next } = assertResponseIsRight(response.body);
       expect(next).not.toBeDefined();
@@ -138,11 +140,11 @@ describe("given the `/messages` endpoint", () => {
   describe("when `maximum_id` is used", () => {
     it("all the items in the second page must older than the items in the first one", async () => {
       const firstResponse = await request.get(
-        `${basePath}/messages?page_size=1`
+        addApiCommunicationV1Prefix("/messages?page_size=1")
       );
       const { items, next } = assertResponseIsRight(firstResponse.body);
       const secondResponse = await request.get(
-        `${basePath}/messages?maximum_id=${next}`
+        addApiCommunicationV1Prefix(`/messages?maximum_id=${next}`)
       );
 
       const { items: olderItems } = assertResponseIsRight(secondResponse.body);
@@ -153,7 +155,9 @@ describe("given the `/messages` endpoint", () => {
   });
 
   it("messages should return those items that are younger than specified minimum_id", async () => {
-    const response = await request.get(`${basePath}/messages`);
+    const response = await request.get(
+      addApiCommunicationV1Prefix("/messages")
+    );
     expect(response.status).toBe(200);
     const list = PaginatedPublicMessagesCollection.decode(response.body);
     expect(E.isRight(list)).toBeTruthy();
@@ -161,7 +165,7 @@ describe("given the `/messages` endpoint", () => {
       for (const m of list.right.items) {
         // ask for those messages younger than this
         const responseYounger = await request.get(
-          `${basePath}/messages?minimum_id=${m.id}`
+          addApiCommunicationV1Prefix(`/messages?minimum_id=${m.id}`)
         );
         const listYounger = PaginatedPublicMessagesCollection.decode(
           responseYounger.body
@@ -188,7 +192,7 @@ describe("given the `/messages` endpoint", () => {
 
   it("messages should return a valid message with content with enriched data", async () => {
     const response = await request.get(
-      `${basePath}/messages?enrich_result_data=true`
+      addApiCommunicationV1Prefix("/messages?enrich_result_data=true")
     );
     expect(response.status).toBe(200);
     const list = PaginatedPublicMessagesCollection.decode(response.body);
@@ -198,7 +202,7 @@ describe("given the `/messages` endpoint", () => {
     }
 
     const responseDefault = await request.get(
-      `${basePath}/messages?enrich_result_data=false`
+      addApiCommunicationV1Prefix("/messages?enrich_result_data=false")
     );
     expect(responseDefault.status).toBe(200);
     const listDefault = PaginatedPublicMessagesCollection.decode(
@@ -212,7 +216,9 @@ describe("given the `/messages` endpoint", () => {
 
   it("messages should return a valid message with content", async () => {
     const messageId = MessagesDB.findAllInbox()[0].id;
-    const response = await request.get(`${basePath}/messages/${messageId}`);
+    const response = await request.get(
+      addApiCommunicationV1Prefix(`/messages/${messageId}`)
+    );
     expect(response.status).toBe(200);
     const message = CreatedMessageWithoutContent.decode(response.body);
     expect(E.isRight(message)).toBeTruthy();
@@ -222,7 +228,7 @@ describe("given the `/messages` endpoint", () => {
   });
 });
 
-describe("given the `/messages/:id/message-status` endpoint", () => {
+describe("given the `/messages/:id/status` endpoint", () => {
   beforeAll(() => {
     populatePersistence(customConfig);
   });
@@ -245,11 +251,11 @@ describe("given the `/messages/:id/message-status` endpoint", () => {
       it("should update the message with the new statuses", async () => {
         const messageId = MessagesDB.findAllInbox()[0].id;
         await request
-          .put(`${basePath}/messages/${messageId}/message-status`)
+          .put(addApiCommunicationV1Prefix(`/messages/${messageId}/status`))
           .send(payload)
           .expect(200);
         const message = await request
-          .get(`${basePath}/messages/${messageId}`)
+          .get(addApiCommunicationV1Prefix(`/messages/${messageId}`))
           .query({ public_message: true })
           .expect(200)
           .then(r => r.body);
@@ -278,7 +284,7 @@ describe("given the `/messages/:id` endpoint", () => {
     it("then the result contains all the expected properties", async () => {
       const messageId = MessagesDB.findAllInbox()[0].id;
       const message = await request
-        .get(`${basePath}/messages/${messageId}`)
+        .get(addApiCommunicationV1Prefix(`/messages/${messageId}`))
         .query({ public_message: true })
         .expect(200)
         .then(r => r.body);
@@ -301,7 +307,7 @@ describe("given the `/messages/:id` endpoint", () => {
     it("then the result contains just the expected properties", async () => {
       const messageId = MessagesDB.findAllInbox()[0].id;
       const message = await request
-        .get(`${basePath}/messages/${messageId}`)
+        .get(addApiCommunicationV1Prefix(`/messages/${messageId}`))
         .query({ public_message: false })
         .expect(200)
         .then(r => r.body);

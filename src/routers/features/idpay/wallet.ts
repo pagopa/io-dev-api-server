@@ -1,7 +1,5 @@
-import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { flow, pipe } from "fp-ts/lib/function";
-import { Iban } from "../../../../generated/definitions/backend/Iban";
 import { IbanPutDTO } from "../../../../generated/definitions/idpay/IbanPutDTO";
 import { StatusEnum as InitiativeStatusEnum } from "../../../../generated/definitions/idpay/InitiativeDTO";
 import { getIdPayError } from "../../../payloads/features/idpay/error";
@@ -180,18 +178,11 @@ addIdPayHandler("put", "/wallet/:initiativeId/iban", (req, res) =>
           O.fromEither,
           O.fold(
             () => res.status(400).json(getIdPayError(400)),
-            ({ iban, description }) =>
-              pipe(
-                Iban.decode(iban),
-                E.fold(
-                  () => res.status(403).json(getIdPayError(403)),
-                  () => {
-                    updateInitiative({ ...initiatives[initiativeId], iban });
-                    storeIban(iban, description);
-                    return res.sendStatus(200);
-                  }
-                )
-              )
+            ({ iban, description }) => {
+              updateInitiative({ ...initiatives[initiativeId], iban });
+              storeIban(iban, description);
+              return res.sendStatus(200);
+            }
           )
         )
     )
