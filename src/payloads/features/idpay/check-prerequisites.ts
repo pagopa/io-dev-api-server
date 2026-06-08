@@ -69,15 +69,18 @@ const familyUnityOnlyAutomatedCriteria: ReadonlyArray<AutomatedCriteriaDTO> = [
 const criterionArray: ReadonlyArray<RowDataDTO> = [
   {
     description: "Criterion 1",
-    subDescription: "Subtitle criterion 1"
+    subDescription: "Subtitle criterion 1",
+    value: "Value criterion 1"
   },
   {
     description: "Criterion 2",
-    subDescription: "Subtitle criterion 2"
+    subDescription: "Subtitle criterion 2",
+    value: "Value criterion 2"
   },
   {
     description: "Criterion 3",
-    subDescription: "Subtitle criterion 3"
+    subDescription: "Subtitle criterion 3",
+    value: "Value criterion 3"
   }
 ];
 const selfDeclarationMulti: ReadonlyArray<SelfCriteriaMultiDTO> = [
@@ -184,15 +187,18 @@ const checkPrerequisites: {
             {
               description: "Sì, inferiore a 25.000€",
               subDescription:
-                "Hai diritto fino a 200€. Verificheremo questa informazione con INPS"
+                "Hai diritto fino a 200€. Verificheremo questa informazione con INPS",
+              value: "0"
             },
             {
               description: "Sì, uguale o superiore a 25.000€",
-              subDescription: "Hai diritto fino a 100€"
+              subDescription: "Hai diritto fino a 100€",
+              value: "1"
             },
             {
               description: "Non ho un ISEE o preferisco non rispondere",
-              subDescription: "Hai diritto fino a 100€"
+              subDescription: "Hai diritto fino a 100€",
+              value: "2"
             }
           ]
         },
