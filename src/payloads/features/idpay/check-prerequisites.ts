@@ -134,6 +134,18 @@ const checkPrerequisites: {
       selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
     }
   },
+  [IDPayInitiativeID.OK_INVITED]: {
+    beneficiaryRule: {
+      automatedCriteria,
+      selfDeclarationCriteria: [...selfDeclarationMulti, ...selfDeclarationBool]
+    }
+  },
+  [IDPayInitiativeID.OK_NO_PREREQUISITES]: {
+    beneficiaryRule: {
+      automatedCriteria: [],
+      selfDeclarationCriteria: []
+    }
+  },
   [IDPayInitiativeID.OK_GUIDONIA]: {
     beneficiaryRule: {
       automatedCriteria,
