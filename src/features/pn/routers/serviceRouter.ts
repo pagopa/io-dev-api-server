@@ -1,21 +1,20 @@
 import { NonNegativeInteger } from "@pagopa/ts-commons/lib/numbers";
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { PNActivation } from "../../../../generated/definitions/pn/PNActivation";
 import { addHandler } from "../../../payloads/response";
-import { addApiV1Prefix } from "../../../utils/strings";
+import { addApiCommunicationV1Prefix } from "../../../utils/strings";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import { sendServiceId } from "../services/dataService";
 import { logExpressResponseWarning } from "../../../utils/logging";
 import { getProblemJson } from "../../../payloads/error";
 import { ioDevServerConfig } from "../../../config";
+import { SendActivation } from "../../../../generated/definitions/communication/SendActivation";
 
 export const sendServiceRouter = Router();
 
-const addPrefix = (path: string) => addApiV1Prefix(`/pn${path}`);
-
-addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
+const handlePostSendActivation = (req: Request, res: Response) => {
   const maybeActivation = PNActivation.decode(req.body);
   if (E.isLeft(maybeActivation)) {
     const problemJson = getProblemJson(
@@ -65,4 +64,32 @@ addHandler(sendServiceRouter, "post", addPrefix("/activation"), (req, res) => {
     return;
   }
   res.status(204).send();
-});
+};
+
+addHandler(
+  sendServiceRouter,
+  "get",
+  addApiCommunicationV1Prefix("/send/activation"),
+  (req: Request, res: Response) => {
+    const servicePreference = ServicesDB.getPreference(sendServiceId);
+    if (servicePreference == null) {
+      const problemJson = getProblemJson(
+        500,
+        "sendServiceId not found",
+        `Unable to retrieve Service preferences for sendServiceId (${sendServiceId})`
+      );
+      logExpressResponseWarning(500, problemJson);
+      res.status(500).json(problemJson);
+      return;
+    }
+
+    const payload: SendActivation = { activation_status: true };
+    res.status(200).json(payload);
+  }
+);
+addHandler(
+  sendServiceRouter,
+  "post",
+  addApiCommunicationV1Prefix("/send/activation"),
+  handlePostSendActivation
+);

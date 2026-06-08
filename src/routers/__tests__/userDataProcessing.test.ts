@@ -1,17 +1,19 @@
 import * as E from "fp-ts/lib/Either";
 import supertest from "supertest";
-import { ProblemJson } from "../../../generated/definitions/backend/ProblemJson";
-import { UserDataProcessing } from "../../../generated/definitions/backend/UserDataProcessing";
-import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/backend/UserDataProcessingChoice";
-import { UserDataProcessingStatusEnum } from "../../../generated/definitions/backend/UserDataProcessingStatus";
-import { basePath } from "../../payloads/response";
+import { ProblemJson } from "../../../generated/definitions/identity/ProblemJson";
+import { UserDataProcessing } from "../../../generated/definitions/identity/UserDataProcessing";
+import { UserDataProcessingChoiceEnum } from "../../../generated/definitions/identity/UserDataProcessingChoice";
+import { UserDataProcessingStatusEnum } from "../../../generated/definitions/identity/UserDataProcessingStatus";
+import { addApiIdentityV1Prefix } from "../../utils/strings";
 import app from "../../server";
 
 const request = supertest(app);
 /* eslint-disable */
 it("info should return ProblemJson with not found", async () => {
   const response = await request.get(
-    `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    addApiIdentityV1Prefix(
+      `/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    )
   );
   expect(response.status).toBe(404);
   const sr = ProblemJson.decode(response.body);
@@ -20,14 +22,16 @@ it("info should return ProblemJson with not found", async () => {
 
 it("Delete should return conflict error if DELETE status is undefined", async () => {
   const response = await request.delete(
-    `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    addApiIdentityV1Prefix(
+      `/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    )
   );
   expect(response.status).toBe(409);
 });
 
 it("Post should create a pending operation", async () => {
   const response = await request
-    .post(`${basePath}/user-data-processing`)
+    .post(addApiIdentityV1Prefix("/user-data-processing"))
     .send({ choice: UserDataProcessingChoiceEnum.DELETE })
     .set("Content-Type", "application/json");
   expect(response.status).toBe(200);
@@ -43,12 +47,16 @@ it("Post should create a pending operation", async () => {
 
 it("Delete should set the request as aborted if the choice is DELETE and status is PENDING", async () => {
   const response = await request.delete(
-    `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    addApiIdentityV1Prefix(
+      `/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    )
   );
   expect(response.status).toBe(202);
 
   const newStatus = await request.get(
-    `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    addApiIdentityV1Prefix(
+      `/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    )
   );
   const aborted: UserDataProcessing = {
     choice: UserDataProcessingChoiceEnum.DELETE,
@@ -62,14 +70,18 @@ it("Delete should set the request as aborted if the choice is DELETE and status 
 
 it("Delete should return conflict error if choice is DOWNLOAD", async () => {
   const response = await request.delete(
-    `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DOWNLOAD}`
+    addApiIdentityV1Prefix(
+      `/user-data-processing/${UserDataProcessingChoiceEnum.DOWNLOAD}`
+    )
   );
   expect(response.status).toBe(409);
 });
 
 it("Delete should return conflict error if DELETE status is ABORTED", async () => {
   const response = await request.delete(
-    `${basePath}/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    addApiIdentityV1Prefix(
+      `/user-data-processing/${UserDataProcessingChoiceEnum.DELETE}`
+    )
   );
   expect(response.status).toBe(409);
 });

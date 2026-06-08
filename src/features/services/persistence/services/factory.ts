@@ -6,8 +6,8 @@ import {
 import { fakerIT as faker } from "@faker-js/faker";
 import { validatePayload } from "../../../../utils/validator";
 import { frontMatter2CTA2 } from "../../../../utils/variables";
-import { ServiceId } from "../../../../../generated/definitions/backend/ServiceId";
-import { ServicePreference } from "../../../../../generated/definitions/backend/ServicePreference";
+import { ServiceId } from "../../../../../generated/definitions/services/ServiceId";
+import { ServicePreference } from "../../../../../generated/definitions/identity/ServicePreference";
 import { getRandomValue } from "../../../../utils/random";
 import { ServiceDetails } from "../../../../../generated/definitions/services/ServiceDetails";
 import { StandardServiceCategoryEnum } from "../../../../../generated/definitions/services/StandardServiceCategory";

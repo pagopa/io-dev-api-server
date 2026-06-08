@@ -7,30 +7,30 @@ import { __, match, not } from "ts-pattern";
 import { readableReportSimplified } from "@pagopa/ts-commons/lib/reporters";
 import { ParsedQs } from "qs";
 import { IoDevServerConfig } from "../../../types/config";
-import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
-import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
+import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/communication/CreatedMessageWithContentAndAttachments";
+import { PublicMessage } from "../../../../generated/definitions/communication/PublicMessage";
+import { CreatedMessageWithContentAndEnrichedData } from "../../../../generated/definitions/communication/CreatedMessageWithContentAndEnrichedData";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import { sendServiceId } from "../../pn/services/dataService";
 import { GetMessagesParameters } from "../../../types/parameters";
-import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
-import { MessageCategory } from "../../../../generated/definitions/backend/MessageCategory";
-import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
-import { TagEnum as TagEnumBase } from "../../../../generated/definitions/backend/MessageCategoryBase";
-import { TagEnum as TagEnumPayment } from "../../../../generated/definitions/backend/MessageCategoryPayment";
+import { CreatedMessageWithContent } from "../../../../generated/definitions/communication/CreatedMessageWithContent";
+import { MessageCategory } from "../../../../generated/definitions/communication/MessageCategory";
+import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/communication/ThirdPartyMessageWithContent";
+import { TagEnum as TagEnumBase } from "../../../../generated/definitions/communication/MessageCategoryBase";
+import { TagEnum as TagEnumPayment } from "../../../../generated/definitions/communication/MessageCategoryPayment";
 import {
   MessageCategoryPN,
   TagEnum as TagEnumPN
-} from "../../../../generated/definitions/backend/MessageCategoryPN";
+} from "../../../../generated/definitions/communication/MessageCategoryPN";
 import { rptIdFromServiceAndPaymentData } from "../../../utils/payment";
 import { ioDevServerConfig } from "../../../config";
 import { nextMessageIdAndCreationDate } from "../utils";
-import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
 import { APIKey } from "../../pn/models/APIKey";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { getProblemJson } from "../../../payloads/error";
 import { fileExists, isPDFFile } from "../../../utils/file";
-import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
+import { ThirdPartyAttachment } from "../../../../generated/definitions/communication/ThirdPartyAttachment";
 import {
   generateDocumentPath,
   generatePaymentDocumentPath

@@ -15,7 +15,7 @@ export const backendInfo = {
   version: "2.1.2"
 };
 
-// ref https://assets.cdn.io.pagopa.it/status/backend.json
+// ref https://assets.io.pagopa.it/status/backend.json
 export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
@@ -54,7 +54,36 @@ export const backendStatus: BackendStatus = {
       show_cgn_categories_modal: {
         android: "5.0.0.0",
         ios: "5.0.0.0"
-      }
+      },
+      show_cgn_engagement_banner: {
+        min_app_version: {
+          android: "1.0.0.0",
+          ios: "1.0.0.0"
+        },
+        description: {
+          "it-IT":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!",
+          "en-EN":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!",
+          "de-DE":
+            "Ottieni in pochi tap la tua Carta Giovani Nazionale. È gratis!"
+        },
+        title: {
+          "it-IT": "Sblocca tante opportunità dedicate a te!",
+          "en-EN": "Sblocca tante opportunità dedicate a te!",
+          "de-DE": "Sblocca tante opportunità dedicate a te!"
+        },
+        action: {
+          label: {
+            "it-IT": "Attiva Carta Giovani",
+            "en-EN": "Attiva Carta Giovani",
+            "de-DE": "Attiva Carta Giovani"
+          },
+          url: ""
+        }
+      },
+      eyca_base_url: "https://eyca.org",
+      eyca_discount_url: "https://eyca.org/discounts?country=IT"
     },
     fims: {
       domain: `${serverUrl}/fims/provider/`,
@@ -114,6 +143,14 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "1.2.3",
         android: "1.2.3"
+      },
+      security_level_check: {
+        min_app_version: {
+          ios: "3.40.0.0",
+          android: "3.40.0.0"
+        },
+        helpCenter_url:
+          "https://assistenza.ioapp.it/hc/it/articles/30722976684049-Cosa-sono-i-livelli-di-sicurezza"
       }
     },
     lollipop: {
@@ -129,7 +166,8 @@ export const backendStatus: BackendStatus = {
         ios: "2.35.0.1",
         android: "2.35.0.1"
       },
-      frontend_url: "https://cittadini.notifichedigitali.it",
+      frontend_url:
+        "https://cittadini.notifichedigitali.it/?utm_source=ioapp&utm_medium=app&utm_campaign=accesso_send",
       optInServiceId: sendOptInServiceId,
       notificationServiceId: sendServiceId,
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
@@ -149,6 +187,28 @@ export const backendStatus: BackendStatus = {
           min_app_version: {
             ios: "3.18.0.0",
             android: "3.18.0.0"
+          }
+        },
+        feedbackBanner: {
+          min_app_version: {
+            ios: "3.27.0.0",
+            android: "3.27.0.0"
+          },
+          title: {
+            "it-IT": "Puoi dirci com'è andata?",
+            "en-EN": ""
+          },
+          description: {
+            "it-IT":
+              "Raccontaci la tua esperienza con la notifica e aiutaci a migliorare.",
+            "en-EN": ""
+          },
+          action: {
+            label: {
+              "it-IT": "Vai al sondaggio",
+              "en-EN": ""
+            },
+            url: "https://pagopa.qualtrics.com/jfe/form/SV_3Da8BtgDTrrnAlo"
           }
         }
       },

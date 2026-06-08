@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { ioDevServerConfig } from "./config";
 import { messageRouter } from "./features/messages/routers/messagesRouter";
+import { communicationRouter } from "./features/messages/routers/messagesRouter";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { fastLoginMiddleware } from "./middleware/fastLoginMiddleware";
 import { cgnRouter } from "./routers/features/cgn";
@@ -48,6 +49,8 @@ import { sendLollipopLambdaRouter } from "./features/pn/routers/lollipopLambda";
 
 // create express server
 const app: Application = express();
+// Disable ETag to prevent 304 responses (native HTTP clients cache ETags automatically)
+app.set("etag", false);
 // parse body request as json
 app.use(bodyParser.json());
 app.use(express.text());
@@ -70,6 +73,7 @@ app.use(fastLoginMiddleware);
   profileRouter,
   sessionRouter,
   messageRouter,
+  communicationRouter,
   productionCrawlerRouter,
   serviceRouter,
   walletRouter,

@@ -1,4 +1,4 @@
-import { CreatedMessageWithContentAndEnrichedData } from "../../../generated/definitions/backend/CreatedMessageWithContentAndEnrichedData";
+import { CreatedMessageWithContentAndEnrichedData } from "../../../generated/definitions/communication/CreatedMessageWithContentAndEnrichedData";
 import MessagesDB from "../../features/messages/persistence/messagesDatabase";
 
 const buildMessage = (id: string) =>

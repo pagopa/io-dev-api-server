@@ -6,12 +6,12 @@ import {
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { enumType } from "@pagopa/ts-commons/lib/types";
 import * as t from "io-ts";
-import { EmailAddress } from "../../generated/definitions/backend/EmailAddress";
-import { ImportoEuroCents } from "../../generated/definitions/backend/ImportoEuroCents";
-import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
-import { PreferredLanguages } from "../../generated/definitions/backend/PreferredLanguages";
-import { PushNotificationsContentType } from "../../generated/definitions/backend/PushNotificationsContentType";
-import { ReminderStatus } from "../../generated/definitions/backend/ReminderStatus";
+import { EmailAddress } from "../../generated/definitions/identity/EmailAddress";
+import { AmountEuroCents as ImportoEuroCents } from "../../generated/definitions/pagopa/ecommerce/AmountEuroCents";
+import { PaymentFaultV2Enum } from "../../generated/definitions/communication/PaymentFaultV2";
+import { PreferredLanguages } from "../../generated/definitions/identity/PreferredLanguages";
+import { PushNotificationsContentType } from "../../generated/definitions/identity/PushNotificationsContentType";
+import { ReminderStatus } from "../../generated/definitions/identity/ReminderStatus";
 import { SubscriptionState } from "../../generated/definitions/trial_system/SubscriptionState";
 import { TrialId } from "../../generated/definitions/trial_system/TrialId";
 import { MessagesConfig } from "../features/messages/types/messagesConfig";
@@ -175,9 +175,15 @@ export const IoDevServerConfig = t.interface({
       // the outcode returned at the end of a payment
       paymentOutCode: t.number,
       // if defined attiva will serve the given error
-      attivaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      attivaError: enumType<PaymentFaultV2Enum>(
+        PaymentFaultV2Enum,
+        "detail_v2"
+      ),
       // if verifica attiva will serve the given error
-      verificaError: enumType<Detail_v2Enum>(Detail_v2Enum, "detail_v2"),
+      verificaError: enumType<PaymentFaultV2Enum>(
+        PaymentFaultV2Enum,
+        "detail_v2"
+      ),
       // configure the dummy payment
       payment: PaymentConfig
     }),

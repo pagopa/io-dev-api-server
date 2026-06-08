@@ -1,4 +1,4 @@
-import { SuccessResponse } from "../../generated/definitions/backend/SuccessResponse";
+import { SuccessResponse } from "../../generated/definitions/communication/SuccessResponse";
 import { validatePayload } from "../utils/validator";
 import { IOResponse } from "./response";
 

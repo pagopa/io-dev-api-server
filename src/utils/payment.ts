@@ -1,14 +1,8 @@
-import { pipe } from "fp-ts/lib/function";
-import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
-import {
-  DetailEnum,
-  Detail_v2Enum,
-  PaymentProblemJson
-} from "../../generated/definitions/backend/PaymentProblemJson";
-import { RptId } from "../../generated/definitions/backend/RptId";
-import { NotificationPaymentInfo } from "../features/pn/types/notificationPaymentInfo";
+import { PaymentDataBase } from "../../generated/definitions/communication/PaymentDataBase";
+import { PaymentDataWithRequiredPayee } from "../../generated/definitions/communication/PaymentDataWithRequiredPayee";
+import { PaymentFaultV2Enum } from "../../generated/definitions/communication/PaymentFaultV2";
 import { ServiceDetails } from "../../generated/definitions/services/ServiceDetails";
-import { PaymentData } from "../../generated/definitions/backend/PaymentData";
+import { NotificationPaymentInfo } from "../features/pn/types/notificationPaymentInfo";
 
 export const enum CreditCardBrandEnum {
   "VISAELECTRON" = "VISAELECTRON",
@@ -64,30 +58,21 @@ export const isOutcomeCodeSuccessfully = (
 
 export const rptIdFromPaymentDataWithRequiredPayee = (
   paymentDataWithRequiredPayee: PaymentDataWithRequiredPayee
-): RptId =>
+): string =>
   `${paymentDataWithRequiredPayee.payee.fiscal_code}${paymentDataWithRequiredPayee.notice_number}`;
 
 export const rptIdFromNotificationPaymentInfo = (
   notificationPaymentInfo: NotificationPaymentInfo
-): RptId =>
+): string =>
   `${notificationPaymentInfo.creditorTaxId}${notificationPaymentInfo.noticeCode}`;
 
 export const rptIdFromServiceAndPaymentData = (
   service: ServiceDetails,
-  paymentData: PaymentData
+  paymentData: PaymentDataBase
 ) => `${service.organization.fiscal_code}${paymentData.notice_number}`;
 
-export const isPaid = (paymentProblemJSON: PaymentProblemJson) =>
-  pipe(
-    paymentProblemJSON.detail_v2,
-    detail =>
-      detail === "PAA_PAGAMENTO_DUPLICATO" ||
-      detail === "PPT_PAGAMENTO_DUPLICATO"
-  );
-
 export const detailV2EnumToPaymentProblemJSON = (
-  details: Detail_v2Enum
-): PaymentProblemJson => ({
-  detail: DetailEnum.PAYMENT_UNKNOWN, // Legacy, it is the default value provided
+  details: PaymentFaultV2Enum
+): { detail_v2: PaymentFaultV2Enum } => ({
   detail_v2: details
 });
