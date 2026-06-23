@@ -398,6 +398,13 @@ export const backendStatus: BackendStatus = {
         itw: "https://pagopa.qualtrics.com/jfe/form/SV_3sMkRc6Jg9aarhY"
       }
     },
+    messages_feedback_banner: {
+      min_app_version: {
+        ios: "3.0.0.0",
+        android: "3.0.0.0"
+      },
+      feedback_uri: "https://pagopa.qualtrics.com/jfe/form/SV_0VCZTkYbfozt9ki"
+    },
     ioMarkdown: {
       min_app_version: {
         ios: "3.0.0.0",
