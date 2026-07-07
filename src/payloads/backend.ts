@@ -85,6 +85,13 @@ export const backendStatus: BackendStatus = {
       eyca_base_url: "https://eyca.org",
       eyca_discount_url: "https://eyca.org/discounts?country=IT"
     },
+    fse: {
+      landingBanner: {
+        is_dismissable: true,
+        engagement_url:
+          "https://www.fascicolosanitario.gov.it/portale/accedi-al-fascicolo"
+      }
+    },
     fims: {
       domain: `${serverUrl}/fims/provider/`,
       enabled: true,
@@ -379,6 +386,7 @@ export const backendStatus: BackendStatus = {
     },
     landing_banners: {
       priority_order: [
+        "FSE_ENGAGEMENT_BANNER",
         "OS_DISMISSION_REMINDER",
         "PUSH_NOTIFICATIONS_REMINDER",
         "SEND_ACTIVATION_REMINDER",
