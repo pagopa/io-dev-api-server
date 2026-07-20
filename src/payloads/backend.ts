@@ -413,12 +413,6 @@ export const backendStatus: BackendStatus = {
       },
       feedback_uri: "https://pagopa.qualtrics.com/jfe/form/SV_0VCZTkYbfozt9ki"
     },
-    ioMarkdown: {
-      min_app_version: {
-        ios: "3.0.0.0",
-        android: "3.0.0.0"
-      }
-    },
     zendeskCacBanner: {
       min_app_version: {
         ios: "0.0.0.0",
