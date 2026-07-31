@@ -355,6 +355,9 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    oneIdentity: {
+      rolloutPercentage: 0
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
