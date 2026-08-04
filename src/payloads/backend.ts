@@ -356,7 +356,15 @@ export const backendStatus: BackendStatus = {
       }
     },
     oneIdentity: {
-      rolloutPercentage: 0
+      rolloutPercentage: 0,
+      environments: {
+        prod: {
+          idpsUrl: "https://io.oneid.pagopa.it/idps"
+        },
+        uat: {
+          idpsUrl: "https://uat.io.oneid.pagopa.it/idps"
+        }
+      }
     },
     emailUniquenessValidation: {
       min_app_version: {
