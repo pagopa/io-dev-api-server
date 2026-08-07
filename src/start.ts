@@ -2,8 +2,6 @@ import child_process from "child_process";
 import chalk from "chalk";
 import { cli } from "cli-ux";
 import figlet from "figlet";
-import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/lib/Option";
 import { routes } from "./payloads/response";
 import populatePersistence from "./populate-persistence";
 import app from "./server";
@@ -28,12 +26,11 @@ app.listen(serverPort, serverHostname, async () => {
       description: {
         header: "description",
         get(row): string {
-          return pipe(
-            O.fromNullable(row.description),
-            // eslint-disable-next-line:no-nested-template-literals
-            O.map(d => `(${d})`),
-            O.getOrElse(() => "")
-          );
+          const description = row.description;
+          if (!description) {
+            return "";
+          }
+          return `(${description})`;
         }
       }
     });
