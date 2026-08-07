@@ -1,3 +1,5 @@
 # see https://help.github.com/en/articles/about-code-owners#example-of-a-codeowners-file
 
 * @pagopa/io-app @gispada @soixdev91 @emilio-dimari @Leerti
+
+/src/ @pagopa/io-app @Leerti
