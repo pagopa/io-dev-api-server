@@ -114,7 +114,8 @@ export const backendStatus: BackendStatus = {
           service_name: "Carta della Cultura - Onboarding"
         }
       ],
-      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"]
+      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"],
+      trackingEnrichedUrls: []
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -355,6 +356,17 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    oneIdentity: {
+      rolloutPercentage: 0,
+      environments: {
+        prod: {
+          idpsUrl: "https://io.oneid.pagopa.it/idps"
+        },
+        uat: {
+          idpsUrl: "https://uat.io.oneid.pagopa.it/idps"
+        }
+      }
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
@@ -412,12 +424,6 @@ export const backendStatus: BackendStatus = {
         android: "3.0.0.0"
       },
       feedback_uri: "https://pagopa.qualtrics.com/jfe/form/SV_0VCZTkYbfozt9ki"
-    },
-    ioMarkdown: {
-      min_app_version: {
-        ios: "3.0.0.0",
-        android: "3.0.0.0"
-      }
     },
     zendeskCacBanner: {
       min_app_version: {

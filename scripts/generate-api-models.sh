@@ -5,7 +5,7 @@ IO_BACKEND_VERSION=v20.0.0
 # (e.g. api_trial_system.yaml, UserMetadata, ServerInfo from api_backend.yaml)
 IO_BACKEND_LEGACY_VERSION=v17.5.2
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.105
+IO_SERVICES_METADATA_VERSION=1.1.3
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.23.1
 # Send Functions
@@ -35,7 +35,7 @@ declare -a noParams=(
 )
 
 declare -a noStrict=(
-  "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_sign.yaml"
+  "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-sign/refs/tags/io-func-sign-user@2.9.2/apps/io-func-sign-user/api/external.yaml"
   "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v3.10.2/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
   "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-services-cms/io-services-app-backend@$IO_SERVICES_APP_BACKEND/apps/app-backend/api/external.yaml"
 )
