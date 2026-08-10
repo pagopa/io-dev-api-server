@@ -114,7 +114,8 @@ export const backendStatus: BackendStatus = {
           service_name: "Carta della Cultura - Onboarding"
         }
       ],
-      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"]
+      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"],
+      trackingEnrichedUrls: []
     },
     premiumMessages: {
       opt_in_out_enabled: true
