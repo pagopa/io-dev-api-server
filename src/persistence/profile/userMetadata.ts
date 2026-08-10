@@ -2,16 +2,16 @@ import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import { Request } from "express";
-import { UserDataProcessing } from "../../../generated/definitions/backend/UserDataProcessing";
+import { UserDataProcessing } from "../../../generated/definitions/identity/UserDataProcessing";
 import {
   UserDataProcessingChoice,
   UserDataProcessingChoiceEnum
-} from "../../../generated/definitions/backend/UserDataProcessingChoice";
+} from "../../../generated/definitions/identity/UserDataProcessingChoice";
 import { CustomResponse, ResponseProblem } from "../../utils/responseTypes";
 import { getProblemJson } from "../../payloads/error";
 import { validatePayload } from "../../utils/validator";
-import { UserDataProcessingChoiceRequest } from "../../../generated/definitions/backend/UserDataProcessingChoiceRequest";
-import { UserDataProcessingStatusEnum } from "../../../generated/definitions/backend/UserDataProcessingStatus";
+import { UserDataProcessingChoiceRequest } from "../../../generated/definitions/identity/UserDataProcessingChoiceRequest";
+import { UserDataProcessingStatusEnum } from "../../../generated/definitions/identity/UserDataProcessingStatus";
 
 const initialUserChoice: UserDeleteDownloadData = {
   DOWNLOAD: undefined,

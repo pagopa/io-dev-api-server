@@ -6,7 +6,7 @@ import { Router } from "express";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import { ServicePreference } from "../../../../generated/definitions/backend/ServicePreference";
+import { ServicePreference } from "../../../../generated/definitions/identity/ServicePreference";
 import { Card } from "../../../../generated/definitions/cgn/Card";
 import { StatusEnum as ActivatedStatusEnum } from "../../../../generated/definitions/cgn/CardActivated";
 import {
@@ -23,16 +23,17 @@ import { EycaCard } from "../../../../generated/definitions/cgn/EycaCard";
 import { Otp } from "../../../../generated/definitions/cgn/Otp";
 import { ioDevServerConfig } from "../../../config";
 import { genRandomOtpCode } from "../../../features/cgn/utils";
-import { addHandler } from "../../../payloads/response";
 import { cgnServiceId } from "../../../features/services/persistence/services/special/cgn-service";
+import ServicesDB from "../../../features/services/persistence/servicesDatabase";
+import { addHandler } from "../../../payloads/response";
 import { getRandomStringId } from "../../../utils/id";
 import { getRandomValue } from "../../../utils/random";
-import { addApiV1Prefix } from "../../../utils/strings";
-import ServicesDB from "../../../features/services/persistence/servicesDatabase";
 
 export const cgnRouter = Router();
 
-const addPrefix = (path: string) => addApiV1Prefix(`/cgn${path}`);
+const CGN_PREFIX = "/api/cgn-card/v1";
+
+const addPrefix = (path: string) => `${CGN_PREFIX}${path}`;
 
 // eslint-disable-next-line functional/no-let
 let idActivationCgn: string | undefined;

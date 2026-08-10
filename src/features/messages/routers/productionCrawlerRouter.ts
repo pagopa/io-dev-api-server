@@ -3,11 +3,11 @@ import axios from "axios";
 import * as E from "fp-ts/lib/Either";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { Router } from "express";
-import { PublicMessage } from "../../../../generated/definitions/backend/PublicMessage";
-import { PaginatedPublicMessagesCollection } from "../../../../generated/definitions/backend/PaginatedPublicMessagesCollection";
-import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
+import { PaginatedPublicMessagesCollection } from "../../../../generated/definitions/communication/PaginatedPublicMessagesCollection";
+import { CreatedMessageWithContentAndAttachments } from "../../../../generated/definitions/communication/CreatedMessageWithContentAndAttachments";
 import { addHandler } from "../../../payloads/response";
 import { getProblemJson } from "../../../payloads/error";
+import { PublicMessage } from "../../../../generated/definitions/communication/PublicMessage";
 
 export const productionCrawlerRouter = Router();
 

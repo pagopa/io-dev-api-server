@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import { EmailAddress } from "../../../generated/definitions/backend/EmailAddress";
+import { EmailAddress } from "../../../generated/definitions/identity/EmailAddress";
 import {
   toPayload,
   validateAndCreatePayload,

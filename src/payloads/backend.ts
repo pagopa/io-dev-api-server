@@ -15,7 +15,7 @@ export const backendInfo = {
   version: "2.1.2"
 };
 
-// ref https://assets.cdn.io.pagopa.it/status/backend.json
+// ref https://assets.io.pagopa.it/status/backend.json
 export const backendStatus: BackendStatus = {
   is_alive: true,
   message: {
@@ -81,6 +81,15 @@ export const backendStatus: BackendStatus = {
           },
           url: ""
         }
+      },
+      eyca_base_url: "https://eyca.org",
+      eyca_discount_url: "https://eyca.org/discounts?country=IT"
+    },
+    fse: {
+      landingBanner: {
+        is_dismissable: true,
+        engagement_url:
+          "https://www.fascicolosanitario.gov.it/portale/accedi-al-fascicolo"
       }
     },
     fims: {
@@ -105,7 +114,8 @@ export const backendStatus: BackendStatus = {
           service_name: "Carta della Cultura - Onboarding"
         }
       ],
-      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"]
+      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"],
+      trackingEnrichedUrls: []
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -141,6 +151,14 @@ export const backendStatus: BackendStatus = {
       min_app_version: {
         ios: "1.2.3",
         android: "1.2.3"
+      },
+      security_level_check: {
+        min_app_version: {
+          ios: "3.40.0.0",
+          android: "3.40.0.0"
+        },
+        helpCenter_url:
+          "https://assistenza.ioapp.it/hc/it/articles/30722976684049-Cosa-sono-i-livelli-di-sicurezza"
       }
     },
     lollipop: {
@@ -156,7 +174,8 @@ export const backendStatus: BackendStatus = {
         ios: "2.35.0.1",
         android: "2.35.0.1"
       },
-      frontend_url: "https://cittadini.notifichedigitali.it",
+      frontend_url:
+        "https://cittadini.notifichedigitali.it/?utm_source=ioapp&utm_medium=app&utm_campaign=accesso_send",
       optInServiceId: sendOptInServiceId,
       notificationServiceId: sendServiceId,
       tos_url: "https://cittadini.notifichedigitali.it/termini-di-servizio",
@@ -337,6 +356,17 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    oneIdentity: {
+      rolloutPercentage: 0,
+      environments: {
+        prod: {
+          idpsUrl: "https://io.oneid.pagopa.it/idps"
+        },
+        uat: {
+          idpsUrl: "https://uat.io.oneid.pagopa.it/idps"
+        }
+      }
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
@@ -368,6 +398,7 @@ export const backendStatus: BackendStatus = {
     },
     landing_banners: {
       priority_order: [
+        "FSE_ENGAGEMENT_BANNER",
         "OS_DISMISSION_REMINDER",
         "PUSH_NOTIFICATIONS_REMINDER",
         "SEND_ACTIVATION_REMINDER",
@@ -387,11 +418,12 @@ export const backendStatus: BackendStatus = {
         itw: "https://pagopa.qualtrics.com/jfe/form/SV_3sMkRc6Jg9aarhY"
       }
     },
-    ioMarkdown: {
+    messages_feedback_banner: {
       min_app_version: {
         ios: "3.0.0.0",
         android: "3.0.0.0"
-      }
+      },
+      feedback_uri: "https://pagopa.qualtrics.com/jfe/form/SV_0VCZTkYbfozt9ki"
     },
     zendeskCacBanner: {
       min_app_version: {

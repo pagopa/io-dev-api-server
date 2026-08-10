@@ -7,20 +7,19 @@ import * as O from "fp-ts/lib/Option";
 import * as S from "fp-ts/lib/string";
 import { fakerIT as faker } from "@faker-js/faker";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { CreatedMessageWithContent } from "../../../../generated/definitions/backend/CreatedMessageWithContent";
-import { CreatedMessageWithoutContent } from "../../../../generated/definitions/backend/CreatedMessageWithoutContent";
-import { NewMessageContent } from "../../../../generated/definitions/backend/NewMessageContent";
-import { PaymentAmount } from "../../../../generated/definitions/backend/PaymentAmount";
-import { PaymentNoticeNumber } from "../../../../generated/definitions/backend/PaymentNoticeNumber";
-import { ThirdPartyAttachment } from "../../../../generated/definitions/backend/ThirdPartyAttachment";
-import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/backend/ThirdPartyMessageWithContent";
+import { CreatedMessageWithoutContent } from "../../../../generated/definitions/communication/CreatedMessageWithoutContent";
+import { NewMessageContent } from "../../../../generated/definitions/communication/NewMessageContent";
+import { PaymentAmount } from "../../../../generated/definitions/communication/PaymentAmount";
+import { PaymentNoticeNumber } from "../../../../generated/definitions/communication/PaymentNoticeNumber";
+import { ThirdPartyAttachment } from "../../../../generated/definitions/communication/ThirdPartyAttachment";
+import { ThirdPartyMessageWithContent } from "../../../../generated/definitions/communication/ThirdPartyMessageWithContent";
 import { assetsFolder } from "../../../config";
 import { contentTypeMapping, listDir } from "../../../utils/file";
 import { getRandomIntInRange } from "../../../utils/id";
 import { validatePayload } from "../../../utils/validator";
-import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/backend/ThirdPartyMessagePrecondition";
+import { ThirdPartyMessagePrecondition } from "../../../../generated/definitions/communication/ThirdPartyMessagePrecondition";
 import { ServiceDetails } from "../../../../generated/definitions/services/ServiceDetails";
-import { FiscalCode } from "../../../../generated/definitions/backend/FiscalCode";
+import { FiscalCode } from "../../../../generated/definitions/communication/FiscalCode";
 import ServicesDB from "../../services/persistence/servicesDatabase";
 import { PaymentsDatabase } from "../../../persistence/payments";
 import { AttachmentCategory } from "../types/attachmentCategory";
@@ -31,7 +30,8 @@ import {
 } from "../types/messageTemplate";
 import { LegacyGreenPass } from "../types/LegacyGreenPass";
 import { nextMessageIdAndCreationDate } from "../utils";
-import { HasPreconditionEnum } from "../../../../generated/definitions/backend/HasPrecondition";
+import { HasPreconditionEnum } from "../../../../generated/definitions/communication/HasPrecondition";
+import { CreatedMessageWithContent } from "../../../../generated/definitions/communication/CreatedMessageWithContent";
 
 /**
  * Generate basic message data based on fiscal code, sender ID, and time to live

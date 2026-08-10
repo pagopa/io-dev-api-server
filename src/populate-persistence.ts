@@ -7,11 +7,11 @@ import * as O from "fp-ts/lib/Option";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { fakerIT as faker } from "@faker-js/faker";
 import _ from "lodash";
-import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/backend/CreatedMessageWithContentAndAttachments";
-import { ThirdPartyMessageWithContent } from "../generated/definitions/backend/ThirdPartyMessageWithContent";
-import { FiscalCode } from "../generated/definitions/backend/FiscalCode";
-import { CreatedMessageWithContent } from "../generated/definitions/backend/CreatedMessageWithContent";
-import { MessageStatusAttributes } from "../generated/definitions/backend/MessageStatusAttributes";
+import { CreatedMessageWithContentAndAttachments } from "../generated/definitions/communication/CreatedMessageWithContentAndAttachments";
+import { ThirdPartyMessageWithContent } from "../generated/definitions/communication/ThirdPartyMessageWithContent";
+import { FiscalCode } from "../generated/definitions/communication/FiscalCode";
+import { CreatedMessageWithContent } from "../generated/definitions/communication/CreatedMessageWithContent";
+import { MessageStatusAttributes } from "../generated/definitions/communication/MessageStatusAttributes";
 import { ioDevServerConfig } from "./config";
 import {
   createMessage,

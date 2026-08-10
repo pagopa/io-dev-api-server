@@ -6,12 +6,14 @@ import * as O from "fp-ts/lib/Option";
 import { contramap } from "fp-ts/lib/Ord";
 import { Ord } from "fp-ts/lib/boolean";
 import { pipe } from "fp-ts/lib/function";
+
 import { DiscountBucketCode } from "../../../../generated/definitions/cgn/merchants/DiscountBucketCode";
 import { OfflineMerchant } from "../../../../generated/definitions/cgn/merchants/OfflineMerchant";
 import { OfflineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OfflineMerchantSearchRequest";
 import { OnlineMerchant } from "../../../../generated/definitions/cgn/merchants/OnlineMerchant";
 import { OnlineMerchantSearchRequest } from "../../../../generated/definitions/cgn/merchants/OnlineMerchantSearchRequest";
 import { ProductCategoryEnum } from "../../../../generated/definitions/cgn/merchants/ProductCategory";
+import { SearchRequest } from "../../../../generated/definitions/cgn/merchants/SearchRequest";
 import { getProblemJson } from "../../../payloads/error";
 import {
   generateMerchantsAll,
@@ -20,14 +22,13 @@ import {
 } from "../../../payloads/features/cgn/merchants";
 import { addHandler } from "../../../payloads/response";
 import { sendFileFromRootPath } from "../../../utils/file";
-import { addApiV1Prefix } from "../../../utils/strings";
 import { publicRouter } from "../../public";
-import { SearchRequest } from "../../../../generated/definitions/cgn/merchants/SearchRequest";
 
 export const cgnMerchantsRouter = Router();
 
-const addPrefix = (path: string) =>
-  addApiV1Prefix(`/cgn/operator-search${path}`);
+const MERCHANTS_PREFIX = "/api/cgn-search/v1";
+
+const addPrefix = (path: string) => `${MERCHANTS_PREFIX}${path}`;
 
 const merchantsAll = generateMerchantsAll();
 

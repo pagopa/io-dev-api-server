@@ -15,8 +15,7 @@ import {
   SendTimelineConfig
 } from "../types/sendConfig";
 import { Document, DocumentCategory } from "../models/Document";
-import { OrganizationName } from "../../../../generated/definitions/backend/OrganizationName";
-import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentFaultV2Enum } from "../../../../generated/definitions/communication/PaymentFaultV2";
 import { IPaymentsDatabase } from "../../../persistence/payments";
 import { IDocumentsRepository } from "./documentRepository";
 
@@ -177,25 +176,25 @@ const recipientsFromPaymentsConfig = (
         case "EXPIRED":
           paymentsDatabase.createProcessedPayment(
             rptId,
-            Detail_v2Enum.PAA_PAGAMENTO_SCADUTO
+            PaymentFaultV2Enum.PAA_PAGAMENTO_SCADUTO
           );
           break;
         case "ONGOING":
           paymentsDatabase.createProcessedPayment(
             rptId,
-            Detail_v2Enum.PPT_PAGAMENTO_IN_CORSO
+            PaymentFaultV2Enum.PPT_PAGAMENTO_IN_CORSO
           );
           break;
         case "PAID":
           paymentsDatabase.createProcessedPayment(
             rptId,
-            Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO
+            PaymentFaultV2Enum.PAA_PAGAMENTO_DUPLICATO
           );
           break;
         case "REVOKED":
           paymentsDatabase.createProcessedPayment(
             rptId,
-            Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO
+            PaymentFaultV2Enum.PAA_PAGAMENTO_ANNULLATO
           );
           break;
         case "TOPAY":
@@ -204,13 +203,13 @@ const recipientsFromPaymentsConfig = (
             rptId,
             paymentDataEither.right.amount,
             organizationFiscalCode,
-            organizationName as OrganizationName
+            organizationName
           );
           break;
         default:
           paymentsDatabase.createProcessedPayment(
             rptId,
-            Detail_v2Enum.GENERIC_ERROR
+            PaymentFaultV2Enum.GENERIC_ERROR
           );
           break;
       }

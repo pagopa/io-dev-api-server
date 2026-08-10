@@ -5,7 +5,7 @@ import { fakerIT as faker } from "@faker-js/faker";
 import { ExpressFailure } from "../../../utils/expressDTO";
 import { PaymentsDatabase } from "../../../persistence/payments";
 import { isProcessedPayment } from "../../../types/PaymentStatus";
-import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentFaultV2Enum } from "../../../../generated/definitions/communication/PaymentFaultV2";
 import { NotificationRepository } from "../repositories/notificationRepository";
 import { getProblemJson } from "../../../payloads/error";
 import { PreconditionContent } from "../../../../generated/definitions/pn/PreconditionContent";
@@ -136,9 +136,9 @@ const completedPaymentsFromNotification = (notification: Notification) =>
             if (isProcessedPayment(paymentStatus)) {
               return (
                 paymentStatus.status.detail_v2 ===
-                  Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO ||
+                  PaymentFaultV2Enum.PAA_PAGAMENTO_DUPLICATO ||
                 paymentStatus.status.detail_v2 ===
-                  Detail_v2Enum.PPT_PAGAMENTO_DUPLICATO
+                  PaymentFaultV2Enum.PPT_PAGAMENTO_DUPLICATO
               );
             }
           }

@@ -11,7 +11,7 @@ import { GuestMethodLastUsageTypeEnum } from "../../../../generated/definitions/
 import { WalletLastUsageTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/WalletLastUsageType";
 import { WalletDetailTypeEnum } from "../../../../generated/definitions/pagopa/ecommerce/WalletDetailType";
 import { RptId } from "../../../../generated/definitions/pagopa/ecommerce/RptId";
-import { Detail_v2Enum } from "../../../../generated/definitions/backend/PaymentProblemJson";
+import { PaymentFaultV2Enum } from "../../../../generated/definitions/communication/PaymentFaultV2";
 import { ioDevServerConfig } from "../../../config";
 import { serverUrl } from "../../../utils/server";
 import { getPaymentRequestsGetResponse } from "../payloads/payments";
@@ -87,21 +87,9 @@ addPaymentHandler("get", "/payment-requests/:rpt_id", (req, res) =>
                             processedPayment.status.detail_v2
                           )
                         ),
-                    processablePayment => {
+                    ({ data }) => {
                       latestPaymentRequestId = rptId;
-                      return res.status(200).send({
-                        rptId: processablePayment.data.codiceContestoPagamento,
-                        amount:
-                          processablePayment.data.importoSingoloVersamento,
-                        paFiscalCode:
-                          processablePayment.data.enteBeneficiario
-                            ?.identificativoUnivocoBeneficiario,
-                        paName:
-                          processablePayment.data.enteBeneficiario
-                            ?.denominazioneBeneficiario,
-                        description: processablePayment.data.causaleVersamento,
-                        dueDate: processablePayment.data.dueDate
-                      });
+                      return res.status(200).send(data);
                     }
                   )
                 )
@@ -329,22 +317,22 @@ addPaymentHandler("post", "/private/finalizePayment", (req, res) => {
   res.sendStatus(200);
 });
 
-const mapOutcomeCodeToDetailsV2Enum = (outcome: number): Detail_v2Enum => {
+const mapOutcomeCodeToDetailsV2Enum = (outcome: number): PaymentFaultV2Enum => {
   switch (outcome) {
     case 0:
-      return Detail_v2Enum.PAA_PAGAMENTO_DUPLICATO;
+      return PaymentFaultV2Enum.PAA_PAGAMENTO_DUPLICATO;
     case 2:
-      return Detail_v2Enum.PPT_AUTENTICAZIONE;
+      return PaymentFaultV2Enum.PPT_AUTENTICAZIONE;
     case 3:
-      return Detail_v2Enum.PPT_ERRORE_EMESSO_DA_PAA;
+      return PaymentFaultV2Enum.PPT_ERRORE_EMESSO_DA_PAA;
     case 8:
-      return Detail_v2Enum.PAA_PAGAMENTO_ANNULLATO;
+      return PaymentFaultV2Enum.PAA_PAGAMENTO_ANNULLATO;
     case 11:
-      return Detail_v2Enum.PAA_PAGAMENTO_SCONOSCIUTO;
+      return PaymentFaultV2Enum.PAA_PAGAMENTO_SCONOSCIUTO;
     case 13:
-      return Detail_v2Enum.PAA_PAGAMENTO_IN_CORSO;
+      return PaymentFaultV2Enum.PAA_PAGAMENTO_IN_CORSO;
     case 18:
-      return Detail_v2Enum.PAA_PAGAMENTO_SCADUTO;
+      return PaymentFaultV2Enum.PAA_PAGAMENTO_SCADUTO;
   }
-  return Detail_v2Enum.GENERIC_ERROR;
+  return PaymentFaultV2Enum.GENERIC_ERROR;
 };

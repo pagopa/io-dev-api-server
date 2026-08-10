@@ -1,33 +1,24 @@
+import { fakerIT as faker } from "@faker-js/faker";
+import { OrganizationFiscalCode } from "@pagopa/ts-commons/lib/strings";
+import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import * as E from "fp-ts/lib/Either";
-import { fakerIT as faker } from "@faker-js/faker";
-import {
-  NonEmptyString,
-  OrganizationFiscalCode
-} from "@pagopa/ts-commons/lib/strings";
-import { getRandomIntInRange } from "../utils/id";
-import { PaymentNoticeNumber } from "../../generated/definitions/backend/PaymentNoticeNumber";
-import { PaymentAmount } from "../../generated/definitions/backend/PaymentAmount";
-import { PaymentDataWithRequiredPayee } from "../../generated/definitions/backend/PaymentDataWithRequiredPayee";
-import { decodePayload } from "../utils/validator";
-import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
-import { EnteBeneficiario } from "../../generated/definitions/backend/EnteBeneficiario";
-import { OrganizationName } from "../../generated/definitions/backend/OrganizationName";
-import { RptId } from "../../generated/definitions/backend/RptId";
-import { Detail_v2Enum } from "../../generated/definitions/backend/PaymentProblemJson";
-import { CodiceContestoPagamento } from "../../generated/definitions/backend/CodiceContestoPagamento";
-import { Iban } from "../../generated/definitions/backend/Iban";
-import { SpezzoniCausaleVersamentoItem } from "../../generated/definitions/backend/SpezzoniCausaleVersamentoItem";
+import { PaymentAmount } from "../../generated/definitions/communication/PaymentAmount";
+import { PaymentDataWithRequiredPayee } from "../../generated/definitions/communication/PaymentDataWithRequiredPayee";
+import { PaymentFaultV2Enum } from "../../generated/definitions/communication/PaymentFaultV2";
+import { PaymentNoticeNumber } from "../../generated/definitions/communication/PaymentNoticeNumber";
 import {
   PaymentStatus,
   processablePayment,
   processedPayment
 } from "../types/PaymentStatus";
+import { PaymentInfoResponse } from "../../generated/definitions/communication/PaymentInfoResponse";
+import { getRandomIntInRange } from "../utils/id";
 import {
   detailV2EnumToPaymentProblemJSON,
   rptIdFromPaymentDataWithRequiredPayee
 } from "../utils/payment";
+import { decodePayload } from "../utils/validator";
 
 const paymentData = new Map<string, PaymentDataWithRequiredPayee>();
 const paymentStatuses = new Map<string, PaymentStatus>();
@@ -42,7 +33,7 @@ const addOrUpdatePayment = (
   );
 
 const addOrUpdatePaymentStatus = (
-  rptId: RptId,
+  rptId: string,
   paymentStatus: PaymentStatus
 ): PaymentStatus =>
   pipe(paymentStatuses.set(rptId, paymentStatus), _ => paymentStatus);
@@ -70,45 +61,28 @@ const createPaymentData = (
   );
 
 const createProcessablePayment = (
-  rptId: RptId,
+  rptId: string,
   amount: PaymentAmount,
   organizationFiscalCode: OrganizationFiscalCode,
-  organizationName: OrganizationName,
-  nativeDueDate: Date = faker.date.soon(),
-  organizationUnitName: NonEmptyString = faker.string.alphanumeric(
-    3
-  ) as NonEmptyString,
-  paymentContextCode: CodiceContestoPagamento = faker.string.alphanumeric(
-    32
-  ) as CodiceContestoPagamento,
-  iban: Iban = faker.finance.iban() as Iban,
-  paymentShortReason: SpezzoniCausaleVersamentoItem = faker.commerce.product() as SpezzoniCausaleVersamentoItem
+  organizationName: string,
+  nativeDueDate: Date = faker.date.soon()
 ): PaymentStatus =>
   pipe(
     {
-      importoSingoloVersamento: amount,
-      codiceContestoPagamento: paymentContextCode,
-      ibanAccredito: iban,
-      causaleVersamento: faker.finance.transactionDescription(),
-      enteBeneficiario: {
-        identificativoUnivocoBeneficiario: organizationFiscalCode,
-        denominazioneBeneficiario: organizationName,
-        denomUnitOperBeneficiario: organizationUnitName
-      } as EnteBeneficiario,
-      spezzoniCausaleVersamento: [
-        {
-          spezzoneCausaleVersamento: paymentShortReason
-        }
-      ],
-      dueDate: nativeDueDate.toISOString().split("T")[0]
-    } as PaymentRequestsGetResponse,
+      rptId,
+      amount: amount as unknown as PaymentInfoResponse["amount"],
+      description: faker.finance.transactionDescription(),
+      dueDate: nativeDueDate.toISOString().split("T")[0],
+      paFiscalCode: organizationFiscalCode,
+      paName: organizationName
+    } as PaymentInfoResponse,
     processablePayment,
     processablePayment => addOrUpdatePaymentStatus(rptId, processablePayment)
   );
 
 const createProcessedPayment = (
-  rptId: RptId,
-  details: Detail_v2Enum
+  rptId: string,
+  details: PaymentFaultV2Enum
 ): PaymentStatus =>
   pipe(
     details,
@@ -117,7 +91,7 @@ const createProcessedPayment = (
     processedPayment => addOrUpdatePaymentStatus(rptId, processedPayment)
   );
 
-const getPaymentStatus = (rptId: RptId): O.Option<PaymentStatus> =>
+const getPaymentStatus = (rptId: string): O.Option<PaymentStatus> =>
   pipe(paymentStatuses.get(rptId), O.fromNullable);
 
 export interface IPaymentsDatabase {
@@ -128,21 +102,17 @@ export interface IPaymentsDatabase {
     amount?: PaymentAmount
   ) => E.Either<string[], PaymentDataWithRequiredPayee>;
   createProcessablePayment: (
-    rptId: RptId,
+    rptId: string,
     amount: PaymentAmount,
     organizationFiscalCode: OrganizationFiscalCode,
-    organizationName: OrganizationName,
-    nativeDueDate?: Date,
-    organizationUnitName?: NonEmptyString,
-    paymentContextCode?: CodiceContestoPagamento,
-    iban?: Iban,
-    paymentShortReason?: SpezzoniCausaleVersamentoItem
+    organizationName: string,
+    nativeDueDate?: Date
   ) => PaymentStatus;
   createProcessedPayment: (
-    rptId: RptId,
-    details: Detail_v2Enum
+    rptId: string,
+    details: PaymentFaultV2Enum
   ) => PaymentStatus;
-  getPaymentStatus: (rptId: RptId) => O.Option<PaymentStatus>;
+  getPaymentStatus: (rptId: string) => O.Option<PaymentStatus>;
 }
 
 export const PaymentsDatabase: IPaymentsDatabase = {

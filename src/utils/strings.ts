@@ -27,3 +27,10 @@ const createNamespaceVersionPrefixer =
 
 export const addApiV1Prefix = (path: string) => `${basePath}${path}`;
 export const addApiAuthV1Prefix = createNamespaceVersionPrefixer("auth");
+export const addApiCatalogV1Prefix = createNamespaceVersionPrefixer("catalog");
+export const addApiCommunicationV1Prefix =
+  createNamespaceVersionPrefixer("communication");
+export const addApiIdentityV1Prefix =
+  createNamespaceVersionPrefixer("identity");
+export const addApiFimsV1Prefix = createNamespaceVersionPrefixer("fims");
+export const addApiSignV1Prefix = createNamespaceVersionPrefixer("sign");

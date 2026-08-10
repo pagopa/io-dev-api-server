@@ -252,6 +252,33 @@
             ]
          },
          {
+            "route_name": "AUTHENTICATION_IDP_LOGIN_ACTIVE_SESSION_LOGIN",
+            "title": "Le tue credenziali",
+            "content": "Per entrare su IO, devi inserire il nome utente e la password che hai scelto per SPID. Una volta fatto, conferma la richiesta di accesso tramite codice OTP o nell’app del tuo Identity Provider, poi torna sull’app IO per proseguire.",
+            "faqs": [
+               {
+                  "title": "Qual è la mia password?",
+                  "body": "È il codice alfanumerico che hai impostato quando hai attivato SPID."
+               },
+               {
+                  "title": "Ho perso le mie credenziali SPID. Come posso fare?",
+                  "body": "Vai [in questa pagina](https://assistenza.ioapp.it/hc/it/sections/30616637679505-Accesso-con-SPID) e scegli il tuo Identity Provider dall’elenco per trovare tutte le indicazioni."
+               },
+               {
+                  "title": "Ho fatto tutto correttamente ma non riesco ad entrare. Cosa posso fare?",
+                  "body": "In questo caso, vai in fondo a questa pagina e seleziona ‘Apri una richiesta’ per scriverci: la nostra Assistenza ti aiuterà a risolvere il problema."
+               },
+               {
+                  "title": "Come viene tutelata la mia privacy?",
+                  "body": "L’app IO è stata concepita e sviluppata secondo i principi del [Regolamento generale sulla protezione dei dati](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), conosciuto anche come GDPR, e del [Codice privacy italiano](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). È quindi uno strumento sicuro che protegge le tue informazioni e i tuoi diritti."
+               },
+               {
+                  "title": "Ho problemi ad accedere con SPID da un dispositivo con sistema operativo Android. Cosa posso fare?",
+                  "body": "Su alcuni dispositivi con sistema operativo Android, l’app IO potrebbe bloccarsi o riavviarsi inaspettatamente quando la usi insieme ad altre app, ad esempio quando provi ad accedere con SPID tramite l’app del tuo Identity Provider. Se hai riscontrato questo problema, segui questi passaggi:\n\n1- tocca e tieni premuta l'icona dell'app IO per alcuni secondi;\n2- seleziona '**App Info**' dal menu che compare;\n3- scorri verso il basso e seleziona '**Risparmio energetico**' o '**Batteria**' (può variare a seconda del dispositivo);\n4- seleziona l'opzione '**Nessuna restrizione**' o '**Senza limitazioni**' o comunque disattiva l'ottimizzazione dell'uso batteria per app IO (può variare a seconda del dispositivo);\n5- riavvia l’app e prova nuovamente ad accedere con SPID."
+               }
+            ]
+            },
+         {
             "route_name": "AUTHENTICATION_LANDING",
             "title": "Come accedere a IO",
             "content": "Per accedere a IO, puoi scegliere di autenticarti con la tua identità SPID, con la Carta d'Identità Elettronica (CIE) o con l’app CieID. Se non hai SPID, segui la procedura che trovi [in questo sito](https://www.spid.gov.it/cos-e-spid/come-attivare-spid/). Per richiedere la Carta d’identità Elettronica, vai sul sito del tuo Comune.",
@@ -1866,6 +1893,29 @@
                   "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). It is therefore a secure tool that protects your information and your rights."
                }
             ]
+         },   
+         {
+            "route_name": "AUTHENTICATION_IDP_LOGIN_ACTIVE_SESSION_LOGIN",
+            "title": "Your credentials",
+            "content": "To log into IO app, you must enter the username and password you chose for SPID. Once done, confirm the login request via OTP or in your Identity Provider's app, then return to the IO app to continue.",
+            "faqs": [
+               {
+                  "title": "What's my password?",
+                  "body": "È il codice alfanumerico che hai impostato quando hai attivato SPID."
+               },
+               {
+                  "title": "I forgot my SPID credentials. What can I do?",
+                  "body": "You can recover your username and password at any time. Choose your Identity Provider from the list to find out how to proceed:\n\n [Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx)\n- [EtnaID](https://etnaid.eht.eu/signup/forgotPassword)\n- [Infocamere](https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryEmergencyCode)\n- [Infocert](https://my.infocert.it/selfcare/#/recoveryPin)\n- [Intesi Group](https://www.intesigroup.com/it/spid/)\n- [Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)\n- [Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php)\n- [Poste](https://posteid.poste.it/recuperocredenziali.shtml)\n- [SpidItalia,in case of forgotten username](https://spid.register.it/selfcare/recovery/username)\n -[SpidItalia,in case of forgotten password](https://spid.register.it/selfcare/recovery/password)\n -[Sielte](https://myid.sieltecloud.it/profile/recovery/forgotPassword)\n -[Tim,in case of forgotten username](https://id.tim.it/secure-proxy/fu)\n -[Tim, in case of forgotten password](https://id.tim.it/secure-proxy/fp)\n -[TeamSystem,in case of forgotten username](https://spid.teamsystem.com/it/auth/usernameLost)\n -[TeamSystem, in case of forgotten password](https://spid.teamsystem.com/it/auth/passwordLost)"
+               },
+               {
+                  "title": "I did everything right but I can't log in. What can I do?",
+                  "body": "In this case, go to the bottom of this page and select 'Open a request' to write to us: our Support will help you solve the problem."
+               },
+               {
+                  "title": "How is my privacy protected?",
+                  "body": "The IO app is designed and developed in compliance with the principles of the [General Data Protection Regulation](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679&from=EN), also known as GDPR, and the [Italian Privacy Code](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=). It is therefore a secure tool that protects your information and your rights."
+               }
+            ]
          },
          {
             "route_name": "AUTHENTICATION_LANDING",
@@ -2721,6 +2771,33 @@
          },
          {
             "route_name": "AUTHENTICATION_IDP_LOGIN",
+            "title": "Deine Zugangsdaten",
+            "content": "Um sich bei IO über SPID anzumelden, musst du deinen Benutzernamen und dein Passwort eingeben. Bestätige dann die Anmeldeanfrage per OTP oder in der App deines Identity Providers und kehre zur IO-App zurück.",
+            "faqs": [
+               {
+                  "title": "Wie lautet mein Passwort?",
+                  "body": "Dies ist der alphanumerische Code, den du bei der Aktivierung von SPID festgelegt hast."
+               },
+               {
+                  "title": "Ich habe meine SPID-Anmeldedaten verloren. Was kann ich tun?",
+                  "body": "Du kannst deinen Benutzernamen und dein Passwort jederzeit wiederherstellen. Wähle deinen Identitätsanbieter aus der Liste, um zu erfahren, wie du vorgehen musst:\n -[Aruba](https://guide.pec.it/spid/recupero-dati/procedure-di-recupero-dati-smarriti.aspx)\n -[EtnaID](https://etnaid.eht.eu/signup/forgotPassword)\n -[Infocamere](https://selfcarespid.infocamere.it/spid-selfCare/#RecoveryEmergencyCode)\n -[Infocert](https://my.infocert.it/selfcare/#/recoveryPin)\n- [Intesi Group](https://www.intesigroup.com/it/spid/)\n -[Lepida](https://id.lepida.it/idm/app/recupero_credenziali.jsp)\n -[Namirial](https://portale.namirialtsp.com/private/user/spid_reset.php)\n -[Poste](https://posteid.poste.it/recuperocredenziali.shtml)\n -[Register, wenn du deinen Benutzernamen vergessen hast](https://spid.register.it/selfcare/recovery/username)\n -[Register, wenn du dein Passwort vergessen hast](https://spid.register.it/selfcare/recovery/password)\n -[Sielte](https://myid.sieltecloud.it/profile/recovery/forgotPassword)\n -[Tim, wenn du deinen Benutzernamen vergessen hast](https://id.tim.it/secure-proxy/fu)\n -[Tim, wenn du dein Passwort vergessen hast](https://id.tim.it/secure-proxy/fp)\n -[TeamSystem, wenn du deinen Benutzernamen vergessen hast](https://spid.teamsystem.com/it/auth/usernameLost)\n -[TeamSystem, wenn du dein Passwort vergessen hast](https://spid.teamsystem.com/it/auth/passwordLost)."
+               },
+               {
+                  "title": "Ich habe alles richtig gemacht, aber ich komme nicht rein. Was kann ich tun?",
+                  "body": "Wenn dies der Fall ist, geh zum Ende dieser Seite und wähle 'Ticket erstellen', um uns zu schreiben: Unser Support wird dir helfen, das Problem zu lösen."
+               },
+               {
+                  "title": "Wie wird meine Privatsphäre geschützt?",
+                  "body": "Die IO-App wurde nach den Grundsätzen der [Datenschutz-Grundverordnung](https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679&from=EN), auch bekannt als GDPR, und des [Italienischen Datenschutzgesetzes](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-06-30;196!vig=) konzipiert und entwickelt. Sie ist daher ein sicheres Werkzeug, das deine Daten und deine Rechte schützt."
+               },
+               {
+                  "title": "Ich habe Probleme, mich mit SPID von einem Android-Gerät aus anzumelden. Was kann ich tun?",
+                  "body": "Auf einigen Geräten mit Android-Betriebssystem kann die IO-App abstürzen oder unerwartet neu gestartet werden, wenn sie in Verbindung mit anderen Apps verwendet wird, z. B. wenn du versuchst, dich mit SPID über die App deines Identitätsanbieters anzumelden. Wenn dieses Problem auftritt, führe bitte die folgenden Schritte aus: \n\n1- tippe auf das IO-App-Symbol und halte es einige Sekunden lang gedrückt;\n2- wähle im angezeigten Menü die Option '**App-Info**' aus;\n3- scrolle nach unten und wähle '**Energiesparen**' oder '**Batterie**' (kann je nach Gerät variieren); \n4- wähle die Option '**Keine Einschränkungen**' oder '**Keine Beschränkungen**' oder deaktiviere auf andere Weise die Optimierung des Akkuverbrauchs für IO (kann je nach Gerät variieren); \n5- starte die App neu und versuche erneut, dich mit SPID anzumelden."
+               }
+            ]
+         }, 
+         {
+            "route_name": "AUTHENTICATION_IDP_LOGIN_ACTIVE_SESSION_LOGIN",
             "title": "Deine Zugangsdaten",
             "content": "Um sich bei IO über SPID anzumelden, musst du deinen Benutzernamen und dein Passwort eingeben. Bestätige dann die Anmeldeanfrage per OTP oder in der App deines Identity Providers und kehre zur IO-App zurück.",
             "faqs": [

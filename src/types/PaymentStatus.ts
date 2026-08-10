@@ -1,14 +1,14 @@
-import { PaymentProblemJson } from "../../generated/definitions/backend/PaymentProblemJson";
-import { PaymentRequestsGetResponse } from "../../generated/definitions/backend/PaymentRequestsGetResponse";
+import { PaymentFaultV2Enum } from "../../generated/definitions/communication/PaymentFaultV2";
+import { PaymentInfoResponse } from "../../generated/definitions/communication/PaymentInfoResponse";
 
 export interface ProcessablePayment {
   readonly type: "processable";
-  readonly data: PaymentRequestsGetResponse;
+  readonly data: PaymentInfoResponse;
 }
 
 export interface ProcessedPayment {
   readonly type: "processed";
-  readonly status: PaymentProblemJson;
+  readonly status: { detail_v2: PaymentFaultV2Enum };
 }
 
 export declare type PaymentStatus = ProcessablePayment | ProcessedPayment;
@@ -21,14 +21,14 @@ export const isProcessedPayment = (
 ): paymentStatus is ProcessedPayment => paymentStatus.type === "processed";
 
 export const processablePayment = (
-  paymentRequestsGetResponse: PaymentRequestsGetResponse
+  data: PaymentInfoResponse
 ): ProcessablePayment => ({
   type: "processable",
-  data: paymentRequestsGetResponse
+  data
 });
-export const processedPayment = (
-  status: PaymentProblemJson
-): ProcessedPayment => ({
+export const processedPayment = (status: {
+  detail_v2: PaymentFaultV2Enum;
+}): ProcessedPayment => ({
   type: "processed",
   status
 });

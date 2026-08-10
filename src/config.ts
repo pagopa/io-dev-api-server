@@ -6,10 +6,10 @@ import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import chalk from "chalk";
 import * as E from "fp-ts/lib/Either";
 import _ from "lodash";
-import { EmailAddress } from "../generated/definitions/backend/EmailAddress";
-import { PreferredLanguageEnum } from "../generated/definitions/backend/PreferredLanguage";
-import { PushNotificationsContentTypeEnum } from "../generated/definitions/backend/PushNotificationsContentType";
-import { ReminderStatusEnum } from "../generated/definitions/backend/ReminderStatus";
+import { EmailAddress } from "../generated/definitions/identity/EmailAddress";
+import { PreferredLanguageEnum } from "../generated/definitions/identity/PreferredLanguage";
+import { PushNotificationsContentTypeEnum } from "../generated/definitions/identity/PushNotificationsContentType";
+import { ReminderStatusEnum } from "../generated/definitions/identity/ReminderStatus";
 import { TrialId } from "../generated/definitions/trial_system/TrialId";
 import {
   IoDevServerConfig,

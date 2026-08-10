@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { addHandler } from "../payloads/response";
-import { addApiV1Prefix } from "../utils/strings";
 import {
   getProfile,
-  getUserMetadata,
   resetUserProfile,
   updateProfile
 } from "../persistence/profile/profile";
@@ -13,82 +11,83 @@ import {
   userDataProcessingDelete,
   userDataProcessingUpdate
 } from "../persistence/profile/userMetadata";
+import { addApiIdentityV1Prefix } from "../utils/strings";
+import { RouteHandler } from "../utils/types";
 
 export const profileRouter = Router();
+const dataProcessingUrl = "/user-data-processing/:choice";
 
-// update installationID (useful information to target device using push notification)
-addHandler(
-  profileRouter,
-  "put",
-  addApiV1Prefix("/installations/:installationID"),
-  (_, res) => res.json({ message: "OK" })
-);
-
-// get profile
-addHandler(profileRouter, "get", addApiV1Prefix("/profile"), (_, res) => {
+const handleGetProfile: RouteHandler = (_, res) => {
   const { status, payload } = getProfile();
   res.status(status).json(payload);
-});
+};
 
-// update profile
-addHandler(profileRouter, "post", addApiV1Prefix("/profile"), (req, res) => {
+const handlePostProfile: RouteHandler = (req, res) => {
   const { status, payload } = updateProfile(req);
   res.status(status).json(payload);
-});
+};
 
-// User metadata
-addHandler(profileRouter, "get", addApiV1Prefix("/user-metadata"), (_, res) =>
-  res.json(getUserMetadata())
-);
+const handleGetUserDataProcessing: RouteHandler = (req, res) => {
+  const choice = getUserChoice(req);
+  res.status(choice.status).json(choice.payload);
+};
 
-addHandler(
-  profileRouter,
-  "post",
-  addApiV1Prefix("/user-metadata"),
-  (req, res) => {
-    res.json(req.body);
-  }
-);
+const handlePostUserDataProcessing: RouteHandler = (req, res) => {
+  const { status, payload } = userDataProcessingUpdate(req);
+  res.status(status).json(payload);
+};
 
-// User data processing (DOWNLOAD / DELETE)
+const handleDeleteUserDataProcessing: RouteHandler = (req, res) => {
+  const { status, payload } = userDataProcessingDelete(req);
+  res.status(status).json(payload);
+};
+
+const handlePostEmailValidationProcess: RouteHandler = (_, res) => {
+  res.sendStatus(202);
+};
+
+// --- Route registrations ---
+
 addHandler(
   profileRouter,
   "get",
-  addApiV1Prefix("/user-data-processing/:choice"),
-  (req, res) => {
-    const choice = getUserChoice(req);
-    res.status(choice.status).json(choice.payload);
-  }
+  addApiIdentityV1Prefix("/profile"),
+  handleGetProfile
 );
+
 addHandler(
   profileRouter,
   "post",
-  addApiV1Prefix("/user-data-processing"),
-  (req, res) => {
-    const { status, payload } = userDataProcessingUpdate(req);
-    res.status(status).json(payload);
-  }
+  addApiIdentityV1Prefix("/profile"),
+  handlePostProfile
+);
+
+addHandler(
+  profileRouter,
+  "get",
+  addApiIdentityV1Prefix(dataProcessingUrl),
+  handleGetUserDataProcessing
+);
+
+addHandler(
+  profileRouter,
+  "post",
+  addApiIdentityV1Prefix("/user-data-processing"),
+  handlePostUserDataProcessing
 );
 
 addHandler(
   profileRouter,
   "delete",
-  addApiV1Prefix("/user-data-processing/:choice"),
-  (req, res) => {
-    const { status, payload } = userDataProcessingDelete(req);
-    res.status(status).json(payload);
-  }
+  addApiIdentityV1Prefix(dataProcessingUrl),
+  handleDeleteUserDataProcessing
 );
 
-// Email validation
-// return positive feedback on request to receive a new email message to verify his/her email
 addHandler(
   profileRouter,
   "post",
-  addApiV1Prefix("/email-validation-process"),
-  (_, res) => {
-    res.sendStatus(202);
-  }
+  addApiIdentityV1Prefix("/email-validation-process"),
+  handlePostEmailValidationProcess
 );
 
 // reset function
