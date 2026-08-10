@@ -114,7 +114,8 @@ export const backendStatus: BackendStatus = {
           service_name: "Carta della Cultura - Onboarding"
         }
       ],
-      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"]
+      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"],
+      trackingEnrichedUrls: []
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -352,6 +353,17 @@ export const backendStatus: BackendStatus = {
         min_app_version: {
           ios: "0.0.0",
           android: "0.0.0"
+        }
+      }
+    },
+    oneIdentity: {
+      rolloutPercentage: 0,
+      environments: {
+        prod: {
+          idpsUrl: "https://io.oneid.pagopa.it/idps"
+        },
+        uat: {
+          idpsUrl: "https://uat.io.oneid.pagopa.it/idps"
         }
       }
     },
