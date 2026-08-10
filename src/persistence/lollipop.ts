@@ -1,7 +1,7 @@
 import * as jose from "jose";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { AssertionRef } from "../../generated/definitions/backend/AssertionRef";
+import { AssertionRef } from "../../generated/definitions/session_manager/AssertionRef";
 import { DEFAULT_LOLLIPOP_HASH_ALGORITHM } from "../routers/public";
 import { ioDevServerConfig } from "../config";
 import { getDateMsDifference } from "../utils/date";

@@ -2,7 +2,6 @@ import { Router } from "express";
 import { addHandler } from "../payloads/response";
 import {
   getProfile,
-  getUserMetadata,
   resetUserProfile,
   updateProfile
 } from "../persistence/profile/profile";
@@ -12,7 +11,7 @@ import {
   userDataProcessingDelete,
   userDataProcessingUpdate
 } from "../persistence/profile/userMetadata";
-import { addApiIdentityV1Prefix, addApiV1Prefix } from "../utils/strings";
+import { addApiIdentityV1Prefix } from "../utils/strings";
 import { RouteHandler } from "../utils/types";
 
 export const profileRouter = Router();
@@ -26,13 +25,6 @@ const handleGetProfile: RouteHandler = (_, res) => {
 const handlePostProfile: RouteHandler = (req, res) => {
   const { status, payload } = updateProfile(req);
   res.status(status).json(payload);
-};
-
-const handleGetUserMetadata: RouteHandler = (_, res) =>
-  res.json(getUserMetadata());
-
-const handlePostUserMetadata: RouteHandler = (req, res) => {
-  res.json(req.body);
 };
 
 const handleGetUserDataProcessing: RouteHandler = (req, res) => {
@@ -56,7 +48,6 @@ const handlePostEmailValidationProcess: RouteHandler = (_, res) => {
 
 // --- Route registrations ---
 
-addHandler(profileRouter, "get", addApiV1Prefix("/profile"), handleGetProfile);
 addHandler(
   profileRouter,
   "get",
@@ -67,12 +58,6 @@ addHandler(
 addHandler(
   profileRouter,
   "post",
-  addApiV1Prefix("/profile"),
-  handlePostProfile
-);
-addHandler(
-  profileRouter,
-  "post",
   addApiIdentityV1Prefix("/profile"),
   handlePostProfile
 );
@@ -80,35 +65,10 @@ addHandler(
 addHandler(
   profileRouter,
   "get",
-  addApiV1Prefix("/user-metadata"),
-  handleGetUserMetadata
-);
-addHandler(
-  profileRouter,
-  "post",
-  addApiV1Prefix("/user-metadata"),
-  handlePostUserMetadata
-);
-
-addHandler(
-  profileRouter,
-  "get",
-  addApiV1Prefix(dataProcessingUrl),
-  handleGetUserDataProcessing
-);
-addHandler(
-  profileRouter,
-  "get",
   addApiIdentityV1Prefix(dataProcessingUrl),
   handleGetUserDataProcessing
 );
 
-addHandler(
-  profileRouter,
-  "post",
-  addApiV1Prefix("/user-data-processing"),
-  handlePostUserDataProcessing
-);
 addHandler(
   profileRouter,
   "post",
@@ -119,22 +79,10 @@ addHandler(
 addHandler(
   profileRouter,
   "delete",
-  addApiV1Prefix(dataProcessingUrl),
-  handleDeleteUserDataProcessing
-);
-addHandler(
-  profileRouter,
-  "delete",
   addApiIdentityV1Prefix(dataProcessingUrl),
   handleDeleteUserDataProcessing
 );
 
-addHandler(
-  profileRouter,
-  "post",
-  addApiV1Prefix("/email-validation-process"),
-  handlePostEmailValidationProcess
-);
 addHandler(
   profileRouter,
   "post",

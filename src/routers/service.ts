@@ -9,7 +9,7 @@ import { ioDevServerConfig } from "../config";
 import ServicesDB from "../features/services/persistence/servicesDatabase";
 import { addHandler } from "../payloads/response";
 import { sendFileFromRootPath } from "../utils/file";
-import { addApiIdentityV1Prefix, addApiV1Prefix } from "../utils/strings";
+import { addApiIdentityV1Prefix } from "../utils/strings";
 import { RouteHandler } from "../utils/types";
 import { publicRouter } from "./public";
 
@@ -95,22 +95,10 @@ const handleGetLocalServices: RouteHandler = (_, res) => {
 addHandler(
   serviceRouter,
   "get",
-  addApiV1Prefix(preferencesEndpoint),
-  handleGetServicePreference
-);
-addHandler(
-  serviceRouter,
-  "get",
   addApiIdentityV1Prefix(preferencesEndpoint),
   handleGetServicePreference
 );
 
-addHandler(
-  serviceRouter,
-  "post",
-  addApiV1Prefix(preferencesEndpoint),
-  handlePostServicePreference
-);
 addHandler(
   serviceRouter,
   "post",

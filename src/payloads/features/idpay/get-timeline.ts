@@ -17,7 +17,8 @@ export const getTimelineResponse = (
       const totalElements = timeline.length;
       const totalPages = Math.ceil(totalElements / pageSize);
 
-      const startIndex = (pageNo - 1) * pageSize;
+      // It should start from 0, but pageNo is 1-based, so we need to subtract 1 but backend change it on prod
+      const startIndex = pageNo * pageSize;
       const endIndex = startIndex + pageSize;
       const operationList = _.slice(timeline, startIndex, endIndex);
 

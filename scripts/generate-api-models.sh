@@ -5,7 +5,7 @@ IO_BACKEND_VERSION=v20.0.0
 # (e.g. api_trial_system.yaml, UserMetadata, ServerInfo from api_backend.yaml)
 IO_BACKEND_LEGACY_VERSION=v17.5.2
 # need to change after merge on io-services-metadata
-IO_SERVICES_METADATA_VERSION=1.0.101
+IO_SERVICES_METADATA_VERSION=1.1.3
 # Session manager version
 IO_SESSION_MANAGER_VERSION=1.23.1
 # Send Functions
@@ -27,7 +27,7 @@ declare -a noParams=(
   "./generated/definitions/pagopa/ecommerce https://raw.githubusercontent.com/pagopa/pagopa-infra/v1.724.0/src/domains/ecommerce-app/api/ecommerce-io/v2/_openapi.json.tpl"
   "./generated/definitions/pagopa/transactions https://raw.githubusercontent.com/pagopa/pagopa-biz-events-service/refs/tags/0.1.87/openapi/openapi_lap_jwt.json"
   "./generated/definitions/pagopa/platform https://raw.githubusercontent.com/pagopa/pagopa-infra/v1.64.0/src/domains/shared-app/api/session-wallet/v1/_openapi.json.tpl"
-  "./generated/definitions/pagopa https://raw.githubusercontent.com/pagopa/io-app/master/assets/paymentManager/spec.json"
+  "./generated/definitions/pagopa https://raw.githubusercontent.com/pagopa/io-app/master/apps/main-app/assets/paymentManager/spec.json"
   "./generated/definitions/cgn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION_CGN_CDC/openapi/generated/api_cgn_card_platform.yaml"
   "./generated/definitions/cgn/merchants https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION_CGN_CDC/openapi/generated/api_cgn_search_platform.yaml"
   "./generated/definitions/cgn/geo https://raw.githubusercontent.com/pagopa/io-backend/here_geoapi_integration/api_geo.yaml"
@@ -35,8 +35,8 @@ declare -a noParams=(
 )
 
 declare -a noStrict=(
-  "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_io_sign.yaml"
-  "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v2.47.6/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
+  "./generated/definitions/fci https://raw.githubusercontent.com/pagopa/io-sign/refs/tags/io-func-sign-user@2.9.2/apps/io-func-sign-user/api/external.yaml"
+  "./generated/definitions/idpay https://raw.githubusercontent.com/pagopa/cstar-securehub-infra-api-spec/refs/tags/v3.10.2/src/idpay/apim/api/idpay_appio_full/openapi.appio.full.yml"
   "./generated/definitions/services https://raw.githubusercontent.com/pagopa/io-services-cms/io-services-app-backend@$IO_SERVICES_APP_BACKEND/apps/app-backend/api/external.yaml"
 )
 
@@ -50,7 +50,7 @@ declare -a noStrictRequestTypesRespondeDecoders=(
 )
 
 declare -a noRMNoMKDirNoStrict=(
-  "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_backend.yaml"
+  "./generated/definitions/backend https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/api_public.yaml"
   "./generated/definitions/session_manager https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/io-session-manager@$IO_SESSION_MANAGER_VERSION/apps/io-session-manager/api/external.yaml"
   "./generated/definitions/pn https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_VERSION/openapi/consumed/api-piattaforma-notifiche.yaml"
 )
@@ -79,14 +79,5 @@ for elem in "${noRMNoMKDirNoStrict[@]}"; do
 done
 wait
 
-# regenerate legacy api_backend.yaml v17.5.2 as a compatibility layer WITHOUT removing
-# the directory first, so that types removed in future versions 
-# are added back alongside the new definitions.
-
-echo "Generating legacy backend compatibility types from $IO_BACKEND_LEGACY_VERSION..."
-yarn run gen-api-models \
-  --api-spec "https://raw.githubusercontent.com/pagopa/io-backend/$IO_BACKEND_LEGACY_VERSION/api_backend.yaml" \
-  --out-dir "./generated/definitions/backend" \
-  --no-strict
 
 yarn prepare

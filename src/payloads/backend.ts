@@ -85,6 +85,13 @@ export const backendStatus: BackendStatus = {
       eyca_base_url: "https://eyca.org",
       eyca_discount_url: "https://eyca.org/discounts?country=IT"
     },
+    fse: {
+      landingBanner: {
+        is_dismissable: true,
+        engagement_url:
+          "https://www.fascicolosanitario.gov.it/portale/accedi-al-fascicolo"
+      }
+    },
     fims: {
       domain: `${serverUrl}/fims/provider/`,
       enabled: true,
@@ -107,7 +114,8 @@ export const backendStatus: BackendStatus = {
           service_name: "Carta della Cultura - Onboarding"
         }
       ],
-      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"]
+      iOSCookieDisabledServiceIds: ["01JV4M365CHAZN5C0FDR62DCVD"],
+      trackingEnrichedUrls: []
     },
     premiumMessages: {
       opt_in_out_enabled: true
@@ -348,6 +356,17 @@ export const backendStatus: BackendStatus = {
         }
       }
     },
+    oneIdentity: {
+      rolloutPercentage: 0,
+      environments: {
+        prod: {
+          idpsUrl: "https://io.oneid.pagopa.it/idps"
+        },
+        uat: {
+          idpsUrl: "https://uat.io.oneid.pagopa.it/idps"
+        }
+      }
+    },
     emailUniquenessValidation: {
       min_app_version: {
         ios: "0.0.0",
@@ -379,6 +398,7 @@ export const backendStatus: BackendStatus = {
     },
     landing_banners: {
       priority_order: [
+        "FSE_ENGAGEMENT_BANNER",
         "OS_DISMISSION_REMINDER",
         "PUSH_NOTIFICATIONS_REMINDER",
         "SEND_ACTIVATION_REMINDER",
@@ -398,11 +418,12 @@ export const backendStatus: BackendStatus = {
         itw: "https://pagopa.qualtrics.com/jfe/form/SV_3sMkRc6Jg9aarhY"
       }
     },
-    ioMarkdown: {
+    messages_feedback_banner: {
       min_app_version: {
         ios: "3.0.0.0",
         android: "3.0.0.0"
-      }
+      },
+      feedback_uri: "https://pagopa.qualtrics.com/jfe/form/SV_0VCZTkYbfozt9ki"
     },
     zendeskCacBanner: {
       min_app_version: {
