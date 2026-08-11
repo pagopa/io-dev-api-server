@@ -1,5 +1,3 @@
-import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { PatternString } from "@pagopa/ts-commons/lib/strings";
 import { compare } from "compare-versions";
@@ -19,38 +17,36 @@ type FeatureFlagWithMinAppVersion<T> = Extract<
   }[keyof T]
 >;
 
-export const isVersionValidAndActive = (version: string | undefined) =>
-  pipe(
-    version,
-    PatternString(`^(?!0(.0)*$)\\d+(\\.\\d+)*$`).decode,
-    E.fold(
-      _ => false,
-      minAppVersion =>
-        pipe(
-          getAppVersion(),
-          PatternString(`^(?!0(.0)*$)\\d+(\\.\\d+)*$`).decode,
-          E.fold(
-            _ => false,
-            userAppVersion => compare(minAppVersion, userAppVersion, "<=")
-          )
-        )
-    )
+export const isVersionValidAndActive = (
+  version: string | undefined
+): boolean => {
+  const versionEither = PatternString(`^(?!0(.0)*$)\\d+(\\.\\d+)*$`).decode(
+    version
   );
+  if (E.isLeft(versionEither)) {
+    return false;
+  }
+
+  const appVersionEither = PatternString(`^(?!0(.0)*$)\\d+(\\.\\d+)*$`).decode(
+    getAppVersion()
+  );
+  if (E.isLeft(appVersionEither)) {
+    return false;
+  }
+
+  return compare(versionEither.right, appVersionEither.right, "<=");
+};
 
 export const isFeatureFlagWithMinVersionEnabled = (
   featureFlag: FeatureFlagWithMinAppVersion<BackendStatus["config"]>
-) =>
-  pipe(
-    O.fromNullable(backendStatus.config[featureFlag]?.min_app_version),
-    O.fold(
-      () => false,
-      (min_app_version: VersionPerPlatform) =>
-        pipe(
-          getAppOs(),
-          O.fold(
-            () => false,
-            os => isVersionValidAndActive(min_app_version[os])
-          )
-        )
-    )
-  );
+): boolean => {
+  const minAppVersion = backendStatus.config[featureFlag]?.min_app_version;
+  if (!minAppVersion) {
+    return false;
+  }
+  const operatingSystem = getAppOs();
+  if (!operatingSystem) {
+    return false;
+  }
+  return isVersionValidAndActive(minAppVersion[operatingSystem]);
+};

@@ -4,9 +4,9 @@
 import * as zlib from "zlib";
 import { JwkPublicKey, parseJwkOrError } from "@pagopa/ts-commons/lib/jwk";
 import chalk from "chalk";
+import { calculateJwkThumbprint } from "jose";
 import { Response, Router } from "express";
 import * as E from "fp-ts/lib/Either";
-import * as jose from "jose";
 import { parseStringPromise } from "xml2js";
 import { assetsFolder, ioDevServerConfig } from "../config";
 import { WALLET_PAYMENT_PATH } from "../features/payments/utils/payment";
@@ -80,7 +80,7 @@ addHandler(
       return;
     }
 
-    const thumbprint = await jose.calculateJwkThumbprint(
+    const thumbprint = await calculateJwkThumbprint(
       jwkPK.right,
       DEFAULT_LOLLIPOP_HASH_ALGORITHM
     );
@@ -191,7 +191,7 @@ addHandler(
         res.sendStatus(400);
         return;
       }
-      const thumbprint = await jose.calculateJwkThumbprint(
+      const thumbprint = await calculateJwkThumbprint(
         jwkPK.right,
         DEFAULT_LOLLIPOP_HASH_ALGORITHM
       );

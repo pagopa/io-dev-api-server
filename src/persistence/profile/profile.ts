@@ -1,4 +1,3 @@
-import * as R from "fp-ts/lib/Record";
 import * as E from "fp-ts/lib/Either";
 import { fakerIT as faker } from "@faker-js/faker";
 import { Request } from "express";
@@ -16,7 +15,7 @@ import { CustomResponse, ResponseProblem } from "../../utils/responseTypes";
 let currentProfile: InitializedProfile = {} as InitializedProfile;
 
 export const getProfile = (): ProfileOperationsType["get"] => {
-  if (R.isEmpty(currentProfile)) {
+  if (isEmptyRecord(currentProfile)) {
     initProfile();
   }
   return {
@@ -90,7 +89,7 @@ const initProfile = () => {
 };
 
 export const setProfileEmailValidated = (value: boolean) => {
-  if (R.isEmpty(currentProfile)) {
+  if (isEmptyRecord(currentProfile)) {
     return;
   }
   currentProfile = {
@@ -101,7 +100,7 @@ export const setProfileEmailValidated = (value: boolean) => {
 };
 
 export const setProfileEmailAlreadyTaken = (value: boolean) => {
-  if (R.isEmpty(currentProfile)) {
+  if (isEmptyRecord(currentProfile)) {
     return;
   }
   currentProfile = {
@@ -185,3 +184,6 @@ const profileSuccessOperations: ProfileOperationsType = {
     payload: InitializedProfile
   }
 };
+
+const isEmptyRecord = (input: Record<string, unknown>): boolean =>
+  Object.keys(input).length === 0;

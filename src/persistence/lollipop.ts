@@ -1,6 +1,4 @@
 import * as jose from "jose";
-import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/lib/Option";
 import { AssertionRef } from "../../generated/definitions/session_manager/AssertionRef";
 import { DEFAULT_LOLLIPOP_HASH_ALGORITHM } from "../routers/public";
 import { ioDevServerConfig } from "../config";
@@ -82,15 +80,15 @@ export function concretizeEphemeralInfo() {
 }
 
 // if is a ttl is defined in config for assertion ref, it checks its expiration, otherwise it is considered infinite
-export const isAssertionRefStillValid = () =>
-  pipe(
-    ioDevServerConfig.features.lollipop.assertionRefValidityMS,
-    O.fromNullable,
-    O.fold(
-      () => true,
-      validity =>
-        !!lollipopInfo.instantiationDate &&
-        getDateMsDifference(new Date(), lollipopInfo.instantiationDate) <
-          validity
-    )
+export const isAssertionRefStillValid = () => {
+  const assertionRefValidityMS =
+    ioDevServerConfig.features.lollipop.assertionRefValidityMS;
+  if (!assertionRefValidityMS) {
+    return true;
+  }
+  return (
+    !!lollipopInfo.instantiationDate &&
+    getDateMsDifference(new Date(), lollipopInfo.instantiationDate) <
+      assertionRefValidityMS
   );
+};
