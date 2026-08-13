@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> Since August 12, 2026, the source of this repository has moved into the [`io-app`](https://github.com/pagopa/io-app) monorepo. This repository is kept for history and is no longer the source of truth for new development.
+>
+> #### [Explore `io-dev-api-server` →](https://github.com/pagopa/io-app/tree/master/apps/dev-api-server)
+
 <h1 align="center">
   <img src="assets/imgs/readme/main_screen.png" alt="io-dev-api-server"></a>
   <br>
